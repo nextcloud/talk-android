@@ -10,9 +10,9 @@ package com.nextcloud.talk.conversationlist.ui
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -142,7 +142,7 @@ class ConversationAvatarContentTest {
 
     private fun conversation(type: ConversationEnums.ConversationType, avatarVersion: String = ""): ConversationModel =
         ConversationModel.mapToConversationModel(
-            Conversation(
+            ConversationDto(
                 token = ROOM_TOKEN,
                 name = PEER_NAME,
                 type = type,
@@ -158,8 +158,8 @@ class ConversationAvatarContentTest {
             userId = "me",
             username = "me",
             baseUrl = "https://server.example.com",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply { this.features = features }
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { this.features = features }
             }
         )
     }

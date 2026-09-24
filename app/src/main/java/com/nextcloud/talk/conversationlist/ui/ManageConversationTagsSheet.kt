@@ -45,12 +45,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel.TagActionUiState
-import com.nextcloud.talk.models.json.tags.ConversationTag
+import com.nextcloud.talk.models.json.tags.ConversationTagDto
 
 @Suppress("LongMethod")
 @Composable
 fun ManageConversationTagsSheetContent(
-    tags: List<ConversationTag>,
+    tags: List<ConversationTagDto>,
     tagActionState: TagActionUiState,
     callbacks: ManageConversationTagsCallbacks
 ) {
@@ -58,7 +58,7 @@ fun ManageConversationTagsSheetContent(
     var newTagName by remember { mutableStateOf("") }
     var editingTagId by remember { mutableStateOf<String?>(null) }
     var editingName by remember { mutableStateOf("") }
-    var tagPendingDelete by remember { mutableStateOf<ConversationTag?>(null) }
+    var tagPendingDelete by remember { mutableStateOf<ConversationTagDto?>(null) }
 
     LaunchedEffect(tagActionState) {
         if (tagActionState is TagActionUiState.Success) {
@@ -91,7 +91,7 @@ fun ManageConversationTagsSheetContent(
             )
         }
 
-        val customTags = tags.filter { it.type == ConversationTag.TYPE_CUSTOM }
+        val customTags = tags.filter { it.type == ConversationTagDto.TYPE_CUSTOM }
 
         if (customTags.isEmpty()) {
             Text(
@@ -105,7 +105,7 @@ fun ManageConversationTagsSheetContent(
         }
 
         tags.forEachIndexed { index, tag ->
-            val isFavorites = tag.type == ConversationTag.TYPE_FAVORITES
+            val isFavorites = tag.type == ConversationTagDto.TYPE_FAVORITES
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -230,10 +230,10 @@ private fun tagErrorMessage(errorType: String?): String =
 
 private fun previewTags() =
     listOf(
-        ConversationTag(id = "favorites", name = "", type = ConversationTag.TYPE_FAVORITES),
-        ConversationTag(id = "1", name = "Work", sortOrder = 0),
-        ConversationTag(id = "2", name = "Family", sortOrder = 1),
-        ConversationTag(id = "3", name = "Projects", sortOrder = 2)
+        ConversationTagDto(id = "favorites", name = "", type = ConversationTagDto.TYPE_FAVORITES),
+        ConversationTagDto(id = "1", name = "Work", sortOrder = 0),
+        ConversationTagDto(id = "2", name = "Family", sortOrder = 1),
+        ConversationTagDto(id = "3", name = "Projects", sortOrder = 2)
     )
 
 @Preview(showBackground = true, name = "Light")

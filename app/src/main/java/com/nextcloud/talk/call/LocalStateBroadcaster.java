@@ -7,9 +7,9 @@
 package com.nextcloud.talk.call;
 
 import com.nextcloud.talk.activities.ParticipantUiState;
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 
 import java.util.Objects;
 
@@ -100,31 +100,31 @@ public abstract class LocalStateBroadcaster {
     public abstract void handleCallParticipantAdded(ParticipantUiState uiState);
     public abstract void handleCallParticipantRemoved(String sessionId);
 
-    protected DataChannelMessage getDataChannelMessageForAudioState() {
+    protected DataChannelMessageDto getDataChannelMessageForAudioState() {
         String type = "audioOff";
         if (localCallParticipantModel.isAudioEnabled() != null && localCallParticipantModel.isAudioEnabled()) {
             type = "audioOn";
         }
 
-        return new DataChannelMessage(type);
+        return new DataChannelMessageDto(type);
     }
 
-    protected DataChannelMessage getDataChannelMessageForSpeakingState() {
+    protected DataChannelMessageDto getDataChannelMessageForSpeakingState() {
         String type = "stoppedSpeaking";
         if (localCallParticipantModel.isSpeaking() != null && localCallParticipantModel.isSpeaking()) {
             type = "speaking";
         }
 
-        return new DataChannelMessage(type);
+        return new DataChannelMessageDto(type);
     }
 
-    protected DataChannelMessage getDataChannelMessageForVideoState() {
+    protected DataChannelMessageDto getDataChannelMessageForVideoState() {
         String type = "videoOff";
         if (localCallParticipantModel.isVideoEnabled() != null && localCallParticipantModel.isVideoEnabled()) {
             type = "videoOn";
         }
 
-        return new DataChannelMessage(type);
+        return new DataChannelMessageDto(type);
     }
 
     /**
@@ -133,8 +133,8 @@ public abstract class LocalStateBroadcaster {
      * @param type the type of the signaling message
      * @return the signaling message
      */
-    private NCSignalingMessage createBaseSignalingMessage(String type) {
-        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+    private NCSignalingMessageDto createBaseSignalingMessage(String type) {
+        NCSignalingMessageDto ncSignalingMessage = new NCSignalingMessageDto();
         // "roomType" is not really relevant without a peer or when referring to the whole participant, but it is
         // nevertheless expected in the message. As most of the signaling messages currently sent to all participants
         // are related to audio/video state "video" is used as the room type.
@@ -149,15 +149,15 @@ public abstract class LocalStateBroadcaster {
      *
      * @return the signaling message
      */
-    protected NCSignalingMessage getSignalingMessageForAudioState() {
+    protected NCSignalingMessageDto getSignalingMessageForAudioState() {
         String type = "mute";
         if (localCallParticipantModel.isAudioEnabled() != null && localCallParticipantModel.isAudioEnabled()) {
             type = "unmute";
         }
 
-        NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
+        NCSignalingMessageDto ncSignalingMessage = createBaseSignalingMessage(type);
 
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
         ncMessagePayload.setName("audio");
         ncSignalingMessage.setPayload(ncMessagePayload);
 
@@ -169,15 +169,15 @@ public abstract class LocalStateBroadcaster {
      *
      * @return the signaling message
      */
-    protected NCSignalingMessage getSignalingMessageForVideoState() {
+    protected NCSignalingMessageDto getSignalingMessageForVideoState() {
         String type = "mute";
         if (localCallParticipantModel.isVideoEnabled() != null && localCallParticipantModel.isVideoEnabled()) {
             type = "unmute";
         }
 
-        NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
+        NCSignalingMessageDto ncSignalingMessage = createBaseSignalingMessage(type);
 
-        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        NCMessagePayloadDto ncMessagePayload = new NCMessagePayloadDto();
         ncMessagePayload.setName("video");
         ncSignalingMessage.setPayload(ncMessagePayload);
 

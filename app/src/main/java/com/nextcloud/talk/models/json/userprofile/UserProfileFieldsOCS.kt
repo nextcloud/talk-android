@@ -10,7 +10,7 @@ package com.nextcloud.talk.models.json.userprofile
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
 import java.util.ArrayList
 
@@ -18,7 +18,7 @@ import java.util.ArrayList
 @JsonObject
 data class UserProfileFieldsOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+    var meta: GenericMetaDto?,
     @JsonField(name = ["data"])
     var data: ArrayList<String>? = null
 ) : Parcelable {

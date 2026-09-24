@@ -87,7 +87,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
@@ -684,17 +684,17 @@ private sealed class ParticipantAvatarContent {
 }
 
 private fun buildParticipantAvatarContent(
-    participant: Participant,
+    participant: ParticipantDto,
     baseUrl: String,
     conversationToken: String,
     isDark: Boolean
 ): ParticipantAvatarContent =
     when (participant.calculatedActorType) {
-        Participant.ActorType.USERS ->
+        ParticipantDto.ActorType.USERS ->
             ParticipantAvatarContent.Url(
                 ApiUtils.getUrlForAvatar(baseUrl, participant.calculatedActorId, true, isDark)
             )
-        Participant.ActorType.FEDERATED ->
+        ParticipantDto.ActorType.FEDERATED ->
             ParticipantAvatarContent.Url(
                 ApiUtils.getUrlForFederatedAvatar(
                     baseUrl,
@@ -704,10 +704,10 @@ private fun buildParticipantAvatarContent(
                     true
                 )
             )
-        Participant.ActorType.GROUPS -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_group_small)
-        Participant.ActorType.CIRCLES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_team_small)
-        Participant.ActorType.PHONES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_phone_small)
-        Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
+        ParticipantDto.ActorType.GROUPS -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_group_small)
+        ParticipantDto.ActorType.CIRCLES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_avatar_team_small)
+        ParticipantDto.ActorType.PHONES -> ParticipantAvatarContent.ThemedRes(R.drawable.ic_phone_small)
+        ParticipantDto.ActorType.GUESTS, ParticipantDto.ActorType.EMAILS -> {
             val name = participant.displayName
             if (!name.isNullOrBlank()) {
                 ParticipantAvatarContent.FirstLetter(name.trimStart().first().uppercase())
@@ -721,7 +721,7 @@ private fun buildParticipantAvatarContent(
 @Composable
 @Suppress("LongMethod")
 private fun ParticipantAvatarImage(
-    participant: Participant,
+    participant: ParticipantDto,
     baseUrl: String,
     credentials: String,
     conversationToken: String,
@@ -855,21 +855,21 @@ private fun ParticipantStatusOverlay(status: String?, modifier: Modifier = Modif
 
 /** Owner and moderator are omitted here, they are shown as an icon instead. */
 @Composable
-private fun participantTypeLabel(participant: Participant): String =
+private fun participantTypeLabel(participant: ParticipantDto): String =
     when (participant.type) {
-        Participant.ParticipantType.USER -> when (participant.calculatedActorType) {
-            Participant.ActorType.GROUPS -> stringResource(R.string.nc_group)
-            Participant.ActorType.CIRCLES -> stringResource(R.string.nc_team)
+        ParticipantDto.ParticipantType.USER -> when (participant.calculatedActorType) {
+            ParticipantDto.ActorType.GROUPS -> stringResource(R.string.nc_group)
+            ParticipantDto.ActorType.CIRCLES -> stringResource(R.string.nc_team)
             else -> ""
         }
-        Participant.ParticipantType.GUEST,
-        Participant.ParticipantType.GUEST_MODERATOR -> stringResource(R.string.nc_guest)
-        Participant.ParticipantType.USER_FOLLOWING_LINK -> stringResource(R.string.nc_following_link)
+        ParticipantDto.ParticipantType.GUEST,
+        ParticipantDto.ParticipantType.GUEST_MODERATOR -> stringResource(R.string.nc_guest)
+        ParticipantDto.ParticipantType.USER_FOLLOWING_LINK -> stringResource(R.string.nc_following_link)
         else -> ""
     }
 
 @Composable
-private fun participantEffectiveStatus(participant: Participant): String {
+private fun participantEffectiveStatus(participant: ParticipantDto): String {
     val explicit = participant.statusMessage
     if (!explicit.isNullOrEmpty()) return explicit
     return when (participant.status) {
@@ -1021,11 +1021,11 @@ private fun ParticipantItemRow(
             )
         }
         val inCallIconRes = when {
-            participant.inCall and Participant.InCallFlags.WITH_PHONE.toLong() > 0L ->
+            participant.inCall and ParticipantDto.InCallFlags.WITH_PHONE.toLong() > 0L ->
                 R.drawable.ic_call_grey_600_24dp
-            participant.inCall and Participant.InCallFlags.WITH_VIDEO.toLong() > 0L ->
+            participant.inCall and ParticipantDto.InCallFlags.WITH_VIDEO.toLong() > 0L ->
                 R.drawable.ic_videocam_grey_600_24dp
-            participant.inCall > Participant.InCallFlags.DISCONNECTED.toLong() ->
+            participant.inCall > ParticipantDto.InCallFlags.DISCONNECTED.toLong() ->
                 R.drawable.ic_mic_grey_600_24dp
             else -> null
         }
@@ -1111,53 +1111,53 @@ private fun DangerZoneSection(state: ConversationInfoUiState, callbacks: Convers
 @Suppress("LongMethod")
 private fun previewState(): ConversationInfoUiState {
     val alice = ParticipantModel(
-        participant = Participant(
-            actorType = Participant.ActorType.USERS,
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.USERS,
             actorId = "alice",
             displayName = "Alice Johnson",
-            type = Participant.ParticipantType.OWNER,
+            type = ParticipantDto.ParticipantType.OWNER,
             status = StatusType.ONLINE.string
         ),
         isOnline = true,
         role = ParticipantRole.OWNER
     )
     val bob = ParticipantModel(
-        participant = Participant(
-            actorType = Participant.ActorType.USERS,
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.USERS,
             actorId = "bob",
             displayName = "Bob Smith",
-            type = Participant.ParticipantType.MODERATOR,
+            type = ParticipantDto.ParticipantType.MODERATOR,
             status = StatusType.AWAY.string,
             statusMessage = "In a meeting",
-            inCall = Participant.InCallFlags.WITH_VIDEO.toLong()
+            inCall = ParticipantDto.InCallFlags.WITH_VIDEO.toLong()
         ),
         isOnline = true,
         role = ParticipantRole.MODERATOR
     )
     val carol = ParticipantModel(
-        participant = Participant(
-            actorType = Participant.ActorType.GROUPS,
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.GROUPS,
             actorId = "dev-team",
             displayName = "Dev Team",
-            type = Participant.ParticipantType.USER
+            type = ParticipantDto.ParticipantType.USER
         ),
         isOnline = false
     )
     val dave = ParticipantModel(
-        participant = Participant(
-            actorType = Participant.ActorType.CIRCLES,
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.CIRCLES,
             actorId = "eng-circle",
             displayName = "Engineering Circle",
-            type = Participant.ParticipantType.USER
+            type = ParticipantDto.ParticipantType.USER
         ),
         isOnline = false
     )
     val erin = ParticipantModel(
-        participant = Participant(
-            actorType = Participant.ActorType.GUESTS,
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.GUESTS,
             actorId = "guest-erin",
             displayName = "Erin",
-            type = Participant.ParticipantType.GUEST_MODERATOR
+            type = ParticipantDto.ParticipantType.GUEST_MODERATOR
         ),
         isOnline = true,
         role = ParticipantRole.MODERATOR
@@ -1432,13 +1432,13 @@ private fun ParticipantItemRowPreview() {
 private fun roleBadgePreviewParticipants(): List<ParticipantModel> {
     fun model(
         displayName: String,
-        type: Participant.ParticipantType,
+        type: ParticipantDto.ParticipantType,
         role: ParticipantRole,
-        actorType: Participant.ActorType = Participant.ActorType.USERS,
+        actorType: ParticipantDto.ActorType = ParticipantDto.ActorType.USERS,
         isOnline: Boolean = true,
         statusMessage: String? = null
     ) = ParticipantModel(
-        participant = Participant(
+        participant = ParticipantDto(
             actorType = actorType,
             actorId = displayName.lowercase(),
             displayName = displayName,
@@ -1452,45 +1452,45 @@ private fun roleBadgePreviewParticipants(): List<ParticipantModel> {
 
     return listOf(
         // Badge only
-        model("Owner, badge only", Participant.ParticipantType.OWNER, ParticipantRole.OWNER),
-        model("Moderator, badge only", Participant.ParticipantType.MODERATOR, ParticipantRole.MODERATOR),
+        model("Owner, badge only", ParticipantDto.ParticipantType.OWNER, ParticipantRole.OWNER),
+        model("Moderator, badge only", ParticipantDto.ParticipantType.MODERATOR, ParticipantRole.MODERATOR),
         // Badge plus a type label
         model(
             displayName = "Guest moderator, badge and label",
-            type = Participant.ParticipantType.GUEST_MODERATOR,
+            type = ParticipantDto.ParticipantType.GUEST_MODERATOR,
             role = ParticipantRole.MODERATOR,
-            actorType = Participant.ActorType.GUESTS
+            actorType = ParticipantDto.ActorType.GUESTS
         ),
         // Label only
         model(
             displayName = "Group, label only",
-            type = Participant.ParticipantType.USER,
+            type = ParticipantDto.ParticipantType.USER,
             role = ParticipantRole.NONE,
-            actorType = Participant.ActorType.GROUPS
+            actorType = ParticipantDto.ActorType.GROUPS
         ),
         // Neither
-        model("Plain user, no badge", Participant.ParticipantType.USER, ParticipantRole.NONE),
+        model("Plain user, no badge", ParticipantDto.ParticipantType.USER, ParticipantRole.NONE),
         // Badge must survive an ellipsized name
         model(
             "Wilhelmina Bartholomew-Fitzgerald the Third of Nextcloud GmbH",
-            Participant.ParticipantType.OWNER,
+            ParticipantDto.ParticipantType.OWNER,
             ParticipantRole.OWNER
         ),
         // Rank suppressed: one-to-one, former one-to-one and changelog conversations have no ranks
-        model("Owner in a one-to-one, suppressed", Participant.ParticipantType.OWNER, ParticipantRole.NONE),
+        model("Owner in a one-to-one, suppressed", ParticipantDto.ParticipantType.OWNER, ParticipantRole.NONE),
         // Offline: name, avatar, badge, label and status line all dim together
         model(
             displayName = "Offline owner, dimmed badge and status",
-            type = Participant.ParticipantType.OWNER,
+            type = ParticipantDto.ParticipantType.OWNER,
             role = ParticipantRole.OWNER,
             isOnline = false,
             statusMessage = "Back on Monday"
         ),
         model(
             displayName = "Offline guest moderator, dimmed badge and label",
-            type = Participant.ParticipantType.GUEST_MODERATOR,
+            type = ParticipantDto.ParticipantType.GUEST_MODERATOR,
             role = ParticipantRole.MODERATOR,
-            actorType = Participant.ActorType.GUESTS,
+            actorType = ParticipantDto.ActorType.GUESTS,
             isOnline = false
         )
     )

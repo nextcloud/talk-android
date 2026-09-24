@@ -7,7 +7,7 @@
 
 package com.nextcloud.talk.passwordpolicy
 
-import com.nextcloud.talk.models.json.passwordResult.PasswordResult
+import com.nextcloud.talk.models.json.passwordResult.PasswordResultDto
 
 /**
  * Outcome of checking a password against the server's password policy.
@@ -17,7 +17,7 @@ sealed interface PasswordValidationState {
 
     /** The server advertises no password policy, so there is nothing to check against. */
     data object NoPolicy : PasswordValidationState
-    data class Success(val result: PasswordResult) : PasswordValidationState
+    data class Success(val result: PasswordResultDto) : PasswordValidationState
     data class Error(val message: String) : PasswordValidationState
 }
 

@@ -7,11 +7,11 @@
 
 package com.nextcloud.talk.conversationcreation.data
 
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.ConversationPreset
+import com.nextcloud.talk.models.json.conversations.ConversationPresetDto
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -19,7 +19,7 @@ import java.io.File
 
 interface ConversationCreationRepository {
 
-    suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset>
+    suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPresetDto>
 
     suspend fun setConversationDescription(
         credentials: String?,
@@ -30,7 +30,7 @@ interface ConversationCreationRepository {
     suspend fun openConversation(credentials: String?, url: String, roomToken: String, scope: Int): GenericOverall
     suspend fun addParticipants(credentials: String?, retrofitBucket: RetrofitBucket): AddParticipantOverall
     suspend fun createRoom(credentials: String?, retrofitBucket: RetrofitBucket): RoomOverall
-    suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall
+    suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequestDto): RoomOverall
     suspend fun setPassword(credentials: String?, url: String, roomToken: String, password: String): GenericOverall
     suspend fun uploadConversationAvatar(
         credentials: String?,

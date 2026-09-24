@@ -13,8 +13,8 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.ServerVersion
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -159,11 +159,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
         if (userAttributes.capabilities != null) {
             user.capabilities = LoganSquare
-                .parse(userAttributes.capabilities, Capabilities::class.java)
+                .parse(userAttributes.capabilities, CapabilitiesDto::class.java)
         }
         if (userAttributes.serverVersion != null) {
             user.serverVersion = LoganSquare
-                .parse(userAttributes.serverVersion, ServerVersion::class.java)
+                .parse(userAttributes.serverVersion, ServerVersionDto::class.java)
         }
         user.clientCertificate = userAttributes.certificateAlias
         if (userAttributes.externalSignalingServer != null) {
@@ -189,10 +189,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.userId = userAttributes.userId
         }
         if (!TextUtils.isEmpty(userAttributes.capabilities)) {
-            user.capabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+            user.capabilities = LoganSquare.parse(userAttributes.capabilities, CapabilitiesDto::class.java)
         }
         if (!TextUtils.isEmpty(userAttributes.serverVersion)) {
-            user.serverVersion = LoganSquare.parse(userAttributes.serverVersion, ServerVersion::class.java)
+            user.serverVersion = LoganSquare.parse(userAttributes.serverVersion, ServerVersionDto::class.java)
         }
         if (!TextUtils.isEmpty(userAttributes.certificateAlias)) {
             user.clientCertificate = userAttributes.certificateAlias

@@ -96,7 +96,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.utils.ApiUtils
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -249,7 +249,7 @@ fun ConversationList(
     onConversationClick: (ConversationModel) -> Unit,
     onConversationLongClick: (ConversationModel) -> Unit,
     onMessageResultClick: (SearchMessageEntry) -> Unit,
-    onContactClick: (Participant) -> Unit,
+    onContactClick: (ParticipantDto) -> Unit,
     onLoadMoreClick: () -> Unit,
     onRefresh: () -> Unit,
     searchQuery: String = "",
@@ -725,7 +725,7 @@ internal fun buildHighlightedText(text: String, searchTerm: String, highlightCol
 
 @Composable
 private fun ContactResultListItem(
-    participant: Participant,
+    participant: ParticipantDto,
     currentUser: User,
     credentials: String,
     searchQuery: String,

@@ -7,22 +7,22 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import org.junit.Assert
 import org.junit.Test
 
 @Suppress("TooManyFunctions")
 class ParticipantRoleUtilsTest {
 
-    private fun participant(type: Participant.ParticipantType): Participant =
-        Participant(actorType = Participant.ActorType.USERS, actorId = "alice", type = type)
+    private fun participant(type: ParticipantDto.ParticipantType): ParticipantDto =
+        ParticipantDto(actorType = ParticipantDto.ActorType.USERS, actorId = "alice", type = type)
 
     @Test
     fun testRoleOf_ownerInGroupConversation_isOwner() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.OWNER),
+            participant(ParticipantDto.ParticipantType.OWNER),
             ConversationEnums.ConversationType.ROOM_GROUP_CALL
         )
         Assert.assertEquals(ParticipantRole.OWNER, result)
@@ -31,7 +31,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_moderatorInPublicConversation_isModerator() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.MODERATOR),
+            participant(ParticipantDto.ParticipantType.MODERATOR),
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
         )
         Assert.assertEquals(ParticipantRole.MODERATOR, result)
@@ -40,7 +40,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_guestModerator_isModerator() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.GUEST_MODERATOR),
+            participant(ParticipantDto.ParticipantType.GUEST_MODERATOR),
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
         )
         Assert.assertEquals(ParticipantRole.MODERATOR, result)
@@ -49,7 +49,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_plainUser_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.USER),
+            participant(ParticipantDto.ParticipantType.USER),
             ConversationEnums.ConversationType.ROOM_GROUP_CALL
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -58,7 +58,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_guest_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.GUEST),
+            participant(ParticipantDto.ParticipantType.GUEST),
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -67,7 +67,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_userFollowingLink_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.USER_FOLLOWING_LINK),
+            participant(ParticipantDto.ParticipantType.USER_FOLLOWING_LINK),
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -80,7 +80,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_ownerInOneToOneConversation_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.OWNER),
+            participant(ParticipantDto.ParticipantType.OWNER),
             ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -89,7 +89,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_ownerInFormerOneToOneConversation_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.OWNER),
+            participant(ParticipantDto.ParticipantType.OWNER),
             ConversationEnums.ConversationType.FORMER_ONE_TO_ONE
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -98,7 +98,7 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testRoleOf_ownerInChangelogConversation_isNone() {
         val result = ParticipantRoleUtils.roleOf(
-            participant(Participant.ParticipantType.OWNER),
+            participant(ParticipantDto.ParticipantType.OWNER),
             ConversationEnums.ConversationType.ROOM_SYSTEM
         )
         Assert.assertEquals(ParticipantRole.NONE, result)
@@ -106,7 +106,7 @@ class ParticipantRoleUtilsTest {
 
     @Test
     fun testRoleOf_unknownConversationType_isNone() {
-        val result = ParticipantRoleUtils.roleOf(participant(Participant.ParticipantType.OWNER), null)
+        val result = ParticipantRoleUtils.roleOf(participant(ParticipantDto.ParticipantType.OWNER), null)
         Assert.assertEquals(ParticipantRole.NONE, result)
     }
 
@@ -123,12 +123,12 @@ class ParticipantRoleUtilsTest {
     // region canChangeOwnership
 
     private fun capabilities(vararg features: String) =
-        SpreedCapability(features = features.toList(), config = null, version = "")
+        SpreedCapabilityDto(features = features.toList(), config = null, version = "")
 
     private val ownerCapability = capabilities(SpreedFeatures.PROMOTE_DEMOTE_OWNER.value)
 
     private fun conversation(
-        selfType: Participant.ParticipantType = Participant.ParticipantType.OWNER,
+        selfType: ParticipantDto.ParticipantType = ParticipantDto.ParticipantType.OWNER,
         type: ConversationEnums.ConversationType = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
         objectType: ConversationEnums.ObjectType = ConversationEnums.ObjectType.DEFAULT
     ) = ConversationModel(
@@ -158,9 +158,9 @@ class ParticipantRoleUtilsTest {
     )
 
     private fun actor(
-        type: Participant.ParticipantType = Participant.ParticipantType.USER,
-        actorType: Participant.ActorType = Participant.ActorType.USERS
-    ) = Participant(actorType = actorType, actorId = "alice", displayName = "Alice", type = type)
+        type: ParticipantDto.ParticipantType = ParticipantDto.ParticipantType.USER,
+        actorType: ParticipantDto.ActorType = ParticipantDto.ActorType.USERS
+    ) = ParticipantDto(actorType = actorType, actorId = "alice", displayName = "Alice", type = type)
 
     @Test
     fun testCanChangeOwnership_whenEverythingLinesUp_isTrue() {
@@ -175,7 +175,7 @@ class ParticipantRoleUtilsTest {
 
     @Test
     fun testCanChangeOwnership_whenSelfIsNotOwner_isFalse() {
-        val asModerator = conversation(selfType = Participant.ParticipantType.MODERATOR)
+        val asModerator = conversation(selfType = ParticipantDto.ParticipantType.MODERATOR)
         Assert.assertFalse(ParticipantRoleUtils.canChangeOwnership(actor(), asModerator, ownerCapability))
     }
 
@@ -250,12 +250,12 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testCanChangeOwnership_forActorsThatCanNeverBeOwners_isFalse() {
         val nonUsers = listOf(
-            Participant.ActorType.GUESTS,
-            Participant.ActorType.EMAILS,
-            Participant.ActorType.GROUPS,
-            Participant.ActorType.CIRCLES,
-            Participant.ActorType.FEDERATED,
-            Participant.ActorType.PHONES
+            ParticipantDto.ActorType.GUESTS,
+            ParticipantDto.ActorType.EMAILS,
+            ParticipantDto.ActorType.GROUPS,
+            ParticipantDto.ActorType.CIRCLES,
+            ParticipantDto.ActorType.FEDERATED,
+            ParticipantDto.ActorType.PHONES
         )
         nonUsers.forEach { actorType ->
             Assert.assertFalse(
@@ -276,9 +276,9 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testCanBePromotedToOwner_forPromotableRanks_isTrue() {
         val promotable = listOf(
-            Participant.ParticipantType.USER,
-            Participant.ParticipantType.USER_FOLLOWING_LINK,
-            Participant.ParticipantType.MODERATOR
+            ParticipantDto.ParticipantType.USER,
+            ParticipantDto.ParticipantType.USER_FOLLOWING_LINK,
+            ParticipantDto.ParticipantType.MODERATOR
         )
         promotable.forEach { type ->
             Assert.assertTrue(
@@ -291,10 +291,10 @@ class ParticipantRoleUtilsTest {
     @Test
     fun testCanBePromotedToOwner_forRanksThatCannotBe_isFalse() {
         val notPromotable = listOf(
-            Participant.ParticipantType.OWNER,
-            Participant.ParticipantType.GUEST,
-            Participant.ParticipantType.GUEST_MODERATOR,
-            Participant.ParticipantType.DUMMY
+            ParticipantDto.ParticipantType.OWNER,
+            ParticipantDto.ParticipantType.GUEST,
+            ParticipantDto.ParticipantType.GUEST_MODERATOR,
+            ParticipantDto.ParticipantType.DUMMY
         )
         notPromotable.forEach { type ->
             Assert.assertFalse(
@@ -308,14 +308,14 @@ class ParticipantRoleUtilsTest {
     fun testCanBeDemotedFromOwner_onlyAppliesToOwners() {
         Assert.assertTrue(
             ParticipantRoleUtils.canBeDemotedFromOwner(
-                actor(Participant.ParticipantType.OWNER),
+                actor(ParticipantDto.ParticipantType.OWNER),
                 conversation(),
                 ownerCapability
             )
         )
         Assert.assertFalse(
             ParticipantRoleUtils.canBeDemotedFromOwner(
-                actor(Participant.ParticipantType.MODERATOR),
+                actor(ParticipantDto.ParticipantType.MODERATOR),
                 conversation(),
                 ownerCapability
             )
@@ -330,7 +330,7 @@ class ParticipantRoleUtilsTest {
         )
         Assert.assertFalse(
             ParticipantRoleUtils.canBeDemotedFromOwner(
-                actor(Participant.ParticipantType.OWNER),
+                actor(ParticipantDto.ParticipantType.OWNER),
                 conversation(),
                 noCapability
             )

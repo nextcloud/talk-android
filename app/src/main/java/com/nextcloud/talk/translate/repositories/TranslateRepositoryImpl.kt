@@ -7,7 +7,7 @@
 package com.nextcloud.talk.translate.repositories
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.translate.repositories.model.Language
+import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -24,7 +24,7 @@ class TranslateRepositoryImpl @Inject constructor(private val ncApi: NcApi) : Tr
             it.ocs?.data!!.text
         }
 
-    override fun getLanguages(authorization: String, url: String): Observable<List<Language>> =
+    override fun getLanguages(authorization: String, url: String): Observable<List<LanguageDto>> =
         ncApi.getLanguages(authorization, url).map {
             it.ocs?.data?.languages
         }

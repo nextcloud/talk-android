@@ -96,13 +96,13 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
-import com.nextcloud.talk.models.json.signaling.Signaling
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
+import com.nextcloud.talk.models.json.signaling.SignalingDto
 import com.nextcloud.talk.models.json.signaling.SignalingOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
@@ -287,10 +287,10 @@ class CallActivity : CallBaseActivity() {
 
     private val callParticipantListObserver: CallParticipantList.Observer = object : CallParticipantList.Observer {
         override fun onCallParticipantsChanged(
-            joined: Collection<Participant>,
-            updated: Collection<Participant>,
-            left: Collection<Participant>,
-            unchanged: Collection<Participant>
+            joined: Collection<ParticipantDto>,
+            updated: Collection<ParticipantDto>,
+            left: Collection<ParticipantDto>,
+            unchanged: Collection<ParticipantDto>
         ) {
             handleCallParticipantsChanged(joined, updated, left, unchanged)
         }
@@ -399,7 +399,7 @@ class CallActivity : CallBaseActivity() {
     private var reactionAnimator: ReactionAnimator? = null
     private var othersInCall = false
     private var isOneToOneConversation = false
-    private var currentConversation: Conversation? = null
+    private var currentConversation: ConversationDto? = null
 
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
@@ -1834,12 +1834,12 @@ class CallActivity : CallBaseActivity() {
                 })
         }
 
-        var inCallFlag = Participant.InCallFlags.IN_CALL
+        var inCallFlag = ParticipantDto.InCallFlags.IN_CALL
         if (canPublishAudioStream) {
-            inCallFlag += Participant.InCallFlags.WITH_AUDIO
+            inCallFlag += ParticipantDto.InCallFlags.WITH_AUDIO
         }
         if (!isVoiceOnlyCall && canPublishVideoStream) {
-            inCallFlag += Participant.InCallFlags.WITH_VIDEO
+            inCallFlag += ParticipantDto.InCallFlags.WITH_VIDEO
         }
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
@@ -1885,7 +1885,7 @@ class CallActivity : CallBaseActivity() {
             })
     }
 
-    private fun setInitialApplicationWideCurrentRoomHolderValues(conversation: Conversation) {
+    private fun setInitialApplicationWideCurrentRoomHolderValues(conversation: ConversationDto) {
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
         ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
         // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
@@ -2128,7 +2128,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun receivedSignalingMessages(signalingList: List<Signaling>?) {
+    private fun receivedSignalingMessages(signalingList: List<SignalingDto>?) {
         if (signalingList != null) {
             for (signaling in signalingList) {
                 try {
@@ -2141,7 +2141,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     @Throws(IOException::class)
-    private fun receivedSignalingMessage(signaling: Signaling) {
+    private fun receivedSignalingMessage(signaling: SignalingDto) {
         val messageType = signaling.type
         if (!isConnectionEstablished && currentCallStatus !== CallStatus.CONNECTING) {
             return
@@ -2154,7 +2154,7 @@ class CallActivity : CallBaseActivity() {
             "message" -> {
                 val ncSignalingMessage = LoganSquare.parse(
                     signaling.messageWrapper.toString(),
-                    NCSignalingMessage::class.java
+                    NCSignalingMessageDto::class.java
                 )
                 internalSignalingMessageReceiver.process(ncSignalingMessage)
             }
@@ -2390,10 +2390,10 @@ class CallActivity : CallBaseActivity() {
 
     @Suppress("Detekt.ComplexMethod")
     private fun handleCallParticipantsChanged(
-        joined: Collection<Participant>,
-        updated: Collection<Participant>,
-        left: Collection<Participant>,
-        unchanged: Collection<Participant>
+        joined: Collection<ParticipantDto>,
+        updated: Collection<ParticipantDto>,
+        left: Collection<ParticipantDto>,
+        unchanged: Collection<ParticipantDto>
     ) {
         Log.d(TAG, "handleCallParticipantsChanged")
 
@@ -2405,13 +2405,13 @@ class CallActivity : CallBaseActivity() {
         }
         Log.d(TAG, "   currentSessionId is $currentSessionId")
 
-        val participantsInCall: MutableList<Participant> = ArrayList()
+        val participantsInCall: MutableList<ParticipantDto> = ArrayList()
         participantsInCall.addAll(joined)
         participantsInCall.addAll(updated)
         participantsInCall.addAll(unchanged)
 
         var isSelfInCall = false
-        var selfParticipant: Participant? = null
+        var selfParticipant: ParticipantDto? = null
 
         for (participant in participantsInCall) {
             val inCallFlag = participant.inCall
@@ -2463,7 +2463,7 @@ class CallActivity : CallBaseActivity() {
         removeSessions(left)
     }
 
-    private fun removeSessions(sessions: Collection<Participant>) {
+    private fun removeSessions(sessions: Collection<ParticipantDto>) {
         for ((_, _, _, _, _, _, _, _, _, _, session) in sessions) {
             Log.d(TAG, "   session that will be removed is: $session")
             endPeerConnection(session, "video")
@@ -2473,8 +2473,8 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleJoinedCallParticipantsChanged(
-        selfParticipant: Participant?,
-        joined: Collection<Participant>,
+        selfParticipant: ParticipantDto?,
+        joined: Collection<ParticipantDto>,
         currentSessionId: String?
     ) {
         var selfJoined = false
@@ -2557,13 +2557,13 @@ class CallActivity : CallBaseActivity() {
     ): Boolean =
         !hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId < currentSessionId)
 
-    private fun participantInCallFlagsHaveAudioOrVideo(participant: Participant?): Boolean =
+    private fun participantInCallFlagsHaveAudioOrVideo(participant: ParticipantDto?): Boolean =
         if (participant == null) {
             false
         } else {
-            participant.inCall and Participant.InCallFlags.WITH_AUDIO.toLong() > 0 ||
+            participant.inCall and ParticipantDto.InCallFlags.WITH_AUDIO.toLong() > 0 ||
                 !isVoiceOnlyCall &&
-                participant.inCall and Participant.InCallFlags.WITH_VIDEO.toLong() > 0
+                participant.inCall and ParticipantDto.InCallFlags.WITH_VIDEO.toLong() > 0
         }
 
     private fun getPeerConnectionWrapperForSessionIdAndType(sessionId: String?, type: String): PeerConnectionWrapper? {
@@ -2798,7 +2798,7 @@ class CallActivity : CallBaseActivity() {
     private fun startSendingNick() {
         dispose(nickSendingDisposable)
         nickSendingDisposable = null
-        val dataChannelMessage = DataChannelMessage()
+        val dataChannelMessage = DataChannelMessageDto()
         dataChannelMessage.type = "nickChanged"
         val nickChangedPayload: MutableMap<String, String> = HashMap()
         nickChangedPayload["userid"] = conversationUser!!.userId!!
@@ -3060,7 +3060,7 @@ class CallActivity : CallBaseActivity() {
             processUsersInRoom(users)
         }
 
-        fun process(message: NCSignalingMessage) {
+        fun process(message: NCSignalingMessageDto) {
             processSignalingMessage(message)
         }
     }
@@ -3155,7 +3155,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private inner class InternalSignalingMessageSender : SignalingMessageSender {
-        override fun send(ncSignalingMessage: NCSignalingMessage) {
+        override fun send(ncSignalingMessage: NCSignalingMessageDto) {
             addLocalParticipantNickIfNeeded(ncSignalingMessage)
             val serializedNcSignalingMessage: String = try {
                 LoganSquare.serialize(ncSignalingMessage)
@@ -3220,7 +3220,7 @@ class CallActivity : CallBaseActivity() {
          *
          * @param ncSignalingMessage the message to add the nick to
          */
-        private fun addLocalParticipantNickIfNeeded(ncSignalingMessage: NCSignalingMessage) {
+        private fun addLocalParticipantNickIfNeeded(ncSignalingMessage: NCSignalingMessageDto) {
             val type = ncSignalingMessage.type
             if ("offer" != type && "answer" != type) {
                 return

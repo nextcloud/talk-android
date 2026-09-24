@@ -14,7 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.translate.repositories.TranslateRepository
-import com.nextcloud.talk.translate.repositories.model.Language
+import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
@@ -33,7 +33,7 @@ class TranslateViewModel @Inject constructor(
     data object StartState : ViewState
     class TranslatedState(val msg: String) : ViewState
 
-    class LanguagesRetrievedState(val list: List<Language>) : ViewState
+    class LanguagesRetrievedState(val list: List<LanguageDto>) : ViewState
 
     data object LanguagesErrorState : ViewState
 
@@ -74,7 +74,7 @@ class TranslateViewModel @Inject constructor(
         repository.getLanguages(authorization, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<List<Language>> {
+            ?.subscribe(object : Observer<List<LanguageDto>> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
@@ -88,7 +88,7 @@ class TranslateViewModel @Inject constructor(
                     // unused atm
                 }
 
-                override fun onNext(list: List<Language>) {
+                override fun onNext(list: List<LanguageDto>) {
                     _viewState.value = LanguagesRetrievedState(list)
                     Log.d(TAG, "Languages retrieved: $list")
                 }

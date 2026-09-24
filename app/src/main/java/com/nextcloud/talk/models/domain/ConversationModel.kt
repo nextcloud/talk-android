@@ -9,10 +9,10 @@ package com.nextcloud.talk.models.domain
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.MessageDraft
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 data class ConversationModel(
     var internalId: String,
@@ -23,7 +23,7 @@ data class ConversationModel(
     var description: String,
     var type: ConversationEnums.ConversationType,
     var lastPing: Long = 0,
-    var participantType: Participant.ParticipantType,
+    var participantType: ParticipantDto.ParticipantType,
     var hasPassword: Boolean = false,
     var sessionId: String,
     var actorId: String,
@@ -32,7 +32,7 @@ data class ConversationModel(
     var lastActivity: Long = 0,
     var unreadMessages: Int = 0,
     var unreadMention: Boolean = false,
-    var lastMessage: ChatMessageJson? = null,
+    var lastMessage: ChatMessageDto? = null,
     var objectType: ConversationEnums.ObjectType,
     var objectId: String = "",
     var notificationLevel: ConversationEnums.NotificationLevel,
@@ -77,7 +77,7 @@ data class ConversationModel(
 
     companion object {
         @Suppress("LongMethod")
-        fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
+        fun mapToConversationModel(conversation: ConversationDto, user: User): ConversationModel =
             ConversationModel(
                 internalId = user.id!!.toString() + "@" + conversation.token,
                 accountId = user.id!!,
@@ -87,7 +87,7 @@ data class ConversationModel(
                 description = conversation.description,
                 type = conversation.type.let { ConversationEnums.ConversationType.valueOf(it.name) },
                 lastPing = conversation.lastPing,
-                participantType = conversation.participantType.let { Participant.ParticipantType.valueOf(it.name) },
+                participantType = conversation.participantType.let { ParticipantDto.ParticipantType.valueOf(it.name) },
                 hasPassword = conversation.hasPassword,
                 sessionId = conversation.sessionId,
                 actorId = conversation.actorId,

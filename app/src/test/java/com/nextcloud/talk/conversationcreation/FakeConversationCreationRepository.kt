@@ -7,12 +7,12 @@
 package com.nextcloud.talk.conversationcreation
 
 import com.nextcloud.talk.conversationcreation.data.ConversationCreationRepository
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.ConversationPreset
+import com.nextcloud.talk.models.json.conversations.ConversationDto
+import com.nextcloud.talk.models.json.conversations.ConversationPresetDto
 import com.nextcloud.talk.models.json.conversations.RoomOCS
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -24,7 +24,7 @@ import java.io.File
  */
 class FakeConversationCreationRepository(private val token: String = "abc123") : ConversationCreationRepository {
 
-    var bodyRequest: CreateRoomRequest? = null
+    var bodyRequest: CreateRoomRequestDto? = null
     var formRequest: RetrofitBucket? = null
     var presetCalls = 0
     var passwordCalls = 0
@@ -35,12 +35,16 @@ class FakeConversationCreationRepository(private val token: String = "abc123") :
     var failPassword = false
     var failingParticipants = emptySet<String>()
 
-    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPreset> {
+    override suspend fun getConversationPresets(credentials: String?, url: String): List<ConversationPresetDto> {
         presetCalls++
         return emptyList()
     }
 
-    override suspend fun createRoomWithBody(credentials: String?, url: String, body: CreateRoomRequest): RoomOverall {
+    override suspend fun createRoomWithBody(
+        credentials: String?,
+        url: String,
+        body: CreateRoomRequestDto
+    ): RoomOverall {
         bodyRequest = body
         return roomOverall(hasPassword = body.password?.isNotEmpty() == true)
     }
@@ -111,5 +115,5 @@ class FakeConversationCreationRepository(private val token: String = "abc123") :
         GenericOverall()
 
     private fun roomOverall(hasPassword: Boolean) =
-        RoomOverall(RoomOCS(null, Conversation(token = token, hasPassword = hasPassword)))
+        RoomOverall(RoomOCS(null, ConversationDto(token = token, hasPassword = hasPassword)))
 }

@@ -6,9 +6,9 @@
  */
 package com.nextcloud.talk.signaling;
 
-import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidateDto;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,11 +68,11 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         signalingMessage.setPayload(messagePayload);
@@ -88,11 +88,11 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("offer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("offer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -109,11 +109,11 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("answer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("answer");
         messagePayload.setSdp("theSdp");
         signalingMessage.setPayload(messagePayload);
@@ -129,11 +129,11 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("answer");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("answer");
         messagePayload.setSdp("theSdp");
         messagePayload.setNick("theNick");
@@ -150,12 +150,12 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("candidate");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
-        NCIceCandidate iceCandidate = new NCIceCandidate();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
+        NCIceCandidateDto iceCandidate = new NCIceCandidateDto();
         iceCandidate.setSdpMid("theSdpMid");
         iceCandidate.setSdpMLineIndex(42);
         iceCandidate.setCandidate("theSdp");
@@ -173,7 +173,7 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -192,7 +192,7 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -209,7 +209,7 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("notMatchingSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -225,7 +225,7 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("notMatchingRoomType");
@@ -242,7 +242,7 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
         signalingMessageReceiver.removeListener(mockedWebRtcMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -265,7 +265,7 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener3, "theSessionId", "theRoomType");
         signalingMessageReceiver.removeListener(mockedWebRtcMessageListener2);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -284,7 +284,7 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId", "theRoomType");
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener, "theSessionId2", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -314,7 +314,7 @@ public class SignalingMessageReceiverWebRtcTest {
 
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");
@@ -339,7 +339,7 @@ public class SignalingMessageReceiverWebRtcTest {
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener1, "theSessionId", "theRoomType");
         signalingMessageReceiver.addListener(mockedWebRtcMessageListener2, "theSessionId", "theRoomType");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("endOfCandidates");
         signalingMessage.setRoomType("theRoomType");

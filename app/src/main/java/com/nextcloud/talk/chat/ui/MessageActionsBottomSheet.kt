@@ -71,7 +71,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.protectEmojiPickerScrollGesture
 import com.nextcloud.talk.ui.theme.themeEmojiPickerCategoryTabs
@@ -147,7 +147,7 @@ internal fun buildMessageActionsState(
     conversation: ConversationModel?,
     hasChatPermission: Boolean,
     hasReactPermission: Boolean,
-    spreedCapabilities: SpreedCapability,
+    spreedCapabilities: SpreedCapabilityDto,
     isOnline: Boolean,
     dateUtils: DateUtils,
     conversationThreadId: Long?

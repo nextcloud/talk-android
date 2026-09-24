@@ -42,9 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ParticipantRole
@@ -69,13 +69,13 @@ private data class ParticipantOpsVisibility(
 private fun computeVisibility(
     model: ParticipantModel,
     conversation: ConversationModel?,
-    spreedCapabilities: SpreedCapability?
+    spreedCapabilities: SpreedCapabilityDto?
 ): ParticipantOpsVisibility {
     val participant = model.participant
     val pin = participant.attendeePin?.takeIf { it.isNotEmpty() }
     val deleteIcon = R.drawable.ic_delete_grey600_24dp
     val canDemoteFromOwner = ParticipantRoleUtils.canBeDemotedFromOwner(participant, conversation, spreedCapabilities)
-    val isOwner = participant.type == Participant.ParticipantType.OWNER
+    val isOwner = participant.type == ParticipantDto.ParticipantType.OWNER
     val canModerate = conversation != null && ConversationUtils.canModerate(conversation, spreedCapabilities)
 
     return when {
@@ -94,7 +94,7 @@ private fun computeVisibility(
             showBan = false
         )
 
-        participant.calculatedActorType == Participant.ActorType.GROUPS -> ParticipantOpsVisibility(
+        participant.calculatedActorType == ParticipantDto.ActorType.GROUPS -> ParticipantOpsVisibility(
             infoPin = null,
             showPromote = false,
             showDemote = false,
@@ -105,7 +105,7 @@ private fun computeVisibility(
             showBan = false
         )
 
-        participant.calculatedActorType == Participant.ActorType.CIRCLES -> ParticipantOpsVisibility(
+        participant.calculatedActorType == ParticipantDto.ActorType.CIRCLES -> ParticipantOpsVisibility(
             infoPin = null,
             showPromote = false,
             showDemote = false,
@@ -129,10 +129,10 @@ private fun computeVisibility(
 
         else -> ParticipantOpsVisibility(
             infoPin = pin,
-            showPromote = participant.type == Participant.ParticipantType.USER ||
-                participant.type == Participant.ParticipantType.GUEST,
-            showDemote = participant.type == Participant.ParticipantType.MODERATOR ||
-                participant.type == Participant.ParticipantType.GUEST_MODERATOR,
+            showPromote = participant.type == ParticipantDto.ParticipantType.USER ||
+                participant.type == ParticipantDto.ParticipantType.GUEST,
+            showDemote = participant.type == ParticipantDto.ParticipantType.MODERATOR ||
+                participant.type == ParticipantDto.ParticipantType.GUEST_MODERATOR,
             showPromoteToOwner = ParticipantRoleUtils.canBePromotedToOwner(
                 participant,
                 conversation,
@@ -150,7 +150,7 @@ private fun computeVisibility(
 fun ParticipantOperationsContent(
     model: ParticipantModel,
     conversation: ConversationModel?,
-    spreedCapabilities: SpreedCapability?,
+    spreedCapabilities: SpreedCapabilityDto?,
     onAction: (ParticipantOpsAction) -> Unit
 ) {
     val visibility = computeVisibility(model, conversation, spreedCapabilities)
@@ -292,13 +292,13 @@ private fun ParticipantOpsMenuItem(@DrawableRes iconRes: Int, label: String, onC
 
 private fun previewParticipant(
     displayName: String,
-    type: Participant.ParticipantType,
+    type: ParticipantDto.ParticipantType,
     role: ParticipantRole,
     attendeePin: String? = null,
     isSelf: Boolean = false
 ) = ParticipantModel(
-    participant = Participant(
-        actorType = Participant.ActorType.USERS,
+    participant = ParticipantDto(
+        actorType = ParticipantDto.ActorType.USERS,
         actorId = displayName.lowercase(),
         displayName = displayName,
         type = type,
@@ -319,7 +319,7 @@ private fun previewConversation() =
         displayName = "Conversation",
         description = "",
         type = ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-        participantType = Participant.ParticipantType.OWNER,
+        participantType = ParticipantDto.ParticipantType.OWNER,
         sessionId = "",
         actorId = "self",
         actorType = "users",
@@ -338,7 +338,7 @@ private fun previewConversation() =
     )
 
 private fun previewCapabilities(vararg features: SpreedFeatures) =
-    SpreedCapability(features = features.map { it.value }, config = null, version = "")
+    SpreedCapabilityDto(features = features.map { it.value }, config = null, version = "")
 
 @Composable
 private fun ParticipantOpsPreviewWrapper(content: @Composable () -> Unit) {
@@ -359,7 +359,7 @@ private fun ParticipantOperationsSheetModeratorPreview() {
         ParticipantOperationsContent(
             model = previewParticipant(
                 "Bob Smith",
-                Participant.ParticipantType.MODERATOR,
+                ParticipantDto.ParticipantType.MODERATOR,
                 ParticipantRole.MODERATOR
             ),
             conversation = null,
@@ -377,7 +377,7 @@ private fun ParticipantOperationsSheetUserWithPinPreview() {
         ParticipantOperationsContent(
             model = previewParticipant(
                 "Carol Danvers",
-                Participant.ParticipantType.USER,
+                ParticipantDto.ParticipantType.USER,
                 ParticipantRole.NONE,
                 attendeePin = "123456"
             ),
@@ -397,7 +397,7 @@ private fun ParticipantOperationsSheetInformationalPreview() {
         ParticipantOperationsContent(
             model = previewParticipant(
                 "Alice Johnson",
-                Participant.ParticipantType.OWNER,
+                ParticipantDto.ParticipantType.OWNER,
                 ParticipantRole.OWNER
             ),
             conversation = null,
@@ -416,7 +416,7 @@ private fun ParticipantOperationsSheetOwnerPreview() {
         ParticipantOperationsContent(
             model = previewParticipant(
                 "Alice Johnson",
-                Participant.ParticipantType.OWNER,
+                ParticipantDto.ParticipantType.OWNER,
                 ParticipantRole.OWNER
             ),
             conversation = previewConversation(),

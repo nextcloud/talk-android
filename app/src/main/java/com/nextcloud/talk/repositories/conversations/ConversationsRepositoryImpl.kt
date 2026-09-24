@@ -9,12 +9,12 @@ package com.nextcloud.talk.repositories.conversations
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
-import com.nextcloud.talk.models.json.profile.Profile
+import com.nextcloud.talk.models.json.participants.TalkBanDto
+import com.nextcloud.talk.models.json.profile.ProfileDto
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -100,7 +100,7 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
         return result
     }
 
-    override suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall {
+    override suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequestDto): RoomOverall {
         val response = coroutineApi.createRoomWithBody(
             credentials,
             url,
@@ -109,7 +109,7 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
         return response
     }
 
-    override suspend fun getProfile(credentials: String, url: String): Profile? =
+    override suspend fun getProfile(credentials: String, url: String): ProfileDto? =
         coroutineApi.getProfile(credentials, url).ocs?.data
 
     override suspend fun markConversationAsSensitive(
@@ -154,9 +154,9 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
         actorType: String,
         actorId: String,
         internalNote: String
-    ): TalkBan = coroutineApi.banActor(credentials, url, actorType, actorId, internalNote)
+    ): TalkBanDto = coroutineApi.banActor(credentials, url, actorType, actorId, internalNote)
 
-    override suspend fun listBans(credentials: String, url: String): List<TalkBan> {
+    override suspend fun listBans(credentials: String, url: String): List<TalkBanDto> {
         val talkBanOverall = coroutineApi.listBans(credentials, url)
         return talkBanOverall.ocs?.data!!
     }

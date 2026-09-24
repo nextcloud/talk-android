@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.signaling;
 
-import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantDto;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -35,13 +35,13 @@ class ParticipantListMessageNotifier {
         participantListMessageListeners.remove(listener);
     }
 
-    public synchronized void notifyUsersInRoom(List<Participant> participants) {
+    public synchronized void notifyUsersInRoom(List<ParticipantDto> participants) {
         for (SignalingMessageReceiver.ParticipantListMessageListener listener : new ArrayList<>(participantListMessageListeners)) {
             listener.onUsersInRoom(participants);
         }
     }
 
-    public synchronized void notifyParticipantsUpdate(List<Participant> participants) {
+    public synchronized void notifyParticipantsUpdate(List<ParticipantDto> participants) {
         for (SignalingMessageReceiver.ParticipantListMessageListener listener : new ArrayList<>(participantListMessageListeners)) {
             listener.onParticipantsUpdate(participants);
         }

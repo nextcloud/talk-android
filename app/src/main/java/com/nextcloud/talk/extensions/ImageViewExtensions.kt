@@ -41,7 +41,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.toDrawable
@@ -57,7 +57,7 @@ private const val TAG = "ImageViewExtensions"
 @Deprecated("use other constructor that expects com.nextcloud.talk.models.domain.ConversationModel")
 fun ImageView.loadConversationAvatar(
     user: User,
-    conversation: Conversation,
+    conversation: ConversationDto,
     ignoreCache: Boolean,
     viewThemeUtils: ViewThemeUtils?
 ): io.reactivex.disposables.Disposable =

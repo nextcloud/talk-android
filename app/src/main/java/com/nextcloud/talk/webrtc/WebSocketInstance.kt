@@ -17,14 +17,14 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.participants.Participant.ActorType
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
-import com.nextcloud.talk.models.json.signaling.settings.FederationSettings
-import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage
-import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
+import com.nextcloud.talk.models.json.signaling.settings.FederationSettingsDto
+import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessageDto
+import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessageDto
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage
-import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage
+import com.nextcloud.talk.models.json.websocket.CallWebSocketMessageDto
 import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage
@@ -75,9 +75,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private val connectionUrl: String
     private var currentRoomToken: String? = null
     private var currentNormalBackendSession: String? = null
-    private var currentFederation: FederationSettings? = null
+    private var currentFederation: FederationSettingsDto? = null
     private var reconnecting = false
-    private val usersHashMap: HashMap<String?, Participant>
+    private val usersHashMap: HashMap<String?, ParticipantDto>
     private var messagesQueue: MutableList<String> = ArrayList()
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
@@ -159,7 +159,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         if (webSocket === internalWebSocket) {
             Log.d(TAG, "Receiving : $webSocket $text")
             try {
-                val (messageType) = LoganSquare.parse(text, BaseWebSocketMessage::class.java)
+                val (messageType) = LoganSquare.parse(text, BaseWebSocketMessageDto::class.java)
                 if (messageType != null) {
                     when (messageType) {
                         "hello" -> processHelloMessage(webSocket, text)
@@ -264,11 +264,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private fun processRoomJoinMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
         val joinEventList = eventOverallWebSocketMessage.eventMap?.get("join") as List<HashMap<String, Any>>?
         var internalHashMap: HashMap<String, Any>
-        var participant: Participant
+        var participant: ParticipantDto
         for (i in joinEventList!!.indices) {
             internalHashMap = joinEventList[i]
             val userMap = internalHashMap["user"] as HashMap<String, Any>?
-            participant = Participant()
+            participant = ParticipantDto()
             val userId = internalHashMap["userid"] as String?
             if (userId != null) {
                 participant.actorType = ActorType.USERS
@@ -292,7 +292,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    fun getUserMap(): HashMap<String?, Participant> = usersHashMap
+    fun getUserMap(): HashMap<String?, ParticipantDto> = usersHashMap
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
@@ -412,7 +412,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     fun joinRoomWithRoomTokenAndSession(
         roomToken: String,
         normalBackendSession: String?,
-        federation: FederationSettings? = null
+        federation: FederationSettingsDto? = null
     ) {
         Log.d(TAG, "joinRoomWithRoomTokenAndSession")
         Log.d(TAG, "   roomToken: $roomToken")
@@ -445,7 +445,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    private fun sendCallMessage(ncSignalingMessage: NCSignalingMessage) {
+    private fun sendCallMessage(ncSignalingMessage: NCSignalingMessageDto) {
         try {
             val message = LoganSquare.serialize(
                 webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
@@ -474,7 +474,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     fun sendBye() {
         if (isConnected) {
             try {
-                val byeWebSocketMessage = ByeWebSocketMessage()
+                val byeWebSocketMessage = ByeWebSocketMessageDto()
                 byeWebSocketMessage.type = "bye"
                 byeWebSocketMessage.bye = HashMap()
                 internalWebSocket!!.send(LoganSquare.serialize(byeWebSocketMessage))
@@ -518,7 +518,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             processEvent(eventMap)
         }
 
-        fun processChatMessage(message: CallWebSocketMessage?) {
+        fun processChatMessage(message: CallWebSocketMessageDto?) {
             if (message?.ncSignalingMessage?.type == "startedTyping" ||
                 message?.ncSignalingMessage?.type == "stoppedTyping"
             ) {
@@ -535,7 +535,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     inner class ExternalSignalingMessageSender : SignalingMessageSender {
-        override fun send(ncSignalingMessage: NCSignalingMessage) {
+        override fun send(ncSignalingMessage: NCSignalingMessageDto) {
             sendCallMessage(ncSignalingMessage)
         }
     }

@@ -18,7 +18,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -66,7 +66,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         }
     }
 
-    private fun navigateToChat(conversation: Conversation) {
+    private fun navigateToChat(conversation: ConversationDto) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
 

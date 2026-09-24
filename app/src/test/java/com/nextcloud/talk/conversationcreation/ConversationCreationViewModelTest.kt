@@ -10,10 +10,10 @@ import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationVie
 import com.nextcloud.talk.conversationcreation.viewmodel.PresetsUiState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.capabilities.PasswordApi
-import com.nextcloud.talk.models.json.capabilities.PasswordPolicy
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.capabilities.PasswordApiDto
+import com.nextcloud.talk.models.json.capabilities.PasswordPolicyDto
 import com.nextcloud.talk.passwordpolicy.FakePasswordPolicyRepository
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
@@ -64,13 +64,13 @@ class ConversationCreationViewModelTest {
             username = "alice",
             token = "token",
             baseUrl = "https://cloud.example.com",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply {
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply {
                     features = spreedFeatures.map { it.value }
                     config = hashMapOf("conversations" to hashMapOf("force-passwords" to passwordEnforced))
                 }
-                passwordPolicy = PasswordPolicy(
-                    PasswordApi(
+                passwordPolicy = PasswordPolicyDto(
+                    PasswordApiDto(
                         validatePasswordApi = "https://cloud.example.com/validate",
                         generatePasswordApi = "https://cloud.example.com/generate"
                     )

@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
-import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantDto;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +35,8 @@ class CallParticipantListNotifier {
         callParticipantListObservers.remove(observer);
     }
 
-    public synchronized void notifyChanged(Collection<Participant> joined, Collection<Participant> updated,
-                                           Collection<Participant> left, Collection<Participant> unchanged) {
+    public synchronized void notifyChanged(Collection<ParticipantDto> joined, Collection<ParticipantDto> updated,
+                                           Collection<ParticipantDto> left, Collection<ParticipantDto> unchanged) {
         for (CallParticipantList.Observer observer : new ArrayList<>(callParticipantListObservers)) {
             observer.onCallParticipantsChanged(joined, updated, left, unchanged);
         }

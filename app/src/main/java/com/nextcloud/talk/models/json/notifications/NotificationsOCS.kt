@@ -11,16 +11,16 @@ package com.nextcloud.talk.models.json.notifications
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 class NotificationsOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+    var meta: GenericMetaDto?,
     @JsonField(name = ["data"])
-    var notificationsList: List<Notification>?
+    var notificationsList: List<NotificationDto>?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

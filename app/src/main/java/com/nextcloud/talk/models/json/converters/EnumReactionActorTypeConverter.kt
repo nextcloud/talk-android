@@ -7,20 +7,20 @@
 package com.nextcloud.talk.models.json.converters
 
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
-import com.nextcloud.talk.models.json.reactions.ReactionVoter.ReactionActorType.DUMMY
-import com.nextcloud.talk.models.json.reactions.ReactionVoter.ReactionActorType.GUESTS
-import com.nextcloud.talk.models.json.reactions.ReactionVoter.ReactionActorType.USERS
-import com.nextcloud.talk.models.json.reactions.ReactionVoter
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto.ReactionActorType.DUMMY
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto.ReactionActorType.GUESTS
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto.ReactionActorType.USERS
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto
 
-class EnumReactionActorTypeConverter : StringBasedTypeConverter<ReactionVoter.ReactionActorType>() {
-    override fun getFromString(string: String): ReactionVoter.ReactionActorType =
+class EnumReactionActorTypeConverter : StringBasedTypeConverter<ReactionVoterDto.ReactionActorType>() {
+    override fun getFromString(string: String): ReactionVoterDto.ReactionActorType =
         when (string) {
             "guests" -> GUESTS
             "users" -> USERS
             else -> DUMMY
         }
 
-    override fun convertToString(`object`: ReactionVoter.ReactionActorType?): String {
+    override fun convertToString(`object`: ReactionVoterDto.ReactionActorType?): String {
         if (`object` == null) {
             return ""
         }

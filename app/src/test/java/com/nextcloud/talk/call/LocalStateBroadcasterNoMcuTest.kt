@@ -7,9 +7,9 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.activities.ParticipantUiState
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,24 +66,24 @@ class LocalStateBroadcasterNoMcuTest {
         Dispatchers.resetMain()
     }
 
-    private fun getExpectedUnmuteAudio(): NCSignalingMessage {
-        val expectedUnmuteAudio = NCSignalingMessage()
+    private fun getExpectedUnmuteAudio(): NCSignalingMessageDto {
+        val expectedUnmuteAudio = NCSignalingMessageDto()
         expectedUnmuteAudio.roomType = "video"
         expectedUnmuteAudio.type = "unmute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedUnmuteAudio.payload = payload
 
         return expectedUnmuteAudio
     }
 
-    private fun getExpectedUnmuteVideo(): NCSignalingMessage {
-        val expectedUnmuteVideo = NCSignalingMessage()
+    private fun getExpectedUnmuteVideo(): NCSignalingMessageDto {
+        val expectedUnmuteVideo = NCSignalingMessageDto()
         expectedUnmuteVideo.roomType = "video"
         expectedUnmuteVideo.type = "unmute"
 
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "video"
         expectedUnmuteVideo.payload = payload
 
@@ -211,9 +211,9 @@ class LocalStateBroadcasterNoMcuTest {
         }
 
     private fun verifyStateSent(sessionId: String) {
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
         val expectedUnmuteAudio = getExpectedUnmuteAudio()
         val expectedUnmuteVideo = getExpectedUnmuteVideo()

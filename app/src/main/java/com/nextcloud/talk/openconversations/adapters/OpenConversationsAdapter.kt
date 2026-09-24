@@ -17,19 +17,19 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemOpenConversationBinding
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class OpenConversationsAdapter(
     val user: User,
     val viewThemeUtils: ViewThemeUtils,
-    private val onClick: (Conversation) -> Unit
-) : ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
+    private val onClick: (ConversationDto) -> Unit
+) : ListAdapter<ConversationDto, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
 
     inner class OpenConversationsViewHolder(val itemBinding: RvItemOpenConversationBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
-        var currentConversation: Conversation? = null
+        var currentConversation: ConversationDto? = null
 
         init {
             itemBinding.root.setOnClickListener {
@@ -39,7 +39,7 @@ class OpenConversationsAdapter(
             }
         }
 
-        fun bindItem(conversation: Conversation) {
+        fun bindItem(conversation: ConversationDto) {
             val nameTextLayoutParams: RelativeLayout.LayoutParams = itemBinding.nameText.layoutParams as
                 RelativeLayout.LayoutParams
             currentConversation = conversation
@@ -76,9 +76,9 @@ class OpenConversationsAdapter(
     }
 }
 
-object ConversationsCallback : DiffUtil.ItemCallback<Conversation>() {
-    override fun areItemsTheSame(oldItem: Conversation, newItem: Conversation): Boolean = oldItem == newItem
+object ConversationsCallback : DiffUtil.ItemCallback<ConversationDto>() {
+    override fun areItemsTheSame(oldItem: ConversationDto, newItem: ConversationDto): Boolean = oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: Conversation, newItem: Conversation): Boolean =
+    override fun areContentsTheSame(oldItem: ConversationDto, newItem: ConversationDto): Boolean =
         oldItem.token == newItem.token
 }

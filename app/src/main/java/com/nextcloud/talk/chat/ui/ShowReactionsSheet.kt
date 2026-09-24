@@ -53,7 +53,7 @@ import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.reactions.ReactionVoter
+import com.nextcloud.talk.models.json.reactions.ReactionVoterDto
 import com.nextcloud.talk.ui.ActorAvatarImage
 import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
@@ -227,7 +227,7 @@ private fun ReactionVoterRow(
 
     // Guests have no avatar on the server, so theirs is drawn from their name here
     val guestAvatar = remember(reactionItem, guestLabel) {
-        if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.GUESTS) {
+        if (reactionItem.reactionVoter.actorType == ReactionVoterDto.ReactionActorType.GUESTS) {
             CharacterAvatarUtils.guestAvatar(reactionItem.reactionVoter.actorDisplayName, guestLabel)
         } else {
             null
@@ -235,7 +235,7 @@ private fun ReactionVoterRow(
     }
 
     val avatarRequest = remember(reactionItem, isDark, credentials) {
-        if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.USERS) {
+        if (reactionItem.reactionVoter.actorType == ReactionVoterDto.ReactionActorType.USERS) {
             ImageRequest.Builder(context)
                 .data(ApiUtils.getUrlForAvatar(user.baseUrl, reactionItem.reactionVoter.actorId, false, isDark))
                 .transformations(CircleCropTransformation())
@@ -355,23 +355,23 @@ private val previewReactions = linkedMapOf("👍" to 3, "❤️" to 2, "😂" to
 
 private val previewReactionItems = listOf(
     ReactionItem(
-        ReactionVoter(ReactionVoter.ReactionActorType.USERS, "alice", "Alice", 0),
+        ReactionVoterDto(ReactionVoterDto.ReactionActorType.USERS, "alice", "Alice", 0),
         "👍"
     ),
     ReactionItem(
-        ReactionVoter(ReactionVoter.ReactionActorType.USERS, "bob", "Bob", 0),
+        ReactionVoterDto(ReactionVoterDto.ReactionActorType.USERS, "bob", "Bob", 0),
         "👍"
     ),
     ReactionItem(
-        ReactionVoter(ReactionVoter.ReactionActorType.USERS, "carol", "Carol", 0),
+        ReactionVoterDto(ReactionVoterDto.ReactionActorType.USERS, "carol", "Carol", 0),
         "👍"
     ),
     ReactionItem(
-        ReactionVoter(ReactionVoter.ReactionActorType.USERS, "dave", "Dave", 0),
+        ReactionVoterDto(ReactionVoterDto.ReactionActorType.USERS, "dave", "Dave", 0),
         "❤️"
     ),
     ReactionItem(
-        ReactionVoter(ReactionVoter.ReactionActorType.GUESTS, "guest1", "مروة", 0),
+        ReactionVoterDto(ReactionVoterDto.ReactionActorType.GUESTS, "guest1", "مروة", 0),
         "😂"
     )
 )

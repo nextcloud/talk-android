@@ -50,9 +50,9 @@ import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.ui.chat.MarkdownText
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -276,9 +276,9 @@ fun PinnedMessagePreview(messageContent: String = "This is a **pinned** message 
     val colorScheme = viewThemeUtils.getColorScheme(context)
 
     val user = User(id = 1L, userId = "user_id")
-    val conversation = Conversation(
+    val conversation = ConversationDto(
         token = "token",
-        participantType = Participant.ParticipantType.OWNER,
+        participantType = ParticipantDto.ParticipantType.OWNER,
         type = ConversationEnums.ConversationType.ROOM_GROUP_CALL
     )
     val currentConversation = ConversationModel.mapToConversationModel(conversation, user)

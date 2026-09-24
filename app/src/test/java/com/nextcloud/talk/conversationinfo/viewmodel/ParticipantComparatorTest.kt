@@ -8,7 +8,7 @@
 package com.nextcloud.talk.conversationinfo.viewmodel
 
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -16,11 +16,11 @@ class ParticipantComparatorTest {
 
     private fun model(
         displayName: String,
-        type: Participant.ParticipantType,
+        type: ParticipantDto.ParticipantType,
         isOnline: Boolean = true,
-        actorType: Participant.ActorType = Participant.ActorType.USERS
+        actorType: ParticipantDto.ActorType = ParticipantDto.ActorType.USERS
     ) = ParticipantModel(
-        participant = Participant(
+        participant = ParticipantDto(
             actorType = actorType,
             actorId = displayName.lowercase(),
             displayName = displayName,
@@ -34,48 +34,48 @@ class ParticipantComparatorTest {
 
     @Test
     fun `owners sort above moderators despite the display name`() {
-        val owner = model("Zoe", Participant.ParticipantType.OWNER)
-        val moderator = model("Alice", Participant.ParticipantType.MODERATOR)
+        val owner = model("Zoe", ParticipantDto.ParticipantType.OWNER)
+        val moderator = model("Alice", ParticipantDto.ParticipantType.MODERATOR)
 
         assertEquals(listOf("Zoe", "Alice"), sortedNames(moderator, owner))
     }
 
     @Test
     fun `owners sort above guest moderators`() {
-        val owner = model("Zoe", Participant.ParticipantType.OWNER)
-        val guestModerator = model("Alice", Participant.ParticipantType.GUEST_MODERATOR)
+        val owner = model("Zoe", ParticipantDto.ParticipantType.OWNER)
+        val guestModerator = model("Alice", ParticipantDto.ParticipantType.GUEST_MODERATOR)
 
         assertEquals(listOf("Zoe", "Alice"), sortedNames(guestModerator, owner))
     }
 
     @Test
     fun `moderators sort above plain users`() {
-        val moderator = model("Zoe", Participant.ParticipantType.MODERATOR)
-        val user = model("Alice", Participant.ParticipantType.USER)
+        val moderator = model("Zoe", ParticipantDto.ParticipantType.MODERATOR)
+        val user = model("Alice", ParticipantDto.ParticipantType.USER)
 
         assertEquals(listOf("Zoe", "Alice"), sortedNames(user, moderator))
     }
 
     @Test
     fun `offline participants sort below online ones regardless of rank`() {
-        val offlineOwner = model("Zoe", Participant.ParticipantType.OWNER, isOnline = false)
-        val onlineUser = model("Alice", Participant.ParticipantType.USER)
+        val offlineOwner = model("Zoe", ParticipantDto.ParticipantType.OWNER, isOnline = false)
+        val onlineUser = model("Alice", ParticipantDto.ParticipantType.USER)
 
         assertEquals(listOf("Alice", "Zoe"), sortedNames(offlineOwner, onlineUser))
     }
 
     @Test
     fun `groups and teams sort last`() {
-        val group = model("Aaa Team", Participant.ParticipantType.USER, actorType = Participant.ActorType.GROUPS)
-        val user = model("Zoe", Participant.ParticipantType.USER)
+        val group = model("Aaa Team", ParticipantDto.ParticipantType.USER, actorType = ParticipantDto.ActorType.GROUPS)
+        val user = model("Zoe", ParticipantDto.ParticipantType.USER)
 
         assertEquals(listOf("Zoe", "Aaa Team"), sortedNames(group, user))
     }
 
     @Test
     fun `same rank falls back to the display name`() {
-        val bob = model("Bob", Participant.ParticipantType.USER)
-        val alice = model("alice", Participant.ParticipantType.USER)
+        val bob = model("Bob", ParticipantDto.ParticipantType.USER)
+        val alice = model("alice", ParticipantDto.ParticipantType.USER)
 
         assertEquals(listOf("alice", "Bob"), sortedNames(bob, alice))
     }

@@ -9,7 +9,7 @@ package com.nextcloud.talk.openconversations.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
@@ -28,7 +28,7 @@ class OpenConversationsViewModel @Inject constructor(
     object FetchConversationsStartState : ViewState
     object FetchConversationsEmptyState : ViewState
     object FetchConversationsErrorState : ViewState
-    open class FetchConversationsSuccessState(val conversations: List<Conversation>) : ViewState
+    open class FetchConversationsSuccessState(val conversations: List<ConversationDto>) : ViewState
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(FetchConversationsStartState)
     val viewState: StateFlow<ViewState>

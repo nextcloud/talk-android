@@ -16,9 +16,9 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import kotlinx.coroutines.CompletableDeferred
@@ -789,8 +789,8 @@ class ChatMessageSyncerTest {
             userId = "me",
             username = "me",
             baseUrl = "https://server.example.com",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply { this.features = features }
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { this.features = features }
             }
         )
     }
@@ -815,8 +815,8 @@ class ChatMessageSyncerTest {
             hasHistory = true
         )
 
-    private fun message(id: Long): ChatMessageJson =
-        ChatMessageJson(
+    private fun message(id: Long): ChatMessageDto =
+        ChatMessageDto(
             id = id,
             token = ROOM_TOKEN,
             actorType = "users",
@@ -828,19 +828,19 @@ class ChatMessageSyncerTest {
             systemMessageType = ChatMessage.SystemMessageType.DUMMY
         )
 
-    private fun reactionMessage(id: Long): ChatMessageJson =
+    private fun reactionMessage(id: Long): ChatMessageDto =
         message(id).apply { systemMessageType = ChatMessage.SystemMessageType.REACTION }
 
-    private fun threadCreatedMessage(id: Long): ChatMessageJson =
+    private fun threadCreatedMessage(id: Long): ChatMessageDto =
         message(id).apply { systemMessageType = ChatMessage.SystemMessageType.THREAD_CREATED }
 
-    private fun threadReplyMessage(id: Long, threadId: Long): ChatMessageJson =
+    private fun threadReplyMessage(id: Long, threadId: Long): ChatMessageDto =
         message(id).apply {
             hasThread = true
             this.threadId = threadId
         }
 
-    private fun overall(vararg messages: ChatMessageJson): ChatOverall =
+    private fun overall(vararg messages: ChatMessageDto): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))
 
     companion object {

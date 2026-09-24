@@ -35,14 +35,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.tags.ConversationTag
+import com.nextcloud.talk.models.json.tags.ConversationTagDto
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationTagsRow(
-    tags: List<ConversationTag>,
+    tags: List<ConversationTagDto>,
     selectedTagId: String?,
     onTagSelected: (String?) -> Unit,
     onManageTagsClick: () -> Unit,
@@ -63,7 +63,7 @@ fun ConversationTagsRow(
         }
         items(tags, key = { it.id }) { tag ->
             val isSelected = tag.id == selectedTagId
-            val isFavorites = tag.type == ConversationTag.TYPE_FAVORITES
+            val isFavorites = tag.type == ConversationTagDto.TYPE_FAVORITES
             TagFilterChip(
                 selected = isSelected,
                 label = if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name,
@@ -108,10 +108,10 @@ private fun TagFilterChip(selected: Boolean, label: String, onClick: () -> Unit,
 
 private fun previewTags() =
     listOf(
-        ConversationTag(id = "favorites", name = "", type = ConversationTag.TYPE_FAVORITES),
-        ConversationTag(id = "1", name = "Work", sortOrder = 0),
-        ConversationTag(id = "2", name = "Family", sortOrder = 1),
-        ConversationTag(id = "3", name = "Projects", sortOrder = 2)
+        ConversationTagDto(id = "favorites", name = "", type = ConversationTagDto.TYPE_FAVORITES),
+        ConversationTagDto(id = "1", name = "Work", sortOrder = 0),
+        ConversationTagDto(id = "2", name = "Family", sortOrder = 1),
+        ConversationTagDto(id = "3", name = "Projects", sortOrder = 2)
     )
 
 @Preview(showBackground = true, name = "Light")

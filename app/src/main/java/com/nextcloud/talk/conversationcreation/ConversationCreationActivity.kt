@@ -103,7 +103,7 @@ import com.nextcloud.talk.conversationcreation.ui.openConversation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
 import com.nextcloud.talk.utils.ApiUtils
@@ -197,7 +197,7 @@ fun ConversationCreationScreen(
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 val selectedParticipants =
-                    data?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
+                    data?.getParcelableArrayListExtraProvider<AutocompleteUserDto>("selectedParticipants")
                         ?: emptyList()
                 val participants = selectedParticipants.toMutableList()
                 conversationCreationViewModel.updateSelectedParticipants(participants)
@@ -416,7 +416,7 @@ fun AddParticipants(
                             val intent = Intent(context, ContactsActivity::class.java)
                             intent.putParcelableArrayListExtra(
                                 "selectedParticipants",
-                                participants as ArrayList<AutocompleteUser>
+                                participants as ArrayList<AutocompleteUserDto>
                             )
                             intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                             intent.putExtra("isAddParticipantsEdit", true)

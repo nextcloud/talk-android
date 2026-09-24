@@ -9,9 +9,9 @@ package com.nextcloud.talk.activities
 import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -131,26 +131,26 @@ class CallParticipantStateBroadcastIntegrationTest {
     }
 
     private fun verifyFullStateSent(sessionId: String) {
-        verify(mockedMessageSender).send(DataChannelMessage("audioOn"), sessionId)
-        verify(mockedMessageSender).send(DataChannelMessage("stoppedSpeaking"), sessionId)
-        verify(mockedMessageSender).send(DataChannelMessage("videoOn"), sessionId)
+        verify(mockedMessageSender).send(DataChannelMessageDto("audioOn"), sessionId)
+        verify(mockedMessageSender).send(DataChannelMessageDto("stoppedSpeaking"), sessionId)
+        verify(mockedMessageSender).send(DataChannelMessageDto("videoOn"), sessionId)
         verify(mockedMessageSender).send(expectedSignalingUnmuteAudio(), sessionId)
         verify(mockedMessageSender).send(expectedSignalingUnmuteVideo(), sessionId)
     }
 
-    private fun expectedSignalingUnmuteAudio(): NCSignalingMessage {
-        val msg = NCSignalingMessage()
+    private fun expectedSignalingUnmuteAudio(): NCSignalingMessageDto {
+        val msg = NCSignalingMessageDto()
         msg.roomType = "video"
         msg.type = "unmute"
-        msg.payload = NCMessagePayload().also { it.name = "audio" }
+        msg.payload = NCMessagePayloadDto().also { it.name = "audio" }
         return msg
     }
 
-    private fun expectedSignalingUnmuteVideo(): NCSignalingMessage {
-        val msg = NCSignalingMessage()
+    private fun expectedSignalingUnmuteVideo(): NCSignalingMessageDto {
+        val msg = NCSignalingMessageDto()
         msg.roomType = "video"
         msg.type = "unmute"
-        msg.payload = NCMessagePayload().also { it.name = "video" }
+        msg.payload = NCMessagePayloadDto().also { it.name = "video" }
         return msg
     }
 
@@ -263,9 +263,9 @@ class CallParticipantStateBroadcastIntegrationTest {
             iceObserver.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
             advanceUntilIdle()
 
-            verify(mockedMessageSender).send(DataChannelMessage("videoOff"), SESSION_ID)
-            verify(mockedMessageSender).send(DataChannelMessage("audioOn"), SESSION_ID)
-            verify(mockedMessageSender).send(DataChannelMessage("stoppedSpeaking"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("videoOff"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("audioOn"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("stoppedSpeaking"), SESSION_ID)
         }
 
     @Test
@@ -283,9 +283,9 @@ class CallParticipantStateBroadcastIntegrationTest {
             iceObserver.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
             advanceUntilIdle()
 
-            verify(mockedMessageSender).send(DataChannelMessage("audioOff"), SESSION_ID)
-            verify(mockedMessageSender).send(DataChannelMessage("videoOn"), SESSION_ID)
-            verify(mockedMessageSender).send(DataChannelMessage("stoppedSpeaking"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("audioOff"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("videoOn"), SESSION_ID)
+            verify(mockedMessageSender).send(DataChannelMessageDto("stoppedSpeaking"), SESSION_ID)
         }
 
     // -----------------------------------------------------------------------------------------

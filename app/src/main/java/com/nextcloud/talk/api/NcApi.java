@@ -17,7 +17,7 @@ import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
-import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.generic.StatusDto;
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall;
 import com.nextcloud.talk.models.json.invitation.InvitationOverall;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
@@ -277,7 +277,7 @@ public interface NcApi {
         Server URL is: baseUrl + /status.php
      */
     @GET
-    Observable<Status> getServerStatus(@Url String url);
+    Observable<StatusDto> getServerStatus(@Url String url);
 
     @GET
     Observable<VapidOverall> getVapidKey(

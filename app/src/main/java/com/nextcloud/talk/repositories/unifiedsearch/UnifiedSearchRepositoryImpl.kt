@@ -9,8 +9,8 @@ package com.nextcloud.talk.repositories.unifiedsearch
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.models.domain.SearchMessageEntry
-import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntry
-import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseData
+import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntryDto
+import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseDataDto
 
 class UnifiedSearchRepositoryImpl(private val api: NcApiCoroutines) : UnifiedSearchRepository {
 
@@ -63,7 +63,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApiCoroutines) : UnifiedSea
         private const val ATTRIBUTE_THREAD_ID = "threadId"
 
         private fun mapToMessageResults(
-            data: UnifiedSearchResponseData,
+            data: UnifiedSearchResponseDataDto,
             searchTerm: String,
             limit: Int
         ): UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry> {
@@ -73,7 +73,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApiCoroutines) : UnifiedSea
             return UnifiedSearchRepository.UnifiedSearchResults(cursor, hasMore, entries ?: emptyList())
         }
 
-        private fun mapToMessage(unifiedSearchEntry: UnifiedSearchEntry, searchTerm: String): SearchMessageEntry {
+        private fun mapToMessage(unifiedSearchEntry: UnifiedSearchEntryDto, searchTerm: String): SearchMessageEntry {
             val conversation = unifiedSearchEntry.attributes?.get(ATTRIBUTE_CONVERSATION)!!
             val messageId = unifiedSearchEntry.attributes?.get(ATTRIBUTE_MESSAGE_ID)
             val threadId = unifiedSearchEntry.attributes?.get(ATTRIBUTE_THREAD_ID)

@@ -50,7 +50,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
+import com.nextcloud.talk.models.json.userAbsence.UserAbsenceDataDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -69,14 +69,14 @@ private const val MILLIS_PER_SECOND = 1000L
 private data class OutOfOfficeDateState(val isSameDay: Boolean, val period: String?)
 
 data class OutOfOfficeViewData(
-    val userAbsence: UserAbsenceData,
+    val userAbsence: UserAbsenceDataDto,
     val displayName: String,
     val baseUrl: String?,
     val initialExpanded: Boolean = false
 )
 
 @Composable
-private fun rememberOutOfOfficeDateState(userAbsence: UserAbsenceData, locale: Locale): OutOfOfficeDateState {
+private fun rememberOutOfOfficeDateState(userAbsence: UserAbsenceDataDto, locale: Locale): OutOfOfficeDateState {
     val startDate = Date(userAbsence.startDate.toLong() * MILLIS_PER_SECOND)
     val endDate = Date(userAbsence.endDate.toLong() * MILLIS_PER_SECOND)
     return remember(userAbsence.startDate, userAbsence.endDate) {
@@ -168,7 +168,7 @@ private fun OutOfOfficeToggleButton(isExpanded: Boolean, onToggle: () -> Unit) {
 
 @Composable
 private fun OutOfOfficeExpandedContent(
-    userAbsence: UserAbsenceData,
+    userAbsence: UserAbsenceDataDto,
     period: String?,
     baseUrl: String?,
     onReplacementClick: () -> Unit,
@@ -204,7 +204,11 @@ private fun OutOfOfficeExpandedContent(
 }
 
 @Composable
-private fun OutOfOfficeReplacementRow(userAbsence: UserAbsenceData, baseUrl: String?, onReplacementClick: () -> Unit) {
+private fun OutOfOfficeReplacementRow(
+    userAbsence: UserAbsenceDataDto,
+    baseUrl: String?,
+    onReplacementClick: () -> Unit
+) {
     val context = LocalContext.current
     val avatarUrl = remember(baseUrl, userAbsence.replacementUserId) {
         if (baseUrl != null) {
@@ -328,7 +332,7 @@ fun OutOfOfficePreview(
     val viewThemeUtils = previewUtils.viewThemeUtils
     val colorScheme = viewThemeUtils.getColorScheme(context)
 
-    val userAbsence = UserAbsenceData(
+    val userAbsence = UserAbsenceDataDto(
         id = "1",
         userId = "jane",
         startDate = 1748736000,

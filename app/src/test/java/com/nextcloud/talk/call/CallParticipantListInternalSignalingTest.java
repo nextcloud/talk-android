@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
-import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantDto;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 
 import org.junit.Before;
@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.nextcloud.talk.models.json.participants.Participant.InCallFlags.DISCONNECTED;
-import static com.nextcloud.talk.models.json.participants.Participant.InCallFlags.IN_CALL;
-import static com.nextcloud.talk.models.json.participants.Participant.InCallFlags.WITH_AUDIO;
-import static com.nextcloud.talk.models.json.participants.Participant.InCallFlags.WITH_VIDEO;
+import static com.nextcloud.talk.models.json.participants.ParticipantDto.InCallFlags.DISCONNECTED;
+import static com.nextcloud.talk.models.json.participants.ParticipantDto.InCallFlags.IN_CALL;
+import static com.nextcloud.talk.models.json.participants.ParticipantDto.InCallFlags.WITH_AUDIO;
+import static com.nextcloud.talk.models.json.participants.ParticipantDto.InCallFlags.WITH_VIDEO;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -40,39 +40,39 @@ public class CallParticipantListInternalSignalingTest {
 
     private CallParticipantList.Observer mockedCallParticipantListObserver;
 
-    private Collection<Participant> expectedJoined;
-    private Collection<Participant> expectedUpdated;
-    private Collection<Participant> expectedLeft;
-    private Collection<Participant> expectedUnchanged;
+    private Collection<ParticipantDto> expectedJoined;
+    private Collection<ParticipantDto> expectedUpdated;
+    private Collection<ParticipantDto> expectedLeft;
+    private Collection<ParticipantDto> expectedUnchanged;
 
     // The order of the left participants in some tests depends on how they are internally sorted by the map, so the
     // list of left participants needs to be checked ignoring the sorting (or, rather, sorting by session ID as in
     // expectedLeft).
     // Other tests can just relay on the not guaranteed, but known internal sorting of the elements.
-    private final ArgumentMatcher<List<Participant>> matchesExpectedLeftIgnoringOrder = left -> {
-        Collections.sort(left, Comparator.comparing(Participant::getSessionId));
+    private final ArgumentMatcher<List<ParticipantDto>> matchesExpectedLeftIgnoringOrder = left -> {
+        Collections.sort(left, Comparator.comparing(ParticipantDto::getSessionId));
         return expectedLeft.equals(left);
     };
 
     private static class UsersInRoomParticipantBuilder {
-        private Participant newUser(long inCall, long lastPing, String sessionId, String userId) {
-            Participant participant = new Participant();
+        private ParticipantDto newUser(long inCall, long lastPing, String sessionId, String userId) {
+            ParticipantDto participant = new ParticipantDto();
             participant.setInCall(inCall);
             participant.setLastPing(lastPing);
             participant.setSessionId(sessionId);
             participant.setUserId(userId);
-            participant.setActorType(Participant.ActorType.USERS);
+            participant.setActorType(ParticipantDto.ActorType.USERS);
             participant.setActorId(userId);
 
             return participant;
         }
 
-        private Participant newGuest(long inCall, long lastPing, String sessionId) {
-            Participant participant = new Participant();
+        private ParticipantDto newGuest(long inCall, long lastPing, String sessionId) {
+            ParticipantDto participant = new ParticipantDto();
             participant.setInCall(inCall);
             participant.setLastPing(lastPing);
             participant.setSessionId(sessionId);
-            participant.setActorType(Participant.ActorType.GUESTS);
+            participant.setActorType(ParticipantDto.ActorType.GUESTS);
             participant.setActorId("sha1-" + sessionId);
 
             return participant;
@@ -104,7 +104,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoom() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", "theUserId1"));
 
         callParticipantList.addObserver(mockedCallParticipantListObserver);
@@ -116,7 +116,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(DISCONNECTED, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -139,7 +139,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomThenJoinCall() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -159,7 +159,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomThenJoinCallSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(DISCONNECTED, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -195,7 +195,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomAndCall() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         callParticipantList.addObserver(mockedCallParticipantListObserver);
@@ -210,7 +210,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomAndCallSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
         participants.add(builder.newUser(IN_CALL, 4, "theSessionId4", "theUserId4"));
 
@@ -236,7 +236,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomJoinRoomAndCallRepeated() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         callParticipantList.addObserver(mockedCallParticipantListObserver);
@@ -253,7 +253,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomChangeCallFlags() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -273,7 +273,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomChangeCallFlagsSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL | WITH_AUDIO | WITH_VIDEO, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -301,7 +301,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomChangeLastPing() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -318,7 +318,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomChangeLastPingSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL | WITH_AUDIO, 2, "theSessionId2"));
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 3, "theSessionId3", "theUserId3"));
@@ -339,7 +339,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCall() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -359,7 +359,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCallSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -387,7 +387,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCallThenLeaveRoom() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -408,7 +408,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCallThenLeaveRoomSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -437,7 +437,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCallAndRoom() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
 
         participantListMessageListener.onUsersInRoom(participants);
@@ -456,7 +456,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomLeaveCallAndRoomSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));
@@ -482,7 +482,7 @@ public class CallParticipantListInternalSignalingTest {
 
     @Test
     public void testUsersInRoomSeveralEventsSeveralParticipants() {
-        List<Participant> participants = new ArrayList<>();
+        List<ParticipantDto> participants = new ArrayList<>();
         participants.add(builder.newUser(IN_CALL | WITH_AUDIO, 1, "theSessionId1", "theUserId1"));
         participants.add(builder.newGuest(IN_CALL, 2, "theSessionId2"));
         participants.add(builder.newUser(DISCONNECTED, 3, "theSessionId3", "theUserId3"));

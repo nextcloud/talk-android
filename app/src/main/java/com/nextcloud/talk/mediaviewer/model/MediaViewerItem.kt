@@ -31,7 +31,7 @@ data class MediaViewerItem(
     val fileSize: Long,
     val previewUrl: String?,
     val actorDisplayName: String,
-    /** Epoch seconds, matching ChatMessage/ChatMessageJson's own timestamp convention. */
+    /** Epoch seconds, matching ChatMessage/ChatMessageDto's own timestamp convention. */
     val timestamp: Long
 ) : Parcelable
 

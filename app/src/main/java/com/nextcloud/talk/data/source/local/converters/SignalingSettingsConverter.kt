@@ -9,12 +9,12 @@ package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsDto
 
 class SignalingSettingsConverter {
 
     @TypeConverter
-    fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String =
+    fun fromSignalingSettingsToString(signalingSettings: SignalingSettingsDto?): String =
         if (signalingSettings == null) {
             ""
         } else {
@@ -22,11 +22,11 @@ class SignalingSettingsConverter {
         }
 
     @TypeConverter
-    fun fromStringToSignalingSettings(value: String): SignalingSettings? {
+    fun fromStringToSignalingSettings(value: String): SignalingSettingsDto? {
         return if (value.isBlank()) {
             null
         } else {
-            return LoganSquare.parse(value, SignalingSettings::class.java)
+            return LoganSquare.parse(value, SignalingSettingsDto::class.java)
         }
     }
 }

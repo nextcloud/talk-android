@@ -6,8 +6,8 @@
  */
 package com.nextcloud.talk.signaling;
 
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,11 +57,11 @@ public class SignalingMessageReceiverCallParticipantTest {
 
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("raiseHand");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("raiseHand");
         messagePayload.setState(Boolean.TRUE);
         messagePayload.setTimestamp(4815162342L);
@@ -78,11 +78,11 @@ public class SignalingMessageReceiverCallParticipantTest {
 
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("reaction");
         signalingMessage.setRoomType("theRoomType");
-        NCMessagePayload messagePayload = new NCMessagePayload();
+        NCMessagePayloadDto messagePayload = new NCMessagePayloadDto();
         messagePayload.setType("reaction");
         messagePayload.setReaction("theReaction");
         signalingMessage.setPayload(messagePayload);
@@ -98,7 +98,7 @@ public class SignalingMessageReceiverCallParticipantTest {
 
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -117,7 +117,7 @@ public class SignalingMessageReceiverCallParticipantTest {
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener1, "theSessionId");
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener2, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -134,7 +134,7 @@ public class SignalingMessageReceiverCallParticipantTest {
 
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("notMatchingSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -151,7 +151,7 @@ public class SignalingMessageReceiverCallParticipantTest {
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
         signalingMessageReceiver.removeListener(mockedCallParticipantMessageListener);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -174,7 +174,7 @@ public class SignalingMessageReceiverCallParticipantTest {
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener3, "theSessionId");
         signalingMessageReceiver.removeListener(mockedCallParticipantMessageListener2);
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -193,7 +193,7 @@ public class SignalingMessageReceiverCallParticipantTest {
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId");
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener, "theSessionId2");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -223,7 +223,7 @@ public class SignalingMessageReceiverCallParticipantTest {
 
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener1, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");
@@ -248,7 +248,7 @@ public class SignalingMessageReceiverCallParticipantTest {
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener1, "theSessionId");
         signalingMessageReceiver.addListener(mockedCallParticipantMessageListener2, "theSessionId");
 
-        NCSignalingMessage signalingMessage = new NCSignalingMessage();
+        NCSignalingMessageDto signalingMessage = new NCSignalingMessageDto();
         signalingMessage.setFrom("theSessionId");
         signalingMessage.setType("unshareScreen");
         signalingMessage.setRoomType("theRoomType");

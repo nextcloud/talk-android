@@ -8,13 +8,17 @@ package com.nextcloud.talk.openconversations.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class OpenConversationsRepositoryImpl(private val ncApiCoroutines: NcApiCoroutines) : OpenConversationsRepository {
-    override suspend fun fetchConversations(user: User, url: String, searchTerm: String): Result<List<Conversation>> =
+    override suspend fun fetchConversations(
+        user: User,
+        url: String,
+        searchTerm: String
+    ): Result<List<ConversationDto>> =
         runCatching {
             val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
@@ -26,7 +30,7 @@ class OpenConversationsRepositoryImpl(private val ncApiCoroutines: NcApiCoroutin
             roomOverall.ocs?.data.orEmpty()
         }
 
-    override fun fetchOpenConversationsFlow(user: User, searchTerm: String): Flow<List<Conversation>> =
+    override fun fetchOpenConversationsFlow(user: User, searchTerm: String): Flow<List<ConversationDto>> =
         flow {
             val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 

@@ -14,7 +14,7 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -45,7 +45,7 @@ class ConversationListUpdaterUnreadTest {
 
     @Before
     fun setUp() {
-        stored = Conversation(token = ROOM_TOKEN)
+        stored = ConversationDto(token = ROOM_TOKEN)
             .asEntity(ACCOUNT_ID)
             .copy(lastReadMessage = READ_UP_TO_NEWEST, unreadMessages = 0)
 

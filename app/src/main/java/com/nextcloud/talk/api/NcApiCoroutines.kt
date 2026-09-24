@@ -8,16 +8,16 @@
 
 package com.nextcloud.talk.api
 
-import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
-import com.nextcloud.talk.models.json.wipe.WipeCheckResponse
+import com.nextcloud.talk.models.json.wipe.WipeCheckResponseDto
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
-import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequest
+import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequestDto
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
-import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequest
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ProbeConversationAttachmentRequestDto
 import com.nextcloud.talk.models.json.conversations.ConversationPresetsOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -25,20 +25,20 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.invitation.InvitationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
-import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequest
+import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequestDto
 import com.nextcloud.talk.models.json.tags.ConversationTagOverall
 import com.nextcloud.talk.models.json.tags.ConversationTagsOverall
-import com.nextcloud.talk.models.json.tags.CreateConversationTagRequest
-import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequest
-import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequest
-import com.nextcloud.talk.models.json.generic.Status
+import com.nextcloud.talk.models.json.tags.CreateConversationTagRequestDto
+import com.nextcloud.talk.models.json.tags.ReorderConversationTagsRequestDto
+import com.nextcloud.talk.models.json.tags.UpdateConversationTagRequestDto
+import com.nextcloud.talk.models.json.generic.StatusDto
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
@@ -107,7 +107,7 @@ interface NcApiCoroutines {
     suspend fun createRoomWithBody(
         @Header("Authorization") authorization: String?,
         @Url url: String?,
-        @Body roomRequest: CreateRoomRequest
+        @Body roomRequest: CreateRoomRequestDto
     ): RoomOverall
 
     /*
@@ -231,7 +231,7 @@ interface NcApiCoroutines {
         @Field("actorType") actorType: String,
         @Field("actorId") actorId: String,
         @Field("internalNote") internalNote: String
-    ): TalkBan
+    ): TalkBanDto
 
     @GET
     suspend fun listBans(@Header("Authorization") authorization: String, @Url url: String): TalkBanOverall
@@ -285,14 +285,14 @@ interface NcApiCoroutines {
     suspend fun createConversationTag(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: CreateConversationTagRequest
+        @Body body: CreateConversationTagRequestDto
     ): ConversationTagOverall
 
     @PUT
     suspend fun updateConversationTag(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: UpdateConversationTagRequest
+        @Body body: UpdateConversationTagRequestDto
     ): ConversationTagOverall
 
     @DELETE
@@ -302,14 +302,14 @@ interface NcApiCoroutines {
     suspend fun reorderConversationTags(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: ReorderConversationTagsRequest
+        @Body body: ReorderConversationTagsRequestDto
     ): ConversationTagsOverall
 
     @POST
     suspend fun assignConversationTags(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: AssignConversationTagsRequest
+        @Body body: AssignConversationTagsRequestDto
     ): RoomOverall
 
     @FormUrlEncoded
@@ -578,14 +578,14 @@ interface NcApiCoroutines {
     suspend fun probeConversationAttachmentFolder(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body request: ProbeConversationAttachmentRequest
+        @Body request: ProbeConversationAttachmentRequestDto
     ): ChatProbeAttachmentFolderOverall
 
     @POST
     suspend fun postConversationAttachment(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Body body: PostConversationAttachmentRequest
+        @Body body: PostConversationAttachmentRequestDto
     ): ChatPostAttachmentOverall
 
     @PUT
@@ -597,7 +597,7 @@ interface NcApiCoroutines {
 
     @FormUrlEncoded
     @POST
-    suspend fun checkRemoteWipe(@Url url: String, @Field("token") token: String): Response<WipeCheckResponse>
+    suspend fun checkRemoteWipe(@Url url: String, @Field("token") token: String): Response<WipeCheckResponseDto>
 
     @FormUrlEncoded
     @POST
@@ -621,7 +621,7 @@ interface NcApiCoroutines {
     suspend fun getCapabilities(@Header("Authorization") authorization: String?, @Url url: String): CapabilitiesOverall
 
     @GET
-    suspend fun getServerStatus(@Url url: String): Status
+    suspend fun getServerStatus(@Url url: String): StatusDto
 
     @GET
     suspend fun getUserProfile(@Header("Authorization") authorization: String, @Url url: String): UserProfileOverall

@@ -9,10 +9,10 @@ package com.nextcloud.talk.ui.theme
 
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 
 interface MaterialSchemesProvider {
     fun getMaterialSchemesForUser(user: User?): MaterialSchemes
-    fun getMaterialSchemesForCapabilities(capabilities: Capabilities?): MaterialSchemes
+    fun getMaterialSchemesForCapabilities(capabilities: CapabilitiesDto?): MaterialSchemes
     fun getMaterialSchemesForCurrentUser(): MaterialSchemes
 }

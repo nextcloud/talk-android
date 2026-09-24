@@ -10,16 +10,16 @@ package com.nextcloud.talk.models.json.signaling
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 class SignalingOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+    var meta: GenericMetaDto?,
     @JsonField(name = ["data"])
-    var signalings: List<Signaling>? = null
+    var signalings: List<SignalingDto>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

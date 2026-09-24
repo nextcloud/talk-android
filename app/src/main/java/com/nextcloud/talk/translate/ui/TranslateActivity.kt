@@ -25,7 +25,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
-import com.nextcloud.talk.translate.repositories.model.Language
+import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -47,7 +47,7 @@ class TranslateActivity : BaseActivity() {
 
     private var toLanguages: Array<String>? = null
     private var fromLanguages: Array<String>? = null
-    private var languages: List<Language>? = null
+    private var languages: List<LanguageDto>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

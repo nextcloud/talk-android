@@ -23,12 +23,12 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -131,7 +131,7 @@ class ConversationListFreshnessIntegrationTest {
             assertEquals("activity must advance to the newest message", 13L, conversation.lastActivity)
             assertEquals("system messages must not count as unread", 2, conversation.unreadMessages)
             assertEquals("the read marker must not be touched", 10, conversation.lastReadMessage)
-            val lastMessage = LoganSquare.parse(conversation.lastMessage, ChatMessageJson::class.java)
+            val lastMessage = LoganSquare.parse(conversation.lastMessage, ChatMessageDto::class.java)
             assertEquals("the newest fetched message must become the preview", 13L, lastMessage.id)
         }
     }
@@ -373,7 +373,7 @@ class ConversationListFreshnessIntegrationTest {
             mock<Logger>()
         )
         whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(Conversation(token = ROOM_TOKEN, lastActivity = 10, unreadMessages = 1)))
+            Observable.just(listOf(ConversationDto(token = ROOM_TOKEN, lastActivity = 10, unreadMessages = 1)))
         )
 
         runBlocking {
@@ -409,8 +409,8 @@ class ConversationListFreshnessIntegrationTest {
         unreadMessages: Int,
         favorite: Boolean = false,
         hasArchived: Boolean = false
-    ): Conversation =
-        Conversation(
+    ): ConversationDto =
+        ConversationDto(
             token = ROOM_TOKEN,
             lastActivity = 12,
             lastReadMessage = lastReadMessage,
@@ -420,7 +420,7 @@ class ConversationListFreshnessIntegrationTest {
         )
 
     private suspend fun seedConversation(lastActivity: Long, lastReadMessage: Int, unreadMessages: Int) {
-        val entity = Conversation(
+        val entity = ConversationDto(
             token = ROOM_TOKEN,
             lastActivity = lastActivity,
             lastReadMessage = lastReadMessage,
@@ -455,8 +455,8 @@ class ConversationListFreshnessIntegrationTest {
             username = "me",
             baseUrl = BASE_URL,
             token = "app-password",
-            capabilities = Capabilities().apply {
-                spreedCapability = SpreedCapability().apply { this.features = features }
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { this.features = features }
             }
         )
     }
@@ -475,8 +475,8 @@ class ConversationListFreshnessIntegrationTest {
         actorId: String = "other",
         messageType: String = "comment",
         systemMessageType: ChatMessage.SystemMessageType = ChatMessage.SystemMessageType.DUMMY
-    ): ChatMessageJson =
-        ChatMessageJson(
+    ): ChatMessageDto =
+        ChatMessageDto(
             id = id,
             token = ROOM_TOKEN,
             actorType = "users",
@@ -488,7 +488,7 @@ class ConversationListFreshnessIntegrationTest {
             systemMessageType = systemMessageType
         )
 
-    private fun overall(vararg messages: ChatMessageJson): ChatOverall =
+    private fun overall(vararg messages: ChatMessageDto): ChatOverall =
         ChatOverall(ocs = ChatOCS(meta = null, data = messages.toList()))
 
     companion object {

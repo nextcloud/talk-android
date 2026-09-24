@@ -7,31 +7,31 @@
 package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
-import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantDto;
 
-public class EnumParticipantTypeConverter extends IntBasedTypeConverter<Participant.ParticipantType> {
+public class EnumParticipantTypeConverter extends IntBasedTypeConverter<ParticipantDto.ParticipantType> {
     @Override
-    public Participant.ParticipantType getFromInt(int i) {
+    public ParticipantDto.ParticipantType getFromInt(int i) {
         switch (i) {
             case 1:
-                return Participant.ParticipantType.OWNER;
+                return ParticipantDto.ParticipantType.OWNER;
             case 2:
-                return Participant.ParticipantType.MODERATOR;
+                return ParticipantDto.ParticipantType.MODERATOR;
             case 3:
-                return Participant.ParticipantType.USER;
+                return ParticipantDto.ParticipantType.USER;
             case 4:
-                return Participant.ParticipantType.GUEST;
+                return ParticipantDto.ParticipantType.GUEST;
             case 5:
-                return Participant.ParticipantType.USER_FOLLOWING_LINK;
+                return ParticipantDto.ParticipantType.USER_FOLLOWING_LINK;
             case 6:
-                return Participant.ParticipantType.GUEST_MODERATOR;
+                return ParticipantDto.ParticipantType.GUEST_MODERATOR;
             default:
-                return Participant.ParticipantType.DUMMY;
+                return ParticipantDto.ParticipantType.DUMMY;
         }
     }
 
     @Override
-    public int convertToInt(Participant.ParticipantType object) {
+    public int convertToInt(ParticipantDto.ParticipantType object) {
         switch (object) {
             case DUMMY:
                 return 0;

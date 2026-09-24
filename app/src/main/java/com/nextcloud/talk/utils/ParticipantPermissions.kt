@@ -8,13 +8,13 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
  */
 class ParticipantPermissions(
-    private val spreedCapabilities: SpreedCapability?,
+    private val spreedCapabilities: SpreedCapabilityDto?,
     private val conversation: ConversationModel
 ) {
     val isDefault = (conversation.permissions and DEFAULT) == DEFAULT

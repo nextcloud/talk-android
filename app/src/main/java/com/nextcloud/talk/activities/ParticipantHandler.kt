@@ -8,7 +8,7 @@
 package com.nextcloud.talk.activities
 
 import android.util.Log
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
@@ -236,7 +236,7 @@ class ParticipantHandler(
 
     fun updateIsInternal(isInternal: Boolean) = _uiState.update { it.copy(isInternal = isInternal) }
 
-    fun updateActor(actorType: Participant.ActorType?, actorId: String?) {
+    fun updateActor(actorType: ParticipantDto.ActorType?, actorId: String?) {
         _uiState.update { it.copy(actorType = actorType, actorId = actorId) }
     }
 

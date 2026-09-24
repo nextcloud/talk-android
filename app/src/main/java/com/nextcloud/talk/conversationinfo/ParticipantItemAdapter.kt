@@ -30,8 +30,8 @@ import com.nextcloud.talk.extensions.loadPhoneAvatar
 import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.participants.Participant.InCallFlags
+import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.participants.ParticipantDto.InCallFlags
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -63,7 +63,7 @@ class ParticipantItemAdapter(
             setOnlineStateColor(binding, item.isOnline)
             binding.nameText.text = model.displayName
 
-            if (model.type == Participant.ParticipantType.GUEST && model.displayName.isNullOrBlank()) {
+            if (model.type == ParticipantDto.ParticipantType.GUEST && model.displayName.isNullOrBlank()) {
                 binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
             }
 
@@ -95,11 +95,11 @@ class ParticipantItemAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setParticipantInfo(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
+    private fun setParticipantInfo(binding: RvItemConversationInfoParticipantBinding, model: ParticipantDto) {
         if (TextUtils.isEmpty(model.displayName) &&
             (
-                model.type == Participant.ParticipantType.GUEST ||
-                    model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+                model.type == ParticipantDto.ParticipantType.GUEST ||
+                    model.type == ParticipantDto.ParticipantType.USER_FOLLOWING_LINK
                 )
         ) {
             binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
@@ -107,25 +107,25 @@ class ParticipantItemAdapter(
 
         var userType = ""
         when (model.type) {
-            Participant.ParticipantType.OWNER,
-            Participant.ParticipantType.MODERATOR,
-            Participant.ParticipantType.GUEST_MODERATOR -> {
+            ParticipantDto.ParticipantType.OWNER,
+            ParticipantDto.ParticipantType.MODERATOR,
+            ParticipantDto.ParticipantType.GUEST_MODERATOR -> {
                 userType = sharedApplication!!.getString(R.string.nc_moderator)
             }
 
-            Participant.ParticipantType.USER -> {
+            ParticipantDto.ParticipantType.USER -> {
                 userType = sharedApplication!!.getString(R.string.nc_user)
-                if (model.calculatedActorType == Participant.ActorType.GROUPS) {
+                if (model.calculatedActorType == ParticipantDto.ActorType.GROUPS) {
                     userType = sharedApplication!!.getString(R.string.nc_group)
                 }
-                if (model.calculatedActorType == Participant.ActorType.CIRCLES) {
+                if (model.calculatedActorType == ParticipantDto.ActorType.CIRCLES) {
                     userType = sharedApplication!!.getString(R.string.nc_team)
                 }
             }
 
-            Participant.ParticipantType.GUEST -> {
+            ParticipantDto.ParticipantType.GUEST -> {
                 userType = sharedApplication!!.getString(R.string.nc_guest)
-                if (model.calculatedActorType == Participant.ActorType.EMAILS) {
+                if (model.calculatedActorType == ParticipantDto.ActorType.EMAILS) {
                     userType = sharedApplication!!.getString(R.string.nc_guest)
                 }
 
@@ -137,7 +137,7 @@ class ParticipantItemAdapter(
                 }
             }
 
-            Participant.ParticipantType.USER_FOLLOWING_LINK -> {
+            ParticipantDto.ParticipantType.USER_FOLLOWING_LINK -> {
                 userType = sharedApplication!!.getString(R.string.nc_following_link)
             }
 
@@ -171,7 +171,7 @@ class ParticipantItemAdapter(
     }
 
     @SuppressLint("StringFormatInvalid")
-    private fun showCallIcons(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
+    private fun showCallIcons(binding: RvItemConversationInfoParticipantBinding, model: ParticipantDto) {
         val resources = sharedApplication!!.resources
         val inCallFlag = model.inCall
         if (inCallFlag and InCallFlags.WITH_PHONE.toLong() > 0) {
@@ -194,25 +194,25 @@ class ParticipantItemAdapter(
         }
     }
 
-    private fun loadAvatars(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
+    private fun loadAvatars(binding: RvItemConversationInfoParticipantBinding, model: ParticipantDto) {
         when (model.calculatedActorType) {
-            Participant.ActorType.GROUPS -> {
+            ParticipantDto.ActorType.GROUPS -> {
                 binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
             }
 
-            Participant.ActorType.CIRCLES -> {
+            ParticipantDto.ActorType.CIRCLES -> {
                 binding.avatarView.loadTeamAvatar(viewThemeUtils)
             }
 
-            Participant.ActorType.USERS -> {
+            ParticipantDto.ActorType.USERS -> {
                 binding.avatarView.loadUserAvatar(user, model.calculatedActorId!!, true, false)
             }
 
-            Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
+            ParticipantDto.ActorType.GUESTS, ParticipantDto.ActorType.EMAILS -> {
                 binding.avatarView.loadGuestAvatar(model.displayName, viewThemeUtils)
             }
 
-            Participant.ActorType.FEDERATED -> {
+            ParticipantDto.ActorType.FEDERATED -> {
                 val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
                 binding.avatarView.loadFederatedUserAvatar(
                     user,
@@ -225,7 +225,7 @@ class ParticipantItemAdapter(
                 )
             }
 
-            Participant.ActorType.PHONES -> {
+            ParticipantDto.ActorType.PHONES -> {
                 binding.avatarView.loadPhoneAvatar(viewThemeUtils)
             }
 
@@ -236,7 +236,7 @@ class ParticipantItemAdapter(
     }
 
     @Suppress("MagicNumber")
-    private fun drawStatus(binding: RvItemConversationInfoParticipantBinding, model: Participant) {
+    private fun drawStatus(binding: RvItemConversationInfoParticipantBinding, model: ParticipantDto) {
         val size = convertDpToPixel(STATUS_SIZE_IN_DP, context)
         binding.userStatusImage.setImageDrawable(
             StatusDrawable(

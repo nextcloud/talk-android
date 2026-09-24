@@ -32,11 +32,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.VerticallyCenteredRow
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsAppBar(isAddParticipants: Boolean, autocompleteUsers: List<AutocompleteUser>, onStartSearch: () -> Unit) {
+fun ContactsAppBar(
+    isAddParticipants: Boolean,
+    autocompleteUsers: List<AutocompleteUserDto>,
+    onStartSearch: () -> Unit
+) {
     val context = LocalContext.current
     TopAppBar(
         modifier = Modifier

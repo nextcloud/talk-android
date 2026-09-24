@@ -9,7 +9,7 @@ package com.nextcloud.talk.contacts
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import kotlinx.coroutines.flow.Flow
 
@@ -26,5 +26,5 @@ interface ContactsRepository {
 
     fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String
 
-    fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>>
+    fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUserDto>>
 }

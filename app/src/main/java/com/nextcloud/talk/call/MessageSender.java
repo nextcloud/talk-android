@@ -6,8 +6,8 @@
  */
 package com.nextcloud.talk.call;
 
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
 import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
@@ -49,7 +49,7 @@ public abstract class MessageSender {
      *
      * @param dataChannelMessage the message to send
      */
-    public abstract void sendToAll(DataChannelMessage dataChannelMessage);
+    public abstract void sendToAll(DataChannelMessageDto dataChannelMessage);
 
     /**
      * Sends the given signaling message to the given session ID.
@@ -59,7 +59,7 @@ public abstract class MessageSender {
      * @param ncSignalingMessage the message to send
      * @param sessionId the signaling session ID of the participant to send the message to
      */
-    public void send(NCSignalingMessage ncSignalingMessage, String sessionId) {
+    public void send(NCSignalingMessageDto ncSignalingMessage, String sessionId) {
         ncSignalingMessage.setTo(sessionId);
 
         signalingMessageSender.send(ncSignalingMessage);
@@ -72,7 +72,7 @@ public abstract class MessageSender {
      *
      * @param ncSignalingMessage the message to send
      */
-    public void sendToAll(NCSignalingMessage ncSignalingMessage) {
+    public void sendToAll(NCSignalingMessageDto ncSignalingMessage) {
         for (String sessionId: callParticipantSessionIds) {
             ncSignalingMessage.setTo(sessionId);
 

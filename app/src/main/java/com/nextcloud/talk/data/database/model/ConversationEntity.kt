@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 @Entity(
     tableName = "Conversations",
@@ -80,7 +80,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "notificationLevel") var notificationLevel: ConversationEnums.NotificationLevel,
     @ColumnInfo(name = "objectType") var objectType: ConversationEnums.ObjectType,
     @ColumnInfo(name = "objectId") var objectId: String,
-    @ColumnInfo(name = "participantType") var participantType: Participant.ParticipantType,
+    @ColumnInfo(name = "participantType") var participantType: ParticipantDto.ParticipantType,
     @ColumnInfo(name = "permissions") var permissions: Int = 0,
     @ColumnInfo(name = "readOnly") var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState,
     @ColumnInfo(name = "recordingConsent") var recordingConsentRequired: Int = 0,

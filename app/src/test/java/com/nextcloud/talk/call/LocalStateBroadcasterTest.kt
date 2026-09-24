@@ -7,9 +7,9 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.activities.ParticipantUiState
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import com.nextcloud.talk.models.json.signaling.NCMessagePayload
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
+import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -50,12 +50,12 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isAudioEnabled = true
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
 
-        val expectedUnmuteAudio = NCSignalingMessage()
+        val expectedUnmuteAudio = NCSignalingMessageDto()
         expectedUnmuteAudio.roomType = "video"
         expectedUnmuteAudio.type = "unmute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedUnmuteAudio.payload = payload
 
@@ -83,12 +83,12 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isAudioEnabled = false
 
-        val expectedAudioOff = DataChannelMessage("audioOff")
+        val expectedAudioOff = DataChannelMessageDto("audioOff")
 
-        val expectedMuteAudio = NCSignalingMessage()
+        val expectedMuteAudio = NCSignalingMessageDto()
         expectedMuteAudio.roomType = "video"
         expectedMuteAudio.type = "mute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedMuteAudio.payload = payload
 
@@ -117,7 +117,7 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isSpeaking = true
 
-        val expectedSpeaking = DataChannelMessage("speaking")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
 
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedSpeaking)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
@@ -157,13 +157,13 @@ class LocalStateBroadcasterTest {
         localCallParticipantModel!!.isSpeaking = true
         localCallParticipantModel!!.isAudioEnabled = true
 
-        val expectedAudioOn = DataChannelMessage("audioOn")
-        val expectedSpeaking = DataChannelMessage("speaking")
+        val expectedAudioOn = DataChannelMessageDto("audioOn")
+        val expectedSpeaking = DataChannelMessageDto("speaking")
 
-        val expectedUnmuteAudio = NCSignalingMessage()
+        val expectedUnmuteAudio = NCSignalingMessageDto()
         expectedUnmuteAudio.roomType = "video"
         expectedUnmuteAudio.type = "unmute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedUnmuteAudio.payload = payload
 
@@ -184,7 +184,7 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isSpeaking = false
 
-        val expectedStoppedSpeaking = DataChannelMessage("stoppedSpeaking")
+        val expectedStoppedSpeaking = DataChannelMessageDto("stoppedSpeaking")
 
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedStoppedSpeaking)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
@@ -211,13 +211,13 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isAudioEnabled = false
 
-        val expectedStoppedSpeaking = DataChannelMessage("stoppedSpeaking")
-        val expectedAudioOff = DataChannelMessage("audioOff")
+        val expectedStoppedSpeaking = DataChannelMessageDto("stoppedSpeaking")
+        val expectedAudioOff = DataChannelMessageDto("audioOff")
 
-        val expectedMuteAudio = NCSignalingMessage()
+        val expectedMuteAudio = NCSignalingMessageDto()
         expectedMuteAudio.roomType = "video"
         expectedMuteAudio.type = "mute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "audio"
         expectedMuteAudio.payload = payload
 
@@ -249,12 +249,12 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isVideoEnabled = true
 
-        val expectedVideoOn = DataChannelMessage("videoOn")
+        val expectedVideoOn = DataChannelMessageDto("videoOn")
 
-        val expectedUnmuteVideo = NCSignalingMessage()
+        val expectedUnmuteVideo = NCSignalingMessageDto()
         expectedUnmuteVideo.roomType = "video"
         expectedUnmuteVideo.type = "unmute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "video"
         expectedUnmuteVideo.payload = payload
 
@@ -282,12 +282,12 @@ class LocalStateBroadcasterTest {
 
         localCallParticipantModel!!.isVideoEnabled = false
 
-        val expectedVideoOff = DataChannelMessage("videoOff")
+        val expectedVideoOff = DataChannelMessageDto("videoOff")
 
-        val expectedMuteVideo = NCSignalingMessage()
+        val expectedMuteVideo = NCSignalingMessageDto()
         expectedMuteVideo.roomType = "video"
         expectedMuteVideo.type = "mute"
-        val payload = NCMessagePayload()
+        val payload = NCMessagePayloadDto()
         payload.name = "video"
         expectedMuteVideo.payload = payload
 

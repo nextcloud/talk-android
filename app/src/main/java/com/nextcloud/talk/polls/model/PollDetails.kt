@@ -6,10 +6,10 @@
  */
 package com.nextcloud.talk.polls.model
 
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 data class PollDetails(
-    val actorType: Participant.ActorType?,
+    val actorType: ParticipantDto.ActorType?,
     val actorId: String?,
     val actorDisplayName: String?,
     val optionId: Int

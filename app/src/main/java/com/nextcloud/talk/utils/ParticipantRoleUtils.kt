@@ -10,9 +10,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 
 /**
  * Moderation rank of a participant, as far as it is worth showing in the participants list.
@@ -40,15 +40,15 @@ object ParticipantRoleUtils {
      * A null [conversationType] yields [ParticipantRole.NONE]: without knowing the conversation type
      * we cannot tell whether a rank is meaningful, and not showing one is the safer default.
      */
-    fun roleOf(participant: Participant, conversationType: ConversationEnums.ConversationType?): ParticipantRole {
+    fun roleOf(participant: ParticipantDto, conversationType: ConversationEnums.ConversationType?): ParticipantRole {
         if (conversationType == null || conversationType in RANKLESS_CONVERSATION_TYPES) {
             return ParticipantRole.NONE
         }
 
         return when (participant.type) {
-            Participant.ParticipantType.OWNER -> ParticipantRole.OWNER
-            Participant.ParticipantType.MODERATOR,
-            Participant.ParticipantType.GUEST_MODERATOR -> ParticipantRole.MODERATOR
+            ParticipantDto.ParticipantType.OWNER -> ParticipantRole.OWNER
+            ParticipantDto.ParticipantType.MODERATOR,
+            ParticipantDto.ParticipantType.GUEST_MODERATOR -> ParticipantRole.MODERATOR
             else -> ParticipantRole.NONE
         }
     }
@@ -96,9 +96,9 @@ object ParticipantRoleUtils {
 
     /** `USER_FOLLOWING_LINK` is this client's name for the server's `USER_SELF_JOINED`. */
     private val PROMOTABLE_TO_OWNER = setOf(
-        Participant.ParticipantType.USER,
-        Participant.ParticipantType.USER_FOLLOWING_LINK,
-        Participant.ParticipantType.MODERATOR
+        ParticipantDto.ParticipantType.USER,
+        ParticipantDto.ParticipantType.USER_FOLLOWING_LINK,
+        ParticipantDto.ParticipantType.MODERATOR
     )
 
     /**
@@ -107,30 +107,30 @@ object ParticipantRoleUtils {
      * `ParticipantService::updateParticipantTypeByModerator`, which enforces all of it again.
      */
     fun canChangeOwnership(
-        participant: Participant,
+        participant: ParticipantDto,
         conversation: ConversationModel?,
-        spreedCapabilities: SpreedCapability?
+        spreedCapabilities: SpreedCapabilityDto?
     ): Boolean =
         CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PROMOTE_DEMOTE_OWNER) &&
             conversation != null &&
-            conversation.participantType == Participant.ParticipantType.OWNER &&
+            conversation.participantType == ParticipantDto.ParticipantType.OWNER &&
             conversation.type in OWNER_CHANGE_CONVERSATION_TYPES &&
             conversation.objectType in OWNER_CHANGE_OBJECT_TYPES &&
-            participant.calculatedActorType == Participant.ActorType.USERS
+            participant.calculatedActorType == ParticipantDto.ActorType.USERS
 
     fun canBePromotedToOwner(
-        participant: Participant,
+        participant: ParticipantDto,
         conversation: ConversationModel?,
-        spreedCapabilities: SpreedCapability?
+        spreedCapabilities: SpreedCapabilityDto?
     ): Boolean =
         canChangeOwnership(participant, conversation, spreedCapabilities) &&
             participant.type in PROMOTABLE_TO_OWNER
 
     fun canBeDemotedFromOwner(
-        participant: Participant,
+        participant: ParticipantDto,
         conversation: ConversationModel?,
-        spreedCapabilities: SpreedCapability?
+        spreedCapabilities: SpreedCapabilityDto?
     ): Boolean =
         canChangeOwnership(participant, conversation, spreedCapabilities) &&
-            participant.type == Participant.ParticipantType.OWNER
+            participant.type == ParticipantDto.ParticipantType.OWNER
 }

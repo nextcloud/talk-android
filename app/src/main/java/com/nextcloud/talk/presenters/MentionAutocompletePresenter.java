@@ -18,7 +18,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.chat.MentionAutocompleteAdapter;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.models.json.mention.MentionDto;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
@@ -43,7 +43,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> {
+public class MentionAutocompletePresenter extends RecyclerViewPresenter<MentionDto> {
     private static final String TAG = "MentionAutocompletePresenter";
 
     @Inject
@@ -84,7 +84,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     @Override
     protected RecyclerView.Adapter instantiateAdapter() {
         mentionAdapter = new MentionAutocompleteAdapter(context, currentUser, viewThemeUtils, roomToken, mention -> {
-            Mention result = new Mention();
+            MentionDto result = new MentionDto();
             if (mention.mentionId != null) {
                 result.setMentionId(mention.mentionId);
             }
@@ -137,7 +137,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                 @Override
                 public void onNext(@NonNull MentionOverall mentionOverall) {
                     if (mentionOverall.getOcs() != null) {
-                        List<Mention> mentionsList = mentionOverall.getOcs().getData();
+                        List<MentionDto> mentionsList = mentionOverall.getOcs().getData();
 
                         if (mentionsList != null) {
 
@@ -145,7 +145,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                                 mentionAdapter.clear();
                             } else {
                                 List<MentionAutocompleteItem> itemList = new ArrayList<>(mentionsList.size());
-                                for (Mention mention : mentionsList) {
+                                for (MentionDto mention : mentionsList) {
                                     itemList.add(new MentionAutocompleteItem(mention, context, roomToken));
                                 }
 

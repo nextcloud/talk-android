@@ -19,7 +19,7 @@ import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -230,7 +230,7 @@ class ChatMessagesDaoTest {
             notificationLevel = ConversationEnums.NotificationLevel.ALWAYS,
             conversationReadOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY,
             hasCustomAvatar = false,
-            participantType = Participant.ParticipantType.DUMMY,
+            participantType = ParticipantDto.ParticipantType.DUMMY,
             recordingConsentRequired = 1
         )
     }

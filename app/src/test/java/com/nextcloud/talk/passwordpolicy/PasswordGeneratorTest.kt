@@ -7,9 +7,9 @@
 package com.nextcloud.talk.passwordpolicy
 
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.capabilities.PasswordApi
-import com.nextcloud.talk.models.json.capabilities.PasswordPolicy
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.PasswordApiDto
+import com.nextcloud.talk.models.json.capabilities.PasswordPolicyDto
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -29,9 +29,9 @@ class PasswordGeneratorTest {
             username = "alice",
             token = "token",
             baseUrl = "https://cloud.example.com",
-            capabilities = Capabilities().apply {
-                passwordPolicy = PasswordPolicy(
-                    PasswordApi(validatePasswordApi = VALIDATE_URL, generatePasswordApi = generateUrl)
+            capabilities = CapabilitiesDto().apply {
+                passwordPolicy = PasswordPolicyDto(
+                    PasswordApiDto(validatePasswordApi = VALIDATE_URL, generatePasswordApi = generateUrl)
                 )
             }
         )

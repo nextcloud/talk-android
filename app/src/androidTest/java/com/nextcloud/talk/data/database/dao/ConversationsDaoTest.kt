@@ -18,7 +18,7 @@ import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -184,7 +184,7 @@ class ConversationsDaoTest {
             notificationLevel = ConversationEnums.NotificationLevel.ALWAYS,
             objectType = ConversationEnums.ObjectType.FILE,
             objectId = "",
-            participantType = Participant.ParticipantType.DUMMY,
+            participantType = ParticipantDto.ParticipantType.DUMMY,
             conversationReadOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
             sessionId = "",
             type = ConversationEnums.ConversationType.DUMMY,

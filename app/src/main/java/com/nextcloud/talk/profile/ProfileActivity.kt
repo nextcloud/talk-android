@@ -32,7 +32,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.Scope
-import com.nextcloud.talk.models.json.userprofile.UserProfileData
+import com.nextcloud.talk.models.json.userprofile.UserProfileDataDto
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.ui.dialog.ScopeModalBottomSheet
@@ -64,7 +64,7 @@ class ProfileActivity : BaseActivity() {
     lateinit var userManager: UserManager
 
     private var currentUser: User? = null
-    private var userInfo: UserProfileData? = null
+    private var userInfo: UserProfileDataDto? = null
     private var editableFields = ArrayList<String>()
 
     /** Single source of truth that drives the Compose UI. */
@@ -366,7 +366,7 @@ class ProfileActivity : BaseActivity() {
         )
     }
 
-    private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
+    private fun createUserInfoDetails(userInfo: UserProfileDataDto?): List<UserInfoDetailsItem> {
         if (userInfo == null) return emptyList()
         return createIdentityItems(userInfo) +
             createContactItems(userInfo) +
@@ -374,7 +374,7 @@ class ProfileActivity : BaseActivity() {
             createProfessionalItems(userInfo)
     }
 
-    private fun createIdentityItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+    private fun createIdentityItems(userInfo: UserProfileDataDto): List<UserInfoDetailsItem> =
         listOf(
             UserInfoDetailsItem(
                 R.drawable.ic_user,
@@ -392,7 +392,7 @@ class ProfileActivity : BaseActivity() {
             )
         )
 
-    private fun createContactItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+    private fun createContactItems(userInfo: UserProfileDataDto): List<UserInfoDetailsItem> =
         listOf(
             UserInfoDetailsItem(
                 R.drawable.ic_email,
@@ -424,7 +424,7 @@ class ProfileActivity : BaseActivity() {
             )
         )
 
-    private fun createSocialItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+    private fun createSocialItems(userInfo: UserProfileDataDto): List<UserInfoDetailsItem> =
         listOf(
             UserInfoDetailsItem(
                 R.drawable.ic_twitter,
@@ -449,7 +449,7 @@ class ProfileActivity : BaseActivity() {
             )
         )
 
-    private fun createProfessionalItems(userInfo: UserProfileData): List<UserInfoDetailsItem> =
+    private fun createProfessionalItems(userInfo: UserProfileDataDto): List<UserInfoDetailsItem> =
         listOf(
             UserInfoDetailsItem(
                 R.drawable.ic_home_work_24px,
@@ -625,7 +625,7 @@ class ProfileActivity : BaseActivity() {
             })
     }
 
-    fun saveScope(item: UserInfoDetailsItem, userInfo: UserProfileData?) {
+    fun saveScope(item: UserInfoDetailsItem, userInfo: UserProfileDataDto?) {
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         ncApi.setUserData(
             credentials,

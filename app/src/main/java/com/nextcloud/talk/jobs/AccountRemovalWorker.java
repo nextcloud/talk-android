@@ -20,7 +20,7 @@ import com.nextcloud.talk.data.database.dao.ChatMessagesDao;
 import com.nextcloud.talk.data.database.dao.ConversationsDao;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.logger.Logger;
-import com.nextcloud.talk.models.json.generic.GenericMeta;
+import com.nextcloud.talk.models.json.generic.GenericMetaDto;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.conversationlist.DirectShareHelper;
@@ -115,7 +115,7 @@ public class AccountRemovalWorker extends Worker {
 
                         @Override
                         public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                            GenericMeta meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
+                            GenericMetaDto meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
                             int statusCode = Objects.requireNonNull(meta).getStatusCode();
 
                             if (statusCode == 200 || statusCode == 202) {

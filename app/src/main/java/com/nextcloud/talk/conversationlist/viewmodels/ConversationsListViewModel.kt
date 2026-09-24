@@ -25,10 +25,10 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -103,7 +103,7 @@ class ConversationsListViewModel @Inject constructor(
 
     sealed class OpenConversationsUiState {
         data object None : OpenConversationsUiState()
-        data class Success(val conversations: List<Conversation>) : OpenConversationsUiState()
+        data class Success(val conversations: List<ConversationDto>) : OpenConversationsUiState()
         data class Error(val exception: Throwable) : OpenConversationsUiState()
     }
 
@@ -477,7 +477,7 @@ class ConversationsListViewModel @Inject constructor(
                     entries.add(ConversationListEntry.Header(usersTitle))
                     sortedByMatchQuality(contacts, { it.label }, filter, wordPattern)
                         .forEach { autocompleteUser ->
-                            val participant = Participant()
+                            val participant = ParticipantDto()
                             participant.actorId = autocompleteUser.id
                             participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
                             participant.displayName = autocompleteUser.label

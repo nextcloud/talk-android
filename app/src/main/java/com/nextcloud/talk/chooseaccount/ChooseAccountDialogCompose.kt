@@ -85,7 +85,7 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
-import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusDto
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.StatusDrawable
@@ -139,7 +139,7 @@ class ChooseAccountDialogCompose {
     fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
         if (shouldDismiss.value) return
         val colorScheme = viewThemeUtils.getColorScheme(activity)
-        val status = remember { mutableStateOf<Status?>(null) }
+        val status = remember { mutableStateOf<StatusDto?>(null) }
         val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }
         val showStatusMessageSheet = rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
@@ -248,7 +248,7 @@ class ChooseAccountDialogCompose {
         }
     }
 
-    private fun handleStatusState(statusViewState: StatusUiState, status: MutableState<Status?>) {
+    private fun handleStatusState(statusViewState: StatusUiState, status: MutableState<StatusDto?>) {
         when (statusViewState) {
             is StatusUiState.Success -> {
                 status.value = statusViewState.status.ocs?.data!!
@@ -360,7 +360,7 @@ class ChooseAccountDialogCompose {
         }
 
     @Composable
-    private fun StatusIndicator(modifier: Modifier = Modifier, status: Status?, context: Context) {
+    private fun StatusIndicator(modifier: Modifier = Modifier, status: StatusDto?, context: Context) {
         status?.let {
             val size = remember { DisplayUtils.convertDpToPixel(STATUS_SIZE_DP, context) }
             val drawable = remember(it) { StatusDrawable(it.status, it.icon, size, 0, context) }
@@ -390,7 +390,7 @@ private fun ChooseAccountDialogContent(
     shouldDismiss: MutableState<Boolean>,
     colorScheme: ColorScheme,
     currentUser: User,
-    status: Status?,
+    status: StatusDto?,
     isStatusAvailable: Boolean,
     isOnline: Boolean,
     accountItems: List<AccountItem>,
@@ -466,7 +466,7 @@ private fun ChooseAccountDialogContent(
 @Composable
 private fun CurrentUserSection(
     currentUser: User,
-    status: Status?,
+    status: StatusDto?,
     onCurrentUserClick: () -> Unit,
     colorScheme: ColorScheme,
     statusIndicator: @Composable (Modifier) -> Unit,
@@ -518,7 +518,7 @@ private fun UserAvatarWithStatus(currentUser: User, context: Context, statusIndi
 }
 
 @Composable
-private fun CurrentUserInfo(currentUser: User, status: Status?, modifier: Modifier = Modifier) {
+private fun CurrentUserInfo(currentUser: User, status: StatusDto?, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(text = currentUser.displayName ?: currentUser.username ?: "")
         status?.let {
@@ -706,7 +706,7 @@ private fun ChooseAccountDialogContentPreview() {
         baseUrl = "https://example.com",
         displayName = "Sample User"
     )
-    val sampleStatus = Status(
+    val sampleStatus = StatusDto(
         userId = "user1",
         message = "Working remotely",
         messageId = "message-id",

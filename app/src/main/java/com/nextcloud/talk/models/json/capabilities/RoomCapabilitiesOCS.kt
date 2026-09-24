@@ -11,16 +11,16 @@ package com.nextcloud.talk.models.json.capabilities
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 data class RoomCapabilitiesOCS(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+    var meta: GenericMetaDto?,
     @JsonField(name = ["data"])
-    var data: SpreedCapability?
+    var data: SpreedCapabilityDto?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

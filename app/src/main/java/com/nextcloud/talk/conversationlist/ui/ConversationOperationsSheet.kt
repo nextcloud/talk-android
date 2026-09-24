@@ -43,7 +43,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -252,7 +252,7 @@ private fun previewConversation() =
         displayName = "Alice 🎉",
         description = "",
         type = ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL,
-        participantType = Participant.ParticipantType.USER,
+        participantType = ParticipantDto.ParticipantType.USER,
         sessionId = "",
         actorId = "user1",
         actorType = "users",

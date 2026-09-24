@@ -67,10 +67,10 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.chat.ChatUtils
-import com.nextcloud.talk.models.json.mention.Mention
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.mention.MentionDto
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.CallStartedBanner
 import com.nextcloud.talk.ui.MicInputCloud
@@ -127,7 +127,7 @@ class MessageInputFragment : Fragment() {
     private var xcounter = 0f
     private var ycounter = 0f
     private var hasScheduledMessages = false
-    private lateinit var spreedCapabilities: SpreedCapability
+    private lateinit var spreedCapabilities: SpreedCapabilityDto
     private var hasSharedText = false
 
     private var lastQuotedJsonId: Int? = null
@@ -336,7 +336,7 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun setReactionsOnly(spreedCapabilities: SpreedCapability) {
+    private fun setReactionsOnly(spreedCapabilities: SpreedCapabilityDto) {
         val isReactionOnly = isReactionOnlyMode(spreedCapabilities)
         if (isReactionOnly) {
             binding.fragmentMessageInputView.setVisible(false)
@@ -414,7 +414,7 @@ class MessageInputFragment : Fragment() {
     }
 
     @Suppress("LongMethod")
-    private fun initMessageInputView(spreedCapabilities: SpreedCapability) {
+    private fun initMessageInputView(spreedCapabilities: SpreedCapabilityDto) {
         if (!chatActivity.active) return
         this.spreedCapabilities = spreedCapabilities
 
@@ -792,7 +792,7 @@ class MessageInputFragment : Fragment() {
 
             if (mentionAutocomplete == null && binding.fragmentMessageInputView.inputEditText != null) {
                 mentionAutocomplete =
-                    Autocomplete.on<Mention>(binding.fragmentMessageInputView.inputEditText)
+                    Autocomplete.on<MentionDto>(binding.fragmentMessageInputView.inputEditText)
                         .with(elevation)
                         .with(backgroundDrawable)
                         .with(CharPolicy('@'))
@@ -982,7 +982,7 @@ class MessageInputFragment : Fragment() {
             val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
             if (concurrentSafeHashMap != null) {
                 for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessage()
+                    val ncSignalingMessage = NCSignalingMessageDto()
                     ncSignalingMessage.to = sessionId
                     ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
                     chatActivity.signalingMessageSender!!.send(ncSignalingMessage)
@@ -1029,7 +1029,7 @@ class MessageInputFragment : Fragment() {
             val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
             if (concurrentSafeHashMap != null) {
                 for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessage()
+                    val ncSignalingMessage = NCSignalingMessageDto()
                     ncSignalingMessage.to = sessionId
                     ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
                     chatActivity.signalingMessageSender?.send(ncSignalingMessage)
@@ -1153,7 +1153,11 @@ class MessageInputFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun editMessageAPI(message: ChatMessage, editedMessageText: String, spreedCapabilities: SpreedCapability) {
+    private fun editMessageAPI(
+        message: ChatMessage,
+        editedMessageText: String,
+        spreedCapabilities: SpreedCapabilityDto
+    ) {
         // FIXME Fix API checking with guests?
         val apiVersion: Int = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
@@ -1282,7 +1286,7 @@ class MessageInputFragment : Fragment() {
         lastQuotedJsonId = null
     }
 
-    private fun isReactionOnlyMode(spreedCapabilities: SpreedCapability): Boolean {
+    private fun isReactionOnlyMode(spreedCapabilities: SpreedCapabilityDto): Boolean {
         val conversation = chatActivity.currentConversation
         val permissions = chatActivity.participantPermissionsFlow.value
         val isChannel = ConversationUtils.isChannel(conversation, spreedCapabilities)

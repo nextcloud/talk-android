@@ -11,7 +11,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
@@ -70,7 +70,7 @@ class ContactsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
     override fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
         ApiUtils.getUrlForAvatar(user.baseUrl, avatarId, requestBigSize, darkMode = isDarkMode)
 
-    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUser>> =
+    override fun getContactsFlow(user: User, searchQuery: String?): Flow<List<AutocompleteUserDto>> =
         flow {
             val credentials = ApiUtils.getCredentials(user.username, user.token)
 

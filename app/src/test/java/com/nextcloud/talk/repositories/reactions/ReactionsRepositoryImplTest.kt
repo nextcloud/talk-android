@@ -11,7 +11,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOCS
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import kotlinx.coroutines.test.runTest
@@ -294,7 +294,7 @@ class ReactionsRepositoryImplTest {
         }
 
     private fun genericOverall(statusCode: Int) =
-        GenericOverall(GenericOCS(GenericMeta(status = "ok", statusCode = statusCode, message = null)))
+        GenericOverall(GenericOCS(GenericMetaDto(status = "ok", statusCode = statusCode, message = null)))
 
     private fun httpException(code: Int) =
         HttpException(Response.error<Any>(code, "".toResponseBody("text/plain".toMediaType())))

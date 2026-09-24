@@ -54,7 +54,7 @@ import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.hovercard.HoverCardAction
+import com.nextcloud.talk.models.json.hovercard.HoverCardActionDto
 import com.nextcloud.talk.utils.ApiUtils
 
 private const val TAG = "ProfileModalBottomSheet"
@@ -82,7 +82,7 @@ fun ProfileModalBottomSheet(
     onDismiss: () -> Unit
 ) {
     var displayName by remember { mutableStateOf<String?>(null) }
-    var actions by remember { mutableStateOf<List<HoverCardAction>>(emptyList()) }
+    var actions by remember { mutableStateOf<List<HoverCardActionDto>>(emptyList()) }
     val context = LocalContext.current
     val credentials = remember(user) { ApiUtils.getCredentials(user.username, user.token) }
 
@@ -122,8 +122,8 @@ fun ProfileModalBottomSheet(
 @Composable
 internal fun ProfileSheetLayout(
     displayName: String,
-    actions: List<HoverCardAction>,
-    onActionClick: (HoverCardAction) -> Unit
+    actions: List<HoverCardActionDto>,
+    onActionClick: (HoverCardActionDto) -> Unit
 ) {
     val timezoneAction = actions.firstOrNull { it.appId == "timezone" }
     val actionItems = actions.filter { it.appId != "timezone" }
@@ -175,7 +175,7 @@ internal fun ProfileSheetLayout(
 }
 
 @Composable
-private fun ProfileActionItem(action: HoverCardAction, onClick: () -> Unit) {
+private fun ProfileActionItem(action: HoverCardActionDto, onClick: () -> Unit) {
     val iconRes = iconResForAppId(action.appId) ?: return
     TextButton(
         onClick = onClick,
@@ -202,7 +202,7 @@ private fun ProfileActionItem(action: HoverCardAction, onClick: () -> Unit) {
 }
 
 private fun handleAction(
-    action: HoverCardAction,
+    action: HoverCardActionDto,
     actorId: String,
     context: Context,
     onTalkTo: (actorId: String) -> Unit
@@ -227,11 +227,11 @@ private fun composeEmail(address: String, context: Context) {
 }
 
 private val previewActions = listOf(
-    HoverCardAction("Profile", null, "https://cloud.example.com/u/alice", "profile"),
-    HoverCardAction("23:27 • same time", null, null, "timezone"),
-    HoverCardAction("alice@example.com", null, null, "email"),
-    HoverCardAction("work@example.com", null, null, "email"),
-    HoverCardAction("Talk to Alice", null, null, "spreed")
+    HoverCardActionDto("Profile", null, "https://cloud.example.com/u/alice", "profile"),
+    HoverCardActionDto("23:27 • same time", null, null, "timezone"),
+    HoverCardActionDto("alice@example.com", null, null, "email"),
+    HoverCardActionDto("work@example.com", null, null, "email"),
+    HoverCardActionDto("Talk to Alice", null, null, "spreed")
 )
 
 private val previewActionsNoTimezone = previewActions.filter { it.appId != "timezone" }

@@ -9,10 +9,10 @@ package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantDto
 import junit.framework.TestCase
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_areFlagsSet() {
-        val spreedCapability = SpreedCapability()
+        val spreedCapability = SpreedCapabilityDto()
         val conversation = createConversation()
 
         conversation.permissions = ParticipantPermissions.PUBLISH_SCREEN or
@@ -49,7 +49,7 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_reactPermissionWithReactCapability() {
-        val spreedCapability = SpreedCapability()
+        val spreedCapability = SpreedCapabilityDto()
         // Server with react-permission also supports chat-permission
         spreedCapability.features = listOf("chat-permission", "react-permission")
         val conversation = createConversation()
@@ -73,7 +73,7 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_reactPermissionDeniedWithReactCapability() {
-        val spreedCapability = SpreedCapability()
+        val spreedCapability = SpreedCapabilityDto()
         // Server with react-permission also supports chat-permission
         spreedCapability.features = listOf("chat-permission", "react-permission")
         val conversation = createConversation()
@@ -97,7 +97,7 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_reactPermissionFallbackToChatOnOlderServer() {
-        val spreedCapability = SpreedCapability()
+        val spreedCapability = SpreedCapabilityDto()
         // Older server without react-permission capability but with chat-permission
         spreedCapability.features = listOf("chat-permission")
         val conversation = createConversation()
@@ -121,7 +121,7 @@ class ParticipantPermissionsTest : TestCase() {
 
     @Test
     fun test_reactPermissionDeniedOnOlderServerWithoutChatPermission() {
-        val spreedCapability = SpreedCapability()
+        val spreedCapability = SpreedCapabilityDto()
         // Older server without react-permission capability but with chat-permission
         spreedCapability.features = listOf("chat-permission")
         val conversation = createConversation()
@@ -143,14 +143,14 @@ class ParticipantPermissionsTest : TestCase() {
     }
 
     private fun createConversation() =
-        Conversation(
+        ConversationDto(
             token = "test",
             name = "test",
             displayName = "test",
             description = "test",
             type = ConversationEnums.ConversationType.DUMMY,
             lastPing = 1,
-            participantType = Participant.ParticipantType.DUMMY,
+            participantType = ParticipantDto.ParticipantType.DUMMY,
             hasPassword = true,
             sessionId = "test",
             actorId = "test",
