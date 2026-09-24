@@ -336,7 +336,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
                                 unreadMessages = room.unreadMessages
                             )
                         }
-                            .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+                            .onFailure {
+                                if (it is CancellationException) throw it
+                                Log.e(TAG, "Message catch-up failed for room ${room.token}", it)
+                            }
                     }
                 }
             }
