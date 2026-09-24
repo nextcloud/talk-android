@@ -6,12 +6,15 @@
  */
 package com.nextcloud.talk.services
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Bundle
@@ -100,7 +103,12 @@ class CallForegroundService : Service() {
                 false
             ) ?: false
 
-            if (!isVoiceOnlyCall && canPublishVideo) {
+            val isCameraPermissionGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!isVoiceOnlyCall && canPublishVideo && isCameraPermissionGranted) {
                 serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
             }
         }
