@@ -198,14 +198,10 @@ class ConversationsListActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
-        val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
-        currentUser = if (targetUserId != 0L) {
-            runBlocking { userManager.getUserWithId(targetUserId) }!!
-        } else {
-            currentUserProviderOld.currentUser.blockingGet()
-        }
+        currentUser = resolveUser()
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
+        currentUser?.let { conversationsListViewModel.setUser(it) }
         conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
 
         setSupportActionBar(null)
@@ -228,6 +224,26 @@ class ConversationsListActivity : BaseActivity() {
             handleEcoSystemIntent(it)
         }
         initObservers()
+    }
+
+    /**
+     * The account this screen shows: the one passed via [KEY_INTERNAL_USER_ID], otherwise the
+     * active one. [UserManager.currentUserFlow] is preferred over [currentUserProviderOld], since
+     * it is updated synchronously by [UserManager.setUserAsActive].
+     */
+    private fun resolveUser(): User? {
+        val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
+        return if (targetUserId != 0L) {
+            runBlocking { userManager.getUserWithId(targetUserId) }!!
+        } else {
+            userManager.currentUserFlow.value ?: currentUserProviderOld.currentUser.blockingGet()
+        }
+    }
+
+    /** True when this screen follows the active account, and the active account has changed. */
+    private fun isActiveUserChanged(): Boolean {
+        val activeUser = userManager.currentUserFlow.value
+        return !intent.hasExtra(KEY_INTERNAL_USER_ID) && activeUser != null && activeUser.id != currentUser?.id
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -353,6 +369,7 @@ class ConversationsListActivity : BaseActivity() {
                         if (user != null) {
                             userManager.setUserAsActive(user)
                             val intent = Intent(context, ConversationsListActivity::class.java)
+                            intent.putExtra(KEY_INTERNAL_USER_ID, user.id)
                             startActivity(intent)
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
@@ -413,6 +430,11 @@ class ConversationsListActivity : BaseActivity() {
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
+        }
+
+        if (isActiveUserChanged()) {
+            recreate()
+            return
         }
 
         if (currentUser != null) {
@@ -671,7 +693,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     fun fetchRooms() {
-        conversationsListViewModel.getRooms(currentUser!!)
+        conversationsListViewModel.getRooms()
     }
 
     private fun fetchPendingInvitations() {

@@ -16,20 +16,21 @@ import kotlinx.coroutines.flow.Flow
 interface OfflineConversationsRepository {
 
     /**
-     * Live stream of the observed account's conversations, for use in the conversation list.
-     * Backed by the local database: it re-emits whenever conversation rows change (room list
-     * sync, background catch-up, optimistic updates), with unchanged lists deduplicated.
+     * Live stream of the conversations of the account [accountId], for use in the conversation
+     * list. Backed by the local database: it re-emits whenever conversation rows change (room
+     * list sync, background catch-up, optimistic updates), with unchanged lists deduplicated.
      */
-    val roomListFlow: Flow<List<ConversationModel>>
+    fun observeRooms(accountId: Long): Flow<List<ConversationModel>>
 
     /**
      * Emits when [getRooms] fails to sync with the server (e.g. a dropped/reset connection on a
      * slow network) while there are no locally cached conversations to fall back on for that
      * account, so the UI can tell the user why the list is empty instead of failing silently.
      * A failed sync while conversations are already cached does not emit here, since
-     * [roomListFlow] already has data to show and the sync is a best-effort background refresh.
+     * [observeRooms] already has data to show and the sync is a best-effort background refresh.
+     * Collectors must ignore errors whose [SyncError.accountId] is not the account they show.
      */
-    val syncErrorFlow: Flow<Throwable>
+    val syncErrorFlow: Flow<SyncError>
 
     /**
      * Stream of a single conversation, for use in each conversations settings.
@@ -38,9 +39,8 @@ interface OfflineConversationsRepository {
     val conversationFlow: Flow<ConversationModel>
 
     /**
-     * Selects the account observed by [roomListFlow] and synchronizes its conversations with
-     * the server (when online). The synced changes surface through [roomListFlow], which
-     * observes the database.
+     * Synchronizes the conversations of [user] with the server (when online). The synced changes
+     * surface through [observeRooms], which observes the database.
      */
     @Deprecated("use observeConversation")
     fun getRooms(user: User): Job
@@ -53,7 +53,7 @@ interface OfflineConversationsRepository {
     fun getRoom(user: User, roomToken: String): Job
 
     /**
-     * Updates a single conversation in the local database. [roomListFlow] observes the database
+     * Updates a single conversation in the local database. [observeRooms] observes the database
      * and re-emits the updated list on its own.
      */
     suspend fun updateConversation(conversationModel: ConversationModel)
@@ -62,4 +62,6 @@ interface OfflineConversationsRepository {
     suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel?
 
     fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult>
+
+    data class SyncError(val accountId: Long, val throwable: Throwable)
 }
