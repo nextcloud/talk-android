@@ -792,6 +792,7 @@
     <string name="thisWeek">This week</string>
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
+    <string name="thread">Thread</string>
     <string name="thread_cancel">Cancel thread creation</string>
     <string name="thread_notifications">Thread notifications</string>
     <string name="thread_reply">Reply</string>
