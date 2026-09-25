@@ -792,6 +792,7 @@
     <string name="thisWeek">Käesolev nädal</string>
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
+    <string name="thread">Jutulõng</string>
     <string name="thread_cancel">Katkesta jutulõnga koostamine</string>
     <string name="thread_notifications">Jutulõngade teavitused</string>
     <string name="thread_reply">Vasta</string>

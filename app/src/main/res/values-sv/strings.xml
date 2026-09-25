@@ -206,7 +206,7 @@
     <string name="nc_common_unknown">Okänd</string>
     <string name="nc_compress_images">Komprimera bilder och videor</string>
     <string name="nc_compress_in_progress">Komprimerar</string>
-    <string name="nc_compress_notification_text">%1$s – %2$s\\%%</string>
+    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_confirm">Bekräfta</string>
     <string name="nc_connecting_call">Ansluter…</string>
@@ -382,9 +382,9 @@
     <string name="nc_logs_share">Dela loggar</string>
     <string name="nc_logs_share_diagnosis">Diagnosrapport</string>
     <string name="nc_logs_share_latest_crash">Senaste kraschrapporten</string>
-    <string name="nc_logs_share_subject">Talk-loggar</string>
+    <string name="nc_logs_share_subject">%1$s loggar</string>
     <string name="nc_logs_title">Loggar</string>
-    <string name="nc_logs_total_size">Total storlek: %1$s</string>
+    <string name="nc_logs_total_size">Total storlek: %d KB</string>
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>

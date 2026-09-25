@@ -682,6 +682,7 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é unha mensaxe de proba</string>
     <string name="this_weekend">Este fin de semana</string>
+    <string name="thread">Fío</string>
     <string name="thread_cancel">Cancelar a creación do fío</string>
     <string name="thread_notifications">Notificacións de fíos</string>
     <string name="thread_reply">Responder</string>

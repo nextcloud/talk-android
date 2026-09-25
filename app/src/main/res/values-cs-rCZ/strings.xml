@@ -704,6 +704,7 @@
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
     <string name="this_weekend">Tento víkend</string>
+    <string name="thread">Vlákno</string>
     <string name="thread_cancel">Zrušit vytváření vlákna</string>
     <string name="thread_notifications">Notifikace ohledně vlákna</string>
     <string name="thread_reply">Odpověď</string>
