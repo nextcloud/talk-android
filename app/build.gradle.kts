@@ -105,6 +105,9 @@ android {
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
+            // Gradle's 512m default is too small for the Robolectric suites
+            it.maxHeapSize = "2g"
+            it.testLogging.events("started", "failed", "skipped")
         }
         unitTests.isReturnDefaultValues = true
     }
