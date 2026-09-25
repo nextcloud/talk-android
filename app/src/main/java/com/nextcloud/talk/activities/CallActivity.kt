@@ -198,6 +198,7 @@ import org.webrtc.VideoSource
 import org.webrtc.VideoTrack
 import java.io.IOException
 import java.util.Objects
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -253,7 +254,7 @@ class CallActivity : CallBaseActivity() {
     private var callSession: String? = null
     private var localStream: MediaStream? = null
     private var credentials: String? = null
-    private val peerConnectionWrapperList: MutableList<PeerConnectionWrapper> = ArrayList()
+    private val peerConnectionWrapperList: MutableList<PeerConnectionWrapper> = CopyOnWriteArrayList()
     private var videoOn = false
     private var microphoneOn = false
     var isVoiceOnlyCall = false
@@ -327,8 +328,34 @@ class CallActivity : CallBaseActivity() {
     private var conversationPassword: String? = null
     private var powerManagerUtils: PowerManagerUtils? = null
     private var handler: Handler? = null
+
+    private val callingTimeoutRunnable = Runnable { setCallState(CallStatus.CALLING_TIMEOUT) }
+
+    @Volatile
     private var currentCallStatus: CallStatus? = null
+
     private var mediaPlayer: MediaPlayer? = null
+
+    @Volatile
+    private var callingSoundRequested = false
+
+    @Volatile
+    private var audioRouteReady = false
+
+    // Set when Android did not confirm the audio route in time. Remote audio is then played on the unconfirmed route
+    // instead of keeping the call silent. Separate from handler, which is cleared on every call state change.
+    @Volatile
+    private var audioRouteReadyTimedOut = false
+    private var audioRouteReadyTimeoutScheduled = false
+    private val audioRouteHandler = Handler(Looper.getMainLooper())
+    private val audioRouteReadyTimeoutRunnable = Runnable { onAudioRouteReadyTimeout() }
+
+    // Guards remoteAudioPlayoutEnabled together with adding wrappers to peerConnectionWrapperList: wrappers are
+    // created on the signaling thread while the route state is updated on the main thread.
+    private val remoteAudioPlayoutLock = Any()
+
+    @Volatile
+    private var remoteAudioPlayoutEnabled = false
 
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
@@ -1020,15 +1047,17 @@ class CallActivity : CallBaseActivity() {
     fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
         if (audioManager != null) {
             audioManager!!.setDefaultAudioDevice(selectedAudioDevice)
-            updateAudioOutputButton(audioManager!!.currentAudioDevice)
+            updateAudioOutputButton(audioManager!!.audioDeviceForUi)
         }
     }
 
-    fun setAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
-        if (audioManager != null) {
-            audioManager!!.selectAudioDevice(selectedAudioDevice)
-            updateAudioOutputButton(audioManager!!.currentAudioDevice)
+    fun setAudioOutputChannel(selectedAudioDevice: AudioDevice?): Boolean {
+        val activeAudioManager = audioManager ?: return false
+        val accepted = activeAudioManager.selectAudioDevice(selectedAudioDevice)
+        if (accepted) {
+            updateAudioOutputButton(activeAudioManager.audioDeviceForUi)
         }
+        return accepted
     }
 
     private fun updateAudioOutputButton(activeAudioDevice: AudioDevice) {
@@ -1165,7 +1194,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun prepareCall() {
-        stopCallingSound()
+        releaseCallingSound()
         basicInitialization()
         initViews()
         checkRecordingConsentAndInitiateCall()
@@ -1268,6 +1297,14 @@ class CallActivity : CallBaseActivity() {
 
     private fun onAudioManagerDevicesChanged(currentDevice: AudioDevice, availableDevices: Set<AudioDevice>) {
         Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
+        audioRouteReady = audioManager?.isAudioRouteReady == true
+        updateAudioRouteReadyTimeout()
+        updateRemoteAudioPlayout()
+        if (audioRouteReady) {
+            maybeStartCallingSound()
+        } else {
+            releaseCallingSound()
+        }
         val shouldDisableProximityLock =
             currentDevice == AudioDevice.WIRED_HEADSET ||
                 currentDevice == AudioDevice.SPEAKER_PHONE ||
@@ -1280,7 +1317,7 @@ class CallActivity : CallBaseActivity() {
         if (audioOutputDialog != null) {
             audioOutputDialog!!.updateOutputDeviceList()
         }
-        updateAudioOutputButton(currentDevice)
+        updateAudioOutputButton(audioManager?.audioDeviceForUi ?: currentDevice)
     }
 
     private fun cameraInitialization() {
@@ -2227,6 +2264,12 @@ class CallActivity : CallBaseActivity() {
             audioSource = null
         }
         runOnUiThread {
+            audioRouteReady = false
+            cancelAudioRouteReadyTimeout()
+            synchronized(remoteAudioPlayoutLock) {
+                remoteAudioPlayoutEnabled = false
+                peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(false) }
+            }
             if (audioManager != null) {
                 audioManager!!.stop()
                 audioManager = null
@@ -2596,7 +2639,10 @@ class CallActivity : CallBaseActivity() {
                 return null
             }
             peerConnectionWrapper = createPeerConnectionWrapperForSessionIdAndType(publisher, sessionId, type)
-            peerConnectionWrapperList.add(peerConnectionWrapper)
+            synchronized(remoteAudioPlayoutLock) {
+                peerConnectionWrapperList.add(peerConnectionWrapper)
+                peerConnectionWrapper.setRemoteAudioPlayoutEnabled(remoteAudioPlayoutEnabled)
+            }
             if (!publisher) {
                 if (!callViewModel.doesParticipantExist(sessionId)) {
                     addCallParticipant(sessionId)
@@ -2840,13 +2886,14 @@ class CallActivity : CallBaseActivity() {
             } else {
                 handler!!.removeCallbacksAndMessages(null)
             }
+            handler!!.post { updateRemoteAudioPlayout() }
             when (callState) {
                 CallStatus.CONNECTING -> handler!!.post { handleCallStateConnected() }
                 CallStatus.CALLING_TIMEOUT -> handler!!.post { handleCallStateCallingTimeout() }
                 CallStatus.PUBLISHER_FAILED -> handler!!.post { handleCallStatePublisherFailed() }
                 CallStatus.RECONNECTING -> handler!!.post { handleCallStateReconnecting() }
                 CallStatus.JOINED -> {
-                    handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, CALLING_TIMEOUT)
+                    handler!!.postDelayed(callingTimeoutRunnable, CALLING_TIMEOUT)
                     handler!!.post { handleCallStateJoined() }
                 }
 
@@ -2923,7 +2970,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateReconnecting() {
-        playCallingSound()
+        stopCallingSound()
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
@@ -2941,6 +2988,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun handleCallStatePublisherFailed() {
         // No calling sound when the publisher failed
+        stopCallingSound()
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
@@ -2975,7 +3023,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateConnected() {
-        playCallingSound()
+        requestCallingSound()
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {
@@ -2996,51 +3044,123 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private fun requestCallingSound() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            runOnUiThread { requestCallingSound() }
+            return
+        }
+        callingSoundRequested = true
+        maybeStartCallingSound()
+    }
+
+    private fun isRemoteAudioPlayoutAllowed(): Boolean =
+        (currentCallStatus === CallStatus.JOINED || currentCallStatus === CallStatus.IN_CONVERSATION) &&
+            (audioRouteReady || audioRouteReadyTimedOut)
+
+    private fun updateAudioRouteReadyTimeout() {
+        if (audioRouteReady) {
+            cancelAudioRouteReadyTimeout()
+        } else if (!audioRouteReadyTimedOut && !audioRouteReadyTimeoutScheduled) {
+            audioRouteReadyTimeoutScheduled = true
+            audioRouteHandler.postDelayed(audioRouteReadyTimeoutRunnable, AUDIO_ROUTE_READY_TIMEOUT)
+        }
+    }
+
+    private fun cancelAudioRouteReadyTimeout() {
+        audioRouteHandler.removeCallbacks(audioRouteReadyTimeoutRunnable)
+        audioRouteReadyTimeoutScheduled = false
+        audioRouteReadyTimedOut = false
+    }
+
+    private fun onAudioRouteReadyTimeout() {
+        audioRouteReadyTimeoutScheduled = false
+        if (audioManager == null || audioRouteReady) {
+            return
+        }
+        Log.w(TAG, "Audio route was not confirmed in time, playing remote audio on the current route")
+        audioRouteReadyTimedOut = true
+        updateRemoteAudioPlayout()
+    }
+
+    private fun updateRemoteAudioPlayout() {
+        synchronized(remoteAudioPlayoutLock) {
+            val enabled = isRemoteAudioPlayoutAllowed()
+            remoteAudioPlayoutEnabled = enabled
+            peerConnectionWrapperList.forEach { it.setRemoteAudioPlayoutEnabled(enabled) }
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun playCallingSound() {
-        stopCallingSound()
+    private fun maybeStartCallingSound() {
+        if (!callingSoundRequested || mediaPlayer != null || audioManager?.isAudioRouteReady != true) {
+            return
+        }
         val ringtoneUri: Uri? = if (isIncomingCallFromNotification) {
             getCallRingtoneUri(applicationContext, appPreferences)
         } else {
             ("android.resource://" + applicationContext.packageName + "/raw/tr110_1_kap8_3_freiton1").toUri()
         }
         if (ringtoneUri != null) {
-            mediaPlayer = MediaPlayer()
+            val player = MediaPlayer()
+            mediaPlayer = player
             try {
-                mediaPlayer!!.setDataSource(this, ringtoneUri)
+                player.setDataSource(this, ringtoneUri)
                 val audioAttributes = AudioAttributes.Builder().setContentType(
                     AudioAttributes.CONTENT_TYPE_SONIFICATION
                 )
                     .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                     .build()
-                mediaPlayer!!.setAudioAttributes(audioAttributes)
-                mediaPlayer!!.setOnPreparedListener { mp: MediaPlayer? ->
-                    mp?.isLooping = true
-                    mp?.start()
+                player.setAudioAttributes(audioAttributes)
+                player.setOnPreparedListener { preparedPlayer ->
+                    if (mediaPlayer === preparedPlayer &&
+                        callingSoundRequested &&
+                        audioManager?.isAudioRouteReady == true
+                    ) {
+                        preparedPlayer.isLooping = true
+                        preparedPlayer.start()
+                    } else {
+                        if (mediaPlayer === preparedPlayer) {
+                            mediaPlayer = null
+                        }
+                        preparedPlayer.release()
+                    }
                 }
-                mediaPlayer!!.prepareAsync()
+                player.prepareAsync()
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to play calling sound", e)
-                mediaPlayer?.release()
-                mediaPlayer = null
+                if (mediaPlayer === player) {
+                    mediaPlayer = null
+                }
+                player.release()
             }
         }
     }
 
     private fun stopCallingSound() {
-        if (mediaPlayer != null) {
-            try {
-                if (mediaPlayer!!.isPlaying) {
-                    mediaPlayer!!.stop()
-                }
-            } catch (e: IllegalStateException) {
-                Log.e(TAG, "mediaPlayer was not initialized", e)
-            } finally {
-                if (mediaPlayer != null) {
-                    mediaPlayer!!.release()
-                }
-                mediaPlayer = null
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            runOnUiThread { stopCallingSound() }
+            return
+        }
+        callingSoundRequested = false
+        releaseCallingSound()
+    }
+
+    private fun releaseCallingSound() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            runOnUiThread { releaseCallingSound() }
+            return
+        }
+        val player = mediaPlayer ?: return
+        mediaPlayer = null
+        player.setOnPreparedListener(null)
+        try {
+            if (player.isPlaying) {
+                player.stop()
             }
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "mediaPlayer was not initialized", e)
+        } finally {
+            player.release()
         }
     }
 
@@ -3259,13 +3379,13 @@ class CallActivity : CallBaseActivity() {
     fun onMessageEvent(networkEvent: NetworkEvent) {
         if (networkEvent.networkConnectionEvent == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED) {
             if (handler != null) {
-                handler!!.removeCallbacksAndMessages(null)
+                handler!!.removeCallbacks(callingTimeoutRunnable)
             }
         } else if (networkEvent.networkConnectionEvent ==
             NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED
         ) {
             if (handler != null) {
-                handler!!.removeCallbacksAndMessages(null)
+                handler!!.removeCallbacks(callingTimeoutRunnable)
             }
         }
     }
@@ -3476,6 +3596,10 @@ class CallActivity : CallBaseActivity() {
         private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX = 280
 
         private const val CALLING_TIMEOUT: Long = 45000
+
+        // Longer than a Bluetooth connect plus disconnect timeout (2 x 4 s), after which the audio manager falls back
+        // to another route by itself.
+        private const val AUDIO_ROUTE_READY_TIMEOUT: Long = 10000
         private const val PULSE_ANIMATION_DURATION: Int = 310
         private const val SEC_10 = 10000
 
