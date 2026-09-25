@@ -40,5 +40,7 @@ data class ChatToolbarState(
     val titleClickable: Boolean = false,
     /** Whether the server capability SILENT_CALL is available (enables long-press on call buttons). */
     val supportsSilentCall: Boolean = false,
-    val isClassified: Boolean = false
+    val isClassified: Boolean = false,
+    /** False when the chat is shown next to the conversation list, where there is nothing to navigate up to. */
+    val showNavigateUp: Boolean = true
 )

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Julius Linus <julius.linus@nextcloud.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<resources xmlns:window="http://schemas.android.com/apk/res-auto">
+
+    <SplitPairRule
+        window:clearTop="true"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="600"
+        window:splitRatio="0.38">
+        <SplitPairFilter
+            window:primaryActivityName="com.nextcloud.talk.conversationlist.ConversationsListActivity"
+            window:secondaryActivityName="com.nextcloud.talk.chat.ChatActivity" />
+    </SplitPairRule>
+
+    <SplitPlaceholderRule
+        window:finishPrimaryWithPlaceholder="always"
+        window:placeholderActivityName="com.nextcloud.talk.conversationlist.ChatPlaceholderActivity"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="600"
+        window:splitRatio="0.38"
+        window:stickyPlaceholder="false">
+        <ActivityFilter window:activityName="com.nextcloud.talk.conversationlist.ConversationsListActivity" />
+    </SplitPlaceholderRule>
+
+</resources>
