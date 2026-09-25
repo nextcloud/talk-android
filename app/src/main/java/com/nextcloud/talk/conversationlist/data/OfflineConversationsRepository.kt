@@ -42,25 +42,29 @@ interface OfflineConversationsRepository {
      * the server (when online). The synced changes surface through [roomListFlow], which
      * observes the database.
      *
-     * The sync asks the server only for what changed since the last one where it can. Set
-     * [forceFullSync] for the cases where that is not good enough and the whole list is wanted
-     * back - a pull to refresh, where a conversation the user left elsewhere should be gone by the
-     * time the indicator stops spinning, rather than within the next five minutes.
+     * The sync asks the server only for the conversations changed since the last one where it
+     * can. [forceFullSync] makes it fetch the whole list instead.
      */
     @Deprecated("use observeConversation")
     fun getRooms(user: User, forceFullSync: Boolean = false): Job
 
     /**
-     * Synchronizes [user]'s conversations with the server and returns once that sync and the
-     * message catch-up it triggers are done, reporting whether it worked.
+     * Synchronizes [user]'s conversations with the server, suspending until that sync and the
+     * message catch-up it triggers have finished, and returns whether the sync succeeded.
      *
-     * [getRooms] launches into the repository's own scope and returns immediately, which is what
-     * the conversation list wants and what a background worker cannot use: WorkManager tears the
-     * process down once the worker returns, mid-request. This does not select the observed account
-     * either - that is what the conversation list screen shows, and a worker walking several
-     * accounts must not move it.
+     * Unlike [getRooms] this neither returns early nor changes which account [roomListFlow]
+     * observes.
      */
     suspend fun syncRooms(user: User, forceFullSync: Boolean = false): Boolean
+
+    /**
+     * Whether a sync for [user] right now would either ask only for the conversations that changed,
+     * or be the full refresh that falls due every five minutes.
+     *
+     * False means the next sync would fetch the whole conversation list without the cadence calling
+     * for it.
+     */
+    suspend fun isPeriodicSyncDue(user: User): Boolean
 
     /**
      * Called once onStart to emit a conversation to [conversationFlow]

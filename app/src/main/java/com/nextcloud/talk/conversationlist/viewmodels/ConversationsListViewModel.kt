@@ -563,6 +563,25 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Refreshes the conversation list, unless a sync is already running, a search is open, or the
+     * sync would fetch the whole list without the refresh cadence calling for it.
+     */
+    suspend fun refreshRoomsIfIdle(user: User) {
+        when {
+            _isLoadingRooms.value ->
+                Log.d(TAG, "Foreground refresh skipped: a sync is already in flight")
+
+            _isSearchActiveFlow.value ->
+                Log.d(TAG, "Foreground refresh skipped: a search is active")
+
+            !repository.isPeriodicSyncDue(user) ->
+                Log.d(TAG, "Foreground refresh skipped: no delta available and no full sync due")
+
+            else -> getRooms(user)
+        }
+    }
+
     fun getRooms(user: User, forceFullSync: Boolean = false) {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
