@@ -89,8 +89,10 @@ fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifi
     Box(modifier = modifier) {
         TopAppBar(
             navigationIcon = {
-                IconButton(onClick = callbacks.onNavigateUp) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back_button))
+                if (state.showNavigateUp) {
+                    IconButton(onClick = callbacks.onNavigateUp) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back_button))
+                    }
                 }
             },
             title = {

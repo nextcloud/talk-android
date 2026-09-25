@@ -23,6 +23,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import androidx.window.embedding.RuleController
 import autodagger.AutoComponent
 import autodagger.AutoInjector
 import coil.Coil
@@ -33,6 +34,7 @@ import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.diagnosis.buildDiagnosisElements
 import com.nextcloud.talk.diagnosis.toMarkdown
@@ -222,6 +224,8 @@ class NextcloudTalkApplication :
                 pendingLockCheck = true
             }
         })
+
+        RuleController.getInstance(this).setRules(RuleController.parseRules(this, R.xml.main_split_config))
 
         Coil.setImageLoader(buildDefaultImageLoader())
         setAppTheme(appPreferences.theme)
