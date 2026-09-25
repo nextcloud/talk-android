@@ -26,6 +26,7 @@ import com.nextcloud.talk.extensions.isPowerSaveMode
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.withRetry
@@ -372,6 +373,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
         when {
             !user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
                 Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
+                false
+            }
+
+            !CapabilitiesUtil.isChatPreloadAllowed(user.capabilities?.spreedCapability) -> {
+                Log.d(TAG, "Server turned off preloading, skipping message catch-up")
                 false
             }
 
