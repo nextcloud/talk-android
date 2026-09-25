@@ -174,6 +174,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val includeStatus = isUserStatusAvailable(user)
 
         try {
+            val knownBeforeRequest = dao.getConversationIdsForUser(user.id!!).toSet()
+
             val conversationsList = withRetry(
                 retries = NETWORK_FETCH_RETRIES,
                 initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
@@ -199,6 +201,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                     conversationsFromSync
                 ),
                 conversationIdsToDelete = determineLeftConversationIds(previousConversations, conversationsFromSync)
+                    .filter { it in knownBeforeRequest }
             )
 
             val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)

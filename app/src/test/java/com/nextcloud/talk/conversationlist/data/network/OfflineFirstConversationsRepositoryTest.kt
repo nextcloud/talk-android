@@ -93,7 +93,7 @@ class OfflineFirstConversationsRepositoryTest {
         whenever(connectivityManager.restrictBackgroundStatus)
             .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED)
 
-        whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
+        stubStoredConversations()
         whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
 
@@ -142,7 +142,7 @@ class OfflineFirstConversationsRepositoryTest {
     fun `getRooms skips deleting local conversations when the server returns an empty list`() =
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
+            stubStoredConversations(previous)
             whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(emptyList()))
 
             repository.getRooms(user()).join()
@@ -157,7 +157,7 @@ class OfflineFirstConversationsRepositoryTest {
         runBlocking {
             val staying = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
             val leaving = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(staying, leaving)))
+            stubStoredConversations(staying, leaving)
             val stayingRoom = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0)
             whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(stayingRoom)))
 
@@ -172,7 +172,7 @@ class OfflineFirstConversationsRepositoryTest {
     fun `getRooms merges the server response through the conversation list updater`() =
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
+            stubStoredConversations(previous)
             val serverRoom = conversation(token = ROOM_TOKEN, lastActivity = 6, unreadMessages = 1)
             whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(serverRoom)))
 
@@ -252,8 +252,7 @@ class OfflineFirstConversationsRepositoryTest {
                 conversation(token = "unchanged", lastActivity = 10, unreadMessages = 0).asEntity(ACCOUNT_ID)
             val previousNoBlock =
                 conversation(token = "noBlockUnread", lastActivity = 10, unreadMessages = 3).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID))
-                .thenReturn(flowOf(listOf(previousUnchanged, previousNoBlock)))
+            stubStoredConversations(previousUnchanged, previousNoBlock)
 
             val unchangedRoom = conversation(token = "unchanged", lastActivity = 10, unreadMessages = 0)
             val noBlockRoom = conversation(token = "noBlockUnread", lastActivity = 10, unreadMessages = 3)
@@ -443,6 +442,31 @@ class OfflineFirstConversationsRepositoryTest {
             unreadMessages = unreadMessages,
             lastReadMessage = lastReadMessage
         )
+
+    @Test
+    fun `a conversation that arrives while the request is in flight is not treated as left`() =
+        runBlocking {
+            val known = conversation(token = "known", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            val arrivedDuringRequest =
+                conversation(token = "arrived", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            wheneverBlocking { dao.getConversationIdsForUser(ACCOUNT_ID) }.thenReturn(listOf(known.internalId))
+            whenever(dao.getConversationsForUser(ACCOUNT_ID))
+                .thenReturn(flowOf(listOf(known, arrivedDuringRequest)))
+            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf()))
+
+            repository.getRooms(user()).join()
+
+            verifyBlocking(dao) { syncConversationsForUser(eq(ACCOUNT_ID), any(), eq(listOf(known.internalId))) }
+        }
+
+    /**
+     * Stubs both reads the sync makes of the conversations table: the rows it merges against, and
+     * the ids it takes before the request to know which conversations the response can speak about.
+     */
+    private fun stubStoredConversations(vararg stored: ConversationEntity) {
+        whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(stored.toList()))
+        wheneverBlocking { dao.getConversationIdsForUser(ACCOUNT_ID) }.thenReturn(stored.map { it.internalId })
+    }
 
     companion object {
         private const val ACCOUNT_ID = 1L
