@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.net.ConnectivityManager
 import android.os.PowerManager
 import android.util.Log
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
@@ -30,6 +31,7 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.withRetry
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,6 +51,7 @@ import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 import kotlin.collections.map
 
+@Suppress("LongParameterList")
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
@@ -56,6 +59,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val chatMessageSyncer: ChatMessageSyncer,
     private val conversationListUpdater: ConversationListUpdater,
+    private val arbitraryStorageManager: ArbitraryStorageManager,
     private val context: Context,
     private val logger: Logger
 ) : OfflineConversationsRepository {
@@ -107,12 +111,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 }
             }
 
-    override fun getRooms(user: User): Job =
+    override fun getRooms(user: User, forceFullSync: Boolean): Job =
         scope.launch {
+            val accountChanged = observedAccountId.value != user.id
             observedAccountId.value = user.id!!
 
             if (networkMonitor.isOnline.value) {
-                getRoomsFromServer(user)
+                getRoomsFromServer(user, forceFullSync = forceFullSync || accountChanged)
             }
         }
 
@@ -163,7 +168,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun getRoomsFromServer(user: User): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(user: User, forceFullSync: Boolean = false): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!networkMonitor.isOnline.value) {
@@ -171,46 +176,104 @@ class OfflineFirstConversationsRepository @Inject constructor(
             return null
         }
 
-        val includeStatus = isUserStatusAvailable(user)
+        val accountId = user.id!!
+        val modifiedSince = modifiedSinceFor(user, forceFullSync)
+
+        val includeStatus = modifiedSince == null && isUserStatusAvailable(user)
 
         try {
-            val conversationsList = withRetry(
+            val roomList = withRetry(
                 retries = NETWORK_FETCH_RETRIES,
                 initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
                 maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
             ) {
-                network.getRooms(user, user.baseUrl!!, includeStatus)
+                network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .blockingSingle()
             }
 
-            conversationsFromSync = conversationsList.map {
-                it.asEntity(user.id!!)
+            conversationsFromSync = roomList.conversations.map {
+                it.asEntity(accountId)
             }
 
-            val previousConversations = dao.getConversationsForUser(user.id!!).first()
+            val previousConversations = dao.getConversationsForUser(accountId).first()
                 .associateBy { it.internalId }
 
             dao.syncConversationsForUser(
-                accountId = user.id!!,
+                accountId = accountId,
                 serverItems = conversationListUpdater.preservePendingLocalState(
                     previousConversations,
                     conversationsFromSync
                 ),
-                conversationIdsToDelete = determineLeftConversationIds(previousConversations, conversationsFromSync)
+                conversationIdsToDelete = if (roomList.wasDelta) {
+                    emptyList()
+                } else {
+                    determineLeftConversationIds(previousConversations, conversationsFromSync)
+                }
             )
+
+            rememberSyncedState(accountId, roomList)
 
             val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
             scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
-            val hasCachedConversations = dao.getConversationsForUser(user.id!!).first().isNotEmpty()
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
+            val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
             if (!hasCachedConversations) {
                 _syncErrorFlow.emit(e)
             }
         }
         return conversationsFromSync
+    }
+
+    /**
+     * The value to send as `modifiedSince`, or null when this sync has to be a full one.
+     *
+     * A filtered response cannot express a removal, so the server asks clients to refresh in full
+     * regularly (`docs/conversation.md`): at least every five minutes, and always when the internal
+     * signaling backend is in use, since there is no signaling server to announce a change out of
+     * band. On top of that a caller can demand one, for a pull to refresh or an account switch.
+     */
+    private fun modifiedSinceFor(user: User, forceFullSync: Boolean): Long? {
+        val accountId = user.id!!
+        val lastFullSyncAt = readTimestamp(accountId, KEY_LAST_FULL_SYNC_AT)
+        val fullSyncIsRecent = lastFullSyncAt != null &&
+            System.currentTimeMillis() - lastFullSyncAt in 0 until FULL_SYNC_INTERVAL_MILLIS
+        val usesExternalSignaling = !user.externalSignalingServer?.externalSignalingServer.isNullOrEmpty()
+
+        return if (!forceFullSync && usesExternalSignaling && fullSyncIsRecent) {
+            readTimestamp(accountId, KEY_MODIFIED_SINCE)
+        } else {
+            null
+        }
+    }
+
+    /**
+     * Stores what the next sync needs, and only once the response is safely in the database: a
+     * timestamp kept ahead of a write that then failed would permanently skip the conversations
+     * that write was carrying.
+     */
+    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult) {
+        storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+        if (!roomList.wasDelta) {
+            storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, System.currentTimeMillis())
+        }
+    }
+
+    /** Null for anything that is not a plausible timestamp, so a bad value asks for a full sync. */
+    private fun readTimestamp(accountId: Long, key: String): Long? =
+        arbitraryStorageManager.getStorageSetting(accountId, key, "")
+            .blockingGet()
+            ?.value
+            ?.toLongOrNull()
+            ?.takeIf { it > 0 }
+
+    private fun storeTimestamp(accountId: Long, key: String, value: Long?) {
+        arbitraryStorageManager.storeStorageSetting(accountId, key, value?.toString(), "")
     }
 
     /**
@@ -273,7 +336,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
                                 unreadMessages = room.unreadMessages
                             )
                         }
-                            .onFailure { Log.e(TAG, "Message catch-up failed for room ${room.token}", it) }
+                            .onFailure {
+                                if (it is CancellationException) throw it
+                                Log.e(TAG, "Message catch-up failed for room ${room.token}", it)
+                            }
                     }
                 }
             }
@@ -346,5 +412,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
         private const val NETWORK_FETCH_RETRIES = 3
         private const val NETWORK_FETCH_RETRY_INITIAL_DELAY_MS = 1000L
         private const val NETWORK_FETCH_RETRY_MAX_DELAY_MS = 8000L
+        private const val FULL_SYNC_INTERVAL_MILLIS = 5 * 60 * 1000L
+        private const val KEY_MODIFIED_SINCE = "conversation_list_modified_since"
+        private const val KEY_LAST_FULL_SYNC_AT = "conversation_list_last_full_sync_at"
     }
 }

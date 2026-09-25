@@ -11,11 +11,13 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.logger.Logger
@@ -38,6 +40,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -94,6 +97,7 @@ class RoomListMessagePrefetchIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             context,
             mock<Logger>()
         )
@@ -111,7 +115,8 @@ class RoomListMessagePrefetchIntegrationTest {
             conversation(ROOM_A, unreadMessages = 2, lastMessageId = 12),
             conversation(ROOM_B, unreadMessages = 1, lastMessageId = 7)
         )
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(Observable.just(rooms))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull()))
+            .thenReturn(roomList(rooms))
         wheneverBlocking { chatNetwork.pullChatMessages(any(), eq(chatUrl(ROOM_A)), any()) }
             .thenReturn(Response.success(overall(message(10, ROOM_A), message(11, ROOM_A), message(12, ROOM_A))))
         wheneverBlocking { chatNetwork.pullChatMessages(any(), eq(chatUrl(ROOM_B)), any()) }
@@ -207,3 +212,6 @@ class RoomListMessagePrefetchIntegrationTest {
         private const val POLL_INTERVAL_MILLIS = 50L
     }
 }
+
+private fun roomList(conversations: List<ConversationDto>): Observable<RoomListResult> =
+    Observable.just(RoomListResult(conversations, modifiedBefore = null, wasDelta = false))

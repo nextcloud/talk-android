@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationlist.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.PowerManager
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -23,6 +24,7 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.utils.SpreedFeatures
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
@@ -78,6 +80,8 @@ class OfflineFirstConversationsRepositoryTest {
     private val powerManager: PowerManager = mock()
     private val connectivityManager: ConnectivityManager = mock()
 
+    private val arbitraryStorageManager: ArbitraryStorageManager = mock()
+
     private lateinit var repository: OfflineFirstConversationsRepository
 
     @Before
@@ -94,6 +98,8 @@ class OfflineFirstConversationsRepositoryTest {
             .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED)
 
         whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
+        whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
+            .thenReturn(Maybe.empty())
         whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
 
@@ -104,6 +110,7 @@ class OfflineFirstConversationsRepositoryTest {
             networkMonitor,
             chatMessageSyncer,
             conversationListUpdater,
+            arbitraryStorageManager,
             context,
             mock<Logger>()
         )
@@ -121,14 +128,14 @@ class OfflineFirstConversationsRepositoryTest {
 
             repository.getRooms(user()).join()
 
-            verifyBlocking(network, never()) { getRooms(any(), any(), any()) }
+            verifyBlocking(network, never()) { getRooms(any(), any(), any(), anyOrNull()) }
         }
 
     @Test
     fun `getRooms fetches conversations from the server and syncs them locally when online`() =
         runBlocking {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(room)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
 
             repository.getRooms(user()).join()
 
@@ -143,7 +150,7 @@ class OfflineFirstConversationsRepositoryTest {
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
             whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(emptyList()))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf()))
 
             repository.getRooms(user()).join()
 
@@ -159,7 +166,7 @@ class OfflineFirstConversationsRepositoryTest {
             val leaving = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
             whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(staying, leaving)))
             val stayingRoom = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(stayingRoom)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(stayingRoom)))
 
             repository.getRooms(user()).join()
 
@@ -174,7 +181,7 @@ class OfflineFirstConversationsRepositoryTest {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
             whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
             val serverRoom = conversation(token = ROOM_TOKEN, lastActivity = 6, unreadMessages = 1)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(serverRoom)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(serverRoom)))
 
             repository.getRooms(user()).join()
 
@@ -189,7 +196,7 @@ class OfflineFirstConversationsRepositoryTest {
     fun `background message catch-up is skipped when the server lacks the chat-keep-notifications capability`() =
         runBlocking {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(room)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
 
             repository.getRooms(user(withKeepNotificationsCapability = false)).join()
 
@@ -203,7 +210,7 @@ class OfflineFirstConversationsRepositoryTest {
         runBlocking {
             whenever(powerManager.isPowerSaveMode).thenReturn(true)
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(room)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
 
             repository.getRooms(user()).join()
 
@@ -219,7 +226,7 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(connectivityManager.restrictBackgroundStatus)
                 .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED)
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(room)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
 
             repository.getRooms(user()).join()
 
@@ -235,7 +242,7 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(connectivityManager.restrictBackgroundStatus)
                 .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED)
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(listOf(room)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             stubCatchUpRoom()
 
             repository.getRooms(user()).join()
@@ -257,8 +264,8 @@ class OfflineFirstConversationsRepositoryTest {
 
             val unchangedRoom = conversation(token = "unchanged", lastActivity = 10, unreadMessages = 0)
             val noBlockRoom = conversation(token = "noBlockUnread", lastActivity = 10, unreadMessages = 3)
-            whenever(network.getRooms(any(), any(), any()))
-                .thenReturn(Observable.just(listOf(unchangedRoom, noBlockRoom)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(roomList(listOf(unchangedRoom, noBlockRoom)))
 
             whenever(chatMessageSyncer.hasLocalChatBlock("$ACCOUNT_ID@unchanged", null)).thenReturn(true)
             whenever(chatMessageSyncer.hasLocalChatBlock("$ACCOUNT_ID@noBlockUnread", null)).thenReturn(false)
@@ -279,7 +286,7 @@ class OfflineFirstConversationsRepositoryTest {
             val rooms = (0 until 25).map { i ->
                 conversation(token = "room$i", lastActivity = i.toLong(), unreadMessages = 0)
             }
-            whenever(network.getRooms(any(), any(), any())).thenReturn(Observable.just(rooms))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(rooms))
             stubCatchUpRoom()
 
             repository.getRooms(user()).join()
@@ -454,3 +461,6 @@ class OfflineFirstConversationsRepositoryTest {
         private const val COLLECTOR_STARTUP_MILLIS = 100L
     }
 }
+
+private fun roomList(conversations: List<ConversationDto>): Observable<RoomListResult> =
+    Observable.just(RoomListResult(conversations, modifiedBefore = null, wasDelta = false))

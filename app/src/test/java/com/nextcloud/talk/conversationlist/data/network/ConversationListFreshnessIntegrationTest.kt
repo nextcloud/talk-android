@@ -12,6 +12,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.bluelinelabs.logansquare.LoganSquare
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -19,6 +20,7 @@ import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.logger.Logger
@@ -47,6 +49,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
@@ -187,6 +190,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
@@ -256,13 +260,14 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 2))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 8, unreadMessages = 4)))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 2))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 8, unreadMessages = 4)))
         )
 
         runBlocking {
@@ -289,10 +294,10 @@ class ConversationListFreshnessIntegrationTest {
     fun `a sync cannot revert a pending favorite until the server confirms it`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = repository()
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, favorite = true))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, favorite = true))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
         )
 
         runBlocking {
@@ -315,9 +320,9 @@ class ConversationListFreshnessIntegrationTest {
     fun `a sync cannot revert a pending mark as unread until the server confirms it`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = repository()
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 9, unreadMessages = 3)))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 9, unreadMessages = 3)))
         )
 
         runBlocking {
@@ -337,10 +342,10 @@ class ConversationListFreshnessIntegrationTest {
     fun `a sync cannot revert a pending archive until the server confirms it`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = repository()
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, hasArchived = true))),
-            Observable.just(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0, hasArchived = true))),
+            roomList(listOf(staleServerRoom(lastReadMessage = 10, unreadMessages = 0)))
         )
 
         runBlocking {
@@ -369,11 +374,12 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
-        whenever(conversationsNetwork.getRooms(any(), any(), any())).thenReturn(
-            Observable.just(listOf(ConversationDto(token = ROOM_TOKEN, lastActivity = 10, unreadMessages = 1)))
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(ConversationDto(token = ROOM_TOKEN, lastActivity = 10, unreadMessages = 1)))
         )
 
         runBlocking {
@@ -400,6 +406,7 @@ class ConversationListFreshnessIntegrationTest {
             networkMonitor,
             syncer,
             conversationListUpdater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
@@ -500,3 +507,6 @@ class ConversationListFreshnessIntegrationTest {
         private const val POLL_INTERVAL_MILLIS = 50L
     }
 }
+
+private fun roomList(conversations: List<ConversationDto>): Observable<RoomListResult> =
+    Observable.just(RoomListResult(conversations, modifiedBefore = null, wasDelta = false))
