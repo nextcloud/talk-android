@@ -372,6 +372,7 @@ dependencies {
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
     androidTestImplementation("org.mockito:mockito-android:5.22.0")
+    testImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion") {
         exclude(group = "com.android.support", module = "support-annotations")
