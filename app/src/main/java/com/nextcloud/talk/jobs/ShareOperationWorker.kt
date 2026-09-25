@@ -9,11 +9,11 @@ package com.nextcloud.talk.jobs
 
 import android.content.Context
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
@@ -26,15 +26,17 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_META_DATA
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class ShareOperationWorker(context: Context, workerParams: WorkerParameters) :
+    CoroutineWorker(context, workerParams) {
 
     @Inject
     lateinit var userManager: UserManager
@@ -42,23 +44,35 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
     @Inject
     lateinit var ncApi: NcApi
 
-    private val userId: Long
-    private val roomToken: String?
+    private var userId: Long = 0
+    private var roomToken: String? = null
     private val filesArray: MutableList<String?> = ArrayList()
-    private val credentials: String
-    private val baseUrl: String?
-    private val metaData: String?
+    private lateinit var credentials: String
+    private var baseUrl: String? = null
+    private var metaData: String? = null
 
-    override fun doWork(): Result {
-        for (filePath in filesArray) {
-            tryCreateShare(filePath)
+    override suspend fun doWork(): Result {
+        sharedApplication!!.componentApplication.inject(this)
+        userId = inputData.getLong(KEY_INTERNAL_USER_ID, 0)
+        roomToken = inputData.getString(KEY_ROOM_TOKEN)
+        metaData = inputData.getString(KEY_META_DATA)
+        inputData.getStringArray(KEY_FILE_PATHS)?.let { filesArray.addAll(it.toList()) }
+
+        val operationsUser = userManager.getUserWithId(userId)!!
+        baseUrl = operationsUser.baseUrl
+        credentials = ApiUtils.getCredentials(operationsUser.username, operationsUser.token)!!
+
+        withContext(Dispatchers.IO) {
+            for (filePath in filesArray) {
+                tryCreateShare(filePath)
+            }
         }
         roomToken?.let { _shareCompletedFlow.tryEmit(it) }
         return Result.success()
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun tryCreateShare(filePath: String?) {
+    private suspend fun tryCreateShare(filePath: String?) {
         for (attempt in 1..SHARE_MAX_ATTEMPTS) {
             var succeeded = false
             var shouldRetry = false
@@ -71,7 +85,6 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                 metaData,
                 "" // no reference id
             )
-                .subscribeOn(Schedulers.io())
                 .blockingSubscribe(
                     { succeeded = true },
                     { e ->
@@ -83,21 +96,8 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                     }
                 )
             if (succeeded || !shouldRetry) return
-            Thread.sleep(SHARE_RETRY_DELAY_MS)
+            delay(SHARE_RETRY_DELAY_MS)
         }
-    }
-
-    init {
-        sharedApplication!!.componentApplication.inject(this)
-        val data = workerParams.inputData
-        userId = data.getLong(KEY_INTERNAL_USER_ID, 0)
-        roomToken = data.getString(KEY_ROOM_TOKEN)
-        metaData = data.getString(KEY_META_DATA)
-        data.getStringArray(KEY_FILE_PATHS)?.let { filesArray.addAll(it.toList()) }
-
-        val operationsUser = runBlocking { userManager.getUserWithId(userId) }!!
-        baseUrl = operationsUser.baseUrl
-        credentials = ApiUtils.getCredentials(operationsUser.username, operationsUser.token)!!
     }
 
     companion object {

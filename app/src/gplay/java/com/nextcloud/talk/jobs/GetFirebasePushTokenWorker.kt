@@ -9,10 +9,10 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.google.android.gms.tasks.OnCompleteListener
@@ -23,13 +23,13 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerParameters) :
-    Worker(context, workerParameters) {
+    CoroutineWorker(context, workerParameters) {
 
     @Inject
     lateinit var appPreferences: AppPreferences
 
     @SuppressLint("LongLogTag")
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
