@@ -444,7 +444,7 @@
     <string name="nc_offline">Nutiseade pole võrgus, palun kontrolli internetiühendust</string>
     <string name="nc_ok">Sobib</string>
     <string name="nc_ongoing_meeting">Pooleliolev kohtumine</string>
-    <string name="nc_open_conversation">Avatud vestlus</string>
+    <string name="nc_open_conversation">Ava vestlus</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
