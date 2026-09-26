@@ -32,15 +32,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -59,33 +55,24 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val context: Context,
     private val logger: Logger
 ) : OfflineConversationsRepository {
-    private val observedAccountId = MutableStateFlow<Long?>(null)
-
     /**
      * The conversation list as a live view of the local database — the single source of truth.
      * Every write to the conversations table (room list sync, background message catch-up,
-     * optimistic read state, drafts) reaches collectors reactively; [getRooms] only selects the
-     * account to observe and triggers the background sync, which stays in place as the authority
-     * and self-healing safeguard.
+     * optimistic read state, drafts) reaches collectors reactively; [getRooms] only triggers the
+     * background sync, which stays in place as the authority and self-healing safeguard.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val roomListFlow: Flow<List<ConversationModel>> =
-        observedAccountId
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { accountId ->
-                dao.getConversationsForUser(accountId)
-                    .map { entities -> entities.map(ConversationEntity::toDomainModel) }
-            }
+    override fun observeRooms(accountId: Long): Flow<List<ConversationModel>> =
+        dao.getConversationsForUser(accountId)
+            .map { entities -> entities.map(ConversationEntity::toDomainModel) }
             .distinctUntilChanged()
 
     override val conversationFlow: Flow<ConversationModel>
         get() = _conversationFlow
     private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
-    override val syncErrorFlow: Flow<Throwable>
+    override val syncErrorFlow: Flow<OfflineConversationsRepository.SyncError>
         get() = _syncErrorFlow
-    private val _syncErrorFlow: MutableSharedFlow<Throwable> = MutableSharedFlow()
+    private val _syncErrorFlow: MutableSharedFlow<OfflineConversationsRepository.SyncError> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -109,8 +96,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRooms(user: User): Job =
         scope.launch {
-            observedAccountId.value = user.id!!
-
             if (networkMonitor.isOnline.value) {
                 getRoomsFromServer(user)
             }
@@ -207,7 +192,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             Log.e(TAG, "Something went wrong when fetching conversations", e)
             val hasCachedConversations = dao.getConversationsForUser(user.id!!).first().isNotEmpty()
             if (!hasCachedConversations) {
-                _syncErrorFlow.emit(e)
+                _syncErrorFlow.emit(OfflineConversationsRepository.SyncError(user.id!!, e))
             }
         }
         return conversationsFromSync

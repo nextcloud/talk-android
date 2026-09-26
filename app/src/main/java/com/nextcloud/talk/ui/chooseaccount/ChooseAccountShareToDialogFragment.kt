@@ -29,6 +29,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.CookieManager
@@ -75,6 +76,8 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
                         }
                         is SwitchUserSuccessStateChooseAccountShareTo -> {
                             cookieManager.cookieStore.removeAll()
+                            // Let the recreated list follow the newly active account.
+                            activity?.intent?.removeExtra(BundleKeys.KEY_INTERNAL_USER_ID)
                             activity?.recreate()
                             dismiss()
                         }

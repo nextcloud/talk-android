@@ -42,13 +42,13 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.withRetry
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,10 +57,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -72,7 +78,6 @@ import javax.inject.Inject
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
     private val contactsRepository: ContactsRepository,
     private val unifiedSearchRepository: UnifiedSearchRepository,
@@ -84,11 +89,37 @@ class ConversationsListViewModel @Inject constructor(
     private val logger: Logger
 ) : ViewModel() {
 
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+    private val userFlow = MutableStateFlow<User?>(null)
 
-    private val searchHelper = MessageSearchHelper(unifiedSearchRepository, currentUser)
+    /** The account this list shows. Must be set via [setUser] before the view model is used. */
+    val currentUser: User
+        get() = checkNotNull(userFlow.value) { "setUser must be called before using the view model" }
+
+    val credentials: String
+        get() = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
+
+    private var searchHelper: MessageSearchHelper? = null
+
+    private val accountIdFlow = userFlow
+        .map { it?.id }
+        .filterNotNull()
+        .distinctUntilChanged()
+
+    /**
+     * Binds the view model to [user]. Switching to another account drops the previous account's
+     * search state; the room list follows via [accountIdFlow].
+     */
+    fun setUser(user: User) {
+        val previous = userFlow.value
+        userFlow.value = user
+        if (previous?.id != user.id) {
+            searchHelper?.cancelSearch()
+            searchHelper = MessageSearchHelper(unifiedSearchRepository, user)
+            if (previous != null) {
+                cancelSearch()
+            }
+        }
+    }
 
     sealed interface ViewState
 
@@ -145,7 +176,9 @@ class ConversationsListViewModel @Inject constructor(
     val getRoomsViewState: LiveData<ViewState>
         get() = _getRoomsViewState
 
-    val getRoomsFlow = repository.roomListFlow
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val getRoomsFlow = accountIdFlow
+        .flatMapLatest { accountId -> repository.observeRooms(accountId) }
         .onEach { list ->
             _getRoomsViewState.value = GetRoomsSuccessState(list.isNotEmpty())
         }.catch {
@@ -154,7 +187,8 @@ class ConversationsListViewModel @Inject constructor(
 
     init {
         repository.syncErrorFlow
-            .onEach { throwable -> _getRoomsViewState.value = GetRoomsErrorState(throwable) }
+            .filter { error -> error.accountId == userFlow.value?.id }
+            .onEach { error -> _getRoomsViewState.value = GetRoomsErrorState(error.throwable) }
             .launchIn(viewModelScope)
     }
 
@@ -166,8 +200,12 @@ class ConversationsListViewModel @Inject constructor(
      */
     val isLoadingRooms: StateFlow<Boolean> = _isLoadingRooms.asStateFlow()
 
-    val getRoomsStateFlow = repository
-        .roomListFlow
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val getRoomsStateFlow = accountIdFlow
+        .flatMapLatest { accountId ->
+            // Clear the previous account's rooms until the new account's first emission.
+            repository.observeRooms(accountId).onStart { emit(emptyList()) }
+        }
         .catch { throwable ->
             Log.e(TAG, "Error observing the conversation list", throwable)
             _getRoomsViewState.value = GetRoomsErrorState(throwable)
@@ -348,7 +386,7 @@ class ConversationsListViewModel @Inject constructor(
         _isSearchLoadingFlow.value = false
         searchJob?.cancel()
         searchJob = null
-        searchHelper.cancelSearch()
+        searchHelper?.cancelSearch()
         searchResultEntries.value = emptyList()
         _currentSearchQueryFlow.value = ""
     }
@@ -536,13 +574,13 @@ class ConversationsListViewModel @Inject constructor(
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
         flow {
-            emit(searchHelper.startMessageSearch(search))
+            emit(checkNotNull(searchHelper).startMessageSearch(search))
         }.flowOn(Dispatchers.IO)
 
     fun loadMoreMessages(context: Context) {
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
-                searchHelper.loadMore()
+                searchHelper?.loadMore()
             } ?: return@launch
 
             val newEntries: List<ConversationListEntry> =
@@ -563,11 +601,11 @@ class ConversationsListViewModel @Inject constructor(
         }
     }
 
-    fun getRooms(user: User) {
+    fun getRooms() {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         _isLoadingRooms.value = true
-        val job = repository.getRooms(user)
+        val job = repository.getRooms(currentUser)
         viewModelScope.launch {
             job.join()
             _isLoadingRooms.value = false
@@ -576,7 +614,7 @@ class ConversationsListViewModel @Inject constructor(
 
     fun checkIfThreadsExist() {
         val limitForFollowedThreadsExistenceCheck = 1
-        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(currentUser)
 
         fun isLastCheckTooOld(lastCheckDate: Long): Boolean {
             val currentTimeMillis = System.currentTimeMillis()
@@ -944,8 +982,6 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         override fun onNext(invitationsModel: InvitationsModel) {
-            val currentUser = currentUserProvider.currentUser.blockingGet()
-
             if (invitationsModel.user.userId?.equals(currentUser.userId) == true &&
                 invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true
             ) {
