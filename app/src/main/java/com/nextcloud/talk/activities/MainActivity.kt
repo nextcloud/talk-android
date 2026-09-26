@@ -254,9 +254,14 @@ class MainActivity :
                         startActivity(invitationsIntent)
                     }
                 } else {
+                    // Open conversation list first so it is shown next to the chat on wide screens
+                    val listIntent = Intent(context, ConversationsListActivity::class.java)
+                    listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
+
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(intent.extras!!)
-                    startActivity(chatIntent)
+                    startActivities(arrayOf(listIntent, chatIntent))
                 }
             } else {
                 try {

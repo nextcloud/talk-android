@@ -338,6 +338,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.sharetarget:sharetarget:1.2.0")
+    implementation("androidx.window:window:1.5.1")
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.33.2")
     implementation("com.github.nextcloud.android-common:core:0.33.2")

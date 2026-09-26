@@ -102,6 +102,10 @@
             android:name="android.max_aspect"
             android:value="10"/>
 
+        <property
+            android:name="android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED"
+            android:value="true" />
+
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>
@@ -193,6 +197,10 @@
 
         <activity
             android:name=".chat.ChatActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".conversationlist.ChatPlaceholderActivity"
             android:theme="@style/AppTheme" />
 
         <activity
