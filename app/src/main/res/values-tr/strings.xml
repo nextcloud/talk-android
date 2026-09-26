@@ -792,6 +792,7 @@
     <string name="thisWeek">Bu hafta</string>
     <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
     <string name="this_weekend">Bu hafta sonu</string>
+    <string name="thread">Yazışma</string>
     <string name="thread_cancel">Yazışma başlatmaktan vazgeç</string>
     <string name="thread_notifications">Yazışma bildirimleri</string>
     <string name="thread_reply">Yanıtla</string>

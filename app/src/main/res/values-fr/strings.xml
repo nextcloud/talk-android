@@ -792,6 +792,7 @@
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="this_weekend">Ce week-end</string>
+    <string name="thread">Conversation</string>
     <string name="thread_cancel">Annuler la création de la conversation</string>
     <string name="thread_notifications">Notifications de conversation</string>
     <string name="thread_reply">Répondre</string>
