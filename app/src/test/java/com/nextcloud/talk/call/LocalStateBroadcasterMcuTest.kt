@@ -12,6 +12,7 @@ import com.nextcloud.talk.models.json.signaling.NCMessagePayloadDto
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -34,6 +35,13 @@ class LocalStateBroadcasterMcuTest {
         localCallParticipantModel!!.isSpeaking = true
         localCallParticipantModel!!.isVideoEnabled = true
         mockedMessageSender = Mockito.mock(MessageSender::class.java)
+    }
+
+    @After
+    fun tearDown() {
+        // The tests swap the global IO scheduler for a TestScheduler; leaking it hangs every
+        // later test that blocks on Schedulers.io()
+        RxJavaPlugins.reset()
     }
 
     private fun getExpectedUnmuteAudio(): NCSignalingMessageDto {
