@@ -793,6 +793,7 @@
     <string name="thisWeek">Tento týždeň</string>
     <string name="this_is_a_test_message">Toto je skúšobná správa</string>
     <string name="this_weekend">Tento víkend</string>
+    <string name="thread">Vlákno</string>
     <string name="thread_cancel">Zrušiť vytváranie vlákna</string>
     <string name="thread_notifications">Upozornenia na vlákna</string>
     <string name="thread_reply">Odpovedať</string>
