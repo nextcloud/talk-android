@@ -71,6 +71,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
+        // The phone book integration is not bound to an account, so it syncs for the default account.
         val currentUser = defaultAccountProvider.getDefaultUserBlocking()
 
         accountName = context.getString(R.string.nc_app_product_name)

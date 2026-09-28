@@ -13,8 +13,8 @@ import javax.inject.Inject
 /**
  * Provides the default account, i.e. the last used one.
  *
- * Only for code without an account context of its own, like app entry points, share-to and the account switcher.
- * Screens, workers and receivers must use the account they were started for.
+ * Only for code without an account context of its own, like app entry points, share-to, the account switcher and the
+ * phone book integration. Screens, workers and receivers must use the account they were started for.
  */
 class DefaultAccountProvider @Inject constructor(private val userManager: UserManager) {
 
