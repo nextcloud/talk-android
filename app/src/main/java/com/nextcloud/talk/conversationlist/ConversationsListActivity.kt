@@ -341,6 +341,7 @@ class ConversationsListActivity : BaseActivity() {
                 bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
                 val settingsIntent = Intent(context, SettingsActivity::class.java)
                 settingsIntent.putExtras(bundle)
+                settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
                 startActivity(settingsIntent)
             },
             onFederationHintClick = {
@@ -361,7 +362,9 @@ class ConversationsListActivity : BaseActivity() {
                 if (resources.getBoolean(R.bool.multiaccount_support)) {
                     showChooseAccountDialog()
                 } else {
-                    startActivity(Intent(context, SettingsActivity::class.java))
+                    val settingsIntent = Intent(context, SettingsActivity::class.java)
+                    settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+                    startActivity(settingsIntent)
                 }
             },
             onNavigateBack = { onBackPressedDispatcher.onBackPressed() },

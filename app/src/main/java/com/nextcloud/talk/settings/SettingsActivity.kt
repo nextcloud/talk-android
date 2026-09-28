@@ -43,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -277,6 +278,7 @@ class SettingsActivity :
         binding.settingsName.visibility = View.VISIBLE
         binding.settingsName.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
             startActivity(intent)
         }
 
@@ -336,7 +338,7 @@ class SettingsActivity :
     }
 
     private fun getCurrentUser() {
-        currentUser = currentUserProviderOld.currentUser.blockingGet()
+        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -631,6 +633,7 @@ class SettingsActivity :
                 }
                 .setNeutralButton(R.string.nc_diagnosis_dialog_open_diagnosis) { _, _ ->
                     val intent = Intent(context, DiagnosisActivity::class.java)
+                    intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
                     startActivity(intent)
                 }
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
@@ -656,14 +659,14 @@ class SettingsActivity :
 
     private fun setupServerNotificationAppCheck() {
         val serverNotificationAppInstalled =
-            currentUserProviderOld.currentUser.blockingGet()
+            currentUser!!
                 .capabilities?.notificationsCapability?.features?.isNotEmpty()
                 ?: false
         if (!serverNotificationAppInstalled) {
             binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
 
             val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                currentUserProviderOld.currentUser.blockingGet().baseUrl!!
+                currentUser!!.baseUrl!!
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {
@@ -692,7 +695,9 @@ class SettingsActivity :
 
     private fun setupDiagnosis() {
         binding.diagnosisWrapper.setOnClickListener {
-            startActivity(Intent(context, DiagnosisActivity::class.java))
+            val intent = Intent(context, DiagnosisActivity::class.java)
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
+            startActivity(intent)
         }
         binding.logsWrapper.setOnClickListener {
             startActivity(Intent(context, LogsActivity::class.java))

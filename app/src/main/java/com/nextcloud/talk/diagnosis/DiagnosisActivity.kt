@@ -39,6 +39,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
 import com.nextcloud.talk.logger.LogsRepository
@@ -48,6 +49,7 @@ import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -57,7 +59,7 @@ class DiagnosisActivity : BaseActivity() {
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: DiagnosisViewModel.Factory
 
     @Inject
     lateinit var ncApi: NcApi
@@ -74,6 +76,7 @@ class DiagnosisActivity : BaseActivity() {
     @Inject
     lateinit var logsRepository: LogsRepository
 
+    private lateinit var diagnosisViewModel: DiagnosisViewModel
     private val diagnosisData = mutableListOf<DiagnosisElement>()
     private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
 
@@ -92,9 +95,14 @@ class DiagnosisActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val diagnosisViewModel = ViewModelProvider(
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            finish()
+            return
+        }
+        diagnosisViewModel = ViewModelProvider(
             this,
-            viewModelFactory
+            ViewModelFactoryWithParams(DiagnosisViewModel::class.java) { viewModelFactory.build(user) }
         )[DiagnosisViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
@@ -128,7 +136,8 @@ class DiagnosisActivity : BaseActivity() {
                 userManager,
                 appPreferences,
                 arbitraryStorageManager,
-                logsRepository
+                logsRepository,
+                diagnosisViewModel.currentUser
             )
         )
         diagnosisDataState.value = diagnosisData.toList()

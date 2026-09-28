@@ -47,6 +47,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -172,7 +173,7 @@ class ProfileActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        currentUser = currentUserProviderOld.currentUser.blockingGet()
+        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
         pickImage = PickImage(this, currentUser)

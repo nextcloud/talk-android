@@ -146,11 +146,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DiagnosisViewModel::class)
-    abstract fun diagnosisViewModel(viewModel: DiagnosisViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(LogsViewModel::class)
     abstract fun logsViewModel(viewModel: LogsViewModel): ViewModel
 
