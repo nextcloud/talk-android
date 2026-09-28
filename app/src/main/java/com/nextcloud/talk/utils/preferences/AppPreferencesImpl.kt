@@ -553,18 +553,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return read.ifEmpty { default }
     }
 
-    override fun saveWaveFormForFile(filename: String, array: Array<Float>) =
-        runBlocking<Unit> {
-            async {
-                writeString(filename, array.contentToString())
-            }
-        }
-
-    override fun getWaveFormFromFile(filename: String): Array<Float> {
-        val string = runBlocking { async { readString(filename).first() } }.getCompleted()
-        return if (string.isNotEmpty()) string.convertStringToArray() else floatArrayOf().toTypedArray()
-    }
-
     override fun saveLastKnownId(internalConversationId: String, lastReadId: Int) {
         runBlocking<Unit> {
             async {
@@ -715,13 +703,5 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         const val CONVERSATION_LIST_POSITION_OFFSET = "CONVERSATION_LIST_POSITION_OFFSET"
         const val CONVERSATION_LIST_LAST_USER_ID = "CONVERSATION_LIST_LAST_USER_ID"
-        private fun String.convertStringToArray(): Array<Float> {
-            var varString = this
-            val floatList = mutableListOf<Float>()
-            varString = varString.replace("\\[".toRegex(), "")
-            varString = varString.replace("]".toRegex(), "")
-            varString.split(",").forEach { floatList.add(it.toFloat()) }
-            return floatList.toTypedArray()
-        }
     }
 }

@@ -12,7 +12,6 @@ import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 
@@ -26,10 +25,7 @@ class ManagerModule {
     fun provideAudioRecorderManager(): AudioRecorderManager = AudioRecorderManager()
 
     @Provides
-    fun provideMediaPlayerManager(preferences: AppPreferences): MediaPlayerManager =
-        MediaPlayerManager().apply {
-            appPreferences = preferences
-        }
+    fun provideMediaPlayerManager(): MediaPlayerManager = MediaPlayerManager()
 
     @Provides
     fun provideAudioFocusManager(context: Context): AudioFocusRequestManager = AudioFocusRequestManager(context)
