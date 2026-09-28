@@ -202,14 +202,8 @@ class ConversationsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        // As entry point, the list falls back to the default account if the requested one doesn't exist (anymore).
-        val user = boundUser ?: defaultAccountProvider.getDefaultUserBlocking() ?: run {
-            Log.e(TAG, "No account available")
-            finish()
-            return
-        }
+        val user = setUpBoundUserOrFinish() ?: return
         currentUser = user
-        applyUserTheme()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
         if (!user.current) {

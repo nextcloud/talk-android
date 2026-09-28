@@ -131,11 +131,13 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     /**
-     * The account this activity was started for (see [resolveUserIdFromIntent]), or null if it doesn't exist.
-     * Loaded once on first access, which must be after injection.
+     * The account this activity was started for (see [resolveUserIdFromIntent]), or null if it doesn't exist. For
+     * activities with [allowsDefaultAccount], a requested account that doesn't exist (anymore) falls back to the
+     * default account. Loaded once on first access, which must be after injection.
      */
     protected val boundUser: User? by lazy {
         runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+            ?: if (allowsDefaultAccount) defaultAccountProvider.getDefaultUserBlocking() else null
     }
 
     /**
