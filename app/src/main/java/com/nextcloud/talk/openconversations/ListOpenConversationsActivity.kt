@@ -36,9 +36,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
-
-        val user = requireBoundUserOrFinish() ?: return
+        val user = setUpBoundUserOrFinish() ?: return
 
         openConversationsViewModel = ViewModelProvider(
             this,

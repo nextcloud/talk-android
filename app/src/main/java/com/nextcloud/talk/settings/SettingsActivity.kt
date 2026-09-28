@@ -172,7 +172,7 @@ class SettingsActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        setUpBoundUserOrFinish() ?: return
         networkMonitor.isOnlineLiveData.observe(this) { online ->
             isOnline.value = online
             handleNetworkChange(isOnline.value)

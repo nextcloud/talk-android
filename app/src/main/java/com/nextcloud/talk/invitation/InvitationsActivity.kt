@@ -57,11 +57,10 @@ class InvitationsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        currentUser = setUpBoundUserOrFinish() ?: return
 
         invitationsViewModel = ViewModelProvider(this, viewModelFactory)[InvitationsViewModel::class.java]
 
-        currentUser = requireBoundUserOrFinish() ?: return
         invitationsViewModel.fetchInvitations(currentUser)
 
         binding = ActivityInvitationsBinding.inflate(layoutInflater)

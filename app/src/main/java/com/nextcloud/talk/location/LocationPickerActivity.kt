@@ -68,12 +68,10 @@ class LocationPickerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        val user = setUpBoundUserOrFinish() ?: return
 
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(KEY_CHAT_API_VERSION, 1)
-
-        val user = requireBoundUserOrFinish() ?: return
 
         viewModel = ViewModelProvider(this, viewModelFactory)[LocationPickerViewModel::class.java]
 

@@ -156,6 +156,12 @@ open class BaseActivity : AppCompatActivity() {
         boundUser?.let { viewThemeUtils = viewThemeUtilsFactory.forUser(it) }
     }
 
+    /**
+     * Resolves [boundUser] and applies its theme, or finishes the activity and returns null if the account doesn't
+     * exist. Must be called right after injection, before anything else is set up.
+     */
+    protected fun setUpBoundUserOrFinish(): User? = requireBoundUserOrFinish()?.also { applyUserTheme() }
+
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 

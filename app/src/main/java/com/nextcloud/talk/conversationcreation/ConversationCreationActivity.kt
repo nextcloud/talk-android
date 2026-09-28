@@ -124,8 +124,7 @@ class ConversationCreationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
-        val user = requireBoundUserOrFinish() ?: return
+        val user = setUpBoundUserOrFinish() ?: return
         val conversationCreationViewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(ConversationCreationViewModel::class.java) {

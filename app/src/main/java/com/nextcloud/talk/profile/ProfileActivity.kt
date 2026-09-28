@@ -111,7 +111,7 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        setUpBoundUserOrFinish() ?: return
 
         val restoredEdit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         profileUiState = profileUiState.copy(isEditMode = restoredEdit)

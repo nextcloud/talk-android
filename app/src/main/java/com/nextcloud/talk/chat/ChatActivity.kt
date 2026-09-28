@@ -602,11 +602,9 @@ class ChatActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
-
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
-        initialUser = requireBoundUserOrFinish() ?: return
+        initialUser = setUpBoundUserOrFinish() ?: return
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)

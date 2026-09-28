@@ -50,10 +50,9 @@ class TranslateActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        val user = setUpBoundUserOrFinish() ?: return
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        val user = requireBoundUserOrFinish() ?: return
         viewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(TranslateViewModel::class.java) { viewModelFactory.build(user) }

@@ -162,15 +162,13 @@ class ScheduledMessagesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        val user = setUpBoundUserOrFinish() ?: return
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
+        scheduledMessagesViewModel.setUser(user)
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
-            LaunchedEffect(Unit) {
-                scheduledMessagesViewModel.loadUser(resolveUserIdFromIntent())
-            }
             MaterialTheme(colorScheme = colorScheme) {
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,

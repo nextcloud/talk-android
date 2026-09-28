@@ -82,10 +82,8 @@ class SharedItemsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        conversationUser = setUpBoundUserOrFinish() ?: return
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
-
-        conversationUser = requireBoundUserOrFinish() ?: return
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
         val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)

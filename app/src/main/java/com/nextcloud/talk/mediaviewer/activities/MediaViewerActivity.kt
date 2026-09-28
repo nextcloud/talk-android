@@ -55,14 +55,13 @@ class MediaViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        val user = setUpBoundUserOrFinish() ?: return
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         val seedItems = intent.getParcelableArrayListExtraProvider<MediaViewerItem>(EXTRA_SEED_ITEMS)
         val startMessageId = intent.getLongExtra(EXTRA_START_MESSAGE_ID, -1L)
-        val user = boundUser
 
-        if (roomToken == null || seedItems.isNullOrEmpty() || user == null) {
+        if (roomToken == null || seedItems.isNullOrEmpty()) {
             Log.e(TAG, "Missing data to open the media viewer")
             finish()
             return

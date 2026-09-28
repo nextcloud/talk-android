@@ -90,8 +90,7 @@ class DiagnosisActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
-        val user = requireBoundUserOrFinish() ?: return
+        val user = setUpBoundUserOrFinish() ?: return
         diagnosisViewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(DiagnosisViewModel::class.java) { viewModelFactory.build(user) }

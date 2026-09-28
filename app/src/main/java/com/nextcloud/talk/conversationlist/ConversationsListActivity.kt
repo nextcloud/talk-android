@@ -202,16 +202,21 @@ class ConversationsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        // As entry point, the list falls back to the default account if the requested one doesn't exist (anymore).
+        val user = boundUser ?: defaultAccountProvider.getDefaultUserBlocking() ?: run {
+            Log.e(TAG, "No account available")
+            finish()
+            return
+        }
+        currentUser = user
         applyUserTheme()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
-        currentUser = boundUser ?: defaultAccountProvider.getDefaultUserBlocking()
-        currentUser?.takeIf { !it.current }?.let { user ->
+        if (!user.current) {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
             lifecycleScope.launch { userManager.setUserAsActive(user) }
         }
 
-        val user = currentUser!!
         conversationsListViewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(ConversationsListViewModel::class.java) {

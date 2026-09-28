@@ -75,10 +75,9 @@ class ConversationInfoEditActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
+        val user = setUpBoundUserOrFinish() ?: return
 
         val roomToken = intent.extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-        val user = requireBoundUserOrFinish() ?: return
 
         conversationInfoEditViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]

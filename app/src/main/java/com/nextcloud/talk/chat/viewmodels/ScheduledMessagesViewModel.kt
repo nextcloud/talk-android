@@ -15,7 +15,6 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.opengraph.ReferenceDto
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +29,6 @@ import javax.inject.Inject
 
 class ScheduledMessagesViewModel @Inject constructor(
     private val chatRepository: ChatMessageRepository,
-    private val userManager: UserManager,
     private val chatNetworkDataSource: ChatNetworkDataSource
 ) : ViewModel() {
 
@@ -143,10 +141,8 @@ class ScheduledMessagesViewModel @Inject constructor(
         }
     }
 
-    fun loadUser(userId: Long) {
-        viewModelScope.launch {
-            _currentUserState.value = userManager.getUserWithId(userId)
-        }
+    fun setUser(user: User) {
+        _currentUserState.value = user
     }
 
     @Suppress("LongParameterList")
