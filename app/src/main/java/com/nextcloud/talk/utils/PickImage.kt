@@ -82,6 +82,7 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
 
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
+        currentUser?.id?.let { avatarIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it) }
         startSelectRemoteFilesIntentForResult.launch(avatarIntent)
     }
 

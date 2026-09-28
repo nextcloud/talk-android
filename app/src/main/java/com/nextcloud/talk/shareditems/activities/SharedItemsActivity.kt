@@ -31,11 +31,13 @@ import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
 import kotlin.getValue
+import kotlinx.coroutines.runBlocking
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : BaseActivity() {
@@ -45,6 +47,11 @@ class SharedItemsActivity : BaseActivity() {
 
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
+
+    @Inject
+    lateinit var userManager: UserManager
+
+    private val conversationUserId: Long by lazy { resolveUserIdFromIntent() }
 
     val roomToken: String by lazy {
         intent.getStringExtra(KEY_ROOM_TOKEN)
@@ -62,7 +69,7 @@ class SharedItemsActivity : BaseActivity() {
     val chatViewModel: ChatViewModel by viewModels {
         ViewModelFactoryWithParams(ChatViewModel::class.java) {
             chatViewModelFactory.build(
-                currentUserProviderOld.currentUser.blockingGet().id!!,
+                conversationUserId,
                 roomToken,
                 conversationThreadId
             )
@@ -80,7 +87,12 @@ class SharedItemsActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
 
-        val user = currentUserProviderOld.currentUser.blockingGet()
+        val user = runBlocking { userManager.getUserWithId(conversationUserId) }
+        if (user == null) {
+            Log.e(TAG, "No user found")
+            finish()
+            return
+        }
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
         val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)

@@ -31,7 +31,6 @@ import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
-import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
@@ -99,11 +98,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PollCreateViewModel::class)
     abstract fun pollCreateViewModel(viewModel: PollCreateViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(RemoteFileBrowserItemsViewModel::class)
-    abstract fun remoteFileBrowserItemsViewModel(viewModel: RemoteFileBrowserItemsViewModel): ViewModel
 
     @Binds
     @IntoMap

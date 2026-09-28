@@ -124,7 +124,9 @@ class SharedItemsAdapter(
             .sortedBy { it.messageId }
             .map { it.toMediaViewerItem() }
             .capSeedAroundMessage(item.messageId)
-        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, seedItems, item.messageId))
+        context.startActivity(
+            MediaViewerActivity.newIntent(context, user.id!!, roomToken, seedItems, item.messageId)
+        )
     }
 
     private fun openInChat(item: SharedFileItem, context: Context) {

@@ -118,7 +118,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             actorDisplayName = message.actorDisplayName.orEmpty(),
             timestamp = message.timestamp
         )
-        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, listOf(item), item.messageId))
+        context.startActivity(
+            MediaViewerActivity.newIntent(context, user.id!!, roomToken, listOf(item), item.messageId)
+        )
     }
 
     fun openFile(

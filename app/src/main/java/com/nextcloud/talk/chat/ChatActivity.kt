@@ -1339,7 +1339,13 @@ class ChatActivity :
 
             if (isViewableMedia && seedItems.any { it.messageId == messageId.toLong() }) {
                 startActivity(
-                    MediaViewerActivity.newIntent(this@ChatActivity, roomToken, seedItems, messageId.toLong())
+                    MediaViewerActivity.newIntent(
+                        this@ChatActivity,
+                        conversationUserId,
+                        roomToken,
+                        seedItems,
+                        messageId.toLong()
+                    )
                 )
             } else {
                 fileViewerUtils.openFile(chatMessage, openWhenDownloadState, downloadState)
@@ -2905,6 +2911,7 @@ class ChatActivity :
 
     fun showBrowserScreen() {
         val sharingFileBrowserIntent = Intent(this, RemoteFileBrowserActivity::class.java)
+        sharingFileBrowserIntent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         startRemoteFileBrowsingForResult.launch(sharingFileBrowserIntent)
     }
 

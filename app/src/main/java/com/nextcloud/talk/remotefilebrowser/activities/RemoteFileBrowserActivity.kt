@@ -29,18 +29,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityRemoteFileBrowserBinding
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapter
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserActivity :
@@ -49,10 +53,12 @@ class RemoteFileBrowserActivity :
     SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: RemoteFileBrowserItemsViewModel.Factory
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    lateinit var userManager: UserManager
+
+    private lateinit var user: User
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -95,6 +101,15 @@ class RemoteFileBrowserActivity :
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
+        user = runBlocking {
+            if (userId != 0L) userManager.getUserWithId(userId) else userManager.getCurrentUser()
+        } ?: run {
+            Log.e(TAG, "No user found")
+            finish()
+            return
+        }
+
         val extras = intent.extras
         val mimeTypeSelectionFilter = extras?.getString(KEY_MIME_TYPE_FILTER, null)
 
@@ -112,7 +127,10 @@ class RemoteFileBrowserActivity :
     }
 
     private fun initViewModel(mimeTypeSelectionFilter: String?) {
-        viewModel = ViewModelProvider(this, viewModelFactory)[RemoteFileBrowserItemsViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(RemoteFileBrowserItemsViewModel::class.java) { viewModelFactory.build(user) }
+        )[RemoteFileBrowserItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
             clearEmptyLoading()
@@ -167,7 +185,7 @@ class RemoteFileBrowserActivity :
         val adapter = RemoteFileBrowserItemsAdapter(
             showGrid = showGrid,
             mimeTypeSelectionFilter = mimeTypeSelectionFilter,
-            user = currentUserProvider.currentUser.blockingGet(),
+            user = user,
             selectionInterface = this,
             viewThemeUtils = viewThemeUtils,
             dateUtils = dateUtils,

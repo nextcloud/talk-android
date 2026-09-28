@@ -31,12 +31,15 @@ import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import java.io.File
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 /**
  * Swipeable, group-aware media viewer - the entry point for every image/video tap in chat. See
@@ -48,6 +51,9 @@ class MediaViewerActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var userManager: UserManager
+
     private lateinit var viewModel: MediaViewerViewModel
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
@@ -58,7 +64,7 @@ class MediaViewerActivity : BaseActivity() {
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         val seedItems = intent.getParcelableArrayListExtraProvider<MediaViewerItem>(EXTRA_SEED_ITEMS)
         val startMessageId = intent.getLongExtra(EXTRA_START_MESSAGE_ID, -1L)
-        val user = currentUserProviderOld.currentUser.blockingGet()
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
 
         if (roomToken == null || seedItems.isNullOrEmpty() || user == null) {
             Log.e(TAG, "Missing data to open the media viewer")
@@ -135,11 +141,13 @@ class MediaViewerActivity : BaseActivity() {
 
         fun newIntent(
             context: Context,
+            userId: Long,
             roomToken: String,
             seedItems: List<MediaViewerItem>,
             startMessageId: Long
         ): Intent =
             Intent(context, MediaViewerActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                 putExtra(KEY_ROOM_TOKEN, roomToken)
                 putParcelableArrayListExtra(EXTRA_SEED_ITEMS, ArrayList(seedItems))
                 putExtra(EXTRA_START_MESSAGE_ID, startMessageId)
