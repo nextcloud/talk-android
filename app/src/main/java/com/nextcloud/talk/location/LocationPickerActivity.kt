@@ -74,6 +74,7 @@ class LocationPickerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(KEY_CHAT_API_VERSION, 1)

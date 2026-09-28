@@ -599,6 +599,7 @@ class ChatActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)

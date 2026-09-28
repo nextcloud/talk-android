@@ -55,6 +55,7 @@ class TranslateActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
         val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }

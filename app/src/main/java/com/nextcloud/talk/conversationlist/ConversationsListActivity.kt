@@ -203,6 +203,7 @@ class ConversationsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
         currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }

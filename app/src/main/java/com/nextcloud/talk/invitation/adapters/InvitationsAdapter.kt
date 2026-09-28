@@ -19,6 +19,7 @@ import com.nextcloud.talk.databinding.RvItemInvitationBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -64,6 +65,7 @@ class InvitationsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitationsViewHolder {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(parent.context, viewThemeUtils)
         return InvitationsViewHolder(
             RvItemInvitationBinding.inflate(
                 LayoutInflater.from(parent.context),

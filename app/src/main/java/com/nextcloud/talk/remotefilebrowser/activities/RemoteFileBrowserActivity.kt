@@ -37,6 +37,7 @@ import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapt
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -64,6 +65,9 @@ class RemoteFileBrowserActivity :
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var viewThemeUtilsFactory: ViewThemeUtilsFactory
+
+    @Inject
     lateinit var dateUtils: DateUtils
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
@@ -81,6 +85,17 @@ class RemoteFileBrowserActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
+        user = runBlocking {
+            if (userId != 0L) userManager.getUserWithId(userId) else userManager.getCurrentUser()
+        } ?: run {
+            Log.e(TAG, "No user found")
+            finish()
+            return
+        }
+
+        viewThemeUtils = viewThemeUtilsFactory.forUser(user)
 
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
@@ -100,15 +115,6 @@ class RemoteFileBrowserActivity :
         )
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
-        user = runBlocking {
-            if (userId != 0L) userManager.getUserWithId(userId) else userManager.getCurrentUser()
-        } ?: run {
-            Log.e(TAG, "No user found")
-            finish()
-            return
-        }
 
         val extras = intent.extras
         val mimeTypeSelectionFilter = extras?.getString(KEY_MIME_TYPE_FILTER, null)

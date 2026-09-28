@@ -43,6 +43,7 @@ class ContactsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
         val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
         if (user == null) {
             finish()

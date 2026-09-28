@@ -62,6 +62,7 @@ class InvitationsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         invitationsViewModel = ViewModelProvider(this, viewModelFactory)[InvitationsViewModel::class.java]
 

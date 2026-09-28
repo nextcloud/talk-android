@@ -26,6 +26,7 @@ import com.nextcloud.talk.databinding.BanItemListBinding
 import com.nextcloud.talk.databinding.FragmentDialogBanListBinding
 import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -82,6 +83,7 @@ class DialogBanListFragment(val roomToken: String, private val conversationUser:
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         binding = FragmentDialogBanListBinding.inflate(layoutInflater)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]

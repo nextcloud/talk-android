@@ -85,6 +85,7 @@ class SharedItemsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
 
         val user = runBlocking { userManager.getUserWithId(conversationUserId) }

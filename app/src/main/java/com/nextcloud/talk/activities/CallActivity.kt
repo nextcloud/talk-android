@@ -447,6 +447,7 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         // Register broadcast receiver for ending call from notification
         val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)

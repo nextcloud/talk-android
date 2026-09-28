@@ -41,6 +41,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
         if (user == null) {

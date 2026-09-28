@@ -66,6 +66,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.dialog.DateTimeCompose.Companion.HALF_WEIGHT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import java.time.DayOfWeek
@@ -99,7 +100,7 @@ class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel, val 
             return
         }
 
-        val colorScheme = viewThemeUtils.getColorScheme(context)
+        val colorScheme = hostViewThemeUtils(context, viewThemeUtils).getColorScheme(context)
         val isCollapsed = remember { mutableStateOf(true) }
 
         MaterialTheme(colorScheme = colorScheme) {

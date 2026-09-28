@@ -80,6 +80,7 @@ class ConversationInfoEditActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         val roomToken = intent.extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
         val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }

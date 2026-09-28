@@ -11,6 +11,7 @@ import android.content.Context
 import android.util.AttributeSet
 import autodagger.AutoInjector
 import com.google.android.material.button.MaterialButton
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import java.util.Locale
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -35,6 +36,7 @@ class PlaybackSpeedControl @JvmOverloads constructor(
 
     init {
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+        viewThemeUtils = hostViewThemeUtils(context, viewThemeUtils)
         text = currentSpeed.label
         viewThemeUtils.material.colorMaterialButtonText(this)
     }

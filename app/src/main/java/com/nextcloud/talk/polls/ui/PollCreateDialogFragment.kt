@@ -32,6 +32,7 @@ import com.nextcloud.talk.polls.adapters.PollCreateOptionsAdapter
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsItemListener
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -56,6 +57,7 @@ class PollCreateDialogFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
         val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!

@@ -182,6 +182,7 @@ class ConversationInfoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        applyUserTheme()
 
         conversationToken = requireNotNull(
             intent.getStringExtra(KEY_ROOM_TOKEN)

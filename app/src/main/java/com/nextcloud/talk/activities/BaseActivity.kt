@@ -43,6 +43,7 @@ import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -81,6 +82,9 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var viewThemeUtilsFactory: ViewThemeUtilsFactory
+
+    @Inject
     lateinit var messageUtils: MessageUtils
 
     @Inject
@@ -106,6 +110,14 @@ open class BaseActivity : AppCompatActivity() {
             ?: (currentUserProviderOld.currentUser.blockingGet()?.id ?: 0L).also {
                 intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
             }
+
+    /**
+     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of the account it was
+     * started for (see [resolveUserIdFromIntent]). Must be called after injection and before any view is themed.
+     */
+    protected fun applyUserTheme() {
+        viewThemeUtilsFactory.forUserId(resolveUserIdFromIntent())?.let { viewThemeUtils = it }
+    }
 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
