@@ -329,6 +329,7 @@
     <string name="nc_locked">Zárolt</string>
     <string name="nc_locked_tap_to_unlock">Koppintson a feloldáshoz</string>
     <string name="nc_logs_disable_delete">Naplók törlése</string>
+    <string name="nc_logs_share_diagnosis">Diagnózisjelentés</string>
     <string name="nc_logs_title">Naplók</string>
     <string name="nc_manual">Nincs megadva</string>
     <string name="nc_mark_as_read">Megjelölés olvasottként</string>

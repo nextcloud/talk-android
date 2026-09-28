@@ -792,6 +792,7 @@
     <string name="thisWeek">本星期</string>
     <string name="this_is_a_test_message">此乃測試訊息</string>
     <string name="this_weekend">本週末</string>
+    <string name="thread">討論串</string>
     <string name="thread_cancel">取消創建討論串</string>
     <string name="thread_notifications">討論串通知</string>
     <string name="thread_reply">回覆</string>
