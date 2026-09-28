@@ -298,10 +298,16 @@ class ChatActivity :
     @Inject
     lateinit var userManager: UserManager
 
+    /**
+     * The user of this chat as loaded in [onCreate], used to create [chatViewModel]. Afterwards use
+     * [conversationUser], which reflects later changes of the stored user.
+     */
+    private lateinit var initialUser: User
+
     val chatViewModel: ChatViewModel by viewModels {
         ViewModelFactoryWithParams(ChatViewModel::class.java) {
             chatViewModelFactory.build(
-                conversationUserId,
+                initialUser,
                 roomToken,
                 conversationThreadId
             )
@@ -380,7 +386,8 @@ class ChatActivity :
 
     var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfoDto? = null
-    lateinit var conversationUser: User
+    val conversationUser: User
+        get() = chatViewModel.currentUser
     lateinit var spreedCapabilities: SpreedCapabilityDto
     var chatApiVersion: Int = 1
     private var roomPassword: String = ""
@@ -601,6 +608,14 @@ class ChatActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         applyUserTheme()
 
+        // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
+        // and registerForActivityResult() must be called before the activity is started.
+        initialUser = runBlocking { userManager.getUserWithId(conversationUserId) } ?: run {
+            Log.e(TAG, "No user found for id $conversationUserId")
+            finish()
+            return
+        }
+
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -644,34 +659,17 @@ class ChatActivity :
             overflowContainerHeightPx.intValue = binding.chatOverflowContainer.height
         }
 
-        // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
-        // and registerForActivityResult() must be called before the activity is started.
-        val user = runBlocking { userManager.getUserWithId(conversationUserId) }
-        if (user == null) {
-            Log.e(TAG, "No user found for id $conversationUserId")
-            finish()
-            return
-        }
-        conversationUser = user
         handleIntent(intent)
-        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, user.baseUrl, roomToken)
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-
-        chatViewModel.initData(
-            user,
-            credentials!!,
-            urlForChatting,
-            conversationThreadId
-        )
+        chatViewModel.initData()
 
         conversationThreadId?.let {
             val threadUrl = ApiUtils.getUrlForThread(
                 version = 1,
-                baseUrl = user.baseUrl,
+                baseUrl = conversationUser.baseUrl,
                 token = roomToken,
                 threadId = it.toInt()
             )
-            chatViewModel.getThread(credentials, threadUrl)
+            chatViewModel.getThread(conversationUser.getCredentials(), threadUrl)
         }
 
         messageInputFragment = getMessageInputFragment()
@@ -990,7 +988,7 @@ class ChatActivity :
                     value = reactionsSheetMessageId?.let { id -> chatViewModel.getMessageById(id).first() }
                 }
                 reactionsSheetMessage?.let { msg ->
-                    if (::conversationUser.isInitialized) {
+                    if (::initialUser.isInitialized) {
                         conversationUser.let { user ->
                             ShowReactionsModalBottomSheet(
                                 chatMessage = msg,
@@ -1013,7 +1011,7 @@ class ChatActivity :
                     ?.takeIf { it.actorType.equals("users") }
                     ?.let { msg ->
                         val actorId = msg.actorId ?: return@let
-                        if (::conversationUser.isInitialized) {
+                        if (::initialUser.isInitialized) {
                             conversationUser.let { user ->
                                 ProfileModalBottomSheet(
                                     actorId = actorId,
@@ -1047,7 +1045,7 @@ class ChatActivity :
                             onDismiss = { chatViewModel.dismissMessageActions() }
                         )
                     } else {
-                        if (::conversationUser.isInitialized) {
+                        if (::initialUser.isInitialized) {
                             conversationUser.let { user ->
                                 MessageActionsBottomSheet(
                                     actionsState = buildMessageActionsState(
@@ -1280,7 +1278,7 @@ class ChatActivity :
     private fun startDirectChat(actorId: String) {
         lifecycleScope.launch {
             try {
-                if (!::conversationUser.isInitialized) return@launch
+                if (!::initialUser.isInitialized) return@launch
                 val user = conversationUser
                 val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
                 val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
@@ -1659,7 +1657,7 @@ class ChatActivity :
                         }
                     }
 
-                    if (::conversationUser.isInitialized) {
+                    if (::initialUser.isInitialized) {
                         conversationUser.let { user ->
                             val credentials = ApiUtils.getCredentials(user.username, user.token)
                             chatViewModel.fetchUpcomingEvent(
@@ -2176,7 +2174,7 @@ class ChatActivity :
 
     fun updateToolbarState() {
         val conversation = currentConversation
-        val user = if (::conversationUser.isInitialized) conversationUser else null
+        val user = if (::initialUser.isInitialized) conversationUser else null
         val isOneToOne = isOneToOneConversation()
         val capabilitiesReady = ::spreedCapabilities.isInitialized
 
@@ -2363,7 +2361,7 @@ class ChatActivity :
     }
 
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
-        if (::conversationUser.isInitialized) {
+        if (::initialUser.isInitialized) {
             runOnUiThread {
                 val toastInfo = if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
                     context.resources.getString(R.string.switch_to_main_room)
@@ -3005,7 +3003,7 @@ class ChatActivity :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelNotificationsForCurrentConversation() {
-        if (::conversationUser.isInitialized) {
+        if (::initialUser.isInitialized) {
             if (!TextUtils.isEmpty(roomToken)) {
                 try {
                     NotificationUtils.cancelExistingNotificationsForRoom(
@@ -3036,7 +3034,7 @@ class ChatActivity :
             getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
         }
 
-        if (::conversationUser.isInitialized && isActivityNotChangingConfigurations() && isNotInCall()) {
+        if (::initialUser.isInitialized && isActivityNotChangingConfigurations() && isNotInCall()) {
             if (isLeavingRoom) {
                 Log.d(TAG, "not leaving room (leave already in progress)")
             } else if (validSessionId()) {
@@ -3085,7 +3083,9 @@ class ChatActivity :
         super.onDestroy()
         logConversationInfos("onDestroy")
 
-        chatViewModel.leaveRoomViewState.removeObserver(leaveRoomObserver)
+        if (::initialUser.isInitialized) {
+            chatViewModel.leaveRoomViewState.removeObserver(leaveRoomObserver)
+        }
 
         findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
 
@@ -3134,7 +3134,7 @@ class ChatActivity :
 
         var apiVersion = 1
         // FIXME Fix API checking with guests?
-        if (::conversationUser.isInitialized) {
+        if (::initialUser.isInitialized) {
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         }
 
@@ -3152,7 +3152,7 @@ class ChatActivity :
     }
 
     private fun setupWebsocket() {
-        if (currentConversation == null || !::conversationUser.isInitialized) {
+        if (currentConversation == null || !::initialUser.isInitialized) {
             Log.e(TAG, "setupWebsocket: currentConversation or conversationUser is null")
             return
         }
@@ -3522,7 +3522,7 @@ class ChatActivity :
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
-            if (::conversationUser.isInitialized) {
+            if (::initialUser.isInitialized) {
                 if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(spreedCapabilities)) {
                     Snackbar.make(binding.root, R.string.nc_call_e2ee_not_supported, Snackbar.LENGTH_LONG).show()
                     return
@@ -3654,7 +3654,7 @@ class ChatActivity :
         } else {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
-            if (::conversationUser.isInitialized) {
+            if (::initialUser.isInitialized) {
                 apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
             }
 
@@ -4101,7 +4101,7 @@ class ChatActivity :
     }
 
     fun userAllowedByPrivilages(message: ChatMessage): Boolean {
-        if (!::conversationUser.isInitialized) return false
+        if (!::initialUser.isInitialized) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true

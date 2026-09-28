@@ -53,6 +53,8 @@ class SharedItemsActivity : BaseActivity() {
 
     private val conversationUserId: Long by lazy { resolveUserIdFromIntent() }
 
+    private lateinit var conversationUser: User
+
     val roomToken: String by lazy {
         intent.getStringExtra(KEY_ROOM_TOKEN)
             ?: error("roomToken missing")
@@ -69,7 +71,7 @@ class SharedItemsActivity : BaseActivity() {
     val chatViewModel: ChatViewModel by viewModels {
         ViewModelFactoryWithParams(ChatViewModel::class.java) {
             chatViewModelFactory.build(
-                conversationUserId,
+                conversationUser,
                 roomToken,
                 conversationThreadId
             )
@@ -94,6 +96,7 @@ class SharedItemsActivity : BaseActivity() {
             finish()
             return
         }
+        conversationUser = user
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
         val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)

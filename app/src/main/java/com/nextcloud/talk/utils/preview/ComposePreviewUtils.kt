@@ -236,7 +236,7 @@ class ComposePreviewUtils private constructor(context: Context) {
             audioFocusRequestManager = audioFocusRequestManager,
             userManager = userManager,
             appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
-            internalUserId = 1L,
+            initialUser = currentUser,
             chatRoomToken = "",
             conversationThreadId = null,
             logger = TestLogger

@@ -274,7 +274,7 @@ class ChatViewModel @AssistedInject constructor(
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userManager: UserManager,
     @ApplicationScope private val appScope: CoroutineScope,
-    @Assisted private val internalUserId: Long,
+    @Assisted private val initialUser: User,
     @Assisted private val chatRoomToken: String,
     @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
@@ -318,8 +318,11 @@ class ChatViewModel @AssistedInject constructor(
             get() = results.getOrNull(selectedIndex)
     }
 
-    @Deprecated("use currentUserFlow")
-    lateinit var currentUser: User
+    /**
+     * The user of this chat with its latest stored values.
+     */
+    val currentUser: User
+        get() = currentUserFlow.value ?: initialUser
 
     private var messageSearchHelper: MessageSearchHelper? = null
     private var searchRequestJob: Job? = null
@@ -681,8 +684,8 @@ class ChatViewModel @AssistedInject constructor(
     // Current user flows
     // ------------------------------
     private val currentUserFlow: StateFlow<User?> =
-        userManager.userFlow(internalUserId)
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        userManager.userFlow(initialUser.id!!)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, initialUser)
 
     private val nonNullUserFlow = currentUserFlow.filterNotNull()
 
@@ -1724,7 +1727,7 @@ class ChatViewModel @AssistedInject constructor(
      * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
      */
     fun getAvatarUrl(message: ChatMessage): String =
-        if (this::currentUser.isInitialized && !message.hasClientSideAvatar()) {
+        if (!message.hasClientSideAvatar()) {
             ApiUtils.getUrlForAvatar(
                 currentUser.baseUrl,
                 message.actorId,
@@ -1737,15 +1740,13 @@ class ChatViewModel @AssistedInject constructor(
     private fun ChatMessage.hasClientSideAvatar(): Boolean =
         CharacterAvatarUtils.avatarFor(actorType, actorId, actorDisplayName, guestLabel = null) != null
 
-    fun initData(user: User, credentials: String, urlForChatting: String, threadId: Long?) {
-        currentUser = user
-
+    fun initData() {
         chatRepository.initData(
-            user,
-            credentials,
-            urlForChatting,
+            currentUser,
+            ApiUtils.getCredentials(currentUser.username, currentUser.token)!!,
+            ApiUtils.getUrlForChat(ApiUtils.API_V1, currentUser.baseUrl, chatRoomToken),
             chatRoomToken,
-            threadId
+            conversationThreadId
         )
 
         observeConversationAndUserFirstTime()
@@ -2102,10 +2103,6 @@ class ChatViewModel @AssistedInject constructor(
      * simply leaving the chat, would immediately mark everything read again.
      */
     fun markChatAsUnread(lastReadMessage: Int) {
-        if (!this::currentUser.isInitialized) {
-            return
-        }
-
         keepMarkedAsUnread = true
         localLastReadMessage = lastReadMessage
         resetUnreadMarkerCache()
@@ -2123,9 +2120,6 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun setChatReadMessage(lastReadMessage: Int) {
-        if (!this::currentUser.isInitialized) {
-            return
-        }
         // marking as read is the explicit counterpart of marking as unread and hands the read marker
         // back to the automatic handling
         keepMarkedAsUnread = false
@@ -2376,7 +2370,7 @@ class ChatViewModel @AssistedInject constructor(
 
             val internalConversationId = "${currentUser.id}@$chatRoomToken"
             val workerId = UploadAndShareFilesWorker.upload(
-                userId = internalUserId,
+                userId = currentUser.id!!,
                 fileUri = fileUri,
                 roomToken = room,
                 conversationName = displayName,
@@ -2461,7 +2455,7 @@ class ChatViewModel @AssistedInject constructor(
     fun getMessageById(messageId: Long): Flow<ChatMessage> {
         val urlForChatting = ApiUtils.getUrlForChat(
             1, // Keep API v1 for local message lookup until version wiring is centralized.
-            currentUser?.baseUrl,
+            currentUser.baseUrl,
             chatRoomToken
         )
 
@@ -2599,9 +2593,8 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? {
-        if (!this::currentUser.isInitialized) return null
-        return withContext(Dispatchers.IO) {
+    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? =
+        withContext(Dispatchers.IO) {
             runCatching {
                 chatNetworkDataSource.getOpenGraph(
                     currentUser.getCredentials(),
@@ -2610,7 +2603,6 @@ class ChatViewModel @AssistedInject constructor(
                 )?.openGraphObject
             }.getOrNull()
         }
-    }
 
     suspend fun updateMessageDraft() {
         val model = conversationRepository.getLocallyStoredConversation(
@@ -2833,6 +2825,6 @@ class ChatViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface ChatViewModelFactory {
-        fun build(internalUserId: Long, roomToken: String, conversationThreadId: Long?): ChatViewModel
+        fun build(user: User, roomToken: String, conversationThreadId: Long?): ChatViewModel
     }
 }
