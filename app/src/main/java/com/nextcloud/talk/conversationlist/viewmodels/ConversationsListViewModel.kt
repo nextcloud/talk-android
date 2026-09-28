@@ -144,7 +144,7 @@ class ConversationsListViewModel @AssistedInject constructor(
     val getRoomsViewState: LiveData<ViewState>
         get() = _getRoomsViewState
 
-    val getRoomsFlow = repository.roomListFlow
+    val getRoomsFlow = repository.roomListFlow(currentUser.id!!)
         .onEach { list ->
             _getRoomsViewState.value = GetRoomsSuccessState(list.isNotEmpty())
         }.catch {
@@ -166,7 +166,7 @@ class ConversationsListViewModel @AssistedInject constructor(
     val isLoadingRooms: StateFlow<Boolean> = _isLoadingRooms.asStateFlow()
 
     val getRoomsStateFlow = repository
-        .roomListFlow
+        .roomListFlow(currentUser.id!!)
         .catch { throwable ->
             Log.e(TAG, "Error observing the conversation list", throwable)
             _getRoomsViewState.value = GetRoomsErrorState(throwable)

@@ -16,11 +16,12 @@ import kotlinx.coroutines.flow.Flow
 interface OfflineConversationsRepository {
 
     /**
-     * Live stream of the observed account's conversations, for use in the conversation list.
-     * Backed by the local database: it re-emits whenever conversation rows change (room list
-     * sync, background catch-up, optimistic updates), with unchanged lists deduplicated.
+     * Live stream of the conversations of the account with the internal id [accountId], for use in
+     * the conversation list. Backed by the local database: it re-emits whenever conversation rows
+     * change (room list sync, background catch-up, optimistic updates), with unchanged lists
+     * deduplicated.
      */
-    val roomListFlow: Flow<List<ConversationModel>>
+    fun roomListFlow(accountId: Long): Flow<List<ConversationModel>>
 
     /**
      * Emits when [getRooms] fails to sync with the server (e.g. a dropped/reset connection on a
@@ -38,9 +39,8 @@ interface OfflineConversationsRepository {
     val conversationFlow: Flow<ConversationModel>
 
     /**
-     * Selects the account observed by [roomListFlow] and synchronizes its conversations with
-     * the server (when online). The synced changes surface through [roomListFlow], which
-     * observes the database.
+     * Synchronizes the conversations of [user] with the server (when online). The synced changes
+     * surface through [roomListFlow], which observes the database.
      */
     @Deprecated("use observeConversation")
     fun getRooms(user: User): Job
