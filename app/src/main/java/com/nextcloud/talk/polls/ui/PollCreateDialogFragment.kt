@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
@@ -57,7 +59,8 @@ class PollCreateDialogFragment :
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
         val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
-        viewModel.setData(roomToken)
+        val user = BundleCompat.getParcelable(requireArguments(), KEY_USER, User::class.java)!!
+        viewModel.setData(user, roomToken)
     }
 
     @SuppressLint("InflateParams")
@@ -187,10 +190,12 @@ class PollCreateDialogFragment :
     companion object {
         private val TAG = PollCreateDialogFragment::class.java.simpleName
         private const val KEY_ROOM_TOKEN = "keyRoomToken"
+        private const val KEY_USER = "keyUser"
 
         @JvmStatic
-        fun newInstance(roomTokenParam: String): PollCreateDialogFragment {
+        fun newInstance(user: User, roomTokenParam: String): PollCreateDialogFragment {
             val args = Bundle()
+            args.putParcelable(KEY_USER, user)
             args.putString(KEY_ROOM_TOKEN, roomTokenParam)
             val fragment = PollCreateDialogFragment()
             fragment.arguments = args

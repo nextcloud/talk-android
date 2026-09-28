@@ -15,17 +15,13 @@ import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollMainViewModel @Inject constructor(
-    private val repository: PollRepository,
-    private val currentUserProvider: CurrentUserProviderOld
-) : ViewModel() {
+class PollMainViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
     @Inject
     lateinit var userManager: UserManager
@@ -63,8 +59,8 @@ class PollMainViewModel @Inject constructor(
 
     private var disposable: Disposable? = null
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
-    private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+    private val credentials: String?
+        get() = ApiUtils.getCredentials(user.username, user.token)
 
     fun setData(user: User, roomToken: String, isOwnerOrModerator: Boolean, pollId: String, pollTitle: String) {
         this.user = user
@@ -93,7 +89,7 @@ class PollMainViewModel @Inject constructor(
         _viewState.value = LoadingState
 
         val url = ApiUtils.getUrlForPoll(
-            currentUser.baseUrl!!,
+            user.baseUrl!!,
             roomToken,
             pollId
         )
@@ -113,7 +109,7 @@ class PollMainViewModel @Inject constructor(
         _viewState.value = LoadingState
 
         val url = ApiUtils.getUrlForPoll(
-            currentUser.baseUrl!!,
+            user.baseUrl!!,
             roomToken,
             pollId
         )
@@ -187,7 +183,7 @@ class PollMainViewModel @Inject constructor(
         poll.resultMode == Poll.RESULT_MODE_PUBLIC &&
             poll.votedSelf?.isNotEmpty() == true
 
-    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean = currentUser.userId == poll.actorId
+    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean = user.userId == poll.actorId
 
     fun dismissDialog() {
         _viewState.value = DismissDialogState

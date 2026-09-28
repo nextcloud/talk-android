@@ -4198,9 +4198,7 @@ class ChatActivity :
     }
 
     fun createPoll() {
-        val pollVoteDialog = PollCreateDialogFragment.newInstance(
-            roomToken
-        )
+        val pollVoteDialog = PollCreateDialogFragment.newInstance(conversationUser, roomToken)
         pollVoteDialog.show(supportFragmentManager, TAG)
     }
 

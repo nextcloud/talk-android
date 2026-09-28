@@ -99,7 +99,7 @@ class PollVoteFragment : Fragment() {
         }
 
         binding.pollVoteSubmitButton.setOnClickListener {
-            viewModel.vote(parentViewModel.roomToken, parentViewModel.pollId)
+            viewModel.vote(parentViewModel.user, parentViewModel.roomToken, parentViewModel.pollId)
         }
 
         binding.pollVoteEditDismiss.setOnClickListener {
