@@ -37,7 +37,6 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ActivityServerSelectionBinding
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.StatusDto
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -62,9 +61,6 @@ class ServerSelectionActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor

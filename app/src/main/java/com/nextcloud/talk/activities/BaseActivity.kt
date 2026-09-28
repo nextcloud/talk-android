@@ -38,10 +38,12 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.users.DefaultAccountProvider
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
@@ -54,6 +56,7 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -93,6 +96,9 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
+    lateinit var userManager: UserManager
+
+    @Inject
     lateinit var logger: Logger
 
     /**
@@ -107,11 +113,29 @@ open class BaseActivity : AppCompatActivity() {
             }
 
     /**
-     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of the account it was
-     * started for (see [resolveUserIdFromIntent]). Must be called after injection and before any view is themed.
+     * The account this activity was started for (see [resolveUserIdFromIntent]), or null if it doesn't exist.
+     * Loaded once on first access, which must be after injection.
+     */
+    protected val boundUser: User? by lazy {
+        runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+    }
+
+    /**
+     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
+     */
+    protected fun requireBoundUserOrFinish(): User? =
+        boundUser ?: run {
+            Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
+            finish()
+            null
+        }
+
+    /**
+     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser].
+     * Must be called after injection and before any view is themed.
      */
     protected fun applyUserTheme() {
-        viewThemeUtilsFactory.forUserId(resolveUserIdFromIntent())?.let { viewThemeUtils = it }
+        boundUser?.let { viewThemeUtils = viewThemeUtilsFactory.forUser(it) }
     }
 
     open val appBarLayoutType: AppBarLayoutType

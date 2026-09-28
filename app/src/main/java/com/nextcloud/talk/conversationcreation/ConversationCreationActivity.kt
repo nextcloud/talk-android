@@ -107,7 +107,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.copyPasswordToClipboard
 import com.nextcloud.talk.utils.DisplayUtils
@@ -120,9 +119,6 @@ import javax.inject.Inject
 class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ConversationCreationViewModel.Factory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

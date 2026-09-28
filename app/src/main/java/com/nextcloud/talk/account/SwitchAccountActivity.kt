@@ -26,7 +26,6 @@ import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.DirectShareHelper
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils.findAvailableAccountsOnDevice
 import com.nextcloud.talk.utils.AccountUtils.getInformationFromAccount
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
@@ -44,9 +43,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SwitchAccountActivity : BaseActivity() {
     private lateinit var binding: ActivitySwitchAccountBinding
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var cookieManager: CookieManager

@@ -21,9 +21,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -31,9 +29,6 @@ class ListOpenConversationsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: OpenConversationsViewModel.Factory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     private lateinit var openConversationsViewModel: OpenConversationsViewModel
 
@@ -43,11 +38,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         applyUserTheme()
 
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
 
         openConversationsViewModel = ViewModelProvider(
             this,

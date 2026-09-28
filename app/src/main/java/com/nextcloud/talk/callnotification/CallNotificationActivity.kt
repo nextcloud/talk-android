@@ -28,7 +28,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -53,9 +52,6 @@ class CallNotificationActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var cache: Cache? = null
-
-    @Inject
-    lateinit var userManager: UserManager
 
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null

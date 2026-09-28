@@ -179,7 +179,6 @@ import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -242,7 +241,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -294,9 +292,6 @@ class ChatActivity :
 
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     /**
      * The user of this chat as loaded in [onCreate], used to create [chatViewModel]. Afterwards use
@@ -610,11 +605,7 @@ class ChatActivity :
 
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
-        initialUser = runBlocking { userManager.getUserWithId(conversationUserId) } ?: run {
-            Log.e(TAG, "No user found for id $conversationUserId")
-            finish()
-            return
-        }
+        initialUser = requireBoundUserOrFinish() ?: return
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -81,7 +81,6 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -131,9 +130,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LargeClass", "TooManyFunctions", "NestedBlockDepth")
 class ConversationsListActivity : BaseActivity() {
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
@@ -206,8 +202,7 @@ class ConversationsListActivity : BaseActivity() {
         applyUserTheme()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
-        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-            ?: defaultAccountProvider.getDefaultUserBlocking()
+        currentUser = boundUser ?: defaultAccountProvider.getDefaultUserBlocking()
         currentUser?.takeIf { !it.current }?.let { user ->
             // The shown account becomes the last used one, which the account switcher and status views rely on.
             lifecycleScope.launch { userManager.setUserAsActive(user) }

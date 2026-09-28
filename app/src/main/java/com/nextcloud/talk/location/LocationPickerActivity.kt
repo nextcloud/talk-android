@@ -8,7 +8,6 @@ package com.nextcloud.talk.location
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,11 +21,9 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.extensions.getParcelableExtraProvider
 import com.nextcloud.talk.location.components.LocationPickerScreen
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 private const val MAP_CENTER_LAT_KEY = "mapCenterLat"
@@ -44,9 +41,6 @@ class LocationPickerActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     private lateinit var viewModel: LocationPickerViewModel
     private lateinit var roomToken: String
@@ -79,12 +73,7 @@ class LocationPickerActivity : BaseActivity() {
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(KEY_CHAT_API_VERSION, 1)
 
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            Log.e(TAG, "No user found")
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
 
         viewModel = ViewModelProvider(this, viewModelFactory)[LocationPickerViewModel::class.java]
 

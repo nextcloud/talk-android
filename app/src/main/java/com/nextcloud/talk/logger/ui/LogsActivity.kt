@@ -66,7 +66,6 @@ import com.nextcloud.talk.errorhandling.saveLogsAsZip
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogEntry
 import com.nextcloud.talk.logger.LogsRepository
-import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -78,9 +77,6 @@ class LogsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var logsRepository: LogsRepository

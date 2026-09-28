@@ -12,8 +12,6 @@ import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.android.common.ui.theme.utils.DialogViewThemeUtils
 import com.nextcloud.android.common.ui.theme.utils.MaterialViewThemeUtils
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.users.UserManager
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 /**
@@ -21,14 +19,8 @@ import javax.inject.Inject
  */
 class ViewThemeUtilsFactory @Inject constructor(
     private val schemesProvider: MaterialSchemesProvider,
-    private val colorUtil: ColorUtil,
-    private val userManager: UserManager
+    private val colorUtil: ColorUtil
 ) {
-    /**
-     * Returns [ViewThemeUtils] for the account with the internal id [userId], or null if there is no such account.
-     */
-    fun forUserId(userId: Long): ViewThemeUtils? = runBlocking { userManager.getUserWithId(userId) }?.let(::forUser)
-
     fun forUser(user: User): ViewThemeUtils {
         val schemes = schemesProvider.getMaterialSchemesForUser(user)
         val android = AndroidViewThemeUtils(schemes, colorUtil)

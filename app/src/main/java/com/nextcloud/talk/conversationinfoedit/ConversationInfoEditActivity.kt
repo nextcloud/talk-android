@@ -30,23 +30,18 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditCallbacks
 import com.nextcloud.talk.conversationinfoedit.ui.ConversationInfoEditScreen
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoEditActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userManager: UserManager
 
     lateinit var conversationInfoEditViewModel: ConversationInfoEditViewModel
 
@@ -83,12 +78,7 @@ class ConversationInfoEditActivity : BaseActivity() {
         applyUserTheme()
 
         val roomToken = intent.extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            Log.e(TAG, "No user found")
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
 
         conversationInfoEditViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]

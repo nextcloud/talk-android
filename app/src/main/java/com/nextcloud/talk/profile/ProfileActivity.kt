@@ -36,7 +36,6 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileDataDto
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.ui.dialog.ScopeModalBottomSheet
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
@@ -60,9 +59,6 @@ class ProfileActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userManager: UserManager
 
     private var currentUser: User? = null
     private var userInfo: UserProfileDataDto? = null

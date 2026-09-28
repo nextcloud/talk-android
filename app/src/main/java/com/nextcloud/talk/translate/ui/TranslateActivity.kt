@@ -28,18 +28,13 @@ import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
 import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import kotlinx.coroutines.runBlocking
 import java.util.Locale
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class TranslateActivity : BaseActivity() {
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var viewModelFactory: TranslateViewModel.Factory
@@ -58,12 +53,7 @@ class TranslateActivity : BaseActivity() {
         applyUserTheme()
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            Log.e(TAG, "No user found")
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
         viewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(TranslateViewModel::class.java) { viewModelFactory.build(user) }

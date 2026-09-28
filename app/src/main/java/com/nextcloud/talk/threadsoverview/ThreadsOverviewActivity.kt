@@ -9,7 +9,6 @@ package com.nextcloud.talk.threadsoverview
 
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,9 +49,7 @@ import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -64,9 +61,6 @@ class ThreadsOverviewActivity : BaseActivity() {
     @Inject
     lateinit var ncApi: NcApi
 
-    @Inject
-    lateinit var userManager: UserManager
-
     lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
 
     var threadsSourceUrl: String = ""
@@ -76,12 +70,7 @@ class ThreadsOverviewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         applyUserTheme()
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            Log.e(TAG, "No user found")
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
         threadsOverviewViewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(ThreadsOverviewViewModel::class.java) {

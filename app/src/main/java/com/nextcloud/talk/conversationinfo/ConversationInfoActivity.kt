@@ -39,7 +39,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -126,9 +125,6 @@ class ConversationInfoActivity : BaseActivity() {
     @Inject
     lateinit var dateUtils: DateUtils
 
-    @Inject
-    lateinit var userManager: UserManager
-
     lateinit var viewModel: ConversationInfoViewModel
 
     private lateinit var conversationToken: String
@@ -199,7 +195,7 @@ class ConversationInfoActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         lifecycleScope.launch {
-            runCatching { checkNotNull(userManager.getUserWithId(resolveUserIdFromIntent())) { "User not found" } }
+            runCatching { checkNotNull(boundUser) { "User not found" } }
                 .onSuccess { user ->
                     conversationUser = user
                     credentials = ApiUtils.getCredentials(user.username, user.token)!!

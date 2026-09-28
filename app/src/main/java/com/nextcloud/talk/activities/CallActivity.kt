@@ -117,7 +117,6 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver.OfferMessageListene
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -169,7 +168,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import org.apache.commons.lang3.StringEscapeUtils
 import org.greenrobot.eventbus.Subscribe
@@ -211,10 +209,6 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var ncApi: NcApi? = null
-
-    @JvmField
-    @Inject
-    var userManager: UserManager? = null
 
     @JvmField
     @Inject
@@ -537,12 +531,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-        val user = runBlocking { userManager!!.getUserWithId(resolveUserIdFromIntent()) }
-        if (user == null) {
-            Log.e(TAG, "No user found for call")
-            finish()
-            return
-        }
+        val user = requireBoundUserOrFinish() ?: return
         conversationUser = user
 
         if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
@@ -1642,7 +1631,7 @@ class CallActivity : CallBaseActivity() {
                             val userId = conversationUser!!.id!!
                             val server = externalSignalingServer!!
                             CoroutineScope(Dispatchers.IO).launch {
-                                userManager!!.updateExternalSignalingServer(userId, server)
+                                userManager.updateExternalSignalingServer(userId, server)
                             }
                         } else {
                             conversationUser!!.externalSignalingServer = externalSignalingServer

@@ -79,9 +79,6 @@ class AccountVerificationActivity : BaseActivity() {
     lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
-    lateinit var userManager: UserManager
-
-    @Inject
     lateinit var cookieManager: CookieManager
 
     private var internalAccountId: Long = -1

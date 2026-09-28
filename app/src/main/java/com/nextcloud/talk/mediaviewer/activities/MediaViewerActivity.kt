@@ -31,13 +31,11 @@ import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.inject.Inject
 
@@ -51,9 +49,6 @@ class MediaViewerActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var userManager: UserManager
-
     private lateinit var viewModel: MediaViewerViewModel
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
@@ -65,7 +60,7 @@ class MediaViewerActivity : BaseActivity() {
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         val seedItems = intent.getParcelableArrayListExtraProvider<MediaViewerItem>(EXTRA_SEED_ITEMS)
         val startMessageId = intent.getLongExtra(EXTRA_START_MESSAGE_ID, -1L)
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        val user = boundUser
 
         if (roomToken == null || seedItems.isNullOrEmpty() || user == null) {
             Log.e(TAG, "Missing data to open the media viewer")
