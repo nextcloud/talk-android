@@ -780,6 +780,7 @@ class MessageInputFragment : Fragment() {
             val backgroundDrawable = it.getColor(R.color.bg_default, null).toDrawable()
             val presenter = MentionAutocompletePresenter(
                 requireContext(),
+                chatActivity.conversationUser,
                 chatActivity.roomToken,
                 chatActivity.chatApiVersion
             )

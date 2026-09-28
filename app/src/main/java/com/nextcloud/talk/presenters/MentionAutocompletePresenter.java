@@ -23,7 +23,6 @@ import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 
 import java.util.ArrayList;
@@ -53,9 +52,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<MentionD
     UserManager userManager;
 
     @Inject
-    CurrentUserProviderOld currentUserProvider;
-
-    @Inject
     ViewThemeUtils viewThemeUtils;
 
     private User currentUser;
@@ -65,20 +61,13 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<MentionD
     private String roomToken;
     private int chatApiVersion;
 
-    public MentionAutocompletePresenter(Context context) {
+    public MentionAutocompletePresenter(Context context, User user, String roomToken, int chatApiVersion) {
         super(context);
-        this.context = context;
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        currentUser = currentUserProvider.getCurrentUser().blockingGet();
-    }
-
-    public MentionAutocompletePresenter(Context context, String roomToken, int chatApiVersion) {
-        super(context);
+        this.currentUser = user;
         this.roomToken = roomToken;
         this.context = context;
         this.chatApiVersion = chatApiVersion;
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        currentUser = currentUserProvider.getCurrentUser().blockingGet();
     }
 
     @Override

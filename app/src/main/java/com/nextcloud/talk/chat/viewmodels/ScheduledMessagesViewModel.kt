@@ -15,8 +15,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.opengraph.ReferenceDto
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 class ScheduledMessagesViewModel @Inject constructor(
     private val chatRepository: ChatMessageRepository,
-    private val currentUserProvider: CurrentUserProvider,
+    private val userManager: UserManager,
     private val chatNetworkDataSource: ChatNetworkDataSource
 ) : ViewModel() {
 
@@ -117,7 +117,7 @@ class ScheduledMessagesViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val user = _currentUserState.value ?: currentUserProvider.getCurrentUser().getOrNull() ?: return@launch
+                val user = _currentUserState.value ?: return@launch
                 if (user.baseUrl.isNullOrBlank()) {
                     return@launch
                 }
@@ -143,10 +143,9 @@ class ScheduledMessagesViewModel @Inject constructor(
         }
     }
 
-    fun loadCurrentUser() {
+    fun loadUser(userId: Long) {
         viewModelScope.launch {
-            val user = currentUserProvider.getCurrentUser().getOrNull()
-            _currentUserState.value = user
+            _currentUserState.value = userManager.getUserWithId(userId)
         }
     }
 
@@ -219,8 +218,7 @@ class ScheduledMessagesViewModel @Inject constructor(
 
     private suspend fun getParentMessageById(token: String, parentMessageId: Long, threadId: Long?): ChatMessage? =
         withContext(Dispatchers.IO) {
-            val userResult = currentUserProvider.getCurrentUser()
-            val user = userResult.getOrElse { return@withContext null }
+            val user = _currentUserState.value ?: return@withContext null
 
             val credentials = user.getCredentials()
 

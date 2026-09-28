@@ -137,11 +137,8 @@ class SharedItemsAdapter(
     }
 
     private fun openMessage(item: SharedItem, context: Context) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val baseUrl = user.baseUrl
         (context as SharedItemsActivity).startContextChatWindowForMessage(
-            credentials,
-            baseUrl,
+            user,
             roomToken,
             item.id,
             null

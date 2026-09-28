@@ -11,11 +11,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.location.GeocodingResult
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import io.reactivex.Observer
@@ -35,7 +35,6 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 class LocationPickerViewModel @Inject constructor(
     private val ncApi: NcApi,
-    private val currentUserProviderOld: CurrentUserProviderOld,
     private val okHttpClient: OkHttpClient,
     private val logger: Logger
 ) : ViewModel() {
@@ -61,6 +60,7 @@ class LocationPickerViewModel @Inject constructor(
     )
 
     data class LocationPickerInitParams(
+        val user: User,
         val roomToken: String,
         val chatApiVersion: Int,
         val geocodingResult: GeocodingResult?,
@@ -78,6 +78,7 @@ class LocationPickerViewModel @Inject constructor(
 
     private var isStateInitialized = false
 
+    private lateinit var user: User
     private var roomToken: String = ""
     private var chatApiVersion: Int = 1
 
@@ -88,6 +89,7 @@ class LocationPickerViewModel @Inject constructor(
         if (isStateInitialized) return
         isStateInitialized = true
 
+        user = params.user
         roomToken = params.roomToken
         chatApiVersion = params.chatApiVersion
         nominatimClient = TalkJsonNominatimClient(params.geocoderBaseUrl, okHttpClient, params.geocoderEmail)
@@ -247,11 +249,9 @@ class LocationPickerViewModel @Inject constructor(
                 "\"latitude\":\"$selectedLat\"," +
                 "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
-
         ncApi.sendLocation(
-            ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            ApiUtils.getUrlToSendLocation(chatApiVersion, currentUser.baseUrl!!, roomToken),
+            ApiUtils.getCredentials(user.username, user.token),
+            ApiUtils.getUrlToSendLocation(chatApiVersion, user.baseUrl!!, roomToken),
             "geo-location",
             objectId,
             metaData

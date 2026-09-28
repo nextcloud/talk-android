@@ -52,8 +52,8 @@ import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ThreadsOverviewActivity : BaseActivity() {

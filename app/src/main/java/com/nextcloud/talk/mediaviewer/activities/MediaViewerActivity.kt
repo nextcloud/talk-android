@@ -37,9 +37,9 @@ import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 
 /**
  * Swipeable, group-aware media viewer - the entry point for every image/video tap in chat. See

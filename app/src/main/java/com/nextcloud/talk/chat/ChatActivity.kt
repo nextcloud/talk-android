@@ -2929,6 +2929,7 @@ class ChatActivity :
 
         if (permissionUtil.isLocationPermissionGranted() && isGpsEnabled) {
             val intent = Intent(this, LocationPickerActivity::class.java)
+            intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
             intent.putExtra(KEY_ROOM_TOKEN, roomToken)
             intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
             startActivity(intent)
@@ -3716,7 +3717,8 @@ class ChatActivity :
             setContent {
                 DateTimeCompose(
                     bundle,
-                    chatViewModel
+                    chatViewModel,
+                    conversationUser
                 ).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
@@ -3821,6 +3823,7 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_TRANSLATE_MESSAGE, message?.getRichText())
 
         val intent = Intent(this, TranslateActivity::class.java)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         intent.putExtras(bundle)
         startActivity(intent)
     }

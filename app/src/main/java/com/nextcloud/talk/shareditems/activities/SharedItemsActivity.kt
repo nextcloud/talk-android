@@ -35,9 +35,9 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.getValue
-import kotlinx.coroutines.runBlocking
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : BaseActivity() {
@@ -175,18 +175,11 @@ class SharedItemsActivity : BaseActivity() {
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
     }
 
-    fun startContextChatWindowForMessage(
-        credentials: String?,
-        baseUrl: String?,
-        roomToken: String,
-        messageId: String?,
-        threadId: String?
-    ) {
+    fun startContextChatWindowForMessage(user: User, roomToken: String, messageId: String?, threadId: String?) {
         binding.genericComposeView.apply {
             setContent {
                 contextChatViewModel.getContextForChatMessages(
-                    credentials = credentials!!,
-                    baseUrl = baseUrl!!,
+                    user = user,
                     token = roomToken,
                     threadId = threadId,
                     messageId = messageId!!,

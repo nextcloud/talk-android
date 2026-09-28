@@ -168,7 +168,7 @@ class ScheduledMessagesActivity : BaseActivity() {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
             LaunchedEffect(Unit) {
-                scheduledMessagesViewModel.loadCurrentUser()
+                scheduledMessagesViewModel.loadUser(resolveUserIdFromIntent())
             }
             MaterialTheme(colorScheme = colorScheme) {
                 CompositionLocalProvider(

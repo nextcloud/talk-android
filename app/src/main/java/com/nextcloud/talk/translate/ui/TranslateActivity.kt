@@ -24,11 +24,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
 import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 import javax.inject.Inject
 
@@ -40,7 +42,7 @@ class TranslateActivity : BaseActivity() {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: TranslateViewModel.Factory
 
     lateinit var viewModel: TranslateViewModel
     lateinit var binding: ActivityTranslateBinding
@@ -55,7 +57,16 @@ class TranslateActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this, viewModelFactory)[TranslateViewModel::class.java]
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            Log.e(TAG, "No user found")
+            finish()
+            return
+        }
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(TranslateViewModel::class.java) { viewModelFactory.build(user) }
+        )[TranslateViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
             when (state) {

@@ -7,9 +7,9 @@
 package com.nextcloud.talk.location.viewmodels
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.location.GeocodingResult
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -30,11 +30,11 @@ class LocationPickerViewModelTest {
     private lateinit var viewModel: LocationPickerViewModel
 
     private val ncApi: NcApi = mock()
-    private val userProvider: CurrentUserProviderOld = mock()
     private val okHttpClient: OkHttpClient = mock()
     private val logger: Logger = mock()
 
     private val initParams = LocationPickerViewModel.LocationPickerInitParams(
+        user = User(id = 1L, username = "user1", baseUrl = "https://server1", token = "token"),
         roomToken = "testRoom",
         chatApiVersion = 1,
         geocodingResult = null,
@@ -48,7 +48,7 @@ class LocationPickerViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = LocationPickerViewModel(ncApi, userProvider, okHttpClient, logger)
+        viewModel = LocationPickerViewModel(ncApi, okHttpClient, logger)
         viewModel.initialize(initParams)
     }
 
