@@ -19,8 +19,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody
 import java.io.BufferedInputStream
 import java.io.File
@@ -42,9 +43,6 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
-    @Inject
     lateinit var appPreferences: AppPreferences
 
     override fun doWork(): Result {
@@ -55,9 +53,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         }
 
         try {
-            val currentUser = currentUserProvider.currentUser.blockingGet()
-            val baseUrl = inputData.getString(KEY_BASE_URL)
-            val userId = inputData.getString(KEY_USER_ID)
+            val currentUser = runBlocking { userManager.getUserWithId(inputData.getLong(KEY_INTERNAL_USER_ID, 0L)) }
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
             val fileId = inputData.getString(KEY_FILE_ID)
             val fileName = inputData.getString(KEY_FILE_NAME)
@@ -65,8 +61,8 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
             totalFileSize = (inputData.getLong(KEY_FILE_SIZE, -1))
 
             checkNotNull(currentUser)
-            checkNotNull(baseUrl)
-            checkNotNull(userId)
+            val baseUrl = checkNotNull(currentUser.baseUrl)
+            val userId = checkNotNull(currentUser.userId)
             checkNotNull(attachmentFolder)
             checkNotNull(fileName)
             checkNotNull(remotePath)
@@ -147,8 +143,6 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
 
     companion object {
         const val TAG = "DownloadFileToCache"
-        const val KEY_BASE_URL = "KEY_BASE_URL"
-        const val KEY_USER_ID = "KEY_USER_ID"
         const val KEY_ATTACHMENT_FOLDER = "KEY_ATTACHMENT_FOLDER"
         const val KEY_FILE_ID = "KEY_FILE_ID"
         const val KEY_FILE_NAME = "KEY_FILE_NAME"

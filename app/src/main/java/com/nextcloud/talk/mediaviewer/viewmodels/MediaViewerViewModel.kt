@@ -12,6 +12,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -137,8 +138,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         _uiState.update { it.copy(downloadingMessageIds = it.downloadingMessageIds + item.messageId) }
 
         val data = Data.Builder()
-            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, user.baseUrl)
-            .putString(DownloadFileToCacheWorker.KEY_USER_ID, user.userId)
+            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
                 CapabilitiesUtil.getAttachmentFolder(user.capabilities!!.spreedCapability!!)

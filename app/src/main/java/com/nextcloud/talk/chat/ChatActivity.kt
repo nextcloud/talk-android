@@ -2416,8 +2416,6 @@ class ChatActivity :
         chatViewModel.syncVoiceMessageUiState(message)
         message.openWhenDownloaded = openWhenDownloaded
 
-        val baseUrl = conversationUser.baseUrl
-        val userId = conversationUser.userId
         val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(
             conversationUser.capabilities!!
                 .spreedCapability!!
@@ -2446,8 +2444,7 @@ class ChatActivity :
         }
 
         val data: Data = Data.Builder()
-            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, baseUrl)
-            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userId)
+            .putLong(KEY_INTERNAL_USER_ID, conversationUserId)
             .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)

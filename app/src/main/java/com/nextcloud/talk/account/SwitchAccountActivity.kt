@@ -24,6 +24,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySwitchAccountBinding
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils.findAvailableAccountsOnDevice
@@ -86,6 +87,18 @@ class SwitchAccountActivity : BaseActivity() {
         supportActionBar?.title = resources!!.getString(R.string.nc_select_an_account)
     }
 
+    private fun switchToAccount(user: User) {
+        lifecycleScope.launch {
+            if (userManager.setUserAsActive(user)) {
+                DirectShareHelper.removeAllShareTargetShortcuts(this@SwitchAccountActivity)
+                cookieManager.cookieStore.removeAll()
+                val intent = ConversationsListActivity.createAccountSwitchIntent(this@SwitchAccountActivity, user.id!!)
+                startActivity(intent)
+                finish()
+            }
+        }
+    }
+
     @Suppress("Detekt.NestedBlockDepth")
     override fun onResume() {
         super.onResume()
@@ -95,13 +108,7 @@ class SwitchAccountActivity : BaseActivity() {
                 if (isAccountImport) {
                     reauthorizeFromImport(item.account)
                 } else {
-                    lifecycleScope.launch {
-                        if (userManager.setUserAsActive(item.user!!)) {
-                            DirectShareHelper.removeAllShareTargetShortcuts(this@SwitchAccountActivity)
-                            cookieManager.cookieStore.removeAll()
-                            finish()
-                        }
-                    }
+                    switchToAccount(item.user!!)
                 }
             }
 

@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.util.concurrent.ExecutionException
@@ -319,8 +320,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
 
         val data: Data = Data.Builder()
-            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, user.baseUrl)
-            .putString(DownloadFileToCacheWorker.KEY_USER_ID, user.userId)
+            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
                 CapabilitiesUtil.getAttachmentFolder(user.capabilities!!.spreedCapability!!)

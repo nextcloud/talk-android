@@ -11,6 +11,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -198,12 +199,8 @@ class ConversationsListActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
-        val targetUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
-        currentUser = if (targetUserId != 0L) {
-            runBlocking { userManager.getUserWithId(targetUserId) }!!
-        } else {
-            currentUserProviderOld.currentUser.blockingGet()
-        }
+        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+            ?: currentUserProviderOld.currentUser.blockingGet()
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
         conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
@@ -237,6 +234,15 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
+        if (newUserId != 0L && newUserId != currentUser?.id) {
+            // The list is bound to one account, so open a fresh instance for the other one.
+            intent.removeFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            finish()
+            startActivity(intent)
+            return
+        }
+        currentUser?.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
         setIntent(intent)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
@@ -350,10 +356,8 @@ class ConversationsListActivity : BaseActivity() {
                         val user = users.firstOrNull { user ->
                             user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
                         }
-                        if (user != null) {
-                            userManager.setUserAsActive(user)
-                            val intent = Intent(context, ConversationsListActivity::class.java)
-                            startActivity(intent)
+                        if (user != null && userManager.setUserAsActive(user)) {
+                            startActivity(createAccountSwitchIntent(context, user.id!!))
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
                         }
@@ -1566,6 +1570,17 @@ class ConversationsListActivity : BaseActivity() {
 
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
+
+        /**
+         * Creates an intent that shows the conversation list of the account with the internal id [userId] in a
+         * cleared task, so no screen of a previously shown account stays in the back stack.
+         */
+        fun createAccountSwitchIntent(context: Context, userId: Long): Intent =
+            Intent(context, ConversationsListActivity::class.java).apply {
+                putExtra(KEY_INTERNAL_USER_ID, userId)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+
         const val BOTTOM_SHEET_DELAY: Long = 2500
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val HTTP_UNAUTHORIZED = 401

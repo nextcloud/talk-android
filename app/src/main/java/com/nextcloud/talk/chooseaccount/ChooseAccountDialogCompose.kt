@@ -299,9 +299,9 @@ class ChooseAccountDialogCompose {
                     scope.launch {
                         if (userManager.setUserAsActive(userItem.user)) {
                             cookieManager.cookieStore.removeAll()
-                            val intent = Intent(activity, ConversationsListActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            activity.startActivity(intent)
+                            activity.startActivity(
+                                ConversationsListActivity.createAccountSwitchIntent(activity, userItem.user.id!!)
+                            )
                             onSelected()
                         }
                     }

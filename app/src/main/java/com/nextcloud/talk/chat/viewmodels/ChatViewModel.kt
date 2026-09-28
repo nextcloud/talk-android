@@ -2376,6 +2376,7 @@ class ChatViewModel @AssistedInject constructor(
 
             val internalConversationId = "${currentUser.id}@$chatRoomToken"
             val workerId = UploadAndShareFilesWorker.upload(
+                userId = internalUserId,
                 fileUri = fileUri,
                 roomToken = room,
                 conversationName = displayName,

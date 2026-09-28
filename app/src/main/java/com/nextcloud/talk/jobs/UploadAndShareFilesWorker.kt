@@ -50,7 +50,7 @@ import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.VideoCompressor
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
@@ -84,9 +84,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -142,7 +139,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     )
     private fun doUpload(): Result {
         return try {
-            currentUser = currentUserProvider.currentUser.blockingGet()
+            currentUser = checkNotNull(
+                runBlocking { userManager.getUserWithId(inputData.getLong(KEY_INTERNAL_USER_ID, 0L)) }
+            )
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
             roomToken = inputData.getString(ROOM_TOKEN)!!
             conversationName = inputData.getString(CONVERSATION_NAME)!!
@@ -527,6 +526,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         @Suppress("LongParameterList")
         fun upload(
+            userId: Long,
             fileUri: String,
             roomToken: String,
             conversationName: String,
@@ -537,6 +537,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             allowUpdate: Boolean = false
         ): UUID {
             val data: Data = Data.Builder()
+                .putLong(KEY_INTERNAL_USER_ID, userId)
                 .putString(DEVICE_SOURCE_FILE, fileUri)
                 .putString(ROOM_TOKEN, roomToken)
                 .putString(CONVERSATION_NAME, conversationName)
