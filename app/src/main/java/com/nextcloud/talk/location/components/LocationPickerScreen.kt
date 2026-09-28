@@ -209,7 +209,7 @@ fun LocationPickerScreen(
     @SuppressLint("LocalContextGetResourceValueCall")
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.values.all { it }) {
+            if (permissions.values.any { it }) {
                 requestLocationUpdates(locationManager, locationListener) { msgRes ->
                     coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(msgRes)) }
                 }
@@ -680,21 +680,27 @@ private fun LocationPickerSharePanel(
 
 @SuppressLint("MissingPermission")
 private fun getLastKnownLocation(locationManager: LocationManager): android.location.Location? =
-    when {
-        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ->
-            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    try {
+        when {
+            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ->
+                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
-        locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ->
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ->
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-        else -> null
+            else -> null
+        }
+    } catch (e: SecurityException) {
+        // before API 31 the GPS provider requires fine location, which may not be granted
+        Log.w(TAG, "Missing permission to get last known location", e)
+        null
     }
 
 private fun isLocationPermissionsGranted(context: Context): Boolean =
     PermissionChecker.checkSelfPermission(
         context,
         Manifest.permission.ACCESS_COARSE_LOCATION
-    ) == PermissionChecker.PERMISSION_GRANTED &&
+    ) == PermissionChecker.PERMISSION_GRANTED ||
         PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
