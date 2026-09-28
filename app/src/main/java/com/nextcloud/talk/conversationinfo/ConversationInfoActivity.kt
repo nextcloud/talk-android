@@ -177,7 +177,7 @@ class ConversationInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         applyUserTheme()
-        val user = requireBoundUserOrFinish() ?: return
+        conversationUser = requireBoundUserOrFinish() ?: return
 
         conversationToken = requireNotNull(
             intent.getStringExtra(KEY_ROOM_TOKEN)
@@ -193,9 +193,8 @@ class ConversationInfoActivity : BaseActivity() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
-        conversationUser = user
-        credentials = ApiUtils.getCredentials(user.username, user.token)!!
-        viewModel.getRoom(user, conversationToken)
+        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
+        viewModel.getRoom(conversationUser, conversationToken)
         if (upcomingEventSummary != null || upcomingEventTime != null) {
             viewModel.setUpcomingEvent(upcomingEventSummary, upcomingEventTime)
         }

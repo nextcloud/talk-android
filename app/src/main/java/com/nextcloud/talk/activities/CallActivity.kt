@@ -532,8 +532,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-        val user = requireBoundUserOrFinish() ?: return
-        conversationUser = user
+        conversationUser = requireBoundUserOrFinish() ?: return
 
         if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
             return

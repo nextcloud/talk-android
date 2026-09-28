@@ -85,8 +85,7 @@ class SharedItemsActivity : BaseActivity() {
         applyUserTheme()
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
 
-        val user = requireBoundUserOrFinish() ?: return
-        conversationUser = user
+        conversationUser = requireBoundUserOrFinish() ?: return
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
         val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)
@@ -106,7 +105,7 @@ class SharedItemsActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            handleModelChange(state, user, roomToken, isUserConversationOwnerOrModerator, isOne2One)
+            handleModelChange(state, conversationUser, roomToken, isUserConversationOwnerOrModerator, isOne2One)
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -118,7 +117,7 @@ class SharedItemsActivity : BaseActivity() {
             }
         })
 
-        viewModel.initialize(user, roomToken)
+        viewModel.initialize(conversationUser, roomToken)
     }
 
     private fun handleModelChange(
