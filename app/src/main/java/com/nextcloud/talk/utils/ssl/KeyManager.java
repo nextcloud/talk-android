@@ -56,7 +56,7 @@ public class KeyManager implements X509KeyManager {
         try {
             currentUser = BuildersKt.runBlocking(
                 EmptyCoroutineContext.INSTANCE,
-                (scope, continuation) -> userManager.getCurrentUser(continuation));
+                (scope, continuation) -> userManager.getDefaultUser(continuation));
         } catch (InterruptedException e) {
             Log.e(TAG, "Interrupted while getting the current user: " + e.getLocalizedMessage());
             Thread.currentThread().interrupt();

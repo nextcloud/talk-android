@@ -50,7 +50,7 @@ class ContactsViewModelTest {
     private var viewModelCount = 0
 
     private fun createViewModel(repo: ContactsRepository): ContactsViewModel {
-        val user = runBlocking { userManager.getCurrentUser() }!!
+        val user = runBlocking { userManager.getDefaultUser() }!!
         return ContactsViewModel(repo, mock<Logger>(), user).also {
             viewModelStore.put("contactsViewModel${viewModelCount++}", it)
         }

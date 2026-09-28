@@ -166,7 +166,7 @@ class MainActivity :
                     val baseUrl = userId.substringAfterLast("@")
                     val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
 
-                    val currentUser = currentUserProviderOld.currentUser.blockingGet()
+                    val currentUser = defaultAccountProvider.getDefaultUserBlocking()
                     if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
@@ -187,13 +187,13 @@ class MainActivity :
     private fun startConversation(userId: String) {
         val roomType = "1"
 
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
-        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             version = apiVersion,
-            baseUrl = currentUser?.baseUrl!!,
+            baseUrl = currentUser.baseUrl!!,
             roomType = roomType,
             invite = userId
         )
@@ -375,7 +375,7 @@ class MainActivity :
     private fun resolveTargetUser(users: List<User>, deepLinkResult: DeepLinkHandler.DeepLinkResult): User? {
         val deepLinkHost = deepLinkResult.serverUrl.toUri().host?.lowercase()
         if (deepLinkHost.isNullOrBlank()) {
-            return currentUserProviderOld.currentUser.blockingGet()
+            return defaultAccountProvider.getDefaultUserBlocking()
         }
 
         // Priority: exact match (username + server) > server match > current user fallback
@@ -394,7 +394,7 @@ class MainActivity :
             userHost == deepLinkHost
         }
 
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()
         val currentUserMatch = currentUser?.takeIf {
             it.baseUrl?.let { url -> url.toUri().host?.lowercase() } == deepLinkHost
         }

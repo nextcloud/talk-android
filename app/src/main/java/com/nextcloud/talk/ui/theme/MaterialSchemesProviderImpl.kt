@@ -11,12 +11,12 @@ import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.users.DefaultAccountProvider
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 internal class MaterialSchemesProviderImpl @Inject constructor(
-    private val userProvider: CurrentUserProviderOld,
+    private val defaultAccountProvider: DefaultAccountProvider,
     private val colorUtil: ColorUtil
 ) : MaterialSchemesProvider {
 
@@ -36,8 +36,8 @@ internal class MaterialSchemesProviderImpl @Inject constructor(
         return themeCache[url]!!
     }
 
-    override fun getMaterialSchemesForCurrentUser(): MaterialSchemes =
-        getMaterialSchemesForUser(userProvider.currentUser.blockingGet())
+    override fun getMaterialSchemesForDefaultUser(): MaterialSchemes =
+        getMaterialSchemesForUser(defaultAccountProvider.getDefaultUserBlocking())
 
     override fun getMaterialSchemesForCapabilities(capabilities: CapabilitiesDto?): MaterialSchemes {
         val serverTheme = ServerThemeImpl(capabilities?.themingCapability, colorUtil)

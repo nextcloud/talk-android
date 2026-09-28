@@ -13,8 +13,8 @@ import com.nextcloud.talk.chooseaccount.data.StatusRepository
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.StatusType
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,11 +22,11 @@ import javax.inject.Inject
 
 class StatusViewModel @Inject constructor(
     private val repository: StatusRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
+    private val defaultAccountProvider: DefaultAccountProvider,
     private val logger: Logger
 ) : ViewModel() {
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
     private val _statusViewState = MutableStateFlow<StatusUiState>(StatusUiState.None)

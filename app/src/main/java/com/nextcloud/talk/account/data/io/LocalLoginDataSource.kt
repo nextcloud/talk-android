@@ -24,7 +24,7 @@ import kotlinx.coroutines.runBlocking
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
 
     fun updateUser(loginData: LoginCompletion) {
-        val currentUser = runBlocking { userManager.getCurrentUser() }
+        val currentUser = runBlocking { userManager.getDefaultUser() }
         if (currentUser != null) {
             currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
             currentUser.token = loginData.appPassword

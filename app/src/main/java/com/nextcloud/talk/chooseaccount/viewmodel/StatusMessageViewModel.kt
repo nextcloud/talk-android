@@ -14,9 +14,9 @@ import com.nextcloud.talk.chooseaccount.data.StatusRepository
 import com.nextcloud.talk.models.json.status.ClearAtDto
 import com.nextcloud.talk.models.json.status.StatusDto
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -36,10 +36,10 @@ private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
 class StatusMessageViewModel @Inject constructor(
     private val repository: StatusRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    private val defaultAccountProvider: DefaultAccountProvider
 ) : ViewModel() {
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     private val _emoji = MutableStateFlow("")

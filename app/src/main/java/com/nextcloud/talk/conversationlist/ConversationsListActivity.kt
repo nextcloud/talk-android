@@ -207,7 +207,7 @@ class ConversationsListActivity : BaseActivity() {
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
         currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-            ?: currentUserProviderOld.currentUser.blockingGet()
+            ?: defaultAccountProvider.getDefaultUserBlocking()
         currentUser?.takeIf { !it.current }?.let { user ->
             // The shown account becomes the last used one, which the account switcher and status views rely on.
             lifecycleScope.launch { userManager.setUserAsActive(user) }

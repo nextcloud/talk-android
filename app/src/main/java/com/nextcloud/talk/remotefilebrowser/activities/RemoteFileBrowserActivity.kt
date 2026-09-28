@@ -88,7 +88,7 @@ class RemoteFileBrowserActivity :
 
         val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
         user = runBlocking {
-            if (userId != 0L) userManager.getUserWithId(userId) else userManager.getCurrentUser()
+            if (userId != 0L) userManager.getUserWithId(userId) else userManager.getDefaultUser()
         } ?: run {
             Log.e(TAG, "No user found")
             finish()

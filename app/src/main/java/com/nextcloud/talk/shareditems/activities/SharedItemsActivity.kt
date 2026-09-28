@@ -188,7 +188,7 @@ class SharedItemsActivity : BaseActivity() {
                 )
                 // Context chat Compose integration is pending for this screen.
                 // ContextChatView(
-                //     user = currentUserProviderOld.currentUser.blockingGet(),
+                //     user = user,
                 //     context,
                 //     viewThemeUtils = viewThemeUtils,
                 //     contextChatViewModel

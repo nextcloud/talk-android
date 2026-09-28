@@ -41,7 +41,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * Only for entry points that have no account context (app launch, share-to, deep links without account).
      * Screens, workers and receivers must use the user they were started for, see [getUserWithId] and [userFlow].
      */
-    suspend fun getCurrentUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+    suspend fun getDefaultUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
 
     /**
      * Emits the user with the given internal id whenever its row changes, or null if it does not exist (anymore).
@@ -50,7 +50,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     /**
      * Ensures that at most one user is marked as active. If several are, the one with the highest id is kept,
-     * matching the user returned by [getCurrentUser].
+     * matching the user returned by [getDefaultUser].
      */
     suspend fun repairMultipleActiveUsers() {
         if (userRepository.getActiveUsersCount() > 1) {
@@ -70,9 +70,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * Room's own [UsersRepository.getActiveUserFlow] is still relied on underneath to seed this and to catch
      * any change to the `current` flag that doesn't go through [setUserAsActive].
      *
-     * This is the default account, not the account of a running screen; screens must use [userFlow].
+     * Screens must not use this but the account they were started for, see [userFlow].
      */
-    val currentUserFlow: StateFlow<User?>
+    val defaultUserFlow: StateFlow<User?>
         get() = activeUserStateFlow
 
     private val activeUserStateFlow: MutableStateFlow<User?> by lazy {

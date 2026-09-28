@@ -34,11 +34,11 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateConstants
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -59,7 +59,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -71,7 +71,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
-        val currentUser = currentUserProvider.currentUser.blockingGet()
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()
 
         accountName = context.getString(R.string.nc_app_product_name)
         accountType = BuildConfig.APPLICATION_ID

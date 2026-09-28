@@ -16,21 +16,20 @@ import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersStartStateChooseAccoun
 import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserErrorStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ChooseAccountShareToViewModel @Inject constructor(
     private val userManager: UserManager,
-    currentUserProvider: CurrentUserProvider
+    defaultAccountProvider: DefaultAccountProvider
 ) : ViewModel() {
 
-    val currentUser: User? = runBlocking { currentUserProvider.getCurrentUser() }.getOrNull()
+    val currentUser: User? = defaultAccountProvider.getDefaultUserBlocking()
 
     private val _chooseAccountShareToViewState: MutableStateFlow<ChooseAccountShareToViewState> =
         MutableStateFlow(LoadUsersStartStateChooseAccountShareTo)

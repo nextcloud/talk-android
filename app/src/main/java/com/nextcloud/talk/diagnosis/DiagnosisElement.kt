@@ -203,7 +203,7 @@ fun buildDiagnosisElements(
 
     // Account
     try {
-        val user = accountUser ?: runBlocking { userManager.getCurrentUser() } ?: return data
+        val user = accountUser ?: runBlocking { userManager.getDefaultUser() } ?: return data
         addHeadline(context.getString(R.string.nc_diagnosis_account_category_title))
         addEntry(context.getString(R.string.nc_diagnosis_account_server), user.baseUrl ?: "")
         addEntry(context.getString(R.string.nc_diagnosis_account_user_name), user.displayName ?: "")

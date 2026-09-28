@@ -90,12 +90,12 @@ import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.launch
 import java.net.CookieManager
 import javax.inject.Inject
@@ -110,7 +110,7 @@ class ChooseAccountDialogCompose {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
     lateinit var cookieManager: CookieManager
@@ -146,7 +146,7 @@ class ChooseAccountDialogCompose {
         val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
         val invitationsStateByUser by invitationsViewModel.invitationsStateByUser.collectAsStateWithLifecycle()
         val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-        val currentUser = currentUserProvider.currentUser.blockingGet()!!
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
         ecosystemManager = EcosystemManager(activity)
 

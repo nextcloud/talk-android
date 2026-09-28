@@ -46,24 +46,24 @@ class UserManagerTest {
     }
 
     @Test
-    fun `getCurrentUser returns the active user without touching any fallback`() =
+    fun `getDefaultUser returns the active user without touching any fallback`() =
         runTest {
             val active = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
             wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
 
-            val result = userManager.getCurrentUser()
+            val result = userManager.getDefaultUser()
 
             assertEquals(active, result)
             verifyBlocking(usersRepository, never()) { getUsersNotScheduledForDeletion() }
         }
 
     @Test
-    fun `getCurrentUser does not write to the database when an active user exists`() =
+    fun `getDefaultUser does not write to the database when an active user exists`() =
         runTest {
             val active = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
             wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
 
-            userManager.getCurrentUser()
+            userManager.getDefaultUser()
 
             verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
         }
@@ -104,7 +104,7 @@ class UserManagerTest {
         }
 
     @Test
-    fun `getCurrentUser falls back to any non-deleted user and sets it active when none is active`() =
+    fun `getDefaultUser falls back to any non-deleted user and sets it active when none is active`() =
         runTest {
             val fallback = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.getUsersNotScheduledForDeletion() }.thenReturn(listOf(fallback))
@@ -113,18 +113,18 @@ class UserManagerTest {
             // now reporting the freshly-activated row.
             wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(null, fallback)
 
-            val result = userManager.getCurrentUser()
+            val result = userManager.getDefaultUser()
 
             assertEquals(fallback, result)
             verifyBlocking(usersRepository) { setUserAsActiveWithId(fallback.id!!) }
         }
 
     @Test
-    fun `getCurrentUser is null when there is no active user and none to fall back to`() =
+    fun `getDefaultUser is null when there is no active user and none to fall back to`() =
         runTest {
             wheneverBlocking { usersRepository.getUsersNotScheduledForDeletion() }.thenReturn(emptyList())
 
-            assertNull(userManager.getCurrentUser())
+            assertNull(userManager.getDefaultUser())
         }
 
     @Test
@@ -280,7 +280,7 @@ class UserManagerTest {
         }
 
     @Test
-    fun `setUserAsActive publishes the new user on currentUserFlow only when it succeeds`() =
+    fun `setUserAsActive publishes the new user on defaultUserFlow only when it succeeds`() =
         runTest {
             val target = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(true)
@@ -288,7 +288,7 @@ class UserManagerTest {
             val result = userManager.setUserAsActive(target)
 
             assertTrue(result)
-            assertEquals(target, userManager.currentUserFlow.value)
+            assertEquals(target, userManager.defaultUserFlow.value)
         }
 
     @Test
@@ -301,11 +301,11 @@ class UserManagerTest {
 
             userManager.setUserAsActive(passed)
 
-            assertEquals(stored, userManager.currentUserFlow.value)
+            assertEquals(stored, userManager.defaultUserFlow.value)
         }
 
     @Test
-    fun `setUserAsActive leaves currentUserFlow untouched when it fails`() =
+    fun `setUserAsActive leaves defaultUserFlow untouched when it fails`() =
         runTest {
             val target = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(false)
@@ -313,7 +313,7 @@ class UserManagerTest {
             val result = userManager.setUserAsActive(target)
 
             assertFalse(result)
-            assertNull(userManager.currentUserFlow.value)
+            assertNull(userManager.defaultUserFlow.value)
         }
 
     @Test

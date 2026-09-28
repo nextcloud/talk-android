@@ -41,6 +41,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
@@ -49,8 +50,6 @@ import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.logger.Logger
@@ -90,12 +89,8 @@ open class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var context: Context
 
-    @Deprecated("Use CurrentUserProvider instead")
     @Inject
-    lateinit var currentUserProviderOld: CurrentUserProviderOld
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProvider
+    lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
     lateinit var logger: Logger
@@ -107,7 +102,7 @@ open class BaseActivity : AppCompatActivity() {
      */
     protected fun resolveUserIdFromIntent(): Long =
         intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
-            ?: (currentUserProviderOld.currentUser.blockingGet()?.id ?: 0L).also {
+            ?: (defaultAccountProvider.getDefaultUserBlocking()?.id ?: 0L).also {
                 intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
             }
 
@@ -349,7 +344,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     override fun startActivity(intent: Intent) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+        val user = defaultAccountProvider.getDefaultUserBlocking()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
             if (user?.baseUrl != null && uri.startsWith(user.baseUrl!!)) {
