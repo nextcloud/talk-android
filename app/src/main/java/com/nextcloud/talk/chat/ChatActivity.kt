@@ -644,63 +644,60 @@ class ChatActivity :
             overflowContainerHeightPx.intValue = binding.chatOverflowContainer.height
         }
 
-        // Resolved synchronously: onStart()/onResume() rely on initData() having run before they are called.
-        val boundUser = runBlocking { userManager.getUserWithId(conversationUserId) }
-        lifecycleScope.launch {
-            runCatching { checkNotNull(boundUser) { "User not found" } }
-                .onSuccess { user ->
-                    conversationUser = user
-                    handleIntent(intent)
-                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+        // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
+        // and registerForActivityResult() must be called before the activity is started.
+        val user = runBlocking { userManager.getUserWithId(conversationUserId) }
+        if (user == null) {
+            Log.e(TAG, "No user found for id $conversationUserId")
+            finish()
+            return
+        }
+        conversationUser = user
+        handleIntent(intent)
+        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, user.baseUrl, roomToken)
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
 
-                    chatViewModel.initData(
-                        user,
-                        credentials!!,
-                        urlForChatting,
-                        conversationThreadId
-                    )
+        chatViewModel.initData(
+            user,
+            credentials!!,
+            urlForChatting,
+            conversationThreadId
+        )
 
-                    conversationThreadId?.let {
-                        val threadUrl = ApiUtils.getUrlForThread(
-                            version = 1,
-                            baseUrl = conversationUser!!.baseUrl,
-                            token = roomToken,
-                            threadId = it.toInt()
-                        )
-                        chatViewModel.getThread(credentials, threadUrl)
-                    }
+        conversationThreadId?.let {
+            val threadUrl = ApiUtils.getUrlForThread(
+                version = 1,
+                baseUrl = user.baseUrl,
+                token = roomToken,
+                threadId = it.toInt()
+            )
+            chatViewModel.getThread(credentials, threadUrl)
+        }
 
-                    messageInputFragment = getMessageInputFragment()
-                    messageInputViewModel.setData(chatViewModel.getChatRepository())
+        messageInputFragment = getMessageInputFragment()
+        messageInputViewModel.setData(chatViewModel.getChatRepository())
 
-                    initObservers()
+        initObservers()
 
-                    pendingTargetMessageId?.let { messageId ->
-                        lifecycleScope.launch {
-                            chatViewModel.openMessageFromGlobalSearch(
-                                messageId = messageId,
-                                threadId = pendingTargetThreadId,
-                                searchQuery = pendingTargetSearchQuery
-                            )
-                        }
-                        pendingTargetMessageId = null
-                        pendingTargetThreadId = null
-                        pendingTargetSearchQuery = null
-                    }
+        pendingTargetMessageId?.let { messageId ->
+            lifecycleScope.launch {
+                chatViewModel.openMessageFromGlobalSearch(
+                    messageId = messageId,
+                    threadId = pendingTargetThreadId,
+                    searchQuery = pendingTargetSearchQuery
+                )
+            }
+            pendingTargetMessageId = null
+            pendingTargetThreadId = null
+            pendingTargetSearchQuery = null
+        }
 
-                    pickMultipleMedia = registerForActivityResult(
-                        ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
-                    ) { uris ->
-                        if (uris.isNotEmpty()) {
-                            onChooseFileResult(uris)
-                        }
-                    }
-                }
-                .onFailure {
-                    logger.e(TAG, "Failed to register media picker activity result launcher", it)
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
+        pickMultipleMedia = registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                onChooseFileResult(uris)
+            }
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
