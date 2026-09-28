@@ -131,6 +131,9 @@ import javax.inject.Inject
 @Suppress("LargeClass", "TooManyFunctions", "NestedBlockDepth")
 class ConversationsListActivity : BaseActivity() {
 
+    // Started without an account on app start, when sharing from other apps and after login.
+    override val allowsDefaultAccount = true
+
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
 

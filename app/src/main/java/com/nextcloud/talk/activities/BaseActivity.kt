@@ -31,6 +31,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.account.BrowserLoginActivity
@@ -102,15 +103,32 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var logger: Logger
 
     /**
-     * Internal id of the account this activity was started for, taken from [BundleKeys.KEY_INTERNAL_USER_ID].
-     * Falls back to the default account for launches without it and writes the id back to the intent, so a
-     * recreated activity stays on the same account. Returns 0 if there is no account at all.
+     * Whether this activity may be started without [BundleKeys.KEY_INTERNAL_USER_ID] and then uses the default
+     * account. Only for entry points without an account context, like the conversation list on app start. For
+     * all other activities a missing id is a bug.
      */
-    protected fun resolveUserIdFromIntent(): Long =
-        intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
-            ?: (defaultAccountProvider.getDefaultUserBlocking()?.id ?: 0L).also {
-                intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
-            }
+    protected open val allowsDefaultAccount: Boolean = false
+
+    /**
+     * Internal id of the account this activity was started for, taken from [BundleKeys.KEY_INTERNAL_USER_ID].
+     * Without it, the default account is used and its id is written to the intent, so a recreated activity stays
+     * on the same account. That is only intended for activities with [allowsDefaultAccount]: for all others it
+     * fails in debug builds and is logged as an error in release builds. Returns 0 if there is no account at all.
+     */
+    protected fun resolveUserIdFromIntent(): Long {
+        val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
+        if (userId != 0L) {
+            return userId
+        }
+        if (!allowsDefaultAccount) {
+            val message = "${javaClass.simpleName} was started without ${BundleKeys.KEY_INTERNAL_USER_ID}"
+            check(!BuildConfig.DEBUG) { message }
+            Log.e(TAG, "$message, using the default account")
+        }
+        return (defaultAccountProvider.getDefaultUserBlocking()?.id ?: 0L).also {
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
+        }
+    }
 
     /**
      * The account this activity was started for (see [resolveUserIdFromIntent]), or null if it doesn't exist.

@@ -514,6 +514,7 @@ class ChatActivity :
                 onBackPressedDispatcher.onBackPressed()
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
                 finish()
@@ -3659,6 +3660,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
         finish()

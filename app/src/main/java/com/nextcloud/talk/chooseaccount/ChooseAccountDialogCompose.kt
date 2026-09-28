@@ -190,7 +190,7 @@ class ChooseAccountDialogCompose {
                 },
                 onOpenSettingsClick = {
                     shouldDismiss.value = true
-                    openSettings(activity)
+                    openSettings(activity, currentUser)
                 },
                 onEcosystemFilesClick = {
                     shouldDismiss.value = true
@@ -269,8 +269,9 @@ class ChooseAccountDialogCompose {
         activity.startActivity(intent)
     }
 
-    private fun openSettings(activity: Activity) {
+    private fun openSettings(activity: Activity, user: User) {
         val intent = Intent(activity, SettingsActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         activity.startActivity(intent)
     }
 
