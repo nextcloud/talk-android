@@ -9,6 +9,7 @@ package com.nextcloud.talk.threadsoverview
 
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
@@ -51,12 +53,13 @@ import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ThreadsOverviewActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var threadsOverviewViewModelFactory: ThreadsOverviewViewModel.Factory
 
     @Inject
     lateinit var ncApi: NcApi
@@ -72,9 +75,17 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            Log.e(TAG, "No user found")
+            finish()
+            return
+        }
         threadsOverviewViewModel = ViewModelProvider(
             this,
-            viewModelFactory
+            ViewModelFactoryWithParams(ThreadsOverviewViewModel::class.java) {
+                threadsOverviewViewModelFactory.build(user)
+            }
         )[ThreadsOverviewViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)

@@ -20,8 +20,6 @@ import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
-import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
-import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
@@ -35,7 +33,6 @@ import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
-import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
@@ -133,16 +130,6 @@ abstract class ViewModelModule {
     @ViewModelKey(OpenConversationsViewModel::class)
     abstract fun openConversationsViewModel(viewModel: OpenConversationsViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(ConversationsListViewModel::class)
-    abstract fun conversationsListViewModel(viewModel: ConversationsListViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ConversationTagsViewModel::class)
-    abstract fun conversationTagsViewModel(viewModel: ConversationTagsViewModel): ViewModel
-
     // @Binds
     // @IntoMap
     // @ViewModelKey(ChatViewModel::class)
@@ -182,11 +169,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LogsViewModel::class)
     abstract fun logsViewModel(viewModel: LogsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ThreadsOverviewViewModel::class)
-    abstract fun threadsOverviewViewModel(viewModel: ThreadsOverviewViewModel): ViewModel
 
     @Binds
     @IntoMap

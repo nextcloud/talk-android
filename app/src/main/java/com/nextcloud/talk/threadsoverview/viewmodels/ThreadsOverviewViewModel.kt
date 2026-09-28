@@ -19,22 +19,21 @@ import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
-class ThreadsOverviewViewModel @Inject constructor(
+class ThreadsOverviewViewModel @AssistedInject constructor(
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
     private val arbitraryStorageManager: ArbitraryStorageManager,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted val currentUser: User
 ) : ViewModel() {
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
 
     private val _threadsListState = MutableStateFlow<ThreadsListUiState>(ThreadsListUiState.None)
     val threadsListState: StateFlow<ThreadsListUiState> = _threadsListState
@@ -59,7 +58,7 @@ class ThreadsOverviewViewModel @Inject constructor(
     private fun updateFollowedThreadsIndicator(url: String, threads: ThreadsOverall) {
         val subscribedThreadsEndpoint = "subscribed-threads"
         if (url.contains(subscribedThreadsEndpoint) && threads.ocs?.data?.isEmpty() == true) {
-            val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
+            val accountId = UserIdUtils.getIdForUser(currentUser)
             arbitraryStorageManager.storeStorageSetting(
                 accountId,
                 FOLLOWED_THREADS_EXIST,
@@ -79,6 +78,11 @@ class ThreadsOverviewViewModel @Inject constructor(
         data object None : ThreadsListUiState()
         data class Success(val threadsList: List<ThreadInfoDto>?) : ThreadsListUiState()
         data class Error(val exception: Exception) : ThreadsListUiState()
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ThreadsOverviewViewModel
     }
 
     companion object {

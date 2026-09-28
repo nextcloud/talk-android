@@ -22,7 +22,9 @@ import com.nextcloud.talk.models.json.tags.ConversationTagErrorOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,18 +32,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-class ConversationTagsViewModel @Inject constructor(
+class ConversationTagsViewModel @AssistedInject constructor(
     private val conversationTagsRepository: ConversationTagsRepository,
     private val repository: OfflineConversationsRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
     private val conversationListUpdater: ConversationListUpdater,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted private val currentUser: User
 ) : ViewModel() {
 
-    private val currentUser: User = currentUserProvider.currentUser.blockingGet()
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
 
     private val _conversationTagsFlow = MutableStateFlow<List<ConversationTagDto>>(emptyList())
@@ -217,6 +217,11 @@ class ConversationTagsViewModel @Inject constructor(
     /** Drops the built-in "Other" tag (not surfaced in this UI) and sorts the rest by sortOrder. */
     private fun List<ConversationTagDto>?.toDisplayTags(): List<ConversationTagDto> =
         this?.filter { it.type != ConversationTagDto.TYPE_OTHER }?.sortedBy { it.sortOrder } ?: emptyList()
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ConversationTagsViewModel
+    }
 
     companion object {
         private val TAG = ConversationTagsViewModel::class.java.simpleName

@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -141,7 +142,10 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var conversationsListViewModelFactory: ConversationsListViewModel.Factory
+
+    @Inject
+    lateinit var conversationTagsViewModelFactory: ConversationTagsViewModel.Factory
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -201,9 +205,24 @@ class ConversationsListActivity : BaseActivity() {
 
         currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
             ?: currentUserProviderOld.currentUser.blockingGet()
+        currentUser?.takeIf { !it.current }?.let { user ->
+            // The shown account becomes the last used one, which the account switcher and status views rely on.
+            lifecycleScope.launch { userManager.setUserAsActive(user) }
+        }
 
-        conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
-        conversationTagsViewModel = ViewModelProvider(this, viewModelFactory)[ConversationTagsViewModel::class.java]
+        val user = currentUser!!
+        conversationsListViewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(ConversationsListViewModel::class.java) {
+                conversationsListViewModelFactory.build(user)
+            }
+        )[ConversationsListViewModel::class.java]
+        conversationTagsViewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(ConversationTagsViewModel::class.java) {
+                conversationTagsViewModelFactory.build(user)
+            }
+        )[ConversationTagsViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -321,7 +340,10 @@ class ConversationsListActivity : BaseActivity() {
             onFederationHintClick = { startActivity(Intent(context, InvitationsActivity::class.java)) },
             onFilterClick = {
                 FilterConversationFragment
-                    .newInstance(conversationsListViewModel.filterStateFlow.value.toMutableMap())
+                    .newInstance(
+                        conversationsListViewModel.filterStateFlow.value.toMutableMap(),
+                        conversationsListViewModel.currentUser
+                    )
                     .show(supportFragmentManager, FilterConversationFragment.TAG)
             },
             onThreadsClick = { openFollowedThreadsOverview() },

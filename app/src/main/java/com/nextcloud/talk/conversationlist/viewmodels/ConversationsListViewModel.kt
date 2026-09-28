@@ -42,8 +42,10 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.withRetry
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -66,13 +68,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @Suppress("LongParameterList", "TooManyFunctions")
-class ConversationsListViewModel @Inject constructor(
+class ConversationsListViewModel @AssistedInject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
     private val openConversationsRepository: OpenConversationsRepository,
     private val contactsRepository: ContactsRepository,
     private val unifiedSearchRepository: UnifiedSearchRepository,
@@ -81,12 +81,11 @@ class ConversationsListViewModel @Inject constructor(
     var userManager: UserManager,
     private val conversationsRepository: ConversationsRepository,
     private val conversationListUpdater: ConversationListUpdater,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted val currentUser: User
 ) : ViewModel() {
 
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
 
     private val searchHelper = MessageSearchHelper(unifiedSearchRepository, currentUser)
 
@@ -576,7 +575,7 @@ class ConversationsListViewModel @Inject constructor(
 
     fun checkIfThreadsExist() {
         val limitForFollowedThreadsExistenceCheck = 1
-        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(currentUser)
 
         fun isLastCheckTooOld(lastCheckDate: Long): Boolean {
             val currentTimeMillis = System.currentTimeMillis()
@@ -944,8 +943,6 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         override fun onNext(invitationsModel: InvitationsModel) {
-            val currentUser = currentUserProvider.currentUser.blockingGet()
-
             if (invitationsModel.user.userId?.equals(currentUser.userId) == true &&
                 invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true
             ) {
@@ -964,6 +961,11 @@ class ConversationsListViewModel @Inject constructor(
         override fun onComplete() {
             // unused atm
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ConversationsListViewModel
     }
 
     companion object {
