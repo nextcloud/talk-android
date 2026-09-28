@@ -26,11 +26,10 @@ import com.nextcloud.talk.databinding.BanItemListBinding
 import com.nextcloud.talk.databinding.FragmentDialogBanListBinding
 import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DialogBanListFragment(val roomToken: String) : DialogFragment() {
+class DialogBanListFragment(val roomToken: String, private val conversationUser: User) : DialogFragment() {
 
     lateinit var binding: FragmentDialogBanListBinding
 
@@ -40,11 +39,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
     lateinit var viewModel: ConversationInfoViewModel
-    private lateinit var conversationUser: User
 
     private val adapter = object : BaseAdapter() {
         private var bans: List<TalkBanDto> = mutableListOf()
@@ -90,7 +85,6 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
         binding = FragmentDialogBanListBinding.inflate(layoutInflater)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
-        conversationUser = currentUserProvider.currentUser.blockingGet()
 
         themeView()
         initObservers()
@@ -145,7 +139,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(roomToken: String) = DialogBanListFragment(roomToken)
+        fun newInstance(roomToken: String, user: User) = DialogBanListFragment(roomToken, user)
         const val ONE_SEC = 1000L
     }
 }

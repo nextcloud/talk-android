@@ -39,6 +39,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -125,6 +126,9 @@ class ConversationInfoActivity : BaseActivity() {
     @Inject
     lateinit var dateUtils: DateUtils
 
+    @Inject
+    lateinit var userManager: UserManager
+
     lateinit var viewModel: ConversationInfoViewModel
 
     private lateinit var conversationToken: String
@@ -194,7 +198,7 @@ class ConversationInfoActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         lifecycleScope.launch {
-            currentUserProvider.getCurrentUser()
+            runCatching { checkNotNull(userManager.getUserWithId(resolveUserIdFromIntent())) { "User not found" } }
                 .onSuccess { user ->
                     conversationUser = user
                     credentials = ApiUtils.getCredentials(user.username, user.token)!!
@@ -320,6 +324,7 @@ class ConversationInfoActivity : BaseActivity() {
             onEditConversation = {
                 editConversationResult.launch(
                     Intent(this, ConversationInfoEditActivity::class.java).apply {
+                        putExtra(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser?.id)
                         putExtra(KEY_ROOM_TOKEN, conversationToken)
                     }
                 )
@@ -404,6 +409,7 @@ class ConversationInfoActivity : BaseActivity() {
         val conv = viewModel.uiState.value.conversation ?: return
         startActivity(
             Intent(this, SharedItemsActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser?.id)
                 putExtra(BundleKeys.KEY_CONVERSATION_NAME, conv.displayName)
                 putExtra(KEY_ROOM_TOKEN, conversationToken)
                 putExtra(
@@ -511,9 +517,10 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     private fun listBans() {
+        val user = conversationUser ?: return
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        transaction.add(android.R.id.content, DialogBanListFragment(conversationToken))
+        transaction.add(android.R.id.content, DialogBanListFragment(conversationToken, user))
             .addToBackStack(null)
             .commit()
     }
@@ -539,6 +546,7 @@ class ConversationInfoActivity : BaseActivity() {
         }
         addParticipantsResult.launch(
             Intent(this, ContactsActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser?.id)
                 putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                 putParcelableArrayListExtra("selectedParticipants", existingParticipants)
                 putExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, true)

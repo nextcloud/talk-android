@@ -16,7 +16,6 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +26,6 @@ import javax.inject.Inject
 
 class ConversationInfoEditViewModel @Inject constructor(
     private val conversationInfoEditRepository: ConversationInfoEditRepository,
-    private val currentUserProvider: CurrentUserProvider,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -38,9 +36,10 @@ class ConversationInfoEditViewModel @Inject constructor(
     private var initialized = false
     private var currentUser: User? = null
 
-    fun initialize(token: String) {
+    fun initialize(user: User, token: String) {
         if (initialized) return
         initialized = true
+        currentUser = user
         roomToken = token
         loadRoom()
     }
@@ -66,8 +65,7 @@ class ConversationInfoEditViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                val user = currentUserProvider.getCurrentUser().getOrThrow()
-                currentUser = user
+                val user = checkNotNull(currentUser)
                 val roomData = conversationInfoEditRepository.getRoom(user, roomToken)
                 val conversationModel = roomData.conversation
                 val isEvent = conversationModel.objectType == ConversationEnums.ObjectType.EVENT
@@ -181,7 +179,7 @@ class ConversationInfoEditViewModel @Inject constructor(
     fun renameRoom(token: String, newName: String) {
         viewModelScope.launch {
             try {
-                val user = currentUser ?: currentUserProvider.getCurrentUser().getOrThrow()
+                val user = currentUser ?: return@launch
                 conversationInfoEditRepository.renameConversation(user, token, newName)
                 _uiState.update { it.copy(navigateBack = true) }
             } catch (exception: Exception) {
