@@ -250,6 +250,7 @@ class MainActivity :
                 if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
                     if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
                         val invitationsIntent = Intent(this@MainActivity, InvitationsActivity::class.java)
+                        invitationsIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
                         startActivity(invitationsIntent)
                     }
                 } else {

@@ -101,11 +101,13 @@ import com.nextcloud.talk.conversationcreation.ui.CreationResultEffect
 import com.nextcloud.talk.conversationcreation.ui.ShareCreatedConversation
 import com.nextcloud.talk.conversationcreation.ui.openConversation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.passwordpolicy.PasswordPolicyField
 import com.nextcloud.talk.passwordpolicy.isPasswordAccepted
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.copyPasswordToClipboard
 import com.nextcloud.talk.utils.DisplayUtils
@@ -117,15 +119,21 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationCreationActivity : BaseActivity() {
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ConversationCreationViewModel.Factory
+
+    @Inject
+    lateinit var userManager: UserManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val userId = resolveUserIdFromIntent()
         val conversationCreationViewModel = ViewModelProvider(
             this,
-            viewModelFactory
+            ViewModelFactoryWithParams(ConversationCreationViewModel::class.java) {
+                viewModelFactory.build(userManager.userFlow(userId))
+            }
         )[ConversationCreationViewModel::class.java]
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
@@ -414,6 +422,10 @@ fun AddParticipants(
                         .padding(start = 16.dp, bottom = 16.dp)
                         .clickable {
                             val intent = Intent(context, ContactsActivity::class.java)
+                            intent.putExtra(
+                                BundleKeys.KEY_INTERNAL_USER_ID,
+                                conversationCreationViewModel.currentUser.value?.id
+                            )
                             intent.putParcelableArrayListExtra(
                                 "selectedParticipants",
                                 participants as ArrayList<AutocompleteUserDto>
@@ -461,6 +473,10 @@ fun AddParticipants(
                 .fillMaxWidth()
                 .clickable {
                     val intent = Intent(context, ContactsActivity::class.java)
+                    intent.putExtra(
+                        BundleKeys.KEY_INTERNAL_USER_ID,
+                        conversationCreationViewModel.currentUser.value?.id
+                    )
                     intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                     intent.putExtra(
                         BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS,

@@ -18,16 +18,22 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ListOpenConversationsActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: OpenConversationsViewModel.Factory
+
+    @Inject
+    lateinit var userManager: UserManager
 
     private lateinit var openConversationsViewModel: OpenConversationsViewModel
 
@@ -36,10 +42,17 @@ class ListOpenConversationsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        openConversationsViewModel = ViewModelProvider(this, viewModelFactory)[OpenConversationsViewModel::class.java]
-        openConversationsViewModel.fetchConversations()
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            finish()
+            return
+        }
 
-        val user = currentUserProviderOld.currentUser.blockingGet()
+        openConversationsViewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(OpenConversationsViewModel::class.java) { viewModelFactory.build(user) }
+        )[OpenConversationsViewModel::class.java]
+        openConversationsViewModel.fetchConversations()
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
@@ -51,13 +64,13 @@ class ListOpenConversationsActivity : BaseActivity() {
                 OpenConversationsScreen(
                     viewState = viewState,
                     searchTerm = searchTerm,
-                    userBaseUrl = user?.baseUrl,
+                    userBaseUrl = user.baseUrl,
                     listenerInput = OpenConversationsScreenListenerInput(
                         onSearchTermChange = { term ->
                             openConversationsViewModel.updateSearchTerm(term)
                             openConversationsViewModel.fetchConversations()
                         },
-                        onConversationClick = { conversation -> user?.id?.let { navigateToChat(it, conversation) } },
+                        onConversationClick = { conversation -> navigateToChat(user.id!!, conversation) },
                         onBackClick = { onBackPressedDispatcher.onBackPressed() }
                     )
                 )

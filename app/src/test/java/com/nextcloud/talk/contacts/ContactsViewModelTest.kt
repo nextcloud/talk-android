@@ -16,8 +16,6 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.preview.DummyUserDaoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,19 +47,11 @@ class ContactsViewModelTest {
     val userManager: UserManager
         get() = UserManager(userRepository)
 
-    val userProvider: CurrentUserProvider
-        get() = CurrentUserProviderImpl(userManager)
-
     private var viewModelCount = 0
 
     private fun createViewModel(repo: ContactsRepository): ContactsViewModel {
-        val provider = userProvider
-        // CurrentUserProviderImpl feeds its currentUserFlow from a real Dispatchers.IO
-        // scope, independent of the test dispatcher's virtual time. Waiting for it here
-        // (real blocking wait, since this isn't inside runTest) ensures the value is
-        // already cached by the time the ViewModel's viewModelScope collects it.
-        runBlocking { provider.getCurrentUser() }
-        return ContactsViewModel(repo, provider, mock<Logger>()).also {
+        val user = runBlocking { userManager.getCurrentUser() }!!
+        return ContactsViewModel(repo, mock<Logger>(), user).also {
             viewModelStore.put("contactsViewModel${viewModelCount++}", it)
         }
     }

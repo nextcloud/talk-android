@@ -70,7 +70,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsViewMo
                     .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, paddingValues.calculateBottomPadding())
             ) {
                 if (!isAddParticipants) {
-                    ConversationCreationOptions()
+                    ConversationCreationOptions(contactsViewModel.currentUser.id!!)
                 }
 
                 ContactsList(

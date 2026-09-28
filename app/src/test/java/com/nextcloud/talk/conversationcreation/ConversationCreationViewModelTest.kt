@@ -16,10 +16,8 @@ import com.nextcloud.talk.models.json.capabilities.PasswordApiDto
 import com.nextcloud.talk.models.json.capabilities.PasswordPolicyDto
 import com.nextcloud.talk.passwordpolicy.FakePasswordPolicyRepository
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -43,12 +41,6 @@ class ConversationCreationViewModelTest {
     private val users = MutableSharedFlow<User>(replay = 1)
     private val repository = FakeConversationCreationRepository()
 
-    private val userProvider = object : CurrentUserProvider {
-        override val currentUserFlow: Flow<User> = users
-        override suspend fun getCurrentUser(timeout: Long): Result<User> =
-            Result.failure(UnsupportedOperationException())
-    }
-
     private val passwordPolicyRepository = FakePasswordPolicyRepository()
 
     private fun viewModel() =
@@ -56,7 +48,7 @@ class ConversationCreationViewModelTest {
             repository,
             ConversationCreator(repository, mock<Logger>()),
             passwordPolicyRepository,
-            userProvider
+            users
         )
 
     private fun user(vararg spreedFeatures: SpreedFeatures, passwordEnforced: Boolean = false) =

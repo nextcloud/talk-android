@@ -33,9 +33,12 @@ import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,13 +46,12 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class ConversationCreationViewModel @Inject constructor(
+class ConversationCreationViewModel @AssistedInject constructor(
     private val repository: ConversationCreationRepository,
     private val conversationCreator: ConversationCreator,
     private val passwordPolicyRepository: PasswordPolicyRepository,
-    currentUserProvider: CurrentUserProvider
+    @Assisted userFlow: Flow<User?>
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUserDto>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUserDto>> = _selectedParticipants
@@ -72,7 +74,7 @@ class ConversationCreationViewModel @Inject constructor(
     private val _isCreatingRoom = MutableStateFlow(false)
     val isCreatingRoom: StateFlow<Boolean> = _isCreatingRoom
 
-    val currentUser: StateFlow<User?> = currentUserProvider.currentUserFlow
+    val currentUser: StateFlow<User?> = userFlow
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val spreedCapabilities
@@ -296,6 +298,11 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun clearCreationState() {
         roomViewState.value = RoomUIState.None
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(userFlow: Flow<User?>): ConversationCreationViewModel
     }
 
     companion object {

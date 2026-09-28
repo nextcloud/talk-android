@@ -44,6 +44,7 @@ import com.nextcloud.talk.data.network.NetworkMonitorImpl
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
@@ -55,7 +56,6 @@ import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
 import com.nextcloud.talk.ui.theme.TalkSpecificViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.logger.Logger
@@ -66,6 +66,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -97,6 +99,9 @@ class ComposePreviewUtils private constructor(context: Context) {
 
     val userProvider: CurrentUserProviderOld
         get() = CurrentUserProviderOldImpl(userManager)
+
+    val currentUser: User
+        get() = runBlocking { userManager.getCurrentUser() }!!
 
     val colorUtil: ColorUtil
         get() = ColorUtil(mContext)
@@ -209,9 +214,6 @@ class ComposePreviewUtils private constructor(context: Context) {
     val audioFocusRequestManager: AudioFocusRequestManager
         get() = AudioFocusRequestManager(mContext)
 
-    val currentUserProvider: CurrentUserProviderImpl
-        get() = CurrentUserProviderImpl(userManager)
-
     object TestLogger : Logger {
         override fun d(tag: String, message: String) = Unit
         override fun d(tag: String, message: String, t: Throwable) = Unit
@@ -245,7 +247,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ContactsRepositoryImpl(ncApiCoroutines)
 
     val contactsViewModel: ContactsViewModel
-        get() = ContactsViewModel(contactsRepository, currentUserProvider, TestLogger)
+        get() = ContactsViewModel(contactsRepository, TestLogger, currentUser)
 
     val conversationCreationViewModel: ConversationCreationViewModel
         get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
@@ -253,7 +255,7 @@ class ComposePreviewUtils private constructor(context: Context) {
                 repository,
                 ConversationCreator(repository, TestLogger),
                 PasswordPolicyRepositoryImpl(ncApiCoroutines),
-                currentUserProvider
+                flowOf(currentUser)
             )
         }
 }

@@ -9,18 +9,20 @@ package com.nextcloud.talk.openconversations.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class OpenConversationsViewModel @Inject constructor(
+class OpenConversationsViewModel @AssistedInject constructor(
     private val repository: OpenConversationsRepository,
-    private val currentUserProvider: CurrentUserProvider
+    @Assisted private val user: User
 ) : ViewModel() {
 
     sealed interface ViewState
@@ -42,40 +44,42 @@ class OpenConversationsViewModel @Inject constructor(
         _viewState.value = FetchConversationsStartState
 
         viewModelScope.launch {
-            currentUserProvider.getCurrentUser()
-                .onSuccess {
-                    val apiVersion = ApiUtils.getConversationApiVersion(
-                        it,
-                        intArrayOf(
-                            ApiUtils.API_V4,
-                            ApiUtils.API_V3,
-                            1
-                        )
-                    )
-                    val url = ApiUtils.getUrlForOpenConversations(apiVersion, it.baseUrl!!)
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                user,
+                intArrayOf(
+                    ApiUtils.API_V4,
+                    ApiUtils.API_V3,
+                    1
+                )
+            )
+            val url = ApiUtils.getUrlForOpenConversations(apiVersion, user.baseUrl!!)
 
-                    repository.fetchConversations(
-                        it,
-                        url,
-                        _searchTerm.value
-                    )
-                        .onSuccess { conversations ->
-                            if (conversations.isEmpty()) {
-                                _viewState.value = FetchConversationsEmptyState
-                            } else {
-                                _viewState.value = FetchConversationsSuccessState(conversations)
-                            }
-                        }
-                        .onFailure { exception ->
-                            Log.e(TAG, "Failed to fetch conversations", exception)
-                            _viewState.value = FetchConversationsErrorState
-                        }
+            repository.fetchConversations(
+                user,
+                url,
+                _searchTerm.value
+            )
+                .onSuccess { conversations ->
+                    if (conversations.isEmpty()) {
+                        _viewState.value = FetchConversationsEmptyState
+                    } else {
+                        _viewState.value = FetchConversationsSuccessState(conversations)
+                    }
+                }
+                .onFailure { exception ->
+                    Log.e(TAG, "Failed to fetch conversations", exception)
+                    _viewState.value = FetchConversationsErrorState
                 }
         }
     }
 
     fun updateSearchTerm(newTerm: String) {
         _searchTerm.value = newTerm
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): OpenConversationsViewModel
     }
 
     companion object {

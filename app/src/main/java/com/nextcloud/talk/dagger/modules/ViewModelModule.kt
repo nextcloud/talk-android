@@ -15,9 +15,7 @@ import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
-import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.diagnosis.DiagnosisViewModel
@@ -26,6 +24,8 @@ import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import com.nextcloud.talk.logger.ui.LogsViewModel
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
+import com.nextcloud.talk.messagesearch.MessageSearchViewModel
+import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
@@ -143,16 +143,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(InvitationsViewModel::class)
     abstract fun invitationsViewModel(viewModel: InvitationsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ContactsViewModel::class)
-    abstract fun contactsViewModel(viewModel: ContactsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ConversationCreationViewModel::class)
-    abstract fun conversationCreationViewModel(viewModel: ConversationCreationViewModel): ViewModel
 
     @Binds
     @IntoMap

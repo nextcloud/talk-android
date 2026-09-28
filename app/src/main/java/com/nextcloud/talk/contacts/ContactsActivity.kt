@@ -20,23 +20,38 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ContactsActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ContactsViewModel.Factory
+
+    @Inject
+    lateinit var userManager: UserManager
+
     private lateinit var contactsViewModel: ContactsViewModel
 
     @SuppressLint("UnrememberedMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            finish()
+            return
+        }
+        contactsViewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(ContactsViewModel::class.java) { viewModelFactory.build(user) }
+        )[ContactsViewModel::class.java]
         setContent {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)

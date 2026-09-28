@@ -151,6 +151,8 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var networkMonitor: NetworkMonitor
 
     @Inject
+    lateinit var contactsViewModelFactory: ContactsViewModel.Factory
+
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
@@ -223,6 +225,10 @@ class ConversationsListActivity : BaseActivity() {
                 conversationTagsViewModelFactory.build(user)
             }
         )[ConversationTagsViewModel::class.java]
+        contactsViewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(ContactsViewModel::class.java) { contactsViewModelFactory.build(user) }
+        )[ContactsViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -337,7 +343,11 @@ class ConversationsListActivity : BaseActivity() {
                 settingsIntent.putExtras(bundle)
                 startActivity(settingsIntent)
             },
-            onFederationHintClick = { startActivity(Intent(context, InvitationsActivity::class.java)) },
+            onFederationHintClick = {
+                val intent = Intent(context, InvitationsActivity::class.java)
+                intent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+                startActivity(intent)
+            },
             onFilterClick = {
                 FilterConversationFragment
                     .newInstance(
@@ -800,6 +810,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivity::class.java)
+        intent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
         startActivity(intent)
     }
 
