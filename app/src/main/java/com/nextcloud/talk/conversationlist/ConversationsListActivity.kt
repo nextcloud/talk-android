@@ -1609,13 +1609,17 @@ class ConversationsListActivity : BaseActivity() {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
         /**
-         * Creates an intent that shows the conversation list of the account with the internal id [userId] in a
-         * cleared task, so no screen of a previously shown account stays in the back stack.
+         * Creates an intent that shows the conversation list of the account with the internal id [userId].
+         * A conversation list already in the task is recreated for that account and all screens above it are
+         * closed, so no screen of a previously shown account stays in the back stack.
+         *
+         * FLAG_ACTIVITY_NEW_TASK must not be used here: activities have an empty task affinity, so it would start
+         * a second task instead of reusing the current one.
          */
         fun createAccountSwitchIntent(context: Context, userId: Long): Intent =
             Intent(context, ConversationsListActivity::class.java).apply {
                 putExtra(KEY_INTERNAL_USER_ID, userId)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
 
         const val BOTTOM_SHEET_DELAY: Long = 2500
