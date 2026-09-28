@@ -181,10 +181,6 @@ public interface AppPreferences {
 
     String getSorting();
 
-    void saveWaveFormForFile(String filename, Float[] array);
-
-    Float[] getWaveFormFromFile(String filename);
-
     void saveLastKnownId(String internalConversationId, int lastReadId);
 
     int getLastKnownId(String internalConversationId, int defaultValue);
