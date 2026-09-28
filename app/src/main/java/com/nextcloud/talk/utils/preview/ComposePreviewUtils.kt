@@ -65,7 +65,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -254,7 +253,7 @@ class ComposePreviewUtils private constructor(context: Context) {
                 repository,
                 ConversationCreator(repository, TestLogger),
                 PasswordPolicyRepositoryImpl(ncApiCoroutines),
-                flowOf(currentUser)
+                currentUser
             )
         }
 }

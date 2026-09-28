@@ -38,27 +38,22 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ConversationCreationViewModel @AssistedInject constructor(
     private val repository: ConversationCreationRepository,
     private val conversationCreator: ConversationCreator,
     private val passwordPolicyRepository: PasswordPolicyRepository,
-    @Assisted userFlow: Flow<User?>
+    @Assisted val currentUser: User
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUserDto>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUserDto>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
     val creationState: StateFlow<RoomUIState> = roomViewState
 
-    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser.value }
+    val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser }
 
     private val passwordGenerator = PasswordGenerator(passwordPolicyRepository)
 
@@ -74,11 +69,8 @@ class ConversationCreationViewModel @AssistedInject constructor(
     private val _isCreatingRoom = MutableStateFlow(false)
     val isCreatingRoom: StateFlow<Boolean> = _isCreatingRoom
 
-    val currentUser: StateFlow<User?> = userFlow
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
     private val spreedCapabilities
-        get() = currentUser.value?.capabilities?.spreedCapability
+        get() = currentUser.capabilities?.spreedCapability
 
     val showPresetSelection: Boolean
         get() = CapabilitiesUtil.hasSpreedFeatureCapability(
@@ -127,7 +119,7 @@ class ConversationCreationViewModel @AssistedInject constructor(
     private var presetsJob: Job? = null
 
     val isLoadingPresets: Boolean
-        get() = currentUser.value == null || (showPresetSelection && _presets.value is PresetsUiState.Loading)
+        get() = showPresetSelection && _presets.value is PresetsUiState.Loading
 
     val pinnedParameters: Set<String>
         get() = (_presets.value as? PresetsUiState.Success)
@@ -137,11 +129,8 @@ class ConversationCreationViewModel @AssistedInject constructor(
             .orEmpty()
 
     init {
-        viewModelScope.launch {
-            currentUser.filterNotNull().first()
-            if (showPresetSelection) {
-                loadPresets()
-            }
+        if (showPresetSelection) {
+            loadPresets()
         }
     }
 
@@ -151,7 +140,7 @@ class ConversationCreationViewModel @AssistedInject constructor(
         _presets.value = PresetsUiState.Loading
         presetsJob = viewModelScope.launch {
             try {
-                val user = currentUser.filterNotNull().first()
+                val user = currentUser
                 val presets = repository.getConversationPresets(
                     ApiUtils.getCredentials(user.username, user.token),
                     ApiUtils.getUrlForConversationPresets(user.baseUrl)
@@ -220,9 +209,8 @@ class ConversationCreationViewModel @AssistedInject constructor(
         parametersChosenByUser.value += ConversationParameter.ROOM_TYPE to roomType
         recomputeParams()
 
-        val user = currentUser.value
-        if (allow && user != null && isPasswordEnforced && _password.value.isEmpty()) {
-            viewModelScope.launch { _password.value = passwordGenerator.generate(user) }
+        if (allow && isPasswordEnforced && _password.value.isEmpty()) {
+            viewModelScope.launch { _password.value = passwordGenerator.generate(currentUser) }
         }
     }
 
@@ -254,8 +242,8 @@ class ConversationCreationViewModel @AssistedInject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants() {
-        val user = currentUser.value
-        if (_isCreatingRoom.value || user == null) {
+        val user = currentUser
+        if (_isCreatingRoom.value) {
             return
         }
         _isCreatingRoom.value = true
@@ -302,7 +290,7 @@ class ConversationCreationViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun build(userFlow: Flow<User?>): ConversationCreationViewModel
+        fun build(user: User): ConversationCreationViewModel
     }
 
     companion object {

@@ -125,36 +125,23 @@ class ConversationCreationActivity : BaseActivity() {
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         applyUserTheme()
-        val userId = resolveUserIdFromIntent()
+        val user = requireBoundUserOrFinish() ?: return
         val conversationCreationViewModel = ViewModelProvider(
             this,
             ViewModelFactoryWithParams(ConversationCreationViewModel::class.java) {
-                viewModelFactory.build(userManager.userFlow(userId))
+                viewModelFactory.build(user)
             }
         )[ConversationCreationViewModel::class.java]
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
-            val currentUser by conversationCreationViewModel.currentUser.collectAsState()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                val user = currentUser
-                if (user == null) {
-                    LoadingScreen()
-                } else {
-                    val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
-                    ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
-                }
+                val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
+                ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
     }
 }
 
@@ -421,7 +408,7 @@ fun AddParticipants(
                             val intent = Intent(context, ContactsActivity::class.java)
                             intent.putExtra(
                                 BundleKeys.KEY_INTERNAL_USER_ID,
-                                conversationCreationViewModel.currentUser.value?.id
+                                conversationCreationViewModel.currentUser.id
                             )
                             intent.putParcelableArrayListExtra(
                                 "selectedParticipants",
@@ -441,12 +428,8 @@ fun AddParticipants(
         }
         participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                val avatarUser = conversationCreationViewModel.currentUser.value
-                val imageUri = if (avatarUser == null) {
-                    null
-                } else {
-                    participant.id?.let { avatarUri(avatarUser, it, DisplayUtils.isDarkModeOn(context)) }
-                }
+                val avatarUser = conversationCreationViewModel.currentUser
+                val imageUri = participant.id?.let { avatarUri(avatarUser, it, DisplayUtils.isDarkModeOn(context)) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
                 AsyncImage(
@@ -472,7 +455,7 @@ fun AddParticipants(
                     val intent = Intent(context, ContactsActivity::class.java)
                     intent.putExtra(
                         BundleKeys.KEY_INTERNAL_USER_ID,
-                        conversationCreationViewModel.currentUser.value?.id
+                        conversationCreationViewModel.currentUser.id
                     )
                     intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                     intent.putExtra(
@@ -810,7 +793,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onHandled = { conversationCreationViewModel.clearCreationState() }
     )
 
-    val currentUser by conversationCreationViewModel.currentUser.collectAsState()
+    val currentUser = conversationCreationViewModel.currentUser
     ShareCreatedConversation(
         roomToken = createdPublicConversation,
         password = password.takeIf { createdWithPassword },
@@ -819,7 +802,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onDismiss = { roomToken ->
             createdPublicConversation = null
             conversationCreationViewModel.clearCreationState()
-            currentUser?.id?.let { openConversation(context, it, roomToken) }
+            currentUser.id?.let { openConversation(context, it, roomToken) }
         }
     )
 
