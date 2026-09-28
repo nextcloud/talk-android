@@ -16,11 +16,7 @@ import kotlinx.coroutines.flow.map
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
-    override suspend fun getActiveUser(): User? {
-        val entity = usersDao.getActiveUser() ?: return null
-        setUserAsActiveWithId(entity.id)
-        return UserMapper.toModel(entity)
-    }
+    override suspend fun getActiveUser(): User? = UserMapper.toModel(usersDao.getActiveUser())
 
     override fun getActiveUserFlow(): Flow<User?> =
         usersDao.getActiveUserFlow().map {
@@ -30,6 +26,13 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override suspend fun getUsers(): List<User> = UserMapper.toModel(usersDao.getUsers())
 
     override suspend fun getUserWithId(id: Long): User? = UserMapper.toModel(usersDao.getUserWithId(id))
+
+    override fun getUserWithIdFlow(id: Long): Flow<User?> =
+        usersDao.getUserWithIdFlow(id).map {
+            UserMapper.toModel(it)
+        }
+
+    override suspend fun getActiveUsersCount(): Int = usersDao.getActiveUsersCount()
 
     override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User? =
         UserMapper.toModel(usersDao.getUserWithIdNotScheduledForDeletion(id))

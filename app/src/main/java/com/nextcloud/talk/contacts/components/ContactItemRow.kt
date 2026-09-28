@@ -10,7 +10,6 @@ package com.nextcloud.talk.contacts.components
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -42,7 +41,6 @@ import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys
 
 @Suppress("LongMethod")
 @Composable
@@ -99,13 +97,12 @@ fun ContactItemRow(contact: AutocompleteUserDto, contactsViewModel: ContactsView
     }
     when (roomUiState) {
         is ContactsViewModel.RoomUiState.Success -> {
-            val conversation = (roomUiState as ContactsViewModel.RoomUiState.Success).conversation
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(bundle)
-            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            context.startActivity(chatIntent)
+            val successState = roomUiState as ContactsViewModel.RoomUiState.Success
+            successState.conversation?.token?.let { token ->
+                val chatIntent = ChatActivity.createIntent(context, successState.userId, token)
+                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                context.startActivity(chatIntent)
+            }
         }
         is ContactsViewModel.RoomUiState.Error -> {
             val errorMessage = (roomUiState as ContactsViewModel.RoomUiState.Error).message

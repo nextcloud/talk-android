@@ -19,8 +19,10 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
@@ -33,9 +35,30 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
     /**
-     * The active user, or - if none is active - any user not scheduled for deletion, which is then set as active.
+     * The default account, i.e. the last active user, or - if none is active - any user not scheduled for deletion,
+     * which is then set as active.
+     *
+     * Only for entry points that have no account context (app launch, share-to, deep links without account).
+     * Screens, workers and receivers must use the user they were started for, see [getUserWithId] and [userFlow].
      */
     suspend fun getCurrentUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+
+    /**
+     * Emits the user with the given internal id whenever its row changes, or null if it does not exist (anymore).
+     */
+    fun userFlow(id: Long): Flow<User?> = userRepository.getUserWithIdFlow(id).distinctUntilChanged()
+
+    /**
+     * Ensures that at most one user is marked as active. If several are, the one with the highest id is kept,
+     * matching the user returned by [getCurrentUser].
+     */
+    suspend fun repairMultipleActiveUsers() {
+        if (userRepository.getActiveUsersCount() > 1) {
+            val activeUser = userRepository.getActiveUser() ?: return
+            Log.w(TAG, "Multiple active users found, keeping ${activeUser.id} as active")
+            userRepository.setUserAsActiveWithId(activeUser.id!!)
+        }
+    }
 
     /**
      * Backed by [activeUserStateFlow] rather than [UsersRepository.getActiveUserFlow] directly, so that
@@ -46,6 +69,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
      * Room's own [UsersRepository.getActiveUserFlow] is still relied on underneath to seed this and to catch
      * any change to the `current` flag that doesn't go through [setUserAsActive].
+     *
+     * This is the default account, not the account of a running screen; screens must use [userFlow].
      */
     val currentUserFlow: StateFlow<User?>
         get() = activeUserStateFlow
@@ -117,7 +142,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         Log.d(TAG, "setUserAsActive:" + user.id!!)
         val success = userRepository.setUserAsActiveWithId(user.id!!)
         if (success) {
-            activeUserStateFlow.value = user
+            activeUserStateFlow.value = userRepository.getUserWithId(user.id!!) ?: user
         }
         return success
     }

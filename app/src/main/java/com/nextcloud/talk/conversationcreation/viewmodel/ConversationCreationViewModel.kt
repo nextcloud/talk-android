@@ -277,7 +277,7 @@ class ConversationCreationViewModel @Inject constructor(
                 )
                 val token = conversation?.token
                 if (!token.isNullOrEmpty()) {
-                    roomViewState.value = RoomUIState.Success(conversation)
+                    roomViewState.value = RoomUIState.Success(user.id!!, conversation)
                 } else {
                     roomViewState.value = RoomUIState.Error()
                     Log.e(TAG, "The created conversation came back without a token")
@@ -311,7 +311,7 @@ sealed interface PresetsUiState {
 
 sealed class RoomUIState {
     data object None : RoomUIState()
-    data class Success(val conversation: ConversationDto?) : RoomUIState()
+    data class Success(val userId: Long, val conversation: ConversationDto?) : RoomUIState()
     data class Error(val serverMessage: String? = null) : RoomUIState()
 }
 

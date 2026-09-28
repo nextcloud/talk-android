@@ -41,7 +41,6 @@ import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -209,11 +208,11 @@ class MainActivity :
             .subscribe(
                 { roomOverall ->
                     if (isFinishing || isDestroyed) return@subscribe
-                    val bundle = Bundle()
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(bundle)
+                    val chatIntent = ChatActivity.createIntent(
+                        context,
+                        currentUser.id!!,
+                        roomOverall.ocs!!.data!!.token
+                    )
                     startActivity(chatIntent)
                 },
                 { e ->
@@ -339,9 +338,7 @@ class MainActivity :
                     listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
 
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
-                    chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
+                    val chatIntent = ChatActivity.createIntent(context, targetUser.id!!, deepLinkResult.roomToken)
 
                     startActivities(arrayOf(listIntent, chatIntent))
                 } else {

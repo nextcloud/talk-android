@@ -21,7 +21,6 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -58,7 +57,7 @@ class ListOpenConversationsActivity : BaseActivity() {
                             openConversationsViewModel.updateSearchTerm(term)
                             openConversationsViewModel.fetchConversations()
                         },
-                        onConversationClick = { conversation -> navigateToChat(conversation) },
+                        onConversationClick = { conversation -> user?.id?.let { navigateToChat(it, conversation) } },
                         onBackClick = { onBackPressedDispatcher.onBackPressed() }
                     )
                 )
@@ -66,12 +65,8 @@ class ListOpenConversationsActivity : BaseActivity() {
         }
     }
 
-    private fun navigateToChat(conversation: ConversationDto) {
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-
-        val chatIntent = Intent(this, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
+    private fun navigateToChat(userId: Long, conversation: ConversationDto) {
+        val chatIntent = ChatActivity.createIntent(this, userId, conversation.token)
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(chatIntent)
     }

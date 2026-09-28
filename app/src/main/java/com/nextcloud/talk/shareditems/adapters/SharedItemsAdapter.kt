@@ -8,7 +8,6 @@
 package com.nextcloud.talk.shareditems.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -129,8 +128,7 @@ class SharedItemsAdapter(
     }
 
     private fun openInChat(item: SharedFileItem, context: Context) {
-        val intent = Intent(context, ChatActivity::class.java).apply {
-            putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        val intent = ChatActivity.createIntent(context, user.id!!, roomToken).apply {
             putExtra(BundleKeys.KEY_MESSAGE_ID, item.messageId)
         }
         context.startActivity(intent)

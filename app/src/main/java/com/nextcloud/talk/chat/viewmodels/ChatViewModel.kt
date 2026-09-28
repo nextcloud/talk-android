@@ -70,6 +70,7 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CharacterAvatarUtils
@@ -81,7 +82,6 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -272,8 +272,9 @@ class ChatViewModel @AssistedInject constructor(
     private val unifiedSearchRepository: UnifiedSearchRepository,
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val currentUserProvider: CurrentUserProvider,
+    private val userManager: UserManager,
     @ApplicationScope private val appScope: CoroutineScope,
+    @Assisted private val internalUserId: Long,
     @Assisted private val chatRoomToken: String,
     @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
@@ -680,18 +681,20 @@ class ChatViewModel @AssistedInject constructor(
     // Current user flows
     // ------------------------------
     private val currentUserFlow: StateFlow<User?> =
-        currentUserProvider.currentUserFlow
+        userManager.userFlow(internalUserId)
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val nonNullUserFlow = currentUserFlow.filterNotNull()
 
+    // Emits once per bound user, so updates of the user row (e.g. capabilities) don't restart dependent flows.
+    private val boundUserFlow = nonNullUserFlow.distinctUntilChangedBy { it.id }
+
     // Unlike conversationFlow below, this is not deduped by lastReadMessage/lastCommonReadMessage,
     // so it also reacts to fields those two ignore, e.g. hasCall (see [hasCall]).
     private val rawConversationFlow: Flow<ConversationModel> =
-        nonNullUserFlow
+        boundUserFlow
             .flatMapLatest { user ->
-                val userId = requireNotNull(user.id)
-                conversationRepository.observeConversation(userId, chatRoomToken)
+                conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
             }
             .mapNotNull { result ->
                 when (result) {
@@ -1149,7 +1152,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     private fun observeLobbyState() {
-        val conversationFromDb = nonNullUserFlow
+        val conversationFromDb = boundUserFlow
             .flatMapLatest { user ->
                 conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
             }
@@ -1189,7 +1192,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     private fun observePinnedMessage() {
-        nonNullUserFlow
+        boundUserFlow
             .flatMapLatest { user ->
                 conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
                     .mapNotNull { result ->
@@ -2829,6 +2832,6 @@ class ChatViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface ChatViewModelFactory {
-        fun build(roomToken: String, conversationThreadId: Long?): ChatViewModel
+        fun build(internalUserId: Long, roomToken: String, conversationThreadId: Long?): ChatViewModel
     }
 }

@@ -10,6 +10,8 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ExternalSignalingServer
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -53,6 +55,52 @@ class UserManagerTest {
 
             assertEquals(active, result)
             verifyBlocking(usersRepository, never()) { getUsersNotScheduledForDeletion() }
+        }
+
+    @Test
+    fun `getCurrentUser does not write to the database when an active user exists`() =
+        runTest {
+            val active = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
+            wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
+
+            userManager.getCurrentUser()
+
+            verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
+        }
+
+    @Test
+    fun `userFlow emits the user with the given id and skips unchanged rows`() =
+        runTest {
+            val userA = user(id = 1, username = "userA", baseUrl = "https://example.com")
+            val renamedUserA = userA.copy(displayName = "New Name")
+            wheneverBlocking { usersRepository.getUserWithIdFlow(1L) }
+                .thenReturn(flowOf(userA, userA.copy(), renamedUserA, null))
+
+            val emissions = userManager.userFlow(1L).toList()
+
+            assertEquals(listOf(userA, renamedUserA, null), emissions)
+        }
+
+    @Test
+    fun `repairMultipleActiveUsers keeps only the resolved active user when several are active`() =
+        runTest {
+            val active = user(id = 2, username = "userB", baseUrl = "https://example.com", current = true)
+            wheneverBlocking { usersRepository.getActiveUsersCount() }.thenReturn(2)
+            wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
+
+            userManager.repairMultipleActiveUsers()
+
+            verifyBlocking(usersRepository) { setUserAsActiveWithId(2L) }
+        }
+
+    @Test
+    fun `repairMultipleActiveUsers does not write when at most one user is active`() =
+        runTest {
+            wheneverBlocking { usersRepository.getActiveUsersCount() }.thenReturn(1)
+
+            userManager.repairMultipleActiveUsers()
+
+            verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
         }
 
     @Test
@@ -241,6 +289,19 @@ class UserManagerTest {
 
             assertTrue(result)
             assertEquals(target, userManager.currentUserFlow.value)
+        }
+
+    @Test
+    fun `setUserAsActive publishes the stored row instead of the passed user`() =
+        runTest {
+            val passed = user(id = 1, username = "userA", baseUrl = "https://example.com")
+            val stored = passed.copy(current = true, displayName = "Stored Name")
+            wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(true)
+            wheneverBlocking { usersRepository.getUserWithId(1L) }.thenReturn(stored)
+
+            userManager.setUserAsActive(passed)
+
+            assertEquals(stored, userManager.currentUserFlow.value)
         }
 
     @Test

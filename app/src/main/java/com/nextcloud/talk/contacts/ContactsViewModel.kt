@@ -198,7 +198,7 @@ class ContactsViewModel @Inject constructor(
                 )
 
                 val conversation: ConversationDto? = room.ocs?.data
-                _roomViewState.value = RoomUiState.Success(conversation)
+                _roomViewState.value = RoomUiState.Success(user.id!!, conversation)
             } catch (exception: Exception) {
                 logger.e(TAG, "Failed to create room", exception)
                 _roomViewState.value = RoomUiState.Error(exception.message ?: "")
@@ -225,7 +225,7 @@ class ContactsViewModel @Inject constructor(
 
     sealed class RoomUiState {
         data object None : RoomUiState()
-        data class Success(val conversation: ConversationDto?) : RoomUiState()
+        data class Success(val userId: Long, val conversation: ConversationDto?) : RoomUiState()
         data class Error(val message: String) : RoomUiState()
     }
 }

@@ -806,7 +806,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onDismiss = { roomToken ->
             createdPublicConversation = null
             conversationCreationViewModel.clearCreationState()
-            openConversation(context, roomToken)
+            currentUser?.id?.let { openConversation(context, it, roomToken) }
         }
     )
 

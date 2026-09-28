@@ -26,7 +26,6 @@ import com.nextcloud.talk.invitation.adapters.InvitationsAdapter
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -136,12 +135,11 @@ class InvitationsActivity : BaseActivity() {
 
                 is InvitationsViewModel.InvitationActionSuccessState -> {
                     if (state.action == ActionEnum.ACCEPT) {
-                        val bundle = Bundle()
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, state.invitation.localToken)
-                        val chatIntent = Intent(context, ChatActivity::class.java)
-                        chatIntent.putExtras(bundle)
-                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(chatIntent)
+                        state.invitation.localToken?.let { token ->
+                            val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, token)
+                            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            startActivity(chatIntent)
+                        }
                     } else {
                         // adapter.currentList.remove(state.invitation)
                         // adapter.notifyDataSetChanged()  // leads to UnsupportedOperationException ?!

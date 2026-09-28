@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.threadsoverview
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
 import androidx.activity.compose.setContent
@@ -50,7 +49,6 @@ import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
 
@@ -124,11 +122,8 @@ class ThreadsOverviewActivity : BaseActivity() {
     }
 
     private fun navigateToChatActivity(roomToken: String, threadId: Int) {
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        bundle.putLong(KEY_THREAD_ID, threadId.toLong())
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
+        val chatIntent = ChatActivity.createIntent(context, resolveUserIdFromIntent(), roomToken)
+        chatIntent.putExtra(KEY_THREAD_ID, threadId.toLong())
         startActivity(chatIntent)
     }
 

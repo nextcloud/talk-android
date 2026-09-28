@@ -62,6 +62,7 @@ class SharedItemsActivity : BaseActivity() {
     val chatViewModel: ChatViewModel by viewModels {
         ViewModelFactoryWithParams(ChatViewModel::class.java) {
             chatViewModelFactory.build(
+                currentUserProviderOld.currentUser.blockingGet().id!!,
                 roomToken,
                 conversationThreadId
             )

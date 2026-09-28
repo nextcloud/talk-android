@@ -96,6 +96,17 @@ open class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var logger: Logger
 
+    /**
+     * Internal id of the account this activity was started for, taken from [BundleKeys.KEY_INTERNAL_USER_ID].
+     * Falls back to the default account for launches without it and writes the id back to the intent, so a
+     * recreated activity stays on the same account. Returns 0 if there is no account at all.
+     */
+    protected fun resolveUserIdFromIntent(): Long =
+        intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
+            ?: (currentUserProviderOld.currentUser.blockingGet()?.id ?: 0L).also {
+                intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
+            }
+
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
 
@@ -344,10 +355,11 @@ open class BaseActivity : AppCompatActivity() {
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
                 } else if (UriUtils.isInstanceInternalTalkUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/call/123456789
-                    val bundle = Bundle()
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, UriUtils.extractRoomTokenFromTalkUrl(uri))
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(bundle)
+                    val chatIntent = ChatActivity.createIntent(
+                        context,
+                        user.id!!,
+                        UriUtils.extractRoomTokenFromTalkUrl(uri)
+                    )
                     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(chatIntent)
                 } else {

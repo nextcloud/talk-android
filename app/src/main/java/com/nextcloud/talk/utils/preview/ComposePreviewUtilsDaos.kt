@@ -205,6 +205,10 @@ class DummyUserDaoImpl : UsersDao {
 
     override suspend fun getUserWithId(id: Long): UserEntity? = dummyUsers.find { it.id == id }
 
+    override fun getUserWithIdFlow(id: Long): Flow<UserEntity?> = flowOf(dummyUsers.find { it.id == id })
+
+    override suspend fun getActiveUsersCount(): Int = if (activeUserId != null) 1 else 0
+
     override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity? =
         dummyUsers.find { it.id == id && !it.scheduledForDeletion }
 

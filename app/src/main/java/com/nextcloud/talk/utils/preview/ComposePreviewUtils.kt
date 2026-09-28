@@ -233,8 +233,9 @@ class ComposePreviewUtils private constructor(context: Context) {
             unifiedSearchRepository = unifiedSearchRepository,
             mediaRecorderManager = mediaRecorderManager,
             audioFocusRequestManager = audioFocusRequestManager,
-            currentUserProvider = currentUserProvider,
+            userManager = userManager,
             appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+            internalUserId = 1L,
             chatRoomToken = "",
             conversationThreadId = null,
             logger = TestLogger

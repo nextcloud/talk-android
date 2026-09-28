@@ -179,6 +179,7 @@ import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.theme.LocalMessageUtils
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
 import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -241,6 +242,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -293,9 +295,13 @@ class ChatActivity :
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
 
+    @Inject
+    lateinit var userManager: UserManager
+
     val chatViewModel: ChatViewModel by viewModels {
         ViewModelFactoryWithParams(ChatViewModel::class.java) {
             chatViewModelFactory.build(
+                conversationUserId,
                 roomToken,
                 conversationThreadId
             )
@@ -361,6 +367,8 @@ class ChatActivity :
         intent.getStringExtra(KEY_ROOM_TOKEN)
             ?: error("roomToken missing")
     }
+
+    val conversationUserId: Long by lazy { resolveUserIdFromIntent() }
 
     val conversationThreadId: Long? by lazy {
         if (intent.hasExtra(KEY_THREAD_ID)) {
@@ -635,8 +643,10 @@ class ChatActivity :
             overflowContainerHeightPx.intValue = binding.chatOverflowContainer.height
         }
 
+        // Resolved synchronously: onStart()/onResume() rely on initData() having run before they are called.
+        val boundUser = runBlocking { userManager.getUserWithId(conversationUserId) }
         lifecycleScope.launch {
-            currentUserProvider.getCurrentUser()
+            runCatching { checkNotNull(boundUser) { "User not found" } }
                 .onSuccess { user ->
                     conversationUser = user
                     handleIntent(intent)
@@ -1286,10 +1296,7 @@ class ChatActivity :
                     retrofitBucket.url,
                     retrofitBucket.queryMap
                 )
-                val bundle = Bundle()
-                bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                val chatIntent = Intent(this@ChatActivity, ChatActivity::class.java)
-                chatIntent.putExtras(bundle)
+                val chatIntent = createIntent(this@ChatActivity, user.id!!, roomOverall.ocs!!.data!!.token)
                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatIntent)
             } catch (e: Exception) {
@@ -1370,6 +1377,14 @@ class ChatActivity :
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, conversationUserId)
+        if (newUserId != conversationUserId) {
+            // A chat instance is bound to one account, so open a fresh instance for the other one.
+            intent.removeFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            finish()
+            startActivity(intent)
+            return
+        }
         val extras: Bundle? = intent.extras
 
         val requestedRoomSwitch = extras?.getBoolean(KEY_SWITCH_TO_ROOM, false) == true
@@ -1820,12 +1835,10 @@ class ChatActivity :
         chatViewModel.createRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.CreateRoomSuccessState -> {
-                    val bundle = Bundle()
-                    bundle.putString(KEY_ROOM_TOKEN, state.roomOverall.ocs!!.data!!.token)
+                    val token = state.roomOverall.ocs!!.data!!.token
 
                     leaveRoom {
-                        val chatIntent = Intent(context, ChatActivity::class.java)
-                        chatIntent.putExtras(bundle)
+                        val chatIntent = createIntent(context, conversationUserId, token)
                         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(chatIntent)
                     }
@@ -2362,7 +2375,6 @@ class ChatActivity :
             }
 
             val bundle = Bundle()
-            bundle.putString(KEY_ROOM_TOKEN, token)
 
             if (startCallAfterRoomSwitch) {
                 bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
@@ -2370,8 +2382,7 @@ class ChatActivity :
             }
 
             leaveRoom {
-                val chatIntent = Intent(context, ChatActivity::class.java)
-                chatIntent.putExtras(bundle)
+                val chatIntent = createIntent(context, conversationUserId, token, bundle)
                 chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatIntent)
             }
@@ -2980,6 +2991,7 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationInfoActivity::class.java)
         intent.putExtras(bundle)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         startActivity(intent)
     }
 
@@ -3231,6 +3243,7 @@ class ChatActivity :
     private fun openScheduledMessages() {
         val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
             putExtra(ScheduledMessagesActivity.ROOM_TOKEN, roomToken)
+            putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
             putExtra(ScheduledMessagesActivity.CONVERSATION_NAME, currentConversation?.displayName.orEmpty())
             if (conversationThreadId != null && conversationThreadId!! > 0) {
                 putExtra(ScheduledMessagesActivity.THREAD_ID, conversationThreadId)
@@ -3471,6 +3484,7 @@ class ChatActivity :
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(
@@ -3556,6 +3570,7 @@ class ChatActivity :
 
             val callIntent = Intent(this, CallActivity::class.java)
             callIntent.putExtras(bundle)
+            callIntent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
             return callIntent
         } ?: run {
             return null
@@ -4022,10 +4037,7 @@ class ChatActivity :
     }
 
     fun openNoteToSelfConversation(noteToSelfRoomToken: String) {
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, noteToSelfRoomToken)
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
+        val chatIntent = createIntent(context, conversationUserId, noteToSelfRoomToken)
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(chatIntent)
     }
@@ -4196,10 +4208,8 @@ class ChatActivity :
 
     fun openThread(messageId: Long) {
         val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putLong(KEY_THREAD_ID, messageId)
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
+        val chatIntent = createIntent(context, conversationUserId, roomToken, bundle)
         startActivity(chatIntent)
     }
 
@@ -4217,6 +4227,7 @@ class ChatActivity :
 
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)
+        threadsOverviewIntent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         startActivity(threadsOverviewIntent)
     }
 
@@ -4303,6 +4314,16 @@ class ChatActivity :
 
     companion object {
         val TAG = ChatActivity::class.java.simpleName
+
+        /**
+         * Creates an intent that opens the conversation [roomToken] of the account with the internal id [userId].
+         */
+        fun createIntent(context: Context, userId: Long, roomToken: String, extras: Bundle? = null): Intent =
+            Intent(context, ChatActivity::class.java).apply {
+                extras?.let { putExtras(it) }
+                putExtra(KEY_ROOM_TOKEN, roomToken)
+                putExtra(KEY_INTERNAL_USER_ID, userId)
+            }
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 3

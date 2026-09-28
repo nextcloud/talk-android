@@ -522,13 +522,11 @@ class ConversationsListActivity : BaseActivity() {
             contactsViewModel.roomViewState.onEach { state ->
                 when (state) {
                     is ContactsViewModel.RoomUiState.Success -> {
-                        val conversation = state.conversation
-                        val bundle = Bundle()
-                        bundle.putString(KEY_ROOM_TOKEN, conversation?.token)
-                        val chatIntent = Intent(context, ChatActivity::class.java)
-                        chatIntent.putExtras(bundle)
-                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(chatIntent)
+                        state.conversation?.token?.let { token ->
+                            val chatIntent = ChatActivity.createIntent(context, state.userId, token)
+                            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            startActivity(chatIntent)
+                        }
                     }
 
                     else -> {}
@@ -599,11 +597,8 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
         if (noteToSelfAvailable) {
-            val bundle = Bundle()
-            bundle.putString(KEY_ROOM_TOKEN, noteToSelfToken)
-            bundle.putBoolean(BundleKeys.KEY_FOCUS_INPUT, true)
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtras(bundle)
+            val intent = ChatActivity.createIntent(context, currentUser!!.id!!, noteToSelfToken)
+            intent.putExtra(BundleKeys.KEY_FOCUS_INPUT, true)
             intent.action = Intent.ACTION_VIEW
             val openNotesString = resources.getString(R.string.open_notes)
 
@@ -646,8 +641,7 @@ class ConversationsListActivity : BaseActivity() {
             return
         }
         val threadId = result.threadId?.toLongOrNull()?.takeIf { it > 0L }
-        val intent = Intent(context, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, result.conversationToken)
+        val intent = ChatActivity.createIntent(context, currentUser!!.id!!, result.conversationToken).apply {
             putExtra(BundleKeys.KEY_MESSAGE_ID, messageId)
             putExtra(BundleKeys.KEY_SEARCH_QUERY, result.searchTerm)
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
@@ -1062,6 +1056,7 @@ class ConversationsListActivity : BaseActivity() {
 
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, it.token)
+            bundle.putLong(KEY_INTERNAL_USER_ID, currentUser!!.id!!)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, currentUser?.baseUrl!!)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
@@ -1099,15 +1094,13 @@ class ConversationsListActivity : BaseActivity() {
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         selectedConversation?.let {
             val bundle = Bundle()
-            bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
             bundle.putString(KEY_SHARED_TEXT, textToPaste)
             if (selectedMessageId != null) {
                 bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
                 selectedMessageId = null
             }
 
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(bundle)
+            val chatIntent = ChatActivity.createIntent(context, currentUser!!.id!!, it.token, bundle)
 
             if (currentUser != null) {
                 if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser?.capabilities?.spreedCapability)) {
@@ -1137,7 +1130,6 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (!filesToShare.isNullOrEmpty()) {
             bundle.putStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS, filesToShare)
@@ -1147,8 +1139,7 @@ class ConversationsListActivity : BaseActivity() {
             selectedMessageId = null
         }
 
-        val intent = Intent(context, ChatActivity::class.java)
-        intent.putExtras(bundle)
+        val intent = ChatActivity.createIntent(context, currentUser!!.id!!, selectedConversation!!.token, bundle)
         startActivity(intent)
 
         clearIntentAction()
@@ -1569,6 +1560,7 @@ class ConversationsListActivity : BaseActivity() {
         bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)
+        threadsOverviewIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
         startActivity(threadsOverviewIntent)
     }
 

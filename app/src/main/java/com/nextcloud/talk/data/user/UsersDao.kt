@@ -52,6 +52,12 @@ interface UsersDao {
     @Query("SELECT * FROM User where id = :id")
     suspend fun getUserWithId(id: Long): UserEntity?
 
+    @Query("SELECT * FROM User where id = :id")
+    fun getUserWithIdFlow(id: Long): Flow<UserEntity?>
+
+    @Query("SELECT COUNT(*) FROM User where current = 1")
+    suspend fun getActiveUsersCount(): Int
+
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
     suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity?
 

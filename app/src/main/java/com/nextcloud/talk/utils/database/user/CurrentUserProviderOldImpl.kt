@@ -12,7 +12,6 @@ import com.nextcloud.talk.users.UserManager
 import io.reactivex.Maybe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -29,27 +28,21 @@ class CurrentUserProviderOldImpl @Inject constructor(private val userManager: Us
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    @Volatile
     private var _currentUser: User? = null
 
-    // synchronized to avoid multiple observers initialized from different threads
-    @get:Synchronized
-    @set:Synchronized
-    private var currentUserObserver: Job? = null
+    init {
+        scope.launch {
+            userManager.currentUserFlow.filterNotNull().collect {
+                _currentUser = it
+            }
+        }
+    }
 
     @Deprecated("Use currentUserProvider instead")
     override val currentUser: Maybe<User>
         get() {
-            if (_currentUser == null) {
-                // immediately get a result synchronously
-                _currentUser = runBlocking { userManager.getCurrentUser() }
-                if (currentUserObserver == null) {
-                    currentUserObserver = scope.launch {
-                        userManager.currentUserFlow.filterNotNull().collect {
-                            _currentUser = it
-                        }
-                    }
-                }
-            }
-            return _currentUser?.let { Maybe.just(it) } ?: Maybe.empty()
+            val user = _currentUser ?: runBlocking { userManager.getCurrentUser() }?.also { _currentUser = it }
+            return user?.let { Maybe.just(it) } ?: Maybe.empty()
         }
 }

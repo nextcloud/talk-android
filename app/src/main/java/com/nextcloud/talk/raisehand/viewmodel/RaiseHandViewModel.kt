@@ -10,22 +10,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.raisehand.RequestAssistanceModel
 import com.nextcloud.talk.raisehand.RequestAssistanceRepository
 import com.nextcloud.talk.raisehand.WithdrawRequestAssistanceModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class RaiseHandViewModel @Inject constructor(
-    private val repository: RequestAssistanceRepository,
-    private val currentUserProvider: CurrentUserProviderOld
-) : ViewModel() {
+class RaiseHandViewModel @Inject constructor(private val repository: RequestAssistanceRepository) : ViewModel() {
 
     @Inject
     lateinit var userManager: UserManager
@@ -39,7 +36,7 @@ class RaiseHandViewModel @Inject constructor(
     object LoweredHandState : ViewState
     object ErrorState : ViewState
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private lateinit var currentUser: User
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(LoweredHandState)
     val viewState: LiveData<ViewState>
@@ -101,7 +98,8 @@ class RaiseHandViewModel @Inject constructor(
         }
     }
 
-    fun setData(roomToken: String, isBreakoutRoom: Boolean) {
+    fun setData(user: User, roomToken: String, isBreakoutRoom: Boolean) {
+        this.currentUser = user
         this.roomToken = roomToken
         this.isBreakoutRoom = isBreakoutRoom
     }

@@ -169,6 +169,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import org.apache.commons.lang3.StringEscapeUtils
 import org.greenrobot.eventbus.Subscribe
@@ -535,7 +536,13 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-        conversationUser = currentUserProviderOld.currentUser.blockingGet()
+        val user = runBlocking { userManager!!.getUserWithId(resolveUserIdFromIntent()) }
+        if (user == null) {
+            Log.e(TAG, "No user found for call")
+            finish()
+            return
+        }
+        conversationUser = user
 
         if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
             return
@@ -576,7 +583,7 @@ class CallActivity : CallBaseActivity() {
         callRecordingViewModel = ViewModelProvider(this, viewModelFactory).get(
             CallRecordingViewModel::class.java
         )
-        callRecordingViewModel!!.setData(roomToken!!)
+        callRecordingViewModel!!.setData(conversationUser, roomToken!!)
         callRecordingViewModel!!.setRecordingState(recordingState)
         callRecordingViewModel!!.viewState.observe(this) { viewState: CallRecordingViewModel.ViewState? ->
             if (viewState is RecordingStartedState) {
@@ -634,7 +641,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun initRaiseHandViewModel() {
         raiseHandViewModel = ViewModelProvider(this, viewModelFactory).get(RaiseHandViewModel::class.java)
-        raiseHandViewModel!!.setData(roomToken!!, isBreakoutRoom)
+        raiseHandViewModel!!.setData(conversationUser, roomToken!!, isBreakoutRoom)
         raiseHandViewModel!!.viewState.observe(this) { viewState: RaiseHandViewModel.ViewState? ->
             var raised = false
             if (viewState is RaisedHandState) {
@@ -2324,14 +2331,12 @@ class CallActivity : CallBaseActivity() {
             openConversationListInPrimaryTask()
             finishAndRemoveTask()
         } else if (switchToRoomToken.isNotEmpty()) {
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val bundle = Bundle()
             bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
             bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
-            bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
             bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
-            intent.putExtras(bundle)
+            val intent = ChatActivity.createIntent(context, conversationUser.id!!, switchToRoomToken, bundle)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
         } else if (shutDownView) {

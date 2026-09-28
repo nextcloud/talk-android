@@ -243,9 +243,7 @@ class ConversationInfoActivity : BaseActivity() {
                             snackbarHostState.showSnackbar(event.text)
                         is ConversationInfoUiEvent.NavigateToChat -> {
                             startActivity(
-                                Intent(this@ConversationInfoActivity, ChatActivity::class.java).apply {
-                                    putExtra(KEY_ROOM_TOKEN, event.token)
-                                }
+                                ChatActivity.createIntent(this@ConversationInfoActivity, user.id!!, event.token)
                             )
                         }
                         ConversationInfoUiEvent.RefreshParticipants ->
@@ -429,6 +427,7 @@ class ConversationInfoActivity : BaseActivity() {
         )
         startActivity(
             Intent(context, ThreadsOverviewActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
                 putExtra(KEY_ROOM_TOKEN, conversationToken)
                 putExtra(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.recent_threads))
                 putExtra(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)

@@ -392,8 +392,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             null
         }
 
-        if (conversation != null && runBlocking { userManager.setUserAsActive(userBeingCalled!!) }) {
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
+        if (conversation != null && userBeingCalled != null) {
+            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled.capabilities?.spreedCapability)) {
                 showEndToEndEncryptionUnsupportedNotification(conversation)
             } else {
                 prepareCallNotificationScreen(conversation)

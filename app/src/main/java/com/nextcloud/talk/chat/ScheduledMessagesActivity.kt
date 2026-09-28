@@ -9,7 +9,6 @@ package com.nextcloud.talk.chat
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
@@ -110,7 +109,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -217,8 +215,8 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     private fun openThread(threadId: Long) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
+        val user = scheduledMessagesViewModel.currentUserState.value ?: return
+        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
             putExtra(KEY_THREAD_ID, threadId)
         }
         startActivity(intent)
@@ -981,17 +979,16 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     private fun openParentMessage(messageId: Long?) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
-
+        val user = scheduledMessagesViewModel.currentUserState.value ?: return
+        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
         startActivity(intent)
     }
 
     private fun openThreadParentMessage(messageId: Long?, threadId: Long?) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
+        val user = scheduledMessagesViewModel.currentUserState.value ?: return
+        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
