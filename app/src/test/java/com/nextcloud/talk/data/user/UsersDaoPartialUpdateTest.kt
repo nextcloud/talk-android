@@ -11,7 +11,12 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.user.model.UserCapabilitiesUpdate
+import com.nextcloud.talk.data.user.model.UserClientCertificateUpdate
+import com.nextcloud.talk.data.user.model.UserCredentialsUpdate
+import com.nextcloud.talk.data.user.model.UserDisplayNameUpdate
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.data.user.model.UserExternalSignalingServerUpdate
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
@@ -60,11 +65,13 @@ class UsersDaoPartialUpdateTest {
         runBlocking {
             dao.setUserAsActiveWithId(USER_B)
 
-            dao.updateCapabilities(USER_A, CapabilitiesDto(), ServerVersionDto(major = 30))
-            dao.updateExternalSignalingServer(USER_A, ExternalSignalingServer(externalSignalingServer = "wss://s"))
-            dao.updateDisplayName(USER_A, "Alice")
-            dao.updateClientCertificate(USER_A, "alias")
-            dao.updateCredentials(USER_A, "newToken", "alias")
+            dao.updateCapabilities(UserCapabilitiesUpdate(USER_A, CapabilitiesDto(), ServerVersionDto(major = 30)))
+            dao.updateExternalSignalingServer(
+                UserExternalSignalingServerUpdate(USER_A, ExternalSignalingServer(externalSignalingServer = "wss://s"))
+            )
+            dao.updateDisplayName(UserDisplayNameUpdate(USER_A, "Alice"))
+            dao.updateClientCertificate(UserClientCertificateUpdate(USER_A, "alias"))
+            dao.updateCredentials(UserCredentialsUpdate(USER_A, "newToken", "alias"))
 
             val userA = dao.getUserWithId(USER_A)!!
             assertFalse(userA.current)

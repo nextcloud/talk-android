@@ -13,10 +13,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.nextcloud.talk.data.user.model.UserCapabilitiesUpdate
+import com.nextcloud.talk.data.user.model.UserClientCertificateUpdate
+import com.nextcloud.talk.data.user.model.UserCredentialsUpdate
+import com.nextcloud.talk.data.user.model.UserDisplayNameUpdate
 import com.nextcloud.talk.data.user.model.UserEntity
-import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
-import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
+import com.nextcloud.talk.data.user.model.UserExternalSignalingServerUpdate
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
 
@@ -93,23 +95,24 @@ interface UsersDao {
     @Query("Update User SET pushConfigurationState = :state WHERE id == :id")
     suspend fun updatePushState(id: Long, state: PushConfigurationState): Int
 
-    // The following updates only write the given columns. Writing back a whole user row that was read earlier
-    // (e.g. before a network request) would reset columns that changed in the meantime, like "current".
+    // The following updates only write the columns of the given partial entity. Writing back a whole user row that
+    // was read earlier (e.g. before a network request) would reset columns that changed in the meantime, like
+    // "current".
 
-    @Query("UPDATE User SET capabilities = :capabilities, serverVersion = :serverVersion WHERE id == :id")
-    suspend fun updateCapabilities(id: Long, capabilities: CapabilitiesDto?, serverVersion: ServerVersionDto?): Int
+    @Update(entity = UserEntity::class)
+    suspend fun updateCapabilities(update: UserCapabilitiesUpdate): Int
 
-    @Query("UPDATE User SET externalSignalingServer = :externalSignalingServer WHERE id == :id")
-    suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer?): Int
+    @Update(entity = UserEntity::class)
+    suspend fun updateExternalSignalingServer(update: UserExternalSignalingServerUpdate): Int
 
-    @Query("UPDATE User SET displayName = :displayName WHERE id == :id")
-    suspend fun updateDisplayName(id: Long, displayName: String?): Int
+    @Update(entity = UserEntity::class)
+    suspend fun updateDisplayName(update: UserDisplayNameUpdate): Int
 
-    @Query("UPDATE User SET clientCertificate = :clientCertificate WHERE id == :id")
-    suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int
+    @Update(entity = UserEntity::class)
+    suspend fun updateClientCertificate(update: UserClientCertificateUpdate): Int
 
-    @Query("UPDATE User SET token = :token, clientCertificate = :clientCertificate WHERE id == :id")
-    suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int
+    @Update(entity = UserEntity::class)
+    suspend fun updateCredentials(update: UserCredentialsUpdate): Int
 
     companion object {
         const val TAG = "UsersDao"

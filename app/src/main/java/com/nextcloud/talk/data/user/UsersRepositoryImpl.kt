@@ -9,6 +9,11 @@ package com.nextcloud.talk.data.user
 
 import android.util.Log
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.data.user.model.UserCapabilitiesUpdate
+import com.nextcloud.talk.data.user.model.UserClientCertificateUpdate
+import com.nextcloud.talk.data.user.model.UserCredentialsUpdate
+import com.nextcloud.talk.data.user.model.UserDisplayNameUpdate
+import com.nextcloud.talk.data.user.model.UserExternalSignalingServerUpdate
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
@@ -71,21 +76,21 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         id: Long,
         capabilities: CapabilitiesDto?,
         serverVersion: ServerVersionDto?
-    ): Int = usersDao.updateCapabilities(id, capabilities, serverVersion)
+    ): Int = usersDao.updateCapabilities(UserCapabilitiesUpdate(id, capabilities, serverVersion))
 
     override suspend fun updateExternalSignalingServer(
         id: Long,
         externalSignalingServer: ExternalSignalingServer?
-    ): Int = usersDao.updateExternalSignalingServer(id, externalSignalingServer)
+    ): Int = usersDao.updateExternalSignalingServer(UserExternalSignalingServerUpdate(id, externalSignalingServer))
 
     override suspend fun updateDisplayName(id: Long, displayName: String?): Int =
-        usersDao.updateDisplayName(id, displayName)
+        usersDao.updateDisplayName(UserDisplayNameUpdate(id, displayName))
 
     override suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int =
-        usersDao.updateClientCertificate(id, clientCertificate)
+        usersDao.updateClientCertificate(UserClientCertificateUpdate(id, clientCertificate))
 
     override suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int =
-        usersDao.updateCredentials(id, token, clientCertificate)
+        usersDao.updateCredentials(UserCredentialsUpdate(id, token, clientCertificate))
 
     companion object {
         private val TAG = UsersRepositoryImpl::class.simpleName
