@@ -413,6 +413,18 @@ class ConversationsListActivity : BaseActivity() {
         return usesPush
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        // The list shows the default account. If another account became the default while the list was in the
+        // background (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which
+        // would lose the pending message.
+        val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
+        val isPickingConversation = forwardMessage || hasActivityActionSendIntent()
+        if (defaultUserId != currentUser?.id && !isPickingConversation) {
+            startActivity(createAccountSwitchIntent(this, defaultUserId))
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
