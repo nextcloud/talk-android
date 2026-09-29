@@ -14,8 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
-import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
-import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
@@ -171,16 +169,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CallViewModel::class)
     abstract fun callViewModel(viewModel: CallViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(StatusViewModel::class)
-    abstract fun statusRepositoryViewModel(viewModel: StatusViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(StatusMessageViewModel::class)
-    abstract fun statusMessageViewModel(viewModel: StatusMessageViewModel): ViewModel
 
     @Binds
     @IntoMap

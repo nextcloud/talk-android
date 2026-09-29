@@ -11,17 +11,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.status.ClearAtDto
 import com.nextcloud.talk.models.json.status.StatusDto
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
-import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import javax.inject.Inject
 
 private const val ONE_SECOND_IN_MILLIS = 1000L
 private const val ONE_MINUTE_IN_SECONDS = 60L
@@ -34,12 +36,11 @@ private const val LAST_SECOND_OF_MINUTE = 59
 private const val HTTP_STATUS_CODE_OK = 200
 private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
-class StatusMessageViewModel @Inject constructor(
+class StatusMessageViewModel @AssistedInject constructor(
     private val repository: StatusRepository,
-    private val defaultAccountProvider: DefaultAccountProvider
+    @Assisted private val currentUser: User
 ) : ViewModel() {
 
-    private val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     private val _emoji = MutableStateFlow("")
@@ -217,6 +218,11 @@ class StatusMessageViewModel @Inject constructor(
     fun updateClearAtPosition(position: Int) {
         _clearAtPosition.value = position
         clearAt = statusMessageClearAtFromPosition(position)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): StatusMessageViewModel
     }
 
     companion object {

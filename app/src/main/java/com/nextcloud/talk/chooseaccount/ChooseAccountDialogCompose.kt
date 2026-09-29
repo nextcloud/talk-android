@@ -84,6 +84,7 @@ import com.nextcloud.talk.chooseaccount.viewmodel.StatusUiState
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
@@ -124,6 +125,12 @@ class ChooseAccountDialogCompose {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var statusViewModelFactory: StatusViewModel.Factory
+
+    @Inject
+    lateinit var statusMessageViewModelFactory: StatusMessageViewModel.Factory
+
+    @Inject
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var ecosystemManager: EcosystemManager
@@ -134,10 +141,23 @@ class ChooseAccountDialogCompose {
     @Suppress("LongMethod")
     fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
         if (shouldDismiss.value) return
-        // Scoped to the hosting activity, so they survive configuration changes and are cleared with it.
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
+        // Scoped to the hosting activity, so they survive configuration changes and are cleared with it. The status
+        // view models are bound to the default account, so they are keyed by it and replaced when the default account
+        // changes while the activity stays open.
         val invitationsViewModel: InvitationsViewModel = viewModel(factory = viewModelFactory)
-        val statusViewModel: StatusViewModel = viewModel(factory = viewModelFactory)
-        val statusMessageViewModel: StatusMessageViewModel = viewModel(factory = viewModelFactory)
+        val statusViewModel: StatusViewModel = viewModel(
+            key = "status-${currentUser.id}",
+            factory = ViewModelFactoryWithParams(StatusViewModel::class.java) {
+                statusViewModelFactory.build(currentUser)
+            }
+        )
+        val statusMessageViewModel: StatusMessageViewModel = viewModel(
+            key = "statusMessage-${currentUser.id}",
+            factory = ViewModelFactoryWithParams(StatusMessageViewModel::class.java) {
+                statusMessageViewModelFactory.build(currentUser)
+            }
+        )
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<StatusDto?>(null) }
         val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }
@@ -146,7 +166,6 @@ class ChooseAccountDialogCompose {
         val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
         val invitationsStateByUser by invitationsViewModel.invitationsStateByUser.collectAsStateWithLifecycle()
         val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-        val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
         ecosystemManager = EcosystemManager(activity)
 
