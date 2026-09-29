@@ -60,10 +60,16 @@ fun StatusMessageModalBottomSheet(currentStatus: StatusDto, viewModel: StatusMes
     var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
     val backToStatus: () -> Unit = { showEmojiPicker = false }
 
-    LaunchedEffect(currentStatus) {
-        viewModel.init(currentStatus)
-        viewModel.checkBackupStatus()
-        viewModel.fetchPredefinedStatuses()
+    // The view model keeps unsaved edits across configuration changes, so it is only initialized when the sheet is
+    // opened, not again when it is recreated.
+    var isInitialized by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!isInitialized) {
+            viewModel.init(currentStatus)
+            viewModel.checkBackupStatus()
+            viewModel.fetchPredefinedStatuses()
+            isInitialized = true
+        }
     }
 
     LaunchedEffect(isDismissed) {
