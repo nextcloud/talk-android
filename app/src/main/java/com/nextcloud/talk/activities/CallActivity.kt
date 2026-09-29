@@ -1596,6 +1596,10 @@ class CallActivity : CallBaseActivity() {
                 Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
                 startActivity(it)
             }
+        } else {
+            // The screen that started the call marked it as dialing, which hangup() would reset. Without resetting
+            // it here, chats would keep treating the app as being in a call.
+            ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
         }
 
         super.onDestroy()
