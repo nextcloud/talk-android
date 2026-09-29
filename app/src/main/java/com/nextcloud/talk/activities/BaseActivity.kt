@@ -111,9 +111,11 @@ open class BaseActivity : AppCompatActivity() {
 
     /**
      * Internal id of the account this activity was started for, taken from [BundleKeys.KEY_INTERNAL_USER_ID].
-     * Without it, the default account is used and its id is written to the intent, so a recreated activity stays
-     * on the same account. That is only intended for activities with [allowsDefaultAccount]: for all others it
-     * fails in debug builds and is logged as an error in release builds. Returns 0 if there is no account at all.
+     * Without it, the default account is used and its id is written to the intent, so an activity recreated after a
+     * configuration change stays on the same account. After process death the system restores the original intent,
+     * so the activity uses the default account at that time. That is only intended for activities with
+     * [allowsDefaultAccount]: for all others it fails in debug builds and is logged as an error in release builds.
+     * Returns 0 if there is no account at all.
      */
     protected fun resolveUserIdFromIntent(): Long {
         val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
