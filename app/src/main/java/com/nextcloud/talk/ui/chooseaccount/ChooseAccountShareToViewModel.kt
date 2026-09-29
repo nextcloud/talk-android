@@ -58,7 +58,7 @@ class ChooseAccountShareToViewModel @Inject constructor(
                 val success = userManager.setUserAsActive(user)
                 _chooseAccountShareToViewState.value =
                     if (success) {
-                        SwitchUserSuccessStateChooseAccountShareTo
+                        SwitchUserSuccessStateChooseAccountShareTo(user)
                     } else {
                         SwitchUserErrorStateChooseAccountShareTo
                     }

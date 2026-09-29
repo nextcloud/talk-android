@@ -25,6 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
@@ -75,7 +76,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
                         }
                         is SwitchUserSuccessStateChooseAccountShareTo -> {
                             cookieManager.cookieStore.removeAll()
-                            activity?.recreate()
+                            (activity as? ConversationsListActivity)?.continueShareWithAccount(state.user.id!!)
                             dismiss()
                         }
                         else -> {}

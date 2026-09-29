@@ -699,6 +699,26 @@ class ConversationsListActivity : BaseActivity() {
         showAccountDialogState.value = true
     }
 
+    /**
+     * Continues the pending share in the conversation list of the account with the internal id [userId].
+     *
+     * The list is bound to its account, so it is replaced by a new one for that account instead of being recreated,
+     * which would keep the account and its view models. The new list gets the shared content and the read access to
+     * the shared files, which ends with this activity.
+     */
+    fun continueShareWithAccount(userId: Long) {
+        val shareIntent = Intent(this, ConversationsListActivity::class.java).apply {
+            action = intent.action
+            setDataAndType(intent.data, intent.type)
+            intent.extras?.let { putExtras(it) }
+            clipData = intent.clipData
+            putExtra(KEY_INTERNAL_USER_ID, userId)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(shareIntent)
+        finish()
+    }
+
     private fun hasActivityActionSendIntent(): Boolean =
         Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 

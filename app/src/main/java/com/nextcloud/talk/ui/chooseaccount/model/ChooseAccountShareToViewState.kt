@@ -13,5 +13,5 @@ sealed interface ChooseAccountShareToViewState
 
 object LoadUsersStartStateChooseAccountShareTo : ChooseAccountShareToViewState
 open class LoadUsersSuccessStateChooseAccountShareTo(val users: List<User>) : ChooseAccountShareToViewState
-object SwitchUserSuccessStateChooseAccountShareTo : ChooseAccountShareToViewState
+class SwitchUserSuccessStateChooseAccountShareTo(val user: User) : ChooseAccountShareToViewState
 object SwitchUserErrorStateChooseAccountShareTo : ChooseAccountShareToViewState
