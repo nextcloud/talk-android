@@ -1287,9 +1287,10 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun renameConversation(conversation: ConversationModel) {
+        val user = currentUser ?: return
         if (!TextUtils.isEmpty(conversation.token)) {
             RenameConversationDialogFragment
-                .newInstance(conversation.token!!, conversation.displayName!!)
+                .newInstance(user, conversation.token!!, conversation.displayName!!)
                 .show(supportFragmentManager, RenameConversationDialogFragment::class.simpleName)
         }
     }

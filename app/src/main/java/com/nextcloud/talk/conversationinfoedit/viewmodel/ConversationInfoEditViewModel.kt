@@ -176,10 +176,9 @@ class ConversationInfoEditViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun renameRoom(token: String, newName: String) {
+    fun renameRoom(user: User, token: String, newName: String) {
         viewModelScope.launch {
             try {
-                val user = currentUser ?: return@launch
                 conversationInfoEditRepository.renameConversation(user, token, newName)
                 _uiState.update { it.copy(navigateBack = true) }
             } catch (exception: Exception) {
