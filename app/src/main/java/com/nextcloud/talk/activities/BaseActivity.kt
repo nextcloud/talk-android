@@ -135,7 +135,7 @@ open class BaseActivity : AppCompatActivity() {
      * activities with [allowsDefaultAccount], a requested account that doesn't exist (anymore) falls back to the
      * default account. Loaded once on first access, which must be after injection.
      */
-    protected val boundUser: User? by lazy {
+    private val boundUser: User? by lazy {
         runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
             ?: if (allowsDefaultAccount) defaultAccountProvider.getDefaultUserBlocking() else null
     }
@@ -143,7 +143,7 @@ open class BaseActivity : AppCompatActivity() {
     /**
      * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
      */
-    protected fun requireBoundUserOrFinish(): User? =
+    private fun requireBoundUserOrFinish(): User? =
         boundUser ?: run {
             Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
             finish()
@@ -154,7 +154,7 @@ open class BaseActivity : AppCompatActivity() {
      * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser].
      * Must be called after injection and before any view is themed.
      */
-    protected fun applyUserTheme() {
+    private fun applyUserTheme() {
         boundUser?.let { viewThemeUtils = viewThemeUtilsFactory.forUser(it) }
     }
 

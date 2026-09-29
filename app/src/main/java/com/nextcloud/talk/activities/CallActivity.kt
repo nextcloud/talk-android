@@ -323,6 +323,9 @@ class CallActivity : CallBaseActivity() {
     private var hasExternalSignalingServer = false
     private var conversationPassword: String? = null
     private var powerManagerUtils: PowerManagerUtils? = null
+
+    // Whether onCreate() got past its early exits, so onDestroy() has a call to clean up.
+    private var isCallSetUp = false
     private var handler: Handler? = null
 
     private val callingTimeoutRunnable = Runnable { setCallState(CallStatus.CALLING_TIMEOUT) }
@@ -442,19 +445,7 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
-        applyUserTheme()
-
-        // Register broadcast receiver for ending call from notification
-        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
-
-        // internal receiver for notification actions, so not exported
-        registerPermissionHandlerBroadcastReceiver(
-            endCallFromNotificationReceiver,
-            endCallFilter,
-            permissionUtil!!.privateBroadcastPermission,
-            null,
-            ReceiverFlag.NotExported
-        )
+        conversationUser = setUpBoundUserOrFinish() ?: return
 
         callViewModel = ViewModelProvider(this, viewModelFactory)[CallViewModel::class.java]
 
@@ -532,7 +523,6 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-        conversationUser = requireBoundUserOrFinish() ?: return
 
         if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
             return
@@ -543,6 +533,20 @@ class CallActivity : CallBaseActivity() {
             baseUrl = conversationUser!!.baseUrl
         }
         powerManagerUtils = PowerManagerUtils()
+
+        // Register broadcast receiver for ending call from notification
+        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
+
+        // internal receiver for notification actions, so not exported
+        registerPermissionHandlerBroadcastReceiver(
+            endCallFromNotificationReceiver,
+            endCallFilter,
+            permissionUtil!!.privateBroadcastPermission,
+            null,
+            ReceiverFlag.NotExported
+        )
+
+        isCallSetUp = true
 
         setCallState(CallStatus.CONNECTING)
 
@@ -1554,36 +1558,38 @@ class CallActivity : CallBaseActivity() {
     public override fun onDestroy() {
         Log.d(TAG, "onDestroy: currentCallStatus=$currentCallStatus")
 
-        // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
-        // signaling listeners all live here), so always clean up and hang up. Background survival is
-        // achieved via moveTaskToBack/PiP, which do not destroy the activity.
-        if (signalingMessageReceiver != null) {
-            signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
-            signalingMessageReceiver!!.removeListener(offerMessageListener)
-        }
-        if (localStream != null) {
-            localStream!!.dispose()
-            localStream = null
-            Log.d(TAG, "Disposed localStream")
-        } else {
-            Log.d(TAG, "localStream is null")
-        }
-        if (currentCallStatus !== CallStatus.LEAVING) {
-            hangup(true, false)
-        }
-        CallForegroundService.stop(applicationContext)
+        if (isCallSetUp) {
+            // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
+            // signaling listeners all live here), so always clean up and hang up. Background survival is
+            // achieved via moveTaskToBack/PiP, which do not destroy the activity.
+            if (signalingMessageReceiver != null) {
+                signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
+                signalingMessageReceiver!!.removeListener(offerMessageListener)
+            }
+            if (localStream != null) {
+                localStream!!.dispose()
+                localStream = null
+                Log.d(TAG, "Disposed localStream")
+            } else {
+                Log.d(TAG, "localStream is null")
+            }
+            if (currentCallStatus !== CallStatus.LEAVING) {
+                hangup(true, false)
+            }
+            CallForegroundService.stop(applicationContext)
 
-        powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+            powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
 
-        try {
-            unregisterReceiver(endCallFromNotificationReceiver)
-        } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
-        }
+            try {
+                unregisterReceiver(endCallFromNotificationReceiver)
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
+            }
 
-        pendingCallIntent?.let {
-            Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
-            startActivity(it)
+            pendingCallIntent?.let {
+                Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
+                startActivity(it)
+            }
         }
 
         super.onDestroy()
