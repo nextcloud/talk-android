@@ -150,12 +150,20 @@ open class BaseActivity : AppCompatActivity() {
             null
         }
 
+    private var isUserThemeApplied = false
+
     /**
-     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser].
-     * Must be called after injection and before any view is themed.
+     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser]. Applied
+     * only once, so fragments that already took over [viewThemeUtils] keep the same instance.
      */
     private fun applyUserTheme() {
-        boundUser?.let { viewThemeUtils = viewThemeUtilsFactory.forUser(it) }
+        if (isUserThemeApplied) {
+            return
+        }
+        boundUser?.let {
+            viewThemeUtils = viewThemeUtilsFactory.forUser(it)
+            isUserThemeApplied = true
+        }
     }
 
     /**
@@ -198,6 +206,11 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         logger.i(this::class.java.simpleName, "onCreate")
+        // Fragments restored in super.onCreate() take over viewThemeUtils there, so apply the theme of the account
+        // before. Without an account in the intent, the injected theme of the default account is the right one.
+        if (intent.hasExtra(BundleKeys.KEY_INTERNAL_USER_ID)) {
+            applyUserTheme()
+        }
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
 
