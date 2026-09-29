@@ -170,7 +170,11 @@ class ProfileActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
+        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) } ?: run {
+            // The account was removed while this screen was in the background.
+            finish()
+            return
+        }
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
         pickImage = PickImage(this, currentUser)

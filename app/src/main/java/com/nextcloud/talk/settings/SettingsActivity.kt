@@ -185,7 +185,7 @@ class SettingsActivity :
 
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
-        getCurrentUser()
+        if (!getCurrentUser()) return
         handleIntent(intent)
 
         setupLicenceSetting(isOnline.value)
@@ -315,8 +315,7 @@ class SettingsActivity :
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
             .observe(this) { workInfo ->
-                if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
-                    getCurrentUser()
+                if (workInfo?.state == WorkInfo.State.SUCCEEDED && getCurrentUser()) {
                     setupCheckables(isOnline)
                 }
             }
@@ -334,9 +333,17 @@ class SettingsActivity :
         viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
     }
 
-    private fun getCurrentUser() {
-        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
-        credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+    /**
+     * Loads the account of this screen again. Finishes the activity and returns false if it was removed meanwhile.
+     */
+    private fun getCurrentUser(): Boolean {
+        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) } ?: run {
+            finish()
+            return false
+        }
+        currentUser = user
+        credentials = ApiUtils.getCredentials(user.username, user.token)
+        return true
     }
 
     private fun setupPhoneBookIntegration(isOnline: Boolean) {
