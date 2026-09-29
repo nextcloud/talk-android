@@ -11,6 +11,7 @@ import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ThemingCapabilityDto
 import com.nextcloud.talk.users.DefaultAccountProvider
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -20,20 +21,15 @@ internal class MaterialSchemesProviderImpl @Inject constructor(
     private val colorUtil: ColorUtil
 ) : MaterialSchemesProvider {
 
-    private val themeCache: ConcurrentHashMap<String, MaterialSchemes> = ConcurrentHashMap()
+    // Keyed by the theming capability instead of the server: accounts on the same server can have different colors
+    // (e.g. a personal primary color), and changed colors are used after the next capabilities sync.
+    private val themeCache: ConcurrentHashMap<ThemeKey, MaterialSchemes> = ConcurrentHashMap()
 
     override fun getMaterialSchemesForUser(user: User?): MaterialSchemes {
-        val url: String = if (user?.baseUrl != null) {
-            user.baseUrl!!
-        } else {
-            FALLBACK_URL
-        }
-
-        if (!themeCache.containsKey(url)) {
-            themeCache[url] = getMaterialSchemesForCapabilities(user?.capabilities)
-        }
-
-        return themeCache[url]!!
+        val capabilities = user?.capabilities
+        // A copy, so a later change of the capability object cannot change the key of a cached entry.
+        val key = ThemeKey(capabilities?.themingCapability?.copy())
+        return themeCache.getOrPut(key) { getMaterialSchemesForCapabilities(capabilities) }
     }
 
     override fun getMaterialSchemesForDefaultUser(): MaterialSchemes =
@@ -44,7 +40,5 @@ internal class MaterialSchemesProviderImpl @Inject constructor(
         return MaterialSchemes.fromServerTheme(serverTheme)
     }
 
-    companion object {
-        const val FALLBACK_URL = "NULL"
-    }
+    private data class ThemeKey(val themingCapability: ThemingCapabilityDto?)
 }
