@@ -59,6 +59,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -547,6 +548,11 @@ class CallActivity : CallBaseActivity() {
         )
 
         isCallSetUp = true
+
+        if (!conversationUser.current) {
+            // Taking part in a call uses its account, so it becomes the last used one.
+            lifecycleScope.launch { userManager.setUserAsActive(conversationUser) }
+        }
 
         setCallState(CallStatus.CONNECTING)
 
