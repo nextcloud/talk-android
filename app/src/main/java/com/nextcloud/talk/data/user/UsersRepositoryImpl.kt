@@ -35,7 +35,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
             UserMapper.toModel(it)
         }
 
-    override suspend fun getActiveUsersCount(): Int = usersDao.getActiveUsersCount()
+    override suspend fun repairMultipleActiveUsers(): Int = usersDao.repairMultipleActiveUsers()
 
     override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User? =
         UserMapper.toModel(usersDao.getUserWithIdNotScheduledForDeletion(id))

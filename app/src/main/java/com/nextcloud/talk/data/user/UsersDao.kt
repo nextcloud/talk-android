@@ -58,8 +58,14 @@ interface UsersDao {
     @Query("SELECT * FROM User where id = :id")
     fun getUserWithIdFlow(id: Long): Flow<UserEntity?>
 
-    @Query("SELECT COUNT(*) FROM User where current = 1")
-    suspend fun getActiveUsersCount(): Int
+    // If several users are marked as active, keeps only the one with the highest id, matching getActiveUser().
+    // A single statement, so it cannot interleave with setUserAsActiveWithId(). SQLite evaluates the uncorrelated
+    // subqueries once, before any row is changed.
+    @Query(
+        "UPDATE User SET current = CASE WHEN id = (SELECT MAX(id) FROM User WHERE current = 1) THEN 1 ELSE 0 END " +
+            "WHERE (SELECT COUNT(*) FROM User WHERE current = 1) > 1"
+    )
+    suspend fun repairMultipleActiveUsers(): Int
 
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
     suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity?

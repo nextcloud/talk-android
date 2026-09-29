@@ -53,10 +53,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * matching the user returned by [getDefaultUser].
      */
     suspend fun repairMultipleActiveUsers() {
-        if (userRepository.getActiveUsersCount() > 1) {
-            val activeUser = userRepository.getActiveUser() ?: return
-            Log.w(TAG, "Multiple active users found, keeping ${activeUser.id} as active")
-            userRepository.setUserAsActiveWithId(activeUser.id!!)
+        if (userRepository.repairMultipleActiveUsers() > 0) {
+            Log.w(TAG, "Multiple active users found, kept the one with the highest id as active")
         }
     }
 

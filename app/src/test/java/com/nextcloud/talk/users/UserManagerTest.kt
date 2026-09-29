@@ -82,24 +82,13 @@ class UserManagerTest {
         }
 
     @Test
-    fun `repairMultipleActiveUsers keeps only the resolved active user when several are active`() =
+    fun `repairMultipleActiveUsers repairs in a single repository call`() =
         runTest {
-            val active = user(id = 2, username = "userB", baseUrl = "https://example.com", current = true)
-            wheneverBlocking { usersRepository.getActiveUsersCount() }.thenReturn(2)
-            wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
+            wheneverBlocking { usersRepository.repairMultipleActiveUsers() }.thenReturn(2)
 
             userManager.repairMultipleActiveUsers()
 
-            verifyBlocking(usersRepository) { setUserAsActiveWithId(2L) }
-        }
-
-    @Test
-    fun `repairMultipleActiveUsers does not write when at most one user is active`() =
-        runTest {
-            wheneverBlocking { usersRepository.getActiveUsersCount() }.thenReturn(1)
-
-            userManager.repairMultipleActiveUsers()
-
+            verifyBlocking(usersRepository) { repairMultipleActiveUsers() }
             verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
         }
 

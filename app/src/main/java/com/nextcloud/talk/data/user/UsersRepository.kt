@@ -21,7 +21,7 @@ interface UsersRepository {
     suspend fun getUsers(): List<User>
     suspend fun getUserWithId(id: Long): User?
     fun getUserWithIdFlow(id: Long): Flow<User?>
-    suspend fun getActiveUsersCount(): Int
+    suspend fun repairMultipleActiveUsers(): Int
     suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User?
     suspend fun getUserWithUserId(userId: String): User?
     suspend fun getUsersScheduledForDeletion(): List<User>
