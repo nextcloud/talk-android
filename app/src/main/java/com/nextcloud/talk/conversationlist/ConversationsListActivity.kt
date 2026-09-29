@@ -245,10 +245,16 @@ class ConversationsListActivity : BaseActivity() {
         super.onNewIntent(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         if (newUserId != 0L && newUserId != currentUser?.id) {
-            // The list is bound to one account, so open a fresh instance for the other one.
-            intent.removeFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            // The list is bound to one account, so open a fresh instance for the other one. The activity is
+            // exported, so the received intent is not launched again as it is: the new one only targets this
+            // activity and takes over no flags like URI permission grants.
+            val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
+                action = intent.action
+                data = intent.data
+                intent.extras?.let { putExtras(it) }
+            }
             finish()
-            startActivity(intent)
+            startActivity(accountIntent)
             return
         }
         currentUser?.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }

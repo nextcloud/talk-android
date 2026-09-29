@@ -69,7 +69,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-@Suppress("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList", "TooManyFunctions", "Detekt.LongMethod")
 class ConversationsListViewModel @AssistedInject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
