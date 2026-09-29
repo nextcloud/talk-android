@@ -55,7 +55,7 @@ import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import dynamiccolor.DynamicScheme
 import dynamiccolor.MaterialDynamicColors
-import eu.davidea.flexibleadapter.utils.FlexibleUtils
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -343,8 +343,8 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun themeAndHighlightText(textView: TextView, originalText: String?, c: String?) {
         withScheme(textView) { scheme ->
             var constraint = c
-            constraint = FlexibleUtils.toLowerCase(constraint)
-            var start = FlexibleUtils.toLowerCase(originalText).indexOf(constraint)
+            constraint = (constraint ?: "").lowercase(Locale.getDefault())
+            var start = (originalText ?: "").lowercase(Locale.getDefault()).indexOf(constraint)
             if (start != -1) {
                 val spanText = Spannable.Factory.getInstance().newSpannable(originalText)
                 do {
@@ -356,7 +356,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     spanText.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    start = FlexibleUtils.toLowerCase(originalText)
+                    start = (originalText ?: "").lowercase(Locale.getDefault())
                         .indexOf(constraint, end + 1) // +1 skips the consecutive span
                 } while (start != -1)
                 textView.setText(spanText, TextView.BufferType.SPANNABLE)

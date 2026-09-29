@@ -22,17 +22,12 @@ import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
-import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
-import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
-import eu.davidea.viewholders.FlexibleViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -54,7 +49,7 @@ class MessageSearchActivity : BaseActivity() {
     private lateinit var viewModel: MessageSearchViewModel
 
     private var searchViewDisposable: Disposable? = null
-    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
+    private lateinit var adapter: MessageSearchAdapter
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -76,6 +71,7 @@ class MessageSearchActivity : BaseActivity() {
         user = currentUserProviderOld.currentUser.blockingGet()
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         viewModel.initialize(roomToken)
+        setupAdapter()
         setupStateObserver()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -126,39 +122,23 @@ class MessageSearchActivity : BaseActivity() {
         setAdapterItems(state)
     }
 
+    private fun setupAdapter() {
+        adapter = MessageSearchAdapter(
+            user = user,
+            viewThemeUtils = viewThemeUtils,
+            onResultClick = { viewModel.selectMessage(it) },
+            onLoadMoreClick = { viewModel.loadMore() }
+        )
+        binding.messageSearchRecycler.adapter = adapter
+    }
+
     private fun setAdapterItems(state: MessageSearchViewModel.LoadedState) {
         val loadMoreItems = if (state.hasMore) {
-            listOf(LoadMoreResultsItem)
+            listOf(MessageSearchAdapter.Item.LoadMore)
         } else {
             emptyList()
         }
-        val newItems =
-            state.results.map { MessageResultItem(this, user, it, false, viewThemeUtils) } + loadMoreItems
-
-        if (adapter != null) {
-            adapter!!.updateDataSet(newItems)
-        } else {
-            createAdapter(newItems)
-        }
-    }
-
-    private fun createAdapter(items: List<AbstractFlexibleItem<out FlexibleViewHolder>>) {
-        adapter = FlexibleAdapter(items)
-        binding.messageSearchRecycler.adapter = adapter
-        adapter!!.addListener(object : FlexibleAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, position: Int): Boolean {
-                val item = adapter!!.getItem(position)
-                when (item) {
-                    is LoadMoreResultsItem -> {
-                        viewModel.loadMore()
-                    }
-                    is MessageResultItem -> {
-                        viewModel.selectMessage(item.messageEntry)
-                    }
-                }
-                return false
-            }
-        })
+        adapter.submitList(state.results.map { MessageSearchAdapter.Item.Result(it) } + loadMoreItems)
     }
 
     private fun onFinish() {
