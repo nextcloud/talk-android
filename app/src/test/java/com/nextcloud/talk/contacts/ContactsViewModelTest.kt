@@ -31,6 +31,7 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("TooManyFunctions")
 class ContactsViewModelTest {
     private lateinit var viewModel: ContactsViewModel
     private val repository: ContactsRepository = FakeRepositorySuccess()
@@ -124,6 +125,14 @@ class ContactsViewModelTest {
             assert(viewModel.roomViewState.value is ContactsViewModel.RoomUiState.Success)
             val successState = viewModel.roomViewState.value as ContactsViewModel.RoomUiState.Success
             assert(successState.conversation == FakeItem.roomOverall.ocs!!.data)
+        }
+
+    @Test
+    fun `a handled room state is cleared`() =
+        runTest {
+            viewModel.createRoom("1", "users", "s@gmail.com", null)
+            viewModel.clearRoomState()
+            assert(viewModel.roomViewState.value is ContactsViewModel.RoomUiState.None)
         }
 
     @Test

@@ -550,6 +550,7 @@ class ConversationsListActivity : BaseActivity() {
                             chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             startActivity(chatIntent)
                         }
+                        contactsViewModel.clearRoomState()
                     }
 
                     else -> {}

@@ -9,7 +9,6 @@
 package com.nextcloud.talk.contacts.components
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.CompanionClass
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.loadImage
@@ -96,14 +94,8 @@ fun ContactItemRow(contact: AutocompleteUserDto, contactsViewModel: ContactsView
         }
     }
     when (roomUiState) {
-        is ContactsViewModel.RoomUiState.Success -> {
-            val successState = roomUiState as ContactsViewModel.RoomUiState.Success
-            successState.conversation?.token?.let { token ->
-                val chatIntent = ChatActivity.createIntent(context, successState.userId, token)
-                chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                context.startActivity(chatIntent)
-            }
-        }
+        // Opening the created conversation is handled once by ContactsActivity, not by every row.
+        is ContactsViewModel.RoomUiState.Success -> {}
         is ContactsViewModel.RoomUiState.Error -> {
             val errorMessage = (roomUiState as ContactsViewModel.RoomUiState.Error).message
             Box(

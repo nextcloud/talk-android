@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Suppress("TooManyFunctions")
 class ContactsViewModel @AssistedInject constructor(
     private val repository: ContactsRepository,
     private val logger: Logger,
@@ -168,6 +169,13 @@ class ContactsViewModel @AssistedInject constructor(
                 }
             }
         }
+
+    /**
+     * Resets [roomViewState] once its result was handled, so a recreated screen doesn't handle it again.
+     */
+    fun clearRoomState() {
+        _roomViewState.value = RoomUiState.None
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
