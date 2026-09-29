@@ -51,8 +51,7 @@ class ScheduledMessagesViewModel @Inject constructor(
 
     data class ScheduledMessageErrorState(val error: Throwable? = null) : ScheduledMessageActionState
 
-    private val _currentUserState = MutableStateFlow<User?>(null)
-    val currentUserState: StateFlow<User?> = _currentUserState
+    private lateinit var user: User
 
     sealed interface SendNowMessageState
     object SendNowMessageIdleState : SendNowMessageState
@@ -115,7 +114,6 @@ class ScheduledMessagesViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val user = _currentUserState.value ?: return@launch
                 if (user.baseUrl.isNullOrBlank()) {
                     return@launch
                 }
@@ -142,7 +140,7 @@ class ScheduledMessagesViewModel @Inject constructor(
     }
 
     fun setUser(user: User) {
-        _currentUserState.value = user
+        this.user = user
     }
 
     @Suppress("LongParameterList")
@@ -214,8 +212,6 @@ class ScheduledMessagesViewModel @Inject constructor(
 
     private suspend fun getParentMessageById(token: String, parentMessageId: Long, threadId: Long?): ChatMessage? =
         withContext(Dispatchers.IO) {
-            val user = _currentUserState.value ?: return@withContext null
-
             val credentials = user.getCredentials()
 
             val apiVersion = ApiUtils.getChatApiVersion(

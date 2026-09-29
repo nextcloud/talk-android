@@ -132,6 +132,8 @@ class ScheduledMessagesActivity : BaseActivity() {
 
     private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
 
+    private lateinit var conversationUser: User
+
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
@@ -162,13 +164,12 @@ class ScheduledMessagesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
+        conversationUser = setUpBoundUserOrFinish() ?: return
         scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
-        scheduledMessagesViewModel.setUser(user)
+        scheduledMessagesViewModel.setUser(conversationUser)
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
-            val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
             MaterialTheme(colorScheme = colorScheme) {
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,
@@ -176,46 +177,43 @@ class ScheduledMessagesActivity : BaseActivity() {
                     LocalShowThreadButton provides false
                 ) {
                     ColoredStatusBar()
-                    currentUser?.let { user ->
-                        ScheduledMessagesScreen(
-                            user = user,
-                            conversationName = conversationName,
-                            scheduledMessagesViewModel = scheduledMessagesViewModel,
-                            dateUtils = dateUtils,
-                            viewThemeUtils = viewThemeUtils,
-                            onBack = { finish() },
-                            onLoadScheduledMessages = { loadScheduledMessages(user) },
-                            onSendNow = { message ->
-                                sendNow(message, user)
-                            },
-                            onReschedule = { message, sendAt, sendWithoutNotification ->
-                                reschedule(message, sendAt, sendWithoutNotification, user)
-                            },
-                            onEdit = { message, sendAt ->
-                                edit(message, sendAt, user)
-                            },
-                            onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                            onOpenParentMessage = { messageId ->
-                                openParentMessage(messageId)
-                            },
-                            onOpenThread = { threadId ->
-                                openThread(threadId)
-                            },
-                            threadTitle = threadTitle,
-                            isThreadView = isThreadView,
-                            onCopyScheduledMessage = { message ->
-                                copyScheduledMessage(message)
-                            }
-                        )
-                    }
+                    ScheduledMessagesScreen(
+                        user = conversationUser,
+                        conversationName = conversationName,
+                        scheduledMessagesViewModel = scheduledMessagesViewModel,
+                        dateUtils = dateUtils,
+                        viewThemeUtils = viewThemeUtils,
+                        onBack = { finish() },
+                        onLoadScheduledMessages = { loadScheduledMessages(conversationUser) },
+                        onSendNow = { message ->
+                            sendNow(message, conversationUser)
+                        },
+                        onReschedule = { message, sendAt, sendWithoutNotification ->
+                            reschedule(message, sendAt, sendWithoutNotification, conversationUser)
+                        },
+                        onEdit = { message, sendAt ->
+                            edit(message, sendAt, conversationUser)
+                        },
+                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, conversationUser) },
+                        onOpenParentMessage = { messageId ->
+                            openParentMessage(messageId)
+                        },
+                        onOpenThread = { threadId ->
+                            openThread(threadId)
+                        },
+                        threadTitle = threadTitle,
+                        isThreadView = isThreadView,
+                        onCopyScheduledMessage = { message ->
+                            copyScheduledMessage(message)
+                        }
+                    )
                 } // CompositionLocalProvider
             }
         }
     }
 
     private fun openThread(threadId: Long) {
-        val user = scheduledMessagesViewModel.currentUserState.value ?: return
-        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             putExtra(KEY_THREAD_ID, threadId)
         }
         startActivity(intent)
@@ -978,16 +976,14 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     private fun openParentMessage(messageId: Long?) {
-        val user = scheduledMessagesViewModel.currentUserState.value ?: return
-        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
         startActivity(intent)
     }
 
     private fun openThreadParentMessage(messageId: Long?, threadId: Long?) {
-        val user = scheduledMessagesViewModel.currentUserState.value ?: return
-        val intent = ChatActivity.createIntent(this, user.id!!, roomToken).apply {
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
