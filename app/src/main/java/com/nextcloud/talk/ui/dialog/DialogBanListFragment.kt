@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.core.os.BundleCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
@@ -30,7 +31,13 @@ import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DialogBanListFragment(val roomToken: String, private val conversationUser: User) : DialogFragment() {
+class DialogBanListFragment : DialogFragment() {
+
+    // Read from the arguments, so the fragment can be recreated by the system after rotation or process death.
+    private val roomToken: String by lazy { requireArguments().getString(ROOM_TOKEN_ARG)!! }
+    private val conversationUser: User by lazy {
+        BundleCompat.getParcelable(requireArguments(), USER_ARG, User::class.java)!!
+    }
 
     lateinit var binding: FragmentDialogBanListBinding
 
@@ -140,8 +147,17 @@ class DialogBanListFragment(val roomToken: String, private val conversationUser:
     }
 
     companion object {
+        private const val ROOM_TOKEN_ARG = "ROOM_TOKEN_ARG"
+        private const val USER_ARG = "USER_ARG"
+
         @JvmStatic
-        fun newInstance(roomToken: String, user: User) = DialogBanListFragment(roomToken, user)
+        fun newInstance(roomToken: String, user: User) =
+            DialogBanListFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ROOM_TOKEN_ARG, roomToken)
+                    putParcelable(USER_ARG, user)
+                }
+            }
         const val ONE_SEC = 1000L
     }
 }

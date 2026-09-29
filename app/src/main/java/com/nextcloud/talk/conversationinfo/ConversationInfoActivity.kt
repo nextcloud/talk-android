@@ -505,7 +505,7 @@ class ConversationInfoActivity : BaseActivity() {
     private fun listBans() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        transaction.add(android.R.id.content, DialogBanListFragment(conversationToken, conversationUser))
+        transaction.add(android.R.id.content, DialogBanListFragment.newInstance(conversationToken, conversationUser))
             .addToBackStack(null)
             .commit()
     }
