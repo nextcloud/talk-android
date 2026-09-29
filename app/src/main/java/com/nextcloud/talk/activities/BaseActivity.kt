@@ -135,10 +135,11 @@ open class BaseActivity : AppCompatActivity() {
      * activities with [allowsDefaultAccount], a requested account that doesn't exist (anymore) falls back to the
      * default account. Loaded once on first access, which must be after injection.
      */
-    private val boundUser: User? by lazy {
+    private val boundUserLazy = lazy {
         runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) }
             ?: if (allowsDefaultAccount) defaultAccountProvider.getDefaultUserBlocking() else null
     }
+    private val boundUser: User? by boundUserLazy
 
     /**
      * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
@@ -405,7 +406,10 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     override fun startActivity(intent: Intent) {
-        val user = defaultAccountProvider.getDefaultUserBlocking()
+        // Links to the own server are opened for the account of this screen. Screens without an account (boundUser
+        // never loaded) use the default account, without resolving one from their intent.
+        val user = (if (boundUserLazy.isInitialized()) boundUser else null)
+            ?: defaultAccountProvider.getDefaultUserBlocking()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
             if (user?.baseUrl != null && uri.startsWith(user.baseUrl!!)) {
