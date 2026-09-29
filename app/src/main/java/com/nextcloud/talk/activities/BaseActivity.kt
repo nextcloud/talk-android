@@ -150,20 +150,18 @@ open class BaseActivity : AppCompatActivity() {
             null
         }
 
-    private var isUserThemeApplied = false
+    private var userViewThemeUtils: ViewThemeUtils? = null
 
     /**
-     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser]. Applied
-     * only once, so fragments that already took over [viewThemeUtils] keep the same instance.
+     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser]. The theme
+     * is created once and assigned again on every call, because the injection of a subclass also injects
+     * [viewThemeUtils] and overwrites it with the theme of the default account. Reusing the instance keeps fragments
+     * that already took it over on the same one.
      */
     private fun applyUserTheme() {
-        if (isUserThemeApplied) {
-            return
-        }
-        boundUser?.let {
-            viewThemeUtils = viewThemeUtilsFactory.forUser(it)
-            isUserThemeApplied = true
-        }
+        val themeUtils = userViewThemeUtils
+            ?: boundUser?.let { viewThemeUtilsFactory.forUser(it) }?.also { userViewThemeUtils = it }
+        themeUtils?.let { viewThemeUtils = it }
     }
 
     /**
