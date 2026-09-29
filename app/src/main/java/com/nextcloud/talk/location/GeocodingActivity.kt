@@ -41,6 +41,7 @@ class GeocodingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        setUpBoundUserOrFinish() ?: return
 
         roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(BundleKeys.KEY_CHAT_API_VERSION, 1)
