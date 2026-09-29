@@ -141,12 +141,9 @@ class MessageInputFragment : Fragment() {
         viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         conversationInternalId = arguments?.getString(ChatActivity.CONVERSATION_INTERNAL_ID).orEmpty()
         chatActivity = requireActivity() as ChatActivity
-        val sharedText = arguments?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
-        if (sharedText.isNotEmpty()) {
-            hasSharedText = true
-            chatActivity.chatViewModel.messageDraft.messageText = sharedText
-            chatActivity.chatViewModel.saveMessageDraft()
-        }
+        // The shared text itself is put into the draft by ChatActivity. This fragment may be restored before
+        // ChatActivity has created its view model, so it must not access it here.
+        hasSharedText = arguments?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty().isNotEmpty()
         if (conversationInternalId.isEmpty()) {
             Log.e(TAG, "internalId for conversation passed to MessageInputFragment is empty")
         }

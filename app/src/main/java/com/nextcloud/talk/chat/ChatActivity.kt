@@ -649,6 +649,10 @@ class ChatActivity :
 
         handleIntent(intent)
         chatViewModel.initData()
+        if (sharedText.isNotEmpty()) {
+            chatViewModel.messageDraft.messageText = sharedText
+            chatViewModel.saveMessageDraft()
+        }
 
         conversationThreadId?.let {
             val threadUrl = ApiUtils.getUrlForThread(
