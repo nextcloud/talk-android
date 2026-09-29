@@ -34,6 +34,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
+    suspend fun getUsersNotScheduledForDeletion(): List<User> = userRepository.getUsersNotScheduledForDeletion()
+
     /**
      * The default account, i.e. the last active user, or - if none is active - any user not scheduled for deletion,
      * which is then set as active.
@@ -246,7 +248,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     companion object {
         const val TAG = "UserManager"
-        private const val NO_ACTIVE_USER_ID = -1L
     }
 
     data class UserAttributes(

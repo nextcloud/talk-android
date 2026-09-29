@@ -256,7 +256,7 @@ class MainActivity :
                 }
             } else {
                 try {
-                    val users = userManager.getUsers()
+                    val users = userManager.getUsersNotScheduledForDeletion()
                     if (isFinishing || isDestroyed) return@launch
 
                     if (users.isNotEmpty()) {

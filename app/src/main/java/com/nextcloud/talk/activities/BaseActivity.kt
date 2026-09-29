@@ -149,6 +149,9 @@ open class BaseActivity : AppCompatActivity() {
     private fun requireBoundUserOrFinish(): User? =
         boundUser ?: run {
             Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
+            if (allowsDefaultAccount) {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
             finish()
             null
         }
