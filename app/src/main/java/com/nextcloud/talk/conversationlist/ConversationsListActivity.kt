@@ -151,17 +151,17 @@ class ConversationsListActivity : BaseActivity() {
     @Inject
     lateinit var contactsViewModelFactory: ContactsViewModel.Factory
 
-    val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser!!) }
+    val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser) }
 
     val conversationsListViewModel: ConversationsListViewModel by assistedViewModels {
-        conversationsListViewModelFactory.build(currentUser!!)
+        conversationsListViewModelFactory.build(currentUser)
     }
 
     val conversationTagsViewModel: ConversationTagsViewModel by assistedViewModels {
-        conversationTagsViewModelFactory.build(currentUser!!)
+        conversationTagsViewModelFactory.build(currentUser)
     }
 
-    private var currentUser: User? = null
+    private lateinit var currentUser: User
     private val snackbarHostState = SnackbarHostState()
     private val isMaintenanceModeState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
@@ -205,13 +205,12 @@ class ConversationsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
-        currentUser = user
+        currentUser = setUpBoundUserOrFinish() ?: return
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
 
-        if (!user.current) {
+        if (!currentUser.current) {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
-            lifecycleScope.launch { userManager.setUserAsActive(user) }
+            lifecycleScope.launch { userManager.setUserAsActive(currentUser) }
         }
 
         setSupportActionBar(null)
@@ -244,7 +243,7 @@ class ConversationsListActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
-        if (newUserId != 0L && newUserId != currentUser?.id) {
+        if (newUserId != 0L && newUserId != currentUser.id) {
             // The list is bound to one account, so open a fresh instance for the other one. The activity is
             // exported, so the received intent is not launched again as it is: the new one only targets this
             // activity and takes over no flags like URI permission grants.
@@ -257,7 +256,7 @@ class ConversationsListActivity : BaseActivity() {
             startActivity(accountIntent)
             return
         }
-        currentUser?.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
+        currentUser.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
         setIntent(intent)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
@@ -331,12 +330,12 @@ class ConversationsListActivity : BaseActivity() {
                 bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
                 val settingsIntent = Intent(context, SettingsActivity::class.java)
                 settingsIntent.putExtras(bundle)
-                settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+                settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser.id)
                 startActivity(settingsIntent)
             },
             onFederationHintClick = {
                 val intent = Intent(context, InvitationsActivity::class.java)
-                intent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+                intent.putExtra(KEY_INTERNAL_USER_ID, currentUser.id)
                 startActivity(intent)
             },
             onFilterClick = {
@@ -353,7 +352,7 @@ class ConversationsListActivity : BaseActivity() {
                     showChooseAccountDialog()
                 } else {
                     val settingsIntent = Intent(context, SettingsActivity::class.java)
-                    settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+                    settingsIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser.id)
                     startActivity(settingsIntent)
                 }
             },
@@ -426,7 +425,7 @@ class ConversationsListActivity : BaseActivity() {
         // would lose the pending message.
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
         val isPickingConversation = forwardMessage || hasActivityActionSendIntent()
-        if (defaultUserId != currentUser?.id && !isPickingConversation) {
+        if (defaultUserId != currentUser.id && !isPickingConversation) {
             startActivity(createAccountSwitchIntent(this, defaultUserId))
         }
     }
@@ -456,27 +455,22 @@ class ConversationsListActivity : BaseActivity() {
             eventBus.register(this)
         }
 
-        if (currentUser != null) {
-            if (isServerEOL(currentUser!!.serverVersion?.major)) {
-                showServerEOLDialog()
-                return
-            }
-            credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-
-            if (currentUser!!.id != appPreferences.getConversationListLastUserId()) {
-                appPreferences.setConversationListPositionAndOffset(0, 0)
-            }
-
-            lifecycleScope.launch {
-                hasMultipleAccountsState.value = userManager.getUsers().size > 1
-            }
-            conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
-            fetchRooms()
-            fetchPendingInvitations()
-        } else {
-            logger.e(TAG, "currentUser was null")
-            showSnackbar(getString(R.string.nc_common_error_sorry))
+        if (isServerEOL(currentUser.serverVersion?.major)) {
+            showServerEOLDialog()
+            return
         }
+        credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+
+        if (currentUser.id != appPreferences.getConversationListLastUserId()) {
+            appPreferences.setConversationListPositionAndOffset(0, 0)
+        }
+
+        lifecycleScope.launch {
+            hasMultipleAccountsState.value = userManager.getUsers().size > 1
+        }
+        conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
+        fetchRooms()
+        fetchPendingInvitations()
 
         conversationsListViewModel.checkIfThreadsExist()
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
@@ -489,7 +483,7 @@ class ConversationsListActivity : BaseActivity() {
             val firstOffset = state.layoutInfo.visibleItemsInfo.firstOrNull()?.offset ?: 0
             appPreferences.setConversationListPositionAndOffset(state.firstVisibleItemIndex, firstOffset)
         }
-        appPreferences.setConversationListLastUserId(currentUser?.id ?: -1L)
+        appPreferences.setConversationListLastUserId(currentUser.id ?: -1L)
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
@@ -523,14 +517,8 @@ class ConversationsListActivity : BaseActivity() {
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
 
                     // Update Direct Share targets
-                    if (currentUser != null) {
-                        lifecycleScope.launch {
-                            DirectShareHelper.publishShareTargetShortcuts(
-                                context,
-                                currentUser!!,
-                                list
-                            )
-                        }
+                    lifecycleScope.launch {
+                        DirectShareHelper.publishShareTargetShortcuts(context, currentUser, list)
                     }
 
                     // check for Direct Share
@@ -545,9 +533,7 @@ class ConversationsListActivity : BaseActivity() {
                     }
 
                     // Update dynamic shortcuts for frequent/favorite conversations
-                    currentUser?.let { user ->
-                        ShortcutManagerHelper.updateDynamicShortcuts(context, list, user)
-                    }
+                    ShortcutManagerHelper.updateDynamicShortcuts(context, list, currentUser)
 
                     if (!scrollPositionRestored) {
                         scrollPositionRestored = true
@@ -639,7 +625,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
         if (noteToSelfAvailable) {
-            val intent = ChatActivity.createIntent(context, currentUser!!.id!!, noteToSelfToken)
+            val intent = ChatActivity.createIntent(context, currentUser.id!!, noteToSelfToken)
             intent.putExtra(BundleKeys.KEY_FOCUS_INPUT, true)
             intent.action = Intent.ACTION_VIEW
             val openNotesString = resources.getString(R.string.open_notes)
@@ -683,7 +669,7 @@ class ConversationsListActivity : BaseActivity() {
             return
         }
         val threadId = result.threadId?.toLongOrNull()?.takeIf { it > 0L }
-        val intent = ChatActivity.createIntent(context, currentUser!!.id!!, result.conversationToken).apply {
+        val intent = ChatActivity.createIntent(context, currentUser.id!!, result.conversationToken).apply {
             putExtra(BundleKeys.KEY_MESSAGE_ID, messageId)
             putExtra(BundleKeys.KEY_SEARCH_QUERY, result.searchTerm)
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
@@ -727,11 +713,11 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     fun fetchRooms() {
-        conversationsListViewModel.getRooms(currentUser!!)
+        conversationsListViewModel.getRooms(currentUser)
     }
 
     private fun fetchPendingInvitations() {
-        if (hasSpreedFeatureCapability(currentUser?.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
+        if (hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
             conversationsListViewModel.getFederationInvitations()
         }
     }
@@ -836,7 +822,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivity::class.java)
-        intent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+        intent.putExtra(KEY_INTERNAL_USER_ID, currentUser.id)
         startActivity(intent)
     }
 
@@ -849,7 +835,7 @@ class ConversationsListActivity : BaseActivity() {
         selectedConversation = conversation
         if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(
-                currentUser?.capabilities?.spreedCapability,
+                currentUser.capabilities?.spreedCapability,
                 selectedConversation!!
             )
                 .hasChatPermission()
@@ -879,11 +865,11 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun shouldShowLobby(conversation: ConversationModel): Boolean {
         val participantPermissions = ParticipantPermissions(
-            currentUser?.capabilities?.spreedCapability,
+            currentUser.capabilities?.spreedCapability,
             selectedConversation!!
         )
         return conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-            !ConversationUtils.canModerate(conversation, currentUser?.capabilities?.spreedCapability) &&
+            !ConversationUtils.canModerate(conversation, currentUser.capabilities?.spreedCapability) &&
             !participantPermissions.canIgnoreLobby()
     }
 
@@ -1094,7 +1080,7 @@ class ConversationsListActivity : BaseActivity() {
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
         val serverNotificationAppInstalled =
-            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() == true
+            currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty() == true
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
@@ -1115,13 +1101,13 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun getIntentForCall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean): Intent? {
         selectedConversation?.let {
-            val pp = ParticipantPermissions(currentUser?.capabilities?.spreedCapability, it)
+            val pp = ParticipantPermissions(currentUser.capabilities?.spreedCapability, it)
 
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, it.token)
-            bundle.putLong(KEY_INTERNAL_USER_ID, currentUser!!.id!!)
+            bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, currentUser?.baseUrl!!)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, currentUser.baseUrl!!)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
             bundle.putInt(KEY_RECORDING_STATE, it.callRecording)
             bundle.putBoolean(KEY_IS_MODERATOR, ConversationUtils.isParticipantOwnerOrModerator(it))
@@ -1163,22 +1149,20 @@ class ConversationsListActivity : BaseActivity() {
                 selectedMessageId = null
             }
 
-            val chatIntent = ChatActivity.createIntent(context, currentUser!!.id!!, it.token, bundle)
+            val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, it.token, bundle)
 
-            if (currentUser != null) {
-                if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser?.capabilities?.spreedCapability)) {
-                    showSnackbar(context.getString(R.string.nc_call_e2ee_not_supported))
-                    return@let
-                }
-                val pp = ParticipantPermissions(currentUser?.capabilities?.spreedCapability, it)
-                if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
-                    Log.e(TAG, "Error starting call from conversations list: call is forbidden")
-                } else {
-                    ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
-                    val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
-                    if (callIntent != null) {
-                        startActivities(arrayOf(chatIntent, callIntent))
-                    }
+            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser.capabilities?.spreedCapability)) {
+                showSnackbar(context.getString(R.string.nc_call_e2ee_not_supported))
+                return@let
+            }
+            val pp = ParticipantPermissions(currentUser.capabilities?.spreedCapability, it)
+            if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
+                Log.e(TAG, "Error starting call from conversations list: call is forbidden")
+            } else {
+                ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
+                val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
+                if (callIntent != null) {
+                    startActivities(arrayOf(chatIntent, callIntent))
                 }
             }
         }
@@ -1202,7 +1186,7 @@ class ConversationsListActivity : BaseActivity() {
             selectedMessageId = null
         }
 
-        val intent = ChatActivity.createIntent(context, currentUser!!.id!!, selectedConversation!!.token, bundle)
+        val intent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, bundle)
         startActivity(intent)
 
         clearIntentAction()
@@ -1210,7 +1194,7 @@ class ConversationsListActivity : BaseActivity() {
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(eventStatus: EventStatus) {
-        if (currentUser != null && eventStatus.userId == currentUser!!.id) {
+        if (eventStatus.userId == currentUser.id) {
             when (eventStatus.eventType) {
                 EventStatus.EventType.CONVERSATION_UPDATE -> if (eventStatus.isAllGood && !isRefreshingState.value) {
                     fetchRooms()
@@ -1246,18 +1230,17 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun shareConversationLink(conversation: ConversationModel) {
-        val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(currentUser!!)
+        val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(currentUser)
         ShareUtils.shareConversationLink(
             this,
-            currentUser?.baseUrl,
+            currentUser.baseUrl,
             conversation.token,
             canGeneratePrettyURL
         )
     }
 
     private fun addConversationToHomeScreen(conversation: ConversationModel) {
-        val user = currentUser ?: return
-        val success = ShortcutManagerHelper.requestPinShortcut(this, conversation, user)
+        val success = ShortcutManagerHelper.requestPinShortcut(this, conversation, currentUser)
         if (success) {
             showSnackbar(resources.getString(R.string.nc_shortcut_created))
         } else {
@@ -1287,10 +1270,9 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun renameConversation(conversation: ConversationModel) {
-        val user = currentUser ?: return
         if (!TextUtils.isEmpty(conversation.token)) {
             RenameConversationDialogFragment
-                .newInstance(user, conversation.token!!, conversation.displayName!!)
+                .newInstance(currentUser, conversation.token!!, conversation.displayName!!)
                 .show(supportFragmentManager, RenameConversationDialogFragment::class.simpleName)
         }
     }
@@ -1322,7 +1304,7 @@ class ConversationsListActivity : BaseActivity() {
         val token = conversation.token ?: return
         val data = Data.Builder()
             .putString(KEY_ROOM_TOKEN, token)
-            .putLong(KEY_INTERNAL_USER_ID, currentUser?.id!!)
+            .putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
             .build()
         val worker = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
             .setInputData(data)
@@ -1332,7 +1314,7 @@ class ConversationsListActivity : BaseActivity() {
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(worker.id).observeForever { workInfo ->
             when (workInfo?.state) {
                 WorkInfo.State.SUCCEEDED -> {
-                    currentUser?.id?.let { userId ->
+                    currentUser.id?.let { userId ->
                         ShortcutManagerHelper.disableConversationShortcut(
                             this,
                             token,
@@ -1415,7 +1397,7 @@ class ConversationsListActivity : BaseActivity() {
             .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
                 val intent = Intent(context, BrowserLoginActivity::class.java)
                 val bundle = Bundle()
-                bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl!!)
+                bundle.putString(BundleKeys.KEY_BASE_URL, currentUser.baseUrl!!)
                 bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
                 intent.putExtras(bundle)
                 startActivity(intent)
@@ -1431,7 +1413,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun deleteUserAndRestartApp() {
         lifecycleScope.launch {
-            userManager.scheduleUserForDeletionWithId(currentUser!!.id!!)
+            userManager.scheduleUserForDeletionWithId(currentUser.id!!)
             val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .setExpeditedIfSupported()
                 .build()
@@ -1444,7 +1426,7 @@ class ConversationsListActivity : BaseActivity() {
                         WorkInfo.State.SUCCEEDED -> {
                             val text = String.format(
                                 context.resources.getString(R.string.nc_deleted_user),
-                                currentUser!!.displayName
+                                currentUser.displayName
                             )
                             Toast.makeText(
                                 context,
@@ -1455,7 +1437,7 @@ class ConversationsListActivity : BaseActivity() {
                         }
 
                         WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                            logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                            logger.e(TAG, "something went wrong when deleting user with id " + currentUser.userId)
 
                             Toast.makeText(
                                 context,
@@ -1569,7 +1551,7 @@ class ConversationsListActivity : BaseActivity() {
         val data = Data.Builder()
         data.putLong(
             KEY_INTERNAL_USER_ID,
-            currentUser?.id!!
+            currentUser.id!!
         )
         data.putString(KEY_ROOM_TOKEN, conversation.token)
 
@@ -1585,7 +1567,7 @@ class ConversationsListActivity : BaseActivity() {
                 if (workInfo != null) {
                     when (workInfo.state) {
                         WorkInfo.State.SUCCEEDED -> {
-                            currentUser?.id?.let { userId ->
+                            currentUser.id?.let { userId ->
                                 ShortcutManagerHelper.disableConversationShortcut(
                                     context,
                                     conversation.token,
@@ -1616,7 +1598,7 @@ class ConversationsListActivity : BaseActivity() {
     fun openFollowedThreadsOverview() {
         val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
             version = 1,
-            baseUrl = currentUser!!.baseUrl
+            baseUrl = currentUser.baseUrl
         )
 
         val bundle = Bundle()
@@ -1624,7 +1606,7 @@ class ConversationsListActivity : BaseActivity() {
         bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)
-        threadsOverviewIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser!!.id)
+        threadsOverviewIntent.putExtra(KEY_INTERNAL_USER_ID, currentUser.id)
         startActivity(threadsOverviewIntent)
     }
 
