@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +24,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
@@ -63,14 +62,12 @@ class SharedItemsActivity : BaseActivity() {
         }
     }
 
-    val chatViewModel: ChatViewModel by viewModels {
-        ViewModelFactoryWithParams(ChatViewModel::class.java) {
-            chatViewModelFactory.build(
-                conversationUser,
-                roomToken,
-                conversationThreadId
-            )
-        }
+    val chatViewModel: ChatViewModel by assistedViewModels {
+        chatViewModelFactory.build(
+            conversationUser,
+            roomToken,
+            conversationThreadId
+        )
     }
 
     @Inject

@@ -31,11 +31,10 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -152,11 +151,15 @@ class ConversationsListActivity : BaseActivity() {
     @Inject
     lateinit var contactsViewModelFactory: ContactsViewModel.Factory
 
-    lateinit var contactsViewModel: ContactsViewModel
+    val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser!!) }
 
-    lateinit var conversationsListViewModel: ConversationsListViewModel
+    val conversationsListViewModel: ConversationsListViewModel by assistedViewModels {
+        conversationsListViewModelFactory.build(currentUser!!)
+    }
 
-    lateinit var conversationTagsViewModel: ConversationTagsViewModel
+    val conversationTagsViewModel: ConversationTagsViewModel by assistedViewModels {
+        conversationTagsViewModelFactory.build(currentUser!!)
+    }
 
     private var currentUser: User? = null
     private val snackbarHostState = SnackbarHostState()
@@ -210,23 +213,6 @@ class ConversationsListActivity : BaseActivity() {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
             lifecycleScope.launch { userManager.setUserAsActive(user) }
         }
-
-        conversationsListViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ConversationsListViewModel::class.java) {
-                conversationsListViewModelFactory.build(user)
-            }
-        )[ConversationsListViewModel::class.java]
-        conversationTagsViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ConversationTagsViewModel::class.java) {
-                conversationTagsViewModelFactory.build(user)
-            }
-        )[ConversationTagsViewModel::class.java]
-        contactsViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ContactsViewModel::class.java) { contactsViewModelFactory.build(user) }
-        )[ContactsViewModel::class.java]
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)

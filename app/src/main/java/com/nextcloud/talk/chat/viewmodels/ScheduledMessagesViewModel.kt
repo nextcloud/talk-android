@@ -17,6 +17,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.opengraph.ReferenceDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,11 +28,11 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class ScheduledMessagesViewModel @Inject constructor(
+class ScheduledMessagesViewModel @AssistedInject constructor(
     private val chatRepository: ChatMessageRepository,
-    private val chatNetworkDataSource: ChatNetworkDataSource
+    private val chatNetworkDataSource: ChatNetworkDataSource,
+    @Assisted private val user: User
 ) : ViewModel() {
 
     sealed interface GetScheduledMessagesState
@@ -50,8 +53,6 @@ class ScheduledMessagesViewModel @Inject constructor(
         ScheduledMessageActionState
 
     data class ScheduledMessageErrorState(val error: Throwable? = null) : ScheduledMessageActionState
-
-    private lateinit var user: User
 
     sealed interface SendNowMessageState
     object SendNowMessageIdleState : SendNowMessageState
@@ -137,10 +138,6 @@ class ScheduledMessagesViewModel @Inject constructor(
                 Log.e(TAG, "Error loading link preview for scheduled message", e)
             }
         }
-    }
-
-    fun setUser(user: User) {
-        this.user = user
     }
 
     @Suppress("LongParameterList")
@@ -266,6 +263,11 @@ class ScheduledMessagesViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ScheduledMessagesViewModel
     }
 
     companion object {

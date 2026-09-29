@@ -83,7 +83,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
@@ -101,7 +100,7 @@ import com.nextcloud.talk.conversationcreation.ui.CreationResultEffect
 import com.nextcloud.talk.conversationcreation.ui.ShareCreatedConversation
 import com.nextcloud.talk.conversationcreation.ui.openConversation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
@@ -120,17 +119,15 @@ class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ConversationCreationViewModel.Factory
 
+    private lateinit var user: User
+
+    private val conversationCreationViewModel by assistedViewModels { viewModelFactory.build(user) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
-        val conversationCreationViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ConversationCreationViewModel::class.java) {
-                viewModelFactory.build(user)
-            }
-        )[ConversationCreationViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current

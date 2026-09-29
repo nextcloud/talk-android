@@ -13,14 +13,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.remember
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -32,17 +32,15 @@ class ContactsActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ContactsViewModel.Factory
 
-    private lateinit var contactsViewModel: ContactsViewModel
+    private lateinit var user: User
+
+    private val contactsViewModel: ContactsViewModel by assistedViewModels { viewModelFactory.build(user) }
 
     @SuppressLint("UnrememberedMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
-        contactsViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ContactsViewModel::class.java) { viewModelFactory.build(user) }
-        )[ContactsViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
         setContent {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)

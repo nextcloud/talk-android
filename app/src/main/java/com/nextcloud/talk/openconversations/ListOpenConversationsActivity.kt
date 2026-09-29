@@ -11,14 +11,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
@@ -30,18 +30,18 @@ class ListOpenConversationsActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: OpenConversationsViewModel.Factory
 
-    private lateinit var openConversationsViewModel: OpenConversationsViewModel
+    private lateinit var user: User
+
+    private val openConversationsViewModel: OpenConversationsViewModel by assistedViewModels {
+        viewModelFactory.build(user)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
+        user = setUpBoundUserOrFinish() ?: return
 
-        openConversationsViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(OpenConversationsViewModel::class.java) { viewModelFactory.build(user) }
-        )[OpenConversationsViewModel::class.java]
         openConversationsViewModel.fetchConversations()
 
         setContent {

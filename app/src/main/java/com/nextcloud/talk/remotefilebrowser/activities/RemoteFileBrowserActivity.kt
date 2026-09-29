@@ -22,14 +22,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityRemoteFileBrowserBinding
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
@@ -71,7 +70,7 @@ class RemoteFileBrowserActivity :
     lateinit var dateUtils: DateUtils
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
-    private lateinit var viewModel: RemoteFileBrowserItemsViewModel
+    private val viewModel: RemoteFileBrowserItemsViewModel by assistedViewModels { viewModelFactory.build(user) }
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
 
@@ -133,11 +132,6 @@ class RemoteFileBrowserActivity :
     }
 
     private fun initViewModel(mimeTypeSelectionFilter: String?) {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(RemoteFileBrowserItemsViewModel::class.java) { viewModelFactory.build(user) }
-        )[RemoteFileBrowserItemsViewModel::class.java]
-
         viewModel.viewState.observe(this) { state ->
             clearEmptyLoading()
             when (state) {

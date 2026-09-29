@@ -92,6 +92,7 @@ import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -130,7 +131,6 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -299,14 +299,12 @@ class ChatActivity :
      */
     private lateinit var initialUser: User
 
-    val chatViewModel: ChatViewModel by viewModels {
-        ViewModelFactoryWithParams(ChatViewModel::class.java) {
-            chatViewModelFactory.build(
-                initialUser,
-                roomToken,
-                conversationThreadId
-            )
-        }
+    val chatViewModel: ChatViewModel by assistedViewModels {
+        chatViewModelFactory.build(
+            initialUser,
+            roomToken,
+            conversationThreadId
+        )
     }
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel

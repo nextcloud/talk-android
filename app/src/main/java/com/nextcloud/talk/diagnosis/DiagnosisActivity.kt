@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -39,8 +38,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -71,7 +71,9 @@ class DiagnosisActivity : BaseActivity() {
     @Inject
     lateinit var logsRepository: LogsRepository
 
-    private lateinit var diagnosisViewModel: DiagnosisViewModel
+    private lateinit var user: User
+
+    private val diagnosisViewModel: DiagnosisViewModel by assistedViewModels { viewModelFactory.build(user) }
     private val diagnosisData = mutableListOf<DiagnosisElement>()
     private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
 
@@ -90,11 +92,7 @@ class DiagnosisActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
-        diagnosisViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(DiagnosisViewModel::class.java) { viewModelFactory.build(user) }
-        )[DiagnosisViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         val isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable

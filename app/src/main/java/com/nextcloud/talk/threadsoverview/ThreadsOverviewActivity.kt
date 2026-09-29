@@ -35,7 +35,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -44,8 +43,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.database.mappers.toDomainModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
@@ -61,7 +61,11 @@ class ThreadsOverviewActivity : BaseActivity() {
     @Inject
     lateinit var ncApi: NcApi
 
-    lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
+    private lateinit var user: User
+
+    val threadsOverviewViewModel: ThreadsOverviewViewModel by assistedViewModels {
+        threadsOverviewViewModelFactory.build(user)
+    }
 
     var threadsSourceUrl: String = ""
     var appbarTitle: String = ""
@@ -69,13 +73,7 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
-        threadsOverviewViewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(ThreadsOverviewViewModel::class.java) {
-                threadsOverviewViewModelFactory.build(user)
-            }
-        )[ThreadsOverviewViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
 

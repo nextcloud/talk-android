@@ -7,12 +7,13 @@
  */
 package com.nextcloud.talk.dagger.modules
 
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
-import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusMessageViewModel
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
@@ -56,6 +57,13 @@ class ViewModelFactoryWithParams<T : ViewModel>(private val modelClass: Class<T>
         return create() as T
     }
 }
+
+/**
+ * Lazily creates a view model with [create] on first access, scoped to this activity like [viewModels]. For view
+ * models that take arguments, e.g. via assisted injection. Everything [create] uses must be set before that access.
+ */
+inline fun <reified VM : ViewModel> ComponentActivity.assistedViewModels(noinline create: () -> VM): Lazy<VM> =
+    viewModels { ViewModelFactoryWithParams(VM::class.java, create) }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @Retention(AnnotationRetention.RUNTIME)
@@ -173,11 +181,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(StatusMessageViewModel::class)
     abstract fun statusMessageViewModel(viewModel: StatusMessageViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ScheduledMessagesViewModel::class)
-    abstract fun scheduledMessagesViewModel(viewModel: ScheduledMessagesViewModel): ViewModel
 
     @Binds
     @IntoMap

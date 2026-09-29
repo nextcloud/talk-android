@@ -18,13 +18,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.graphics.drawable.toDrawable
-import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityTranslateBinding
 import com.nextcloud.talk.translate.repositories.model.LanguageDto
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
@@ -39,7 +39,9 @@ class TranslateActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: TranslateViewModel.Factory
 
-    lateinit var viewModel: TranslateViewModel
+    private lateinit var user: User
+
+    val viewModel: TranslateViewModel by assistedViewModels { viewModelFactory.build(user) }
     lateinit var binding: ActivityTranslateBinding
 
     private var toLanguages: Array<String>? = null
@@ -50,13 +52,9 @@ class TranslateActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
+        user = setUpBoundUserOrFinish() ?: return
 
         binding = ActivityTranslateBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactoryWithParams(TranslateViewModel::class.java) { viewModelFactory.build(user) }
-        )[TranslateViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
             when (state) {

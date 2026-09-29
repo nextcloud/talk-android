@@ -81,7 +81,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji2.widget.EmojiEditText
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -92,6 +91,7 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
@@ -125,12 +125,14 @@ private const val STICKY_HEADER_SCROLL_DELAY = 1200L
 class ScheduledMessagesActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ScheduledMessagesViewModel.Factory
 
     @Inject
     lateinit var dateUtils: DateUtils
 
-    private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
+    private val scheduledMessagesViewModel: ScheduledMessagesViewModel by assistedViewModels {
+        viewModelFactory.build(conversationUser)
+    }
 
     private lateinit var conversationUser: User
 
@@ -165,8 +167,6 @@ class ScheduledMessagesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         conversationUser = setUpBoundUserOrFinish() ?: return
-        scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
-        scheduledMessagesViewModel.setUser(conversationUser)
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
