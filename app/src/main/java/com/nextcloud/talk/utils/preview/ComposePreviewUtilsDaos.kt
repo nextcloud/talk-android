@@ -15,6 +15,9 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -240,6 +243,33 @@ class DummyUserDaoImpl : UsersDao {
         } else {
             0
         }
+    }
+
+    override suspend fun updateCapabilities(
+        id: Long,
+        capabilities: CapabilitiesDto?,
+        serverVersion: ServerVersionDto?
+    ): Int = updateDummyUser(id) { it.copy(capabilities = capabilities, serverVersion = serverVersion) }
+
+    override suspend fun updateExternalSignalingServer(
+        id: Long,
+        externalSignalingServer: ExternalSignalingServer?
+    ): Int = updateDummyUser(id) { it.copy(externalSignalingServer = externalSignalingServer) }
+
+    override suspend fun updateDisplayName(id: Long, displayName: String?): Int =
+        updateDummyUser(id) { it.copy(displayName = displayName) }
+
+    override suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int =
+        updateDummyUser(id) { it.copy(clientCertificate = clientCertificate) }
+
+    override suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int =
+        updateDummyUser(id) { it.copy(token = token, clientCertificate = clientCertificate) }
+
+    private fun updateDummyUser(id: Long, update: (UserEntity) -> UserEntity): Int {
+        val index = dummyUsers.indexOfFirst { it.id == id }
+        if (index == -1) return 0
+        dummyUsers[index] = update(dummyUsers[index])
+        return 1
     }
 }
 

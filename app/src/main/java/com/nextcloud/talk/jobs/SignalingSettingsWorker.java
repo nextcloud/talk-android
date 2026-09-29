@@ -116,7 +116,10 @@ public class SignalingSettingsWorker extends Worker {
                         try {
                             int rows = BuildersKt.runBlocking(
                                 EmptyCoroutineContext.INSTANCE,
-                                (scope, continuation) -> userManager.saveUser(user, continuation));
+                                (scope, continuation) -> userManager.updateExternalSignalingServer(
+                                    user.getId(),
+                                    externalSignalingServer,
+                                    continuation));
                             saved = rows > 0;
                         } catch (Exception e) {
                             saved = false;

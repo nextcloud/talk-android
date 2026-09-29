@@ -231,10 +231,11 @@ class UserManagerTest {
     @Test
     fun `updateExternalSignalingServer throws when the user does not exist`() =
         runTest {
-            wheneverBlocking { usersRepository.getUserWithId(7L) }.thenReturn(null)
+            val server = ExternalSignalingServer()
+            wheneverBlocking { usersRepository.updateExternalSignalingServer(7L, server) }.thenReturn(0)
 
             try {
-                userManager.updateExternalSignalingServer(7L, ExternalSignalingServer())
+                userManager.updateExternalSignalingServer(7L, server)
                 fail("Expected NoSuchElementException")
             } catch (expected: NoSuchElementException) {
                 // expected
@@ -244,15 +245,13 @@ class UserManagerTest {
     @Test
     fun `updateExternalSignalingServer updates the matching user`() =
         runTest {
-            val existing = user(id = 7, username = "userA", baseUrl = "https://example.com")
             val server = ExternalSignalingServer(externalSignalingServer = "https://signaling.example.com")
-            wheneverBlocking { usersRepository.getUserWithId(7L) }.thenReturn(existing)
-            wheneverBlocking { usersRepository.updateUser(existing) }.thenReturn(1)
+            wheneverBlocking { usersRepository.updateExternalSignalingServer(7L, server) }.thenReturn(1)
 
             val result = userManager.updateExternalSignalingServer(7L, server)
 
             assertEquals(1, result)
-            assertEquals(server, existing.externalSignalingServer)
+            verify(usersRepository, never()).updateUser(any())
         }
 
     @Test

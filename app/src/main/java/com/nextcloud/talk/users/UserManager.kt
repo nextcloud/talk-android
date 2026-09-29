@@ -124,19 +124,32 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
+    // The following updates only write the given fields, so they cannot reset fields that changed since the user
+    // was read, like the default account flag. Use them instead of saving a whole user that was read earlier.
+
     suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Int {
-        val user = userRepository.getUserWithId(id) ?: throw NoSuchElementException()
-        user.externalSignalingServer = externalSignalingServer
-        return userRepository.updateUser(user)
+        val updated = userRepository.updateExternalSignalingServer(id, externalSignalingServer)
+        if (updated == 0) throw NoSuchElementException()
+        return updated
     }
+
+    suspend fun updateCapabilities(id: Long, capabilities: CapabilitiesDto?, serverVersion: ServerVersionDto?): Int =
+        userRepository.updateCapabilities(id, capabilities, serverVersion)
+
+    suspend fun updateDisplayName(id: Long, displayName: String?): Int =
+        userRepository.updateDisplayName(id, displayName)
+
+    suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int =
+        userRepository.updateClientCertificate(id, clientCertificate)
+
+    suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int =
+        userRepository.updateCredentials(id, token, clientCertificate)
 
     suspend fun updateOrCreateUser(user: User): Int =
         when (user.id) {
             null -> userRepository.insertUser(user).toInt()
             else -> userRepository.updateUser(user)
         }
-
-    suspend fun saveUser(user: User): Int = userRepository.updateUser(user)
 
     suspend fun setUserAsActive(user: User): Boolean {
         Log.d(TAG, "setUserAsActive:" + user.id!!)

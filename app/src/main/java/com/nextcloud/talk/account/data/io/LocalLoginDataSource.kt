@@ -26,9 +26,13 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
     fun updateUser(loginData: LoginCompletion) {
         val currentUser = runBlocking { userManager.getDefaultUser() }
         if (currentUser != null) {
-            currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
-            currentUser.token = loginData.appPassword
-            runBlocking { userManager.updateOrCreateUser(currentUser) }
+            runBlocking {
+                userManager.updateCredentials(
+                    currentUser.id!!,
+                    loginData.appPassword,
+                    appPreferences.temporaryClientCertAlias
+                )
+            }
         }
     }
 

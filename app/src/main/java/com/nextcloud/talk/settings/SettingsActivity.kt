@@ -778,8 +778,9 @@ class SettingsActivity :
                     }
                     Log.d(TAG, "host: $host and port: $port")
                     currentUser!!.clientCertificate = finalAlias
+                    val userId = currentUser!!.id!!
                     lifecycleScope.launch {
-                        userManager.updateOrCreateUser(currentUser!!)
+                        userManager.updateClientCertificate(userId, finalAlias)
                     }
                 },
                 arrayOf("RSA", "EC"),
@@ -1096,8 +1097,9 @@ class SettingsActivity :
                     }
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
+                        val userId = currentUser!!.id!!
                         lifecycleScope.launch {
-                            userManager.updateOrCreateUser(currentUser!!)
+                            userManager.updateDisplayName(userId, displayName)
                         }
                         binding.nameText.text = currentUser!!.displayName
                     }
