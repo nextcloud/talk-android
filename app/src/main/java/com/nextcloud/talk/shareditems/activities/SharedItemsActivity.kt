@@ -46,8 +46,6 @@ class SharedItemsActivity : BaseActivity() {
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
 
-    private val conversationUserId: Long by lazy { resolveUserIdFromIntent() }
-
     private lateinit var conversationUser: User
 
     val roomToken: String by lazy {
