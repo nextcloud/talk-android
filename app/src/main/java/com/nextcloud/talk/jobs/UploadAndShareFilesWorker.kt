@@ -99,7 +99,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     lateinit var fileName: String
 
-    private var mNotifyManager: NotificationManager? = null
+    private val notificationManager by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     lateinit var roomToken: String
     lateinit var conversationName: String
@@ -139,17 +141,21 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     )
     private fun doUpload(): Result {
         return try {
-            currentUser = checkNotNull(
-                runBlocking { userManager.getUserWithId(inputData.getLong(KEY_INTERNAL_USER_ID, 0L)) }
-            )
+            // Read first, so a failure below can still mark the placeholder message as failed.
+            referenceId = inputData.getString(KEY_REFERENCE_ID)
+            internalConversationId = inputData.getString(KEY_INTERNAL_CONVERSATION_ID)
+
+            val userId = inputData.getLong(KEY_INTERNAL_USER_ID, 0L)
+            currentUser = runBlocking { userManager.getUserWithId(userId) } ?: run {
+                // E.g. the account was removed while the upload waited for a retry.
+                Log.e(TAG, "No user found for id $userId")
+                return failUpload()
+            }
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
             roomToken = inputData.getString(ROOM_TOKEN)!!
             conversationName = inputData.getString(CONVERSATION_NAME)!!
             val metaData = inputData.getString(META_DATA)
-            referenceId = inputData.getString(KEY_REFERENCE_ID)
-            internalConversationId = inputData.getString(KEY_INTERNAL_CONVERSATION_ID)
 
-            checkNotNull(currentUser)
             checkNotNull(sourceFile)
             require(sourceFile.isNotEmpty())
             checkNotNull(roomToken)
@@ -157,8 +163,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             var sourceFileUri = sourceFile.toUri()
             fileName = FileUtils.getFileName(sourceFileUri, context)
             file = FileUtils.getFileFromUri(context, sourceFileUri)
-
-            initNotificationSetup()
 
             if (inputData.getBoolean(COMPRESS_IMAGES, false)) {
                 sourceFileUri = compressMediaIfPossible(sourceFileUri)
@@ -429,15 +433,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         super.onStopped()
     }
 
-    private fun initNotificationSetup() {
-        mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-
     private fun showFailedToUploadNotification() {
         val failureTitle = getResourceString(context, R.string.nc_upload_failed_notification_title)
         val failureText = String.format(
             getResourceString(context, R.string.nc_upload_failed_notification_text),
-            fileName
+            failedFileName()
         )
         val failureNotification = NotificationCompat.Builder(
             context,
@@ -451,8 +451,16 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             .setOngoing(false)
             .build()
 
-        mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), failureNotification)
+        notificationManager.notify(SystemClock.uptimeMillis().toInt(), failureNotification)
     }
+
+    // The upload can fail before the file name is known, e.g. when its account does not exist anymore.
+    private fun failedFileName(): String =
+        if (::fileName.isInitialized) {
+            fileName
+        } else {
+            inputData.getString(DEVICE_SOURCE_FILE)?.toUri()?.lastPathSegment.orEmpty()
+        }
 
     private fun getResourceString(context: Context, resourceId: Int): String = context.resources.getString(resourceId)
 
