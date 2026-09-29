@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,8 +71,7 @@ class SharedItemsActivity : BaseActivity() {
         )
     }
 
-    @Inject
-    lateinit var contextChatViewModel: ContextChatViewModel
+    private val contextChatViewModel: ContextChatViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel

@@ -192,11 +192,3 @@ abstract class ViewModelModule {
     @ViewModelKey(FileAttachmentPreviewViewModel::class)
     internal abstract fun fileAttachmentPreviewViewModel(viewModel: FileAttachmentPreviewViewModel): ViewModel
 }
-
-// @Module
-// interface ChatViewModelAssistedModule {
-//     @Binds
-//     fun bindChatViewModelFactory(
-//         factory: ChatViewModel.Factory
-//     ): ChatViewModel.Factory
-// }

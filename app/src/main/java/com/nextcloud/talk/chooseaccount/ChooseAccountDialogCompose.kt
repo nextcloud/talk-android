@@ -65,7 +65,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemApp
@@ -119,13 +121,7 @@ class ChooseAccountDialogCompose {
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
-    lateinit var invitationsViewModel: InvitationsViewModel
-
-    @Inject
-    lateinit var statusViewModel: StatusViewModel
-
-    @Inject
-    lateinit var statusMessageViewModel: StatusMessageViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -138,6 +134,10 @@ class ChooseAccountDialogCompose {
     @Suppress("LongMethod")
     fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
         if (shouldDismiss.value) return
+        // Scoped to the hosting activity, so they survive configuration changes and are cleared with it.
+        val invitationsViewModel: InvitationsViewModel = viewModel(factory = viewModelFactory)
+        val statusViewModel: StatusViewModel = viewModel(factory = viewModelFactory)
+        val statusMessageViewModel: StatusMessageViewModel = viewModel(factory = viewModelFactory)
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<StatusDto?>(null) }
         val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }

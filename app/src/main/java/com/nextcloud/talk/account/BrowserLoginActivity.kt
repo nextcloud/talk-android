@@ -14,8 +14,10 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
@@ -39,7 +41,9 @@ class BrowserLoginActivity : BaseActivity() {
     private lateinit var binding: ActivityWebViewLoginBinding
 
     @Inject
-    lateinit var viewModel: BrowserLoginActivityViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: BrowserLoginActivityViewModel by viewModels { viewModelFactory }
 
     private var reauthorizeAccount = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
