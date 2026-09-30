@@ -270,8 +270,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
         fullScreenTextViewerIntent.putExtra("FILE_ID", fileId)
         fullScreenTextViewerIntent.putExtra("LINK", link)
-        fullScreenTextViewerIntent.putExtra("USERNAME", user.username)
-        fullScreenTextViewerIntent.putExtra("BASE_URL", user.baseUrl)
+        fullScreenTextViewerIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         context.startActivity(fullScreenTextViewerIntent)
     }
 

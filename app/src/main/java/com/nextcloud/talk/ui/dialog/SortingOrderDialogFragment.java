@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.SortingOrderFragmentBinding;
+import com.nextcloud.talk.ui.theme.HostViewThemeUtils;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.FileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -98,6 +99,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        viewThemeUtils = HostViewThemeUtils.hostViewThemeUtils(getActivity(), viewThemeUtils);
 
         setupDialogElements();
         setupListeners();
