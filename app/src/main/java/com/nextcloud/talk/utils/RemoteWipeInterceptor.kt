@@ -60,7 +60,7 @@ class RemoteWipeInterceptor(
             return response
         }
 
-        val candidate = resolveWipeCandidate(chain.request().url.toString()) ?: return response
+        val candidate = resolveWipeCandidate(chain.request()) ?: return response
         if (!handledUserIds.add(candidate.userId)) {
             Log.d(TAG, "User ${candidate.userId} was already handled, ignoring")
             return response
@@ -72,11 +72,27 @@ class RemoteWipeInterceptor(
         return response
     }
 
-    private fun resolveWipeCandidate(requestUrl: String): WipeCandidate? {
+    /**
+     * The account whose credentials the server rejected: the one with exactly the credentials of [request], on the
+     * server of its URL. A 401 for a request without credentials, or with credentials of no stored account, says
+     * nothing about an account, e.g. a request that relied on a session cookie, and is ignored. Several accounts can
+     * be on the same server, so the server alone does not identify the account.
+     */
+    private fun resolveWipeCandidate(request: Request): WipeCandidate? {
+        val requestUrl = request.url.toString()
+        val authorization = request.header(AUTHORIZATION)
+        if (authorization == null) {
+            Log.d(TAG, "401 for a request without credentials, ignoring: $requestUrl")
+            return null
+        }
         val user = runBlocking { userManager.getUsers() }
-            .firstOrNull { it.baseUrl != null && requestUrl.startsWith(it.baseUrl!!) }
+            .firstOrNull {
+                it.baseUrl != null &&
+                    requestUrl.startsWith(it.baseUrl!!) &&
+                    ApiUtils.getCredentials(it.username, it.token) == authorization
+            }
         if (user == null) {
-            Log.d(TAG, "No known user matches base URL of $requestUrl, ignoring")
+            Log.d(TAG, "No known user matches the credentials and base URL of $requestUrl, ignoring")
             return null
         }
 
@@ -155,6 +171,7 @@ class RemoteWipeInterceptor(
     companion object {
         private const val TAG = "RemoteWipeInterceptor"
         private const val HTTP_UNAUTHORIZED = 401
+        private const val AUTHORIZATION = "Authorization"
         private const val WIPE_PATH = "wipe"
     }
 }
