@@ -79,36 +79,29 @@ class RemoteWipeInterceptor(
      * be on the same server, so the server alone does not identify the account.
      */
     private fun resolveWipeCandidate(request: Request): WipeCandidate? {
+        val user = findUserWithCredentialsOf(request)
+        val token = user?.token
+        val userId = user?.id
+
+        return if (user != null && token != null && userId != null) {
+            WipeCandidate(user, token, userId)
+        } else {
+            Log.d(TAG, "401 for a request without the credentials of a known account, ignoring: ${request.url}")
+            null
+        }
+    }
+
+    /**
+     * The stored account on the server of [request] whose credentials the request carries, if any.
+     */
+    private fun findUserWithCredentialsOf(request: Request): User? {
+        val credentials = request.header(AUTHORIZATION) ?: return null
         val requestUrl = request.url.toString()
-        val authorization = request.header(AUTHORIZATION)
-        if (authorization == null) {
-            Log.d(TAG, "401 for a request without credentials, ignoring: $requestUrl")
-            return null
-        }
-        val user = runBlocking { userManager.getUsers() }
-            .firstOrNull {
-                it.baseUrl != null &&
-                    requestUrl.startsWith(it.baseUrl!!) &&
-                    ApiUtils.getCredentials(it.username, it.token) == authorization
-            }
-        if (user == null) {
-            Log.d(TAG, "No known user matches the credentials and base URL of $requestUrl, ignoring")
-            return null
-        }
 
-        val token = user.token
-        if (token == null) {
-            Log.d(TAG, "User ${user.id} has no token, ignoring")
-            return null
+        return runBlocking { userManager.getUsers() }.firstOrNull { user ->
+            val isOnServerOfRequest = user.baseUrl?.let { requestUrl.startsWith(it) } == true
+            isOnServerOfRequest && ApiUtils.getCredentials(user.username, user.token) == credentials
         }
-
-        val userId = user.id
-        if (userId == null) {
-            Log.d(TAG, "User has no id, ignoring")
-            return null
-        }
-
-        return WipeCandidate(user, token, userId)
     }
 
     private fun isWipeRequestedByServer(candidate: WipeCandidate): Boolean {
