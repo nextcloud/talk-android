@@ -15,7 +15,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -84,14 +86,17 @@ class ContactsActivity : BaseActivity() {
 
     private fun observeCreatedRoom() {
         lifecycleScope.launch {
-            contactsViewModel.roomViewState.collect { state ->
-                if (state is ContactsViewModel.RoomUiState.Success) {
-                    state.conversation?.token?.let { token ->
-                        val chatIntent = ChatActivity.createIntent(this@ContactsActivity, state.userId, token)
-                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(chatIntent)
+            // Only while visible: a conversation created meanwhile is still opened when the screen is started again.
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                contactsViewModel.roomViewState.collect { state ->
+                    if (state is ContactsViewModel.RoomUiState.Success) {
+                        state.conversation?.token?.let { token ->
+                            val chatIntent = ChatActivity.createIntent(this@ContactsActivity, state.userId, token)
+                            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            startActivity(chatIntent)
+                        }
+                        contactsViewModel.clearRoomState()
                     }
-                    contactsViewModel.clearRoomState()
                 }
             }
         }
