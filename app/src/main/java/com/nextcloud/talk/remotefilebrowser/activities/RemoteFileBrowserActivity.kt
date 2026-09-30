@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import autodagger.AutoInjector
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.dagger.modules.assistedViewModels
@@ -85,11 +86,17 @@ class RemoteFileBrowserActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        // Not a BaseActivity, so it applies the same rule itself: it must be started with the id of its account.
         val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
+        if (userId == 0L) {
+            val message = "${javaClass.simpleName} was started without ${BundleKeys.KEY_INTERNAL_USER_ID}"
+            check(!BuildConfig.DEBUG) { message }
+            Log.e(TAG, "$message, using the default account")
+        }
         user = runBlocking {
             if (userId != 0L) userManager.getUserWithId(userId) else userManager.getDefaultUser()
         } ?: run {
-            Log.e(TAG, "No user found")
+            Log.e(TAG, "No user found for id $userId")
             finish()
             return
         }
