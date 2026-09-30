@@ -17,6 +17,7 @@ import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.CredentialsCookieInterceptor;
 import com.nextcloud.talk.utils.RemoteWipeInterceptor;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -223,6 +224,8 @@ public class RestModule {
         httpClient.addInterceptor(new HeadersInterceptor());
         httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
+        // Session cookies of one account must not authenticate the requests of another one on the same server.
+        httpClient.addNetworkInterceptor(new CredentialsCookieInterceptor());
 
         return httpClient.build();
     }
