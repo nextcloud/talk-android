@@ -38,12 +38,12 @@ class RemoteWipeInterceptorTest {
         mock<TrustManager>()
     )
 
-    private val marcel = User(id = 1, username = "marcel", token = "tokenA", baseUrl = BASE_URL)
-    private val marcel2 = User(id = 2, username = "marcel2", token = "tokenB", baseUrl = BASE_URL)
+    private val userA = User(id = 1, username = "userA", token = "tokenA", baseUrl = BASE_URL)
+    private val userB = User(id = 2, username = "userB", token = "tokenB", baseUrl = BASE_URL)
 
     @Test
     fun `a 401 for a request without credentials removes no account`() {
-        wheneverBlocking { userManager.getUsers() } doReturn listOf(marcel, marcel2)
+        wheneverBlocking { userManager.getUsers() } doReturn listOf(userA, userB)
 
         val response = interceptor.intercept(chainAnswering401(Request.Builder().url(PREVIEW_URL).build()))
 
@@ -53,10 +53,10 @@ class RemoteWipeInterceptorTest {
 
     @Test
     fun `a 401 for credentials of no stored account removes no account`() {
-        wheneverBlocking { userManager.getUsers() } doReturn listOf(marcel, marcel2)
+        wheneverBlocking { userManager.getUsers() } doReturn listOf(userA, userB)
         val request = Request.Builder()
             .url(PREVIEW_URL)
-            .header("Authorization", Credentials.basic("marcel2", "outdatedToken"))
+            .header("Authorization", Credentials.basic("userB", "outdatedToken"))
             .build()
 
         interceptor.intercept(chainAnswering401(request))
@@ -64,9 +64,24 @@ class RemoteWipeInterceptorTest {
         verifyBlocking(userManager, never()) { scheduleUserForDeletionWithId(any()) }
     }
 
-    private fun chainAnswering401(request: Request): Interceptor.Chain {
+    @Test
+    fun `a 401 after a redirect to another host removes no account`() {
+        wheneverBlocking { userManager.getUsers() } doReturn listOf(userA, userB)
+        val original = Request.Builder()
+            .url(PREVIEW_URL)
+            .header("Authorization", Credentials.basic("userA", "tokenA"))
+            .build()
+        // OkHttp drops the credentials when following a redirect to another host.
+        val redirected = Request.Builder().url("https://other.example.org/image").build()
+
+        interceptor.intercept(chainAnswering401(original, answeredRequest = redirected))
+
+        verifyBlocking(userManager, never()) { scheduleUserForDeletionWithId(any()) }
+    }
+
+    private fun chainAnswering401(request: Request, answeredRequest: Request = request): Interceptor.Chain {
         val response = Response.Builder()
-            .request(request)
+            .request(answeredRequest)
             .protocol(Protocol.HTTP_1_1)
             .code(HTTP_UNAUTHORIZED)
             .message("Unauthorized")

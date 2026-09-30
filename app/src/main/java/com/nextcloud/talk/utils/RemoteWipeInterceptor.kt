@@ -53,14 +53,17 @@ class RemoteWipeInterceptor(
         val response = chain.proceed(chain.request())
         if (response.code != HTTP_UNAUTHORIZED) return response
 
-        Log.d(TAG, "Received 401 for ${chain.request().url}")
+        // The request that got the 401. After a redirect, it differs from chain.request(): e.g. OkHttp drops the
+        // credentials when redirecting to another host, so that 401 says nothing about the original credentials.
+        val rejectedRequest = response.request
+        Log.d(TAG, "Received 401 for ${rejectedRequest.url}")
 
-        if (WIPE_PATH in chain.request().url.encodedPath) {
+        if (WIPE_PATH in rejectedRequest.url.encodedPath) {
             Log.d(TAG, "401 was from the wipe endpoint itself, ignoring to avoid recursion")
             return response
         }
 
-        val candidate = resolveWipeCandidate(chain.request()) ?: return response
+        val candidate = resolveWipeCandidate(rejectedRequest) ?: return response
         if (!handledUserIds.add(candidate.userId)) {
             Log.d(TAG, "User ${candidate.userId} was already handled, ignoring")
             return response
