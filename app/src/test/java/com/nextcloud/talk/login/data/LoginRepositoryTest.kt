@@ -498,6 +498,27 @@ class LoginRepositoryTest {
             assertTrue(result is LoginRepository.LoginResult.NewAccount)
         }
 
+    @Test
+    fun `parseAndLogin reports a different account for an account that is not set up during a reauthorization`() =
+        runTest {
+            // Arrange - reauthorize the account with the internal id 7
+            val qrData = "nc://login/server:https%3A//example.com"
+            repo.startLoginFlowFromQR(qrData, reAuth = true, accountToReauthorize = 7L)
+
+            val loginData = LoginCompletion(200, "https://server.com", "newuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(false)
+
+            // Act
+            val result = repo.parseAndLogin(loginData)
+
+            // Assert
+            assertEquals(LoginRepository.LoginResult.DifferentAccount, result)
+            verify(localLoginDataSource, never()).updateUser(any(), anyOrNull())
+        }
+
     // ========== LocalLoginDataSource Integration Tests ==========
 
     @Test

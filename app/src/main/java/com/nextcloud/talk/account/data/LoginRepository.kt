@@ -203,9 +203,9 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     }
 
     /**
-     * Returns [LoginResult.NewAccount] if the account is not scheduled for deletion and doesn't exist yet. For an
-     * existing account being reauthorized, [LoginResult.DifferentAccount] if another account than the one to
-     * reauthorize logged in, which is then left unchanged.
+     * Returns [LoginResult.NewAccount] if the account is not scheduled for deletion and doesn't exist yet. During a
+     * reauthorization, [LoginResult.DifferentAccount] if another account than the one to reauthorize logged in, set
+     * up or not, which is then left unchanged.
      */
     suspend fun parseAndLogin(loginData: LoginCompletion): LoginResult {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {
@@ -223,6 +223,10 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
             }
 
             return LoginResult.ExistingAccount
+        } else if (shouldReauthorizeUser) {
+            // A reauthorization must not add the account that logged in instead.
+            Log.w(TAG, "Logged in with an account that is not set up during a reauthorization. Skipped user creation.")
+            return LoginResult.DifferentAccount
         } else {
             return LoginResult.NewAccount(startAccountVerification(loginData))
         }
