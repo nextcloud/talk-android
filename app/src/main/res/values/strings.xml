@@ -885,8 +885,6 @@ How to translate with transifex:
     <string name="messages">Messages</string>
     <string name="load_more_results">Load more results</string>
     <string name="message_search_hint">Search …</string>
-    <string name="message_search_begin_typing">Start typing to search …</string>
-    <string name="message_search_begin_empty">No search results</string>
     <string name="message_search_previous_result">Previous search result</string>
     <string name="message_search_next_result">Next search result</string>
     <string name="message_search_no_more_results">No more messages found</string>
