@@ -1153,10 +1153,6 @@ class ConversationsListActivity : BaseActivity() {
 
             val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, it.token, bundle)
 
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser.capabilities?.spreedCapability)) {
-                showSnackbar(context.getString(R.string.nc_call_e2ee_not_supported))
-                return@let
-            }
             val pp = ParticipantPermissions(currentUser.capabilities?.spreedCapability, it)
             if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
                 Log.e(TAG, "Error starting call from conversations list: call is forbidden")

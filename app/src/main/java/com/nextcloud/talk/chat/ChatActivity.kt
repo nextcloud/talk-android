@@ -3494,10 +3494,6 @@ class ChatActivity :
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(spreedCapabilities)) {
-                Snackbar.make(binding.root, R.string.nc_call_e2ee_not_supported, Snackbar.LENGTH_LONG).show()
-                return
-            }
             val pp = ParticipantPermissions(spreedCapabilities, it)
             if (!pp.canStartCall() && currentConversation?.hasCall == false) {
                 Snackbar.make(binding.root, R.string.startCallForbidden, Snackbar.LENGTH_LONG).show()
