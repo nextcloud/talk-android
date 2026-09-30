@@ -77,7 +77,7 @@ private const val CHIP_CORNER_RADIUS_DP = 16f
 private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
 
 val validLinkRegex = Regex(
-    """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:/[^\s)]*)?""",
+    """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?::\d{1,5})?(?:/[^\s)]*)?""",
     RegexOption.IGNORE_CASE
 )
 
