@@ -187,15 +187,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private fun processMessage(text: String) {
         val (_, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
         if (callWebSocketMessage != null) {
-            val ncSignalingMessage = callWebSocketMessage.ncSignalingMessage
-
-            if (ncSignalingMessage != null &&
-                TextUtils.isEmpty(ncSignalingMessage.from) &&
-                callWebSocketMessage.senderWebSocketMessage != null
-            ) {
-                ncSignalingMessage.from = callWebSocketMessage.senderWebSocketMessage!!.sessionId
-            }
-
+            takeSenderFromEnvelope(callWebSocketMessage)
             signalingMessageReceiver.processChatMessage(callWebSocketMessage)
         }
     }
@@ -545,6 +537,12 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         private const val NORMAL_CLOSURE = 1000
         private const val ONE_SECOND: Long = 1000
         private const val PING_INTERVAL_SECONDS: Long = 30
+
+        // The sender is what the signaling server says, never what the message claims, like in the web client. A
+        // message without a sender gets none, so the key exchange ignores it
+        internal fun takeSenderFromEnvelope(callWebSocketMessage: CallWebSocketMessageDto) {
+            callWebSocketMessage.ncSignalingMessage?.from = callWebSocketMessage.senderWebSocketMessage?.sessionId
+        }
 
         // Dedicated client with pings, so half-open WebSocket connections
         // (e.g. after a WiFi to cellular switch without TCP reset) fail and trigger the reconnect path.
