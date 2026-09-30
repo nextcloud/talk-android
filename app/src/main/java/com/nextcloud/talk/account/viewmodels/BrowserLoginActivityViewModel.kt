@@ -53,7 +53,19 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
     private var savedResponse: LoginResponse? = null
 
+    // The view model survives a recreation of the activity, which starts the login again. A started login is
+    // continued instead of starting a second one, whose session the browser would not authorize. After process
+    // death the view model is new, so the login is started again.
+    private var isLoginStarted = false
+
+    private fun startLoginOnce(): Boolean {
+        if (isLoginStarted) return false
+        isLoginStarted = true
+        return true
+    }
+
     fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
+        if (!startLoginOnce()) return
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth, accountToReauthorize)
             savedResponse = response
@@ -84,6 +96,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     }
 
     fun loginWithQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
+        if (!startLoginOnce()) return
         viewModelScope.launch {
             val loginCompletionResponse = repository.startLoginFlowFromQR(dataString, reAuth, accountToReauthorize)
             if (loginCompletionResponse == null) {
@@ -96,6 +109,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     }
 
     fun loginWithOTPQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
+        if (!startLoginOnce()) return
         viewModelScope.launch {
             val loginCompletionResponse = repository.startOTPLoginFlow(dataString, reAuth, accountToReauthorize)
             if (loginCompletionResponse == null) {
