@@ -697,6 +697,7 @@
     <string name="pinned_indefinitely">已永久釘選</string>
     <string name="pinned_message_options">訊息選項</string>
     <string name="pinned_until">釘選直到</string>
+    <string name="play_pause_audio_file">播放/暫停音訊檔案</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
@@ -791,6 +792,7 @@
     <string name="thisWeek">這個禮拜</string>
     <string name="this_is_a_test_message">這是測試訊息</string>
     <string name="this_weekend">本週末</string>
+    <string name="thread">討論串</string>
     <string name="thread_cancel">取消建立討論串</string>
     <string name="thread_notifications">討論串通知</string>
     <string name="thread_reply">回覆</string>
