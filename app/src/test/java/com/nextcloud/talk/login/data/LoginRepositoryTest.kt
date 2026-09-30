@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.login.data
 
-import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
@@ -30,6 +29,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -402,7 +402,7 @@ class LoginRepositoryTest {
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNull(result)
+            assertEquals(LoginRepository.LoginResult.ExistingAccount, result)
             verify(localLoginDataSource).startAccountRemovalWorker()
         }
 
@@ -420,8 +420,8 @@ class LoginRepositoryTest {
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNull(result)
-            verify(localLoginDataSource, never()).updateUser(any())
+            assertEquals(LoginRepository.LoginResult.ExistingAccount, result)
+            verify(localLoginDataSource, never()).updateUser(any(), anyOrNull())
         }
 
     @Test
@@ -436,13 +436,15 @@ class LoginRepositoryTest {
                 .thenReturn(false)
             whenever(localLoginDataSource.checkIfUserExists(loginData))
                 .thenReturn(true)
+            whenever(localLoginDataSource.updateUser(loginData, null))
+                .thenReturn(true)
 
             // Act
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNull(result)
-            verify(localLoginDataSource).updateUser(loginData)
+            assertEquals(LoginRepository.LoginResult.ExistingAccount, result)
+            verify(localLoginDataSource).updateUser(loginData, null)
         }
 
     @Test
@@ -459,8 +461,7 @@ class LoginRepositoryTest {
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNotNull(result)
-            assertTrue(result is Bundle)
+            assertTrue(result is LoginRepository.LoginResult.NewAccount)
         }
 
     @Test
@@ -477,8 +478,7 @@ class LoginRepositoryTest {
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNotNull(result)
-            assertTrue(result is Bundle)
+            assertTrue(result is LoginRepository.LoginResult.NewAccount)
         }
 
     @Test
@@ -495,8 +495,7 @@ class LoginRepositoryTest {
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertNotNull(result)
-            assertTrue(result is Bundle)
+            assertTrue(result is LoginRepository.LoginResult.NewAccount)
         }
 
     // ========== LocalLoginDataSource Integration Tests ==========
@@ -534,7 +533,7 @@ class LoginRepositoryTest {
 
             // Assert
             verify(localLoginDataSource).checkIfUserExists(loginData)
-            verify(localLoginDataSource, never()).updateUser(any())
+            verify(localLoginDataSource, never()).updateUser(any(), anyOrNull())
         }
 
     @Test
@@ -549,12 +548,37 @@ class LoginRepositoryTest {
                 .thenReturn(false)
             whenever(localLoginDataSource.checkIfUserExists(loginData))
                 .thenReturn(true)
+            whenever(localLoginDataSource.updateUser(loginData, null))
+                .thenReturn(true)
 
             // Act
             repo.parseAndLogin(loginData)
 
             // Assert
-            verify(localLoginDataSource).updateUser(loginData)
+            verify(localLoginDataSource).updateUser(loginData, null)
+        }
+
+    @Test
+    fun `parseAndLogin passes the account to reauthorize and reports a different account`() =
+        runTest {
+            // Arrange - reauthorize the account with the internal id 7
+            val qrData = "nc://login/server:https%3A//example.com"
+            repo.startLoginFlowFromQR(qrData, reAuth = true, accountToReauthorize = 7L)
+
+            val loginData = LoginCompletion(200, "https://server.com", "otheruser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
+                .thenReturn(false)
+            whenever(localLoginDataSource.checkIfUserExists(loginData))
+                .thenReturn(true)
+            whenever(localLoginDataSource.updateUser(loginData, 7L))
+                .thenReturn(false)
+
+            // Act
+            val result = repo.parseAndLogin(loginData)
+
+            // Assert
+            assertEquals(LoginRepository.LoginResult.DifferentAccount, result)
+            verify(localLoginDataSource).updateUser(loginData, 7L)
         }
 
     // ========== Edge Cases and Error Handling ==========

@@ -1392,6 +1392,7 @@ class ConversationsListActivity : BaseActivity() {
                 val bundle = Bundle()
                 bundle.putString(BundleKeys.KEY_BASE_URL, currentUser.baseUrl!!)
                 bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
+                bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }

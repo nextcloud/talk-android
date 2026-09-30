@@ -115,6 +115,13 @@ class BrowserLoginActivity : BaseActivity() {
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
                         }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginDifferentAccount -> {
+                            Snackbar.make(
+                                binding.root,
+                                R.string.nc_reauthorize_different_account,
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
@@ -128,17 +135,19 @@ class BrowserLoginActivity : BaseActivity() {
         if (extras.containsKey(BundleKeys.KEY_REAUTHORIZE_ACCOUNT)) {
             reauthorizeAccount = extras.getBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT)
         }
+        // The account to reauthorize, so a login with another account doesn't change it.
+        val accountToReauthorize = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
 
         if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
             val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
 
             if (uri.startsWith(LoginRepository.ONE_TIME_PREFIX)) {
-                viewModel.loginWithOTPQR(uri, reauthorizeAccount)
+                viewModel.loginWithOTPQR(uri, reauthorizeAccount, accountToReauthorize)
             } else {
-                viewModel.loginWithQR(uri, reauthorizeAccount)
+                viewModel.loginWithQR(uri, reauthorizeAccount, accountToReauthorize)
             }
         } else if (baseUrl != null) {
-            viewModel.startWebBrowserLogin(baseUrl, reauthorizeAccount)
+            viewModel.startWebBrowserLogin(baseUrl, reauthorizeAccount, accountToReauthorize)
         }
     }
 

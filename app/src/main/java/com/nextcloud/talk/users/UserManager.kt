@@ -96,7 +96,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     suspend fun getUserWithInternalId(id: Long): User? = userRepository.getUserWithIdNotScheduledForDeletion(id)
 
     suspend fun checkIfUserExists(username: String, server: String): Boolean =
-        userRepository.getUserWithUsernameAndServer(username, server) != null
+        getUserWithUsernameAndServer(username, server) != null
+
+    suspend fun getUserWithUsernameAndServer(username: String, server: String): User? =
+        userRepository.getUserWithUsernameAndServer(username, server)
 
     /**
      * Don't ask

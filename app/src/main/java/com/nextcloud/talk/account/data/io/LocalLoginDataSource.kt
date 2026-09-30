@@ -17,23 +17,22 @@ import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import kotlinx.coroutines.runBlocking
 
 // local datasource for communicating with room through account manager
 // crucial for making sure the login process interacts with the db as expected.
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
 
-    fun updateUser(loginData: LoginCompletion) {
-        val currentUser = runBlocking { userManager.getDefaultUser() }
-        if (currentUser != null) {
-            runBlocking {
-                userManager.updateCredentials(
-                    currentUser.id!!,
-                    loginData.appPassword,
-                    appPreferences.temporaryClientCertAlias
-                )
-            }
-        }
+    /**
+     * Stores the new credentials of a reauthorized account. That is the account that logged in, found by its login
+     * name and server, as the browser login flow grants an app password for whoever is logged in there. Returns false
+     * without any change if it is not the account with the internal id [accountToReauthorize].
+     */
+    suspend fun updateUser(loginData: LoginCompletion, accountToReauthorize: Long?): Boolean {
+        val user = userManager.getUserWithUsernameAndServer(loginData.loginName, loginData.server)
+            ?.takeIf { accountToReauthorize == null || it.id == accountToReauthorize }
+            ?: return false
+        userManager.updateCredentials(user.id!!, loginData.appPassword, appPreferences.temporaryClientCertAlias)
+        return true
     }
 
     fun startAccountRemovalWorker(): LiveData<WorkInfo?> {

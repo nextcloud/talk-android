@@ -38,6 +38,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         data object PostLoginRestartApp : PostLoginViewState()
         data object PostLoginError : PostLoginViewState()
         data class PostLoginContinue(val data: Bundle) : PostLoginViewState()
+        data object PostLoginDifferentAccount : PostLoginViewState()
     }
 
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
@@ -52,9 +53,9 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
     private var savedResponse: LoginResponse? = null
 
-    fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false) {
+    fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         viewModelScope.launch {
-            val response = repository.startLoginFlow(baseUrl, reAuth)
+            val response = repository.startLoginFlow(baseUrl, reAuth, accountToReauthorize)
             savedResponse = response
 
             if (response == null) {
@@ -77,52 +78,41 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
                     return@launch
                 }
 
-                val bundle = repository.parseAndLogin(loginCompletionResponse)
-                if (bundle == null) {
-                    _postLoginState.value = PostLoginViewState.PostLoginRestartApp
-                    return@launch
-                }
-
-                _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
+                _postLoginState.value = postLoginStateFor(repository.parseAndLogin(loginCompletionResponse))
             }
         }
     }
 
-    fun loginWithQR(dataString: String, reAuth: Boolean = false) {
+    fun loginWithQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         viewModelScope.launch {
-            val loginCompletionResponse = repository.startLoginFlowFromQR(dataString, reAuth)
+            val loginCompletionResponse = repository.startLoginFlowFromQR(dataString, reAuth, accountToReauthorize)
             if (loginCompletionResponse == null) {
                 _postLoginState.value = PostLoginViewState.PostLoginError
                 return@launch
             }
 
-            val bundle = repository.parseAndLogin(loginCompletionResponse)
-            if (bundle == null) {
-                _postLoginState.value = PostLoginViewState.PostLoginRestartApp
-                return@launch
-            }
-
-            _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
+            _postLoginState.value = postLoginStateFor(repository.parseAndLogin(loginCompletionResponse))
         }
     }
 
-    fun loginWithOTPQR(dataString: String, reAuth: Boolean = false) {
+    fun loginWithOTPQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         viewModelScope.launch {
-            val loginCompletionResponse = repository.startOTPLoginFlow(dataString, reAuth)
+            val loginCompletionResponse = repository.startOTPLoginFlow(dataString, reAuth, accountToReauthorize)
             if (loginCompletionResponse == null) {
                 _postLoginState.value = PostLoginViewState.PostLoginError
                 return@launch
             }
 
-            val bundle = repository.parseAndLogin(loginCompletionResponse)
-            if (bundle == null) {
-                _postLoginState.value = PostLoginViewState.PostLoginRestartApp
-                return@launch
-            }
-
-            _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
+            _postLoginState.value = postLoginStateFor(repository.parseAndLogin(loginCompletionResponse))
         }
     }
+
+    private fun postLoginStateFor(result: LoginRepository.LoginResult): PostLoginViewState =
+        when (result) {
+            is LoginRepository.LoginResult.NewAccount -> PostLoginViewState.PostLoginContinue(result.bundle)
+            LoginRepository.LoginResult.ExistingAccount -> PostLoginViewState.PostLoginRestartApp
+            LoginRepository.LoginResult.DifferentAccount -> PostLoginViewState.PostLoginDifferentAccount
+        }
 
     fun cancelLogin() = repository.cancelLoginFlow()
 }
