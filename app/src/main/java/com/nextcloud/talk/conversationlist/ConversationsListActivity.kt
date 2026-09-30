@@ -244,16 +244,7 @@ class ConversationsListActivity : BaseActivity() {
         super.onNewIntent(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         if (newUserId != 0L && newUserId != currentUser.id) {
-            // The list is bound to one account, so open a fresh instance for the other one. The activity is
-            // exported, so the received intent is not launched again as it is: the new one only targets this
-            // activity and takes over no flags like URI permission grants.
-            val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
-                action = intent.action
-                data = intent.data
-                intent.extras?.let { putExtras(it) }
-            }
-            finish()
-            startActivity(accountIntent)
+            relaunchForAccount(newUserId, intent)
             return
         }
         currentUser.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
@@ -686,22 +677,24 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     /**
-     * Continues the pending share in the conversation list of the account with the internal id [userId].
+     * Replaces this list by a new one for the account with the internal id [userId], e.g. for an intent for another
+     * account or to continue a pending share with another account.
      *
-     * The list is bound to its account, so it is replaced by a new one for that account instead of being recreated,
-     * which would keep the account and its view models. The new list gets the shared content and the read access to
-     * the shared files, which ends with this activity.
+     * The list is bound to its account, so it is not recreated, which would keep the account and its view models.
+     * The new list gets the action, data and extras of [source], including shared content and the read access to
+     * shared files, which ends with this activity. The activity is exported, so [source] can come from another app:
+     * the new intent only targets this activity and takes over no other flags.
      */
-    fun continueShareWithAccount(userId: Long) {
-        val shareIntent = Intent(this, ConversationsListActivity::class.java).apply {
-            action = intent.action
-            setDataAndType(intent.data, intent.type)
-            intent.extras?.let { putExtras(it) }
-            clipData = intent.clipData
+    fun relaunchForAccount(userId: Long, source: Intent = intent) {
+        val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
+            action = source.action
+            setDataAndType(source.data, source.type)
+            source.extras?.let { putExtras(it) }
+            clipData = source.clipData
             putExtra(KEY_INTERNAL_USER_ID, userId)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        startActivity(shareIntent)
+        startActivity(accountIntent)
         finish()
     }
 

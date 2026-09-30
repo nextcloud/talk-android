@@ -76,7 +76,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
                         }
                         is SwitchUserSuccessStateChooseAccountShareTo -> {
                             cookieManager.cookieStore.removeAll()
-                            (activity as? ConversationsListActivity)?.continueShareWithAccount(state.user.id!!)
+                            (activity as? ConversationsListActivity)?.relaunchForAccount(state.user.id!!)
                             dismiss()
                         }
                         else -> {}
