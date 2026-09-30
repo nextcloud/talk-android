@@ -72,7 +72,8 @@ enum class SpreedFeatures(val value: String) {
     ANNOUNCEMENT_PRESET("announcement-preset"),
     CONVERSATION_TAGS("conversation-tags"),
     PROMOTE_DEMOTE_OWNER("promote-demote-owner"),
-    NOTE_TO_SELF("note-to-self")
+    NOTE_TO_SELF("note-to-self"),
+    CALL_END_TO_END_ENCRYPTION("call-end-to-end-encryption")
 }
 
 @Suppress("TooManyFunctions")
@@ -328,8 +329,12 @@ object CapabilitiesUtil {
     fun isBanningAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
+    /**
+     * Whether calls have to be end-to-end encrypted: the signaling setup supports it and the admin turned it on.
+     */
     fun isCallEndToEndEncryptionEnabled(spreedCapabilities: SpreedCapabilityDto?): Boolean {
         if (
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CALL_END_TO_END_ENCRYPTION) &&
             spreedCapabilities?.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&
             spreedCapabilities.config!!["call"]!!.containsKey("end-to-end-encryption")
