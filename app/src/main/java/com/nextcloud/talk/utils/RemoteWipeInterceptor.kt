@@ -99,7 +99,7 @@ class RemoteWipeInterceptor(
         val requestUrl = request.url.toString()
 
         return runBlocking { userManager.getUsers() }.firstOrNull { user ->
-            val isOnServerOfRequest = user.baseUrl?.let { requestUrl.startsWith(it) } == true
+            val isOnServerOfRequest = user.baseUrl?.let { UriUtils.isOnServer(requestUrl, it) } == true
             isOnServerOfRequest && ApiUtils.getCredentials(user.username, user.token) == credentials
         }
     }

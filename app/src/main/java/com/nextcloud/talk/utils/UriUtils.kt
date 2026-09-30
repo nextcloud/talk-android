@@ -8,10 +8,28 @@
 package com.nextcloud.talk.utils
 
 import androidx.core.net.toUri
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class UriUtils {
     companion object {
         fun hasHttpProtocolPrefixed(uri: String): Boolean = uri.startsWith("http://") || uri.startsWith("https://")
+
+        /**
+         * Whether [url] points to the server at [baseUrl]: same scheme, host and port, and within its path. Unlike a
+         * prefix check, this rejects e.g. `https://cloud.example.com.attacker.test` for `https://cloud.example.com`,
+         * so it can decide whether to send the account's credentials.
+         */
+        fun isOnServer(url: String, baseUrl: String): Boolean {
+            val target = url.toHttpUrlOrNull()
+            val server = baseUrl.toHttpUrlOrNull()
+            val serverPath = server?.encodedPath?.trimEnd('/').orEmpty()
+            return target != null &&
+                server != null &&
+                target.scheme == server.scheme &&
+                target.host == server.host &&
+                target.port == server.port &&
+                (target.encodedPath == serverPath || target.encodedPath.startsWith("$serverPath/"))
+        }
 
         fun extractInstanceInternalFileFileId(url: String): String {
             // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41

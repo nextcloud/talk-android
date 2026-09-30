@@ -34,6 +34,7 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
 import com.nextcloud.talk.ui.theme.LocalOpenGraphFetcher
+import com.nextcloud.talk.utils.UriUtils
 import androidx.core.net.toUri
 
 private val previewImageHeight = 120.dp
@@ -153,7 +154,7 @@ private fun LinkPreviewImage(
 ) {
     thumbUrl?.takeIf { it.isNotBlank() }?.let {
         // Credentials only for images of the account's own server, never for external ones.
-        val isOwnServer = typeContent.serverBaseUrl?.let { baseUrl -> it.startsWith(baseUrl) } == true
+        val isOwnServer = typeContent.serverBaseUrl?.let { baseUrl -> UriUtils.isOnServer(it, baseUrl) } == true
         val loadedImage = load(
             imageUri = it,
             context = context,
