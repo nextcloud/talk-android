@@ -1163,7 +1163,7 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun openConversation(textToPaste: String? = "") {
         if (CallActivity.active &&
-            selectedConversation!!.token != ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
+            !ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(selectedConversation!!.token, currentUser.id)
         ) {
             showSnackbar(context.getString(R.string.restrict_join_other_room_while_call))
             return

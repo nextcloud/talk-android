@@ -771,16 +771,18 @@ class CallActivity : CallBaseActivity() {
             return
         }
         val newRoomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
-        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken")
+        // Accounts on the same server share the tokens of their common conversations, so compare the account too.
+        val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, conversationUser.id!!)
+        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken newUserId=$newUserId")
 
         when {
             // notification tap without extras: just bring the current call back to the front
             newRoomToken.isNullOrEmpty() -> Unit
 
             // re-entry for the call this instance is already handling (singleTask reuse)
-            newRoomToken == roomToken -> setIntent(intent)
+            newRoomToken == roomToken && newUserId == conversationUser.id -> setIntent(intent)
 
-            // a call for another room was requested while this instance lingered in the background:
+            // a call for another room or account was requested while this instance lingered in the background:
             // end the current call and restart cleanly in onDestroy, so no stale state is reused
             else -> {
                 Log.d(TAG, "onNewIntent: call requested for another room, ending current call first")

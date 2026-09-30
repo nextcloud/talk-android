@@ -3071,8 +3071,10 @@ class ChatActivity :
 
     private fun joinRoomWithPassword() {
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
-        if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken ==
-            currentConversation!!.token
+        if (ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(
+                currentConversation!!.token,
+                conversationUser.id
+            )
         ) {
             sessionIdAfterRoomJoined = ApplicationWideCurrentRoomHolder.getInstance().session
 
