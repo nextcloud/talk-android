@@ -69,7 +69,11 @@ sealed interface MessageTypeContent {
     object RegularText : MessageTypeContent
     object SystemMessage : MessageTypeContent
 
-    data class LinkPreview(val url: String) : MessageTypeContent
+    /**
+     * [authHeader] authenticates images of the account's own server at [serverBaseUrl], e.g. reference previews.
+     */
+    data class LinkPreview(val url: String, val serverBaseUrl: String? = null, val authHeader: String? = null) :
+        MessageTypeContent
 
     data class Media(
         val previewUrl: String?,
@@ -79,7 +83,9 @@ sealed interface MessageTypeContent {
         val blurhash: String? = null,
         val width: Int? = null,
         val height: Int? = null,
-        val isClassified: Boolean = false
+        val isClassified: Boolean = false,
+        // Credentials of the account, as the preview is always loaded from its server.
+        val authHeader: String? = null
     ) : MessageTypeContent
 
     data class UploadingMedia(
@@ -291,7 +297,13 @@ fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolea
         getDeckContent(message)
     } else {
         message.extractLinkPreviewUrl(user)
-            ?.let { MessageTypeContent.LinkPreview(url = it) }
+            ?.let {
+                MessageTypeContent.LinkPreview(
+                    url = it,
+                    serverBaseUrl = user.baseUrl,
+                    authHeader = ApiUtils.getCredentials(user.username, user.token)
+                )
+            }
             ?: MessageTypeContent.RegularText
     }
 
@@ -332,7 +344,8 @@ fun getMediaContent(user: User, message: ChatMessage, isClassified: Boolean = fa
         blurhash = message.fileParameters.blurhash,
         width = message.fileParameters.width,
         height = message.fileParameters.height,
-        isClassified = isClassified
+        isClassified = isClassified,
+        authHeader = ApiUtils.getCredentials(user.username, user.token)
     )
 }
 

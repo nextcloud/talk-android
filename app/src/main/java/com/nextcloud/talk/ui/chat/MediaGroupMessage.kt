@@ -434,7 +434,8 @@ private fun SyncedMediaTileContent(
                 imageUri = typeContent.previewUrl,
                 context = context,
                 errorPlaceholderImage = typeContent.drawableResourceId,
-                animated = typeContent.animateGif
+                animated = typeContent.animateGif,
+                authHeader = typeContent.authHeader
             )
         }
     }

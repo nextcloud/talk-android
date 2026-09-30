@@ -38,6 +38,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import java.io.File
 import javax.inject.Inject
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.ui.LocalImageAuthHeader
+import androidx.compose.runtime.CompositionLocalProvider
 
 /**
  * Swipeable, group-aware media viewer - the entry point for every image/video tap in chat. See
@@ -56,6 +59,7 @@ class MediaViewerActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val user = setUpBoundUserOrFinish() ?: return
+        val imageAuthHeader = ApiUtils.getCredentials(user.username, user.token)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         val seedItems = intent.getParcelableArrayListExtraProvider<MediaViewerItem>(EXTRA_SEED_ITEMS)
@@ -82,14 +86,16 @@ class MediaViewerActivity : BaseActivity() {
             setContent {
                 val colorScheme = viewThemeUtils.getColorScheme(this@MediaViewerActivity)
                 MaterialTheme(colorScheme = colorScheme) {
-                    MediaViewerScreen(
-                        viewModel = viewModel,
-                        onShare = ::shareFile,
-                        onSave = ::showSaveDialog,
-                        onControlsVisibilityChanged = { visible ->
-                            if (visible) exitImmersiveMode() else enterImmersiveMode()
-                        }
-                    )
+                    CompositionLocalProvider(LocalImageAuthHeader provides imageAuthHeader) {
+                        MediaViewerScreen(
+                            viewModel = viewModel,
+                            onShare = ::shareFile,
+                            onSave = ::showSaveDialog,
+                            onControlsVisibilityChanged = { visible ->
+                                if (visible) exitImmersiveMode() else enterImmersiveMode()
+                            }
+                        )
+                    }
                 }
             }
         }

@@ -23,6 +23,9 @@ import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import javax.inject.Inject
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.ui.LocalImageAuthHeader
+import androidx.compose.runtime.CompositionLocalProvider
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ListOpenConversationsActivity : BaseActivity() {
@@ -51,19 +54,23 @@ class ListOpenConversationsActivity : BaseActivity() {
 
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
-                OpenConversationsScreen(
-                    viewState = viewState,
-                    searchTerm = searchTerm,
-                    userBaseUrl = user.baseUrl,
-                    listenerInput = OpenConversationsScreenListenerInput(
-                        onSearchTermChange = { term ->
-                            openConversationsViewModel.updateSearchTerm(term)
-                            openConversationsViewModel.fetchConversations()
-                        },
-                        onConversationClick = { conversation -> navigateToChat(user.id!!, conversation) },
-                        onBackClick = { onBackPressedDispatcher.onBackPressed() }
+                CompositionLocalProvider(
+                    LocalImageAuthHeader provides ApiUtils.getCredentials(user.username, user.token)
+                ) {
+                    OpenConversationsScreen(
+                        viewState = viewState,
+                        searchTerm = searchTerm,
+                        userBaseUrl = user.baseUrl,
+                        listenerInput = OpenConversationsScreenListenerInput(
+                            onSearchTermChange = { term ->
+                                openConversationsViewModel.updateSearchTerm(term)
+                                openConversationsViewModel.fetchConversations()
+                            },
+                            onConversationClick = { conversation -> navigateToChat(user.id!!, conversation) },
+                            onBackClick = { onBackPressedDispatcher.onBackPressed() }
+                        )
                     )
-                )
+                }
             }
         }
     }

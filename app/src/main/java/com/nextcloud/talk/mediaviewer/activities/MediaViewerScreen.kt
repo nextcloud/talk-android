@@ -90,6 +90,8 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
+import com.nextcloud.talk.ui.LocalImageAuthHeader
+import com.nextcloud.talk.ui.withAuthHeader
 import java.io.File
 import kotlinx.coroutines.launch
 import pl.droidsonroids.gif.GifDrawable
@@ -330,7 +332,10 @@ private fun MediaPage(
 private fun PreviewPlaceholder(item: MediaViewerItem, onToggleControls: () -> Unit) {
     if (item.previewUrl != null) {
         AsyncImage(
-            model = item.previewUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(item.previewUrl)
+                .withAuthHeader(LocalImageAuthHeader.current)
+                .build(),
             contentDescription = item.fileName,
             modifier = Modifier.fillMaxSize().clickable(onClick = onToggleControls),
             contentScale = ContentScale.Fit
@@ -512,7 +517,10 @@ private fun ThumbnailTile(item: MediaViewerItem, isSelected: Boolean, onClick: (
     ) {
         if (item.previewUrl != null) {
             AsyncImage(
-                model = item.previewUrl,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.previewUrl)
+                    .withAuthHeader(LocalImageAuthHeader.current)
+                    .build(),
                 contentDescription = item.fileName,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
