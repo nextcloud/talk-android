@@ -16,20 +16,22 @@ import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersStartStateChooseAccoun
 import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserErrorStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
-import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class ChooseAccountShareToViewModel @Inject constructor(
+/**
+ * Lets the conversation list of [currentUser] continue a pending share with another account.
+ */
+class ChooseAccountShareToViewModel @AssistedInject constructor(
     private val userManager: UserManager,
-    defaultAccountProvider: DefaultAccountProvider
+    @Assisted val currentUser: User
 ) : ViewModel() {
-
-    val currentUser: User? = defaultAccountProvider.getDefaultUserBlocking()
 
     private val _chooseAccountShareToViewState: MutableStateFlow<ChooseAccountShareToViewState> =
         MutableStateFlow(LoadUsersStartStateChooseAccountShareTo)
@@ -43,7 +45,7 @@ class ChooseAccountShareToViewModel @Inject constructor(
             try {
                 val users = userManager.getUsers()
                 _chooseAccountShareToViewState.value =
-                    LoadUsersSuccessStateChooseAccountShareTo(users.filter { !it.current })
+                    LoadUsersSuccessStateChooseAccountShareTo(users.filter { it.id != currentUser.id })
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading users", e)
                 _chooseAccountShareToViewState.value = LoadUsersSuccessStateChooseAccountShareTo(emptyList())
@@ -67,6 +69,11 @@ class ChooseAccountShareToViewModel @Inject constructor(
                 _chooseAccountShareToViewState.value = SwitchUserErrorStateChooseAccountShareTo
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ChooseAccountShareToViewModel
     }
 
     companion object {

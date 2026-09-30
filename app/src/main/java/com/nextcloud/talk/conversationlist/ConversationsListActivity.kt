@@ -349,7 +349,7 @@ class ConversationsListActivity : BaseActivity() {
             },
             onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
             onAccountChooserClick = {
-                ChooseAccountShareToDialogFragment.newInstance()
+                ChooseAccountShareToDialogFragment.newInstance(currentUser)
                     .show(supportFragmentManager, ChooseAccountShareToDialogFragment.TAG)
             },
             onNewConversation = { showNewConversationsScreen() },

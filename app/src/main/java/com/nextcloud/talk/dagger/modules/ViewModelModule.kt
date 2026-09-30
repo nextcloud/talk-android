@@ -172,11 +172,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ChooseAccountShareToViewModel::class)
-    abstract fun chooseAccountShareToViewModel(viewModel: ChooseAccountShareToViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(FileAttachmentPreviewViewModel::class)
     internal abstract fun fileAttachmentPreviewViewModel(viewModel: FileAttachmentPreviewViewModel): ViewModel
 }
