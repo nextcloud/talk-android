@@ -25,14 +25,18 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
     /**
      * Stores the new credentials of a reauthorized account. That is the account that logged in, found by its login
      * name and server, as the browser login flow grants an app password for whoever is logged in there. Returns false
-     * without any change if it is not the account with the internal id [accountToReauthorize].
+     * without any change if it is not the account with the internal id [accountToReauthorize], or if nothing was
+     * stored, e.g. because the account was removed meanwhile.
      */
     suspend fun updateUser(loginData: LoginCompletion, accountToReauthorize: Long?): Boolean {
         val user = userManager.getUserWithUsernameAndServer(loginData.loginName, loginData.server)
             ?.takeIf { accountToReauthorize == null || it.id == accountToReauthorize }
             ?: return false
-        userManager.updateCredentials(user.id!!, loginData.appPassword, appPreferences.temporaryClientCertAlias)
-        return true
+        return userManager.updateCredentials(
+            user.id!!,
+            loginData.appPassword,
+            appPreferences.temporaryClientCertAlias
+        ) > 0
     }
 
     fun startAccountRemovalWorker(): LiveData<WorkInfo?> {
