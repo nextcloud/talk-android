@@ -14,6 +14,9 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.call.e2ee.CallEncryption
+import com.nextcloud.talk.call.e2ee.CallEncryptionFactory
+import com.nextcloud.talk.call.e2ee.EncryptionMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
@@ -31,6 +34,7 @@ import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMes
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -83,6 +87,20 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     val signalingMessageSender = ExternalSignalingMessageSender()
     private val signalingHttpClient: OkHttpClient by lazy { createSignalingHttpClient(okHttpClient!!) }
 
+    // Whether calls have to be end-to-end encrypted and this build can do it, refreshed whenever this instance is
+    // handed out again
+    private var isCallEncryptionEnabled =
+        CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability) &&
+            CallEncryptionFactory.IS_AVAILABLE
+
+    /**
+     * The key exchange of the joined room, null until the room is joined with the MCU or when calls are not
+     * end-to-end encrypted. It is replaced whenever the signaling session changes.
+     */
+    private val callEncryptionLifecycle = CallEncryptionLifecycle({ isCallEncryptionEnabled })
+    val callEncryption: CallEncryption?
+        get() = callEncryptionLifecycle.current
+
     init {
         sharedApplication!!.componentApplication.inject(this)
         this.connectionUrl = connectionUrl
@@ -91,6 +109,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         webSocketConnectionHelper = WebSocketConnectionHelper()
         usersHashMap = HashMap()
         isConnected = false
+        signalingMessageReceiver.addListener(
+            SignalingMessageReceiver.EncryptionMessageListener(callEncryptionLifecycle::handleMessage)
+        )
         eventBus!!.register(this)
         restartWebSocket()
     }
@@ -101,14 +122,14 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 internalWebSocket!!.send(
                     LoganSquare.serialize(
                         webSocketConnectionHelper
-                            .getAssembledHelloModel(conversationUser, webSocketTicket)
+                            .getAssembledHelloModel(conversationUser, webSocketTicket, isCallEncryptionEnabled)
                     )
                 )
             } else {
                 internalWebSocket!!.send(
                     LoganSquare.serialize(
                         webSocketConnectionHelper
-                            .getAssembledHelloModelForResume(resumeId)
+                            .getAssembledHelloModelForResume(resumeId, isCallEncryptionEnabled)
                     )
                 )
             }
@@ -275,6 +296,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             }
             usersHashMap[internalHashMap["sessionid"] as String?] = participant
         }
+        callEncryptionLifecycle.usersJoined(joinEventList.mapNotNull { it["sessionid"] as String? })
     }
 
     private fun processRoomLeaveMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
@@ -282,6 +304,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         for (i in leaveEventList!!.indices) {
             usersHashMap.remove(leaveEventList[i])
         }
+        callEncryptionLifecycle.usersLeft(leaveEventList)
     }
 
     fun getUserMap(): HashMap<String?, ParticipantDto> = usersHashMap
@@ -292,7 +315,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         if (roomWebSocketMessage != null) {
             val alreadyInRoom = roomWebSocketMessage.roomId == currentRoomToken
             currentRoomToken = roomWebSocketMessage.roomId
-            if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
+            if (TextUtils.isEmpty(currentRoomToken)) {
+                // The server took the client out of the room, so the keys of that room go with it, like on iOS
+                callEncryptionLifecycle.close()
+            } else if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null) {
+                callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
                 if (alreadyInRoom) {
                     sendRoomUpdatedEvent()
                 } else {
@@ -302,6 +329,34 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
+    // The capabilities may have changed since this instance was created. Once calls have to be encrypted while a
+    // room is joined (or about to be resumed), a new signaling session is needed: the key exchange is set up when
+    // the room is joined, and the other participants only start their handshakes when they see that join
+    fun refreshCallEncryptionPolicy(user: User) {
+        val enabled = CapabilitiesUtil.isCallEndToEndEncryptionEnabled(user.capabilities?.spreedCapability)
+        if (enabled && !isCallEncryptionEnabled && !currentRoomToken.isNullOrEmpty()) {
+            Log.d(TAG, "Calls have to be end-to-end encrypted now, starting a new signaling session")
+            startNewSignalingSession()
+        }
+        isCallEncryptionEnabled = enabled
+    }
+
+    // Drops the session and the joined room, so the next hello starts a new session and the room is joined again
+    private fun startNewSignalingSession() {
+        resumeId = ""
+        currentRoomToken = ""
+        currentNormalBackendSession = ""
+        restartWebSocket()
+    }
+
+    private fun sendEncryptionMessage(to: String, message: EncryptionMessage) {
+        val ncSignalingMessage = NCSignalingMessageDto()
+        ncSignalingMessage.to = to
+        ncSignalingMessage.type = "message"
+        ncSignalingMessage.payload = message.toPayload()
+        sendCallMessage(ncSignalingMessage)
+    }
+
     @Throws(IOException::class)
     private fun processErrorMessage(webSocket: WebSocket, text: String) {
         Log.e(TAG, "Received error: $text")
@@ -309,10 +364,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         if (message != null) {
             if ("no_such_session" == message.code) {
                 Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired")
-                resumeId = ""
-                currentRoomToken = ""
-                currentNormalBackendSession = ""
-                restartWebSocket()
+                startNewSignalingSession()
             } else if ("hello_expected" == message.code) {
                 restartWebSocket()
             } else if ("no_such_room" == message.code) {
@@ -337,6 +389,10 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         )
         if (helloResponseWebSocketMessage1 != null) {
             resumeId = helloResponseWebSocketMessage1.resumeId
+            if (sessionId != helloResponseWebSocketMessage1.sessionId) {
+                // A new session has to exchange keys again after joining the room again
+                callEncryptionLifecycle.close()
+            }
             sessionId = helloResponseWebSocketMessage1.sessionId
             hasMCU = helloResponseWebSocketMessage1.serverHasMCUSupport()
 
@@ -417,6 +473,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
                 currentFederation = null
+                callEncryptionLifecycle.close()
                 sendMessage(message)
             } else if (
                 roomToken == currentRoomToken &&
@@ -464,6 +521,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     fun sendBye() {
+        callEncryptionLifecycle.close()
         if (isConnected) {
             try {
                 val byeWebSocketMessage = ByeWebSocketMessageDto()
