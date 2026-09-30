@@ -278,8 +278,6 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     implementation("org.parceler:parceler-api:$parcelerVersion")
-    implementation("com.github.ddB0515.FlexibleAdapter:flexible-adapter:5.1.1")
-    implementation("com.github.ddB0515.FlexibleAdapter:flexible-adapter-ui:5.1.1")
     implementation("org.apache.commons:commons-lang3:3.20.0")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("joda-time:joda-time:2.14.3")

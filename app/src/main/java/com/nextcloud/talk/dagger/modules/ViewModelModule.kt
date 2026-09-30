@@ -23,12 +23,11 @@ import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditVie
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
 import com.nextcloud.talk.diagnosis.DiagnosisViewModel
-import com.nextcloud.talk.logger.ui.LogsViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
+import com.nextcloud.talk.logger.ui.LogsViewModel
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
-import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
-import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
@@ -38,8 +37,8 @@ import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsVie
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
+import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
-import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -83,11 +82,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MediaViewerViewModel::class)
     abstract fun mediaViewerViewModel(viewModel: MediaViewerViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MessageSearchViewModel::class)
-    abstract fun messageSearchViewModel(viewModel: MessageSearchViewModel): ViewModel
 
     @Binds
     @IntoMap

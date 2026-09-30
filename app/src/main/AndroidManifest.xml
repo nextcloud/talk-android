@@ -234,10 +234,6 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".messagesearch.MessageSearchActivity"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name=".location.LocationPickerActivity"
             android:theme="@style/AppTheme" />
 
