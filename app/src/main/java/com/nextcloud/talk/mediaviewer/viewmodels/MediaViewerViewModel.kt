@@ -83,7 +83,8 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     fun initialize(user: User, roomToken: String, seedItems: List<MediaViewerItem>, startMessageId: Long) {
         this.user = user
         repositoryParameters = SharedItemsRepository.Parameters(
-            user.userId!!,
+            // The login name, as it authenticates the requests. The user id can differ from it.
+            user.username!!,
             user.token!!,
             user.baseUrl!!,
             roomToken

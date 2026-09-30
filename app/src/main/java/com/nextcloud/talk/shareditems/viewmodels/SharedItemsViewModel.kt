@@ -41,7 +41,8 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
 
     fun initialize(user: User, roomToken: String) {
         repositoryParameters = SharedItemsRepository.Parameters(
-            user.userId!!,
+            // The login name, as it authenticates the requests. The user id can differ from it.
+            user.username!!,
             user.token!!,
             user.baseUrl!!,
             roomToken

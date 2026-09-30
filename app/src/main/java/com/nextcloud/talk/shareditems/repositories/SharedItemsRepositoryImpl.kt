@@ -26,6 +26,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
+import retrofit2.HttpException
 import retrofit2.Response
 import java.util.Locale
 import javax.inject.Inject
@@ -65,6 +66,9 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
             chatLastGiven = response.headers()["x-chat-last-given"]!!.toInt()
         }
 
+        if (!response.isSuccessful) {
+            throw HttpException(response)
+        }
         val mediaItems = response.body()!!.ocs!!.data
         if (mediaItems != null) {
             for (it in mediaItems) {
