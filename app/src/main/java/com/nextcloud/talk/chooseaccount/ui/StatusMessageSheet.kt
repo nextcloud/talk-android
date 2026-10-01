@@ -62,22 +62,20 @@ fun StatusMessageModalBottomSheet(currentStatus: StatusDto, viewModel: StatusMes
 
     // The view model keeps unsaved edits across configuration changes, so it is only initialized when the sheet is
     // opened, not again when it is recreated.
-    var isInitialized by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        if (!isInitialized) {
-            viewModel.init(currentStatus)
-            viewModel.checkBackupStatus()
-            viewModel.fetchPredefinedStatuses()
-            isInitialized = true
-        }
+        viewModel.initSheetIfNeeded(currentStatus)
+    }
+    val close = {
+        viewModel.onSheetClosed()
+        onDismiss()
     }
 
     LaunchedEffect(isDismissed) {
-        if (isDismissed) onDismiss()
+        if (isDismissed) close()
     }
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = close,
         sheetState = sheetState
     ) {
         if (showEmojiPicker) {

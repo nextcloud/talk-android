@@ -67,6 +67,27 @@ class StatusMessageViewModel @AssistedInject constructor(
     private var clearAt: Long? = null
     private var currentStatusMessageId: String? = null
 
+    private var isSheetInitialized = false
+
+    /**
+     * Initializes the view model for a newly opened sheet with [currentStatus], but not again for a sheet recreated
+     * after a configuration change, so its unsaved edits are kept.
+     */
+    fun initSheetIfNeeded(currentStatus: StatusDto) {
+        if (isSheetInitialized) return
+        isSheetInitialized = true
+        init(currentStatus)
+        checkBackupStatus()
+        fetchPredefinedStatuses()
+    }
+
+    /**
+     * Must be called when the sheet is closed, so the next one starts from the then current status.
+     */
+    fun onSheetClosed() {
+        isSheetInitialized = false
+    }
+
     fun init(currentStatus: StatusDto) {
         _emoji.value = currentStatus.icon ?: ""
         _message.value = currentStatus.message?.trim() ?: ""
