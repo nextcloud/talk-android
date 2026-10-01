@@ -2,7 +2,11 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2011, 2012 Chris Banes
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on PhotoView 2.3.0 (https://github.com/Baseflow/PhotoView), ported to Kotlin
+ * and reduced to the features used by the media viewer.
  */
 package com.nextcloud.talk.ui
 
