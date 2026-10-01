@@ -10,6 +10,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.net.CookieManager
 import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Keeps the cookies of requests with credentials separate per account.
@@ -26,7 +28,8 @@ import java.util.concurrent.ConcurrentHashMap
  * Must be added as a network interceptor, as OkHttp adds the cookies of the shared cookie jar and stores received
  * cookies in it around the network interceptors.
  */
-class AccountCookieInterceptor : Interceptor {
+@Singleton
+class AccountCookieInterceptor @Inject constructor() : Interceptor {
 
     // Only in memory, keyed by the credentials of the requests, which are kept in memory anyway.
     private val cookieStores = ConcurrentHashMap<String, CookieManager>()
@@ -47,6 +50,13 @@ class AccountCookieInterceptor : Interceptor {
 
         cookieStore.put(uri, response.headers.toMultimap())
         return response.newBuilder().removeHeader(SET_COOKIE).build()
+    }
+
+    /**
+     * Drops the cookies of an account, e.g. when it is removed.
+     */
+    fun removeCookiesOf(credentials: String) {
+        cookieStores.remove(credentials)
     }
 
     private companion object {

@@ -24,6 +24,7 @@ class AccountCookieInterceptorTest {
 
     private val server = MockWebServer()
     private val sharedCookieManager = CookieManager()
+    private val interceptor = AccountCookieInterceptor()
     private lateinit var client: OkHttpClient
 
     @Before
@@ -31,7 +32,7 @@ class AccountCookieInterceptorTest {
         server.start()
         client = OkHttpClient.Builder()
             .cookieJar(JavaNetCookieJar(sharedCookieManager))
-            .addNetworkInterceptor(AccountCookieInterceptor())
+            .addNetworkInterceptor(interceptor)
             .build()
     }
 
@@ -59,6 +60,19 @@ class AccountCookieInterceptorTest {
 
         execute(CREDENTIALS_A)
         execute(CREDENTIALS_B)
+
+        server.takeRequest()
+        assertNull(server.takeRequest().getHeader("Cookie"))
+    }
+
+    @Test
+    fun `a removed account's session isn't sent anymore`() {
+        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_A; Path=/"))
+        server.enqueue(MockResponse())
+
+        execute(CREDENTIALS_A)
+        interceptor.removeCookiesOf(CREDENTIALS_A)
+        execute(CREDENTIALS_A)
 
         server.takeRequest()
         assertNull(server.takeRequest().getHeader("Cookie"))

@@ -184,7 +184,8 @@ public class RestModule {
                                    CookieManager cookieManager,
                                    Dispatcher dispatcher,
                                    UserManager userManager,
-                                   LoggingHttpInterceptor loggingHttpInterceptor) {
+                                   LoggingHttpInterceptor loggingHttpInterceptor,
+                                   AccountCookieInterceptor accountCookieInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.retryOnConnectionFailure(true);
@@ -220,7 +221,7 @@ public class RestModule {
         httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
         // Each account keeps its own cookies, so its server session is kept but never used by another account.
-        httpClient.addNetworkInterceptor(new AccountCookieInterceptor());
+        httpClient.addNetworkInterceptor(accountCookieInterceptor);
 
         return httpClient.build();
     }
