@@ -11,15 +11,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.aurae.retrofit2.LoganSquareConverterFactory;
-import com.nextcloud.talk.R;
+import com.nextcloud.talk.api.LoggingHttpInterceptor;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
+import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.CredentialsCookieInterceptor;
 import com.nextcloud.talk.utils.RemoteWipeInterceptor;
-import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
@@ -35,8 +34,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -50,7 +47,6 @@ import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Authenticator;
 import okhttp3.Cache;
-import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
@@ -60,7 +56,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
 import okhttp3.internal.tls.OkHostnameVerifier;
-import com.nextcloud.talk.api.LoggingHttpInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -224,8 +219,8 @@ public class RestModule {
         httpClient.addInterceptor(new HeadersInterceptor());
         httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
-        // Session cookies of one account must not authenticate the requests of another one on the same server.
-        httpClient.addNetworkInterceptor(new CredentialsCookieInterceptor());
+        // Each account keeps its own cookies, so its server session is kept but never used by another account.
+        httpClient.addNetworkInterceptor(new AccountCookieInterceptor());
 
         return httpClient.build();
     }
