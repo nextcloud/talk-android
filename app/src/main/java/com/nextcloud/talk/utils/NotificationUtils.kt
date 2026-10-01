@@ -101,14 +101,14 @@ object NotificationUtils {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
                 .build()
         val soundUri = getCallRingtoneUri(context, appPreferences)
 
         createNotificationChannel(
             context,
             Channel(
-                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name,
+                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name,
                 context.resources.getString(R.string.nc_notification_channel_calls),
                 context.resources.getString(R.string.nc_notification_channel_calls_description),
                 true
@@ -264,7 +264,7 @@ object NotificationUtils {
     }
 
     fun isCallsNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
+        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name)
         if (channel != null) {
             return isNotificationChannelEnabled(channel)
         }
@@ -318,7 +318,7 @@ object NotificationUtils {
             context,
             appPreferences.callRingtoneUri,
             DEFAULT_CALL_RINGTONE_URI,
-            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
         )
 
     fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? =

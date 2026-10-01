@@ -591,7 +591,7 @@ class SettingsActivity :
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
             intent.putExtra(
                 Settings.EXTRA_CHANNEL_ID,
-                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
             )
 
             startActivity(intent)
