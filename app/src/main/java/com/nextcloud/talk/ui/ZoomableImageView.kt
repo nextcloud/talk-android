@@ -22,6 +22,7 @@ import android.widget.ImageView
 import android.widget.OverScroller
 import androidx.appcompat.widget.AppCompatImageView
 import kotlin.math.abs
+import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -76,7 +77,13 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
     private var isDragging = false
     private var lastTouchX = 0f
     private var lastTouchY = 0f
+    private var downX = 0f
+    private var downY = 0f
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop.toFloat()
+
+    // Once the parent intercepts, this view gets ACTION_CANCEL and a second finger can no longer start a
+    // pinch. So the parent only gets the gesture after the finger has moved clearly further than touchSlop.
+    private val parentHandoffSlop = touchSlop * PARENT_HANDOFF_SLOP_FACTOR
     private val minimumFlingVelocity = ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat()
     private val maximumFlingVelocity = ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat()
     private var velocityTracker: VelocityTracker? = null
@@ -221,6 +228,8 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
                 activePointerId = event.getPointerId(0)
                 lastTouchX = event.x
                 lastTouchY = event.y
+                downX = event.x
+                downY = event.y
                 isDragging = false
             }
             MotionEvent.ACTION_MOVE -> handleDragMove(event)
@@ -232,6 +241,8 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
                     activePointerId = event.getPointerId(newIndex)
                     lastTouchX = event.getX(newIndex)
                     lastTouchY = event.getY(newIndex)
+                    downX = lastTouchX
+                    downY = lastTouchY
                 }
             }
         }
@@ -253,9 +264,10 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
         if (!scaleGestureDetector.isInProgress) {
             suppMatrix.postTranslate(dx, dy)
             checkAndDisplayMatrix()
+            val movedBeyondHandoffSlop = event.pointerCount == 1 && hypot(x - downX, y - downY) >= parentHandoffSlop
             when {
                 blockParentIntercept -> parent?.requestDisallowInterceptTouchEvent(true)
-                reachedPanEdge(dx, dy) -> parent?.requestDisallowInterceptTouchEvent(false)
+                movedBeyondHandoffSlop && reachedPanEdge(dx, dy) -> parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
         lastTouchX = x
@@ -448,6 +460,7 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
         private const val INVALID_POINTER_ID = -1
         private const val MATRIX_VALUES_SIZE = 9
         private const val VELOCITY_UNIT = 1000
+        private const val PARENT_HANDOFF_SLOP_FACTOR = 3f
 
         private const val EDGE_NONE = -1
         private const val EDGE_LEFT = 0
