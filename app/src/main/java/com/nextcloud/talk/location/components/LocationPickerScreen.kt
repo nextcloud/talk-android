@@ -12,9 +12,12 @@ package com.nextcloud.talk.location.components
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,8 +58,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -83,6 +88,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.PermissionChecker
+import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -116,6 +122,11 @@ private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
 private const val ZOOM_LEVEL_MIN: Double = 1.0
 private const val ZOOM_LEVEL_MAX: Double = 22.0
 private const val COORDINATE_ZERO: Double = 0.0
+
+// shown until the current location is known, instead of 0,0 in the South Atlantic
+private const val FALLBACK_LAT: Double = 52.520008
+private const val FALLBACK_LON: Double = 13.404954
+private const val ZOOM_LEVEL_FALLBACK: Double = 11.0
 private const val MIN_LOCATION_UPDATE_TIME: Long = 30 * 1000L
 private const val MIN_LOCATION_UPDATE_DISTANCE: Float = 0f
 private const val PIN_HEIGHT_DP = 50
@@ -123,6 +134,10 @@ private const val ATTRIBUTION_BUTTON_ALPHA = 0.7f
 private const val USER_LOCATION_LAYER_ID = "location-picker-user-location"
 private const val COLOR_NC_BLUE_PACKED = 0xFF0082C9.toInt()
 private const val TAG = "LocationPickerScreen"
+
+// request both, so that the user can choose between precise and approximate location (API 31+)
+private val locationPermissions =
+    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
 @Suppress("Detekt.LongMethod", "Detekt.LongParameterList")
 @Composable
@@ -156,8 +171,8 @@ fun LocationPickerScreen(
 
     val cameraState = rememberCameraState(
         firstPosition = CameraPosition(
-            target = initialTarget ?: Position(COORDINATE_ZERO, COORDINATE_ZERO),
-            zoom = initialZoom
+            target = initialTarget ?: Position(FALLBACK_LON, FALLBACK_LAT),
+            zoom = if (initialTarget != null) initialZoom else ZOOM_LEVEL_FALLBACK
         )
     )
 
@@ -217,8 +232,19 @@ fun LocationPickerScreen(
                     myLocation = Position(location.longitude, location.latitude)
                 }
             } else {
+                // the map stays usable without location permission, e.g. to pick some other place
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(context.getString(R.string.nc_location_permission_required))
+                    showSnackbarWithSettingsAction(
+                        snackbarHostState = snackbarHostState,
+                        message = context.getString(R.string.location_permission_denied),
+                        actionLabel = context.getString(R.string.nc_permissions_settings)
+                    ) {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", context.packageName, null)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -288,9 +314,7 @@ fun LocationPickerScreen(
                 myLocation = Position(location.longitude, location.latitude)
             }
         } else {
-            permissionLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-            )
+            permissionLauncher.launch(locationPermissions)
         }
     }
 
@@ -309,7 +333,24 @@ fun LocationPickerScreen(
             )
         },
         onCenterClick = {
-            if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
+            if (!isLocationPermissionsGranted(context)) {
+                permissionLauncher.launch(locationPermissions)
+            } else if (!LocationManagerCompat.isLocationEnabled(locationManager)) {
+                coroutineScope.launch {
+                    showSnackbarWithSettingsAction(
+                        snackbarHostState = snackbarHostState,
+                        message = context.getString(R.string.location_services_disabled),
+                        actionLabel = context.getString(R.string.nc_permissions_settings)
+                    ) {
+                        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                }
+            } else if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
+                // location services may have been enabled after the screen was opened
+                requestLocationUpdates(locationManager, locationListener) { /* handled below */ }
+                getLastKnownLocation(locationManager)?.let { location ->
+                    myLocation = Position(location.longitude, location.latitude)
+                }
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(context.getString(R.string.nc_location_unknown))
                 }
@@ -675,6 +716,22 @@ private fun LocationPickerSharePanel(
             color = colorResource(R.color.medium_emphasis_text),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+    }
+}
+
+private suspend fun showSnackbarWithSettingsAction(
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String,
+    onAction: () -> Unit
+) {
+    val result = snackbarHostState.showSnackbar(
+        message = message,
+        actionLabel = actionLabel,
+        duration = SnackbarDuration.Long
+    )
+    if (result == SnackbarResult.ActionPerformed) {
+        onAction()
     }
 }
 
