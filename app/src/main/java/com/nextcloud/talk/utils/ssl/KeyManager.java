@@ -72,13 +72,30 @@ public class KeyManager implements X509KeyManager {
             Log.e(TAG, "Interrupted while getting the users: " + e.getLocalizedMessage());
             Thread.currentThread().interrupt();
         }
-        if (!TextUtils.isEmpty(alias = ClientCertificateSelector.selectAlias(getPeerHost(socket), users, defaultUser)) ||
+        if (!TextUtils.isEmpty(alias = ClientCertificateSelector.selectAlias(
+            getPeerHost(socket),
+            getPeerPort(socket),
+            users,
+            defaultUser)) ||
             !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
                 && new ArrayList<>(Arrays.asList(getClientAliases())).contains(alias)) {
             return alias;
         }
 
         return null;
+    }
+
+    private static int getPeerPort(@Nullable Socket socket) {
+        if (socket instanceof SSLSocket) {
+            SSLSession session = ((SSLSocket) socket).getHandshakeSession();
+            if (session != null && session.getPeerPort() > 0) {
+                return session.getPeerPort();
+            }
+        }
+        if (socket != null && socket.getPort() > 0) {
+            return socket.getPort();
+        }
+        return -1;
     }
 
     @Nullable
