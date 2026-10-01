@@ -17,22 +17,16 @@ import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
-import com.nextcloud.talk.diagnosis.DiagnosisViewModel
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import com.nextcloud.talk.logger.ui.LogsViewModel
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
-import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
-import com.nextcloud.talk.messagesearch.MessageSearchViewModel
-import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
-import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
-import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import dagger.Binds
 import dagger.MapKey
@@ -119,16 +113,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RaiseHandViewModel::class)
     abstract fun raiseHandViewModel(viewModel: RaiseHandViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(TranslateViewModel::class)
-    abstract fun translateViewModel(viewModel: TranslateViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(OpenConversationsViewModel::class)
-    abstract fun openConversationsViewModel(viewModel: OpenConversationsViewModel): ViewModel
 
     // @Binds
     // @IntoMap
