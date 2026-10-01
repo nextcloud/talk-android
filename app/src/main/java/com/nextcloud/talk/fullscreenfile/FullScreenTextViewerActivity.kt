@@ -13,7 +13,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -21,44 +20,39 @@ import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
-import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.io.File
-import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class FullScreenTextViewerActivity : AppCompatActivity() {
+class FullScreenTextViewerActivity : BaseActivity() {
 
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
     private lateinit var textFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val user = setUpBoundUserOrFinish() ?: return
 
         val fileName = intent.getStringExtra("FILE_NAME").orEmpty()
         val isMarkdown = intent.getBooleanExtra("IS_MARKDOWN", false)
         val fileId = intent.getStringExtra("FILE_ID").orEmpty()
         val link = intent.getStringExtra("LINK")
-        val username = intent.getStringExtra("USERNAME").orEmpty()
-        val baseUrl = intent.getStringExtra("BASE_URL").orEmpty()
+        val username = user.username.orEmpty()
+        val baseUrl = user.baseUrl.orEmpty()
         textFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
             Log.e(TAG, "Invalid text filename: $fileName")
             finish()
             return
         }
         val text = readFile(textFile)
-
-        adjustUIForAPILevel35()
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)

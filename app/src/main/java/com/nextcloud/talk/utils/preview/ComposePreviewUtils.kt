@@ -44,6 +44,7 @@ import com.nextcloud.talk.data.network.NetworkMonitorImpl
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
@@ -54,10 +55,8 @@ import com.nextcloud.talk.threadsoverview.data.ThreadsRepositoryImpl
 import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
 import com.nextcloud.talk.ui.theme.TalkSpecificViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
@@ -66,6 +65,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -95,14 +95,17 @@ class ComposePreviewUtils private constructor(context: Context) {
     val userManager: UserManager
         get() = UserManager(userRepository)
 
-    val userProvider: CurrentUserProviderOld
-        get() = CurrentUserProviderOldImpl(userManager)
+    val defaultAccountProvider: DefaultAccountProvider
+        get() = DefaultAccountProvider(userManager)
+
+    val currentUser: User
+        get() = runBlocking { userManager.getDefaultUser() }!!
 
     val colorUtil: ColorUtil
         get() = ColorUtil(mContext)
 
     val materialScheme: MaterialSchemes
-        get() = MaterialSchemesProviderImpl(userProvider, colorUtil).getMaterialSchemesForCurrentUser()
+        get() = MaterialSchemesProviderImpl(defaultAccountProvider, colorUtil).getMaterialSchemesForDefaultUser()
 
     val viewThemeUtils: ViewThemeUtils
         get() {
@@ -209,9 +212,6 @@ class ComposePreviewUtils private constructor(context: Context) {
     val audioFocusRequestManager: AudioFocusRequestManager
         get() = AudioFocusRequestManager(mContext)
 
-    val currentUserProvider: CurrentUserProviderImpl
-        get() = CurrentUserProviderImpl(userManager)
-
     object TestLogger : Logger {
         override fun d(tag: String, message: String) = Unit
         override fun d(tag: String, message: String, t: Throwable) = Unit
@@ -233,8 +233,9 @@ class ComposePreviewUtils private constructor(context: Context) {
             unifiedSearchRepository = unifiedSearchRepository,
             mediaRecorderManager = mediaRecorderManager,
             audioFocusRequestManager = audioFocusRequestManager,
-            currentUserProvider = currentUserProvider,
+            userManager = userManager,
             appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+            initialUser = currentUser,
             chatRoomToken = "",
             conversationThreadId = null,
             logger = TestLogger
@@ -244,7 +245,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = ContactsRepositoryImpl(ncApiCoroutines)
 
     val contactsViewModel: ContactsViewModel
-        get() = ContactsViewModel(contactsRepository, currentUserProvider, TestLogger)
+        get() = ContactsViewModel(contactsRepository, TestLogger, currentUser)
 
     val conversationCreationViewModel: ConversationCreationViewModel
         get() = ConversationCreationRepositoryImpl(ncApiCoroutines).let { repository ->
@@ -252,7 +253,7 @@ class ComposePreviewUtils private constructor(context: Context) {
                 repository,
                 ConversationCreator(repository, TestLogger),
                 PasswordPolicyRepositoryImpl(ncApiCoroutines),
-                currentUserProvider
+                currentUser
             )
         }
 }

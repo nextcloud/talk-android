@@ -10,58 +10,50 @@ package com.nextcloud.talk.remotefilebrowser.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.dagger.modules.assistedViewModels
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityRemoteFileBrowserBinding
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapter
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserActivity :
-    AppCompatActivity(),
+    BaseActivity(),
     SelectionInterface,
     SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: RemoteFileBrowserItemsViewModel.Factory
 
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
+    private lateinit var user: User
 
     @Inject
     lateinit var dateUtils: DateUtils
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
-    private lateinit var viewModel: RemoteFileBrowserItemsViewModel
+    private val viewModel: RemoteFileBrowserItemsViewModel by assistedViewModels { viewModelFactory.build(user) }
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
 
@@ -75,6 +67,7 @@ class RemoteFileBrowserActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        user = setUpBoundUserOrFinish() ?: return
 
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
@@ -112,8 +105,6 @@ class RemoteFileBrowserActivity :
     }
 
     private fun initViewModel(mimeTypeSelectionFilter: String?) {
-        viewModel = ViewModelProvider(this, viewModelFactory)[RemoteFileBrowserItemsViewModel::class.java]
-
         viewModel.viewState.observe(this) { state ->
             clearEmptyLoading()
             when (state) {
@@ -167,7 +158,7 @@ class RemoteFileBrowserActivity :
         val adapter = RemoteFileBrowserItemsAdapter(
             showGrid = showGrid,
             mimeTypeSelectionFilter = mimeTypeSelectionFilter,
-            user = currentUserProvider.currentUser.blockingGet(),
+            user = user,
             selectionInterface = this,
             viewThemeUtils = viewThemeUtils,
             dateUtils = dateUtils,
@@ -244,21 +235,6 @@ class RemoteFileBrowserActivity :
 
     private fun showList() {
         binding.recyclerView.visibility = View.VISIBLE
-    }
-
-    fun initSystemBars() {
-        val decorView = window.decorView
-        decorView.setOnApplyWindowInsetsListener { view, insets ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                val systemBars = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or
-                        WindowInsetsCompat.Type.displayCutout()
-                )
-                view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            }
-            insets
-        }
-        ViewCompat.requestApplyInsets(decorView)
     }
 
     override fun onRefresh() {

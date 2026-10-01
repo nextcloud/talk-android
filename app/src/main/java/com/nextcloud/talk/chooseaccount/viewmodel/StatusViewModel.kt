@@ -10,23 +10,24 @@ package com.nextcloud.talk.chooseaccount.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class StatusViewModel @Inject constructor(
+class StatusViewModel @AssistedInject constructor(
     private val repository: StatusRepository,
-    private val currentUserProvider: CurrentUserProviderOld,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted private val currentUser: User
 ) : ViewModel() {
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
 
     private val _statusViewState = MutableStateFlow<StatusUiState>(StatusUiState.None)
@@ -60,6 +61,11 @@ class StatusViewModel @Inject constructor(
                 logger.e(TAG, "Failed to set statusType", exception)
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): StatusViewModel
     }
 
     companion object {

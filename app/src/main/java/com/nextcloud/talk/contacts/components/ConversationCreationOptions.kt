@@ -34,9 +34,10 @@ import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationcreation.ConversationCreationActivity
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
+import com.nextcloud.talk.utils.bundle.BundleKeys
 
 @Composable
-fun ConversationCreationOptions() {
+fun ConversationCreationOptions(userId: Long) {
     val context = LocalContext.current
     Column {
         Row(
@@ -44,6 +45,7 @@ fun ConversationCreationOptions() {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                 .clickable {
                     val intent = Intent(context, ConversationCreationActivity::class.java)
+                    intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                     context.startActivity(intent)
                 },
             verticalAlignment = Alignment.CenterVertically
@@ -70,6 +72,7 @@ fun ConversationCreationOptions() {
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 .clickable {
                     val intent = Intent(context, ListOpenConversationsActivity::class.java)
+                    intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                     context.startActivity(intent)
                 },
             verticalAlignment = Alignment.CenterVertically
@@ -98,7 +101,7 @@ fun ConversationCreationOptions() {
 fun ConversationCreationOptionsPreview() {
     MaterialTheme {
         Surface {
-            ConversationCreationOptions()
+            ConversationCreationOptions(userId = 1L)
         }
     }
 }

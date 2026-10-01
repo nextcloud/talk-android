@@ -14,7 +14,12 @@ import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.UsersDao
+import com.nextcloud.talk.data.user.model.UserCapabilitiesUpdate
+import com.nextcloud.talk.data.user.model.UserClientCertificateUpdate
+import com.nextcloud.talk.data.user.model.UserCredentialsUpdate
+import com.nextcloud.talk.data.user.model.UserDisplayNameUpdate
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.data.user.model.UserExternalSignalingServerUpdate
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -205,6 +210,10 @@ class DummyUserDaoImpl : UsersDao {
 
     override suspend fun getUserWithId(id: Long): UserEntity? = dummyUsers.find { it.id == id }
 
+    override fun getUserWithIdFlow(id: Long): Flow<UserEntity?> = flowOf(dummyUsers.find { it.id == id })
+
+    override suspend fun repairMultipleActiveUsers(): Int = 0
+
     override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): UserEntity? =
         dummyUsers.find { it.id == id && !it.scheduledForDeletion }
 
@@ -236,6 +245,30 @@ class DummyUserDaoImpl : UsersDao {
         } else {
             0
         }
+    }
+
+    override suspend fun updateCapabilities(update: UserCapabilitiesUpdate): Int =
+        updateDummyUser(update.id) {
+            it.copy(capabilities = update.capabilities, serverVersion = update.serverVersion)
+        }
+
+    override suspend fun updateExternalSignalingServer(update: UserExternalSignalingServerUpdate): Int =
+        updateDummyUser(update.id) { it.copy(externalSignalingServer = update.externalSignalingServer) }
+
+    override suspend fun updateDisplayName(update: UserDisplayNameUpdate): Int =
+        updateDummyUser(update.id) { it.copy(displayName = update.displayName) }
+
+    override suspend fun updateClientCertificate(update: UserClientCertificateUpdate): Int =
+        updateDummyUser(update.id) { it.copy(clientCertificate = update.clientCertificate) }
+
+    override suspend fun updateCredentials(update: UserCredentialsUpdate): Int =
+        updateDummyUser(update.id) { it.copy(token = update.token, clientCertificate = update.clientCertificate) }
+
+    private fun updateDummyUser(id: Long, update: (UserEntity) -> UserEntity): Int {
+        val index = dummyUsers.indexOfFirst { it.id == id }
+        if (index == -1) return 0
+        dummyUsers[index] = update(dummyUsers[index])
+        return 1
     }
 }
 

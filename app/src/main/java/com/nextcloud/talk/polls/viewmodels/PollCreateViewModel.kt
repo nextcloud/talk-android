@@ -10,21 +10,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollCreateViewModel @Inject constructor(
-    private val repository: PollRepository,
-    private val currentUserProvider: CurrentUserProviderOld
-) : ViewModel() {
+class PollCreateViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
     private lateinit var roomToken: String
 
@@ -33,7 +30,7 @@ class PollCreateViewModel @Inject constructor(
     object PollCreatedState : ViewState
     object PollCreationFailedState : ViewState
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private lateinit var currentUser: User
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(
         PollCreationState(
@@ -68,7 +65,8 @@ class PollCreateViewModel @Inject constructor(
         addOption()
     }
 
-    fun setData(roomToken: String) {
+    fun setData(user: User, roomToken: String) {
+        this.currentUser = user
         this.roomToken = roomToken
         updateCreationState()
     }

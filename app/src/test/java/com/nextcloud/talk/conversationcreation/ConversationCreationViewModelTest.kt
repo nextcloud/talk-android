@@ -16,11 +16,8 @@ import com.nextcloud.talk.models.json.capabilities.PasswordApiDto
 import com.nextcloud.talk.models.json.capabilities.PasswordPolicyDto
 import com.nextcloud.talk.passwordpolicy.FakePasswordPolicyRepository
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -35,28 +32,21 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 
 /**
- * What the creation screen's ViewModel does before and after the current user is known.
+ * What the creation screen's ViewModel does depending on the capabilities of its user.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConversationCreationViewModelTest {
 
-    private val users = MutableSharedFlow<User>(replay = 1)
     private val repository = FakeConversationCreationRepository()
-
-    private val userProvider = object : CurrentUserProvider {
-        override val currentUserFlow: Flow<User> = users
-        override suspend fun getCurrentUser(timeout: Long): Result<User> =
-            Result.failure(UnsupportedOperationException())
-    }
 
     private val passwordPolicyRepository = FakePasswordPolicyRepository()
 
-    private fun viewModel() =
+    private fun viewModel(user: User) =
         ConversationCreationViewModel(
             repository,
             ConversationCreator(repository, mock<Logger>()),
             passwordPolicyRepository,
-            userProvider
+            user
         )
 
     private fun user(vararg spreedFeatures: SpreedFeatures, passwordEnforced: Boolean = false) =
@@ -89,32 +79,9 @@ class ConversationCreationViewModelTest {
     }
 
     @Test
-    fun `nothing is asked of the server while the current user is unknown`() =
+    fun `the presets are requested when the server supports them`() =
         runTest {
-            val model = viewModel()
-
-            assertNull(model.currentUser.value)
-            assertEquals(0, repository.presetCalls)
-            assertTrue(model.isLoadingPresets)
-        }
-
-    @Test
-    fun `creating is refused while the current user is unknown`() =
-        runTest {
-            val model = viewModel()
-
-            model.createRoomAndAddParticipants()
-
-            assertNull(repository.bodyRequest)
-            assertNull(repository.formRequest)
-        }
-
-    @Test
-    fun `the presets are requested once the user arrives`() =
-        runTest {
-            val model = viewModel()
-
-            users.emit(user(SpreedFeatures.CONVERSATION_PRESETS))
+            val model = viewModel(user(SpreedFeatures.CONVERSATION_PRESETS))
 
             assertEquals(1, repository.presetCalls)
             assertTrue(model.presets.value is PresetsUiState.Success)
@@ -125,8 +92,7 @@ class ConversationCreationViewModelTest {
     fun `opening a conversation to guests generates the password the server enforces`() =
         runTest {
             passwordPolicyRepository.generatedPassword = "generated"
-            val model = viewModel()
-            users.emit(user(passwordEnforced = true))
+            val model = viewModel(user(passwordEnforced = true))
 
             model.allowGuests(true)
 
@@ -137,8 +103,7 @@ class ConversationCreationViewModelTest {
     fun `a password the user typed is left alone`() =
         runTest {
             passwordPolicyRepository.generatedPassword = "generated"
-            val model = viewModel()
-            users.emit(user(passwordEnforced = true))
+            val model = viewModel(user(passwordEnforced = true))
             model.updatePassword("hunter2")
 
             model.allowGuests(true)
@@ -150,8 +115,7 @@ class ConversationCreationViewModelTest {
     fun `no password is generated where the server does not enforce one`() =
         runTest {
             passwordPolicyRepository.generatedPassword = "generated"
-            val model = viewModel()
-            users.emit(user())
+            val model = viewModel(user())
 
             model.allowGuests(true)
 
@@ -162,9 +126,7 @@ class ConversationCreationViewModelTest {
     @Test
     fun `a server without the capability is never asked for presets`() =
         runTest {
-            val model = viewModel()
-
-            users.emit(user())
+            val model = viewModel(user())
 
             assertEquals(0, repository.presetCalls)
             assertFalse(model.showPresetSelection)

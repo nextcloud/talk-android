@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -28,10 +29,12 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogRenameConversationBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -54,6 +57,7 @@ class RenameConversationDialogFragment : DialogFragment() {
     private lateinit var binding: DialogRenameConversationBinding
     private lateinit var viewModel: ConversationInfoEditViewModel
 
+    private lateinit var user: User
     private var roomToken = ""
     private var initialName = ""
 
@@ -61,8 +65,10 @@ class RenameConversationDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]
+        user = BundleCompat.getParcelable(requireArguments(), KEY_USER, User::class.java)!!
         roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
         initialName = arguments?.getString(INITIAL_NAME)!!
     }
@@ -100,7 +106,7 @@ class RenameConversationDialogFragment : DialogFragment() {
         val positiveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
         positiveButton.isEnabled = false
         positiveButton.setOnClickListener {
-            viewModel.renameRoom(roomToken, binding.textEdit.text.toString())
+            viewModel.renameRoom(user, roomToken, binding.textEdit.text.toString())
         }
 
         themeDialog()
@@ -185,12 +191,14 @@ class RenameConversationDialogFragment : DialogFragment() {
      */
     companion object {
         private val TAG = RenameConversationDialogFragment::class.java.simpleName
+        private const val KEY_USER = "keyUser"
         private const val KEY_ROOM_TOKEN = "keyRoomToken"
         private const val INITIAL_NAME = "initialName"
 
         @JvmStatic
-        fun newInstance(roomTokenParam: String, initialName: String): RenameConversationDialogFragment {
+        fun newInstance(user: User, roomTokenParam: String, initialName: String): RenameConversationDialogFragment {
             val args = Bundle()
+            args.putParcelable(KEY_USER, user)
             args.putString(KEY_ROOM_TOKEN, roomTokenParam)
             args.putString(INITIAL_NAME, initialName)
             val fragment = RenameConversationDialogFragment()

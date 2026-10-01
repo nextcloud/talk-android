@@ -43,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -80,7 +81,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
 import com.nextcloud.talk.ui.dialog.SetPhoneNumberDialogFragment
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -135,9 +135,6 @@ class SettingsActivity :
     lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
-    lateinit var userManager: UserManager
-
-    @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
     @Inject
@@ -175,6 +172,7 @@ class SettingsActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        setCurrentUser(setUpBoundUserOrFinish() ?: return)
         networkMonitor.isOnlineLiveData.observe(this) { online ->
             isOnline.value = online
             handleNetworkChange(isOnline.value)
@@ -187,7 +185,6 @@ class SettingsActivity :
 
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
-        getCurrentUser()
         handleIntent(intent)
 
         setupLicenceSetting(isOnline.value)
@@ -277,6 +274,7 @@ class SettingsActivity :
         binding.settingsName.visibility = View.VISIBLE
         binding.settingsName.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
             startActivity(intent)
         }
 
@@ -316,8 +314,7 @@ class SettingsActivity :
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
             .observe(this) { workInfo ->
-                if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
-                    getCurrentUser()
+                if (workInfo?.state == WorkInfo.State.SUCCEEDED && reloadCurrentUser()) {
                     setupCheckables(isOnline)
                 }
             }
@@ -335,9 +332,22 @@ class SettingsActivity :
         viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
     }
 
-    private fun getCurrentUser() {
-        currentUser = currentUserProviderOld.currentUser.blockingGet()
-        credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+    private fun setCurrentUser(user: User) {
+        currentUser = user
+        credentials = ApiUtils.getCredentials(user.username, user.token)
+    }
+
+    /**
+     * Loads the account of this screen again, e.g. for updated capabilities. Finishes the activity and returns false
+     * if it was removed meanwhile.
+     */
+    private fun reloadCurrentUser(): Boolean {
+        val user = runBlocking { userManager.getUserWithInternalId(resolveUserIdFromIntent()) } ?: run {
+            finish()
+            return false
+        }
+        setCurrentUser(user)
+        return true
     }
 
     private fun setupPhoneBookIntegration(isOnline: Boolean) {
@@ -631,6 +641,7 @@ class SettingsActivity :
                 }
                 .setNeutralButton(R.string.nc_diagnosis_dialog_open_diagnosis) { _, _ ->
                     val intent = Intent(context, DiagnosisActivity::class.java)
+                    intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
                     startActivity(intent)
                 }
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
@@ -656,14 +667,14 @@ class SettingsActivity :
 
     private fun setupServerNotificationAppCheck() {
         val serverNotificationAppInstalled =
-            currentUserProviderOld.currentUser.blockingGet()
+            currentUser!!
                 .capabilities?.notificationsCapability?.features?.isNotEmpty()
                 ?: false
         if (!serverNotificationAppInstalled) {
             binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
 
             val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                currentUserProviderOld.currentUser.blockingGet().baseUrl!!
+                currentUser!!.baseUrl!!
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {
@@ -692,7 +703,9 @@ class SettingsActivity :
 
     private fun setupDiagnosis() {
         binding.diagnosisWrapper.setOnClickListener {
-            startActivity(Intent(context, DiagnosisActivity::class.java))
+            val intent = Intent(context, DiagnosisActivity::class.java)
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
+            startActivity(intent)
         }
         binding.logsWrapper.setOnClickListener {
             startActivity(Intent(context, LogsActivity::class.java))
@@ -776,8 +789,9 @@ class SettingsActivity :
                     }
                     Log.d(TAG, "host: $host and port: $port")
                     currentUser!!.clientCertificate = finalAlias
+                    val userId = currentUser!!.id!!
                     lifecycleScope.launch {
-                        userManager.updateOrCreateUser(currentUser!!)
+                        userManager.updateClientCertificate(userId, finalAlias)
                     }
                 },
                 arrayOf("RSA", "EC"),
@@ -1094,8 +1108,9 @@ class SettingsActivity :
                     }
                     if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
                         currentUser!!.displayName = displayName
+                        val userId = currentUser!!.id!!
                         lifecycleScope.launch {
-                            userManager.updateOrCreateUser(currentUser!!)
+                            userManager.updateDisplayName(userId, displayName)
                         }
                         binding.nameText.text = currentUser!!.displayName
                     }

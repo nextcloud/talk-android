@@ -19,8 +19,10 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
@@ -32,10 +34,31 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
+    suspend fun getUsersNotScheduledForDeletion(): List<User> = userRepository.getUsersNotScheduledForDeletion()
+
     /**
-     * The active user, or - if none is active - any user not scheduled for deletion, which is then set as active.
+     * The default account, i.e. the last active user, or - if none is active - any user not scheduled for deletion,
+     * which is then set as active.
+     *
+     * Only for entry points that have no account context (app launch, share-to, deep links without account).
+     * Screens, workers and receivers must use the user they were started for, see [getUserWithId] and [userFlow].
      */
-    suspend fun getCurrentUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+    suspend fun getDefaultUser(): User? = userRepository.getActiveUser() ?: getAnyUserAndSetAsActive()
+
+    /**
+     * Emits the user with the given internal id whenever its row changes, or null if it does not exist (anymore).
+     */
+    fun userFlow(id: Long): Flow<User?> = userRepository.getUserWithIdFlow(id).distinctUntilChanged()
+
+    /**
+     * Ensures that at most one user is marked as active. If several are, the one with the highest id is kept,
+     * matching the user returned by [getDefaultUser].
+     */
+    suspend fun repairMultipleActiveUsers() {
+        if (userRepository.repairMultipleActiveUsers() > 0) {
+            Log.w(TAG, "Multiple active users found, kept the one with the highest id as active")
+        }
+    }
 
     /**
      * Backed by [activeUserStateFlow] rather than [UsersRepository.getActiveUserFlow] directly, so that
@@ -46,8 +69,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
      * knows about it - e.g. launching a screen for the new user before its avatar/data had actually updated.
      * Room's own [UsersRepository.getActiveUserFlow] is still relied on underneath to seed this and to catch
      * any change to the `current` flag that doesn't go through [setUserAsActive].
+     *
+     * Screens must not use this but the account they were started for, see [userFlow].
      */
-    val currentUserFlow: StateFlow<User?>
+    val defaultUserFlow: StateFlow<User?>
         get() = activeUserStateFlow
 
     private val activeUserStateFlow: MutableStateFlow<User?> by lazy {
@@ -71,7 +96,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     suspend fun getUserWithInternalId(id: Long): User? = userRepository.getUserWithIdNotScheduledForDeletion(id)
 
     suspend fun checkIfUserExists(username: String, server: String): Boolean =
-        userRepository.getUserWithUsernameAndServer(username, server) != null
+        getUserWithUsernameAndServer(username, server) != null
+
+    suspend fun getUserWithUsernameAndServer(username: String, server: String): User? =
+        userRepository.getUserWithUsernameAndServer(username, server)
 
     /**
      * Don't ask
@@ -99,11 +127,26 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
+    // The following updates only write the given fields, so they cannot reset fields that changed since the user
+    // was read, like the default account flag. Use them instead of saving a whole user that was read earlier.
+
     suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Int {
-        val user = userRepository.getUserWithId(id) ?: throw NoSuchElementException()
-        user.externalSignalingServer = externalSignalingServer
-        return userRepository.updateUser(user)
+        val updated = userRepository.updateExternalSignalingServer(id, externalSignalingServer)
+        if (updated == 0) throw NoSuchElementException()
+        return updated
     }
+
+    suspend fun updateCapabilities(id: Long, capabilities: CapabilitiesDto?, serverVersion: ServerVersionDto?): Int =
+        userRepository.updateCapabilities(id, capabilities, serverVersion)
+
+    suspend fun updateDisplayName(id: Long, displayName: String?): Int =
+        userRepository.updateDisplayName(id, displayName)
+
+    suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int =
+        userRepository.updateClientCertificate(id, clientCertificate)
+
+    suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int =
+        userRepository.updateCredentials(id, token, clientCertificate)
 
     suspend fun updateOrCreateUser(user: User): Int =
         when (user.id) {
@@ -111,13 +154,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             else -> userRepository.updateUser(user)
         }
 
-    suspend fun saveUser(user: User): Int = userRepository.updateUser(user)
-
     suspend fun setUserAsActive(user: User): Boolean {
         Log.d(TAG, "setUserAsActive:" + user.id!!)
         val success = userRepository.setUserAsActiveWithId(user.id!!)
         if (success) {
-            activeUserStateFlow.value = user
+            activeUserStateFlow.value = userRepository.getUserWithId(user.id!!) ?: user
         }
         return success
     }
@@ -210,7 +251,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     companion object {
         const val TAG = "UserManager"
-        private const val NO_ACTIVE_USER_ID = -1L
     }
 
     data class UserAttributes(

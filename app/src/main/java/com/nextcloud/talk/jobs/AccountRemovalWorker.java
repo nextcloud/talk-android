@@ -25,6 +25,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.conversationlist.DirectShareHelper;
 import com.nextcloud.talk.users.UserManager;
+import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
@@ -70,6 +71,8 @@ public class AccountRemovalWorker extends Worker {
     @Inject ChatBlocksDao chatBlocksDao;
 
     @Inject Logger logger;
+
+    @Inject AccountCookieInterceptor accountCookieInterceptor;
 
     NcApi ncApi;
 
@@ -213,6 +216,10 @@ public class AccountRemovalWorker extends Worker {
                 BuildersKt.runBlocking(
                     EmptyCoroutineContext.INSTANCE,
                     (scope, continuation) -> userManager.deleteUser(id, continuation));
+                String credentials = ApiUtils.getCredentials(username, user.getToken());
+                if (credentials != null) {
+                    accountCookieInterceptor.removeCookiesOf(credentials);
+                }
                 if (username != null) {
                     Log.d(TAG, "deleted user: " + username);
                 }

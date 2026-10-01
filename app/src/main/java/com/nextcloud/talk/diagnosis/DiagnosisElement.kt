@@ -15,6 +15,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -56,13 +57,14 @@ private const val PUSH_TOKEN_PREFIX_END: Int = 5
 
 private val TAG = DiagnosisActivity::class.java.simpleName
 
-@Suppress("LongMethod", "TooGenericExceptionCaught", "CyclomaticComplexMethod")
+@Suppress("LongMethod", "TooGenericExceptionCaught", "CyclomaticComplexMethod", "LongParameterList")
 fun buildDiagnosisElements(
     context: Context,
     userManager: UserManager,
     appPreferences: AppPreferences,
     arbitraryStorageManager: ArbitraryStorageManager? = null,
-    logsRepository: LogsRepository
+    logsRepository: LogsRepository,
+    accountUser: User? = null
 ): List<DiagnosisElement> {
     val data = mutableListOf<DiagnosisElement>()
 
@@ -201,7 +203,7 @@ fun buildDiagnosisElements(
 
     // Account
     try {
-        val user = runBlocking { userManager.getCurrentUser() } ?: return data
+        val user = accountUser ?: runBlocking { userManager.getDefaultUser() } ?: return data
         addHeadline(context.getString(R.string.nc_diagnosis_account_category_title))
         addEntry(context.getString(R.string.nc_diagnosis_account_server), user.baseUrl ?: "")
         addEntry(context.getString(R.string.nc_diagnosis_account_user_name), user.displayName ?: "")

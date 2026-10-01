@@ -59,6 +59,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -117,7 +118,6 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver.OfferMessageListene
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -133,6 +133,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL
@@ -210,10 +211,6 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var ncApi: NcApi? = null
-
-    @JvmField
-    @Inject
-    var userManager: UserManager? = null
 
     @JvmField
     @Inject
@@ -327,6 +324,9 @@ class CallActivity : CallBaseActivity() {
     private var hasExternalSignalingServer = false
     private var conversationPassword: String? = null
     private var powerManagerUtils: PowerManagerUtils? = null
+
+    // Whether onCreate() got past its early exits, so onDestroy() has a call to clean up.
+    private var isCallSetUp = false
     private var handler: Handler? = null
 
     private val callingTimeoutRunnable = Runnable { setCallState(CallStatus.CALLING_TIMEOUT) }
@@ -446,18 +446,7 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
-
-        // Register broadcast receiver for ending call from notification
-        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
-
-        // internal receiver for notification actions, so not exported
-        registerPermissionHandlerBroadcastReceiver(
-            endCallFromNotificationReceiver,
-            endCallFilter,
-            permissionUtil!!.privateBroadcastPermission,
-            null,
-            ReceiverFlag.NotExported
-        )
+        conversationUser = setUpBoundUserOrFinish() ?: return
 
         callViewModel = ViewModelProvider(this, viewModelFactory)[CallViewModel::class.java]
 
@@ -535,7 +524,6 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-        conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
         if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
             return
@@ -546,6 +534,25 @@ class CallActivity : CallBaseActivity() {
             baseUrl = conversationUser!!.baseUrl
         }
         powerManagerUtils = PowerManagerUtils()
+
+        // Register broadcast receiver for ending call from notification
+        val endCallFilter = IntentFilter(END_CALL_FROM_NOTIFICATION)
+
+        // internal receiver for notification actions, so not exported
+        registerPermissionHandlerBroadcastReceiver(
+            endCallFromNotificationReceiver,
+            endCallFilter,
+            permissionUtil!!.privateBroadcastPermission,
+            null,
+            ReceiverFlag.NotExported
+        )
+
+        isCallSetUp = true
+
+        if (!conversationUser.current) {
+            // Taking part in a call uses its account, so it becomes the last used one.
+            lifecycleScope.launch { userManager.setUserAsActive(conversationUser) }
+        }
 
         setCallState(CallStatus.CONNECTING)
 
@@ -576,7 +583,7 @@ class CallActivity : CallBaseActivity() {
         callRecordingViewModel = ViewModelProvider(this, viewModelFactory).get(
             CallRecordingViewModel::class.java
         )
-        callRecordingViewModel!!.setData(roomToken!!)
+        callRecordingViewModel!!.setData(conversationUser, roomToken!!)
         callRecordingViewModel!!.setRecordingState(recordingState)
         callRecordingViewModel!!.viewState.observe(this) { viewState: CallRecordingViewModel.ViewState? ->
             if (viewState is RecordingStartedState) {
@@ -634,7 +641,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun initRaiseHandViewModel() {
         raiseHandViewModel = ViewModelProvider(this, viewModelFactory).get(RaiseHandViewModel::class.java)
-        raiseHandViewModel!!.setData(roomToken!!, isBreakoutRoom)
+        raiseHandViewModel!!.setData(conversationUser, roomToken!!, isBreakoutRoom)
         raiseHandViewModel!!.viewState.observe(this) { viewState: RaiseHandViewModel.ViewState? ->
             var raised = false
             if (viewState is RaisedHandState) {
@@ -764,16 +771,18 @@ class CallActivity : CallBaseActivity() {
             return
         }
         val newRoomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
-        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken")
+        // Accounts on the same server share the tokens of their common conversations, so compare the account too.
+        val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, conversationUser.id!!)
+        Log.d(TAG, "onNewIntent: newRoomToken=$newRoomToken roomToken=$roomToken newUserId=$newUserId")
 
         when {
             // notification tap without extras: just bring the current call back to the front
             newRoomToken.isNullOrEmpty() -> Unit
 
             // re-entry for the call this instance is already handling (singleTask reuse)
-            newRoomToken == roomToken -> setIntent(intent)
+            newRoomToken == roomToken && newUserId == conversationUser.id -> setIntent(intent)
 
-            // a call for another room was requested while this instance lingered in the background:
+            // a call for another room or account was requested while this instance lingered in the background:
             // end the current call and restart cleanly in onDestroy, so no stale state is reused
             else -> {
                 Log.d(TAG, "onNewIntent: call requested for another room, ending current call first")
@@ -1557,36 +1566,42 @@ class CallActivity : CallBaseActivity() {
     public override fun onDestroy() {
         Log.d(TAG, "onDestroy: currentCallStatus=$currentCallStatus")
 
-        // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
-        // signaling listeners all live here), so always clean up and hang up. Background survival is
-        // achieved via moveTaskToBack/PiP, which do not destroy the activity.
-        if (signalingMessageReceiver != null) {
-            signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
-            signalingMessageReceiver!!.removeListener(offerMessageListener)
-        }
-        if (localStream != null) {
-            localStream!!.dispose()
-            localStream = null
-            Log.d(TAG, "Disposed localStream")
+        if (isCallSetUp) {
+            // The call cannot survive the activity being destroyed (WebRTC connections, local stream and
+            // signaling listeners all live here), so always clean up and hang up. Background survival is
+            // achieved via moveTaskToBack/PiP, which do not destroy the activity.
+            if (signalingMessageReceiver != null) {
+                signalingMessageReceiver!!.removeListener(localParticipantMessageListener)
+                signalingMessageReceiver!!.removeListener(offerMessageListener)
+            }
+            if (localStream != null) {
+                localStream!!.dispose()
+                localStream = null
+                Log.d(TAG, "Disposed localStream")
+            } else {
+                Log.d(TAG, "localStream is null")
+            }
+            if (currentCallStatus !== CallStatus.LEAVING) {
+                hangup(true, false)
+            }
+            CallForegroundService.stop(applicationContext)
+
+            powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
+
+            try {
+                unregisterReceiver(endCallFromNotificationReceiver)
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
+            }
+
+            pendingCallIntent?.let {
+                Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
+                startActivity(it)
+            }
         } else {
-            Log.d(TAG, "localStream is null")
-        }
-        if (currentCallStatus !== CallStatus.LEAVING) {
-            hangup(true, false)
-        }
-        CallForegroundService.stop(applicationContext)
-
-        powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
-
-        try {
-            unregisterReceiver(endCallFromNotificationReceiver)
-        } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Failed to unregister endCallFromNotificationReceiver", e)
-        }
-
-        pendingCallIntent?.let {
-            Log.d(TAG, "onDestroy: starting CallActivity for pending call intent")
-            startActivity(it)
+            // The screen that started the call marked it as dialing, which hangup() would reset. Without resetting
+            // it here, chats would keep treating the app as being in a call.
+            ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
         }
 
         super.onDestroy()
@@ -1634,7 +1649,7 @@ class CallActivity : CallBaseActivity() {
                             val userId = conversationUser!!.id!!
                             val server = externalSignalingServer!!
                             CoroutineScope(Dispatchers.IO).launch {
-                                userManager!!.updateExternalSignalingServer(userId, server)
+                                userManager.updateExternalSignalingServer(userId, server)
                             }
                         } else {
                             conversationUser!!.externalSignalingServer = externalSignalingServer
@@ -2324,14 +2339,12 @@ class CallActivity : CallBaseActivity() {
             openConversationListInPrimaryTask()
             finishAndRemoveTask()
         } else if (switchToRoomToken.isNotEmpty()) {
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val bundle = Bundle()
             bundle.putBoolean(KEY_SWITCH_TO_ROOM, true)
             bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
-            bundle.putString(KEY_ROOM_TOKEN, switchToRoomToken)
             bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
-            intent.putExtras(bundle)
+            val intent = ChatActivity.createIntent(context, conversationUser.id!!, switchToRoomToken, bundle)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
         } else if (shutDownView) {
@@ -2367,6 +2380,7 @@ class CallActivity : CallBaseActivity() {
 
         if (primaryTask != null) {
             val intent = Intent(context, ConversationsListActivity::class.java).apply {
+                putExtra(KEY_INTERNAL_USER_ID, conversationUser.id)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
             primaryTask.startActivity(context, intent, null)

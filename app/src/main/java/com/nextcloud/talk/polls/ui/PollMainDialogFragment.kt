@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.BundleCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,7 +24,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogPollMainBinding
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -35,9 +36,6 @@ class PollMainDialogFragment : DialogFragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    var currentUserProvider: CurrentUserProviderOld? = null
-        @Inject set
-
     private lateinit var binding: DialogPollMainBinding
     private lateinit var viewModel: PollMainViewModel
 
@@ -46,10 +44,11 @@ class PollMainDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollMainViewModel::class.java]
 
-        user = currentUserProvider?.currentUser?.blockingGet()!!
+        user = BundleCompat.getParcelable(requireArguments(), KEY_USER_ENTITY, User::class.java)!!
 
         val roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
         val isOwnerOrModerator = arguments?.getBoolean(KEY_OWNER_OR_MODERATOR)!!

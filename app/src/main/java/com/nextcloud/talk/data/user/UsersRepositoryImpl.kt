@@ -9,6 +9,14 @@ package com.nextcloud.talk.data.user
 
 import android.util.Log
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.data.user.model.UserCapabilitiesUpdate
+import com.nextcloud.talk.data.user.model.UserClientCertificateUpdate
+import com.nextcloud.talk.data.user.model.UserCredentialsUpdate
+import com.nextcloud.talk.data.user.model.UserDisplayNameUpdate
+import com.nextcloud.talk.data.user.model.UserExternalSignalingServerUpdate
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,11 +24,7 @@ import kotlinx.coroutines.flow.map
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
-    override suspend fun getActiveUser(): User? {
-        val entity = usersDao.getActiveUser() ?: return null
-        setUserAsActiveWithId(entity.id)
-        return UserMapper.toModel(entity)
-    }
+    override suspend fun getActiveUser(): User? = UserMapper.toModel(usersDao.getActiveUser())
 
     override fun getActiveUserFlow(): Flow<User?> =
         usersDao.getActiveUserFlow().map {
@@ -30,6 +34,13 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override suspend fun getUsers(): List<User> = UserMapper.toModel(usersDao.getUsers())
 
     override suspend fun getUserWithId(id: Long): User? = UserMapper.toModel(usersDao.getUserWithId(id))
+
+    override fun getUserWithIdFlow(id: Long): Flow<User?> =
+        usersDao.getUserWithIdFlow(id).map {
+            UserMapper.toModel(it)
+        }
+
+    override suspend fun repairMultipleActiveUsers(): Int = usersDao.repairMultipleActiveUsers()
 
     override suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User? =
         UserMapper.toModel(usersDao.getUserWithIdNotScheduledForDeletion(id))
@@ -60,6 +71,26 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override suspend fun updatePushState(id: Long, state: PushConfigurationState): Int =
         usersDao.updatePushState(id, state)
+
+    override suspend fun updateCapabilities(
+        id: Long,
+        capabilities: CapabilitiesDto?,
+        serverVersion: ServerVersionDto?
+    ): Int = usersDao.updateCapabilities(UserCapabilitiesUpdate(id, capabilities, serverVersion))
+
+    override suspend fun updateExternalSignalingServer(
+        id: Long,
+        externalSignalingServer: ExternalSignalingServer?
+    ): Int = usersDao.updateExternalSignalingServer(UserExternalSignalingServerUpdate(id, externalSignalingServer))
+
+    override suspend fun updateDisplayName(id: Long, displayName: String?): Int =
+        usersDao.updateDisplayName(UserDisplayNameUpdate(id, displayName))
+
+    override suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int =
+        usersDao.updateClientCertificate(UserClientCertificateUpdate(id, clientCertificate))
+
+    override suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int =
+        usersDao.updateCredentials(UserCredentialsUpdate(id, token, clientCertificate))
 
     companion object {
         private val TAG = UsersRepositoryImpl::class.simpleName

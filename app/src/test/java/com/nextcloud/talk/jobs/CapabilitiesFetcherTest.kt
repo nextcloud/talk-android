@@ -22,6 +22,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -51,7 +53,7 @@ class CapabilitiesFetcherTest {
             val testUser = user()
             val capabilities = CapabilitiesDto()
             val serverVersion = ServerVersionDto(major = 30)
-            wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenReturn(1)
+            wheneverBlocking { userManager.updateCapabilities(USER_ID, capabilities, serverVersion) }.thenReturn(1)
 
             val result = fetcher.updateUser(overall(capabilities, serverVersion), testUser)
 
@@ -65,7 +67,7 @@ class CapabilitiesFetcherTest {
     fun `returns false and posts failure when no row was updated`() =
         runTest {
             val testUser = user()
-            wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenReturn(0)
+            wheneverBlocking { userManager.updateCapabilities(any(), anyOrNull(), anyOrNull()) }.thenReturn(0)
 
             val result = fetcher.updateUser(overall(CapabilitiesDto()), testUser)
 
@@ -77,7 +79,8 @@ class CapabilitiesFetcherTest {
     fun `returns false and posts failure when persisting the user throws`() =
         runTest {
             val testUser = user()
-            wheneverBlocking { userManager.updateOrCreateUser(testUser) }.thenThrow(RuntimeException("db error"))
+            wheneverBlocking { userManager.updateCapabilities(any(), anyOrNull(), anyOrNull()) }
+                .thenThrow(RuntimeException("db error"))
 
             val result = fetcher.updateUser(overall(CapabilitiesDto()), testUser)
 
@@ -94,7 +97,7 @@ class CapabilitiesFetcherTest {
 
             assertFalse(result)
             verify(eventBus).post(EventStatus(USER_ID, EventStatus.EventType.CAPABILITIES_FETCH, false))
-            verifyBlocking(userManager, never()) { updateOrCreateUser(testUser) }
+            verifyBlocking(userManager, never()) { updateCapabilities(any(), anyOrNull(), anyOrNull()) }
         }
 
     @Test
@@ -106,7 +109,7 @@ class CapabilitiesFetcherTest {
 
             assertFalse(result)
             verify(eventBus).post(EventStatus(USER_ID, EventStatus.EventType.CAPABILITIES_FETCH, false))
-            verifyBlocking(userManager, never()) { updateOrCreateUser(testUser) }
+            verifyBlocking(userManager, never()) { updateCapabilities(any(), anyOrNull(), anyOrNull()) }
         }
 
     @Test
@@ -118,7 +121,7 @@ class CapabilitiesFetcherTest {
 
             assertFalse(result)
             verify(eventBus).post(EventStatus(USER_ID, EventStatus.EventType.CAPABILITIES_FETCH, false))
-            verifyBlocking(userManager, never()) { updateOrCreateUser(testUser) }
+            verifyBlocking(userManager, never()) { updateCapabilities(any(), anyOrNull(), anyOrNull()) }
         }
 
     companion object {

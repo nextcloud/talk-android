@@ -99,6 +99,8 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import java.time.LocalDate
+import coil.request.ImageRequest
+import com.nextcloud.talk.ui.withAuthHeader
 
 private val regularTextSize = 16.sp
 private val timeTextSize = 12.sp
@@ -907,7 +909,10 @@ private fun QuoteMediaRow(message: ChatMessageUi, content: MessageTypeContent.Me
         ) {
             if (content.previewUrl != null) {
                 AsyncImage(
-                    model = content.previewUrl,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(content.previewUrl)
+                        .withAuthHeader(content.authHeader)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize(),

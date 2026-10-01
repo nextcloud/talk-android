@@ -23,6 +23,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogSetPhoneNumberBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -37,6 +38,7 @@ class SetPhoneNumberDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

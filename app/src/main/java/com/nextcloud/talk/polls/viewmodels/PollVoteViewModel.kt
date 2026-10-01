@@ -11,20 +11,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollVoteViewModel @Inject constructor(
-    private val repository: PollRepository,
-    private val currentUserProvider: CurrentUserProviderOld
-) : ViewModel() {
+class PollVoteViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -50,9 +47,6 @@ class PollVoteViewModel @Inject constructor(
     val selectedOptions: List<Int>
         get() = _selectedOptions
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
-    private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-
     fun initVotedOptions(selectedOptions: List<Int>) {
         _votedOptions = selectedOptions
         _selectedOptions = selectedOptions
@@ -70,18 +64,18 @@ class PollVoteViewModel @Inject constructor(
         _selectedOptions = _selectedOptions.minus(option)
     }
 
-    fun vote(roomToken: String, pollId: String) {
+    fun vote(user: User, roomToken: String, pollId: String) {
         if (_selectedOptions.isNotEmpty()) {
             _submitButtonEnabled.value = false
 
             val url = ApiUtils.getUrlForPoll(
-                currentUser.baseUrl!!,
+                user.baseUrl!!,
                 roomToken,
                 pollId
             )
 
             repository.vote(
-                credentials,
+                ApiUtils.getCredentials(user.username, user.token),
                 url,
                 roomToken,
                 pollId,

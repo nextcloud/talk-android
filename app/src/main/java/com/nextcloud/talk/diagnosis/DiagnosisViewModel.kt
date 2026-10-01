@@ -14,21 +14,20 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
-class DiagnosisViewModel @Inject constructor(
+class DiagnosisViewModel @AssistedInject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
-    private val currentUserProvider: CurrentUserProviderOld,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted val currentUser: User
 ) : ViewModel() {
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
-    val currentUser: User = _currentUser
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
+    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token) ?: ""
 
     private val _notificationViewState = MutableStateFlow<NotificationUiState>(NotificationUiState.None)
     val notificationViewState: StateFlow<NotificationUiState> = _notificationViewState
@@ -46,7 +45,7 @@ class DiagnosisViewModel @Inject constructor(
                 val response = ncApiCoroutines.testPushNotifications(
                     credentials,
                     ApiUtils
-                        .getUrlForTestPushNotifications(_currentUser.baseUrl ?: "")
+                        .getUrlForTestPushNotifications(currentUser.baseUrl ?: "")
                 )
                 val notificationMessage = response.ocs?.data?.message
                 _notificationViewState.value = NotificationUiState.Success(notificationMessage)
@@ -62,6 +61,11 @@ class DiagnosisViewModel @Inject constructor(
 
     fun dismissDialog() {
         _showDialog.value = false
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): DiagnosisViewModel
     }
 
     companion object {

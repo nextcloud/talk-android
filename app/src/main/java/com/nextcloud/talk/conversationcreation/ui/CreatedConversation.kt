@@ -10,7 +10,6 @@ package com.nextcloud.talk.conversationcreation.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
@@ -28,7 +27,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ShareUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.copyPasswordToClipboard
 
 private val TAG = ConversationCreationActivity::class.java.simpleName
@@ -69,7 +67,7 @@ fun CreationResultEffect(
                         onHandled()
                     } else {
                         onHandled()
-                        openConversation(context, roomToken)
+                        openConversation(context, state.userId, roomToken)
                     }
                 }
             }
@@ -128,11 +126,8 @@ fun ShareCreatedConversation(
     )
 }
 
-fun openConversation(context: Context, roomToken: String) {
-    val bundle = Bundle()
-    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-    val chatIntent = Intent(context, ChatActivity::class.java)
-    chatIntent.putExtras(bundle)
+fun openConversation(context: Context, userId: Long, roomToken: String) {
+    val chatIntent = ChatActivity.createIntent(context, userId, roomToken)
     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     context.startActivity(chatIntent)
 }

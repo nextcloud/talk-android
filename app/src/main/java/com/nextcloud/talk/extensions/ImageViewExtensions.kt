@@ -49,6 +49,7 @@ import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.UriUtils
 import kotlin.math.min
 
 private const val ROUNDING_PIXEL = 16f
@@ -230,7 +231,7 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
     layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
     requestBuilder.placeholder(LayerDrawable(layers))
 
-    if (url.startsWith(user.baseUrl!!) &&
+    if (UriUtils.isOnServer(url, user.baseUrl!!) &&
         (url.contains("index.php/core/preview") || url.contains("/avatar/") || url.contains("remote.php/dav/"))
     ) {
         requestBuilder.addHeader(
@@ -256,7 +257,7 @@ fun ImageView.loadImage(url: String, user: User, placeholder: Drawable? = null):
         .error(finalPlaceholder)
         .transformations(RoundedCornersTransformation(ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL, ROUNDING_PIXEL))
 
-    if (url.startsWith(user.baseUrl!!) &&
+    if (UriUtils.isOnServer(url, user.baseUrl!!) &&
         (url.contains("index.php/core/preview") || url.contains("/avatar/") || url.contains("remote.php/dav/"))
     ) {
         requestBuilder.addHeader(

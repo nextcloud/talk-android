@@ -90,6 +90,8 @@ import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewMode
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.flow.distinctUntilChanged
+import com.nextcloud.talk.ui.withAuthHeader
+import com.nextcloud.talk.ui.LocalImageAuthHeader
 
 private val TAG = ListOpenConversationsActivity::class.java.simpleName
 
@@ -352,6 +354,7 @@ private fun OpenConversationItem(
     }
     val imageRequest = ImageRequest.Builder(context)
         .data(avatarUrl)
+        .withAuthHeader(LocalImageAuthHeader.current)
         .transformations(CircleCropTransformation())
         .error(errorPlaceholder)
         .placeholder(errorPlaceholder)

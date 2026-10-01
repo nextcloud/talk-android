@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -39,10 +38,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
 import com.nextcloud.talk.logger.LogsRepository
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -57,13 +57,10 @@ class DiagnosisActivity : BaseActivity() {
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: DiagnosisViewModel.Factory
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userManager: UserManager
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -74,6 +71,9 @@ class DiagnosisActivity : BaseActivity() {
     @Inject
     lateinit var logsRepository: LogsRepository
 
+    private lateinit var user: User
+
+    private val diagnosisViewModel: DiagnosisViewModel by assistedViewModels { viewModelFactory.build(user) }
     private val diagnosisData = mutableListOf<DiagnosisElement>()
     private val diagnosisDataState = mutableStateOf(emptyList<DiagnosisElement>())
 
@@ -92,10 +92,7 @@ class DiagnosisActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val diagnosisViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[DiagnosisViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
         val isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
@@ -128,7 +125,8 @@ class DiagnosisActivity : BaseActivity() {
                 userManager,
                 appPreferences,
                 arbitraryStorageManager,
-                logsRepository
+                logsRepository,
+                diagnosisViewModel.currentUser
             )
         )
         diagnosisDataState.value = diagnosisData.toList()

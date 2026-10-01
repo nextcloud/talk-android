@@ -10,6 +10,8 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.ExternalSignalingServer
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -44,19 +46,54 @@ class UserManagerTest {
     }
 
     @Test
-    fun `getCurrentUser returns the active user without touching any fallback`() =
+    fun `getDefaultUser returns the active user without touching any fallback`() =
         runTest {
             val active = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
             wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
 
-            val result = userManager.getCurrentUser()
+            val result = userManager.getDefaultUser()
 
             assertEquals(active, result)
             verifyBlocking(usersRepository, never()) { getUsersNotScheduledForDeletion() }
         }
 
     @Test
-    fun `getCurrentUser falls back to any non-deleted user and sets it active when none is active`() =
+    fun `getDefaultUser does not write to the database when an active user exists`() =
+        runTest {
+            val active = user(id = 1, username = "userA", baseUrl = "https://example.com", current = true)
+            wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(active)
+
+            userManager.getDefaultUser()
+
+            verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
+        }
+
+    @Test
+    fun `userFlow emits the user with the given id and skips unchanged rows`() =
+        runTest {
+            val userA = user(id = 1, username = "userA", baseUrl = "https://example.com")
+            val renamedUserA = userA.copy(displayName = "New Name")
+            wheneverBlocking { usersRepository.getUserWithIdFlow(1L) }
+                .thenReturn(flowOf(userA, userA.copy(), renamedUserA, null))
+
+            val emissions = userManager.userFlow(1L).toList()
+
+            assertEquals(listOf(userA, renamedUserA, null), emissions)
+        }
+
+    @Test
+    fun `repairMultipleActiveUsers repairs in a single repository call`() =
+        runTest {
+            wheneverBlocking { usersRepository.repairMultipleActiveUsers() }.thenReturn(2)
+
+            userManager.repairMultipleActiveUsers()
+
+            verifyBlocking(usersRepository) { repairMultipleActiveUsers() }
+            verifyBlocking(usersRepository, never()) { setUserAsActiveWithId(any()) }
+        }
+
+    @Test
+    fun `getDefaultUser falls back to any non-deleted user and sets it active when none is active`() =
         runTest {
             val fallback = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.getUsersNotScheduledForDeletion() }.thenReturn(listOf(fallback))
@@ -65,18 +102,18 @@ class UserManagerTest {
             // now reporting the freshly-activated row.
             wheneverBlocking { usersRepository.getActiveUser() }.thenReturn(null, fallback)
 
-            val result = userManager.getCurrentUser()
+            val result = userManager.getDefaultUser()
 
             assertEquals(fallback, result)
             verifyBlocking(usersRepository) { setUserAsActiveWithId(fallback.id!!) }
         }
 
     @Test
-    fun `getCurrentUser is null when there is no active user and none to fall back to`() =
+    fun `getDefaultUser is null when there is no active user and none to fall back to`() =
         runTest {
             wheneverBlocking { usersRepository.getUsersNotScheduledForDeletion() }.thenReturn(emptyList())
 
-            assertNull(userManager.getCurrentUser())
+            assertNull(userManager.getDefaultUser())
         }
 
     @Test
@@ -183,10 +220,11 @@ class UserManagerTest {
     @Test
     fun `updateExternalSignalingServer throws when the user does not exist`() =
         runTest {
-            wheneverBlocking { usersRepository.getUserWithId(7L) }.thenReturn(null)
+            val server = ExternalSignalingServer()
+            wheneverBlocking { usersRepository.updateExternalSignalingServer(7L, server) }.thenReturn(0)
 
             try {
-                userManager.updateExternalSignalingServer(7L, ExternalSignalingServer())
+                userManager.updateExternalSignalingServer(7L, server)
                 fail("Expected NoSuchElementException")
             } catch (expected: NoSuchElementException) {
                 // expected
@@ -196,15 +234,13 @@ class UserManagerTest {
     @Test
     fun `updateExternalSignalingServer updates the matching user`() =
         runTest {
-            val existing = user(id = 7, username = "userA", baseUrl = "https://example.com")
             val server = ExternalSignalingServer(externalSignalingServer = "https://signaling.example.com")
-            wheneverBlocking { usersRepository.getUserWithId(7L) }.thenReturn(existing)
-            wheneverBlocking { usersRepository.updateUser(existing) }.thenReturn(1)
+            wheneverBlocking { usersRepository.updateExternalSignalingServer(7L, server) }.thenReturn(1)
 
             val result = userManager.updateExternalSignalingServer(7L, server)
 
             assertEquals(1, result)
-            assertEquals(server, existing.externalSignalingServer)
+            verify(usersRepository, never()).updateUser(any())
         }
 
     @Test
@@ -232,7 +268,7 @@ class UserManagerTest {
         }
 
     @Test
-    fun `setUserAsActive publishes the new user on currentUserFlow only when it succeeds`() =
+    fun `setUserAsActive publishes the new user on defaultUserFlow only when it succeeds`() =
         runTest {
             val target = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(true)
@@ -240,11 +276,24 @@ class UserManagerTest {
             val result = userManager.setUserAsActive(target)
 
             assertTrue(result)
-            assertEquals(target, userManager.currentUserFlow.value)
+            assertEquals(target, userManager.defaultUserFlow.value)
         }
 
     @Test
-    fun `setUserAsActive leaves currentUserFlow untouched when it fails`() =
+    fun `setUserAsActive publishes the stored row instead of the passed user`() =
+        runTest {
+            val passed = user(id = 1, username = "userA", baseUrl = "https://example.com")
+            val stored = passed.copy(current = true, displayName = "Stored Name")
+            wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(true)
+            wheneverBlocking { usersRepository.getUserWithId(1L) }.thenReturn(stored)
+
+            userManager.setUserAsActive(passed)
+
+            assertEquals(stored, userManager.defaultUserFlow.value)
+        }
+
+    @Test
+    fun `setUserAsActive leaves defaultUserFlow untouched when it fails`() =
         runTest {
             val target = user(id = 1, username = "userA", baseUrl = "https://example.com")
             wheneverBlocking { usersRepository.setUserAsActiveWithId(1L) }.thenReturn(false)
@@ -252,7 +301,7 @@ class UserManagerTest {
             val result = userManager.setUserAsActive(target)
 
             assertFalse(result)
-            assertNull(userManager.currentUserFlow.value)
+            assertNull(userManager.defaultUserFlow.value)
         }
 
     @Test

@@ -9,7 +9,6 @@ package com.nextcloud.talk.chat
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
@@ -82,7 +81,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji2.widget.EmojiEditText
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -93,6 +91,7 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.ui.model.toScheduledMessageUiModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
@@ -110,7 +109,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -127,12 +125,16 @@ private const val STICKY_HEADER_SCROLL_DELAY = 1200L
 class ScheduledMessagesActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ScheduledMessagesViewModel.Factory
 
     @Inject
     lateinit var dateUtils: DateUtils
 
-    private lateinit var scheduledMessagesViewModel: ScheduledMessagesViewModel
+    private val scheduledMessagesViewModel: ScheduledMessagesViewModel by assistedViewModels {
+        viewModelFactory.build(conversationUser)
+    }
+
+    private lateinit var conversationUser: User
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -164,14 +166,10 @@ class ScheduledMessagesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        scheduledMessagesViewModel = ViewModelProvider(this, viewModelFactory)[ScheduledMessagesViewModel::class.java]
+        conversationUser = setUpBoundUserOrFinish() ?: return
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
-            val currentUser by scheduledMessagesViewModel.currentUserState.collectAsStateWithLifecycle()
-            LaunchedEffect(Unit) {
-                scheduledMessagesViewModel.loadCurrentUser()
-            }
             MaterialTheme(colorScheme = colorScheme) {
                 CompositionLocalProvider(
                     LocalViewThemeUtils provides viewThemeUtils,
@@ -179,46 +177,43 @@ class ScheduledMessagesActivity : BaseActivity() {
                     LocalShowThreadButton provides false
                 ) {
                     ColoredStatusBar()
-                    currentUser?.let { user ->
-                        ScheduledMessagesScreen(
-                            user = user,
-                            conversationName = conversationName,
-                            scheduledMessagesViewModel = scheduledMessagesViewModel,
-                            dateUtils = dateUtils,
-                            viewThemeUtils = viewThemeUtils,
-                            onBack = { finish() },
-                            onLoadScheduledMessages = { loadScheduledMessages(user) },
-                            onSendNow = { message ->
-                                sendNow(message, user)
-                            },
-                            onReschedule = { message, sendAt, sendWithoutNotification ->
-                                reschedule(message, sendAt, sendWithoutNotification, user)
-                            },
-                            onEdit = { message, sendAt ->
-                                edit(message, sendAt, user)
-                            },
-                            onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, user) },
-                            onOpenParentMessage = { messageId ->
-                                openParentMessage(messageId)
-                            },
-                            onOpenThread = { threadId ->
-                                openThread(threadId)
-                            },
-                            threadTitle = threadTitle,
-                            isThreadView = isThreadView,
-                            onCopyScheduledMessage = { message ->
-                                copyScheduledMessage(message)
-                            }
-                        )
-                    }
+                    ScheduledMessagesScreen(
+                        user = conversationUser,
+                        conversationName = conversationName,
+                        scheduledMessagesViewModel = scheduledMessagesViewModel,
+                        dateUtils = dateUtils,
+                        viewThemeUtils = viewThemeUtils,
+                        onBack = { finish() },
+                        onLoadScheduledMessages = { loadScheduledMessages(conversationUser) },
+                        onSendNow = { message ->
+                            sendNow(message, conversationUser)
+                        },
+                        onReschedule = { message, sendAt, sendWithoutNotification ->
+                            reschedule(message, sendAt, sendWithoutNotification, conversationUser)
+                        },
+                        onEdit = { message, sendAt ->
+                            edit(message, sendAt, conversationUser)
+                        },
+                        onDeleteScheduledMessage = { message -> deleteScheduledMessage(message, conversationUser) },
+                        onOpenParentMessage = { messageId ->
+                            openParentMessage(messageId)
+                        },
+                        onOpenThread = { threadId ->
+                            openThread(threadId)
+                        },
+                        threadTitle = threadTitle,
+                        isThreadView = isThreadView,
+                        onCopyScheduledMessage = { message ->
+                            copyScheduledMessage(message)
+                        }
+                    )
                 } // CompositionLocalProvider
             }
         }
     }
 
     private fun openThread(threadId: Long) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             putExtra(KEY_THREAD_ID, threadId)
         }
         startActivity(intent)
@@ -981,17 +976,14 @@ class ScheduledMessagesActivity : BaseActivity() {
     }
 
     private fun openParentMessage(messageId: Long?) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
-
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }
         startActivity(intent)
     }
 
     private fun openThreadParentMessage(messageId: Long?, threadId: Long?) {
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra(KEY_ROOM_TOKEN, roomToken)
+        val intent = ChatActivity.createIntent(this, conversationUser.id!!, roomToken).apply {
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
             messageId?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it.toString()) }
         }

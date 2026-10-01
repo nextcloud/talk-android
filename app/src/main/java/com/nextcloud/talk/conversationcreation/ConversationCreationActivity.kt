@@ -83,7 +83,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
@@ -101,6 +100,7 @@ import com.nextcloud.talk.conversationcreation.ui.CreationResultEffect
 import com.nextcloud.talk.conversationcreation.ui.ShareCreatedConversation
 import com.nextcloud.talk.conversationcreation.ui.openConversation
 import com.nextcloud.talk.conversationcreation.viewmodel.ConversationCreationViewModel
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
@@ -117,39 +117,27 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationCreationActivity : BaseActivity() {
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ConversationCreationViewModel.Factory
+
+    private lateinit var user: User
+
+    private val conversationCreationViewModel by assistedViewModels { viewModelFactory.build(user) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val conversationCreationViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[ConversationCreationViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
-            val currentUser by conversationCreationViewModel.currentUser.collectAsState()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                val user = currentUser
-                if (user == null) {
-                    LoadingScreen()
-                } else {
-                    val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
-                    ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
-                }
+                val pickImage = remember(user) { PickImage(this@ConversationCreationActivity, user) }
+                ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
     }
 }
 
@@ -414,6 +402,10 @@ fun AddParticipants(
                         .padding(start = 16.dp, bottom = 16.dp)
                         .clickable {
                             val intent = Intent(context, ContactsActivity::class.java)
+                            intent.putExtra(
+                                BundleKeys.KEY_INTERNAL_USER_ID,
+                                conversationCreationViewModel.currentUser.id
+                            )
                             intent.putParcelableArrayListExtra(
                                 "selectedParticipants",
                                 participants as ArrayList<AutocompleteUserDto>
@@ -432,12 +424,8 @@ fun AddParticipants(
         }
         participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                val avatarUser = conversationCreationViewModel.currentUser.value
-                val imageUri = if (avatarUser == null) {
-                    null
-                } else {
-                    participant.id?.let { avatarUri(avatarUser, it, DisplayUtils.isDarkModeOn(context)) }
-                }
+                val avatarUser = conversationCreationViewModel.currentUser
+                val imageUri = participant.id?.let { avatarUri(avatarUser, it, DisplayUtils.isDarkModeOn(context)) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
                 val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
                 AsyncImage(
@@ -461,6 +449,10 @@ fun AddParticipants(
                 .fillMaxWidth()
                 .clickable {
                     val intent = Intent(context, ContactsActivity::class.java)
+                    intent.putExtra(
+                        BundleKeys.KEY_INTERNAL_USER_ID,
+                        conversationCreationViewModel.currentUser.id
+                    )
                     intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                     intent.putExtra(
                         BundleKeys.KEY_ONLY_LOCAL_PARTICIPANTS,
@@ -797,7 +789,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onHandled = { conversationCreationViewModel.clearCreationState() }
     )
 
-    val currentUser by conversationCreationViewModel.currentUser.collectAsState()
+    val currentUser = conversationCreationViewModel.currentUser
     ShareCreatedConversation(
         roomToken = createdPublicConversation,
         password = password.takeIf { createdWithPassword },
@@ -806,7 +798,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         onDismiss = { roomToken ->
             createdPublicConversation = null
             conversationCreationViewModel.clearCreationState()
-            openConversation(context, roomToken)
+            currentUser.id?.let { openConversation(context, it, roomToken) }
         }
     )
 

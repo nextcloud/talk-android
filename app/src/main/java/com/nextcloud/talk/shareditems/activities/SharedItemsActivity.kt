@@ -25,7 +25,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
-import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
@@ -46,6 +46,8 @@ class SharedItemsActivity : BaseActivity() {
     @Inject
     lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
 
+    private lateinit var conversationUser: User
+
     val roomToken: String by lazy {
         intent.getStringExtra(KEY_ROOM_TOKEN)
             ?: error("roomToken missing")
@@ -59,17 +61,15 @@ class SharedItemsActivity : BaseActivity() {
         }
     }
 
-    val chatViewModel: ChatViewModel by viewModels {
-        ViewModelFactoryWithParams(ChatViewModel::class.java) {
-            chatViewModelFactory.build(
-                roomToken,
-                conversationThreadId
-            )
-        }
+    val chatViewModel: ChatViewModel by assistedViewModels {
+        chatViewModelFactory.build(
+            conversationUser,
+            roomToken,
+            conversationThreadId
+        )
     }
 
-    @Inject
-    lateinit var contextChatViewModel: ContextChatViewModel
+    private val contextChatViewModel: ContextChatViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
@@ -77,9 +77,8 @@ class SharedItemsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        conversationUser = setUpBoundUserOrFinish() ?: return
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
-
-        val user = currentUserProviderOld.currentUser.blockingGet()
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
         val isOne2One = intent.getBooleanExtra(KEY_IS_ONE_2_ONE, false)
@@ -99,7 +98,7 @@ class SharedItemsActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            handleModelChange(state, user, roomToken, isUserConversationOwnerOrModerator, isOne2One)
+            handleModelChange(state, conversationUser, roomToken, isUserConversationOwnerOrModerator, isOne2One)
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -111,7 +110,7 @@ class SharedItemsActivity : BaseActivity() {
             }
         })
 
-        viewModel.initialize(user, roomToken)
+        viewModel.initialize(conversationUser, roomToken)
     }
 
     private fun handleModelChange(
@@ -162,18 +161,11 @@ class SharedItemsActivity : BaseActivity() {
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
     }
 
-    fun startContextChatWindowForMessage(
-        credentials: String?,
-        baseUrl: String?,
-        roomToken: String,
-        messageId: String?,
-        threadId: String?
-    ) {
+    fun startContextChatWindowForMessage(user: User, roomToken: String, messageId: String?, threadId: String?) {
         binding.genericComposeView.apply {
             setContent {
                 contextChatViewModel.getContextForChatMessages(
-                    credentials = credentials!!,
-                    baseUrl = baseUrl!!,
+                    user = user,
                     token = roomToken,
                     threadId = threadId,
                     messageId = messageId!!,
@@ -181,7 +173,7 @@ class SharedItemsActivity : BaseActivity() {
                 )
                 // Context chat Compose integration is pending for this screen.
                 // ContextChatView(
-                //     user = currentUserProviderOld.currentUser.blockingGet(),
+                //     user = user,
                 //     context,
                 //     viewThemeUtils = viewThemeUtils,
                 //     contextChatViewModel

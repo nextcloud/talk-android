@@ -65,7 +65,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemApp
@@ -82,6 +84,7 @@ import com.nextcloud.talk.chooseaccount.viewmodel.StatusUiState
 import com.nextcloud.talk.chooseaccount.viewmodel.StatusViewModel
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
@@ -90,12 +93,12 @@ import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.launch
 import java.net.CookieManager
 import javax.inject.Inject
@@ -110,7 +113,7 @@ class ChooseAccountDialogCompose {
     lateinit var userManager: UserManager
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
     lateinit var cookieManager: CookieManager
@@ -119,13 +122,13 @@ class ChooseAccountDialogCompose {
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
-    lateinit var invitationsViewModel: InvitationsViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var statusViewModel: StatusViewModel
+    lateinit var statusViewModelFactory: StatusViewModel.Factory
 
     @Inject
-    lateinit var statusMessageViewModel: StatusMessageViewModel
+    lateinit var statusMessageViewModelFactory: StatusMessageViewModel.Factory
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -138,6 +141,23 @@ class ChooseAccountDialogCompose {
     @Suppress("LongMethod")
     fun GetChooseAccountDialog(shouldDismiss: MutableState<Boolean>, activity: Activity, showEcosystem: Boolean) {
         if (shouldDismiss.value) return
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()!!
+        // Scoped to the hosting activity, so they survive configuration changes and are cleared with it. The status
+        // view models are bound to the default account, so they are keyed by it and replaced when the default account
+        // changes while the activity stays open.
+        val invitationsViewModel: InvitationsViewModel = viewModel(factory = viewModelFactory)
+        val statusViewModel: StatusViewModel = viewModel(
+            key = "status-${currentUser.id}",
+            factory = ViewModelFactoryWithParams(StatusViewModel::class.java) {
+                statusViewModelFactory.build(currentUser)
+            }
+        )
+        val statusMessageViewModel: StatusMessageViewModel = viewModel(
+            key = "statusMessage-${currentUser.id}",
+            factory = ViewModelFactoryWithParams(StatusMessageViewModel::class.java) {
+                statusMessageViewModelFactory.build(currentUser)
+            }
+        )
         val colorScheme = viewThemeUtils.getColorScheme(activity)
         val status = remember { mutableStateOf<StatusDto?>(null) }
         val showOnlineStatusSheet = rememberSaveable { mutableStateOf(false) }
@@ -146,7 +166,6 @@ class ChooseAccountDialogCompose {
         val statusViewState by statusViewModel.statusViewState.collectAsStateWithLifecycle()
         val invitationsStateByUser by invitationsViewModel.invitationsStateByUser.collectAsStateWithLifecycle()
         val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-        val currentUser = currentUserProvider.currentUser.blockingGet()!!
         val isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(currentUser)
         ecosystemManager = EcosystemManager(activity)
 
@@ -190,7 +209,7 @@ class ChooseAccountDialogCompose {
                 },
                 onOpenSettingsClick = {
                     shouldDismiss.value = true
-                    openSettings(activity)
+                    openSettings(activity, currentUser)
                 },
                 onEcosystemFilesClick = {
                     shouldDismiss.value = true
@@ -269,8 +288,9 @@ class ChooseAccountDialogCompose {
         activity.startActivity(intent)
     }
 
-    private fun openSettings(activity: Activity) {
+    private fun openSettings(activity: Activity, user: User) {
         val intent = Intent(activity, SettingsActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         activity.startActivity(intent)
     }
 
@@ -299,9 +319,9 @@ class ChooseAccountDialogCompose {
                     scope.launch {
                         if (userManager.setUserAsActive(userItem.user)) {
                             cookieManager.cookieStore.removeAll()
-                            val intent = Intent(activity, ConversationsListActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            activity.startActivity(intent)
+                            activity.startActivity(
+                                ConversationsListActivity.createAccountSwitchIntent(activity, userItem.user.id!!)
+                            )
                             onSelected()
                         }
                     }

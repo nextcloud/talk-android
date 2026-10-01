@@ -33,7 +33,6 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeepLinkHandler
@@ -41,7 +40,6 @@ import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.UnifiedPushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -58,9 +56,6 @@ class MainActivity :
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userManager: UserManager
 
     // MainActivity only routes to ConversationsListActivity or ChatActivity and is never
     // visible to the user. The lock check must run in the actual destination activity.
@@ -167,7 +162,7 @@ class MainActivity :
                     val baseUrl = userId.substringAfterLast("@")
                     val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
 
-                    val currentUser = currentUserProviderOld.currentUser.blockingGet()
+                    val currentUser = defaultAccountProvider.getDefaultUserBlocking()
                     if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
@@ -188,13 +183,13 @@ class MainActivity :
     private fun startConversation(userId: String) {
         val roomType = "1"
 
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
-        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             version = apiVersion,
-            baseUrl = currentUser?.baseUrl!!,
+            baseUrl = currentUser.baseUrl!!,
             roomType = roomType,
             invite = userId
         )
@@ -209,11 +204,11 @@ class MainActivity :
             .subscribe(
                 { roomOverall ->
                     if (isFinishing || isDestroyed) return@subscribe
-                    val bundle = Bundle()
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(bundle)
+                    val chatIntent = ChatActivity.createIntent(
+                        context,
+                        currentUser.id!!,
+                        roomOverall.ocs!!.data!!.token
+                    )
                     startActivity(chatIntent)
                 },
                 { e ->
@@ -251,6 +246,7 @@ class MainActivity :
                 if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
                     if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
                         val invitationsIntent = Intent(this@MainActivity, InvitationsActivity::class.java)
+                        invitationsIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
                         startActivity(invitationsIntent)
                     }
                 } else {
@@ -260,7 +256,7 @@ class MainActivity :
                 }
             } else {
                 try {
-                    val users = userManager.getUsers()
+                    val users = userManager.getUsersNotScheduledForDeletion()
                     if (isFinishing || isDestroyed) return@launch
 
                     if (users.isNotEmpty()) {
@@ -339,9 +335,7 @@ class MainActivity :
                     listIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     listIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
 
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtra(KEY_ROOM_TOKEN, deepLinkResult.roomToken)
-                    chatIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, targetUser.id)
+                    val chatIntent = ChatActivity.createIntent(context, targetUser.id!!, deepLinkResult.roomToken)
 
                     startActivities(arrayOf(listIntent, chatIntent))
                 } else {
@@ -377,7 +371,7 @@ class MainActivity :
     private fun resolveTargetUser(users: List<User>, deepLinkResult: DeepLinkHandler.DeepLinkResult): User? {
         val deepLinkHost = deepLinkResult.serverUrl.toUri().host?.lowercase()
         if (deepLinkHost.isNullOrBlank()) {
-            return currentUserProviderOld.currentUser.blockingGet()
+            return defaultAccountProvider.getDefaultUserBlocking()
         }
 
         // Priority: exact match (username + server) > server match > current user fallback
@@ -396,7 +390,7 @@ class MainActivity :
             userHost == deepLinkHost
         }
 
-        val currentUser = currentUserProviderOld.currentUser.blockingGet()
+        val currentUser = defaultAccountProvider.getDefaultUserBlocking()
         val currentUserMatch = currentUser?.takeIf {
             it.baseUrl?.let { url -> url.toUri().host?.lowercase() } == deepLinkHost
         }

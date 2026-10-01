@@ -23,7 +23,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -36,9 +35,6 @@ class MarkAsReadReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var ncApi: NcApi
@@ -62,8 +58,11 @@ class MarkAsReadReceiver : BroadcastReceiver() {
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         messageId = intent.getIntExtra(KEY_MESSAGE_ID, 0)
 
-        val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, currentUserProvider.currentUser.blockingGet().id!!)
-        currentUser = runBlocking { userManager.getUserWithId(id) }!!
+        val id = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
+        currentUser = runBlocking { userManager.getUserWithId(id) } ?: run {
+            Log.e(TAG, "No user found for id $id")
+            return
+        }
 
         markAsRead()
     }

@@ -19,5 +19,8 @@ interface SharedItemsRepository {
 
     fun availableTypes(parameters: Parameters): Observable<Set<SharedItemType>>
 
+    /**
+     * [userName] is the login name of the account, which authenticates the requests together with [userToken].
+     */
     data class Parameters(val userName: String, val userToken: String, val baseUrl: String, val roomToken: String)
 }

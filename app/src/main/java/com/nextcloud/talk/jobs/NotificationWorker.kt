@@ -392,8 +392,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             null
         }
 
-        if (conversation != null && runBlocking { userManager.setUserAsActive(userBeingCalled!!) }) {
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
+        if (conversation != null && userBeingCalled != null) {
+            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled.capabilities?.spreedCapability)) {
                 showEndToEndEncryptionUnsupportedNotification(conversation)
             } else {
                 prepareCallNotificationScreen(conversation)
@@ -1062,6 +1062,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         val dismissIntent = Intent(context, DismissRecordingAvailableReceiver::class.java)
         dismissIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
+        dismissIntent.putExtra(KEY_INTERNAL_USER_ID, user.id)
         dismissIntent.putExtra(KEY_DISMISS_RECORDING_URL, dismissRecordingUrl)
 
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -1095,6 +1096,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         val shareRecordingIntent = Intent(context, ShareRecordingToChatReceiver::class.java)
         shareRecordingIntent.putExtra(KEY_SYSTEM_NOTIFICATION_ID, systemNotificationId)
+        shareRecordingIntent.putExtra(KEY_INTERNAL_USER_ID, user.id)
         shareRecordingIntent.putExtra(KEY_SHARE_RECORDING_TO_CHAT_URL, shareToChatUrl)
         shareRecordingIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
 

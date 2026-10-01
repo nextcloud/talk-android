@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.nextcloud.talk.activities.BaseActivity
@@ -33,9 +32,6 @@ import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditVie
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoEditActivity : BaseActivity() {
@@ -75,26 +71,17 @@ class ConversationInfoEditActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val user = setUpBoundUserOrFinish() ?: return
+        // Created right away, so results of the camera or an image picker are handled even when the activity was
+        // recreated after process death and the conversation is still loading.
+        pickImage = PickImage(this, user)
 
         val roomToken = intent.extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
 
         conversationInfoEditViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]
 
-        conversationInfoEditViewModel.initialize(roomToken)
-
-        conversationInfoEditViewModel.uiState.value.conversationUser?.let { user ->
-            pickImage = PickImage(this, user)
-        }
-
-        if (pickImage == null) {
-            lifecycleScope.launch {
-                val user = conversationInfoEditViewModel.uiState
-                    .mapNotNull { it.conversationUser }
-                    .first()
-                pickImage = PickImage(this@ConversationInfoEditActivity, user)
-            }
-        }
+        conversationInfoEditViewModel.initialize(user, roomToken)
 
         setupCompose()
     }

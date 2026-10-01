@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.DialogFragment
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,12 +21,13 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogFilterConversationBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -33,9 +35,7 @@ class FilterConversationFragment : DialogFragment() {
     lateinit var binding: DialogFilterConversationBinding
     private var dialogView: View? = null
     private lateinit var filterState: HashMap<String, Boolean>
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
+    private lateinit var user: User
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -50,11 +50,13 @@ class FilterConversationFragment : DialogFragment() {
         } else {
             arguments?.getSerializable(FILTER_STATE_ARG) as HashMap<String, Boolean>
         }
+        user = BundleCompat.getParcelable(requireArguments(), USER_ARG, User::class.java)!!
         return MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         setUpColors()
         setUpListeners()
         return inflater.inflate(R.layout.dialog_filter_conversation, container, false)
@@ -117,7 +119,7 @@ class FilterConversationFragment : DialogFragment() {
         binding.mentionedFilterChip.isChecked = filterState[MENTION]!!
 
         binding.archivedFilterChip.visibility = View.GONE
-        currentUserProvider.currentUser.blockingGet().capabilities?.spreedCapability?.let {
+        user.capabilities?.spreedCapability?.let {
             if (hasSpreedFeatureCapability(it, SpreedFeatures.ARCHIVE_CONVERSATIONS)) {
                 binding.archivedFilterChip.visibility = View.VISIBLE
                 binding.archivedFilterChip.isChecked = filterState[ARCHIVE]!!
@@ -127,7 +129,7 @@ class FilterConversationFragment : DialogFragment() {
 
     private fun processSubmit() {
         // store
-        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(user)
         val mentionValue = filterState[MENTION] == true
         val unreadValue = filterState[UNREAD] == true
         val archivedValue = filterState[ARCHIVE] == true
@@ -153,12 +155,14 @@ class FilterConversationFragment : DialogFragment() {
 
     companion object {
         private const val FILTER_STATE_ARG = "FILTER_STATE_ARG"
+        private const val USER_ARG = "USER_ARG"
 
         @JvmStatic
-        fun newInstance(savedFilterState: MutableMap<String, Boolean>): FilterConversationFragment {
+        fun newInstance(savedFilterState: MutableMap<String, Boolean>, user: User): FilterConversationFragment {
             val filterConversationFragment = FilterConversationFragment()
             val args = Bundle()
             args.putSerializable(FILTER_STATE_ARG, HashMap(savedFilterState))
+            args.putParcelable(USER_ARG, user)
             filterConversationFragment.arguments = args
             return filterConversationFragment
         }

@@ -28,7 +28,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -38,7 +37,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -54,18 +52,13 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     var cache: Cache? = null
 
-    @Inject
-    lateinit var userManager: UserManager
-
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
     private var displayName: String? = null
     private var callFlag: Int = 0
     private var isOneToOneCall: Boolean = true
     private var conversationName: String? = null
-    private var internalUserId: Long = -1
-
-    private var userBeingCalled: User? = null
+    private lateinit var userBeingCalled: User
     private var leavingScreen = false
     private var handler: Handler? = null
     private var binding: CallNotificationActivityBinding? = null
@@ -73,12 +66,12 @@ class CallNotificationActivity : CallBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+        userBeingCalled = setUpBoundUserOrFinish() ?: return
         binding = CallNotificationActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
 
         handleExtras()
-        userBeingCalled = runBlocking { userManager.getUserWithId(internalUserId) }
 
         setupCallTypeDescription()
         setupCallAnswerButtons()
@@ -96,13 +89,12 @@ class CallNotificationActivity : CallBaseActivity() {
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
         isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
         conversationName = extras.getString(BundleKeys.KEY_CONVERSATION_NAME, "")
-        internalUserId = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
     }
 
     private fun setupAvatar(isOneToOneCall: Boolean, conversationName: String?) {
         if (isOneToOneCall) {
             binding!!.avatarImageView.loadUserAvatar(
-                userBeingCalled!!,
+                userBeingCalled,
                 conversationName!!,
                 true,
                 false
@@ -114,7 +106,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun hasCallFlagsCapability(): Boolean {
         val apiVersion = ApiUtils.getConversationApiVersion(
-            userBeingCalled!!,
+            userBeingCalled,
             intArrayOf(
                 ApiUtils.API_V4,
                 ApiUtils.API_V3,
@@ -124,7 +116,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
         return apiVersion >= ApiUtils.API_V3 &&
             hasSpreedFeatureCapability(
-                userBeingCalled?.capabilities?.spreedCapability,
+                userBeingCalled.capabilities?.spreedCapability,
                 SpreedFeatures.CONVERSATION_CALL_FLAGS
             )
     }
@@ -206,7 +198,7 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun proceedToCall() {
-        if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled?.capabilities?.spreedCapability)) {
+        if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled.capabilities?.spreedCapability)) {
             Toast.makeText(context, R.string.nc_call_e2ee_not_supported, Toast.LENGTH_LONG).show()
             hangup()
             return

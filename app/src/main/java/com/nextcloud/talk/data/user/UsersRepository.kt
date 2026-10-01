@@ -8,6 +8,9 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
 
@@ -17,6 +20,8 @@ interface UsersRepository {
     fun getActiveUserFlow(): Flow<User?>
     suspend fun getUsers(): List<User>
     suspend fun getUserWithId(id: Long): User?
+    fun getUserWithIdFlow(id: Long): Flow<User?>
+    suspend fun repairMultipleActiveUsers(): Int
     suspend fun getUserWithIdNotScheduledForDeletion(id: Long): User?
     suspend fun getUserWithUserId(userId: String): User?
     suspend fun getUsersScheduledForDeletion(): List<User>
@@ -27,4 +32,9 @@ interface UsersRepository {
     suspend fun setUserAsActiveWithId(id: Long): Boolean
     suspend fun deleteUser(user: User): Int
     suspend fun updatePushState(id: Long, state: PushConfigurationState): Int
+    suspend fun updateCapabilities(id: Long, capabilities: CapabilitiesDto?, serverVersion: ServerVersionDto?): Int
+    suspend fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer?): Int
+    suspend fun updateDisplayName(id: Long, displayName: String?): Int
+    suspend fun updateClientCertificate(id: Long, clientCertificate: String?): Int
+    suspend fun updateCredentials(id: Long, token: String?, clientCertificate: String?): Int
 }

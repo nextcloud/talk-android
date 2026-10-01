@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.threadsoverview
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
 import androidx.activity.compose.setContent
@@ -36,7 +35,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -45,12 +43,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.database.mappers.toDomainModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
-import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
 
@@ -58,15 +56,16 @@ import javax.inject.Inject
 class ThreadsOverviewActivity : BaseActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var threadsOverviewViewModelFactory: ThreadsOverviewViewModel.Factory
 
     @Inject
     lateinit var ncApi: NcApi
 
-    @Inject
-    lateinit var userManager: UserManager
+    private lateinit var user: User
 
-    lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
+    val threadsOverviewViewModel: ThreadsOverviewViewModel by assistedViewModels {
+        threadsOverviewViewModelFactory.build(user)
+    }
 
     var threadsSourceUrl: String = ""
     var appbarTitle: String = ""
@@ -74,10 +73,7 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        threadsOverviewViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[ThreadsOverviewViewModel::class.java]
+        user = setUpBoundUserOrFinish() ?: return
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
@@ -124,11 +120,8 @@ class ThreadsOverviewActivity : BaseActivity() {
     }
 
     private fun navigateToChatActivity(roomToken: String, threadId: Int) {
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        bundle.putLong(KEY_THREAD_ID, threadId.toLong())
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
+        val chatIntent = ChatActivity.createIntent(context, resolveUserIdFromIntent(), roomToken)
+        chatIntent.putExtra(KEY_THREAD_ID, threadId.toLong())
         startActivity(chatIntent)
     }
 

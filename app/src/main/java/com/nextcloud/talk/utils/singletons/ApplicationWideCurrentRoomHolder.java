@@ -41,6 +41,14 @@ public class ApplicationWideCurrentRoomHolder {
         return currentRoomToken;
     }
 
+    /**
+     * Whether the current room is the room with the given token of the account with the given internal id. The token
+     * alone is not enough: accounts on the same server share the tokens of their common conversations.
+     */
+    public boolean isCurrentRoom(String roomToken, Long userId) {
+        return currentRoomToken.equals(roomToken) && userInRoom.getId() != null && userInRoom.getId().equals(userId);
+    }
+
     public void setCurrentRoomToken(String currentRoomToken) {
         this.currentRoomToken = currentRoomToken;
     }

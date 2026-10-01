@@ -24,6 +24,7 @@ import com.nextcloud.talk.camera.ImageSegmenterHelper
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
@@ -40,6 +41,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+        viewThemeUtils = hostViewThemeUtils(callActivity, viewThemeUtils)
 
         binding = DialogMoreCallActionsBinding.inflate(layoutInflater)
         setContentView(binding.root)

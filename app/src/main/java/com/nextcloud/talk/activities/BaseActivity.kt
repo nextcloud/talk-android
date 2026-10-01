@@ -31,6 +31,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.account.BrowserLoginActivity
@@ -38,22 +39,25 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.users.DefaultAccountProvider
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -81,20 +85,96 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
+    lateinit var viewThemeUtilsFactory: ViewThemeUtilsFactory
+
+    @Inject
     lateinit var messageUtils: MessageUtils
 
     @Inject
     lateinit var context: Context
 
-    @Deprecated("Use CurrentUserProvider instead")
     @Inject
-    lateinit var currentUserProviderOld: CurrentUserProviderOld
+    lateinit var defaultAccountProvider: DefaultAccountProvider
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProvider
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var logger: Logger
+
+    /**
+     * Whether this activity may be started without [BundleKeys.KEY_INTERNAL_USER_ID] and then uses the default
+     * account. Only for entry points without an account context, like the conversation list on app start. For
+     * all other activities a missing id is a bug.
+     */
+    protected open val allowsDefaultAccount: Boolean = false
+
+    /**
+     * Internal id of the account this activity was started for, taken from [BundleKeys.KEY_INTERNAL_USER_ID].
+     * Without it, the default account is used and its id is written to the intent, so an activity recreated after a
+     * configuration change stays on the same account. After process death the system restores the original intent,
+     * so the activity uses the default account at that time. That is only intended for activities with
+     * [allowsDefaultAccount]: for all others it fails in debug builds and is logged as an error in release builds.
+     * Returns 0 if there is no account at all.
+     */
+    protected fun resolveUserIdFromIntent(): Long {
+        val userId = intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)
+        if (userId != 0L) {
+            return userId
+        }
+        if (!allowsDefaultAccount) {
+            val message = "${javaClass.simpleName} was started without ${BundleKeys.KEY_INTERNAL_USER_ID}"
+            check(!BuildConfig.DEBUG) { message }
+            Log.e(TAG, "$message, using the default account")
+        }
+        return (defaultAccountProvider.getDefaultUserBlocking()?.id ?: 0L).also {
+            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it)
+        }
+    }
+
+    /**
+     * The account this activity was started for (see [resolveUserIdFromIntent]), or null if it doesn't exist or is
+     * being removed. For activities with [allowsDefaultAccount], such an account falls back to the default account.
+     * Loaded once on first access, which must be after injection.
+     */
+    private val boundUserLazy = lazy {
+        runBlocking { userManager.getUserWithInternalId(resolveUserIdFromIntent()) }
+            ?: if (allowsDefaultAccount) defaultAccountProvider.getDefaultUserBlocking() else null
+    }
+    private val boundUser: User? by boundUserLazy
+
+    /**
+     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
+     */
+    private fun requireBoundUserOrFinish(): User? =
+        boundUser ?: run {
+            Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
+            if (allowsDefaultAccount) {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+            finish()
+            null
+        }
+
+    private var userViewThemeUtils: ViewThemeUtils? = null
+
+    /**
+     * Themes this activity, and the fragments and dialogs it hosts, with the server colors of [boundUser]. The theme
+     * is created once and assigned again on every call, because the injection of a subclass also injects
+     * [viewThemeUtils] and overwrites it with the theme of the default account. Reusing the instance keeps fragments
+     * that already took it over on the same one.
+     */
+    private fun applyUserTheme() {
+        val themeUtils = userViewThemeUtils
+            ?: boundUser?.let { viewThemeUtilsFactory.forUser(it) }?.also { userViewThemeUtils = it }
+        themeUtils?.let { viewThemeUtils = it }
+    }
+
+    /**
+     * Resolves [boundUser] and applies its theme, or finishes the activity and returns null if the account doesn't
+     * exist. Must be called right after injection, before anything else is set up.
+     */
+    protected fun setUpBoundUserOrFinish(): User? = requireBoundUserOrFinish()?.also { applyUserTheme() }
 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
@@ -130,6 +210,11 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         logger.i(this::class.java.simpleName, "onCreate")
+        // Fragments restored in super.onCreate() take over viewThemeUtils there, so apply the theme of the account
+        // before. Without an account in the intent, the injected theme of the default account is the right one.
+        if (intent.hasExtra(BundleKeys.KEY_INTERNAL_USER_ID)) {
+            applyUserTheme()
+        }
         adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
 
@@ -326,7 +411,10 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     override fun startActivity(intent: Intent) {
-        val user = currentUserProviderOld.currentUser.blockingGet()
+        // Links to the own server are opened for the account of this screen. Screens without an account (boundUser
+        // never loaded) use the default account, without resolving one from their intent.
+        val user = (if (boundUserLazy.isInitialized()) boundUser else null)
+            ?: defaultAccountProvider.getDefaultUserBlocking()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
             if (user?.baseUrl != null && uri.startsWith(user.baseUrl!!)) {
@@ -344,10 +432,11 @@ open class BaseActivity : AppCompatActivity() {
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
                 } else if (UriUtils.isInstanceInternalTalkUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/call/123456789
-                    val bundle = Bundle()
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, UriUtils.extractRoomTokenFromTalkUrl(uri))
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(bundle)
+                    val chatIntent = ChatActivity.createIntent(
+                        context,
+                        user.id!!,
+                        UriUtils.extractRoomTokenFromTalkUrl(uri)
+                    )
                     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(chatIntent)
                 } else {

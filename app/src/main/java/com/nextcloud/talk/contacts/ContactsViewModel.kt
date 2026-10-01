@@ -13,22 +13,22 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class ContactsViewModel @Inject constructor(
+@Suppress("TooManyFunctions")
+class ContactsViewModel @AssistedInject constructor(
     private val repository: ContactsRepository,
-    private val currentUserProvider: CurrentUserProvider,
-    private val logger: Logger
+    private val logger: Logger,
+    @Assisted val currentUser: User
 ) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
@@ -57,12 +57,10 @@ class ContactsViewModel @Inject constructor(
 
     private var hideAlreadyAddedParticipants: Boolean = false
 
-    private val currentUserFlow: StateFlow<User?> =
-        currentUserProvider.currentUserFlow
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    private val currentUser: User?
-        get() = currentUserFlow.value
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): ContactsViewModel
+    }
 
     companion object {
         private val TAG = ContactsViewModel::class.java.simpleName
@@ -114,10 +112,6 @@ class ContactsViewModel @Inject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun getContactsFromSearchParams(query: String = "") {
         val user = currentUser
-        if (user == null) {
-            _contactsViewState.value = ContactsUiState.Error("No current user")
-            return
-        }
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
@@ -150,10 +144,6 @@ class ContactsViewModel @Inject constructor(
     suspend fun getBlockingContactsFromSearchParams(query: String = "") =
         withContext(Dispatchers.IO) {
             val user = currentUser
-            if (user == null) {
-                _contactsViewState.value = ContactsUiState.Error("No current user")
-                return@withContext
-            }
             _contactsViewState.value = ContactsUiState.Loading
             try {
                 val contacts = repository.getContacts(
@@ -180,13 +170,16 @@ class ContactsViewModel @Inject constructor(
             }
         }
 
+    /**
+     * Resets [roomViewState] once its result was handled, so a recreated screen doesn't handle it again.
+     */
+    fun clearRoomState() {
+        _roomViewState.value = RoomUiState.None
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
         val user = currentUser
-        if (user == null) {
-            _roomViewState.value = RoomUiState.Error("No current user")
-            return
-        }
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(
@@ -198,7 +191,7 @@ class ContactsViewModel @Inject constructor(
                 )
 
                 val conversation: ConversationDto? = room.ocs?.data
-                _roomViewState.value = RoomUiState.Success(conversation)
+                _roomViewState.value = RoomUiState.Success(user.id!!, conversation)
             } catch (exception: Exception) {
                 logger.e(TAG, "Failed to create room", exception)
                 _roomViewState.value = RoomUiState.Error(exception.message ?: "")
@@ -207,14 +200,12 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun getImageUri(avatarId: String, requestBigSize: Boolean, isDarkMode: Boolean): String =
-        currentUser?.let {
-            repository.getImageUri(
-                it,
-                avatarId,
-                requestBigSize,
-                isDarkMode
-            )
-        } ?: ""
+        repository.getImageUri(
+            currentUser,
+            avatarId,
+            requestBigSize,
+            isDarkMode
+        )
 
     sealed class ContactsUiState {
         data object None : ContactsUiState()
@@ -225,7 +216,7 @@ class ContactsViewModel @Inject constructor(
 
     sealed class RoomUiState {
         data object None : RoomUiState()
-        data class Success(val conversation: ConversationDto?) : RoomUiState()
+        data class Success(val userId: Long, val conversation: ConversationDto?) : RoomUiState()
         data class Error(val message: String) : RoomUiState()
     }
 }

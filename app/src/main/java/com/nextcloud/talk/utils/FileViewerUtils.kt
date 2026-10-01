@@ -47,6 +47,7 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.util.concurrent.ExecutionException
@@ -117,7 +118,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             actorDisplayName = message.actorDisplayName.orEmpty(),
             timestamp = message.timestamp
         )
-        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, listOf(item), item.messageId))
+        context.startActivity(
+            MediaViewerActivity.newIntent(context, user.id!!, roomToken, listOf(item), item.messageId)
+        )
     }
 
     fun openFile(
@@ -267,8 +270,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
         fullScreenTextViewerIntent.putExtra("FILE_ID", fileId)
         fullScreenTextViewerIntent.putExtra("LINK", link)
-        fullScreenTextViewerIntent.putExtra("USERNAME", user.username)
-        fullScreenTextViewerIntent.putExtra("BASE_URL", user.baseUrl)
+        fullScreenTextViewerIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         context.startActivity(fullScreenTextViewerIntent)
     }
 
@@ -319,8 +321,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
 
         val data: Data = Data.Builder()
-            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, user.baseUrl)
-            .putString(DownloadFileToCacheWorker.KEY_USER_ID, user.userId)
+            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
                 CapabilitiesUtil.getAttachmentFolder(user.capabilities!!.spreedCapability!!)

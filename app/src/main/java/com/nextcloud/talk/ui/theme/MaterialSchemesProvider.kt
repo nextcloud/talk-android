@@ -14,5 +14,9 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 interface MaterialSchemesProvider {
     fun getMaterialSchemesForUser(user: User?): MaterialSchemes
     fun getMaterialSchemesForCapabilities(capabilities: CapabilitiesDto?): MaterialSchemes
-    fun getMaterialSchemesForCurrentUser(): MaterialSchemes
+
+    /**
+     * Schemes of the default account, for code without an account context of its own.
+     */
+    fun getMaterialSchemesForDefaultUser(): MaterialSchemes
 }

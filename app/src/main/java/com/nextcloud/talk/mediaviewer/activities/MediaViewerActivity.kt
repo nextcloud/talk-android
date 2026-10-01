@@ -34,9 +34,13 @@ import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import java.io.File
 import javax.inject.Inject
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.ui.LocalImageAuthHeader
+import androidx.compose.runtime.CompositionLocalProvider
 
 /**
  * Swipeable, group-aware media viewer - the entry point for every image/video tap in chat. See
@@ -54,13 +58,14 @@ class MediaViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val user = setUpBoundUserOrFinish() ?: return
+        val imageAuthHeader = ApiUtils.getCredentials(user.username, user.token)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
         val seedItems = intent.getParcelableArrayListExtraProvider<MediaViewerItem>(EXTRA_SEED_ITEMS)
         val startMessageId = intent.getLongExtra(EXTRA_START_MESSAGE_ID, -1L)
-        val user = currentUserProviderOld.currentUser.blockingGet()
 
-        if (roomToken == null || seedItems.isNullOrEmpty() || user == null) {
+        if (roomToken == null || seedItems.isNullOrEmpty()) {
             Log.e(TAG, "Missing data to open the media viewer")
             finish()
             return
@@ -81,14 +86,16 @@ class MediaViewerActivity : BaseActivity() {
             setContent {
                 val colorScheme = viewThemeUtils.getColorScheme(this@MediaViewerActivity)
                 MaterialTheme(colorScheme = colorScheme) {
-                    MediaViewerScreen(
-                        viewModel = viewModel,
-                        onShare = ::shareFile,
-                        onSave = ::showSaveDialog,
-                        onControlsVisibilityChanged = { visible ->
-                            if (visible) exitImmersiveMode() else enterImmersiveMode()
-                        }
-                    )
+                    CompositionLocalProvider(LocalImageAuthHeader provides imageAuthHeader) {
+                        MediaViewerScreen(
+                            viewModel = viewModel,
+                            onShare = ::shareFile,
+                            onSave = ::showSaveDialog,
+                            onControlsVisibilityChanged = { visible ->
+                                if (visible) exitImmersiveMode() else enterImmersiveMode()
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -135,11 +142,13 @@ class MediaViewerActivity : BaseActivity() {
 
         fun newIntent(
             context: Context,
+            userId: Long,
             roomToken: String,
             seedItems: List<MediaViewerItem>,
             startMessageId: Long
         ): Intent =
             Intent(context, MediaViewerActivity::class.java).apply {
+                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                 putExtra(KEY_ROOM_TOKEN, roomToken)
                 putParcelableArrayListExtra(EXTRA_SEED_ITEMS, ArrayList(seedItems))
                 putExtra(EXTRA_START_MESSAGE_ID, startMessageId)

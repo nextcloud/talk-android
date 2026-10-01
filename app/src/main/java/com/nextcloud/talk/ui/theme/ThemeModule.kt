@@ -24,7 +24,7 @@ internal abstract class ThemeModule {
 
     companion object {
         @Provides
-        fun provideCurrentMaterialSchemes(schemesProvider: MaterialSchemesProvider): MaterialSchemes =
-            schemesProvider.getMaterialSchemesForCurrentUser()
+        fun provideDefaultMaterialSchemes(schemesProvider: MaterialSchemesProvider): MaterialSchemes =
+            schemesProvider.getMaterialSchemesForDefaultUser()
     }
 }

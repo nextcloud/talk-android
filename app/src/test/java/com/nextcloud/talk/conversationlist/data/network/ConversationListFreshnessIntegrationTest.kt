@@ -379,7 +379,7 @@ class ConversationListFreshnessIntegrationTest {
         runBlocking {
             val emissions = mutableListOf<List<ConversationModel>>()
             val collector = launch(Dispatchers.IO) {
-                repository.roomListFlow.collect { emissions.add(it) }
+                repository.roomListFlow(user.id!!).collect { emissions.add(it) }
             }
 
             repository.getRooms(user).join()
@@ -389,6 +389,21 @@ class ConversationListFreshnessIntegrationTest {
             awaitUntil { emissions.lastOrNull()?.firstOrNull()?.unreadMessages == 7 }
 
             collector.cancel()
+        }
+    }
+
+    @Test
+    fun `room list flow only emits the conversations of the requested account`() {
+        val repository = repository()
+
+        runBlocking {
+            db.usersDao().saveUser(
+                UserEntity(id = OTHER_ACCOUNT_ID, userId = "other", username = "other", baseUrl = BASE_URL)
+            )
+            seedConversation(lastActivity = 10, lastReadMessage = 1, unreadMessages = 0)
+
+            assertEquals(1, repository.roomListFlow(ACCOUNT_ID).first().size)
+            assertTrue(repository.roomListFlow(OTHER_ACCOUNT_ID).first().isEmpty())
         }
     }
 
@@ -493,6 +508,7 @@ class ConversationListFreshnessIntegrationTest {
 
     companion object {
         private const val ACCOUNT_ID = 1L
+        private const val OTHER_ACCOUNT_ID = 2L
         private const val BASE_URL = "https://server.example.com"
         private const val ROOM_TOKEN = "room1"
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"

@@ -11,17 +11,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chooseaccount.data.StatusRepository
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.status.ClearAtDto
 import com.nextcloud.talk.models.json.status.StatusDto
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusDto
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import javax.inject.Inject
 
 private const val ONE_SECOND_IN_MILLIS = 1000L
 private const val ONE_MINUTE_IN_SECONDS = 60L
@@ -34,12 +36,11 @@ private const val LAST_SECOND_OF_MINUTE = 59
 private const val HTTP_STATUS_CODE_OK = 200
 private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
-class StatusMessageViewModel @Inject constructor(
+class StatusMessageViewModel @AssistedInject constructor(
     private val repository: StatusRepository,
-    private val currentUserProvider: CurrentUserProviderOld
+    @Assisted private val currentUser: User
 ) : ViewModel() {
 
-    private val currentUser = currentUserProvider.currentUser.blockingGet()
     private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     private val _emoji = MutableStateFlow("")
@@ -65,6 +66,27 @@ class StatusMessageViewModel @Inject constructor(
 
     private var clearAt: Long? = null
     private var currentStatusMessageId: String? = null
+
+    private var isSheetInitialized = false
+
+    /**
+     * Initializes the view model for a newly opened sheet with [currentStatus], but not again for a sheet recreated
+     * after a configuration change, so its unsaved edits are kept.
+     */
+    fun initSheetIfNeeded(currentStatus: StatusDto) {
+        if (isSheetInitialized) return
+        isSheetInitialized = true
+        init(currentStatus)
+        checkBackupStatus()
+        fetchPredefinedStatuses()
+    }
+
+    /**
+     * Must be called when the sheet is closed, so the next one starts from the then current status.
+     */
+    fun onSheetClosed() {
+        isSheetInitialized = false
+    }
 
     fun init(currentStatus: StatusDto) {
         _emoji.value = currentStatus.icon ?: ""
@@ -217,6 +239,11 @@ class StatusMessageViewModel @Inject constructor(
     fun updateClearAtPosition(position: Int) {
         _clearAtPosition.value = position
         clearAt = statusMessageClearAtFromPosition(position)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun build(user: User): StatusMessageViewModel
     }
 
     companion object {

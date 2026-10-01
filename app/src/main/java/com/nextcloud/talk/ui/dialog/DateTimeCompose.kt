@@ -63,10 +63,11 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.dialog.DateTimeCompose.Companion.HALF_WEIGHT
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import java.time.DayOfWeek
 import java.time.Instant
@@ -79,20 +80,16 @@ import java.time.temporal.TemporalAdjusters.nextOrSame
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
+class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel, val user: User) {
     private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN))
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = currentUserProvider.currentUser.blockingGet()
         val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
         val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
         val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
         chatViewModel.getReminder(user, roomToken, messageId.toString(), apiVersion)
     }
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -103,7 +100,7 @@ class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
             return
         }
 
-        val colorScheme = viewThemeUtils.getColorScheme(context)
+        val colorScheme = hostViewThemeUtils(context, viewThemeUtils).getColorScheme(context)
         val isCollapsed = remember { mutableStateOf(true) }
 
         MaterialTheme(colorScheme = colorScheme) {
@@ -141,7 +138,6 @@ class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
         ) {
             TextButton(
                 onClick = {
-                    val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                     val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
@@ -169,7 +165,6 @@ class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
 
             TextButton(
                 onClick = {
-                    val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                     val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)

@@ -8,7 +8,6 @@
 package com.nextcloud.talk.shareditems.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -125,23 +124,21 @@ class SharedItemsAdapter(
             .sortedBy { it.messageId }
             .map { it.toMediaViewerItem() }
             .capSeedAroundMessage(item.messageId)
-        context.startActivity(MediaViewerActivity.newIntent(context, roomToken, seedItems, item.messageId))
+        context.startActivity(
+            MediaViewerActivity.newIntent(context, user.id!!, roomToken, seedItems, item.messageId)
+        )
     }
 
     private fun openInChat(item: SharedFileItem, context: Context) {
-        val intent = Intent(context, ChatActivity::class.java).apply {
-            putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        val intent = ChatActivity.createIntent(context, user.id!!, roomToken).apply {
             putExtra(BundleKeys.KEY_MESSAGE_ID, item.messageId)
         }
         context.startActivity(intent)
     }
 
     private fun openMessage(item: SharedItem, context: Context) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val baseUrl = user.baseUrl
         (context as SharedItemsActivity).startContextChatWindowForMessage(
-            credentials,
-            baseUrl,
+            user,
             roomToken,
             item.id,
             null

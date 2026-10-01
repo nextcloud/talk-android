@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.core.os.BundleCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
@@ -26,11 +27,17 @@ import com.nextcloud.talk.databinding.BanItemListBinding
 import com.nextcloud.talk.databinding.FragmentDialogBanListBinding
 import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DialogBanListFragment(val roomToken: String) : DialogFragment() {
+class DialogBanListFragment : DialogFragment() {
+
+    // Read from the arguments, so the fragment can be recreated by the system after rotation or process death.
+    private val roomToken: String by lazy { requireArguments().getString(ROOM_TOKEN_ARG)!! }
+    private val conversationUser: User by lazy {
+        BundleCompat.getParcelable(requireArguments(), USER_ARG, User::class.java)!!
+    }
 
     lateinit var binding: FragmentDialogBanListBinding
 
@@ -40,11 +47,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderOld
-
     lateinit var viewModel: ConversationInfoViewModel
-    private lateinit var conversationUser: User
 
     private val adapter = object : BaseAdapter() {
         private var bans: List<TalkBanDto> = mutableListOf()
@@ -87,10 +90,10 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         binding = FragmentDialogBanListBinding.inflate(layoutInflater)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
-        conversationUser = currentUserProvider.currentUser.blockingGet()
 
         themeView()
         initObservers()
@@ -144,8 +147,17 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     }
 
     companion object {
+        private const val ROOM_TOKEN_ARG = "ROOM_TOKEN_ARG"
+        private const val USER_ARG = "USER_ARG"
+
         @JvmStatic
-        fun newInstance(roomToken: String) = DialogBanListFragment(roomToken)
+        fun newInstance(roomToken: String, user: User) =
+            DialogBanListFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ROOM_TOKEN_ARG, roomToken)
+                    putParcelable(USER_ARG, user)
+                }
+            }
         const val ONE_SEC = 1000L
     }
 }

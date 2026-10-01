@@ -36,7 +36,6 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileDataDto
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.ui.dialog.ScopeModalBottomSheet
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
@@ -47,6 +46,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -59,9 +59,6 @@ class ProfileActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var userManager: UserManager
 
     private var currentUser: User? = null
     private var userInfo: UserProfileDataDto? = null
@@ -114,6 +111,7 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        setUpBoundUserOrFinish() ?: return
 
         val restoredEdit = savedInstanceState?.getBoolean(KEY_EDIT_MODE) ?: false
         profileUiState = profileUiState.copy(isEditMode = restoredEdit)
@@ -172,7 +170,11 @@ class ProfileActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        currentUser = currentUserProviderOld.currentUser.blockingGet()
+        currentUser = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) } ?: run {
+            // The account was removed while this screen was in the background.
+            finish()
+            return
+        }
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
         pickImage = PickImage(this, currentUser)

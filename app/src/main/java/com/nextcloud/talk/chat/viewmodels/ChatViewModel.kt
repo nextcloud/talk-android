@@ -70,6 +70,7 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CharacterAvatarUtils
@@ -81,7 +82,6 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -272,8 +272,9 @@ class ChatViewModel @AssistedInject constructor(
     private val unifiedSearchRepository: UnifiedSearchRepository,
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val currentUserProvider: CurrentUserProvider,
+    private val userManager: UserManager,
     @ApplicationScope private val appScope: CoroutineScope,
+    @Assisted private val initialUser: User,
     @Assisted private val chatRoomToken: String,
     @Assisted private val conversationThreadId: Long?
 ) : ViewModel(),
@@ -317,8 +318,11 @@ class ChatViewModel @AssistedInject constructor(
             get() = results.getOrNull(selectedIndex)
     }
 
-    @Deprecated("use currentUserFlow")
-    lateinit var currentUser: User
+    /**
+     * The user of this chat with its latest stored values.
+     */
+    val currentUser: User
+        get() = currentUserFlow.value ?: initialUser
 
     private var messageSearchHelper: MessageSearchHelper? = null
     private var searchRequestJob: Job? = null
@@ -680,18 +684,20 @@ class ChatViewModel @AssistedInject constructor(
     // Current user flows
     // ------------------------------
     private val currentUserFlow: StateFlow<User?> =
-        currentUserProvider.currentUserFlow
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        userManager.userFlow(initialUser.id!!)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, initialUser)
 
     private val nonNullUserFlow = currentUserFlow.filterNotNull()
+
+    // Emits once per bound user, so updates of the user row (e.g. capabilities) don't restart dependent flows.
+    private val boundUserFlow = nonNullUserFlow.distinctUntilChangedBy { it.id }
 
     // Unlike conversationFlow below, this is not deduped by lastReadMessage/lastCommonReadMessage,
     // so it also reacts to fields those two ignore, e.g. hasCall (see [hasCall]).
     private val rawConversationFlow: Flow<ConversationModel> =
-        nonNullUserFlow
+        boundUserFlow
             .flatMapLatest { user ->
-                val userId = requireNotNull(user.id)
-                conversationRepository.observeConversation(userId, chatRoomToken)
+                conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
             }
             .mapNotNull { result ->
                 when (result) {
@@ -1149,7 +1155,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     private fun observeLobbyState() {
-        val conversationFromDb = nonNullUserFlow
+        val conversationFromDb = boundUserFlow
             .flatMapLatest { user ->
                 conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
             }
@@ -1189,7 +1195,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     private fun observePinnedMessage() {
-        nonNullUserFlow
+        boundUserFlow
             .flatMapLatest { user ->
                 conversationRepository.observeConversation(requireNotNull(user.id), chatRoomToken)
                     .mapNotNull { result ->
@@ -1721,7 +1727,7 @@ class ChatViewModel @AssistedInject constructor(
      * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
      */
     fun getAvatarUrl(message: ChatMessage): String =
-        if (this::currentUser.isInitialized && !message.hasClientSideAvatar()) {
+        if (!message.hasClientSideAvatar()) {
             ApiUtils.getUrlForAvatar(
                 currentUser.baseUrl,
                 message.actorId,
@@ -1734,15 +1740,13 @@ class ChatViewModel @AssistedInject constructor(
     private fun ChatMessage.hasClientSideAvatar(): Boolean =
         CharacterAvatarUtils.avatarFor(actorType, actorId, actorDisplayName, guestLabel = null) != null
 
-    fun initData(user: User, credentials: String, urlForChatting: String, threadId: Long?) {
-        currentUser = user
-
+    fun initData() {
         chatRepository.initData(
-            user,
-            credentials,
-            urlForChatting,
+            currentUser,
+            ApiUtils.getCredentials(currentUser.username, currentUser.token)!!,
+            ApiUtils.getUrlForChat(ApiUtils.API_V1, currentUser.baseUrl, chatRoomToken),
             chatRoomToken,
-            threadId
+            conversationThreadId
         )
 
         observeConversationAndUserFirstTime()
@@ -2099,10 +2103,6 @@ class ChatViewModel @AssistedInject constructor(
      * simply leaving the chat, would immediately mark everything read again.
      */
     fun markChatAsUnread(lastReadMessage: Int) {
-        if (!this::currentUser.isInitialized) {
-            return
-        }
-
         keepMarkedAsUnread = true
         localLastReadMessage = lastReadMessage
         resetUnreadMarkerCache()
@@ -2120,9 +2120,6 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun setChatReadMessage(lastReadMessage: Int) {
-        if (!this::currentUser.isInitialized) {
-            return
-        }
         // marking as read is the explicit counterpart of marking as unread and hands the read marker
         // back to the automatic handling
         keepMarkedAsUnread = false
@@ -2373,6 +2370,7 @@ class ChatViewModel @AssistedInject constructor(
 
             val internalConversationId = "${currentUser.id}@$chatRoomToken"
             val workerId = UploadAndShareFilesWorker.upload(
+                userId = currentUser.id!!,
                 fileUri = fileUri,
                 roomToken = room,
                 conversationName = displayName,
@@ -2457,7 +2455,7 @@ class ChatViewModel @AssistedInject constructor(
     fun getMessageById(messageId: Long): Flow<ChatMessage> {
         val urlForChatting = ApiUtils.getUrlForChat(
             1, // Keep API v1 for local message lookup until version wiring is centralized.
-            currentUser?.baseUrl,
+            currentUser.baseUrl,
             chatRoomToken
         )
 
@@ -2595,9 +2593,8 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? {
-        if (!this::currentUser.isInitialized) return null
-        return withContext(Dispatchers.IO) {
+    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? =
+        withContext(Dispatchers.IO) {
             runCatching {
                 chatNetworkDataSource.getOpenGraph(
                     currentUser.getCredentials(),
@@ -2606,7 +2603,6 @@ class ChatViewModel @AssistedInject constructor(
                 )?.openGraphObject
             }.getOrNull()
         }
-    }
 
     suspend fun updateMessageDraft() {
         val model = conversationRepository.getLocallyStoredConversation(
@@ -2829,6 +2825,6 @@ class ChatViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface ChatViewModelFactory {
-        fun build(roomToken: String, conversationThreadId: Long?): ChatViewModel
+        fun build(user: User, roomToken: String, conversationThreadId: Long?): ChatViewModel
     }
 }

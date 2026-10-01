@@ -18,12 +18,14 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.getParcelableExtraProvider
 import com.nextcloud.talk.location.components.LocationPickerScreen
+import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CHAT_API_VERSION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_GEOCODING_RESULT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import javax.inject.Inject
 
 private const val MAP_CENTER_LAT_KEY = "mapCenterLat"
@@ -34,6 +36,8 @@ private const val MOVE_TO_CURRENT_LOCATION_KEY = "moveToCurrentLocation"
 
 private const val GEOCODING_RESULT_KEY = "geocodingResult"
 
+private const val TAG = "LocationPickerActivity"
+
 @AutoInjector(NextcloudTalkApplication::class)
 class LocationPickerActivity : BaseActivity() {
 
@@ -41,6 +45,7 @@ class LocationPickerActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: LocationPickerViewModel
+    private lateinit var user: User
     private lateinit var roomToken: String
     private var chatApiVersion: Int = 1
 
@@ -66,6 +71,7 @@ class LocationPickerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        user = setUpBoundUserOrFinish() ?: return
 
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         chatApiVersion = intent.getIntExtra(KEY_CHAT_API_VERSION, 1)
@@ -84,6 +90,7 @@ class LocationPickerActivity : BaseActivity() {
 
         viewModel.initialize(
             LocationPickerViewModel.LocationPickerInitParams(
+                user = user,
                 roomToken = roomToken,
                 chatApiVersion = chatApiVersion,
                 geocodingResult = geocodingResult,
@@ -122,6 +129,7 @@ class LocationPickerActivity : BaseActivity() {
 
     private fun navigateToGeocoding() {
         val intent = Intent(this, GeocodingActivity::class.java)
+        intent.putExtra(KEY_INTERNAL_USER_ID, user.id)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_CHAT_API_VERSION, chatApiVersion)
         geocodingLauncher.launch(intent)

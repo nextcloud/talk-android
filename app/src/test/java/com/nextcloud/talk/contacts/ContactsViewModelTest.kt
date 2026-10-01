@@ -16,8 +16,6 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
 import com.nextcloud.talk.utils.preview.DummyUserDaoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +31,7 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("TooManyFunctions")
 class ContactsViewModelTest {
     private lateinit var viewModel: ContactsViewModel
     private val repository: ContactsRepository = FakeRepositorySuccess()
@@ -49,19 +48,11 @@ class ContactsViewModelTest {
     val userManager: UserManager
         get() = UserManager(userRepository)
 
-    val userProvider: CurrentUserProvider
-        get() = CurrentUserProviderImpl(userManager)
-
     private var viewModelCount = 0
 
     private fun createViewModel(repo: ContactsRepository): ContactsViewModel {
-        val provider = userProvider
-        // CurrentUserProviderImpl feeds its currentUserFlow from a real Dispatchers.IO
-        // scope, independent of the test dispatcher's virtual time. Waiting for it here
-        // (real blocking wait, since this isn't inside runTest) ensures the value is
-        // already cached by the time the ViewModel's viewModelScope collects it.
-        runBlocking { provider.getCurrentUser() }
-        return ContactsViewModel(repo, provider, mock<Logger>()).also {
+        val user = runBlocking { userManager.getDefaultUser() }!!
+        return ContactsViewModel(repo, mock<Logger>(), user).also {
             viewModelStore.put("contactsViewModel${viewModelCount++}", it)
         }
     }
@@ -134,6 +125,14 @@ class ContactsViewModelTest {
             assert(viewModel.roomViewState.value is ContactsViewModel.RoomUiState.Success)
             val successState = viewModel.roomViewState.value as ContactsViewModel.RoomUiState.Success
             assert(successState.conversation == FakeItem.roomOverall.ocs!!.data)
+        }
+
+    @Test
+    fun `a handled room state is cleared`() =
+        runTest {
+            viewModel.createRoom("1", "users", "s@gmail.com", null)
+            viewModel.clearRoomState()
+            assert(viewModel.roomViewState.value is ContactsViewModel.RoomUiState.None)
         }
 
     @Test

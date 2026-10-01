@@ -84,7 +84,7 @@ class CapabilitiesFetcher(
         user.serverVersion = capabilitiesOverall.ocs?.data?.serverVersion
 
         return try {
-            val success = userManager.updateOrCreateUser(user) > 0
+            val success = userManager.updateCapabilities(user.id!!, user.capabilities, user.serverVersion) > 0
             if (!success) {
                 Log.w(TAG, "Error updating user")
             }

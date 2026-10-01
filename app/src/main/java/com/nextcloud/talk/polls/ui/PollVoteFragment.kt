@@ -29,6 +29,7 @@ import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -51,6 +52,7 @@ class PollVoteFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollVoteViewModel::class.java]
 
         parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class.java]
@@ -99,7 +101,7 @@ class PollVoteFragment : Fragment() {
         }
 
         binding.pollVoteSubmitButton.setOnClickListener {
-            viewModel.vote(parentViewModel.roomToken, parentViewModel.pollId)
+            viewModel.vote(parentViewModel.user, parentViewModel.roomToken, parentViewModel.pollId)
         }
 
         binding.pollVoteEditDismiss.setOnClickListener {

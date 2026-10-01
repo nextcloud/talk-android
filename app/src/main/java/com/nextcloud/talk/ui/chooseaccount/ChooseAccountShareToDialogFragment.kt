@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -25,10 +26,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.chooseaccount.model.LoadUsersSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.chooseaccount.model.SwitchUserSuccessStateChooseAccountShareTo
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.CookieManager
@@ -38,7 +42,7 @@ import javax.inject.Inject
 class ChooseAccountShareToDialogFragment : DialogFragment() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ChooseAccountShareToViewModel.Factory
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -62,7 +66,13 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         NextcloudTalkApplication.Companion.sharedApplication!!.componentApplication.inject(this)
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[ChooseAccountShareToViewModel::class.java]
+        viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
+        // The account of the conversation list this chooser belongs to, not the default account.
+        val user = BundleCompat.getParcelable(requireArguments(), KEY_USER, User::class.java)!!
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryWithParams(ChooseAccountShareToViewModel::class.java) { viewModelFactory.build(user) }
+        )[ChooseAccountShareToViewModel::class.java]
 
         val otherUsers = mutableStateOf<List<User>>(emptyList())
 
@@ -75,7 +85,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
                         }
                         is SwitchUserSuccessStateChooseAccountShareTo -> {
                             cookieManager.cookieStore.removeAll()
-                            activity?.recreate()
+                            (activity as? ConversationsListActivity)?.relaunchForAccount(state.user.id!!)
                             dismiss()
                         }
                         else -> {}
@@ -110,6 +120,11 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
 
     companion object {
         const val TAG = "ChooseAccountShareToDialogFragment"
-        fun newInstance(): ChooseAccountShareToDialogFragment = ChooseAccountShareToDialogFragment()
+        private const val KEY_USER = "KEY_USER"
+
+        fun newInstance(user: User): ChooseAccountShareToDialogFragment =
+            ChooseAccountShareToDialogFragment().apply {
+                arguments = Bundle().apply { putParcelable(KEY_USER, user) }
+            }
     }
 }

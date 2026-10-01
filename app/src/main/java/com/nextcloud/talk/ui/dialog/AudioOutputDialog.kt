@@ -19,6 +19,7 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import javax.inject.Inject
 
@@ -33,6 +34,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
+        viewThemeUtils = hostViewThemeUtils(callActivity, viewThemeUtils)
 
         dialogAudioOutputBinding = DialogAudioOutputBinding.inflate(layoutInflater)
         setContentView(dialogAudioOutputBinding.root)
