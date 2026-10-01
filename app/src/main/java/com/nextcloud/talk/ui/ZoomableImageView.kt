@@ -81,6 +81,7 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
     private val maximumFlingVelocity = ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat()
     private var velocityTracker: VelocityTracker? = null
     private val flingRunnable = FlingRunnable()
+    private var scaleAnimator: ValueAnimator? = null
 
     private val scaleGestureDetector = ScaleGestureDetector(
         context,
@@ -154,6 +155,12 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
         return changed
     }
 
+    override fun onDetachedFromWindow() {
+        flingRunnable.cancel()
+        scaleAnimator?.cancel()
+        super.onDetachedFromWindow()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (drawable == null) return false
         var handled = false
@@ -162,13 +169,14 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
         if (action == MotionEvent.ACTION_DOWN) {
             parent?.requestDisallowInterceptTouchEvent(true)
             flingRunnable.cancel()
+            scaleAnimator?.cancel()
             velocityTracker?.recycle()
             velocityTracker = VelocityTracker.obtain()
         }
         velocityTracker?.addMovement(event)
 
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            handled = handleTouchEnd()
+            handled = handleTouchEnd(action)
         }
 
         val wasScaling = scaleGestureDetector.isInProgress
@@ -184,7 +192,7 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
         return handled
     }
 
-    private fun handleTouchEnd(): Boolean {
+    private fun handleTouchEnd(action: Int): Boolean {
         val scale = currentScale()
         val rect = getDisplayRect()
         val handled = when {
@@ -196,7 +204,8 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
                 animateScale(scale, maximumScale, rect.centerX(), rect.centerY())
                 true
             }
-            isDragging && !scaleGestureDetector.isInProgress -> startFlingFromVelocity()
+            action == MotionEvent.ACTION_UP && isDragging && !scaleGestureDetector.isInProgress ->
+                startFlingFromVelocity()
             else -> false
         }
         velocityTracker?.recycle()
@@ -327,7 +336,7 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
             val newX = scroller.currX
             val newY = scroller.currY
             suppMatrix.postTranslate((currentX - newX).toFloat(), (currentY - newY).toFloat())
-            imageMatrix = drawMatrix()
+            checkAndDisplayMatrix()
             currentX = newX
             currentY = newY
             postOnAnimation(this)
@@ -337,7 +346,8 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
     // ---- scale animation -------------------------------------------------
 
     private fun animateScale(startScale: Float, endScale: Float, focalX: Float, focalY: Float) {
-        ValueAnimator.ofFloat(startScale, endScale).apply {
+        scaleAnimator?.cancel()
+        scaleAnimator = ValueAnimator.ofFloat(startScale, endScale).apply {
             duration = ZOOM_DURATION_MS
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animator ->
@@ -360,6 +370,7 @@ class ZoomableImageView @JvmOverloads constructor(context: Context, attrs: Attri
     private fun updateBaseMatrix(drawable: Drawable?) {
         if (drawable == null) return
         flingRunnable.cancel()
+        scaleAnimator?.cancel()
         val viewWidth = (width - paddingLeft - paddingRight).toFloat()
         val viewHeight = (height - paddingTop - paddingBottom).toFloat()
         baseMatrix.reset()
