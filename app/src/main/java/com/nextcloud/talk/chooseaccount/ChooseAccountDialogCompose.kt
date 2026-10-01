@@ -300,6 +300,7 @@ class ChooseAccountDialogCompose {
                         if (userManager.setUserAsActive(userItem.user)) {
                             cookieManager.cookieStore.removeAll()
                             val intent = Intent(activity, ConversationsListActivity::class.java)
+                            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userItem.user.id)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             activity.startActivity(intent)
                             onSelected()

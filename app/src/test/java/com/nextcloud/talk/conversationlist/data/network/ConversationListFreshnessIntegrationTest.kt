@@ -379,7 +379,7 @@ class ConversationListFreshnessIntegrationTest {
         runBlocking {
             val emissions = mutableListOf<List<ConversationModel>>()
             val collector = launch(Dispatchers.IO) {
-                repository.roomListFlow.collect { emissions.add(it) }
+                repository.observeRooms(ACCOUNT_ID).collect { emissions.add(it) }
             }
 
             repository.getRooms(user).join()
