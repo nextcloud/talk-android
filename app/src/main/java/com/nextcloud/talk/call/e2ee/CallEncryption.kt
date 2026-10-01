@@ -30,7 +30,8 @@ import java.util.UUID
  *
  * All state is handled on a single-threaded dispatcher; [keyRing] can be called from any thread.
  */
-@Suppress("TooManyFunctions")
+// Guard clauses with early returns keep the message handlers readable and close to the web client's code
+@Suppress("TooManyFunctions", "ReturnCount")
 class CallEncryption(
     private val ownSessionId: String,
     private val olm: OlmCrypto,
