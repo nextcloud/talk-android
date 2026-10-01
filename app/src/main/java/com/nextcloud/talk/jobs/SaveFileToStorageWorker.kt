@@ -19,7 +19,7 @@ import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns
 import android.util.Log
 import android.widget.Toast
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -27,6 +27,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.Mimetype.AUDIO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -34,10 +36,12 @@ import java.net.URLConnection
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerParameters) :
-    Worker(context, workerParameters) {
+    CoroutineWorker(context, workerParameters) {
+
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) { saveFileToStorage() }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun doWork(): Result {
+    private fun saveFileToStorage(): Result {
         try {
             val cacheFile = File(inputData.getString(KEY_SOURCE_FILE_PATH)!!)
             val contentResolver = context.contentResolver

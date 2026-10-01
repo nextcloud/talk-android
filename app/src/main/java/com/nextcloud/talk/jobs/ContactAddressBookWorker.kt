@@ -21,10 +21,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.google.gson.Gson
@@ -44,13 +44,15 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ContactAddressBookWorker(val context: Context, workerParameters: WorkerParameters) :
-    Worker(context, workerParameters) {
+    CoroutineWorker(context, workerParameters) {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -67,10 +69,13 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     private lateinit var accountName: String
     private lateinit var accountType: String
 
-    @Suppress("LongMethod")
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
+        return withContext(Dispatchers.IO) { syncAddressBook() }
+    }
 
+    @Suppress("LongMethod")
+    private fun syncAddressBook(): Result {
         val currentUser = currentUserProvider.currentUser.blockingGet()
 
         accountName = context.getString(R.string.nc_app_product_name)
