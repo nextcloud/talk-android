@@ -13,6 +13,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.net.toUri
@@ -116,11 +117,11 @@ class BrowserLoginActivity : BaseActivity() {
                             restartApp()
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginDifferentAccount -> {
-                            Snackbar.make(
-                                binding.root,
-                                R.string.nc_reauthorize_different_account,
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                            // This login can't be used anymore. Back on the previous screen, the reauthorization can
+                            // be started again, so the message must outlive this activity.
+                            Toast.makeText(context, R.string.nc_reauthorize_different_account, Toast.LENGTH_LONG)
+                                .show()
+                            finish()
                         }
                     }
                 }
