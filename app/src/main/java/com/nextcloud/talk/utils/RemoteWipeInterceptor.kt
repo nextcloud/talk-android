@@ -53,14 +53,17 @@ class RemoteWipeInterceptor(
         val response = chain.proceed(chain.request())
         if (response.code != HTTP_UNAUTHORIZED) return response
 
-        Log.d(TAG, "Received 401 for ${chain.request().url}")
+        // The request that got the 401. After a redirect, it differs from chain.request(): e.g. OkHttp drops the
+        // credentials when redirecting to another host, so that 401 says nothing about the original credentials.
+        val rejectedRequest = response.request
+        Log.d(TAG, "Received 401 for ${rejectedRequest.url}")
 
-        if (WIPE_PATH in chain.request().url.encodedPath) {
+        if (WIPE_PATH in rejectedRequest.url.encodedPath) {
             Log.d(TAG, "401 was from the wipe endpoint itself, ignoring to avoid recursion")
             return response
         }
 
-        val candidate = resolveWipeCandidate(chain.request().url.toString()) ?: return response
+        val candidate = resolveWipeCandidate(rejectedRequest) ?: return response
         if (!handledUserIds.add(candidate.userId)) {
             Log.d(TAG, "User ${candidate.userId} was already handled, ignoring")
             return response
@@ -72,27 +75,36 @@ class RemoteWipeInterceptor(
         return response
     }
 
-    private fun resolveWipeCandidate(requestUrl: String): WipeCandidate? {
-        val user = runBlocking { userManager.getUsers() }
-            .firstOrNull { it.baseUrl != null && requestUrl.startsWith(it.baseUrl!!) }
-        if (user == null) {
-            Log.d(TAG, "No known user matches base URL of $requestUrl, ignoring")
-            return null
-        }
+    /**
+     * The account whose credentials the server rejected: the one with exactly the credentials of [request], on the
+     * server of its URL. A 401 for a request without credentials, or with credentials of no stored account, says
+     * nothing about an account, e.g. a request that relied on a session cookie, and is ignored. Several accounts can
+     * be on the same server, so the server alone does not identify the account.
+     */
+    private fun resolveWipeCandidate(request: Request): WipeCandidate? {
+        val user = findUserWithCredentialsOf(request)
+        val token = user?.token
+        val userId = user?.id
 
-        val token = user.token
-        if (token == null) {
-            Log.d(TAG, "User ${user.id} has no token, ignoring")
-            return null
+        return if (user != null && token != null && userId != null) {
+            WipeCandidate(user, token, userId)
+        } else {
+            Log.d(TAG, "401 for a request without the credentials of a known account, ignoring: ${request.url}")
+            null
         }
+    }
 
-        val userId = user.id
-        if (userId == null) {
-            Log.d(TAG, "User has no id, ignoring")
-            return null
+    /**
+     * The stored account on the server of [request] whose credentials the request carries, if any.
+     */
+    private fun findUserWithCredentialsOf(request: Request): User? {
+        val credentials = request.header(AUTHORIZATION) ?: return null
+        val requestUrl = request.url.toString()
+
+        return runBlocking { userManager.getUsers() }.firstOrNull { user ->
+            val isOnServerOfRequest = user.baseUrl?.let { UriUtils.isOnServer(requestUrl, it) } == true
+            isOnServerOfRequest && ApiUtils.getCredentials(user.username, user.token) == credentials
         }
-
-        return WipeCandidate(user, token, userId)
     }
 
     private fun isWipeRequestedByServer(candidate: WipeCandidate): Boolean {
@@ -155,6 +167,7 @@ class RemoteWipeInterceptor(
     companion object {
         private const val TAG = "RemoteWipeInterceptor"
         private const val HTTP_UNAUTHORIZED = 401
+        private const val AUTHORIZATION = "Authorization"
         private const val WIPE_PATH = "wipe"
     }
 }
