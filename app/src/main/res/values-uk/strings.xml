@@ -352,7 +352,7 @@
     <string name="nc_ongoing_meeting">Зустріч, що триває</string>
     <string name="nc_open_conversation">Відкрита розмова</string>
     <string name="nc_open_conversation_to_registered_users">Відкрита бесіда для зареєстрованих користувачів</string>
-    <string name="nc_open_to_guest_app_users">Також відкрито для користувачів гостьових додатків</string>
+    <string name="nc_open_to_guest_app_users">Також відкрити для користувачів гостьових застосунків</string>
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учасники</string>
     <string name="nc_participants_add">Додати учасників</string>
