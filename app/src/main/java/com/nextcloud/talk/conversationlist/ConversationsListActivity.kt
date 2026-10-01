@@ -31,7 +31,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.dagger.modules.assistedViewModels
@@ -537,9 +539,9 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         lifecycleScope.launch {
-            contactsViewModel.roomViewState.onEach { state ->
-                when (state) {
-                    is ContactsViewModel.RoomUiState.Success -> {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                contactsViewModel.roomViewState.collect { state ->
+                    if (state is ContactsViewModel.RoomUiState.Success) {
                         state.conversation?.token?.let { token ->
                             val chatIntent = ChatActivity.createIntent(context, state.userId, token)
                             chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -547,10 +549,8 @@ class ConversationsListActivity : BaseActivity() {
                         }
                         contactsViewModel.clearRoomState()
                     }
-
-                    else -> {}
                 }
-            }.collect()
+            }
         }
 
         lifecycleScope.launch {
