@@ -172,7 +172,7 @@ class SettingsActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        setUpBoundUserOrFinish() ?: return
+        setCurrentUser(setUpBoundUserOrFinish() ?: return)
         networkMonitor.isOnlineLiveData.observe(this) { online ->
             isOnline.value = online
             handleNetworkChange(isOnline.value)
@@ -185,7 +185,6 @@ class SettingsActivity :
 
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
-        if (!getCurrentUser()) return
         handleIntent(intent)
 
         setupLicenceSetting(isOnline.value)
@@ -315,7 +314,7 @@ class SettingsActivity :
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
             .observe(this) { workInfo ->
-                if (workInfo?.state == WorkInfo.State.SUCCEEDED && getCurrentUser()) {
+                if (workInfo?.state == WorkInfo.State.SUCCEEDED && reloadCurrentUser()) {
                     setupCheckables(isOnline)
                 }
             }
@@ -333,16 +332,21 @@ class SettingsActivity :
         viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
     }
 
+    private fun setCurrentUser(user: User) {
+        currentUser = user
+        credentials = ApiUtils.getCredentials(user.username, user.token)
+    }
+
     /**
-     * Loads the account of this screen again. Finishes the activity and returns false if it was removed meanwhile.
+     * Loads the account of this screen again, e.g. for updated capabilities. Finishes the activity and returns false
+     * if it was removed meanwhile.
      */
-    private fun getCurrentUser(): Boolean {
-        val user = runBlocking { userManager.getUserWithId(resolveUserIdFromIntent()) } ?: run {
+    private fun reloadCurrentUser(): Boolean {
+        val user = runBlocking { userManager.getUserWithInternalId(resolveUserIdFromIntent()) } ?: run {
             finish()
             return false
         }
-        currentUser = user
-        credentials = ApiUtils.getCredentials(user.username, user.token)
+        setCurrentUser(user)
         return true
     }
 
