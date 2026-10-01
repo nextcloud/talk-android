@@ -46,7 +46,7 @@ object NotificationUtils {
 
     enum class NotificationChannels {
         NOTIFICATION_CHANNEL_MESSAGES_V4,
-        NOTIFICATION_CHANNEL_CALLS_V4,
+        NOTIFICATION_CHANNEL_CALLS_V5,
         NOTIFICATION_CHANNEL_CALLS_ONGOING_V1,
         NOTIFICATION_CHANNEL_UPLOADS
     }
@@ -102,14 +102,14 @@ object NotificationUtils {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
                 .build()
         val soundUri = getCallRingtoneUri(context, appPreferences)
 
         createNotificationChannel(
             context,
             Channel(
-                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name,
+                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name,
                 context.resources.getString(R.string.nc_notification_channel_calls),
                 context.resources.getString(R.string.nc_notification_channel_calls_description),
                 true
@@ -120,7 +120,7 @@ object NotificationUtils {
     }
 
     /**
-     * Separate from [NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4] (the incoming-ring channel,
+     * Separate from [NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5] (the incoming-ring channel,
      * which must stay IMPORTANCE_HIGH) so the persistent "call in progress" foreground-service
      * notification never heads-ups/peeks - it should only be visible by pulling down the status bar.
      */
@@ -285,7 +285,7 @@ object NotificationUtils {
     }
 
     fun isCallsNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
+        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name)
         if (channel != null) {
             return isNotificationChannelEnabled(channel)
         }
@@ -339,7 +339,7 @@ object NotificationUtils {
             context,
             appPreferences.callRingtoneUri,
             DEFAULT_CALL_RINGTONE_URI,
-            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
         )
 
     fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? =
