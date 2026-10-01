@@ -242,8 +242,13 @@ class ConversationsListActivity : BaseActivity() {
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
     }
 
+    // Set once this list is replaced by one for another account. onRestart and onNewIntent can both trigger that when
+    // the list is brought back with an intent for another account, which must only relaunch it once.
+    private var isRelaunching = false
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        if (isRelaunching) return
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         if (newUserId != 0L && newUserId != currentUser.id) {
             relaunchForAccount(newUserId, intent)
@@ -416,9 +421,11 @@ class ConversationsListActivity : BaseActivity() {
         // The list shows the default account. If another account became the default while the list was in the
         // background (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which
         // would lose the pending message.
+        if (isRelaunching) return
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
         val isPickingConversation = forwardMessage || hasActivityActionSendIntent()
         if (defaultUserId != currentUser.id && !isPickingConversation) {
+            isRelaunching = true
             startActivity(createAccountSwitchIntent(this, defaultUserId))
         }
     }
@@ -686,6 +693,8 @@ class ConversationsListActivity : BaseActivity() {
      * the new intent only targets this activity and takes over no other flags.
      */
     fun relaunchForAccount(userId: Long, source: Intent = intent) {
+        if (isRelaunching) return
+        isRelaunching = true
         val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
             action = source.action
             setDataAndType(source.data, source.type)
