@@ -21,6 +21,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.conversationlist.DirectShareHelper
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
@@ -44,6 +45,9 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var conversationsRepository: OfflineConversationsRepository
 
     private val result = SettableFuture.create<Result>()
 
@@ -88,6 +92,7 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
                     }
 
                     override fun onComplete() {
+                        currentUser.id?.let { conversationsRepository.requireFullSync(it) }
                         if (currentUser.id != null) {
                             DirectShareHelper.removeShortcutForConversation(
                                 applicationContext,
