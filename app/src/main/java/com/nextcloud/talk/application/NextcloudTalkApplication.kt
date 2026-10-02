@@ -51,6 +51,7 @@ import com.nextcloud.talk.dagger.modules.UtilsModule
 import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.jobs.AccountRemovalWorker
+import com.nextcloud.talk.jobs.ConversationsSyncWorker
 import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
@@ -271,6 +272,8 @@ class NextcloudTalkApplication :
             ExistingPeriodicWorkPolicy.REPLACE,
             periodicCapabilitiesUpdateWork
         )
+
+        ConversationsSyncWorker.schedule(applicationContext)
     }
 
     override fun onTerminate() {
