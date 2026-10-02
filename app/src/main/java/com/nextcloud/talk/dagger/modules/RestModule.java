@@ -221,7 +221,8 @@ public class RestModule {
         }
 
         httpClient.addInterceptor(new HeadersInterceptor());
-        httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
+        // remote wipe is deactivated for 25.0.2 and will come back with improvements in 25.1.x
+//      httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
 
         return httpClient.build();
