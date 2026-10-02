@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
-import android.location.LocationManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -33,7 +32,6 @@ import android.os.Handler
 import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.MediaStore
-import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -254,9 +252,9 @@ import java.time.ZonedDateTime
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.CancellationException
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import java.util.concurrent.CancellationException
 import kotlin.math.abs
 
 @Suppress("TooManyFunctions", "LargeClass", "LongMethod")
@@ -2889,68 +2887,13 @@ class ChatActivity :
     fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
-        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-
-        if (!isGpsEnabled) {
-            showLocationServicesDisabledDialog()
-        } else if (!permissionUtil.isLocationPermissionGranted()) {
-            showLocationPermissionDeniedDialog()
-        }
-
-        if (permissionUtil.isLocationPermissionGranted() && isGpsEnabled) {
-            val intent = Intent(this, LocationPickerActivity::class.java)
-            intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-            intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-            intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
-            startActivity(intent)
-        }
-    }
-
-    private fun showLocationServicesDisabledDialog() {
-        val title = resources.getString(R.string.location_services_disabled)
-        val explanation = resources.getString(R.string.location_services_disabled_msg)
-        val positive = resources.getString(R.string.nc_permissions_settings)
-        val cancel = resources.getString(R.string.nc_cancel)
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setTitle(title)
-            .setMessage(explanation)
-            .setPositiveButton(positive) { _, _ ->
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
-            .setNegativeButton(cancel, null)
-
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-        val dialog = dialogBuilder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
-    }
-
-    private fun showLocationPermissionDeniedDialog() {
-        val title = resources.getString(R.string.location_permission_denied)
-        val explanation = resources.getString(R.string.location_permission_denied_msg)
-        val positive = resources.getString(R.string.nc_permissions_settings)
-        val cancel = resources.getString(R.string.nc_cancel)
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setTitle(title)
-            .setMessage(explanation)
-            .setPositiveButton(positive) { _, _ ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", packageName, null)
-                }
-                startActivity(intent)
-            }
-            .setNegativeButton(cancel, null)
-
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-        val dialog = dialogBuilder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
+        // location permission and location services are optional: without them, a place can still be picked on the
+        // map. The picker asks for the permission itself.
+        val intent = Intent(this, LocationPickerActivity::class.java)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
+        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        intent.putExtra(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
+        startActivity(intent)
     }
 
     private fun showConversationInfoScreen() {
