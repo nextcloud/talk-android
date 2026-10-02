@@ -8,6 +8,13 @@
  */
 include ':app'
 
+includeBuild("../android-library") {
+    dependencySubstitution {
+        substitute(module("com.github.nextcloud:android-library"))
+            .using(project(":library"))
+    }
+}
+
 //// uncomment to use local build of common-ui
 //includeBuild('../android-common') {
 //    dependencySubstitution {
