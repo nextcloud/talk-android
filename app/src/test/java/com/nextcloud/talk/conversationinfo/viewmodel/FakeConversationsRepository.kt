@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.models.json.profile.ProfileDto
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import io.reactivex.Observable
+import java.io.IOException
 
 /**
  * Answers with what a test needs of [ConversationsRepository.allowGuests], and fails everything
@@ -23,6 +24,10 @@ class FakeConversationsRepository : ConversationsRepository {
 
     var failAllowGuests = false
     var lastAllowGuestsPassword: String? = null
+
+    /** How many of the next important-conversation requests fail with a connection problem. */
+    var failingImportantRequests = 0
+    var importantRequests = 0
 
     override suspend fun allowGuests(
         user: User,
@@ -93,7 +98,14 @@ class FakeConversationsRepository : ConversationsRepository {
         credentials: String,
         baseUrl: String,
         roomToken: String
-    ): GenericOverall = throw UnsupportedOperationException()
+    ): GenericOverall {
+        importantRequests++
+        if (failingImportantRequests > 0) {
+            failingImportantRequests--
+            throw IOException("no connection")
+        }
+        return GenericOverall()
+    }
 
     override suspend fun markConversationAsUnImportant(
         credentials: String,

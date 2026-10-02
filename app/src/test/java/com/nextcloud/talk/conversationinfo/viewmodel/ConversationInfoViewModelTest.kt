@@ -111,6 +111,60 @@ class ConversationInfoViewModelTest {
         }
 
     @Test
+    fun `an important toggle that the server never accepts goes back to what it was`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingImportantRequests = Int.MAX_VALUE }
+            val model = viewModel(repository)
+
+            model.toggleImportantConversation("credentials", user.baseUrl!!, "token")
+            dispatcher.scheduler.runCurrent()
+            assertEquals(true, model.uiState.value.importantConversation)
+
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(model.uiState.value.importantConversation)
+        }
+
+    @Test
+    fun `an important toggle survives a single connection problem`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingImportantRequests = 1 }
+            val model = viewModel(repository)
+
+            model.toggleImportantConversation("credentials", user.baseUrl!!, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(2, repository.importantRequests)
+            assertEquals(true, model.uiState.value.importantConversation)
+        }
+
+    // undoIfUnchanged(): a setting can have two changes in flight at once, and the older one failing
+    // must not put its value back over the newer one the server already accepted. A two-state toggle
+    // cannot show the difference - its undo value equals the newer change - so the rule is asserted
+    // on the guard itself.
+
+    @Test
+    fun `an undo runs while the value it wrote is still the one on screen`() =
+        runTest(dispatcher) {
+            val model = viewModel(FakeConversationsRepository())
+
+            model.undoIfUnchanged({ true }) { it.copy(notificationLevel = "restored") }.invoke()
+
+            assertEquals("restored", model.uiState.value.notificationLevel)
+        }
+
+    @Test
+    fun `an undo is dropped once something newer has written that value`() =
+        runTest(dispatcher) {
+            val model = viewModel(FakeConversationsRepository())
+            val levelBefore = model.uiState.value.notificationLevel
+
+            model.undoIfUnchanged({ false }) { it.copy(notificationLevel = "restored") }.invoke()
+
+            assertEquals(levelBefore, model.uiState.value.notificationLevel)
+        }
+
+    @Test
     fun `createConversationNameByParticipants should combine names correctly`() {
         val original = listOf("Dave", null, "Charlie")
         val all = listOf("Bob", "Charlie", "Dave", "Alice", null, "Simon")
