@@ -475,6 +475,7 @@
     <string name="nc_push_notification_error">Vabandust, midagi läks valesti, veateade on: %1$s</string>
     <string name="nc_push_notification_fetch_error">Vabandust, midagi läks valesti, tõuketeavituse testsõnumit ei õnnestu laadida</string>
     <string name="nc_push_notification_message">Tõuketeavituse saatmine õnnestus. Peaksid selles seadmes nüüd saama tõuketeavituse pealkirjaga „Tõuketeavituse test“</string>
+    <string name="nc_reauthorize_different_account">Sa logisid sisse teise kasutajakontoga. Palun pruugi seda kontot, mida soovid uuesti autentida.</string>
     <string name="nc_remind">Tuleta mulle hiljem meelde</string>
     <string name="nc_remote_wipe_logged_out">Selle kasutajakonto kasutajanimi/salasõna pole enam kehtivad</string>
     <string name="nc_remove_color">Eemalda värv</string>
