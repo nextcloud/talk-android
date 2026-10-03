@@ -31,9 +31,13 @@ class LinkedHashMapConverter {
             val mapList = trimmed.split(",")
             // ["👍":1]["👎":1]["😃":1]["😯":1]
             for (mapStr in mapList) {
-                val emojiMapList = mapStr.split(":")
-                val emoji = emojiMapList[0].replace("\"", "") // removes double quotes
-                val count = emojiMapList[1].toInt()
+                // reaction keys such as ":thank_you:" contain colons themselves
+                val separator = mapStr.lastIndexOf(':')
+                val count = mapStr.substring(separator + 1).toIntOrNull()
+                if (separator < 0 || count == null) {
+                    continue
+                }
+                val emoji = mapStr.substring(0, separator).replace("\"", "") // removes double quotes
                 map[emoji] = count
             }
             // [👍:1],[👎:1],[😃:1],[😯:1]
