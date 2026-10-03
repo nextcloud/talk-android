@@ -475,6 +475,7 @@
     <string name="nc_push_notification_error">Leider ist etwas schief gelaufen, der Fehler ist %1$s</string>
     <string name="nc_push_notification_fetch_error">Leider ist etwas schief gelaufen, die Test-Push-Nachricht kann nicht abgerufen werden</string>
     <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel \"Testen von Push-Benachrichtigungen\" erhalten.</string>
+    <string name="nc_reauthorize_different_account">Sie haben sich mit einem anderen Konto angemeldet. Bitte mit dem Konto anmelden, für das Sie die Autorisierung erneuern möchten.</string>
     <string name="nc_remind">Erinnere mich später</string>
     <string name="nc_remote_wipe_logged_out">Die Anmeldeinformationen für dieses Konto waren nicht mehr gültig</string>
     <string name="nc_remove_color">Farbe entfernen</string>
