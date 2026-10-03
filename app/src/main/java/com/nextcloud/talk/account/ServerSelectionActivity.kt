@@ -22,11 +22,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import autodagger.AutoInjector
 import com.blikoon.qrcodescanner.QrCodeActivity
 import com.github.dhaval2404.imagepicker.util.PermissionUtil
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -52,6 +54,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
 import java.security.cert.CertificateException
 import javax.inject.Inject
+import javax.net.ssl.SSLPeerUnverifiedException
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -260,22 +263,10 @@ class ServerSelectionActivity : BaseActivity() {
                     showErrorTextForStatus(status)
                 }
             }, { throwable: Throwable ->
-                if (checkForcedHttps) {
-                    checkServer(queryStatusUrl.replace("https://", "http://"), false)
+                if (checkForcedHttps && !isTlsTrustFailure(throwable)) {
+                    askToFallBackToHttp(url, throwable)
                 } else {
-                    if (throwable.localizedMessage != null) {
-                        setErrorText(throwable.localizedMessage)
-                    } else if (throwable.cause is CertificateException) {
-                        setErrorText(resources!!.getString(R.string.nc_certificate_error))
-                    } else {
-                        hideserverEntryProgressBar()
-                    }
-
-                    if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
-                        binding.importOrChooseProviderText.visibility = View.VISIBLE
-                        binding.certTextView.visibility = View.VISIBLE
-                    }
-                    dispose()
+                    showServerCheckError(throwable)
                 }
             }) {
                 hideserverEntryProgressBar()
@@ -285,6 +276,63 @@ class ServerSelectionActivity : BaseActivity() {
                 }
                 dispose()
             }
+    }
+
+    // A certificate or host name failure must never lead to an offer to downgrade to HTTP.
+    private fun isTlsTrustFailure(throwable: Throwable): Boolean {
+        val seen = mutableSetOf<Throwable>()
+        var current: Throwable? = throwable
+        while (current != null && seen.add(current)) {
+            if (current is CertificateException || current is SSLPeerUnverifiedException) {
+                return true
+            }
+            current = current.cause
+        }
+        return false
+    }
+
+    private fun showServerCheckError(throwable: Throwable) {
+        if (throwable.localizedMessage != null) {
+            setErrorText(throwable.localizedMessage)
+        } else if (throwable.cause is CertificateException) {
+            setErrorText(resources!!.getString(R.string.nc_certificate_error))
+        } else {
+            hideserverEntryProgressBar()
+        }
+
+        if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
+            binding.importOrChooseProviderText.visibility = View.VISIBLE
+            binding.certTextView.visibility = View.VISIBLE
+        }
+        dispose()
+    }
+
+    private fun askToFallBackToHttp(httpsUrl: String, httpsError: Throwable) {
+        if (isFinishing || isDestroyed) {
+            dispose()
+            return
+        }
+
+        var confirmed = false
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_server_http_fallback_title)
+            .setMessage(R.string.nc_server_http_fallback_message)
+            .setPositiveButton(R.string.nc_server_http_fallback_confirm) { _, _ ->
+                confirmed = true
+                checkServer(httpsUrl.replaceFirst("https://", "http://"), false)
+            }
+            .setNegativeButton(R.string.nc_cancel, null)
+            .setOnDismissListener {
+                if (!confirmed) {
+                    showServerCheckError(httpsError)
+                }
+            }
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun showErrorTextForStatus(status: StatusDto) {
