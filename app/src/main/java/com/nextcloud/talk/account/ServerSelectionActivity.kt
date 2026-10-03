@@ -54,6 +54,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
 import java.security.cert.CertificateException
 import javax.inject.Inject
+import javax.net.ssl.SSLPeerUnverifiedException
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -262,7 +263,7 @@ class ServerSelectionActivity : BaseActivity() {
                     showErrorTextForStatus(status)
                 }
             }, { throwable: Throwable ->
-                if (checkForcedHttps) {
+                if (checkForcedHttps && !isTlsTrustFailure(throwable)) {
                     askToFallBackToHttp(url, throwable)
                 } else {
                     showServerCheckError(throwable)
@@ -275,6 +276,19 @@ class ServerSelectionActivity : BaseActivity() {
                 }
                 dispose()
             }
+    }
+
+    // A certificate or host name failure must never lead to an offer to downgrade to HTTP.
+    private fun isTlsTrustFailure(throwable: Throwable): Boolean {
+        val seen = mutableSetOf<Throwable>()
+        var current: Throwable? = throwable
+        while (current != null && seen.add(current)) {
+            if (current is CertificateException || current is SSLPeerUnverifiedException) {
+                return true
+            }
+            current = current.cause
+        }
+        return false
     }
 
     private fun showServerCheckError(throwable: Throwable) {
