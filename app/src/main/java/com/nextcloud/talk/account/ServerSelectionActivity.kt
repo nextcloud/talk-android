@@ -261,7 +261,7 @@ class ServerSelectionActivity : BaseActivity() {
                 }
             }, { throwable: Throwable ->
                 if (checkForcedHttps) {
-                    checkServer(queryStatusUrl.replace("https://", "http://"), false)
+                    checkServer(url.replaceFirst("https://", "http://"), false)
                 } else {
                     if (throwable.localizedMessage != null) {
                         setErrorText(throwable.localizedMessage)
