@@ -30,6 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.nextcloud.talk.camera.rotationForDeviceOrientation
 import java.io.File
 
 /**
@@ -450,25 +451,4 @@ class DeviceOrientationTracker(context: Context) {
         listener.disable()
         degrees = OrientationEventListener.ORIENTATION_UNKNOWN
     }
-}
-
-private const val ORIENTATION_QUARTER = 90
-private const val ORIENTATION_EIGHTH = 45
-private const val FULL_CIRCLE = 360
-
-// Device turned clockwise by 0, 90, 180, 270 degrees: the display rotates the other way.
-private val rotationByQuadrant = intArrayOf(
-    Surface.ROTATION_0,
-    Surface.ROTATION_270,
-    Surface.ROTATION_180,
-    Surface.ROTATION_90
-)
-
-/**
- * Maps the device orientation reported by OrientationEventListener (degrees, clockwise from upright) to the
- * [Surface] rotation, or null when the orientation is unknown.
- */
-internal fun rotationForDeviceOrientation(degrees: Int): Int? {
-    if (degrees < 0) return null
-    return rotationByQuadrant[((degrees + ORIENTATION_EIGHTH) % FULL_CIRCLE) / ORIENTATION_QUARTER]
 }

@@ -118,6 +118,7 @@ import com.nextcloud.talk.attachmentsheet.AttachmentSheetCallbacks
 import com.nextcloud.talk.attachmentsheet.AttachmentSheetModel
 import com.nextcloud.talk.attachmentsheet.AttachmentVisibilityInput
 import com.nextcloud.talk.attachmentsheet.resolveAttachmentActions
+import com.nextcloud.talk.camera.TakePhotoInApp
 import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
@@ -364,6 +365,10 @@ class ChatActivity :
         executeIfResultOk(it) { intent ->
             onPickCameraResult(intent)
         }
+    }
+
+    private val takePhotoInApp = registerForActivityResult(TakePhotoInApp()) { uri ->
+        uri?.let { showCapturedFile(it) }
     }
 
     override val view: View
@@ -2876,14 +2881,17 @@ class ChatActivity :
 
     @Throws(IllegalStateException::class)
     private fun onPickCameraResult(intent: Intent?) {
+        // The system camera app is only guaranteed to write to the URI passed via EXTRA_OUTPUT;
+        // whether it also populates the result intent's data is device/vendor-dependent, so the
+        // URI we supplied up front is the one source of truth here.
+        val uri = pendingCameraUri ?: intent?.data
+        pendingCameraUri = null
+        showCapturedFile(uri)
+    }
+
+    private fun showCapturedFile(uri: Uri?) {
         try {
             filesToUpload.clear()
-
-            // The system camera app is only guaranteed to write to the URI passed via EXTRA_OUTPUT;
-            // whether it also populates the result intent's data is device/vendor-dependent, so the
-            // URI we supplied up front is the one source of truth here.
-            val uri = pendingCameraUri ?: intent?.data
-            pendingCameraUri = null
             if (uri != null) {
                 filesToUpload.add(uri.toString())
             } else {
@@ -4235,7 +4243,7 @@ class ChatActivity :
                 onAction = { runAttachmentAction(it) },
                 onTakePhoto = {
                     attachmentSheetModel = null
-                    sendPictureFromCamIntent()
+                    takePhotoWithInAppCamera()
                 },
                 onSend = {
                     attachmentSheetModel = null
@@ -4280,7 +4288,7 @@ class ChatActivity :
     private fun runAttachmentAction(action: AttachmentAction) {
         attachmentSheetModel = null
         when (action) {
-            AttachmentAction.PICTURE_FROM_CAM -> sendPictureFromCamIntent()
+            AttachmentAction.PICTURE_FROM_CAM -> takePhotoWithInAppCamera()
             AttachmentAction.VIDEO_FROM_CAM -> sendVideoFromCamIntent()
             AttachmentAction.GALLERY -> showGalleryPicker()
             AttachmentAction.FILE_FROM_LOCAL -> sendSelectLocalFileIntent()
@@ -4292,21 +4300,11 @@ class ChatActivity :
         }
     }
 
-    private fun sendPictureFromCamIntent() {
+    private fun takePhotoWithInAppCamera() {
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(packageManager)?.also {
-                    val photoFile = createAttachmentFile(R.string.nc_picture_filename, PICTURE_SUFFIX)
-
-                    photoFile?.also {
-                        pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
-                        startPickCameraIntentForResult.launch(takePictureIntent)
-                    }
-                }
-            }
+            takePhotoInApp.launch(Unit)
         }
     }
 
@@ -4480,7 +4478,6 @@ class ChatActivity :
         private const val REQUEST_VIDEO_RECORD_PERMISSIONS = 224
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
-        private const val PICTURE_SUFFIX = ".jpg"
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_FORBIDDEN = 403
