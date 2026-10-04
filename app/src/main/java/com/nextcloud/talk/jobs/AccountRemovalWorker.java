@@ -129,6 +129,9 @@ public class AccountRemovalWorker extends Worker {
                                 queryMap.put("deviceIdentifierSignature",
                                              finalPushConfigurationState.getDeviceIdentifierSignature());
                                 unregisterDeviceForNotificationWithProxy(queryMap, user);
+                            } else {
+                                Log.e(TAG, "unregister Device For Notifications failed with status " + statusCode);
+                                initiateUserDeletion(user);
                             }
                         }
 
@@ -154,7 +157,9 @@ public class AccountRemovalWorker extends Worker {
     private void unregisterDeviceForNotificationWithProxy(HashMap<String, String> queryMap, User user) {
         ncApi.unregisterDeviceForNotificationsWithProxy
                 (ApiUtils.getUrlPushProxy(), queryMap)
-                .subscribe(new Observer<Void>() {
+                // Blocking, so that doWork() returns only after the user is deleted. Callers restart the app or
+                // log in again as soon as the work is SUCCEEDED, and the user must be gone by then.
+                .blockingSubscribe(new Observer<Void>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         // unused atm
