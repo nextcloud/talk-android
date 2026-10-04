@@ -18,6 +18,8 @@
     <dimen name="small_item_height">48dp</dimen>
 
     <dimen name="min_size_clickable_area">48dp</dimen>
+    <dimen name="video_recording_preview_width">180dp</dimen>
+    <dimen name="video_recording_preview_height">240dp</dimen>
 
     <!-- Custom transition dimensions -->
     <dimen name="margin_between_elements">8dp</dimen>

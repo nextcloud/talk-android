@@ -42,6 +42,7 @@ val androidxTestVersion = "1.5.0"
 val media3Version = "1.11.1"
 val coroutinesVersion = "1.11.0"
 val mockitoKotlinVersion = "6.4.0"
+val cameraXVersion = "1.6.1"
 
 android {
     compileSdk = 37
@@ -243,6 +244,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-common:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
+
+    implementation("androidx.camera:camera-core:$cameraXVersion")
+    implementation("androidx.camera:camera-camera2:$cameraXVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraXVersion")
+    implementation("androidx.camera:camera-video:$cameraXVersion")
+    implementation("androidx.camera:camera-view:$cameraXVersion")
 
     implementation("androidx.biometric:biometric:1.1.0")
 
