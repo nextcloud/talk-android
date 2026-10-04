@@ -196,6 +196,14 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
         }
 
     /**
+     * Continues a login that was already started, the next step is [pollLogin] with its response.
+     */
+    fun resumeLoginFlow(reAuth: Boolean, accountToReauthorize: Long?) {
+        shouldReauthorizeUser = reAuth
+        this.accountToReauthorize = accountToReauthorize
+    }
+
+    /**
      * Ends normal login process by canceling the polling
      */
     fun cancelLoginFlow() {
