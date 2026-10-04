@@ -40,8 +40,8 @@ object PendingBrowserLoginStore {
 
     /** The unfinished login, or null if there is none or it expired. */
     fun active(): PendingBrowserLogin? {
-        val current = pending ?: return null
-        if (clock() - current.startedAtMillis >= LIFETIME_MILLIS) {
+        val current = pending
+        if (current != null && clock() - current.startedAtMillis >= LIFETIME_MILLIS) {
             clear()
             return null
         }
