@@ -14,6 +14,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.attachmentsheet.READ_MEDIA_VISUAL_USER_SELECTED
+import com.nextcloud.talk.attachmentsheet.hasMediaFilesAccess
 
 class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermissionUtil {
     override val privateBroadcastPermission: String =
@@ -41,20 +43,12 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
     override fun isFilesPermissionGranted(): Boolean =
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-                if (
-                    PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
-                    == PermissionChecker.PERMISSION_GRANTED ||
-                    PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VIDEO)
-                    == PermissionChecker.PERMISSION_GRANTED ||
-                    PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_MEDIA_AUDIO)
-                    == PermissionChecker.PERMISSION_GRANTED
-                ) {
-                    Log.d(TAG, "Permission is granted (SDK 33 or greater)")
-                    true
-                } else {
-                    Log.d(TAG, "Permission is revoked (SDK 33 or greater)")
-                    false
-                }
+                val granted = MEDIA_PERMISSIONS.filter {
+                    PermissionChecker.checkSelfPermission(context, it) == PermissionChecker.PERMISSION_GRANTED
+                }.toSet()
+                val hasAccess = hasMediaFilesAccess(Build.VERSION.SDK_INT, granted)
+                Log.d(TAG, "Media permission is ${if (hasAccess) "granted" else "revoked"} (SDK 33 or greater)")
+                hasAccess
             }
             Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                 if (PermissionChecker.checkSelfPermission(
@@ -98,6 +92,13 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
         ) == PermissionChecker.PERMISSION_GRANTED
 
     companion object {
+        private val MEDIA_PERMISSIONS = listOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            READ_MEDIA_VISUAL_USER_SELECTED
+        )
+
         private val TAG = PlatformPermissionUtilImpl::class.simpleName
     }
 }

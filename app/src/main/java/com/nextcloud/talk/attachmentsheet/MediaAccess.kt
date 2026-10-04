@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2026 Krainov Gleb <krajnov.g@kontentplus.ru>
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.attachmentsheet
@@ -36,6 +36,14 @@ fun resolveMediaAccess(sdkInt: Int, granted: Set<String>): MediaAccess =
 
         else -> MediaAccess.NONE
     }
+
+/**
+ * Whether the app may read files of the user without own picker: any media permission, including the partial
+ * grant of Android 14, or audio. Used by flows that already hold a URI (recording, camera, share-to-Talk).
+ */
+fun hasMediaFilesAccess(sdkInt: Int, granted: Set<String>): Boolean =
+    sdkInt >= Build.VERSION_CODES.TIRAMISU &&
+        (resolveMediaAccess(sdkInt, granted) != MediaAccess.NONE || Manifest.permission.READ_MEDIA_AUDIO in granted)
 
 /**
  * Permissions to request in one dialog so that Android 14 offers the "select photos" choice next to "allow all".
