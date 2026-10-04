@@ -34,6 +34,9 @@
 <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
 
+    <!-- AppTheme for screens that call keepContentOutOfDisplayCutout(); the cutout mode itself is in values-v28 -->
+    <style name="AppTheme.DisplayCutout" parent="AppTheme" />
+
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.Material3.Dark">
         <item name="android:colorBackground">@color/bg_default</item>
         <item name="colorSurface">@color/bg_default</item>

@@ -167,7 +167,7 @@
         <activity
             android:name=".conversationlist.ConversationsListActivity"
             android:exported="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme.DisplayCutout">
 
             <meta-data
                 android:name="android.service.chooser.chooser_target_service"
@@ -193,7 +193,7 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.DisplayCutout" />
 
         <activity
             android:name=".activities.CallActivity"
