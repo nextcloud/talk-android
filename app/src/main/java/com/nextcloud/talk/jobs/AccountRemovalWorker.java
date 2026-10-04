@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import kotlin.coroutines.EmptyCoroutineContext;
@@ -155,47 +156,40 @@ public class AccountRemovalWorker extends Worker {
     }
 
     private void unregisterDeviceForNotificationWithProxy(HashMap<String, String> queryMap, User user) {
-        ncApi.unregisterDeviceForNotificationsWithProxy
-                (ApiUtils.getUrlPushProxy(), queryMap)
-                // Blocking, so that doWork() returns only after the user is deleted. Callers restart the app or
-                // log in again as soon as the work is SUCCEEDED, and the user must be gone by then.
-                .blockingSubscribe(new Observer<Void>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // unused atm
-                    }
+        Throwable error = awaitCompletion(
+            ncApi.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap));
 
-                    @Override
-                    public void onNext(Void aVoid) {
-                            String groupName = String.format(
-                                getApplicationContext()
-                                    .getResources()
-                                    .getString(R.string.nc_notification_channel), user.getUserId(), user.getBaseUrl());
-                            CRC32 crc32 = new CRC32();
-                            crc32.update(groupName.getBytes());
-                            NotificationManager notificationManager =
-                                    (NotificationManager) getApplicationContext()
-                                        .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (error == null) {
+            String groupName = String.format(
+                getApplicationContext()
+                    .getResources()
+                    .getString(R.string.nc_notification_channel), user.getUserId(), user.getBaseUrl());
+            CRC32 crc32 = new CRC32();
+            crc32.update(groupName.getBytes());
+            NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
 
-                            if (notificationManager != null) {
-                                notificationManager.deleteNotificationChannelGroup(
-                                    Long.toString(crc32.getValue()));
-                            }
+            if (notificationManager != null) {
+                notificationManager.deleteNotificationChannelGroup(
+                    Long.toString(crc32.getValue()));
+            }
+        } else {
+            Log.e(TAG, "error while trying to unregister Device For Notification With Proxy", error);
+        }
 
-                        initiateUserDeletion(user);
-                    }
+        initiateUserDeletion(user);
+    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "error while trying to unregister Device For Notification With Proxy", e);
-                        initiateUserDeletion(user);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+    /**
+     * Blocks until the request ended, so that doWork() returns only after the user is deleted. Callers restart the
+     * app or log in again as soon as the work is SUCCEEDED, and the user must be gone by then.
+     * The elements are ignored: the body of the proxy answer is null, which a blocking subscriber can't take.
+     *
+     * @return the error, or null if the request succeeded
+     */
+    static Throwable awaitCompletion(Observable<?> request) {
+        return request.ignoreElements().blockingGet();
     }
 
     private void initiateUserDeletion(User user) {
