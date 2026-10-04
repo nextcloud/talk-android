@@ -29,14 +29,6 @@ private val TAG = FileAttachmentPreviewViewModel::class.java.simpleName
 internal fun isCompressible(mimeType: String?): Boolean =
     ImageCompressor.isCompressible(mimeType) || VideoCompressor.isCompressible(mimeType)
 
-/**
- * [current] is the detail text for the file's active compress setting, [alternate] is what it
- * would read as under the other setting. Both are computed regardless of [FileDescription]'s own
- * `compress` flag, so the large preview's detail chip can reserve width for whichever is wider and
- * never resize when the HQ toggle flips which one is actually shown.
- */
-private data class DetailVariants(val current: String, val alternate: String)
-
 @Suppress("ReturnCount")
 internal fun describeFile(context: Context, uriString: String, compress: Boolean): FileDescription {
     val uri = uriString.toUri()
@@ -48,7 +40,7 @@ internal fun describeFile(context: Context, uriString: String, compress: Boolean
     val sizeOnly = formatSize(context, file.length())
 
     val variants = when (kind) {
-        MediaKind.IMAGE -> describeImageDetail(context, file, compress, sizeOnly)
+        MediaKind.IMAGE -> describeImageDetail(context, file, mimeType, compress, sizeOnly)
         MediaKind.VIDEO -> describeVideoDetail(context, file, compress, sizeOnly)
         MediaKind.OTHER -> "$name, $sizeOnly".let { DetailVariants(it, it) }
     }
@@ -72,31 +64,24 @@ internal fun describeFile(context: Context, uriString: String, compress: Boolean
 
 @Suppress("ReturnCount")
 private fun imageAspectRatio(file: File): Float? {
-    val info = ImageCompressor.readImageInfo(file) ?: return null
+    val info = ImageCompressor.readImageInfo(file)?.inDisplayOrientation(readExifOrientation(file)) ?: return null
     if (info.height <= 0) return null
-    val (width, height) = if (isSidewaysExifOrientation(file)) {
-        info.height to info.width
-    } else {
-        info.width to info.height
-    }
-    if (height <= 0) return null
-    return width.toFloat() / height.toFloat()
+    return info.width.toFloat() / info.height.toFloat()
 }
 
 // BitmapFactory's decode bounds are the raw, un-rotated pixel grid, so a photo whose sensor-native
 // orientation is landscape (with an EXIF tag marking it as rotated for portrait display) reports
-// swapped width/height here compared to how it actually renders. Swap them back so the aspect ratio
-// used to size the preview matches what Coil (which does honor EXIF) actually draws.
-private fun isSidewaysExifOrientation(file: File): Boolean =
+// swapped width/height compared to how it actually renders. Callers swap them back so the aspect
+// ratio and the size caption match what Coil and the compressor (both honor EXIF) actually produce.
+private fun readExifOrientation(file: File): Int =
     try {
-        val orientation = ExifInterface(file.absolutePath).getAttributeInt(
+        ExifInterface(file.absolutePath).getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_NORMAL
         )
-        orientation == ExifInterface.ORIENTATION_ROTATE_90 || orientation == ExifInterface.ORIENTATION_ROTATE_270
     } catch (e: IOException) {
         NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to read EXIF orientation", e)
-        false
+        ExifInterface.ORIENTATION_NORMAL
     }
 
 @Suppress("ReturnCount")
@@ -156,12 +141,18 @@ private fun downscaleIfNeeded(bitmap: Bitmap): Bitmap {
 }
 
 @Suppress("ReturnCount")
-private fun describeImageDetail(context: Context, file: File, compress: Boolean, fallback: String): DetailVariants {
-    val original = ImageCompressor.readImageInfo(file) ?: return DetailVariants(fallback, fallback)
-    val originalText = describeMedia(context, original.width, original.height, original.sizeBytes)
-    val compressed = ImageCompressor.estimateCompression(file)
-    val compressedText = compressed?.let { describeMedia(context, it.width, it.height, it.sizeBytes) } ?: originalText
-    return if (compress) DetailVariants(compressedText, originalText) else DetailVariants(originalText, compressedText)
+private fun describeImageDetail(
+    context: Context,
+    file: File,
+    mimeType: String?,
+    compress: Boolean,
+    fallback: String
+): DetailVariants {
+    val original = ImageCompressor.readImageInfo(file)?.inDisplayOrientation(readExifOrientation(file))
+        ?: return DetailVariants(fallback, fallback)
+    return imageDetailVariants(original, compressedImageInfo(mimeType, file), compress) {
+        describeMedia(context, it.width, it.height, it.sizeBytes)
+    }
 }
 
 @Suppress("ReturnCount")

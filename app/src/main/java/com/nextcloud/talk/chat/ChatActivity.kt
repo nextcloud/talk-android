@@ -621,6 +621,7 @@ class ChatActivity :
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
         initialUser = setUpBoundUserOrFinish() ?: return
+        registerAttachmentPreviewResultListener()
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -2825,15 +2826,29 @@ class ChatActivity :
         }
     }
 
+    private fun registerAttachmentPreviewResultListener() {
+        supportFragmentManager.setFragmentResultListener(
+            FileAttachmentPreviewFragment.RESULT_KEY,
+            this
+        ) { _, result ->
+            val files = result.getStringArrayList(FileAttachmentPreviewFragment.RESULT_FILES)
+            if (files != null) {
+                uploadFiles(
+                    files,
+                    result.getString(FileAttachmentPreviewFragment.RESULT_CAPTION, ""),
+                    result.getBoolean(FileAttachmentPreviewFragment.RESULT_COMPRESS_IMAGES),
+                    result.getBoolean(FileAttachmentPreviewFragment.RESULT_ALLOW_UPDATE)
+                )
+            }
+        }
+    }
+
     private fun showFileAttachmentPreview(files: MutableList<String>) {
         val newFragment = FileAttachmentPreviewFragment.newInstance(
             files,
             currentConversation?.displayName ?: "",
             CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
         )
-        newFragment.setListener { selectedFiles, caption, compressImages, allowUpdate ->
-            uploadFiles(selectedFiles, caption, compressImages, allowUpdate)
-        }
         newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
     }
 

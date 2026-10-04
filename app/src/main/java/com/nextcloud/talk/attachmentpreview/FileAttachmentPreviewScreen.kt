@@ -6,18 +6,24 @@
  */
 package com.nextcloud.talk.attachmentpreview
 
+import android.app.Activity
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,26 +31,16 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.EditOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -58,26 +54,40 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.FileUtils
+import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.launch
+import java.io.File
 
 private const val MAX_ADD_MORE_FILES = 10
 
 private const val APP_BAR_HEIGHT_DP = 64
 private const val APP_BAR_HORIZONTAL_PADDING_DP = 4
+private const val SELECTION_MARK_SIZE_DP = 32
+private const val SELECTION_MARK_BORDER_DP = 2
+private const val SCRIM_ALPHA = 0.6f
+private const val TOOL_ROW_SPACING_DP = 12
 
 /**
- * Full-screen dialog content for reviewing, reordering and captioning files picked for upload,
- * hosted by [FileAttachmentPreviewFragment]. [viewModel] owns the file list and its (IO-derived)
- * descriptions so both survive configuration changes; everything else here is ephemeral UI state.
+ * Full-screen dialog content for reviewing, selecting, editing and captioning files picked for
+ * upload, hosted by [FileAttachmentPreviewFragment]. [viewModel] owns the file list, the selection
+ * and its (IO-derived) descriptions so they survive configuration changes; everything else here is
+ * ephemeral UI state.
  */
 @Suppress("LongMethod", "LongParameterList")
 @Composable
@@ -95,6 +105,7 @@ internal fun FileAttachmentPreviewContent(
     var caption by rememberSaveable { mutableStateOf("") }
     var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
     var allowUpdate by rememberSaveable { mutableStateOf(false) }
+    var drawingUri by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
@@ -103,14 +114,22 @@ internal fun FileAttachmentPreviewContent(
 
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
+    val currentDescription = fileDescriptions.getOrNull(pagerState.currentPage)
 
     val pickMoreMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(MAX_ADD_MORE_FILES)
     ) { uris ->
         viewModel.addFiles(uris.map { it.toString() })
     }
-
     val cameraCapture = rememberCameraCaptureActions(currentFiles)
+    val startCrop = rememberCropLauncher(viewModel)
+
+    LaunchedEffect(viewModel.editFailed) {
+        if (viewModel.editFailed) {
+            Toast.makeText(context, R.string.nc_attachment_edit_failed, Toast.LENGTH_LONG).show()
+            viewModel.editFailureShown()
+        }
+    }
 
     LaunchedEffect(currentFiles.size) {
         if (currentFiles.isEmpty()) {
@@ -118,87 +137,206 @@ internal fun FileAttachmentPreviewContent(
         }
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    val density = LocalDensity.current
+    var bottomPanelHeight by remember { mutableStateOf(0.dp) }
+    val topBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + APP_BAR_HEIGHT_DP.dp
+
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        if (fileDescriptions.isNotEmpty()) {
+            LargePreview(
+                descriptions = fileDescriptions,
+                pagerState = pagerState,
+                videoPadding = PaddingValues(top = topBarHeight, bottom = bottomPanelHeight),
+                detailTopPadding = topBarHeight
+            )
+        }
+
+        PreviewTopBar(
+            conversationName = conversationName,
+            position = pagerState.currentPage to fileDescriptions.size,
+            selectedCount = viewModel.selectedFiles().size,
+            currentSelected = currentDescription?.let { it.uri !in viewModel.unselected } ?: false,
+            onToggleSelected = { currentDescription?.let { viewModel.toggleSelected(it.uri) } },
+            onDismiss = onDismiss,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
+                .align(Alignment.BottomCenter)
+                .onSizeChanged { bottomPanelHeight = with(density) { it.height.toDp() } }
+                .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = SCRIM_ALPHA))))
                 .navigationBarsPadding()
                 .imePadding()
         ) {
-            PreviewTopBar(conversationName = conversationName, onDismiss = onDismiss)
-
-            HorizontalDivider()
-
-            Column(modifier = Modifier.weight(1f)) {
-                if (fileDescriptions.isNotEmpty()) {
-                    LargePreview(
-                        descriptions = fileDescriptions,
-                        pagerState = pagerState,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    ThumbnailStrip(
-                        descriptions = fileDescriptions,
-                        selectedIndex = pagerState.currentPage,
-                        onSelect = { index -> coroutineScope.launch { pagerState.scrollToPage(index) } },
-                        onRemove = { uri -> viewModel.removeFile(uri) },
-                        onReorder = { from, to -> viewModel.reorder(from, to) },
-                        onAddMore = {
-                            pickMoreMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
-                        },
-                        onTakePhoto = cameraCapture.onTakePhoto,
-                        onTakeVideo = cameraCapture.onTakeVideo
-                    )
-                }
-            }
-
-            if (showFilePermissionsOption || hasCompressibleMedia) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-                ) {
-                    if (showFilePermissionsOption) {
-                        FilePermissionOptionButton(
-                            allowUpdate = allowUpdate,
-                            onAllowUpdateChange = { allowUpdate = it }
-                        )
-                    }
-
-                    if (hasCompressibleMedia) {
-                        MediaQualityOptionButton(
-                            highQuality = !compressImages,
-                            onHighQualityChange = { highQuality -> compressImages = !highQuality }
-                        )
-                    }
-                }
+            if (fileDescriptions.size > 1) {
+                ThumbnailStrip(
+                    descriptions = fileDescriptions,
+                    selectedIndex = pagerState.currentPage,
+                    unselected = viewModel.unselected.toSet(),
+                    onSelect = { index -> coroutineScope.launch { pagerState.scrollToPage(index) } },
+                    onReorder = { from, to -> viewModel.reorder(from, to) }
+                )
             }
 
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
-                sendEnabled = currentFiles.isNotEmpty(),
-                onSend = { onSend(currentFiles.toList(), caption, compressImages, allowUpdate) }
+                addMoreActions = AddMoreActions(
+                    onPickFromGallery = {
+                        pickMoreMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
+                    },
+                    onTakePhoto = cameraCapture.onTakePhoto,
+                    onTakeVideo = cameraCapture.onTakeVideo
+                )
+            )
+
+            BottomToolRow(
+                options = ToolBarState(
+                    showQuality = hasCompressibleMedia,
+                    highQuality = !compressImages,
+                    showPermission = showFilePermissionsOption,
+                    allowUpdate = allowUpdate
+                ),
+                current = currentDescription?.takeUnless { viewModel.isEditing },
+                onCrop = startCrop,
+                onDraw = {
+                    viewModel.drawing.clear()
+                    drawingUri = it.uri
+                },
+                onHighQualityChange = { highQuality -> compressImages = !highQuality },
+                onAllowUpdateChange = { allowUpdate = it },
+                sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing,
+                onSend = { onSend(viewModel.selectedFiles(), caption, compressImages, allowUpdate) }
             )
         }
+
+        DrawingOverlay(
+            target = fileDescriptions.firstOrNull { it.uri == drawingUri },
+            session = viewModel.drawing,
+            onCancel = {
+                viewModel.drawing.clear()
+                drawingUri = null
+            },
+            onDone = { target ->
+                viewModel.saveDrawing(target)
+                drawingUri = null
+            }
+        )
+    }
+}
+
+/** The edit tools / quality / permission pill on the left, the round send button on the right. */
+@Suppress("LongParameterList")
+@Composable
+internal fun BottomToolRow(
+    options: ToolBarState,
+    current: FileDescription?,
+    onCrop: (FileDescription) -> Unit,
+    onDraw: (FileDescription) -> Unit,
+    onHighQualityChange: (Boolean) -> Unit,
+    onAllowUpdateChange: (Boolean) -> Unit,
+    sendEnabled: Boolean,
+    onSend: () -> Unit
+) {
+    // Edit tools exist for images only; drawing additionally needs a known aspect ratio to map touches.
+    val image = current?.takeIf { it.kind == MediaKind.IMAGE }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(TOOL_ROW_SPACING_DP.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+    ) {
+        // The pill gets all the width the send button leaves; it scrolls instead of squeezing its buttons.
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            AttachmentToolBar(
+                state = options,
+                actions = ToolBarActions(
+                    onCrop = image?.let { { onCrop(it) } },
+                    onDraw = image?.takeIf { it.aspectRatio != null }?.let { { onDraw(it) } },
+                    onHighQualityChange = onHighQualityChange,
+                    onAllowUpdateChange = onAllowUpdateChange
+                )
+            )
+        }
+        SendButton(enabled = sendEnabled, onClick = onSend)
     }
 }
 
 @Composable
-private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
+private fun DrawingOverlay(
+    target: FileDescription?,
+    session: DrawingSession,
+    onCancel: () -> Unit,
+    onDone: (FileDescription) -> Unit
+) {
+    val ratio = target?.aspectRatio ?: return
+    DrawingEditor(
+        imageUri = target.uri,
+        aspectRatio = ratio,
+        session = session,
+        onCancel = onCancel,
+        onDone = { onDone(target) }
+    )
+}
+
+/** Launches uCrop on a file and swaps the cropped/rotated result in at the original's position. */
+@Composable
+private fun rememberCropLauncher(viewModel: FileAttachmentPreviewViewModel): (FileDescription) -> Unit {
+    val context = LocalContext.current
+    var sourceUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var destinationPath by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val source = sourceUri
+        val destination = destinationPath?.let(::File)
+        val cropped = result.resultCode == Activity.RESULT_OK && result.data?.let { UCrop.getOutput(it) } != null
+        if (cropped && source != null && destination != null && destination.length() > 0) {
+            viewModel.applyCrop(source, destination)
+        } else {
+            // cancelled or failed: don't leave uCrop's empty/partial output behind
+            destination?.delete()
+        }
+        sourceUri = null
+        destinationPath = null
+    }
+
+    return { description ->
+        val destination = createEditOutputFile(context, description.name, description.mimeType)
+        if (destination == null) {
+            Toast.makeText(context, R.string.nc_attachment_edit_failed, Toast.LENGTH_LONG).show()
+        } else {
+            sourceUri = description.uri
+            destinationPath = destination.absolutePath
+            launcher.launch(createCropIntent(context, description.uri.toUri(), destination, description.mimeType))
+        }
+    }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun PreviewTopBar(
+    conversationName: String,
+    position: Pair<Int, Int>,
+    selectedCount: Int,
+    currentSelected: Boolean,
+    onToggleSelected: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = SCRIM_ALPHA), Color.Transparent)))
+            .statusBarsPadding()
             .height(APP_BAR_HEIGHT_DP.dp)
             .padding(horizontal = APP_BAR_HORIZONTAL_PADDING_DP.dp)
     ) {
         IconButton(onClick = onDismiss) {
             Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.nc_common_dismiss)
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.nc_common_dismiss),
+                tint = Color.White
             )
         }
 
@@ -209,148 +347,61 @@ private fun PreviewTopBar(conversationName: String, onDismiss: () -> Unit) {
         ) {
             Text(
                 text = conversationName,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = stringResource(R.string.nc_add_file),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-
-private const val OPTION_BUTTON_ICON_SIZE_DP = 16
-private const val OPTION_BUTTON_HORIZONTAL_PADDING_DP = 12
-private const val OPTION_BUTTON_VERTICAL_PADDING_DP = 6
-private const val OPTION_BUTTON_LABEL_PADDING_DP = 4
-private const val TEXT_BADGE_BORDER_DP = 1
-private const val TEXT_BADGE_CORNER_RADIUS_DP = 4
-private const val TEXT_BADGE_HORIZONTAL_PADDING_DP = 3
-
-@Composable
-private fun OptionButton(label: String, onClick: () -> Unit, icon: @Composable () -> Unit) {
-    Button(
-        onClick = onClick,
-        shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        contentPadding = PaddingValues(
-            horizontal = OPTION_BUTTON_HORIZONTAL_PADDING_DP.dp,
-            vertical = OPTION_BUTTON_VERTICAL_PADDING_DP.dp
-        )
-    ) {
-        icon()
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(horizontal = OPTION_BUTTON_LABEL_PADDING_DP.dp)
-        )
-        Icon(
-            imageVector = Icons.Filled.ArrowDropDown,
-            contentDescription = null,
-            modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
-        )
-    }
-}
-
-@Composable
-private fun TextBadge(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Bold,
-        color = LocalContentColor.current,
-        modifier = Modifier
-            .border(
-                width = TEXT_BADGE_BORDER_DP.dp,
-                color = LocalContentColor.current,
-                shape = RoundedCornerShape(TEXT_BADGE_CORNER_RADIUS_DP.dp)
-            )
-            .padding(horizontal = TEXT_BADGE_HORIZONTAL_PADDING_DP.dp)
-    )
-}
-
-@Composable
-private fun MediaQualityOptionButton(highQuality: Boolean, onHighQualityChange: (Boolean) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        OptionButton(
-            label = stringResource(
-                if (highQuality) R.string.nc_media_quality_original else R.string.nc_media_quality_reduced
-            ),
-            onClick = { expanded = true },
-            icon = { TextBadge(if (highQuality) "HD" else "SD") }
-        )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.nc_media_quality_original)) },
-                leadingIcon = { TextBadge("HD") },
-                trailingIcon = { if (highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
-                onClick = {
-                    onHighQualityChange(true)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.nc_media_quality_reduced)) },
-                leadingIcon = { TextBadge("SD") },
-                trailingIcon = { if (!highQuality) Icon(Icons.Filled.Check, contentDescription = null) },
-                onClick = {
-                    onHighQualityChange(false)
-                    expanded = false
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange: (Boolean) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        OptionButton(
-            label = stringResource(
-                if (allowUpdate) R.string.nc_file_permission_editable else R.string.nc_file_permission_view_only
-            ),
-            onClick = { expanded = true },
-            icon = {
-                Icon(
-                    imageVector = if (allowUpdate) Icons.Filled.Edit else Icons.Filled.EditOff,
-                    contentDescription = null,
-                    modifier = Modifier.size(OPTION_BUTTON_ICON_SIZE_DP.dp)
+            if (position.second > 1) {
+                Text(
+                    text = stringResource(R.string.nc_attachment_position, position.first + 1, position.second),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White.copy(alpha = 0.8f)
                 )
             }
+        }
+
+        SelectionMark(
+            selected = currentSelected,
+            onClick = onToggleSelected,
+            modifier = Modifier.padding(end = 4.dp)
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.nc_file_permission_view_only)) },
-                leadingIcon = { Icon(Icons.Filled.EditOff, contentDescription = null) },
-                trailingIcon = { if (!allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
-                onClick = {
-                    onAllowUpdateChange(false)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.nc_file_permission_editable)) },
-                leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
-                trailingIcon = { if (allowUpdate) Icon(Icons.Filled.Check, contentDescription = null) },
-                onClick = {
-                    onAllowUpdateChange(true)
-                    expanded = false
-                }
+        SelectedCount(selectedCount)
+    }
+}
+
+@Composable
+private fun SelectedCount(count: Int) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .size(SELECTION_MARK_SIZE_DP.dp)
+            .border(SELECTION_MARK_BORDER_DP.dp, Color.White, CircleShape)
+    ) {
+        Text(text = count.toString(), style = MaterialTheme.typography.labelLarge, color = Color.White)
+    }
+}
+
+/** The round tick that includes/excludes the current file; the last selected file can't be un-ticked. */
+@Composable
+private fun SelectionMark(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val description = stringResource(R.string.nc_attachment_include)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(SELECTION_MARK_SIZE_DP.dp)
+            .clip(CircleShape)
+            .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+            .border(SELECTION_MARK_BORDER_DP.dp, if (selected) Color.Transparent else Color.White, CircleShape)
+            .toggleable(value = selected, role = Role.Checkbox, onValueChange = { onClick() })
+            .semantics { contentDescription = description }
+    ) {
+        if (selected) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

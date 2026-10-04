@@ -693,7 +693,6 @@ How to translate with transifex:
     <string name="media_message_content_play">Play media file</string>
 
     <!-- Upload -->
-    <string name="nc_add_file">Add to conversation</string>
     <string name="attachment_sheet_select_more">Select more photos and videos</string>
     <string name="attachment_sheet_photo">Photo</string>
     <string name="attachment_sheet_video">Video, %1$s</string>
@@ -1022,7 +1021,20 @@ How to translate with transifex:
     <string name="nc_compress_images">Compress images and videos</string>
     <string name="nc_hq_toggle">HQ</string>
     <string name="nc_hq_toggle_description">High quality, no compression</string>
-    <string name="nc_remove_file">Remove file</string>
+    <string name="nc_attachment_position" translatable="false">%1$d / %2$d</string>
+    <string name="nc_attachment_include">Include this file</string>
+    <string name="nc_attachment_crop">Crop and rotate</string>
+    <string name="nc_attachment_draw">Draw</string>
+    <string name="nc_attachment_undo">Undo</string>
+    <string name="nc_attachment_add_menu">Add photos or video</string>
+    <string name="nc_attachment_excluded">Not included in the message</string>
+    <string name="nc_attachment_edit_failed">Could not save the changes to the picture</string>
+    <string name="nc_attachment_color_white">White</string>
+    <string name="nc_attachment_color_black">Black</string>
+    <string name="nc_attachment_color_red">Red</string>
+    <string name="nc_attachment_color_yellow">Yellow</string>
+    <string name="nc_attachment_color_green">Green</string>
+    <string name="nc_attachment_color_blue">Blue</string>
     <string name="nc_add_more_files">Add more files</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
