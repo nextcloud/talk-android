@@ -211,6 +211,10 @@ public interface AppPreferences {
 
     long getConversationListLastUserId();
 
+    String getCameraCaptureMode();
+
+    void setCameraCaptureMode(String value);
+
     boolean getVideoRecordMode();
 
     void setVideoRecordMode(boolean value);

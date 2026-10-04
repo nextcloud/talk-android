@@ -7,6 +7,7 @@
 package com.nextcloud.talk.camera
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -36,11 +37,15 @@ import java.io.File
 internal class PhotoCamera(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val previewView: PreviewView
+    private val previewView: PreviewView,
+    initialCaptureMode: CaptureModeSetting = CaptureModeSetting.DEFAULT,
+    private val onCaptureModeChanged: (CaptureModeSetting) -> Unit = {}
 ) {
     var lensFacing by mutableIntStateOf(CameraSelector.LENS_FACING_BACK)
         private set
     var flash by mutableStateOf(FlashSetting.OFF)
+        private set
+    var captureMode by mutableStateOf(initialCaptureMode)
         private set
     var hasFlashUnit by mutableStateOf(false)
         private set
@@ -62,10 +67,7 @@ internal class PhotoCamera(
             provider = readyProvider
             // No target rotation: the preview follows the display, the photo follows setTargetRotation().
             preview = Preview.Builder().build()
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setResolutionSelector(photoResolutionSelector())
-                .build()
+            imageCapture = buildImageCapture(captureMode)
             canSwitchLens = readyProvider.hasCamera(cameraSelectorFor(CameraSelector.LENS_FACING_BACK)) &&
                 readyProvider.hasCamera(cameraSelectorFor(CameraSelector.LENS_FACING_FRONT))
             bind(resolveLens(readyProvider, lensFacing))
@@ -79,6 +81,21 @@ internal class PhotoCamera(
         if (!bind(oppositeLens(previousLens))) {
             bind(previousLens)
         }
+    }
+
+    /**
+     * Switches between the fast and the maximum quality shutter. The mode is fixed when [ImageCapture] is built, so
+     * the use case is replaced and bound again. Ignored while a photo is taken: unbinding would cancel it.
+     */
+    fun toggleCaptureMode() {
+        if (provider == null || isCapturing) return
+        val previousMode = captureMode
+        val lens = lensFacing
+        if (!rebindWith(previousMode.toggled(), lens)) {
+            rebindWith(previousMode, lens)
+            return
+        }
+        onCaptureModeChanged(captureMode)
     }
 
     fun cycleFlash() {
@@ -104,18 +121,25 @@ internal class PhotoCamera(
             return
         }
         isCapturing = true
+        val mode = captureMode
+        val startedAt = SystemClock.elapsedRealtime()
         val options = ImageCapture.OutputFileOptions.Builder(file).build()
         capture.takePicture(
             options,
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    Log.i(TAG, "capture mode=${mode.logName} took=${SystemClock.elapsedRealtime() - startedAt} ms")
                     isCapturing = false
                     onResult(true)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    Log.w(TAG, "taking the photo failed", exception)
+                    Log.w(
+                        TAG,
+                        "capture mode=${mode.logName} failed after ${SystemClock.elapsedRealtime() - startedAt} ms",
+                        exception
+                    )
                     isCapturing = false
                     onResult(false)
                 }
@@ -126,6 +150,21 @@ internal class PhotoCamera(
     fun release() {
         released = true
         unbind()
+    }
+
+    private fun buildImageCapture(mode: CaptureModeSetting): ImageCapture =
+        ImageCapture.Builder()
+            .setCaptureMode(mode.imageCaptureMode)
+            .setResolutionSelector(photoResolutionSelector())
+            .build()
+
+    private fun rebindWith(mode: CaptureModeSetting, lens: Int): Boolean {
+        // A new use case starts with the display rotation, the old one knows the rotation of the hold.
+        val rotation = imageCapture?.targetRotation
+        unbind()
+        imageCapture = buildImageCapture(mode).also { capture -> rotation?.let { capture.targetRotation = it } }
+        captureMode = mode
+        return bind(lens)
     }
 
     private fun bind(lens: Int): Boolean {

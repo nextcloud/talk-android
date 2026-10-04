@@ -850,6 +850,10 @@ How to translate with transifex:
     <string name="nc_photo_capture_flash_off">Flash off</string>
     <string name="nc_photo_capture_flash_auto">Flash automatic</string>
     <string name="nc_photo_capture_flash_on">Flash on</string>
+    <string name="nc_photo_capture_mode_fast">Fast</string>
+    <string name="nc_photo_capture_mode_quality">Quality</string>
+    <string name="nc_photo_capture_mode_fast_description">Fast shutter. Tap to switch to maximum quality</string>
+    <string name="nc_photo_capture_mode_quality_description">Maximum quality. Tap to switch to fast shutter</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="camera_permission_granted">Camera permission granted. Please choose camera again.</string>
     <string name="nc_take_video">Take a video</string>
