@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.chat.viewmodels
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -478,7 +479,10 @@ class ChatViewModel @AssistedInject constructor(
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
-        mediaRecorderManager.handleOnStop()
+        // a rotation stops the activity but not the recording: the new activity goes on with it
+        if ((owner as? Activity)?.isChangingConfigurations != true) {
+            mediaRecorderManager.handleOnStop()
+        }
         chatRepository.handleOnStop()
         mediaPlayerManager.handleOnStop()
     }
