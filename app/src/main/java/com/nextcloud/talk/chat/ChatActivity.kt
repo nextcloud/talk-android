@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
+import android.graphics.Outline
 import android.location.LocationManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -39,6 +40,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.WindowManager
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -50,6 +52,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
@@ -268,6 +271,8 @@ class ChatActivity :
     var active = false
 
     private lateinit var binding: ActivityChatBinding
+
+    private var videoMessageRecorder: VideoMessageRecorder? = null
 
     @Inject
     lateinit var ncApi: NcApi
@@ -2464,6 +2469,111 @@ class ChatActivity :
         )
     }
 
+    fun isVideoRecordPermissionGranted(): Boolean =
+        permissionUtil.isCameraPermissionGranted() && permissionUtil.isMicrophonePermissionGranted()
+
+    fun requestVideoRecordPermissions() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
+            ),
+            REQUEST_VIDEO_RECORD_PERMISSIONS
+        )
+    }
+
+    /**
+     * Starts recording a video message with the front camera. The recording shares the in-progress and locked state
+     * of the voice recording, so the gestures of the record button work the same for both.
+     *
+     * @return true if the recording was started
+     */
+    fun startVideoRecording(): Boolean {
+        val recorder = videoMessageRecorder
+            ?: VideoMessageRecorder(this, this, binding.videoRecordingPreview, ::onVideoRecordingFinished)
+                .also { videoMessageRecorder = it }
+        val file = if (recorder.isActive) null else createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
+        if (file == null || !chatViewModel.onVideoRecordingStarted()) {
+            return false
+        }
+        showVideoRecordingPreview(true)
+        recorder.start(file)
+        return true
+    }
+
+    fun stopAndSendRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            videoMessageRecorder?.stopAndSend()
+        } else {
+            chatViewModel.stopAndSendAudioRecording(
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation!!.displayName
+            )
+        }
+    }
+
+    fun stopAndDiscardRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            videoMessageRecorder?.cancel()
+        } else {
+            chatViewModel.stopAndDiscardAudioRecording()
+        }
+    }
+
+    private fun onVideoRecordingFinished(outcome: VideoMessageRecorder.Outcome, file: File?) {
+        showVideoRecordingPreview(false)
+        if (chatViewModel.getVoiceRecordingInProgress.value == true) {
+            chatViewModel.onVideoRecordingEnded()
+        }
+        if (chatViewModel.getVoiceRecordingLocked.value == true) {
+            chatViewModel.setVoiceRecordingLocked(false)
+        }
+        when (outcome) {
+            VideoMessageRecorder.Outcome.SEND -> file?.let {
+                uploadFiles(mutableListOf(FileProvider.getUriForFile(context, context.packageName, it).toString()))
+            }
+
+            VideoMessageRecorder.Outcome.TOO_SHORT ->
+                Snackbar.make(
+                    binding.root,
+                    R.string.nc_video_message_hold_to_record_info_switch_to_voice,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+            VideoMessageRecorder.Outcome.FAILED ->
+                Snackbar.make(binding.root, R.string.nc_video_message_recording_failed, Snackbar.LENGTH_LONG).show()
+
+            VideoMessageRecorder.Outcome.CANCELLED -> Unit
+        }
+    }
+
+    private fun showVideoRecordingPreview(show: Boolean) {
+        if (show) {
+            binding.videoRecordingContainer.clipToOutline = true
+            binding.videoRecordingContainer.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    val radius = view.resources.getDimension(R.dimen.standard_margin)
+                    outline.setRoundRect(0, 0, view.width, view.height, radius)
+                }
+            }
+            binding.videoRecordingSwitchCamera.setOnClickListener { videoMessageRecorder?.switchCamera() }
+        }
+        binding.videoRecordingContainer.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    private fun createAttachmentFile(@StringRes nameRes: Int, suffix: String): File? =
+        try {
+            val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
+                ?: throw IOException("Could not create shared attachments directory")
+            val date = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT).format(Date())
+            File(outputDir, "${context.resources.getString(nameRes, date)}$suffix")
+        } catch (e: IOException) {
+            logger.e(TAG, "error while creating attachment file", e)
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            null
+        }
+
     private fun requestCameraPermissions() {
         requestPermissions(
             arrayOf(
@@ -2817,6 +2927,14 @@ class ChatActivity :
                     Snackbar.LENGTH_LONG
                 ).show()
             }
+        } else if (requestCode == REQUEST_VIDEO_RECORD_PERMISSIONS) {
+            if (grantResults.isEmpty() || grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.nc_video_message_missing_permissions),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Snackbar
@@ -2998,6 +3116,8 @@ class ChatActivity :
 
     override fun onPause() {
         super.onPause()
+
+        videoMessageRecorder?.cancel()
 
         logConversationInfos("onPause")
 
@@ -4111,21 +4231,7 @@ class ChatActivity :
         } else {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                 takePictureIntent.resolveActivity(packageManager)?.also {
-                    val photoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val photoName = String.format(
-                            context.resources.getString(R.string.nc_picture_filename),
-                            date
-                        )
-                        File(outputDir, "$photoName$PICTURE_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating photo file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+                    val photoFile = createAttachmentFile(R.string.nc_picture_filename, PICTURE_SUFFIX)
 
                     photoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
@@ -4143,21 +4249,7 @@ class ChatActivity :
         } else {
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
                 takeVideoIntent.resolveActivity(packageManager)?.also {
-                    val videoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val videoName = String.format(
-                            context.resources.getString(R.string.nc_video_filename),
-                            date
-                        )
-                        File(outputDir, "$videoName$VIDEO_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating video file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+                    val videoFile = createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
 
                     videoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
@@ -4318,6 +4410,7 @@ class ChatActivity :
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
+        private const val REQUEST_VIDEO_RECORD_PERMISSIONS = 224
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val PICTURE_SUFFIX = ".jpg"

@@ -743,6 +743,12 @@ How to translate with transifex:
     <string name="nc_voice_message_filename" translatable="false">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_description_record_voice">Record voice message</string>
+    <string name="nc_description_record_video">Record video message</string>
+    <string name="nc_voice_message_hold_to_record_info_switch_to_video">Hold to record, release to send. Tap to switch to video mode.</string>
+    <string name="nc_video_message_hold_to_record_info_switch_to_voice">Hold to record video, release to send. Tap to switch to voice mode.</string>
+    <string name="nc_video_message_recording_failed">Video recording failed</string>
+    <string name="nc_video_message_missing_permissions">Permissions for camera and audio recording are required</string>
+    <string name="nc_video_recording_switch_camera">Switch camera</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="play_pause_audio_file">Play/pause audio file</string>

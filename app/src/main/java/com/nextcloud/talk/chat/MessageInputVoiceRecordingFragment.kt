@@ -75,6 +75,9 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     }
 
     private fun initObservers() {
+        if (isVideoRecording()) {
+            return
+        }
         messageInputViewModel.startMicInput(requireContext())
         messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
             binding.micInputCloud.setRotationSpeed(it.first, it.second)
@@ -114,21 +117,21 @@ class MessageInputVoiceRecordingFragment : Fragment() {
 
     private fun initVoiceRecordingView() {
         binding.deleteVoiceRecording.setOnClickListener {
-            chatActivity.chatViewModel.stopAndDiscardAudioRecording()
+            chatActivity.stopAndDiscardRecording()
             clear()
         }
 
         binding.sendVoiceRecording.setOnClickListener {
-            chatActivity.chatViewModel.stopAndSendAudioRecording(
-                roomToken = chatActivity.roomToken,
-                replyToMessageId = chatActivity.getReplyToMessageId(),
-                displayName = chatActivity.currentConversation!!.displayName
-            )
+            chatActivity.stopAndSendRecording()
             clear()
         }
 
-        binding.micInputCloud.setOnClickListener {
-            togglePreviewVisibility()
+        if (isVideoRecording()) {
+            binding.micInputCloud.visibility = View.INVISIBLE
+        } else {
+            binding.micInputCloud.setOnClickListener {
+                togglePreviewVisibility()
+            }
         }
 
         binding.playPauseBtn.setOnClickListener {
@@ -155,10 +158,16 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         })
     }
 
+    private fun isVideoRecording() = chatActivity.chatViewModel.activeRecordingMode == RecordInputMode.VIDEO
+
     private fun clear() {
         chatActivity.chatViewModel.setVoiceRecordingLocked(false)
         messageInputViewModel.stopMicInput()
-        chatActivity.chatViewModel.stopAudioRecording()
+        if (isVideoRecording()) {
+            chatActivity.chatViewModel.onVideoRecordingEnded()
+        } else {
+            chatActivity.chatViewModel.stopAudioRecording()
+        }
         messageInputViewModel.stopMediaPlayer()
         binding.audioRecordDuration.stop()
         binding.audioRecordDuration.clearAnimation()
