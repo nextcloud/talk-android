@@ -475,6 +475,7 @@
     <string name="nc_push_notification_error">Sorry something went wrong, error is %1$s</string>
     <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
+    <string name="nc_reauthorize_different_account">You logged in with a different account. Log in with the account you want to reauthorize.</string>
     <string name="nc_remind">Remind me later</string>
     <string name="nc_remote_wipe_logged_out">Credentials for this account were no longer valid</string>
     <string name="nc_remove_color">Remove colour</string>
