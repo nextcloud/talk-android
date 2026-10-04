@@ -114,6 +114,12 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewFragment
+import com.nextcloud.talk.attachmentsheet.AttachmentAction
+import com.nextcloud.talk.attachmentsheet.AttachmentSheet
+import com.nextcloud.talk.attachmentsheet.AttachmentSheetCallbacks
+import com.nextcloud.talk.attachmentsheet.AttachmentSheetModel
+import com.nextcloud.talk.attachmentsheet.AttachmentVisibilityInput
+import com.nextcloud.talk.attachmentsheet.resolveAttachmentActions
 import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
@@ -429,6 +435,7 @@ class ChatActivity :
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
     private var pendingCameraUri: Uri? = null
+    private var attachmentSheetModel by mutableStateOf<AttachmentSheetModel?>(null)
     private var pendingTargetMessageId: Long? = null
     private var pendingTargetThreadId: Long? = null
     private var pendingTargetSearchQuery: String? = null
@@ -1090,6 +1097,8 @@ class ChatActivity :
                         )
                     }
                 }
+
+                AttachmentSheetHost()
             }
         }
     }
@@ -3038,7 +3047,7 @@ class ChatActivity :
         )
     }
 
-    fun sendSelectLocalFileIntent() {
+    private fun sendSelectLocalFileIntent() {
         if (!permissionUtil.isFilesPermissionGranted()) {
             requestReadFilesPermissions()
         } else {
@@ -3046,17 +3055,17 @@ class ChatActivity :
         }
     }
 
-    fun sendChooseContactIntent() {
+    private fun sendChooseContactIntent() {
         requestReadContacts()
     }
 
-    fun showBrowserScreen() {
+    private fun showBrowserScreen() {
         val sharingFileBrowserIntent = Intent(this, RemoteFileBrowserActivity::class.java)
         sharingFileBrowserIntent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         startRemoteFileBrowsingForResult.launch(sharingFileBrowserIntent)
     }
 
-    fun showShareLocationScreen() {
+    private fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
         val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
@@ -4270,7 +4279,72 @@ class ChatActivity :
         }
     }
 
-    fun sendPictureFromCamIntent() {
+    @Composable
+    private fun AttachmentSheetHost() {
+        val model = attachmentSheetModel ?: return
+        val callbacks = remember {
+            AttachmentSheetCallbacks(
+                onAction = { runAttachmentAction(it) },
+                onTakePhoto = {
+                    attachmentSheetModel = null
+                    sendPictureFromCamIntent()
+                },
+                onSend = {
+                    attachmentSheetModel = null
+                    onChooseFileResult(it)
+                },
+                onDismiss = { attachmentSheetModel = null }
+            )
+        }
+        AttachmentSheet(model = model, callbacks = callbacks)
+    }
+
+    fun showAttachmentSheet() {
+        attachmentSheetModel = buildAttachmentSheetModel()
+    }
+
+    private fun buildAttachmentSheetModel(): AttachmentSheetModel? {
+        val conversation = currentConversation ?: return null
+        val actions = resolveAttachmentActions(
+            AttachmentVisibilityInput(
+                isRemoteConversation = !conversation.remoteServer.isNullOrEmpty(),
+                hasGeoLocationCapability = hasSpreedFeatureCapability(
+                    spreedCapabilities,
+                    SpreedFeatures.GEO_LOCATION_SHARING
+                ),
+                hasPollsCapability = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.TALK_POLLS),
+                isOneToOneConversation = isOneToOneConversation(),
+                hasThreadsCapability = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS),
+                isInsideThread = conversationThreadId != null,
+                hasCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+            )
+        )
+        val serverName = CapabilitiesUtil.getServerName(conversationUser)
+            .takeUnless { it.isNullOrEmpty() } ?: getString(R.string.nc_server_product_name)
+        return AttachmentSheetModel(
+            actions = actions,
+            cloudLabel = getString(R.string.nc_upload_from_cloud, serverName),
+            maxSelection = MAX_AMOUNT_MEDIA_FILE_PICKER,
+            livePreviewEnabled = !(CallActivity.active || !isNotInCall())
+        )
+    }
+
+    private fun runAttachmentAction(action: AttachmentAction) {
+        attachmentSheetModel = null
+        when (action) {
+            AttachmentAction.PICTURE_FROM_CAM -> sendPictureFromCamIntent()
+            AttachmentAction.VIDEO_FROM_CAM -> sendVideoFromCamIntent()
+            AttachmentAction.GALLERY -> showGalleryPicker()
+            AttachmentAction.FILE_FROM_LOCAL -> sendSelectLocalFileIntent()
+            AttachmentAction.FILE_FROM_CLOUD -> showBrowserScreen()
+            AttachmentAction.CREATE_THREAD -> createThread()
+            AttachmentAction.CREATE_POLL -> createPoll()
+            AttachmentAction.SHARE_LOCATION -> showShareLocationScreen()
+            AttachmentAction.SHARE_CONTACT -> sendChooseContactIntent()
+        }
+    }
+
+    private fun sendPictureFromCamIntent() {
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
@@ -4288,7 +4362,7 @@ class ChatActivity :
         }
     }
 
-    fun sendVideoFromCamIntent() {
+    private fun sendVideoFromCamIntent() {
         if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
@@ -4306,12 +4380,12 @@ class ChatActivity :
         }
     }
 
-    fun createPoll() {
+    private fun createPoll() {
         val pollVoteDialog = PollCreateDialogFragment.newInstance(conversationUser, roomToken)
         pollVoteDialog.show(supportFragmentManager, TAG)
     }
 
-    fun createThread() {
+    private fun createThread() {
         messageInputViewModel.startThreadCreation()
     }
 
