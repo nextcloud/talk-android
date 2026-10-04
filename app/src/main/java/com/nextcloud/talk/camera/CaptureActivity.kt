@@ -16,16 +16,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import autodagger.AutoInjector
 import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.File
 import java.util.Date
+import javax.inject.Inject
 
 /**
  * Takes one photo with the in-app camera and returns its content uri as the result data. There is no confirmation
  * step: the shutter finishes the activity. Without the camera permission the activity ends as cancelled, the caller
  * asks for the permission before it starts this screen.
  */
+@AutoInjector(NextcloudTalkApplication::class)
 class CaptureActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +44,10 @@ class CaptureActivity : ComponentActivity() {
             finish()
             return
         }
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         setContent {
             PhotoCaptureScreen(
+                appPreferences = appPreferences,
                 newPhotoFile = ::newPhotoFile,
                 onCaptured = ::returnPhoto,
                 onFailed = {

@@ -45,6 +45,27 @@ internal enum class FlashSetting(val imageCaptureMode: Int) {
 }
 
 /**
+ * Shutter mode of the capture screen. [storageValue] is what the app preferences keep, [logName] the name in the
+ * capture log. [toggled] is the order of the mode button.
+ */
+internal enum class CaptureModeSetting(val storageValue: String, val imageCaptureMode: Int, val logName: String) {
+    FAST("fast", ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY, "MINIMIZE_LATENCY"),
+    QUALITY("quality", ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY, "MAXIMIZE_QUALITY");
+
+    fun toggled(): CaptureModeSetting = if (this == FAST) QUALITY else FAST
+
+    companion object {
+        val DEFAULT = FAST
+
+        /**
+         * The mode kept in the preferences; nothing stored or an unknown value gives [DEFAULT].
+         */
+        fun fromStorage(value: String?): CaptureModeSetting =
+            entries.firstOrNull { it.storageValue == value } ?: DEFAULT
+    }
+}
+
+/**
  * The flash mode to apply: a camera without a flash unit always gets [ImageCapture.FLASH_MODE_OFF].
  */
 internal fun effectiveFlashMode(setting: FlashSetting, hasFlashUnit: Boolean): Int =
