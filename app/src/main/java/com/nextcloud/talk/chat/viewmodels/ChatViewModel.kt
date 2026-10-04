@@ -24,6 +24,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.RecordInputMode
+import com.nextcloud.talk.chat.VideoMessageRecorder
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
@@ -2335,6 +2336,24 @@ class ChatViewModel @AssistedInject constructor(
             _getVoiceRecordingInProgress.value = true
         }
         return granted
+    }
+
+    private var videoRecorder: VideoMessageRecorder? = null
+
+    /**
+     * The recorder of the video messages of this room. It lives here, not in the activity, so that it survives the
+     * recreation of the activity like the voice recorder does.
+     */
+    fun videoMessageRecorder(context: Context): VideoMessageRecorder =
+        videoRecorder ?: VideoMessageRecorder(context).also { videoRecorder = it }
+
+    val activeVideoMessageRecorder: VideoMessageRecorder?
+        get() = videoRecorder
+
+    override fun onCleared() {
+        super.onCleared()
+        videoRecorder?.release()
+        videoRecorder = null
     }
 
     fun onVideoRecordingEnded() {
