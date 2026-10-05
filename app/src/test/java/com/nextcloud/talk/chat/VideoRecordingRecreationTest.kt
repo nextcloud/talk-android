@@ -50,6 +50,23 @@ class VideoRecordingRecreationTest {
     }
 
     @Test
+    fun resultIsDeferredUntilTheChatIsLoaded() {
+        assertEquals(
+            RecordingResume.DEFER_RESULT,
+            resolveRecordingResume(false, true, true, true, chatReady = false)
+        )
+        assertEquals(
+            RecordingResume.DELIVER_RESULT,
+            resolveRecordingResume(false, true, true, true, chatReady = true)
+        )
+    }
+
+    @Test
+    fun activeRecordingIsAttachedEvenIfTheChatIsNotLoaded() {
+        assertEquals(RecordingResume.ATTACH, resolveRecordingResume(true, false, true, true, chatReady = false))
+    }
+
+    @Test
     fun videoRotationFollowsTheSensor() {
         // phone turned clockwise by 90 degrees: the display rotates the other way
         assertEquals(Surface.ROTATION_270, VideoMessageRecorder.videoTargetRotation(90, Surface.ROTATION_0))
