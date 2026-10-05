@@ -7,6 +7,7 @@
 package com.nextcloud.talk.upload.chunked
 
 import android.app.Application
+import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import okhttp3.MediaType.Companion.toMediaType
@@ -16,7 +17,6 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -101,20 +101,21 @@ class ChunkedFileUploaderTest {
     }
 
     @Test
-    fun `returns false when the server rejects the chunk with an HTTP error`() {
+    fun `throws the HTTP error when the server rejects the chunk`() {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
         server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
 
-        val result = uploader().upload(file, MIME_TYPE, TARGET_PATH)
+        assertThrows(HttpException::class.java) {
+            uploader().upload(file, MIME_TYPE, TARGET_PATH)
+        }
 
-        assertFalse(result)
         assertEquals(listOf("MKCOL", "PROPFIND", "PUT"), takeRequests().map { it.method })
     }
 
     @Test
-    fun `returns false when the server rejects assembling the chunks with an HTTP error`() {
+    fun `throws the HTTP error when the server rejects assembling the chunks`() {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
@@ -122,9 +123,10 @@ class ChunkedFileUploaderTest {
         server.enqueue(MockResponse().setResponseCode(CREATED))
         server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
 
-        val result = uploader().upload(file, MIME_TYPE, TARGET_PATH)
+        assertThrows(HttpException::class.java) {
+            uploader().upload(file, MIME_TYPE, TARGET_PATH)
+        }
 
-        assertFalse(result)
         assertEquals(listOf("MKCOL", "PROPFIND", "PUT", "MKCOL", "MOVE"), takeRequests().map { it.method })
     }
 
