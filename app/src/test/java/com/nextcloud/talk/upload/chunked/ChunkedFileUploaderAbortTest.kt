@@ -139,7 +139,7 @@ class ChunkedFileUploaderAbortTest {
         server.enqueue(MockResponse(code = NOT_FOUND))
         server.enqueue(MockResponse(code = FORBIDDEN))
         val uploader = uploader()
-        uploader.upload(file, "text/plain".toMediaType(), "/Talk/test.txt")
+        runCatching { uploader.upload(file, "text/plain".toMediaType(), "/Talk/test.txt") }
         repeat(server.requestCount) { server.takeRequest(1, TimeUnit.SECONDS) }
         return uploader
     }
