@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import java.io.File
@@ -111,7 +112,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var currentUser: User
     private var isChunkedUploading = false
     private var file: File? = null
+
+    @Volatile
     private var chunkedFileUploader: ChunkedFileUploader? = null
+
     private var referenceId: String? = null
     private var internalConversationId: String? = null
     private var uploadDisposable: Disposable? = null
@@ -325,6 +329,28 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return Result.failure()
     }
 
+    private fun newChunkedUploader() =
+        ChunkedFileUploader(
+            okHttpClient,
+            currentUser,
+            this,
+            ncApiCoroutines,
+            isRestarted = workspace::isRestarted,
+            markRestarted = workspace::markRestarted
+        )
+
+    /**
+     * Publishes [uploader] before the last stop check: a stop that comes earlier is seen here, a later one reaches
+     * the uploader through [onStopped].
+     */
+    private fun startChunkedUpload(uploader: ChunkedFileUploader, mimeType: MediaType?, path: String): Boolean {
+        chunkedFileUploader = uploader
+        if (isStopped || isCancelled()) {
+            return false
+        }
+        return uploader.upload(file!!, mimeType, path)
+    }
+
     private fun uploadFile(
         sourceFileUri: Uri,
         metaData: String?,
@@ -339,15 +365,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
             val mimeType = FileUtils.resolveMimeType(context, sourceFileUri)?.toMediaTypeOrNull()
-            chunkedFileUploader = ChunkedFileUploader(
-                okHttpClient,
-                currentUser,
-                this,
-                ncApiCoroutines,
-                isRestarted = workspace::isRestarted,
-                markRestarted = workspace::markRestarted
-            )
-            chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
+            startChunkedUpload(newChunkedUploader(), mimeType, remotePath)
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
             val observable = FileUploader(
@@ -423,15 +441,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             val uploadSuccess = if (isChunkedUploading) {
                 val mimeType = FileUtils.resolveMimeType(context, sourceFileUri)?.toMediaTypeOrNull()
-                chunkedFileUploader = ChunkedFileUploader(
-                    okHttpClient,
-                    currentUser,
-                    this@UploadAndShareFilesWorker,
-                    ncApiCoroutines,
-                    isRestarted = workspace::isRestarted,
-                    markRestarted = workspace::markRestarted
-                )
-                chunkedFileUploader!!.upload(file!!, mimeType, tempRemotePath)
+                startChunkedUpload(newChunkedUploader(), mimeType, tempRemotePath)
             } else {
                 FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!, ncApiCoroutines)
                     .uploadToConversationSubfolder(sourceFileUri, tempRemotePath)
