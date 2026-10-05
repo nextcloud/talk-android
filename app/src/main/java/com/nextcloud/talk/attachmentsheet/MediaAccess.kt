@@ -7,6 +7,7 @@
 package com.nextcloud.talk.attachmentsheet
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 
 /**
@@ -62,6 +63,25 @@ fun mediaPermissionsToRequest(sdkInt: Int): Array<String> =
 
         else -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
+
+/**
+ * Permissions of the "file from device" request: the set of the attachment sheet, plus audio from Android 13 on,
+ * which the request has always included.
+ */
+fun shareFilePermissionsToRequest(sdkInt: Int): Array<String> =
+    if (sdkInt >= Build.VERSION_CODES.TIRAMISU) {
+        mediaPermissionsToRequest(sdkInt) + Manifest.permission.READ_MEDIA_AUDIO
+    } else {
+        mediaPermissionsToRequest(sdkInt)
+    }
+
+/**
+ * Whether the result of the "file from device" request allows to pick a file. No single result is the answer:
+ * Android 14 may grant only the selected photos, and before Android 10 the granted read permission differs from the
+ * one [effectivelyGranted] checks. Any granted permission or an effective access is enough.
+ */
+fun isShareFileRequestGranted(grantResults: IntArray, effectivelyGranted: Boolean): Boolean =
+    grantResults.any { it == PackageManager.PERMISSION_GRANTED } || effectivelyGranted
 
 // Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED exists only from API 34; the string is stable.
 internal const val READ_MEDIA_VISUAL_USER_SELECTED = "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
