@@ -357,7 +357,11 @@ class ChunkedFileUploader(
             }
         } catch (e: NotFoundException) {
             Log.i(TAG, "Chunk upload folder could not be found", e)
-            onSuccess()
+            try {
+                onSuccess()
+            } catch (callbackError: Exception) {
+                Log.w(TAG, "Abort callback failed", callbackError)
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to remove chunk upload folder", e)
         }

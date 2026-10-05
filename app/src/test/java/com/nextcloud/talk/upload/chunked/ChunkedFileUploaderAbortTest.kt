@@ -122,6 +122,14 @@ class ChunkedFileUploaderAbortTest {
         uploader.abortUpload { throw IllegalStateException("callback failed") }
     }
 
+    @Test
+    fun `does not throw when the success callback throws for a folder that is already gone`() {
+        val uploader = startedUploader()
+        server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
+
+        uploader.abortUpload { throw IllegalStateException("callback failed") }
+    }
+
     private fun uploader() = ChunkedFileUploader(client, user, progressListener, ncApiCoroutines)
 
     /** Runs a rejected upload so the uploader knows its upload folder, then drops the recorded requests. */
