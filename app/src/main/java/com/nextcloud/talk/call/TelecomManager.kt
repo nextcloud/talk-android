@@ -11,6 +11,7 @@ import android.content.Context
 import android.net.Uri
 import android.telecom.DisconnectCause
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.core.telecom.CallAttributesCompat
 import androidx.core.telecom.CallControlResult
 import androidx.core.telecom.CallControlScope
@@ -121,7 +122,6 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
-
     fun endCurrentCall() {
         telecomScope.launch {
             currentCallControlScope?.disconnect(DisconnectCause(DisconnectCause.LOCAL))
@@ -135,7 +135,8 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
-    private fun getCallType(isVideo: Boolean): Int =
+    @VisibleForTesting
+    internal fun getCallType(isVideo: Boolean): Int =
         if (isVideo) CallAttributesCompat.CALL_TYPE_VIDEO_CALL else CallAttributesCompat.CALL_TYPE_AUDIO_CALL
 
     companion object {
