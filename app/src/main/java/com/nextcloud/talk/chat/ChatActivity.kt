@@ -1642,6 +1642,11 @@ class ChatActivity :
 
                     joinRoomWithPassword()
 
+                    // a video result which waited for the conversation and the capabilities of this activity
+                    chatViewModel.activeVideoMessageRecorder?.takeIf { it.hasPendingResult }?.let {
+                        attachVideoRecorder(it)
+                    }
+
                     if (sharedFilePaths.isNotEmpty()) {
                         onChooseFileResult(sharedFilePaths.map { it.toUri() })
                         sharedFilePaths = emptyList()
@@ -2595,7 +2600,9 @@ class ChatActivity :
             recorderActive = recorder?.isActive == true,
             hasPendingResult = recorder?.hasPendingResult == true,
             recordingInProgress = chatViewModel.getVoiceRecordingInProgress.value == true,
-            recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true
+            recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true,
+            // the result is uploaded or previewed with the conversation and the capabilities, which load later
+            chatReady = currentConversation != null && ::spreedCapabilities.isInitialized
         )
         if (recorder != null && recorder.isActive) {
             showVideoRecordingPreview(true)
@@ -2603,17 +2610,19 @@ class ChatActivity :
         val attach = action == RecordingResume.ATTACH ||
             action == RecordingResume.ATTACH_AND_LOCK ||
             action == RecordingResume.DELIVER_RESULT
-        if (recorder != null && attach) {
-            recorder.attach(
-                this,
-                binding.videoRecordingPreview,
-                ::onVideoRecordingFinished,
-                ::updateVideoRecordingPreviewLayout
-            )
-        }
+        if (recorder != null && attach) attachVideoRecorder(recorder)
         if (action == RecordingResume.ATTACH_AND_LOCK) {
             chatViewModel.setVoiceRecordingLocked(true)
         }
+    }
+
+    private fun attachVideoRecorder(recorder: VideoMessageRecorder) {
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
     }
 
     private val accessibilityBeforeVideoRecording = HashMap<View, Int>()
