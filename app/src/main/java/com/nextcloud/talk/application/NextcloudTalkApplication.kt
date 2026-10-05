@@ -40,6 +40,7 @@ import com.nextcloud.talk.errorhandling.ExceptionHandler
 import com.nextcloud.talk.logger.LoggerImpl
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.ApplicationScope
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule
@@ -122,6 +123,9 @@ class NextcloudTalkApplication :
     @Inject
     lateinit var logger: LoggerImpl
     //endregion
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     //region private methods
     private fun installExceptionHandler() {
@@ -214,11 +218,13 @@ class NextcloudTalkApplication :
         securityKeyManager.init(this, securityKeyConfigBuilder.build())
         initializeWebRtc()
         buildComponent()
+
+        componentApplication.inject(this)
+
+        telecomManager.registerAppWithTelecom()
         DavUtils.registerCustomFactories()
 
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
-
-        componentApplication.inject(this)
         installExceptionHandler()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {

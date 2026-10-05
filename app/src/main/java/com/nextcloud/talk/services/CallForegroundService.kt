@@ -176,7 +176,7 @@ class CallForegroundService : Service() {
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_CALL)
-            .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+            .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
             .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .also { builder ->
@@ -293,6 +293,10 @@ class CallForegroundService : Service() {
         var serviceType = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+            }
 
             val isVoiceOnlyCall = callExtras?.getBoolean(KEY_CALL_VOICE_ONLY, false) ?: false
             val canPublishVideo = callExtras?.getBoolean(
