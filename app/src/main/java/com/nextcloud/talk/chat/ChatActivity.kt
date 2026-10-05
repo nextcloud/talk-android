@@ -4032,7 +4032,8 @@ class ChatActivity :
      */
     private fun runPendingMediaRequest() {
         val request = pendingMediaRequest ?: return
-        if (currentConversation == null) {
+        // the conversation can arrive before the capabilities; the request waits for the initial-load state then
+        if (currentConversation == null || !::spreedCapabilities.isInitialized) {
             return
         }
         pendingMediaRequest = null
