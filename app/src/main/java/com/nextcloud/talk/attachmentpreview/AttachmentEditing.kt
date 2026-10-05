@@ -42,14 +42,34 @@ private const val EDIT_PNG_QUALITY = 100
 private const val CROP_MAX_BITMAP_PX = 4096
 
 /**
- * Creates the (not yet existing) output file of an edit in the cache dir shared through the app's
- * FileProvider; null when that directory is unavailable (anything else would be unshareable).
+ * Reserves the (empty) output file of an edit in the cache dir shared through the app's FileProvider. The name is
+ * built from the current millisecond; when it is taken (two edits in the same millisecond), a numeric suffix is
+ * added, so an output never overwrites a file of another edit. The caller owns the file and deletes it on failure.
+ * Null when the directory is unavailable (anything else would be unshareable) or the file can't be created.
  */
 internal fun createEditOutputFile(context: Context, sourceName: String, sourceMimeType: String?): File? {
     val directory = FileUtils.getSharedAttachmentsDirectory(context.cacheDir) ?: return null
     val stamp = SimpleDateFormat(EDIT_FILE_STAMP_PATTERN, Locale.ROOT).format(Date())
     val extension = if (editOutputIsPng(sourceMimeType)) "png" else "jpg"
-    return File(directory, editedFileName(sourceName, stamp, extension))
+    return try {
+        claimFirstFree(
+            maxAttempts = EDIT_NAME_MAX_ATTEMPTS,
+            candidate = { attempt ->
+                val unique = if (attempt == 0) stamp else "$stamp-$attempt"
+                File(directory, editedFileName(sourceName, unique, extension))
+            },
+            claim = { it.createNewFile() }
+        )
+    } catch (e: IOException) {
+        logEditFileFailure(e)
+    } catch (e: SecurityException) {
+        logEditFileFailure(e)
+    }
+}
+
+private fun logEditFileFailure(error: Exception): File? {
+    NextcloudTalkApplication.sharedApplication?.logger?.w(TAG, "Failed to reserve an edit output file", error)
+    return null
 }
 
 /** The same URI form the camera capture uses for files in the shared attachments cache; null if not shareable. */
