@@ -135,6 +135,7 @@ class MessageInputFragment : Fragment() {
 
     private val recordButtonHandler = Handler(Looper.getMainLooper())
     private var pendingRecordStart: Runnable? = null
+    private var recordingStartedAt = 0L
     private var recordHintPopup: RecordHintPopup? = null
     private var recordingUiShown = false
 
@@ -608,8 +609,6 @@ class MessageInputFragment : Fragment() {
         updateRecordButtonMode()
 
         var prevDx = 0f
-        var voiceRecordStartTime = 0L
-        var voiceRecordEndTime: Long
         val gesture = RecordButtonGesture(VOICE_RECORD_CANCEL_SLIDER_X.toFloat())
         binding.fragmentMessageInputView.recordAudioButton.setOnTouchListener { v, event ->
             v?.performClick()
@@ -617,7 +616,6 @@ class MessageInputFragment : Fragment() {
                 MotionEvent.ACTION_DOWN -> {
                     // A tap only switches the mode, the recording starts only after the hold threshold.
                     recordHintPopup?.dismiss()
-                    voiceRecordStartTime = System.currentTimeMillis()
                     prevDx = event.x
                     gesture.down()
                     scheduleRecordStart(gesture)
@@ -655,11 +653,9 @@ class MessageInputFragment : Fragment() {
                     showRecordAudioUi(false)
 
                     val isVideo = chatActivity.chatViewModel.activeRecordingMode == RecordInputMode.VIDEO
-                    voiceRecordEndTime = System.currentTimeMillis()
-                    val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                     if (isVideo) {
                         chatActivity.stopAndSendRecording()
-                    } else if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
+                    } else if (isVoiceRecordTooShort()) {
                         showRecordHint(R.string.nc_voice_message_hold_to_record_info)
                         chatActivity.stopAndDiscardRecording()
                         return@setOnTouchListener false
@@ -708,6 +704,9 @@ class MessageInputFragment : Fragment() {
         }
     }
 
+    private fun isVoiceRecordTooShort(): Boolean =
+        RecordButtonGesture.isTooShort(recordingStartedAt, SystemClock.elapsedRealtime(), MINIMUM_VOICE_RECORD_DURATION)
+
     private fun beginRecording(isVideo: Boolean) {
         val base = SystemClock.elapsedRealtime()
         if (isVideo) {
@@ -715,6 +714,8 @@ class MessageInputFragment : Fragment() {
         } else {
             chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
         }
+        // the minimum duration counts from the start of the recording, not from the touch which preceded the hold
+        recordingStartedAt = SystemClock.elapsedRealtime()
         binding.fragmentMessageInputView.audioRecordDuration.base = base
         messageInputViewModel.setRecordingTime(base)
         binding.fragmentMessageInputView.audioRecordDuration.start()
