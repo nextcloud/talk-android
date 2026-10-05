@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,6 +43,7 @@ class TelecomManagerTest {
         Dispatchers.setMain(testDispatcher)
 
         context = mock(Context::class.java)
+        `when`(context.packageName).thenReturn("com.nextcloud.talk2")
         platformTelecomManager = mock(android.telecom.TelecomManager::class.java)
         `when`(context.getSystemService(Context.TELECOM_SERVICE)).thenReturn(platformTelecomManager)
         `when`(context.getSystemService(android.telecom.TelecomManager::class.java)).thenReturn(platformTelecomManager)
@@ -91,7 +93,7 @@ class TelecomManagerTest {
     @Test
     fun testAddIncomingCallHandlesExceptionGracefully() {
         `when`(platformTelecomManager.registerPhoneAccount(any()))
-            .thenThrow(UnsupportedOperationException("Telecom not supported on device"))
+            .thenThrow(UnsupportedOperationException("Unsupported"))
 
         // Should catch any exception thrown by CallsManager without crashing
         telecomManager.addIncomingCall(
@@ -106,7 +108,7 @@ class TelecomManagerTest {
     @Test
     fun testAddOutgoingCallHandlesExceptionGracefully() {
         `when`(platformTelecomManager.registerPhoneAccount(any()))
-            .thenThrow(UnsupportedOperationException("Telecom not supported on device"))
+            .thenThrow(UnsupportedOperationException("Unsupported"))
 
         // Should catch any exception thrown by CallsManager without crashing
         telecomManager.addOutgoingCall(
@@ -114,5 +116,94 @@ class TelecomManagerTest {
             roomToken = "token123",
             isVideo = false
         )
+    }
+
+    @Test
+    fun testAddOutgoingCallConfiguresDisconnectHandler() {
+        var disconnected = false
+        telecomManager.addOutgoingCall(
+            displayName = "Test User",
+            roomToken = "token123",
+            isVideo = false,
+            onDisconnectCall = { disconnected = true }
+        )
+
+        assertFalse(disconnected)
+    }
+
+    @Test
+    fun testAddCallGuardsAgainstConcurrentDuplicateRegistrations() {
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+        assertFalse(telecomManager.hasActiveCall("roomB"))
+
+        // Duplicate incoming or outgoing registration for another room while roomA is active should be ignored
+        telecomManager.addIncomingCall(
+            displayName = "User 2",
+            roomToken = "roomB",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+        assertFalse(telecomManager.hasActiveCall("roomB"))
+    }
+
+    @Test
+    fun testEndCurrentCallIgnoresMismatchedRoomToken() {
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        telecomManager.endCurrentCall("roomB")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        telecomManager.endCurrentCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testAddOutgoingCallIsIdempotentForSameRoomToken() {
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // Duplicate call for roomA should be ignored cleanly
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testSetCallActiveQueuesPendingActivationForPendingRoomToken() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // When answered, setCallActive is called even if registration is pending
+        telecomManager.setCallActive("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
     }
 }
