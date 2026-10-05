@@ -2539,7 +2539,7 @@ class CallActivity : CallBaseActivity() {
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         stopOrSuspendScreenSharing(shutDownView)
-        telecomManager.endCurrentCall()
+
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2582,6 +2582,7 @@ class CallActivity : CallBaseActivity() {
         }
 
         hangupNetworkCalls(shutDownView, endCallForAll)
+        telecomManager.endCurrentCall()
     }
 
     private fun terminateAudioVideo() {
