@@ -2264,7 +2264,9 @@ class CallActivity : CallBaseActivity() {
         }
 
         hangupNetworkCalls(shutDownView, endCallForAll)
-        telecomManager.endCurrentCall()
+        if (shutDownView) {
+            telecomManager.endCurrentCall(roomToken)
+        }
     }
 
     private fun terminateAudioVideo() {
@@ -2973,14 +2975,21 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
-        if (!telecomManager.hasActiveCall()) {
+        if (!telecomManager.hasActiveCall(roomToken)) {
             telecomManager.addOutgoingCall(
                 displayName = conversationName ?: "Nextcloud Talk Call",
                 roomToken = roomToken ?: "",
-                isVideo = !isVoiceOnlyCall
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = {
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed && currentCallStatus != CallStatus.LEAVING) {
+                            hangup(shutDownView = true, endCallForAll = false)
+                        }
+                    }
+                }
             )
         } else {
-            telecomManager.setCallActive()
+            telecomManager.setCallActive(roomToken)
         }
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)

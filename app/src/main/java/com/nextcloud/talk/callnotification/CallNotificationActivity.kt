@@ -82,21 +82,25 @@ class CallNotificationActivity : CallBaseActivity() {
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
         setupNotificationCanceledRoutine()
-        telecomManager.addIncomingCall(
-            displayName = displayName ?: "Nextcloud Talk Call",
-            roomToken = roomToken ?: "",
-            isVideo = isInCallWithVideo(callFlag),
-            onAnswerCall = {
-                runOnUiThread {
-                    proceedToCall()
+        if (savedInstanceState == null && !roomToken.isNullOrBlank()) {
+            telecomManager.addIncomingCall(
+                displayName = displayName ?: "Nextcloud Talk Call",
+                roomToken = roomToken!!,
+                isVideo = isInCallWithVideo(callFlag),
+                onAnswerCall = {
+                    runOnUiThread {
+                        proceedToCall()
+                    }
+                },
+                onRejectCall = {
+                    runOnUiThread {
+                        if (!leavingScreen && !isFinishing && !isDestroyed) {
+                            hangup()
+                        }
+                    }
                 }
-            },
-            onRejectCall = {
-                runOnUiThread {
-                    hangup()
-                }
-            }
-        )
+            )
+        }
     }
 
     private fun handleExtras() {
