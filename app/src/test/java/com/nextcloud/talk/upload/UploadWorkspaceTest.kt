@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
+@Suppress("TooManyFunctions")
 class UploadWorkspaceTest {
 
     @get:Rule
@@ -85,14 +86,30 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `delete removes the prepared file and the marks`() {
+    fun `server errors are counted across runs`() {
+        assertEquals(0, workspace().serverErrors())
+        assertEquals(1, workspace().registerServerError())
+        assertEquals(2, workspace().registerServerError())
+        assertEquals(2, workspace().serverErrors())
+    }
+
+    @Test
+    fun `server error count survives a new preparation`() {
+        workspace().registerServerError()
+        workspace().prepareOnce { create(it, "photo.jpg", 1_000) }
+
+        assertEquals(1, workspace().serverErrors())
+    }
+
+    @Test
+    fun `delete removes the file and the counters`() {
         val ws = workspace()
         val prepared = ws.prepareOnce { create(it, "photo.jpg", 1_000) }!!
-        ws.markRestarted()
+        ws.registerServerError()
         ws.delete()
 
         assertFalse(prepared.file.exists())
-        assertFalse(workspace().isRestarted())
+        assertEquals(0, workspace().serverErrors())
         assertNull(workspace().prepareOnce { null })
     }
 
@@ -134,16 +151,61 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `the restart mark survives a new preparation after the prepared file is gone`() {
+    fun `the uploaded and shared stages are kept between runs`() {
+        val ws = workspace()
+        assertNull(ws.uploadedPath())
+        assertFalse(ws.isShared())
+
+        ws.markUploaded("/Talk/video.mp4", "video_compressed.mp4")
+        assertEquals("/Talk/video.mp4", workspace().uploadedPath())
+        assertEquals("video_compressed.mp4", workspace().uploadedName())
+        assertFalse(workspace().isShared())
+
+        ws.markShared()
+        assertTrue(workspace().isShared())
+    }
+
+    @Test
+    fun `the stages survive a new preparation after the prepared file is gone`() {
         val ws = workspace()
         val prepared = ws.prepareOnce { create(it, "a.jpg", 1_000) }!!
-        assertFalse(ws.isRestarted())
+        ws.markUploaded("/Talk/a.jpg", "a.jpg")
+        ws.markShared()
         ws.markRestarted()
         prepared.file.delete()
 
         workspace().prepareOnce { create(it, "a.jpg", 2_000) }
 
+        assertEquals("/Talk/a.jpg", workspace().uploadedPath())
+        assertTrue(workspace().isShared())
         assertTrue(workspace().isRestarted())
+    }
+
+    @Test
+    fun `the upload id stays the same on every run`() {
+        val id = workspace().uploadId()
+
+        assertEquals(id, workspace().uploadId())
+    }
+
+    @Test
+    fun `a cancel flag can be set before the work ran and survives a new preparation`() {
+        val ws = workspace()
+        assertFalse(ws.isCancelled())
+
+        ws.markCancelled()
+        ws.prepareOnce { create(it, "a.jpg", 1_000) }
+
+        assertTrue(workspace().isCancelled())
+    }
+
+    @Test
+    fun `the stored prepared file is available without preparing`() {
+        assertNull(workspace().prepared())
+
+        val prepared = workspace().prepareOnce { create(it, "a.jpg", 1_000) }
+
+        assertEquals(prepared, workspace().prepared())
     }
 
     companion object {

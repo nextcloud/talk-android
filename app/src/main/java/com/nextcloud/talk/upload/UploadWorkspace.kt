@@ -11,21 +11,28 @@ import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileLock
 import java.nio.channels.OverlappingFileLockException
+import java.util.UUID
 
 /** The file an upload sends and the name it gets on the server. */
 data class PreparedUpload(val file: File, val fileName: String)
 
 /**
  * Holds what one upload needs across runs of its worker: the prepared file (copy of the content uri, compressed
- * media), whether the parts on the server were already removed once, and a lock that keeps two runs of the same
- * work and the cleanup of dead workspaces apart.
+ * media), the number of server errors, the stages already done (uploaded, shared), the cancel flag and a lock
+ * that keeps two runs of the same work and the cleanup of dead workspaces apart.
  *
  * The prepared file is created once. Its name, size and modification time stay the same on every run, so the
  * chunk folder on the server, which is keyed by them, stays the same too.
  */
+@Suppress("TooManyFunctions")
 class UploadWorkspace(private val dir: File) {
 
     private val preparedFile = File(dir, PREPARED_FILE)
+    private val serverErrorsFile = File(dir, SERVER_ERRORS_FILE)
+    private val uploadedFile = File(dir, UPLOADED_FILE)
+    private val sharedFile = File(dir, SHARED_FILE)
+    private val cancelledFile = File(dir, CANCELLED_FILE)
+    private val uploadIdFile = File(dir, UPLOAD_ID_FILE)
     private val lockFile = File(dir, LOCK_FILE)
     private val restartedFile = File(dir, RESTARTED_FILE)
 
@@ -84,6 +91,31 @@ class UploadWorkspace(private val dir: File) {
         return prepare(dir)?.also { write(preparedFile, "${it.file.absolutePath}\n${it.fileName}") }
     }
 
+    fun serverErrors(): Int = readLong(serverErrorsFile)?.toInt() ?: 0
+
+    fun registerServerError(): Int {
+        val count = serverErrors() + 1
+        dir.mkdirs()
+        write(serverErrorsFile, count.toString())
+        return count
+    }
+
+    /** The prepared file of an earlier run, if there is one. */
+    fun prepared(): PreparedUpload? = stored()
+
+    /** The path on the server the file was uploaded to, or null while the upload is not complete. */
+    fun uploadedPath(): String? = uploadedLines()?.getOrNull(0)?.takeIf { it.isNotEmpty() }
+
+    /** The name the uploaded file was shared under, kept because the prepared file may be gone by then. */
+    fun uploadedName(): String? = uploadedLines()?.getOrNull(1)?.takeIf { it.isNotEmpty() }
+
+    fun markUploaded(path: String, fileName: String) {
+        dir.mkdirs()
+        write(uploadedFile, "$path\n$fileName")
+    }
+
+    private fun uploadedLines(): List<String>? = runCatching { uploadedFile.readLines() }.getOrNull()
+
     /** Whether the parts were already removed once after the server rejected the assembly. */
     fun isRestarted(): Boolean = restartedFile.exists()
 
@@ -91,6 +123,30 @@ class UploadWorkspace(private val dir: File) {
         dir.mkdirs()
         write(restartedFile, "1")
     }
+
+    fun isShared(): Boolean = sharedFile.exists()
+
+    fun markShared() {
+        dir.mkdirs()
+        write(sharedFile, "1")
+    }
+
+    /** Stays the same on every run, so the target of the assembled file in the draft folder does not change. */
+    fun uploadId(): String {
+        runCatching { uploadIdFile.readText() }.getOrNull()?.takeIf { it.isNotEmpty() }?.let { return it }
+        val id = UUID.randomUUID().toString()
+        dir.mkdirs()
+        write(uploadIdFile, id)
+        return id
+    }
+
+    /** Asks the work to abort when it runs. Creates the directory, because the work may not have run yet. */
+    fun markCancelled() {
+        dir.mkdirs()
+        write(cancelledFile, "1")
+    }
+
+    fun isCancelled(): Boolean = cancelledFile.exists()
 
     /** Call only while holding the lock. */
     fun delete() {
@@ -110,6 +166,8 @@ class UploadWorkspace(private val dir: File) {
         }
     }
 
+    private fun readLong(file: File): Long? = runCatching { file.readText().trim().toLong() }.getOrNull()
+
     private fun write(file: File, text: String) {
         val tmp = File(dir, file.name + TMP_SUFFIX)
         tmp.writeText(text)
@@ -118,12 +176,25 @@ class UploadWorkspace(private val dir: File) {
 
     companion object {
         private const val PREPARED_FILE = "prepared"
+        private const val SERVER_ERRORS_FILE = "server_errors"
+        private const val UPLOADED_FILE = "uploaded"
+        private const val SHARED_FILE = "shared"
+        private const val CANCELLED_FILE = "cancelled"
+        private const val UPLOAD_ID_FILE = "upload_id"
         private const val LOCK_FILE = "lock"
         private const val RESTARTED_FILE = "restarted"
         private const val TMP_SUFFIX = ".tmp"
 
         /** Not part of the prepared file: survive a new preparation. */
-        private val KEPT_FILES = setOf(LOCK_FILE, RESTARTED_FILE)
+        private val KEPT_FILES = setOf(
+            SERVER_ERRORS_FILE,
+            CANCELLED_FILE,
+            LOCK_FILE,
+            UPLOAD_ID_FILE,
+            UPLOADED_FILE,
+            SHARED_FILE,
+            RESTARTED_FILE
+        )
 
         /**
          * Removes the workspaces of uploads that are no longer alive, e.g. left behind by a killed process.
