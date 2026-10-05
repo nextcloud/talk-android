@@ -1324,8 +1324,7 @@ class ConversationsListActivity : BaseActivity() {
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    conversationsListViewModel.clearConversationPendingLeave(token)
-                    fetchRooms(forceFullSync = true)
+                    conversationsListViewModel.onConversationLeft(currentUser, token)
                 }
                 WorkInfo.State.FAILED -> {
                     logger.e(TAG, "LeaveConversationWorker failed for token $token")

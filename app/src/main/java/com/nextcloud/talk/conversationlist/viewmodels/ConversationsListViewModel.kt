@@ -562,7 +562,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
-    fun getRooms(user: User, forceFullSync: Boolean = false) {
+    fun getRooms(user: User, forceFullSync: Boolean = false): Job {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         _isLoadingRooms.value = true
@@ -570,6 +570,20 @@ class ConversationsListViewModel @AssistedInject constructor(
         viewModelScope.launch {
             job.join()
             _isLoadingRooms.value = false
+        }
+        return job
+    }
+
+    /**
+     * Removes the room [token] that [user] has just left from the list. The room stays hidden
+     * until the full sync that deletes its row has finished; un-hiding it before would show the
+     * still stored row again for as long as the sync takes.
+     */
+    fun onConversationLeft(user: User, token: String) {
+        val job = getRooms(user, forceFullSync = true)
+        viewModelScope.launch {
+            job.join()
+            clearConversationPendingLeave(token)
         }
     }
 
