@@ -94,6 +94,7 @@ import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.ScreenCapture
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.call.components.CALL_VIEW_MODE_BUTTON_SIZE
 import com.nextcloud.talk.call.components.CallViewMode
 import com.nextcloud.talk.call.components.CallViewModeButton
@@ -251,6 +252,9 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var permissionUtil: PlatformPermissionUtil? = null
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -2535,6 +2539,7 @@ class CallActivity : CallBaseActivity() {
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         stopOrSuspendScreenSharing(shutDownView)
+        telecomManager.endCurrentCall()
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -3326,6 +3331,15 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
+        if (!telecomManager.hasActiveCall()) {
+            telecomManager.addOutgoingCall(
+                displayName = conversationName ?: "Nextcloud Talk Call",
+                roomToken = roomToken ?: "",
+                isVideo = !isVoiceOnlyCall
+            )
+        } else {
+            telecomManager.setCallActive()
+        }
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {
