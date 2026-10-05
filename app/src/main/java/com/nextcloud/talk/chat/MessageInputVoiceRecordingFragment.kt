@@ -161,12 +161,20 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     private fun isVideoRecording() = chatActivity.chatViewModel.activeRecordingMode == RecordInputMode.VIDEO
 
     private fun clear() {
-        chatActivity.chatViewModel.setVoiceRecordingLocked(false)
+        val isVideo = isVideoRecording()
+        val recorderActive = chatActivity.chatViewModel.activeVideoMessageRecorder?.isActive == true
         messageInputViewModel.stopMicInput()
-        if (isVideoRecording()) {
-            chatActivity.chatViewModel.onVideoRecordingEnded()
-        } else {
-            chatActivity.chatViewModel.stopAudioRecording()
+        // A video recording is finished by CameraX later: ChatActivity.onVideoRecordingFinished releases the lock
+        // and the in-progress state then, also when the recording failed or was cancelled.
+        if (!clearsRecordingStateOnFinalize(isVideo, recorderActive)) {
+            chatActivity.chatViewModel.setVoiceRecordingLocked(false)
+            if (isVideo) {
+                if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == true) {
+                    chatActivity.chatViewModel.onVideoRecordingEnded()
+                }
+            } else {
+                chatActivity.chatViewModel.stopAudioRecording()
+            }
         }
         messageInputViewModel.stopMediaPlayer()
         binding.audioRecordDuration.stop()
