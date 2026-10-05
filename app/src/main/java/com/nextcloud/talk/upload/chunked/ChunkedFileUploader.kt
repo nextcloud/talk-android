@@ -36,6 +36,8 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import okhttp3.Dispatcher
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -340,7 +342,10 @@ class ChunkedFileUploader(
     }
 
     private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
+        // Own dispatcher: stop() cancels all calls of the dispatcher, and the one of okHttpClient is shared with
+        // the whole app (chat requests, signaling websocket, other uploads).
         val builder = okHttpClient.newBuilder()
+            .dispatcher(Dispatcher())
             .followRedirects(false)
             .followSslRedirects(false)
             .protocols(listOf(Protocol.HTTP_1_1))
@@ -405,12 +410,13 @@ class ChunkedFileUploader(
     }
 
     /**
-     * Interrupts a running [upload] between two parts, without touching the parts on the server, so a later
-     * [upload] can resume. Called from the worker's onStopped, which WorkManager runs inside a coroutine
-     * cancellation handler: anything thrown here crashes the process, so this function must never throw.
+     * Interrupts a running [upload] without touching the parts on the server, so a later [upload] can resume.
+     * Called from the worker's onStopped, which WorkManager runs inside a coroutine cancellation handler:
+     * anything thrown here crashes the process, so this function must never throw.
      */
     fun stop() {
         isUploadAborted = true
+        okHttpClientNoRedirects?.dispatcher?.cancelAll()
     }
 
     /**
@@ -441,6 +447,28 @@ class ChunkedFileUploader(
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to remove chunk upload folder", e)
+        }
+    }
+
+    /** Removes the parts of an earlier run of [localFile], for an uploader that has not started an upload. */
+    fun abortUpload(localFile: File, onSuccess: () -> Unit) {
+        uploadFolderUri = folderUriOf(localFile)
+        abortUpload(onSuccess)
+    }
+
+    /**
+     * Removes a file this uploader or an earlier run assembled on the server, e.g. when the user cancelled after
+     * the upload and before the share. Never throws, like [abortUpload].
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun deleteUploadedFile(targetPath: String) {
+        try {
+            val url = ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, targetPath)
+            DavResource(okHttpClientNoRedirects!!, url.toHttpUrl()).delete { _ -> }
+        } catch (e: NotFoundException) {
+            Log.i(TAG, "Uploaded file is already gone", e)
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to remove the uploaded file", e)
         }
     }
 
