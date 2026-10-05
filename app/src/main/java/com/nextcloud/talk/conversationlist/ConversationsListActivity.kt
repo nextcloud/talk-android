@@ -297,7 +297,7 @@ class ConversationsListActivity : BaseActivity() {
                 isMaintenanceModeState.value = false
                 isRefreshingState.value = true
                 appPreferences.setConversationListPositionAndOffset(0, 0)
-                fetchRooms()
+                fetchRooms(forceFullSync = true)
                 fetchPendingInvitations()
             },
             onFabClick = {
@@ -714,8 +714,8 @@ class ConversationsListActivity : BaseActivity() {
         lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
     }
 
-    fun fetchRooms() {
-        conversationsListViewModel.getRooms(currentUser)
+    fun fetchRooms(forceFullSync: Boolean = false) {
+        conversationsListViewModel.getRooms(currentUser, forceFullSync)
     }
 
     private fun fetchPendingInvitations() {
@@ -1324,8 +1324,7 @@ class ConversationsListActivity : BaseActivity() {
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    conversationsListViewModel.clearConversationPendingLeave(token)
-                    fetchRooms()
+                    conversationsListViewModel.onConversationLeft(currentUser, token)
                 }
                 WorkInfo.State.FAILED -> {
                     logger.e(TAG, "LeaveConversationWorker failed for token $token")
@@ -1584,6 +1583,7 @@ class ConversationsListActivity : BaseActivity() {
                                     conversation.displayName
                                 )
                             )
+                            fetchRooms(forceFullSync = true)
                         }
 
                         WorkInfo.State.FAILED -> {

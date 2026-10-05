@@ -15,6 +15,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.conversationlist.DirectShareHelper;
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.UserIdUtils;
@@ -53,6 +54,9 @@ public class DeleteConversationWorker extends Worker {
 
     @Inject
     EventBus eventBus;
+
+    @Inject
+    OfflineConversationsRepository conversationsRepository;
 
     NcApi ncApi;
 
@@ -104,6 +108,7 @@ public class DeleteConversationWorker extends Worker {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        conversationsRepository.requireFullSync(operationUserId);
                         eventBus.postSticky(eventStatus);
                         if (conversationToken != null) {
                             DirectShareHelper.INSTANCE.removeShortcutForConversation(
