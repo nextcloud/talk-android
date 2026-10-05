@@ -88,16 +88,16 @@
             android:id="@+id/videoRecordingIndicator"
             android:layout_width="@dimen/video_recording_indicator_size"
             android:layout_height="@dimen/video_recording_indicator_size"
-            android:importantForAccessibility="no"
+            android:importantForAccessibility="noHideDescendants"
             android:visibility="gone">
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/videoRecordingProgress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:max="1000"
                 android:progress="0"
                 app:indicatorColor="@color/nc_darkRed"
+                app:indicatorInset="0dp"
                 app:indicatorSize="@dimen/video_recording_indicator_size"
                 app:trackColor="@color/transparent"
                 app:trackThickness="2dp" />
