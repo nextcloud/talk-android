@@ -52,13 +52,13 @@ object ImageCompressor {
     }
 
     /**
-     * Returns a downscaled, JPEG re-encoded copy of [sourceFile] in the app cache directory,
-     * or null if the image could not be decoded or written.
+     * Returns a downscaled, JPEG re-encoded copy of [sourceFile] in [outputDir] (the app cache directory by
+     * default), or null if the image could not be decoded or written.
      */
-    fun compress(context: Context, sourceFile: File): File? {
+    fun compress(context: Context, sourceFile: File, outputDir: File = context.cacheDir): File? {
         val (bitmap, bytes) = encode(sourceFile) ?: return null
         return try {
-            val compressedFile = File(context.cacheDir, sourceFile.nameWithoutExtension + COMPRESSED_FILE_SUFFIX)
+            val compressedFile = File(outputDir, sourceFile.nameWithoutExtension + COMPRESSED_FILE_SUFFIX)
             compressedFile.writeBytes(bytes)
             compressedFile
         } catch (e: IOException) {
