@@ -23,8 +23,16 @@ data class VideoPreviewPlacement(val width: Int, val height: Int)
  * @param margin the gap kept free at every edge of the area (shrinks on a very small area)
  * @param maxWidthFraction the part of the area width the preview may take at most
  * @param maxSide the longest side the preview may have, so that it does not grow without limit on a tablet
+ * @param shortAreaHeight an area lower than this keeps [shortMargin] instead of [margin]: on a short landscape area two
+ * full margins would take a noticeable part of the height. Zero turns this off.
  */
-data class VideoPreviewLimits(val margin: Int, val maxWidthFraction: Float, val maxSide: Int)
+data class VideoPreviewLimits(
+    val margin: Int,
+    val maxWidthFraction: Float,
+    val maxSide: Int,
+    val shortAreaHeight: Int = 0,
+    val shortMargin: Int = margin
+)
 
 /**
  * Fits a frame of the given aspect ratio into the area inside the [limits]. A portrait frame is limited
@@ -43,7 +51,8 @@ fun videoPreviewPlacement(
     val width = max(areaWidth, 0)
     val height = max(areaHeight, 0)
     // a margin may not eat the area: at most an eighth of the shorter side on each edge
-    val margin = max(min(limits.margin, min(width, height) / MARGIN_DIVISOR), 0)
+    val wanted = if (height < limits.shortAreaHeight) limits.shortMargin else limits.margin
+    val margin = max(min(wanted, min(width, height) / MARGIN_DIVISOR), 0)
     val boxWidth = min((width - 2 * margin).toFloat(), width * limits.maxWidthFraction)
     val boxHeight = (height - 2 * margin).toFloat()
 
