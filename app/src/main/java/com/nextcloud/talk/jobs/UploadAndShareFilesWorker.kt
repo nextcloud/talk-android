@@ -400,7 +400,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     // A work that WorkManager does not know, or knows as finished, cannot resume, so its workspace is garbage.
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun deleteFinishedWorkspaces() {
-        UploadWorkspace.deleteFinished(File(context.cacheDir, WORKSPACE_DIR)) { name ->
+        UploadWorkspace.deleteFinished(File(context.noBackupFilesDir, WORKSPACE_DIR)) { name ->
             try {
                 val info = WorkManager.getInstance(context).getWorkInfoById(UUID.fromString(name)).get()
                 info != null && !info.state.isFinished
@@ -792,7 +792,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private fun referenceTag(referenceId: String) = "upload_ref:$referenceId"
 
         private fun workspaceDir(context: Context, workId: UUID) =
-            File(File(context.cacheDir, WORKSPACE_DIR), workId.toString())
+            File(File(context.noBackupFilesDir, WORKSPACE_DIR), workId.toString())
 
         /**
          * Asks an upload to cancel itself. Only a flag in the workspace of the work is set: whether the work waits

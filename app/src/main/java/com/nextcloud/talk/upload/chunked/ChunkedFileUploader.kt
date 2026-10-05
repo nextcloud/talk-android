@@ -90,8 +90,8 @@ class ChunkedFileUploader(
                 throw e
             }
             Log.w(TAG, "Server rejected the assembly, uploading the file again", e)
-            markRestarted()
             deleteUploadFolder()
+            markRestarted()
             uploadParts(localFile, mimeType, targetPath)
         }
     }
