@@ -179,6 +179,8 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         for (button in listOf(binding.deleteVoiceRecording, binding.sendVoiceRecording)) {
             button.layoutParams = LinearLayout.LayoutParams(button.layoutParams.width, button.layoutParams.height)
         }
+        binding.deleteVoiceRecording.contentDescription = getString(R.string.nc_video_message_delete_recording)
+        binding.sendVoiceRecording.contentDescription = getString(R.string.nc_video_message_send_recording)
         binding.micInputCloud.visibility = View.GONE
         binding.videoRecordingIndicator.visibility = View.VISIBLE
         binding.videoRecordingProgress.max = PROGRESS_MAX
