@@ -8,7 +8,10 @@
 package com.nextcloud.talk.jobs
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.utils.setExpeditedIfSupported
@@ -16,6 +19,7 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -50,15 +54,20 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
     private val metaData: String?
 
     override fun doWork(): Result {
-        for (filePath in filesArray) {
-            tryCreateShare(filePath)
+        val failed = filesArray.count { !tryCreateShare(it) }
+        if (failed > 0) {
+            // The work itself is not retried (the share was refused), so the user has to be told.
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(applicationContext, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            }
         }
         roomToken?.let { _shareCompletedFlow.tryEmit(it) }
         return Result.success()
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun tryCreateShare(filePath: String?) {
+    private fun tryCreateShare(filePath: String?): Boolean {
+        var created = false
         for (attempt in 1..SHARE_MAX_ATTEMPTS) {
             var succeeded = false
             var shouldRetry = false
@@ -82,9 +91,13 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                         }
                     }
                 )
-            if (succeeded || !shouldRetry) return
+            if (succeeded || !shouldRetry) {
+                created = succeeded
+                break
+            }
             Thread.sleep(SHARE_RETRY_DELAY_MS)
         }
+        return created
     }
 
     init {

@@ -139,6 +139,7 @@ import com.nextcloud.talk.chat.ui.ProfileModalBottomSheet
 import com.nextcloud.talk.chat.ui.ShowReactionsModalBottomSheet
 import com.nextcloud.talk.chat.ui.TempMessageActionsBottomSheet
 import com.nextcloud.talk.chat.ui.TypingIndicatorBanner
+import com.nextcloud.talk.chat.ui.MessageActionsState
 import com.nextcloud.talk.chat.ui.buildMessageActionsState
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
@@ -155,6 +156,12 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
+import com.nextcloud.talk.mediaviewer.model.MediaViewerChatAction
+import com.nextcloud.talk.mediaviewer.model.MediaViewerChatRequest
+import com.nextcloud.talk.mediaviewer.model.PendingFileForward
+import com.nextcloud.talk.mediaviewer.model.isInsideDirectory
+import com.nextcloud.talk.mediaviewer.model.isMediaActionAllowed
+import com.nextcloud.talk.mediaviewer.model.remoteSharePath
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
@@ -256,6 +263,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -446,6 +454,9 @@ class ChatActivity :
     private var pendingCameraUri: Uri? = null
     private var attachmentSheetModel by mutableStateOf<AttachmentSheetModel?>(null)
     private var pendingTargetMessageId: Long? = null
+
+    /** An action the media viewer handed over (reply, delete, forward, draw); runs once the room is joined. */
+    private var pendingMediaRequest: MediaViewerChatRequest? = null
     private var pendingTargetThreadId: Long? = null
     private var pendingTargetSearchQuery: String? = null
 
@@ -626,6 +637,18 @@ class ChatActivity :
         // and registerForActivityResult() must be called before the activity is started.
         initialUser = setUpBoundUserOrFinish() ?: return
         registerAttachmentPreviewResultListener()
+        // The request of the media viewer comes from the intent only on a fresh start. When the activity is restored
+        // (rotation, process death) the system hands over the original intent again, which must not run it twice:
+        // then only what was saved, i.e. not yet run, counts.
+        pendingMediaRequest = if (savedInstanceState == null) {
+            readMediaRequest(intent)
+        } else {
+            MediaViewerChatRequest.parse(
+                savedInstanceState.getString(MediaViewerChatRequest.KEY_ACTION),
+                savedInstanceState.getLong(MediaViewerChatRequest.KEY_MESSAGE_ID),
+                savedInstanceState.getString(MediaViewerChatRequest.KEY_LOCAL_PATH)
+            )
+        }
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -693,18 +716,7 @@ class ChatActivity :
         initObservers()
         resumeRecordingAfterRecreation()
 
-        pendingTargetMessageId?.let { messageId ->
-            lifecycleScope.launch {
-                chatViewModel.openMessageFromGlobalSearch(
-                    messageId = messageId,
-                    threadId = pendingTargetThreadId,
-                    searchQuery = pendingTargetSearchQuery
-                )
-            }
-            pendingTargetMessageId = null
-            pendingTargetThreadId = null
-            pendingTargetSearchQuery = null
-        }
+        openPendingTargetMessage()
 
         pickMultipleMedia = registerForActivityResult(
             ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
@@ -1054,17 +1066,7 @@ class ChatActivity :
                         )
                     } else {
                         MessageActionsBottomSheet(
-                            actionsState = buildMessageActionsState(
-                                message = msg,
-                                user = conversationUser,
-                                conversation = currentConversation,
-                                hasChatPermission = participantPermissions?.hasChatPermission() == true,
-                                hasReactPermission = participantPermissions?.hasReactPermission() == true,
-                                spreedCapabilities = spreedCapabilities,
-                                isOnline = isOnline,
-                                dateUtils = dateUtils,
-                                conversationThreadId = conversationThreadId
-                            ),
+                            actionsState = actionsStateFor(msg, isOnline),
                             onEmojiClick = { emoji ->
                                 if (msg.reactionsSelf?.contains(emoji) == true) {
                                     chatViewModel.deleteReaction(roomToken, msg, emoji)
@@ -1072,13 +1074,7 @@ class ChatActivity :
                                     chatViewModel.addReaction(roomToken, msg, emoji)
                                 }
                             },
-                            onReply = {
-                                if (msg.isThread && conversationThreadId == null) {
-                                    openThread(msg)
-                                } else {
-                                    messageInputViewModel.reply(msg)
-                                }
-                            },
+                            onReply = { replyTo(msg) },
                             onReplyPrivately = { replyPrivately(msg) },
                             onOpenThread = { msg.threadId?.let { openThread(it) } },
                             onForward = { forwardMessage(msg) },
@@ -1404,9 +1400,49 @@ class ChatActivity :
             if (newRoomToken != roomToken) {
                 switchToRoom(newRoomToken, startCallAfterRoomSwitch, isVoiceOnlyCall)
             }
+        } else if (isForOtherRoom(extras)) {
+            // e.g. back from the media viewer to a chat which is not the one underneath: open it as a new chat
+            intent.removeFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         } else {
             handleIntent(intent)
+            readMediaRequest(intent)?.let { pendingMediaRequest = it }
+            applyIntentTargetsToJoinedRoom()
         }
+    }
+
+    /** Scrolls to the message the intent asked for (a search hit, "show in chat"), once. */
+    private fun openPendingTargetMessage() {
+        pendingTargetMessageId?.let { messageId ->
+            lifecycleScope.launch {
+                chatViewModel.openMessageFromGlobalSearch(
+                    messageId = messageId,
+                    threadId = pendingTargetThreadId,
+                    searchQuery = pendingTargetSearchQuery
+                )
+            }
+            pendingTargetMessageId = null
+            pendingTargetThreadId = null
+            pendingTargetSearchQuery = null
+        }
+    }
+
+    private fun isForOtherRoom(extras: Bundle?): Boolean {
+        val requestedToken = extras?.getString(KEY_ROOM_TOKEN)
+        return requestedToken != null && requestedToken != roomToken
+    }
+
+    /**
+     * An intent for the chat which is already open: scrolls to the message it names and runs the request of the media
+     * viewer, but only when the conversation is already loaded. Otherwise the request stays pending and is run when
+     * the joined-room state arrives; the scroll target is not kept for that case.
+     */
+    private fun applyIntentTargetsToJoinedRoom() {
+        if (currentConversation == null) {
+            return
+        }
+        openPendingTargetMessage()
+        runPendingMediaRequest()
     }
 
     private fun handleIntent(intent: Intent) {
@@ -1443,6 +1479,18 @@ class ChatActivity :
         pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(KEY_THREAD_ID)?.takeIf { it > 0L }
         pendingTargetSearchQuery = extras?.getString(BundleKeys.KEY_SEARCH_QUERY)
+    }
+
+    /** The request of the media viewer in [source], if any; removes it from the intent so it is read only once. */
+    private fun readMediaRequest(source: Intent): MediaViewerChatRequest? {
+        val extras = source.extras
+        val request = MediaViewerChatRequest.parse(
+            actionName = extras?.getString(MediaViewerChatRequest.KEY_ACTION),
+            messageId = extras?.getLong(MediaViewerChatRequest.KEY_MESSAGE_ID) ?: 0L,
+            localPath = extras?.getString(MediaViewerChatRequest.KEY_LOCAL_PATH)
+        )
+        source.removeExtra(MediaViewerChatRequest.KEY_ACTION)
+        return request
     }
 
     override fun onStart() {
@@ -1485,6 +1533,11 @@ class ChatActivity :
 
     override fun onSaveInstanceState(outState: Bundle) {
         chatViewModel.handleOrientationChange()
+        pendingMediaRequest?.let {
+            outState.putString(MediaViewerChatRequest.KEY_ACTION, it.action.name)
+            outState.putLong(MediaViewerChatRequest.KEY_MESSAGE_ID, it.messageId)
+            outState.putString(MediaViewerChatRequest.KEY_LOCAL_PATH, it.localPath)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -1657,6 +1710,7 @@ class ChatActivity :
                         onChooseFileResult(sharedFilePaths.map { it.toUri() })
                         sharedFilePaths = emptyList()
                     }
+                    runPendingMediaRequest()
 
                     refreshScheduledMessages()
 
@@ -2916,11 +2970,12 @@ class ChatActivity :
         }
     }
 
-    private fun showFileAttachmentPreview(files: MutableList<String>) {
+    private fun showFileAttachmentPreview(files: MutableList<String>, startDrawing: Boolean = false) {
         val newFragment = FileAttachmentPreviewFragment.newInstance(
             files,
             currentConversation?.displayName ?: "",
-            CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
+            CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities),
+            startDrawing
         )
         newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
     }
@@ -3733,19 +3788,16 @@ class ChatActivity :
     }
 
     private fun showSharedItems() {
-        val intent = Intent(this, SharedItemsActivity::class.java)
-        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
-        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        intent.putExtra(
-            SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
-            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+        startActivity(
+            SharedItemsActivity.createIntent(
+                context = this,
+                userId = conversationUserId,
+                roomToken = roomToken,
+                conversationName = currentConversation?.displayName,
+                isOwnerOrModerator = ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!),
+                isOneToOne = currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            )
         )
-        intent.putExtra(
-            SharedItemsActivity.KEY_IS_ONE_2_ONE,
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-        )
-        startActivity(intent)
     }
 
     private fun startMessageSearch() {
@@ -3879,6 +3931,27 @@ class ChatActivity :
         }
     }
 
+    private fun replyTo(message: ChatMessage) {
+        if (message.isThread && conversationThreadId == null) {
+            openThread(message)
+        } else {
+            messageInputViewModel.reply(message)
+        }
+    }
+
+    private fun actionsStateFor(message: ChatMessage, isOnline: Boolean): MessageActionsState =
+        buildMessageActionsState(
+            message = message,
+            user = conversationUser,
+            conversation = currentConversation,
+            hasChatPermission = participantPermissionsFlow.value?.hasChatPermission() == true,
+            hasReactPermission = participantPermissionsFlow.value?.hasReactPermission() == true,
+            spreedCapabilities = spreedCapabilities,
+            isOnline = isOnline,
+            dateUtils = dateUtils,
+            conversationThreadId = conversationThreadId
+        )
+
     private fun openMessageActionsDialog(message: ChatMessage) {
         if (message.isTemporary || (hasVisibleItems(message) && !isSystemMessage(message))) {
             chatViewModel.showMessageActions(message.jsonMessageId.toLong())
@@ -3937,6 +4010,80 @@ class ChatActivity :
 
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.putExtras(bundle)
+        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
+        finish()
+    }
+
+    /**
+     * Runs the request the media viewer handed over, with the chat's own handlers. The rules of the message actions
+     * are checked again here, with the chat's data, so a request is never run for what the chat would not offer.
+     */
+    private fun runPendingMediaRequest() {
+        val request = pendingMediaRequest ?: return
+        if (currentConversation == null) {
+            return
+        }
+        pendingMediaRequest = null
+        lifecycleScope.launch {
+            val message = loadMessageOrNull(request.messageId)
+            val state = message?.let { actionsStateFor(it, networkMonitor.isOnline.value) }
+            if (message == null || state == null || !isMediaActionAllowed(request.action, state)) {
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                return@launch
+            }
+            when (request.action) {
+                MediaViewerChatAction.REPLY -> replyTo(message)
+                MediaViewerChatAction.DELETE -> deleteMessage(message)
+                MediaViewerChatAction.FORWARD -> forwardFile(message)
+                MediaViewerChatAction.DRAW -> startDrawingOnCopy(request.localPath)
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun loadMessageOrNull(messageId: Long): ChatMessage? =
+        try {
+            withTimeoutOrNull(MESSAGE_LOAD_TIMEOUT_MS) { chatViewModel.getMessageById(messageId).first() }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not load the message of the media viewer request", e)
+            null
+        }
+
+    /**
+     * Opens the upload preview of the cached file, with the drawing editor on. The preview works on copies: drawing
+     * and cropping write new files, the cached file and the sent message stay as they are.
+     */
+    private fun startDrawingOnCopy(localPath: String?) {
+        val directory = FileUtils.getSharedAttachmentsDirectory(cacheDir)
+        val file = localPath?.let { File(it) }
+        if (directory == null || file == null || !file.isFile || !isInsideDirectory(directory, file)) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
+        showFileAttachmentPreview(mutableListOf(uri.toString()), startDrawing = true)
+    }
+
+    /**
+     * Forwards the file of [message] to a conversation to be picked. The path comes from the message in the database
+     * and goes to the conversation list as the key of an entry in [PendingFileForward], never as a path in an intent.
+     */
+    private fun forwardFile(message: ChatMessage) {
+        val path = message.fileParameters.path
+        if (path.isNullOrBlank()) {
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        val caption = message.message?.takeIf { it != "{file}" }.orEmpty()
+        val key = PendingFileForward.put(PendingFileForward.Entry(conversationUserId, remoteSharePath(path), caption))
+        val intent = Intent(this, ConversationsListActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
+        intent.putExtra(BundleKeys.KEY_FORWARD_FILE_KEY, key)
+        intent.putExtra(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomToken)
         intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
@@ -4608,6 +4755,7 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val MILLIS_250 = 250L
+        private const val MESSAGE_LOAD_TIMEOUT_MS = 10_000L
         private const val MILLIS_150 = 150L
         private const val MILLIS_1000 = 1000L
         private const val FLOAT_100 = 100f

@@ -112,6 +112,11 @@ internal fun FileAttachmentPreviewContent(
     }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
 
+    AutoStartDrawing(viewModel, fileDescriptions) {
+        viewModel.drawing.clear()
+        drawingUri = it
+    }
+
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
     val currentDescription = fileDescriptions.getOrNull(pagerState.currentPage)
@@ -223,6 +228,24 @@ internal fun FileAttachmentPreviewContent(
                 drawingUri = null
             }
         )
+    }
+}
+
+/** Opened from the media viewer's draw button: go straight into the drawing editor once the photo is described. */
+@Composable
+private fun AutoStartDrawing(
+    viewModel: FileAttachmentPreviewViewModel,
+    descriptions: List<FileDescription>,
+    onStart: (String) -> Unit
+) {
+    val target = viewModel.autoDrawUri?.let { uri -> descriptions.firstOrNull { it.uri == uri } }
+    LaunchedEffect(target) {
+        if (target != null) {
+            if (target.kind == MediaKind.IMAGE && target.aspectRatio != null) {
+                onStart(target.uri)
+            }
+            viewModel.autoDrawStarted()
+        }
     }
 }
 
