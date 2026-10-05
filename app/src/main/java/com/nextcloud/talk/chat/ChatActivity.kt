@@ -1430,8 +1430,8 @@ class ChatActivity :
 
     /**
      * An intent for the chat which is already open: scrolls to the message it names and runs the request of the media
-     * viewer, but only when the conversation is already loaded. Otherwise the request stays pending and is run when
-     * the joined-room state arrives; the scroll target is not kept for that case.
+     * viewer, but only when the conversation is already loaded. Otherwise both stay pending and are run when the
+     * joined-room state arrives.
      */
     private fun applyIntentTargetsToJoinedRoom() {
         if (currentConversation == null) {
@@ -1712,6 +1712,8 @@ class ChatActivity :
                         onChooseFileResult(sharedFilePaths.map { it.toUri() })
                         sharedFilePaths = emptyList()
                     }
+                    // "show in chat" for a chat which was open before its conversation was loaded
+                    openPendingTargetMessage()
                     runPendingMediaRequest()
 
                     refreshScheduledMessages()
