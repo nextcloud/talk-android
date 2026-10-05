@@ -2779,6 +2779,10 @@ class ChatActivity :
             null
         }
 
+    // The photo of the in-app camera was asked for and waits for the camera permission. Kept in the activity only: if
+    // the activity is recreated while the dialog is open, the user taps the camera again.
+    private var pendingInAppPhoto = false
+
     private fun requestCameraPermissions() {
         requestPermissions(
             arrayOf(
@@ -3143,10 +3147,16 @@ class ChatActivity :
                 ).show()
             }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            val openInAppCamera = pendingInAppPhoto
+            pendingInAppPhoto = false
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Snackbar
-                    .make(binding.root, context.getString(R.string.camera_permission_granted), Snackbar.LENGTH_LONG)
-                    .show()
+                if (openInAppCamera) {
+                    takePhotoInApp.launch(Unit)
+                } else {
+                    Snackbar
+                        .make(binding.root, context.getString(R.string.camera_permission_granted), Snackbar.LENGTH_LONG)
+                        .show()
+                }
             } else {
                 Snackbar
                     .make(binding.root, context.getString(R.string.take_photo_permission), Snackbar.LENGTH_LONG)
@@ -4589,6 +4599,7 @@ class ChatActivity :
 
     private fun takePhotoWithInAppCamera() {
         if (!permissionUtil.isCameraPermissionGranted()) {
+            pendingInAppPhoto = true
             requestCameraPermissions()
         } else {
             takePhotoInApp.launch(Unit)
@@ -4597,6 +4608,7 @@ class ChatActivity :
 
     private fun sendVideoFromCamIntent() {
         if (!permissionUtil.isCameraPermissionGranted()) {
+            pendingInAppPhoto = false
             requestCameraPermissions()
         } else {
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
