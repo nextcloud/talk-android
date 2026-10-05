@@ -447,16 +447,21 @@ enum class RecordingResume {
     ATTACH_AND_LOCK,
 
     /** The recording ended while there was no activity: deliver its result. */
-    DELIVER_RESULT
+    DELIVER_RESULT,
+
+    /** Same, but the chat of the new activity is not loaded yet: attach later, once it is. */
+    DEFER_RESULT
 }
 
 fun resolveRecordingResume(
     recorderActive: Boolean,
     hasPendingResult: Boolean,
     recordingInProgress: Boolean,
-    recordingLocked: Boolean
+    recordingLocked: Boolean,
+    chatReady: Boolean = true
 ): RecordingResume =
     when {
+        hasPendingResult && !chatReady -> RecordingResume.DEFER_RESULT
         hasPendingResult -> RecordingResume.DELIVER_RESULT
         recorderActive && recordingLocked -> RecordingResume.ATTACH
         recorderActive -> RecordingResume.ATTACH_AND_LOCK
