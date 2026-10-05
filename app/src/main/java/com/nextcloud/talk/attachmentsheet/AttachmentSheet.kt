@@ -127,7 +127,9 @@ fun AttachmentSheet(model: AttachmentSheetModel, callbacks: AttachmentSheetCallb
 private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: AttachmentSheetCallbacks) {
     val context = LocalContext.current
     val refreshKey = rememberResumeRefreshKey()
-    val access = remember(refreshKey) { currentMediaAccess(context) }
+    val granted = remember(refreshKey) { grantedMediaPermissions(context) }
+    val access = resolveMediaAccess(Build.VERSION.SDK_INT, granted)
+    val canSelectMore = canSelectMoreMedia(Build.VERSION.SDK_INT, granted)
     val media by produceState<List<RecentMedia>?>(null, refreshKey, access) {
         value = if (access == MediaAccess.NONE) {
             emptyList()
@@ -159,7 +161,7 @@ private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: Attachme
                     onToggle = { selection = selection.toggle(it.key) },
                     camera = CameraTileConfig(model.livePreviewEnabled, callbacks.onTakePhoto)
                         .takeIf { AttachmentAction.PICTURE_FROM_CAM in model.actions },
-                    onSelectMore = permissionRequest.takeIf { access == MediaAccess.PARTIAL }
+                    onSelectMore = permissionRequest.takeIf { canSelectMore }
                 )
             }
         }
