@@ -430,6 +430,14 @@ fun resolveRecordingResume(
     }
 
 /**
+ * Whether "send" or "delete" of a locked recording leaves the recording state to [VideoMessageRecorder]: a video
+ * recording is not over before CameraX has finalized the file, and its callback releases the lock and the in-progress
+ * state. Cleared earlier, the UI would accept a new start which the still busy recorder drops. An audio recording,
+ * or a video recorder which is already idle (no finalization to wait for), is cleared at once.
+ */
+fun clearsRecordingStateOnFinalize(isVideo: Boolean, recorderActive: Boolean): Boolean = isVideo && recorderActive
+
+/**
  * Follows the orientation of the device with the sensor, which keeps working while the activity is not rotated.
  */
 class DeviceOrientationTracker(context: Context) {
