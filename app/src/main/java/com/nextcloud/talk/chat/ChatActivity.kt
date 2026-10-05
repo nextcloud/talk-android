@@ -2640,7 +2640,9 @@ class ChatActivity :
             limits = VideoPreviewLimits(
                 margin = resources.getDimensionPixelSize(R.dimen.standard_margin),
                 maxWidthFraction = VIDEO_PREVIEW_MAX_WIDTH_FRACTION,
-                maxSide = resources.getDimensionPixelSize(R.dimen.video_recording_preview_max_side)
+                maxSide = resources.getDimensionPixelSize(R.dimen.video_recording_preview_max_side),
+                shortAreaHeight = resources.getDimensionPixelSize(R.dimen.video_recording_preview_short_area),
+                shortMargin = resources.getDimensionPixelSize(R.dimen.standard_half_margin)
             )
         )
         val container = binding.videoRecordingContainer
