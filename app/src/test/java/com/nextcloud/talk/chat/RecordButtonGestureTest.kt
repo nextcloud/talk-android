@@ -89,4 +89,12 @@ class RecordButtonGestureTest {
         assertEquals(400L, RecordButtonGesture.holdThresholdMs(250))
         assertEquals(600L, RecordButtonGesture.holdThresholdMs(1500))
     }
+
+    @Test
+    fun minimumDurationIsMeasuredFromTheRecordingStart() {
+        // touch at 0 ms, recording starts at 500 ms (hold threshold), released at 1300 ms: 800 ms recorded
+        assertTrue(RecordButtonGesture.isTooShort(startedAtMs = 500, endedAtMs = 1300, minMs = 1000))
+        assertFalse(RecordButtonGesture.isTooShort(startedAtMs = 500, endedAtMs = 1500, minMs = 1000))
+        assertFalse(RecordButtonGesture.isTooShort(startedAtMs = 500, endedAtMs = 2000, minMs = 1000))
+    }
 }
