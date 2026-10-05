@@ -96,4 +96,19 @@ class MediaAccessTest {
     fun filesAccessIsFalseWithoutAnyMediaPermission() {
         assertFalse(hasMediaFilesAccess(Build.VERSION_CODES.UPSIDE_DOWN_CAKE, emptySet()))
     }
+
+    @Test
+    fun partialGrantOnAndroid14IsAccessEvenThoughTheFirstRequestedPermissionIsDenied() {
+        // User-selected photos are asked for from Android 14 on, not before.
+        val sdk = Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+        val requested = mediaPermissionsToRequest(sdk)
+        assertEquals(setOf(images, video, selected), requested.toSet())
+        assertEquals(setOf(images, video), mediaPermissionsToRequest(Build.VERSION_CODES.TIRAMISU).toSet())
+
+        // The result handler must not look at grantResults[0] only: with "selected photos" the first permission of
+        // the request (READ_MEDIA_IMAGES) is denied and only READ_MEDIA_VISUAL_USER_SELECTED is granted.
+        val granted = setOf(selected)
+        assertFalse(requested.first() in granted)
+        assertTrue(hasMediaFilesAccess(sdk, granted))
+    }
 }
