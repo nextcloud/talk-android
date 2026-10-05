@@ -20,11 +20,10 @@ class VideoPreviewPlacementTest {
     private fun place(areaWidth: Int, areaHeight: Int, aspect: Float, limits: VideoPreviewLimits = this.limits) =
         videoPreviewPlacement(areaWidth, areaHeight, aspect, limits)
 
+    /** Centered by the parent: the preview fits the area with the margin kept on every side. */
     private fun assertInside(p: VideoPreviewPlacement, areaWidth: Int, areaHeight: Int) {
-        assertTrue("left ${p.left}", p.left >= 0)
-        assertTrue("top ${p.top}", p.top >= 0)
-        assertTrue("right", p.left + p.width <= areaWidth)
-        assertTrue("bottom", p.top + p.height <= areaHeight)
+        assertTrue("width ${p.width}", p.width in 0..areaWidth)
+        assertTrue("height ${p.height}", p.height in 0..areaHeight)
     }
 
     private fun assertAspect(p: VideoPreviewPlacement, aspect: Float) {
@@ -38,9 +37,6 @@ class VideoPreviewPlacementTest {
         assertEquals(464, p.height)
         assertAspect(p, portrait)
         assertInside(p, 348, 560)
-        // centered: the gap on both sides is the same, within a pixel
-        assertTrue(Math.abs(p.left - (348 - p.left - p.width)) <= 1)
-        assertTrue(Math.abs(p.top - (560 - p.top - p.height)) <= 1)
     }
 
     @Test
@@ -50,7 +46,7 @@ class VideoPreviewPlacementTest {
         assertEquals(368, p.height)
         assertEquals(207, p.width)
         assertAspect(p, portrait)
-        assertTrue(p.top >= 16)
+        assertTrue(p.height <= 400 - 32)
     }
 
     @Test
@@ -59,8 +55,8 @@ class VideoPreviewPlacementTest {
         assertEquals(168, p.height)
         assertEquals(299, p.width)
         assertAspect(p, landscape)
-        assertTrue(p.top >= 16)
-        assertTrue(p.left >= 16)
+        assertTrue(p.height <= 200 - 32)
+        assertTrue(p.width <= 700 - 32)
         assertInside(p, 700, 200)
     }
 
@@ -70,7 +66,6 @@ class VideoPreviewPlacementTest {
         assertEquals(261, p.width)
         assertEquals(147, p.height)
         assertAspect(p, landscape)
-        assertEquals((560 - 147) / 2, p.top)
     }
 
     @Test
@@ -80,7 +75,7 @@ class VideoPreviewPlacementTest {
         assertEquals(180, p.width)
         assertEquals(320, p.height)
         assertAspect(p, portrait)
-        assertTrue(p.left >= 16)
+        assertTrue(p.width <= 240 - 32)
         assertInside(p, 240, 520)
     }
 
@@ -90,7 +85,7 @@ class VideoPreviewPlacementTest {
         // 200 - 2 * 16 = 168 is less than 95 % of 200
         assertEquals(168, p.width)
         assertAspect(p, landscape)
-        assertTrue(p.left >= 16)
+        assertTrue(p.width <= 200 - 32)
     }
 
     @Test
@@ -113,7 +108,7 @@ class VideoPreviewPlacementTest {
     @Test
     fun emptyAreaGivesAnEmptyPreview() {
         val p = place(0, 0, portrait)
-        assertEquals(VideoPreviewPlacement(0, 0, 0, 0), p)
+        assertEquals(VideoPreviewPlacement(0, 0), p)
         assertEquals(0, place(-5, 100, portrait).width)
     }
 

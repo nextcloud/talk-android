@@ -82,7 +82,10 @@ class VideoMessageRecorder(context: Context) {
     private var outputFile: File? = null
     private var lensFacing = CameraSelector.LENS_FACING_FRONT
     private var session = 0
-    private var videoRotation = Surface.ROTATION_0
+
+    /** The [Surface] rotation the video is recorded in. */
+    var videoRotation = Surface.ROTATION_0
+        private set
     private val stopCoordinator = RecordingStopCoordinator(MainThreadScheduler()) { recording?.stop() }
 
     val isActive: Boolean
@@ -223,6 +226,8 @@ class VideoMessageRecorder(context: Context) {
             lensFacing = previousLens
             bindUseCases(provider)
         }
+        // the new camera may deliver another resolution
+        onFrameAspectChanged?.invoke()
     }
 
     private fun stop(action: StopAction) {
