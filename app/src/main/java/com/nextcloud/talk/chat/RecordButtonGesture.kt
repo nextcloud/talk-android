@@ -65,5 +65,12 @@ class RecordButtonGesture(private val cancelX: Float) {
          */
         fun holdThresholdMs(systemLongPressMs: Int): Long =
             systemLongPressMs.toLong().coerceIn(MIN_HOLD_MS, MAX_HOLD_MS)
+
+        /**
+         * Whether a recording which started at [startedAtMs] and ends at [endedAtMs] is shorter than [minMs]. Both
+         * times are taken when the recording actually starts and stops, not at the touch of the button, which
+         * precedes the start by the hold threshold.
+         */
+        fun isTooShort(startedAtMs: Long, endedAtMs: Long, minMs: Int): Boolean = endedAtMs - startedAtMs < minMs
     }
 }
