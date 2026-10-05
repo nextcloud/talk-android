@@ -10,7 +10,12 @@ import android.app.Application
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.utils.FileUtils
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -215,6 +220,31 @@ class ChunkedFileUploaderResumeTest {
     }
 
     @Test
+    fun `stop does not cancel calls of other clients built from the same base client`() {
+        val hanging = MockWebServer()
+        hanging.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest) = MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE)
+        }
+        hanging.start()
+        try {
+            val other = client.newBuilder().build()
+            val call = other.newCall(Request.Builder().url(hanging.url("/")).build())
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) = Unit
+                override fun onResponse(call: Call, response: Response) = Unit
+            })
+            hanging.takeRequest(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+
+            uploader.stop()
+
+            assertFalse(call.isCanceled())
+            call.cancel()
+        } finally {
+            hanging.shutdown()
+        }
+    }
+
+    @Test
     fun `a rejected assembly removes the parts once and uploads the file again`() {
         moveResponseCodes.add(BAD_REQUEST)
 
@@ -279,6 +309,21 @@ class ChunkedFileUploaderResumeTest {
     }
 
     @Test
+    fun `an uploaded file is removed from the server`() {
+        uploader.deleteUploadedFile("/Talk/video.mp4")
+
+        val delete = requests.single { it.method == "DELETE" }
+        assertTrue(delete.path!!.endsWith("/files/alice/Talk/video.mp4"))
+    }
+
+    @Test
+    fun `removing an uploaded file never throws`() {
+        server.shutdown()
+
+        uploader.deleteUploadedFile("/Talk/video.mp4")
+    }
+
+    @Test
     fun `an assembly rejected twice is an error`() {
         moveResponseCodes.addAll(listOf(BAD_REQUEST, BAD_REQUEST))
 
@@ -302,6 +347,16 @@ class ChunkedFileUploaderResumeTest {
             // retried later by the worker
         }
         assertEquals(emptyList<String>(), putPaths())
+    }
+
+    @Test
+    fun `abort of an uploader that did not start removes the folder of the file`() {
+        val fresh = ChunkedFileUploader(client, user, mock<OnDataTransferProgressListener>(), mock<NcApiCoroutines>())
+
+        fresh.abortUpload(file) {}
+
+        val delete = requests.single { it.method == "DELETE" }
+        assertTrue(delete.path!!.endsWith("/" + FileUtils.md5Sum(file)))
     }
 
     @Test
