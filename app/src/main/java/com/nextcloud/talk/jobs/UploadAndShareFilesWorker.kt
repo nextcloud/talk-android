@@ -286,7 +286,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     /** Removes the workspaces of works that are finished or unknown to WorkManager, e.g. after a killed process. */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun deleteFinishedWorkspaces() {
-        UploadWorkspace.deleteFinished(File(context.cacheDir, WORKSPACE_DIR)) { name ->
+        UploadWorkspace.deleteFinished(File(context.noBackupFilesDir, WORKSPACE_DIR)) { name ->
             try {
                 val info = WorkManager.getInstance(context).getWorkInfoById(UUID.fromString(name)).get()
                 info != null && !info.state.isFinished
@@ -668,7 +668,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private fun uploadQueueName(internalConversationId: String) = "upload_queue_$internalConversationId"
 
         private fun workspaceDir(context: Context, workId: UUID) =
-            File(File(context.cacheDir, WORKSPACE_DIR), workId.toString())
+            File(File(context.noBackupFilesDir, WORKSPACE_DIR), workId.toString())
 
         // Cancellation is by the WorkRequest's own id (not enqueueUniqueWork's name) since that name
         // is now shared by every file queued in the same conversation - cancelling by name would

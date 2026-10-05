@@ -56,6 +56,7 @@ class ChunkedFileUploaderResumeTest {
     private var propfindResponseCode: Int? = null
     private var propfindDisconnects = false
     private var putDisconnects = false
+    private var deleteDisconnects = false
 
     /** Answers of the next MOVE requests; 201 when empty. */
     private val moveResponseCodes: MutableList<Int> = Collections.synchronizedList(mutableListOf())
@@ -80,6 +81,11 @@ class ChunkedFileUploaderResumeTest {
                         MockResponse().setResponseCode(putResponseCode)
                     }
                     "MKCOL" -> MockResponse().setResponseCode(METHOD_NOT_ALLOWED)
+                    "DELETE" -> if (deleteDisconnects) {
+                        MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
+                    } else {
+                        MockResponse().setResponseCode(CREATED)
+                    }
                     else -> MockResponse().setResponseCode(CREATED)
                 }
             }
@@ -263,6 +269,27 @@ class ChunkedFileUploaderResumeTest {
         assertTrue(first.upload(file, null, "/Talk/video.mp4"))
 
         assertEquals(1, marked)
+    }
+
+    @Test
+    fun `a restart is not reported when the parts could not be removed`() {
+        moveResponseCodes.add(BAD_REQUEST)
+        deleteDisconnects = true
+        var marked = 0
+        val first = ChunkedFileUploader(
+            client,
+            user,
+            mock<OnDataTransferProgressListener>(),
+            mock<NcApiCoroutines>(),
+            markRestarted = { marked++ }
+        )
+
+        try {
+            first.upload(file, null, "/Talk/video.mp4")
+            fail("expected the upload to throw")
+        } catch (e: IOException) {
+            assertEquals(0, marked)
+        }
     }
 
     @Test
