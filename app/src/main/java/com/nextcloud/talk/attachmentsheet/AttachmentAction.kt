@@ -38,11 +38,11 @@ data class AttachmentVisibilityInput(
 fun resolveAttachmentActions(input: AttachmentVisibilityInput): List<AttachmentAction> =
     AttachmentAction.entries.filter { action ->
         when (action) {
-            AttachmentAction.PICTURE_FROM_CAM,
             AttachmentAction.FILE_FROM_LOCAL,
             AttachmentAction.FILE_FROM_CLOUD,
             AttachmentAction.SHARE_CONTACT -> !input.isRemoteConversation
 
+            AttachmentAction.PICTURE_FROM_CAM,
             AttachmentAction.VIDEO_FROM_CAM -> !input.isRemoteConversation && input.hasCamera
 
             AttachmentAction.GALLERY -> true
