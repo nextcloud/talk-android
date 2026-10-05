@@ -37,12 +37,14 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.Surface
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -2504,7 +2506,12 @@ class ChatActivity :
             return false
         }
         showVideoRecordingPreview(true)
-        recorder.attach(this, binding.videoRecordingPreview, ::onVideoRecordingFinished)
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
         recorder.start(
             file,
             VideoMessageRecorder.videoTargetRotation(
@@ -2586,15 +2593,65 @@ class ChatActivity :
             action == RecordingResume.ATTACH_AND_LOCK ||
             action == RecordingResume.DELIVER_RESULT
         if (recorder != null && attach) {
-            recorder.attach(this, binding.videoRecordingPreview, ::onVideoRecordingFinished)
+            recorder.attach(
+                this,
+                binding.videoRecordingPreview,
+                ::onVideoRecordingFinished,
+                ::updateVideoRecordingPreviewLayout
+            )
         }
         if (action == RecordingResume.ATTACH_AND_LOCK) {
             chatViewModel.setVoiceRecordingLocked(true)
         }
     }
 
+    // the update only touches the layout of the preview when its placement changed, so it does not loop
+    private val videoScrimLayoutListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        updateVideoRecordingPreviewLayout()
+    }
+
+    /**
+     * Places the preview in the middle of the dimming layer, which covers the area of the chat above the recording
+     * panel: in the aspect of the recorded frame, fitted into the area. Called whenever the area changes its size
+     * (rotation, panels of a wide screen) and when the recorder knows the aspect of the frame.
+     */
+    private fun updateVideoRecordingPreviewLayout() {
+        val scrim = binding.videoRecordingScrim
+        if (scrim.width <= 0 || scrim.height <= 0) return
+        val resources = scrim.resources
+        val placement = videoPreviewPlacement(
+            areaWidth = scrim.width,
+            areaHeight = scrim.height,
+            aspect = chatViewModel.activeVideoMessageRecorder?.frameAspect ?: fallbackVideoFrameAspect(
+                binding.videoRecordingPreview.display?.rotation ?: Surface.ROTATION_0
+            ),
+            limits = VideoPreviewLimits(
+                margin = resources.getDimensionPixelSize(R.dimen.standard_margin),
+                maxWidthFraction = VIDEO_PREVIEW_MAX_WIDTH_FRACTION,
+                maxSide = resources.getDimensionPixelSize(R.dimen.video_recording_preview_max_side)
+            )
+        )
+        val container = binding.videoRecordingContainer
+        val params = container.layoutParams as FrameLayout.LayoutParams
+        val changed = params.width != placement.width ||
+            params.height != placement.height ||
+            params.leftMargin != placement.left ||
+            params.topMargin != placement.top
+        if (changed) {
+            params.width = placement.width
+            params.height = placement.height
+            params.gravity = Gravity.TOP or Gravity.START
+            params.marginStart = placement.left
+            params.topMargin = placement.top
+            container.layoutParams = params
+            container.invalidateOutline()
+        }
+    }
+
     private fun showVideoRecordingPreview(show: Boolean) {
         if (show) {
+            binding.videoRecordingScrim.removeOnLayoutChangeListener(videoScrimLayoutListener)
+            binding.videoRecordingScrim.addOnLayoutChangeListener(videoScrimLayoutListener)
             binding.videoRecordingContainer.clipToOutline = true
             binding.videoRecordingContainer.outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -2606,7 +2663,7 @@ class ChatActivity :
                 chatViewModel.activeVideoMessageRecorder?.switchCamera()
             }
         }
-        binding.videoRecordingContainer.visibility = if (show) View.VISIBLE else View.GONE
+        binding.videoRecordingScrim.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun createAttachmentFile(@StringRes nameRes: Int, suffix: String): File? =
@@ -4424,6 +4481,7 @@ class ChatActivity :
     }
 
     companion object {
+        private const val VIDEO_PREVIEW_MAX_WIDTH_FRACTION = 0.75f
         val TAG = ChatActivity::class.java.simpleName
 
         /**

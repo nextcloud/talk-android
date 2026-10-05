@@ -66,6 +66,7 @@ class VideoMessageRecorder(context: Context) {
     private var cameraOwner: RecordingLifecycleOwner? = null
     private var previewView: PreviewView? = null
     private var onFinished: ((Outcome, File?) -> Unit)? = null
+    private var onFrameAspectChanged: (() -> Unit)? = null
     private var pendingResult: Finished? = null
     private var released = false
 
@@ -88,6 +89,25 @@ class VideoMessageRecorder(context: Context) {
         get() = state != State.IDLE
 
     /**
+     * Width divided by height of the frame that is recorded, as the viewer sees it: portrait for a recording of a
+     * phone held upright, landscape for one held on its side. It comes from the resolution the camera was bound
+     * with; until that is known, from the rotation the video is recorded in.
+     */
+    val frameAspect: Float
+        get() {
+            val info = videoCapture?.resolutionInfo
+            val crop = info?.cropRect
+            val resolution = info?.resolution
+            val aspect = when {
+                info == null -> null
+                crop != null && !crop.isEmpty -> videoFrameAspect(crop.width(), crop.height(), info.rotationDegrees)
+                resolution != null -> videoFrameAspect(resolution.width, resolution.height, info.rotationDegrees)
+                else -> null
+            }
+            return aspect ?: fallbackVideoFrameAspect(videoRotation)
+        }
+
+    /**
      * A recording ended while no activity was attached, its result waits for the next [attach].
      */
     val hasPendingResult: Boolean
@@ -97,13 +117,20 @@ class VideoMessageRecorder(context: Context) {
      * Shows the preview in [view] and reports the end of the recording to [callback]. A running recording keeps its
      * camera, only the preview picture moves to the new view; a result which is waiting is delivered at once. The
      * previously attached view is dropped. [owner] is only watched: its destruction detaches the recorder.
+     * [onFrameAspect] is called when the aspect ratio of the recorded frame became known, see [frameAspect].
      */
-    fun attach(owner: LifecycleOwner, view: PreviewView, callback: (Outcome, File?) -> Unit) {
+    fun attach(
+        owner: LifecycleOwner,
+        view: PreviewView,
+        callback: (Outcome, File?) -> Unit,
+        onFrameAspect: () -> Unit = {}
+    ) {
         if (released) return
         detach()
         activityLifecycle = owner.lifecycle
         previewView = view
         onFinished = callback
+        onFrameAspectChanged = onFrameAspect
         owner.lifecycle.addObserver(ownerObserver)
 
         preview?.let { previewUseCase ->
@@ -127,6 +154,7 @@ class VideoMessageRecorder(context: Context) {
         activityLifecycle = null
         previewView = null
         onFinished = null
+        onFrameAspectChanged = null
     }
 
     /**
@@ -235,6 +263,7 @@ class VideoMessageRecorder(context: Context) {
             return
         }
         startRecording()
+        onFrameAspectChanged?.invoke()
     }
 
     private fun bindUseCases(provider: ProcessCameraProvider): Boolean {
