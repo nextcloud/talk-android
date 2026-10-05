@@ -224,7 +224,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
                 TAG,
                 "CallControlScope obtained for stale registration (id=$registrationId, room=$roomToken), disconnecting"
             )
-            launch { disconnect(DisconnectCause(DisconnectCause.CANCELED)) }
+            launch { disconnect(DisconnectCause(DisconnectCause.REJECTED)) }
         }
     }
 
