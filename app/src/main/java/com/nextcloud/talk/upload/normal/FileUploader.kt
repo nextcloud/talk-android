@@ -28,6 +28,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody
 import okhttp3.Response
+import retrofit2.HttpException as RetrofitHttpException
 import java.io.File
 import java.io.IOException
 
@@ -58,7 +59,11 @@ class FileUploader(
             ),
             createRequestBody(sourceFileUri) ?: return false
         )
-        return response.isSuccessful
+        // An error answer is thrown, so the retry policy can tell an unavailable server from a refusal.
+        if (!response.isSuccessful) {
+            throw RetrofitHttpException(response)
+        }
+        return true
     }
 
     fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> =
@@ -86,7 +91,7 @@ class FileUploader(
                     ) {
                         createDavResource(sourceFileUri, fileName, remotePath, metaData)
                     } else {
-                        Observable.just(false)
+                        Observable.error<Boolean>(RetrofitHttpException(response))
                     }
                 }
             }

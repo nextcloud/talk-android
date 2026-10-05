@@ -10,7 +10,7 @@ import android.app.Application
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.upload.UploadRetryPolicy
 import com.nextcloud.talk.utils.FileUtils
 import okhttp3.Call
 import okhttp3.Callback
@@ -198,11 +198,19 @@ class ChunkedFileUploaderResumeTest {
     fun `the worker tries again after a service unavailable answer to a part but not after a rejected part`() {
         putResponseCode = SERVICE_UNAVAILABLE
         val unavailable = assertThrows(HttpException::class.java) { uploader.upload(file, null, "/Talk/video.mp4") }
-        assertTrue(UploadAndShareFilesWorker.isRetryable(unavailable))
+        assertEquals(UploadRetryPolicy.FailureKind.NETWORK, UploadRetryPolicy.classify(unavailable))
+        assertEquals(
+            UploadRetryPolicy.Decision.RETRY,
+            UploadRetryPolicy.decide(UploadRetryPolicy.classify(unavailable), UploadRetryPolicy.MAX_SERVER_ERRORS)
+        )
 
         putResponseCode = BAD_REQUEST
         val rejected = assertThrows(HttpException::class.java) { uploader.upload(file, null, "/Talk/video.mp4") }
-        assertFalse(UploadAndShareFilesWorker.isRetryable(rejected))
+        assertEquals(UploadRetryPolicy.FailureKind.SERVER, UploadRetryPolicy.classify(rejected))
+        assertEquals(
+            UploadRetryPolicy.Decision.FAIL,
+            UploadRetryPolicy.decide(UploadRetryPolicy.classify(rejected), UploadRetryPolicy.MAX_SERVER_ERRORS)
+        )
     }
 
     @Test

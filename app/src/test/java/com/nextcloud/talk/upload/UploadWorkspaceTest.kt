@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
+@Suppress("TooManyFunctions")
 class UploadWorkspaceTest {
 
     @get:Rule
@@ -86,18 +87,31 @@ class UploadWorkspaceTest {
 
     @Test
     fun `a file named like a file of the workspace stays intact and is found again`() {
-        for (name in listOf("prepared", "lock", "restarted", "prepared.tmp", "restarted.tmp", "file")) {
+        val names = WORKSPACE_FILE_NAMES + WORKSPACE_FILE_NAMES.map { "$it.tmp" } + "file"
+        for (name in names) {
             val ws = workspace(name)
             // The worker takes the lock before it prepares the file.
             assertTrue(ws.tryLock())
             val prepared = ws.prepareOnce { create(it, name, 1_000) }!!
             ws.markRestarted()
+            ws.markCancelled()
+            ws.markUploaded("/Talk/$name", name)
+            ws.markShared()
+            ws.registerServerError()
+            val uploadId = ws.uploadId()
             assertFalse(workspace(name).tryLock())
 
-            assertEquals(SIZE.toLong(), prepared.file.length())
-            assertEquals(prepared, workspace(name).prepareOnce { null })
-            assertEquals(SIZE.toLong(), prepared.file.length())
-            assertTrue(workspace(name).isRestarted())
+            assertEquals("$name", SIZE.toLong(), prepared.file.length())
+            assertEquals(name, prepared, workspace(name).prepareOnce { null })
+            assertEquals(name, prepared, workspace(name).prepared())
+            assertEquals(name, SIZE.toLong(), prepared.file.length())
+            assertTrue(name, workspace(name).isRestarted())
+            assertTrue(name, workspace(name).isCancelled())
+            assertTrue(name, workspace(name).isShared())
+            assertEquals(name, "/Talk/$name", workspace(name).uploadedPath())
+            assertEquals(name, name, workspace(name).uploadedName())
+            assertEquals(name, 1, workspace(name).serverErrors())
+            assertEquals(name, uploadId, workspace(name).uploadId())
             assertFalse(workspace(name).tryLock())
             ws.unlock()
             assertTrue(workspace(name).tryLock())
@@ -105,14 +119,41 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `delete removes the prepared file and the marks`() {
+    fun `an empty prepared file is kept and found again`() {
+        val prepared = workspace().prepareOnce { dir ->
+            PreparedUpload(File(dir, "empty.txt").apply { writeBytes(ByteArray(0)) }, "empty.txt")
+        }!!
+
+        assertEquals(0L, prepared.file.length())
+        assertEquals(prepared, workspace().prepareOnce { null })
+        assertEquals(prepared, workspace().prepared())
+    }
+
+    @Test
+    fun `server errors are counted across runs`() {
+        assertEquals(0, workspace().serverErrors())
+        assertEquals(1, workspace().registerServerError())
+        assertEquals(2, workspace().registerServerError())
+        assertEquals(2, workspace().serverErrors())
+    }
+
+    @Test
+    fun `server error count survives a new preparation`() {
+        workspace().registerServerError()
+        workspace().prepareOnce { create(it, "photo.jpg", 1_000) }
+
+        assertEquals(1, workspace().serverErrors())
+    }
+
+    @Test
+    fun `delete removes the file and the counters`() {
         val ws = workspace()
         val prepared = ws.prepareOnce { create(it, "photo.jpg", 1_000) }!!
-        ws.markRestarted()
+        ws.registerServerError()
         ws.delete()
 
         assertFalse(prepared.file.exists())
-        assertFalse(workspace().isRestarted())
+        assertEquals(0, workspace().serverErrors())
         assertNull(workspace().prepareOnce { null })
     }
 
@@ -154,19 +195,78 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `the restart mark survives a new preparation after the prepared file is gone`() {
+    fun `the uploaded and shared stages are kept between runs`() {
+        val ws = workspace()
+        assertNull(ws.uploadedPath())
+        assertFalse(ws.isShared())
+
+        ws.markUploaded("/Talk/video.mp4", "video_compressed.mp4")
+        assertEquals("/Talk/video.mp4", workspace().uploadedPath())
+        assertEquals("video_compressed.mp4", workspace().uploadedName())
+        assertFalse(workspace().isShared())
+
+        ws.markShared()
+        assertTrue(workspace().isShared())
+    }
+
+    @Test
+    fun `the stages survive a new preparation after the prepared file is gone`() {
         val ws = workspace()
         val prepared = ws.prepareOnce { create(it, "a.jpg", 1_000) }!!
-        assertFalse(ws.isRestarted())
+        ws.markUploaded("/Talk/a.jpg", "a.jpg")
+        ws.markShared()
         ws.markRestarted()
         prepared.file.delete()
 
         workspace().prepareOnce { create(it, "a.jpg", 2_000) }
 
+        assertEquals("/Talk/a.jpg", workspace().uploadedPath())
+        assertTrue(workspace().isShared())
         assertTrue(workspace().isRestarted())
+    }
+
+    @Test
+    fun `the upload id stays the same on every run`() {
+        val id = workspace().uploadId()
+
+        assertEquals(id, workspace().uploadId())
+    }
+
+    @Test
+    fun `a cancel flag can be set before the work ran and survives a new preparation`() {
+        val ws = workspace()
+        assertFalse(ws.isCancelled())
+
+        ws.markCancelled()
+        ws.prepareOnce { create(it, "a.jpg", 1_000) }
+
+        assertTrue(workspace().isCancelled())
+    }
+
+    @Test
+    fun `the stored prepared file is available without preparing`() {
+        assertNull(workspace().prepared())
+
+        val prepared = workspace().prepareOnce { create(it, "a.jpg", 1_000) }
+
+        assertEquals(prepared, workspace().prepared())
     }
 
     companion object {
         private const val SIZE = 16
+
+        // The files of the workspace itself, plus names a later version may use.
+        private val WORKSPACE_FILE_NAMES = listOf(
+            "prepared",
+            "lock",
+            "restarted",
+            "server_errors",
+            "uploaded",
+            "shared",
+            "cancelled",
+            "upload_id",
+            "unavailable",
+            "progress"
+        )
     }
 }
