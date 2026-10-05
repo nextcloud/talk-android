@@ -12,10 +12,10 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * Size and position of the video recording preview inside the area of the chat. All values are in the same unit
- * (pixels); [left] and [top] are measured from the top start corner of the area.
+ * Size of the video recording preview inside the area of the chat, in the unit of the area (pixels). The preview is
+ * centered by its parent (gravity), so no offsets are given: they would have to be resolved for right-to-left.
  */
-data class VideoPreviewPlacement(val width: Int, val height: Int, val left: Int, val top: Int)
+data class VideoPreviewPlacement(val width: Int, val height: Int)
 
 /**
  * Bounds of the preview inside the area.
@@ -27,7 +27,7 @@ data class VideoPreviewPlacement(val width: Int, val height: Int, val left: Int,
 data class VideoPreviewLimits(val margin: Int, val maxWidthFraction: Float, val maxSide: Int)
 
 /**
- * Fits a frame of the given aspect ratio into the area, centered, inside the [limits]. A portrait frame is limited
+ * Fits a frame of the given aspect ratio into the area inside the [limits]. A portrait frame is limited
  * by the width of the area and by its height, a landscape frame is fitted by the height when the area is short:
  * the frame is never distorted, only scaled down.
  *
@@ -60,14 +60,7 @@ fun videoPreviewPlacement(
         h *= scale
     }
 
-    val finalWidth = w.roundToInt()
-    val finalHeight = h.roundToInt()
-    return VideoPreviewPlacement(
-        width = finalWidth,
-        height = finalHeight,
-        left = (width - finalWidth) / 2,
-        top = (height - finalHeight) / 2
-    )
+    return VideoPreviewPlacement(width = w.roundToInt(), height = h.roundToInt())
 }
 
 /**
@@ -84,6 +77,20 @@ fun videoFrameAspect(surfaceWidth: Int, surfaceHeight: Int, rotationDegrees: Int
     }
 
 /**
+ * The aspect ratio of the recorded frame in the coordinates of the screen. The sensor image always runs along the
+ * same side of the phone; the rotation the video is recorded in only sets the flag in the file. The preview is
+ * drawn upright for the display, so when the recording rotation and the display rotation differ by a quarter turn
+ * (auto-rotate off with the phone held sideways, or the phone turned during the recording) the frame on the screen
+ * is the other way round than the recorded one.
+ *
+ * @param frameAspect width / height of the frame as the recording shows it
+ * @param videoRotation [android.view.Surface] rotation the video is recorded in
+ * @param displayRotation [android.view.Surface] rotation of the display
+ */
+fun screenFrameAspect(frameAspect: Float, videoRotation: Int, displayRotation: Int): Float =
+    if ((videoRotation - displayRotation + QUARTER_TURNS) % 2 == 1) 1f / frameAspect else frameAspect
+
+/**
  * Aspect ratio of a recording before the camera has told its resolution: the recording is 16:9, upright in the
  * rotation the video is recorded in ([android.view.Surface] ROTATION_0 and ROTATION_180 are portrait).
  */
@@ -94,6 +101,7 @@ fun fallbackVideoFrameAspect(surfaceRotation: Int): Float =
         LANDSCAPE_ASPECT
     }
 
+private const val QUARTER_TURNS = 4
 private const val MARGIN_DIVISOR = 8
 private const val HALF_TURN = 180
 private const val DEFAULT_FRAME_ASPECT = 9f / 16f
