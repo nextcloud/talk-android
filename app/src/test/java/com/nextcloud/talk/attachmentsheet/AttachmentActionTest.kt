@@ -8,7 +8,6 @@ package com.nextcloud.talk.attachmentsheet
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AttachmentActionTest {
@@ -38,10 +37,10 @@ class AttachmentActionTest {
     }
 
     @Test
-    fun missingCameraHidesOnlyVideo() {
+    fun missingCameraHidesPhotoAndVideo() {
         val actions = resolveAttachmentActions(everything.copy(hasCamera = false))
         assertFalse(AttachmentAction.VIDEO_FROM_CAM in actions)
-        assertTrue(AttachmentAction.PICTURE_FROM_CAM in actions)
+        assertFalse(AttachmentAction.PICTURE_FROM_CAM in actions)
     }
 
     @Test
