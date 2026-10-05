@@ -61,6 +61,9 @@ internal class PhotoCamera(
     private var imageCapture: ImageCapture? = null
     private var released = false
 
+    // The latest rotation of the hold; it may arrive before the ImageCapture exists and is applied to every new one.
+    private var photoRotation: Int? = null
+
     fun start() {
         whenCameraProviderReady(context) { readyProvider ->
             if (released || readyProvider == null) return@whenCameraProviderReady
@@ -108,6 +111,7 @@ internal class PhotoCamera(
      * Sets the rotation of the next photo, so the picture is upright however the phone is held.
      */
     fun setTargetRotation(rotation: Int) {
+        photoRotation = rotation
         imageCapture?.targetRotation = rotation
     }
 
@@ -156,13 +160,13 @@ internal class PhotoCamera(
         ImageCapture.Builder()
             .setCaptureMode(mode.imageCaptureMode)
             .setResolutionSelector(photoResolutionSelector())
+            .apply { photoRotation?.let { setTargetRotation(it) } }
             .build()
 
     private fun rebindWith(mode: CaptureModeSetting, lens: Int): Boolean {
-        // A new use case starts with the display rotation, the old one knows the rotation of the hold.
-        val rotation = imageCapture?.targetRotation
         unbind()
-        imageCapture = buildImageCapture(mode).also { capture -> rotation?.let { capture.targetRotation = it } }
+        // the new use case gets the rotation of the hold from buildImageCapture()
+        imageCapture = buildImageCapture(mode)
         captureMode = mode
         return bind(lens)
     }
