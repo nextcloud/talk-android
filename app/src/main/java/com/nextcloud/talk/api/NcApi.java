@@ -20,7 +20,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.StatusDto;
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall;
 import com.nextcloud.talk.models.json.invitation.InvitationOverall;
-import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -390,13 +389,6 @@ public interface NcApi {
                                                                           @Url String url,
                                                                           @Nullable @Query("limit") Integer limit);
 
-
-    @GET
-    Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
-                                                                 @Url String url,
-                                                                 @Query("search") String query,
-                                                                 @Nullable @Query("limit") Integer limit,
-                                                                 @QueryMap Map<String, String> fields);
 
     @GET
     Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization,

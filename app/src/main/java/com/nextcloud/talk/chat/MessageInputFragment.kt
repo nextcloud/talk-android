@@ -40,8 +40,8 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.emojipicker.RecentEmojiProvider
@@ -49,6 +49,7 @@ import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
@@ -58,10 +59,13 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.mention.MentionAutocompleteController
+import com.nextcloud.talk.chat.mention.MentionChipInserter
+import com.nextcloud.talk.chat.mention.MentionSuggestionsLoader
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -69,18 +73,17 @@ import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.chat.ChatUtils
-import com.nextcloud.talk.models.json.mention.MentionDto
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
-import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.CallStartedBanner
 import com.nextcloud.talk.ui.MicInputCloud
+import com.nextcloud.talk.ui.chat.MentionSuggestionContext
+import com.nextcloud.talk.ui.chat.MentionSuggestionList
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.EmojiTextInputEditText
@@ -89,7 +92,6 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
-import com.otaliastudios.autocomplete.Autocomplete
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -105,6 +107,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -124,7 +129,7 @@ class MessageInputFragment : Fragment() {
     private var typingTimer: CountDownTimer? = null
     private lateinit var chatActivity: ChatActivity
     private var restoreKeyboardOnEmojiDismiss = false
-    private var mentionAutocomplete: Autocomplete<*>? = null
+    private var mentionAutocomplete: MentionAutocompleteController? = null
     private var xcounter = 0f
     private var ycounter = 0f
     private var hasScheduledMessages = false
@@ -158,9 +163,8 @@ class MessageInputFragment : Fragment() {
     override fun onDestroyView() {
         restoreKeyboardOnEmojiDismiss = false
         super.onDestroyView()
-        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
-            mentionAutocomplete?.dismissPopup()
-        }
+        mentionAutocomplete?.detach()
+        mentionAutocomplete = null
 
         val messageText = binding.fragmentMessageInputView.messageInput.text
         if (messageText.isNotEmpty()) {
@@ -774,31 +778,41 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun setupMentionAutocomplete() {
-        val elevation = MENTION_AUTO_COMPLETE_ELEVATION
-        resources.let {
-            val backgroundDrawable = it.getColor(R.color.bg_default, null).toDrawable()
-            val presenter = MentionAutocompletePresenter(
-                requireContext(),
-                chatActivity.conversationUser,
-                chatActivity.roomToken,
-                chatActivity.chatApiVersion
-            )
-            val callback = MentionAutocompleteCallback(
-                requireContext(),
-                chatActivity.conversationUser!!,
-                binding.fragmentMessageInputView.inputEditText,
-                viewThemeUtils
-            )
+        if (mentionAutocomplete != null) {
+            return
+        }
+        val user = chatActivity.conversationUser ?: return
+        val editText = binding.fragmentMessageInputView.inputEditText
+        val loader = MentionSuggestionsLoader(
+            requireContext(),
+            ncApiCoroutines,
+            user,
+            chatActivity.roomToken,
+            chatActivity.chatApiVersion
+        )
+        val chipInserter = MentionChipInserter(requireContext(), user, editText, viewThemeUtils)
+        val controller = MentionAutocompleteController(editText, viewLifecycleOwner.lifecycleScope, loader::load)
+        mentionAutocomplete = controller
 
-            if (mentionAutocomplete == null && binding.fragmentMessageInputView.inputEditText != null) {
-                mentionAutocomplete =
-                    Autocomplete.on<MentionDto>(binding.fragmentMessageInputView.inputEditText)
-                        .with(elevation)
-                        .with(backgroundDrawable)
-                        .with(CharPolicy('@'))
-                        .with(presenter)
-                        .with(callback)
-                        .build()
+        val suggestionContext = MentionSuggestionContext(
+            baseUrl = user.baseUrl.orEmpty(),
+            credentials = user.getCredentials(),
+            roomToken = chatActivity.roomToken
+        )
+        binding.mentionSuggestions.setContent {
+            val state by controller.state.collectAsStateWithLifecycle()
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(requireContext())) {
+                MentionSuggestionList(
+                    items = state.items,
+                    query = state.query,
+                    suggestionContext = suggestionContext,
+                    onItemClick = { item -> controller.select(item, chipInserter::insert) }
+                )
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            controller.state.collect { state ->
+                binding.mentionSuggestions.isVisible = state.isVisible
             }
         }
     }
@@ -1185,9 +1199,7 @@ class MessageInputFragment : Fragment() {
         val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
         binding.fragmentEditView.editMessage.text = editedMessage
         binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
-        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
-            mentionAutocomplete?.dismissPopup()
-        }
+        mentionAutocomplete?.dismiss()
         val end = binding.fragmentMessageInputView.inputEditText.text.length
         binding.fragmentMessageInputView.inputEditText.setSelection(end)
         binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
@@ -1326,7 +1338,6 @@ class MessageInputFragment : Fragment() {
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
-        private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val ANIMATION_DURATION: Long = 750
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -300
