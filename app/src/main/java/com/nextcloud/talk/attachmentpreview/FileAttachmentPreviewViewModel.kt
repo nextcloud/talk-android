@@ -60,10 +60,22 @@ internal class FileAttachmentPreviewViewModel(
     private var describeJob: Job? = null
     private var mimeTypeJob: Job? = null
 
-    /** No-op after the first call, so re-entering (e.g. after rotation) doesn't wipe edits made since. */
-    fun setInitialFiles(initialFiles: List<String>) {
+    /**
+     * The file whose drawing editor is to be opened as soon as it is described, set once by
+     * [setInitialFiles] and cleared by the screen once the editor is open.
+     */
+    var autoDrawUri by mutableStateOf<String?>(null)
+
+    /**
+     * No-op after the first call, so re-entering (e.g. after rotation) doesn't wipe edits made since.
+     * With [startDrawing] the first file opens straight in the drawing editor.
+     */
+    fun setInitialFiles(initialFiles: List<String>, startDrawing: Boolean = false) {
         if (files.isEmpty()) {
             files.addAll(initialFiles)
+            if (startDrawing) {
+                autoDrawUri = initialFiles.firstOrNull()
+            }
         }
     }
 

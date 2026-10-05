@@ -125,7 +125,14 @@ class SharedItemsAdapter(
             .map { it.toMediaViewerItem() }
             .capSeedAroundMessage(item.messageId)
         context.startActivity(
-            MediaViewerActivity.newIntent(context, user.id!!, roomToken, seedItems, item.messageId)
+            MediaViewerActivity.newIntent(
+                context,
+                user.id!!,
+                roomToken,
+                seedItems,
+                item.messageId,
+                fromSharedItems = true
+            )
         )
     }
 

@@ -37,12 +37,14 @@ class SaveToStorageDialogFragment : DialogFragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
     lateinit var fileName: String
+    private var fileId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         fileName = arguments?.getString(KEY_FILE_NAME)!!
+        fileId = arguments?.getString(KEY_FILE_ID)
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogText = StringBuilder()
@@ -74,11 +76,15 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
     @SuppressLint("LongLogTag")
     private fun saveImageToStorage(fileName: String) {
-        val sourceDirectory = FileUtils.getSharedAttachmentsDirectory(requireContext().cacheDir) ?: run {
-            Log.e(TAG, "Failed to resolve shared attachments directory")
+        // Files cached by the media viewer live in a folder named after their file id, chat attachments directly in
+        // the shared attachments directory.
+        val sourceFile = fileId?.let { FileUtils.resolveSharedAttachmentFile(requireContext().cacheDir, it, fileName) }
+            ?: FileUtils.resolveSharedAttachmentFile(requireContext().cacheDir, fileName)
+        if (sourceFile == null) {
+            Log.e(TAG, "Failed to resolve the file to save")
             return
         }
-        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileName
+        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + sourceFile.absolutePath
 
         val workers = WorkManager.getInstance(requireContext()).getWorkInfosByTag(workerTag)
         try {
@@ -95,7 +101,7 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
         val data: Data = Data.Builder()
             .putString(SaveFileToStorageWorker.KEY_FILE_NAME, fileName)
-            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, "$sourceDirectory/$fileName")
+            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, sourceFile.absolutePath)
             .build()
 
         val saveWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveFileToStorageWorker::class.java)
@@ -110,11 +116,13 @@ class SaveToStorageDialogFragment : DialogFragment() {
     companion object {
         val TAG = SaveToStorageDialogFragment::class.java.simpleName
         private const val KEY_FILE_NAME = "keyFileName"
+        private const val KEY_FILE_ID = "keyFileId"
         private const val SAVE_TO_STORAGE_WORKER_PREFIX = "saveToStorage_"
 
-        fun newInstance(fileName: String): SaveToStorageDialogFragment {
+        fun newInstance(fileName: String, fileId: String? = null): SaveToStorageDialogFragment {
             val args = Bundle()
             args.putString(KEY_FILE_NAME, fileName)
+            fileId?.let { args.putString(KEY_FILE_ID, it) }
             val fragment = SaveToStorageDialogFragment()
             fragment.arguments = args
             return fragment
