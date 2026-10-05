@@ -2620,7 +2620,9 @@ class ChatActivity :
         }
     }
 
-    // the update only touches the layout of the preview when its placement changed, so it does not loop
+    private val accessibilityBeforeVideoRecording = HashMap<View, Int>()
+
+    // the update only touches the layout of the preview when its size changed, so it does not loop
     private val videoScrimLayoutListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
         updateVideoRecordingPreviewLayout()
     }
@@ -2634,12 +2636,13 @@ class ChatActivity :
         val scrim = binding.videoRecordingScrim
         if (scrim.width <= 0 || scrim.height <= 0) return
         val resources = scrim.resources
+        val displayRotation = ContextCompat.getDisplayOrDefault(scrim.context)?.rotation ?: Surface.ROTATION_0
         val placement = videoPreviewPlacement(
             areaWidth = scrim.width,
             areaHeight = scrim.height,
-            aspect = chatViewModel.activeVideoMessageRecorder?.frameAspect ?: fallbackVideoFrameAspect(
-                binding.videoRecordingPreview.display?.rotation ?: Surface.ROTATION_0
-            ),
+            aspect = chatViewModel.activeVideoMessageRecorder
+                ?.let { screenFrameAspect(it.frameAspect, it.videoRotation, displayRotation) }
+                ?: fallbackVideoFrameAspect(displayRotation),
             limits = VideoPreviewLimits(
                 margin = resources.getDimensionPixelSize(R.dimen.standard_margin),
                 maxWidthFraction = VIDEO_PREVIEW_MAX_WIDTH_FRACTION,
@@ -2648,18 +2651,33 @@ class ChatActivity :
         )
         val container = binding.videoRecordingContainer
         val params = container.layoutParams as FrameLayout.LayoutParams
-        val changed = params.width != placement.width ||
-            params.height != placement.height ||
-            params.leftMargin != placement.left ||
-            params.topMargin != placement.top
-        if (changed) {
+        if (params.width != placement.width || params.height != placement.height) {
             params.width = placement.width
             params.height = placement.height
-            params.gravity = Gravity.TOP or Gravity.START
-            params.marginStart = placement.left
-            params.topMargin = placement.top
+            params.gravity = Gravity.CENTER
             container.layoutParams = params
             container.invalidateOutline()
+        }
+    }
+
+    /**
+     * TalkBack reaches the views under the dimming layer, which only swallows touches. While the video is recorded
+     * they are hidden from it; the values they had are put back afterwards. A new activity after a rotation starts
+     * with nothing saved and saves the defaults of its own fresh views.
+     */
+    private fun hideChatFromAccessibility(hide: Boolean) {
+        val parent = binding.videoRecordingScrim.parent as? ViewGroup ?: return
+        if (hide) {
+            if (accessibilityBeforeVideoRecording.isNotEmpty()) return
+            for (i in 0 until parent.childCount) {
+                val child = parent.getChildAt(i)
+                if (child === binding.videoRecordingScrim) continue
+                accessibilityBeforeVideoRecording[child] = child.importantForAccessibility
+                child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            }
+        } else {
+            accessibilityBeforeVideoRecording.forEach { (view, value) -> view.importantForAccessibility = value }
+            accessibilityBeforeVideoRecording.clear()
         }
     }
 
@@ -2678,6 +2696,7 @@ class ChatActivity :
                 chatViewModel.activeVideoMessageRecorder?.switchCamera()
             }
         }
+        hideChatFromAccessibility(show)
         binding.videoRecordingScrim.visibility = if (show) View.VISIBLE else View.GONE
     }
 
