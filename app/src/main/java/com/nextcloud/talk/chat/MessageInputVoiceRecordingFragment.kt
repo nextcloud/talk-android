@@ -164,7 +164,8 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     /**
      * Video is recorded with a one-line panel (delete, red dot in the progress ring, timer, send) so that the preview
      * gets the height. The views are the ones of the voice panel, only arranged differently; the voice panel stays
-     * as it is. The fragment is recreated after a rotation and arranges the row again.
+     * as it is. The fragment is recreated after a rotation and arranges the row again. The buttons get new layout
+     * params here, so their vertical margins from the layout do not apply in this row (48dp + 2 x 8dp padding).
      */
     private fun showCompactVideoRow() {
         val row = binding.recordingControlsRow
@@ -172,7 +173,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         val margin = resources.getDimensionPixelSize(R.dimen.standard_half_margin)
         (timer.parent as ViewGroup).removeView(timer)
         row.addView(timer, row.indexOfChild(binding.micInputCloud), LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
-        timer.setPadding(margin, 0, 0, 0)
+        timer.setPaddingRelative(margin, 0, 0, 0)
         row.setPadding(margin, margin, margin, margin)
         row.weightSum = 0f
         for (button in listOf(binding.deleteVoiceRecording, binding.sendVoiceRecording)) {
@@ -180,6 +181,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         }
         binding.micInputCloud.visibility = View.GONE
         binding.videoRecordingIndicator.visibility = View.VISIBLE
+        binding.videoRecordingProgress.max = PROGRESS_MAX
         timer.setOnChronometerTickListener {
             val elapsed = SystemClock.elapsedRealtime() - it.base
             binding.videoRecordingProgress.progress =
