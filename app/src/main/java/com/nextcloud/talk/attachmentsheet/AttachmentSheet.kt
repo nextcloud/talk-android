@@ -47,6 +47,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -127,10 +128,10 @@ fun AttachmentSheet(model: AttachmentSheetModel, callbacks: AttachmentSheetCallb
 private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: AttachmentSheetCallbacks) {
     val context = LocalContext.current
     val refreshKey = rememberResumeRefreshKey()
-    val granted = remember(refreshKey) { grantedMediaPermissions(context) }
+    val granted = remember(refreshKey.intValue) { grantedMediaPermissions(context) }
     val access = resolveMediaAccess(Build.VERSION.SDK_INT, granted)
     val canSelectMore = canSelectMoreMedia(Build.VERSION.SDK_INT, granted)
-    val media by produceState<List<RecentMedia>?>(null, refreshKey, access) {
+    val media by produceState<List<RecentMedia>?>(null, refreshKey.intValue, access) {
         value = if (access == MediaAccess.NONE) {
             emptyList()
         } else {
@@ -141,7 +142,8 @@ private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: Attachme
     LaunchedEffect(media) {
         media?.let { loaded -> selection = selection.retainAvailable(loaded.map { it.key }) }
     }
-    val permissionRequest = rememberMediaPermissionRequest()
+    // The system grants without a dialog (no pause, no resume) when the permission group is already granted
+    val permissionRequest = rememberMediaPermissionRequest { refreshKey.intValue++ }
 
     val hiddenBottomPx = rememberHiddenBottomPx()
     val hiddenBottomDp = with(LocalDensity.current) { hiddenBottomPx.value.toDp() }
@@ -187,17 +189,18 @@ private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: Attachme
 
 /**
  * Changes after the sheet's screen came back from the background (e.g. from the app settings), so the media list
- * and the permissions are read again. The first resume while the sheet opens does not count.
+ * and the permissions are read again. The first resume while the sheet opens does not count. The caller also bumps
+ * it when a permission request returns.
  */
 @Composable
-private fun rememberResumeRefreshKey(): Int {
-    var refreshKey by remember { mutableIntStateOf(0) }
+private fun rememberResumeRefreshKey(): MutableIntState {
+    val refreshKey = remember { mutableIntStateOf(0) }
     var wasPaused by remember { mutableStateOf(false) }
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) { wasPaused = true }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         if (wasPaused) {
             wasPaused = false
-            refreshKey++
+            refreshKey.intValue++
         }
     }
     return refreshKey
@@ -232,14 +235,15 @@ private fun currentMediaAccess(context: Context): MediaAccess =
 
 /**
  * Asks for media access. When the system dialog will not appear again (denied with "don't ask again"), the call
- * opens the app settings instead.
+ * opens the app settings instead. [onPermissionResult] runs when the request returns, whatever the answer.
  */
 @Composable
-private fun rememberMediaPermissionRequest(): () -> Unit {
+private fun rememberMediaPermissionRequest(onPermissionResult: () -> Unit): () -> Unit {
     val context = LocalContext.current
     val activity = LocalActivity.current
     var blocked by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        onPermissionResult()
         blocked = currentMediaAccess(context) == MediaAccess.NONE &&
             activity != null &&
             mediaPermissionsToRequest(Build.VERSION.SDK_INT).none {
