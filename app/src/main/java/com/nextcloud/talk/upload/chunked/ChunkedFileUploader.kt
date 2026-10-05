@@ -335,13 +335,20 @@ class ChunkedFileUploader(
         }
     }
 
+    /**
+     * Called from the worker's onStopped, which WorkManager runs inside a coroutine cancellation handler:
+     * anything thrown here crashes the process, so this function must never throw.
+     */
     fun abortUpload(onSuccess: () -> Unit) {
         isUploadAborted = true
+        val client = okHttpClientNoRedirects
+        val folderUrl = uploadFolderUri.toHttpUrlOrNull()
+        if (client == null || folderUrl == null) {
+            Log.i(TAG, "Nothing to abort, chunk upload was not started")
+            return
+        }
         try {
-            DavResource(
-                okHttpClientNoRedirects!!,
-                uploadFolderUri.toHttpUrlOrNull()!!
-            ).delete { response: Response ->
+            DavResource(client, folderUrl).delete { response: Response ->
                 when {
                     response.isSuccessful -> onSuccess()
                     else -> isUploadAborted = false
@@ -350,6 +357,10 @@ class ChunkedFileUploader(
         } catch (e: NotFoundException) {
             Log.i(TAG, "Chunk upload folder could not be found", e)
             onSuccess()
+        } catch (e: DavException) {
+            Log.w(TAG, "Failed to remove chunk upload folder", e)
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to remove chunk upload folder", e)
         }
     }
 
