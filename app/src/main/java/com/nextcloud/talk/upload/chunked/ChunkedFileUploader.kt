@@ -339,6 +339,7 @@ class ChunkedFileUploader(
      * Called from the worker's onStopped, which WorkManager runs inside a coroutine cancellation handler:
      * anything thrown here crashes the process, so this function must never throw.
      */
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun abortUpload(onSuccess: () -> Unit) {
         isUploadAborted = true
         val client = okHttpClientNoRedirects
@@ -357,9 +358,7 @@ class ChunkedFileUploader(
         } catch (e: NotFoundException) {
             Log.i(TAG, "Chunk upload folder could not be found", e)
             onSuccess()
-        } catch (e: DavException) {
-            Log.w(TAG, "Failed to remove chunk upload folder", e)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.w(TAG, "Failed to remove chunk upload folder", e)
         }
     }
