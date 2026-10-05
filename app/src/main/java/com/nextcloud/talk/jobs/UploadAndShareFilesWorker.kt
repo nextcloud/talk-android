@@ -67,6 +67,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import java.io.File
@@ -114,7 +115,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var currentUser: User
     private var isChunkedUploading = false
     private var file: File? = null
+
+    @Volatile
     private var chunkedFileUploader: ChunkedFileUploader? = null
+
     private var referenceId: String? = null
     private var internalConversationId: String? = null
     private var uploadDisposable: Disposable? = null
@@ -315,6 +319,18 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         )
 
     /**
+     * Publishes [uploader] before the last stop check: a stop that comes earlier is seen here, a later one reaches
+     * the uploader through [onStopped].
+     */
+    private fun startChunkedUpload(uploader: ChunkedFileUploader, mimeType: MediaType?, path: String): Boolean {
+        chunkedFileUploader = uploader
+        if (isStopped || isCancelled()) {
+            return false
+        }
+        return uploader.upload(file!!, mimeType, path)
+    }
+
+    /**
      * Removes what the upload left on the server: the parts of a chunked upload and, when [deleteUploadedFile] is
      * set and the file was not shared yet, the assembled file. Never throws.
      */
@@ -325,12 +341,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 return
             }
             val uploader = chunkedFileUploader ?: newChunkedUploader()
-            // No upload ran in this process: remove the parts an earlier run may have left.
+            // The parts are keyed by the prepared file: this finds them also when the upload of this run did not
+            // start yet or ran in an earlier process.
             val prepared = workspace.prepared()?.file
-            if (chunkedFileUploader != null) {
-                uploader.abortUpload {}
-            } else if (prepared != null && prepared.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
+            if (prepared != null && prepared.length() > CHUNK_UPLOAD_THRESHOLD_SIZE) {
                 uploader.abortUpload(prepared) {}
+            } else if (chunkedFileUploader != null) {
+                uploader.abortUpload {}
             }
             val uploadedPath = workspace.uploadedPath()
             if (deleteUploadedFile && uploadedPath != null && !workspace.isShared()) {
@@ -463,8 +480,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
             val mimeType = FileUtils.resolveMimeType(context, sourceFileUri)?.toMediaTypeOrNull()
-            chunkedFileUploader = newChunkedUploader()
-            chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
+            startChunkedUpload(newChunkedUploader(), mimeType, remotePath)
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
             val observable = FileUploader(
@@ -568,8 +584,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private suspend fun uploadToDraftFolder(sourceFileUri: Uri, tempRemotePath: String): Boolean =
         if (isChunkedUploading) {
             val mimeType = FileUtils.resolveMimeType(context, sourceFileUri)?.toMediaTypeOrNull()
-            chunkedFileUploader = newChunkedUploader()
-            chunkedFileUploader!!.upload(file!!, mimeType, tempRemotePath)
+            startChunkedUpload(newChunkedUploader(), mimeType, tempRemotePath)
         } else {
             FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!, ncApiCoroutines)
                 .uploadToConversationSubfolder(sourceFileUri, tempRemotePath)

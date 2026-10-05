@@ -427,7 +427,7 @@ class ChunkedFileUploader(
         }
     }
 
-    /** Removes the parts of an earlier run of [localFile], for an uploader that has not started an upload. */
+    /** Interrupts this uploader and removes the parts of [localFile], also those an earlier run left. */
     fun abortUpload(localFile: File, onSuccess: () -> Unit) {
         uploadFolderUri = folderUriOf(localFile)
         abortUpload(onSuccess)
