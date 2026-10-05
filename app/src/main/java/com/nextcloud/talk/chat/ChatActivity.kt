@@ -121,7 +121,9 @@ import com.nextcloud.talk.attachmentsheet.AttachmentSheet
 import com.nextcloud.talk.attachmentsheet.AttachmentSheetCallbacks
 import com.nextcloud.talk.attachmentsheet.AttachmentSheetModel
 import com.nextcloud.talk.attachmentsheet.AttachmentVisibilityInput
+import com.nextcloud.talk.attachmentsheet.isShareFileRequestGranted
 import com.nextcloud.talk.attachmentsheet.resolveAttachmentActions
+import com.nextcloud.talk.attachmentsheet.shareFilePermissionsToRequest
 import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
@@ -2727,23 +2729,7 @@ class ChatActivity :
     }
 
     private fun requestReadFilesPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_AUDIO
-                ),
-                REQUEST_SHARE_FILE_PERMISSION
-            )
-        } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                REQUEST_SHARE_FILE_PERMISSION
-            )
-        }
+        requestPermissions(shareFilePermissionsToRequest(Build.VERSION.SDK_INT), REQUEST_SHARE_FILE_PERMISSION)
     }
 
     private fun checkShowCallButtons() {
@@ -3031,7 +3017,7 @@ class ChatActivity :
                     .show()
             }
         } else if (requestCode == REQUEST_SHARE_FILE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isShareFileRequestGranted(grantResults, permissionUtil.isFilesPermissionGranted())) {
                 showLocalFilePicker()
             } else {
                 Snackbar.make(
