@@ -123,14 +123,23 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private lateinit var workspace: UploadWorkspace
     private var keepWorkspace = false
 
+    @Volatile
+    private var cancelSeen = false
+
     /**
      * WorkManager's own `isStopped`/`onStopped()` only becomes true/fires after
      * cancelUniqueWork() round-trips through WorkManager's internal executor and Room DB - for a
      * small/compressed image the whole upload+share can finish faster than that round-trip, so
      * isStopped alone arrives too late. [cancelledReferenceIds] is set synchronously by the UI
      * before cancelUniqueWork() is even called, so it's visible to doWork() immediately.
+     * Once seen, the cancel is latched: doWork() removes the marker, and onStopped() can still come after that.
      */
-    private fun isCancelled(): Boolean = referenceId?.let { cancelledReferenceIds.contains(it) } == true
+    private fun isCancelled(): Boolean {
+        if (referenceId?.let { cancelledReferenceIds.contains(it) } == true) {
+            cancelSeen = true
+        }
+        return cancelSeen
+    }
 
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -144,6 +153,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         try {
             return doUpload()
         } finally {
+            isCancelled() // latches a cancel that came after the last check, before its marker is removed
             referenceId?.let { cancelledReferenceIds.remove(it) }
             // A run that is stopped, or will be tried again, resumes from the prepared file.
             if (!keepWorkspace) {
