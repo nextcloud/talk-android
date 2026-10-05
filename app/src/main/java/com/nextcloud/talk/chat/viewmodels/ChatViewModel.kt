@@ -414,11 +414,12 @@ class ChatViewModel @AssistedInject constructor(
         // uploadReferenceToWorkId is session-local - after an app restart it's empty, then the work is
         // found by its reference id. That lookup blocks, so it runs off the main thread.
         // The placeholder below is removed whether or not a work is found.
+        // Both jobs run in appScope: leaving the chat right after the tap must not drop the cancellation.
         val workId = uploadReferenceToWorkId.remove(referenceId)
-        viewModelScope.launch(Dispatchers.IO) {
+        appScope.launch(Dispatchers.IO) {
             UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
         }
-        viewModelScope.launch {
+        appScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
         _uploadProgressMap.update { it - referenceId }
