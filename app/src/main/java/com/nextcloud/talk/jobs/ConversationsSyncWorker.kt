@@ -38,10 +38,10 @@ import javax.inject.Inject
  *
  * Accounts are synced one after another, in two passes: first the room list of every account,
  * then the messages of each. A slow message prefetch therefore cannot keep another account's
- * room list from being synced. The run is skipped in battery saver mode and while the app
- * is in the foreground, and a run in which any account failed is retried up to [MAX_RUN_ATTEMPTS]
- * times. Network availability is enforced by the [NetworkType.CONNECTED] constraint on the request
- * rather than checked here.
+ * room list from being synced. The run is skipped in battery saver mode and while the app is in
+ * the foreground, stops syncing room lists once the app comes to the foreground, and a run in which
+ * any account failed is retried up to [MAX_RUN_ATTEMPTS] times. Network availability is enforced by the
+ * [NetworkType.CONNECTED] constraint on the request rather than checked here.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) :
@@ -93,20 +93,52 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
 
         // room lists first, for every account: they are what the conversation list shows. Messages
         // are prefetched only after that, with the time the run has left
-        val syncedAccounts = longestWaitingFirst.map { it to syncAccount(it) }
-        syncedAccounts.forEach { (user, roomsWithNewMessages) ->
-            roomsWithNewMessages?.let { catchUpAccount(user, it) }
-        }
+        val syncedAccounts = syncRoomLists(longestWaitingFirst)
+        catchUpMessages(syncedAccounts)
 
         val failed = syncedAccounts.count { (_, roomsWithNewMessages) -> roomsWithNewMessages == null }
 
         return if (failed == 0) {
             Result.success()
         } else {
-            Log.w(TAG, "$failed of ${accounts.size} accounts did not sync (attempt ${runAttemptCount + 1})")
+            Log.w(TAG, "$failed of ${syncedAccounts.size} tried accounts did not sync (attempt ${runAttemptCount + 1})")
             retryOrFail()
         }
     }
+
+    /**
+     * Syncs the room list of each of [accounts] in turn, pairing each account with the rooms to
+     * catch up, or null when its sync failed. Accounts the run did not get to are left out.
+     */
+    private suspend fun syncRoomLists(accounts: List<User>): List<Pair<User, List<ConversationEntity>?>> {
+        val syncedAccounts = mutableListOf<Pair<User, List<ConversationEntity>?>>()
+        for (user in accounts) {
+            if (cameToForeground()) break
+            syncedAccounts += user to syncAccount(user)
+        }
+        return syncedAccounts
+    }
+
+    /**
+     * Catches up the messages of every account whose room list was synced, even once the app is in
+     * the foreground: the list stored those rooms' latest activity already, so its own sync no
+     * longer counts them as having new messages and would not catch them up in the run's place.
+     */
+    private suspend fun catchUpMessages(syncedAccounts: List<Pair<User, List<ConversationEntity>?>>) {
+        for ((user, roomsWithNewMessages) in syncedAccounts) {
+            roomsWithNewMessages?.let { catchUpAccount(user, it) }
+        }
+    }
+
+    /**
+     * Whether the app came to the foreground since the run started. The conversation list then
+     * syncs on its own, and a run going on alongside it would race it for the same rows, so the
+     * remaining room lists are left to the next run.
+     */
+    private suspend fun cameToForeground(): Boolean =
+        isAppInForeground().also { inForeground ->
+            if (inForeground) Log.d(TAG, "App came to the foreground, leaving the remaining room lists to the next run")
+        }
 
     /**
      * Syncs a single account's room list, returning the rooms whose messages should be caught up,

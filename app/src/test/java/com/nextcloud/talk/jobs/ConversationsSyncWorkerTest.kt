@@ -10,6 +10,9 @@ package com.nextcloud.talk.jobs
 import android.app.Application
 import android.content.Context
 import android.os.PowerManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
@@ -19,6 +22,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -43,6 +47,7 @@ import java.util.concurrent.TimeUnit
  * Tests for [ConversationsSyncWorker]: which accounts a run syncs, when a run stands down without
  * syncing, and how a failed run reports itself.
  */
+@Suppress("TooManyFunctions")
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
 class ConversationsSyncWorkerTest {
@@ -69,6 +74,18 @@ class ConversationsSyncWorkerTest {
         val worker = worker()
         shadowOf(applicationContext().getSystemService(Context.POWER_SERVICE) as PowerManager)
             .setIsPowerSaveMode(true)
+
+        val result = runBlocking { worker.sync() }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(userManager, never()) { getUsers() }
+        verifyBlocking(repository, never()) { syncRooms(any(), any(), anyOrNull()) }
+    }
+
+    @Test
+    fun `an app in the foreground stands the sync down entirely`() {
+        val worker = worker()
+        moveAppTo(Lifecycle.State.STARTED)
 
         val result = runBlocking { worker.sync() }
 
@@ -162,6 +179,22 @@ class ConversationsSyncWorkerTest {
     }
 
     @Test
+    fun `the app coming to the foreground stops the room lists but not the messages already due`() {
+        val worker = worker()
+        wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
+        wheneverBlocking { repository.syncRooms(eq(user(1)), any(), anyOrNull()) }.thenAnswer {
+            moveAppTo(Lifecycle.State.STARTED)
+            NO_ROOMS
+        }
+
+        val result = runBlocking { worker.sync() }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(repository, never()) { syncRooms(eq(user(2)), any(), anyOrNull()) }
+        verifyBlocking(repository) { catchUpRooms(user(1), NO_ROOMS) }
+    }
+
+    @Test
     fun `a failed account lookup is retried rather than reported as a sync`() {
         val worker = worker()
         wheneverBlocking { userManager.getUsers() }.thenThrow(IllegalStateException("database is gone"))
@@ -192,6 +225,16 @@ class ConversationsSyncWorkerTest {
         assertThrows(CancellationException::class.java) { runBlocking { worker.sync() } }
 
         verifyBlocking(repository, times(1)) { syncRooms(any(), any(), anyOrNull()) }
+    }
+
+    @After
+    fun tearDown() {
+        moveAppTo(Lifecycle.State.CREATED)
+    }
+
+    /** Moves the process lifecycle, which outlives a single test, to [state]. */
+    private fun moveAppTo(state: Lifecycle.State) {
+        (ProcessLifecycleOwner.get().lifecycle as LifecycleRegistry).currentState = state
     }
 
     private fun worker(runAttempt: Int = 0): ConversationsSyncWorker =
