@@ -13,6 +13,7 @@ import android.os.PowerManager
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
@@ -198,7 +199,7 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.getRooms(user()).join()
@@ -214,13 +215,13 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.syncRooms(user())
 
             collector.cancel()
-            assertEquals(emptyList<Throwable>(), errors)
+            assertEquals(emptyList<OfflineConversationsRepository.SyncError>(), errors)
         }
 
     @Test
@@ -598,7 +599,7 @@ class OfflineFirstConversationsRepositoryTest {
             val unauthorized = HttpException(Response.error<Any>(HTTP_UNAUTHORIZED, "".toResponseBody()))
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(Observable.error(unauthorized))
 
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.IO) {
                 repository.syncErrorFlow.collect { errors.add(it) }
             }
@@ -608,7 +609,7 @@ class OfflineFirstConversationsRepositoryTest {
             repository.getRooms(user()).join()
 
             awaitUntil { errors.isNotEmpty() }
-            assertEquals(unauthorized, errors.first())
+            assertEquals(OfflineConversationsRepository.SyncError(ACCOUNT_ID, unauthorized), errors.first())
             verify(network, times(1)).getRooms(any(), any(), any(), anyOrNull())
             collector.cancel()
         }

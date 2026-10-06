@@ -82,9 +82,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
         get() = _conversationFlow
     private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
-    override val syncErrorFlow: Flow<Throwable>
+    override val syncErrorFlow: Flow<OfflineConversationsRepository.SyncError>
         get() = _syncErrorFlow
-    private val _syncErrorFlow: MutableSharedFlow<Throwable> = MutableSharedFlow()
+    private val _syncErrorFlow: MutableSharedFlow<OfflineConversationsRepository.SyncError> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -187,9 +187,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
      * Syncs [user]'s room list, returning the rooms whose messages should be caught up, or null
      * when the sync failed.
      *
-     * [reportSyncError] lets a failure reach [syncErrorFlow]. That flow does not say which account
-     * failed and the conversation list shows whatever arrives there, so only a sync of the account
-     * the list shows may report to it.
+     * [reportSyncError] lets a failure reach [syncErrorFlow]. The conversation list shows the errors
+     * of its account that arrive there, so only the sync the list starts may report to it, not the
+     * background sync of the same account.
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun getRoomsFromServer(
@@ -219,7 +219,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
             // Cached conversations do not help when the credentials were rejected, the user has to act on that.
             if (reportSyncError && (!hasCachedConversations || e.isUnauthorized())) {
-                _syncErrorFlow.emit(e)
+                _syncErrorFlow.emit(OfflineConversationsRepository.SyncError(accountId, e))
             }
             null
         }
