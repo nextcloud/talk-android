@@ -14,9 +14,11 @@ import junit.framework.TestCase.assertNull
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.mockito.MockitoAnnotations
+import java.io.IOException
 
 @Suppress("ktlint:standard:max-line-length", "MaxLineLength")
 class NetworkLoginDataSourceTest {
@@ -163,5 +165,16 @@ class NetworkLoginDataSourceTest {
 
         val loginCompletion = network.performLoginFlowV2(loginResponse)
         assertNull(loginCompletion)
+    }
+
+    @Test
+    fun `testing performLoginFlowV2 request failure is thrown`() {
+        val server = MockWebServer()
+        server.start()
+        val httpUrl = server.url("login/v2/poll")
+        server.shutdown()
+        val loginResponse = LoginResponse(token = "token", pollUrl = httpUrl.toString(), loginUrl = "")
+
+        assertThrows(IOException::class.java) { network.performLoginFlowV2(loginResponse) }
     }
 }

@@ -113,7 +113,9 @@ class BrowserLoginActivity : BaseActivity() {
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
                             logger.e(TAG, "Post login step failed")
-                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                            // The waiting screen has nothing left to wait for, so the message must outlive it.
+                            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                            finish()
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()

@@ -123,6 +123,10 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
         return result
     }
 
+    /**
+     * Returns null for a 200 response with an unusable body. Throws [IOException] if the request fails.
+     */
+    @Throws(IOException::class)
     fun performLoginFlowV2(response: LoginResponse): LoginCompletion? {
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", response.token)
@@ -153,11 +157,9 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
                 }
         }.getOrElse { e ->
             when (e) {
+                // An unusable body: the poll is over. An IOException is not caught, the caller retries.
                 is NullPointerException,
-                is SSLHandshakeException,
-                is IllegalStateException,
-                is java.net.UnknownHostException,
-                is IOException -> {
+                is IllegalStateException -> {
                     Log.e(TAG, "Error caught at performLoginFlowV2: with url ${request.url} $e")
                 }
 
