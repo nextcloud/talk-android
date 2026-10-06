@@ -622,7 +622,7 @@
     <string name="nc_share_this_location">Del denne placering</string>
     <string name="nc_share_to_choose_account">Vælg konto</string>
     <string name="nc_shared_items">Delte elementer</string>
-    <string name="nc_shared_items_deck_card">Opslagskort</string>
+    <string name="nc_shared_items_deck_card">Deck-kort</string>
     <string name="nc_shared_items_description">Billeder, filer, stemmebeskeder ...</string>
     <string name="nc_shared_items_empty">Ingen delte elementer</string>
     <string name="nc_shared_items_location">Sted</string>
