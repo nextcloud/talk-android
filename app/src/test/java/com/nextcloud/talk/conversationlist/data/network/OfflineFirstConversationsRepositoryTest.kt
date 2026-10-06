@@ -135,6 +135,18 @@ class OfflineFirstConversationsRepositoryTest {
         }
 
     @Test
+    fun `syncRooms tries the server even when the device is not known to be online`() =
+        runBlocking {
+            whenever(networkMonitor.isOnline).thenReturn(MutableStateFlow(false))
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+
+            val roomsWithNewMessages = repository.syncRooms(user())
+
+            assertEquals(listOf(ROOM_TOKEN), roomsWithNewMessages?.map { it.token })
+        }
+
+    @Test
     fun `getRooms fetches conversations from the server and syncs them locally when online`() =
         runBlocking {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)

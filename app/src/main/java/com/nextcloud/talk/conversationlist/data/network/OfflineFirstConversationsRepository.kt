@@ -170,11 +170,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
         forceFullSync: Boolean = false,
         roomListTimeoutMillis: Long? = null
     ): List<ConversationEntity>? {
-        if (!networkMonitor.isOnline.value) {
-            Log.d(TAG, "Device is offline, can't load conversations from server")
-            return null
-        }
-
         val accountId = user.id!!
         val modifiedSince = modifiedSinceFor(user, forceFullSync)
 

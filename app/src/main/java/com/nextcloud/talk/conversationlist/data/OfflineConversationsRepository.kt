@@ -65,6 +65,9 @@ interface OfflineConversationsRepository {
      *
      * With [roomListTimeoutMillis] set, the sync is given at most that long and reports failure
      * when it runs out.
+     *
+     * Connectivity is not pre-checked: the request is sent and a failure is reported like any
+     * other, so a network that is connected but not yet validated still gets its chance.
      */
     suspend fun syncRooms(
         user: User,
