@@ -9,6 +9,7 @@ package com.nextcloud.talk.account.data.network
 
 import android.util.Log
 import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
@@ -162,7 +163,9 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             when (e) {
                 // An unusable body: the poll is over. An IOException is not caught, the caller retries.
                 is NullPointerException,
-                is IllegalStateException -> {
+                is IllegalStateException,
+                is UnsupportedOperationException,
+                is JsonParseException -> {
                     Log.e(TAG, "Error caught at performLoginFlowV2: with url ${request.url} $e")
                 }
 
