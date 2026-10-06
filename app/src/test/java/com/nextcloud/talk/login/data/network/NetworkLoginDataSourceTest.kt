@@ -11,6 +11,7 @@ import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -163,5 +164,25 @@ class NetworkLoginDataSourceTest {
 
         val loginCompletion = network.performLoginFlowV2(loginResponse)
         assertNull(loginCompletion)
+    }
+
+    @Test(expected = NetworkLoginDataSource.TooManyLoginAttemptsException::class)
+    fun `testing oneTimePasswordRequest refused because of too many failed logins`() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse().setResponseCode(429))
+        server.start()
+
+        network.oneTimePasswordRequest(server.url("").toString(), Credentials.basic("username", "oneTimePassword"))
+    }
+
+    @Test
+    fun `testing oneTimePasswordRequest error path`() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse().setResponseCode(401))
+        server.start()
+
+        val appPassword =
+            network.oneTimePasswordRequest(server.url("").toString(), Credentials.basic("username", "oneTimePassword"))
+        assertNull(appPassword)
     }
 }
