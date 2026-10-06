@@ -9,6 +9,8 @@ package com.nextcloud.talk.account.viewmodels
 import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.data.PendingBrowserLoginStore
 import com.nextcloud.talk.account.data.model.LoginResponse
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -22,6 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -137,6 +140,41 @@ class BrowserLoginActivityViewModelTest {
 
         assertNull(PendingBrowserLoginStore.active())
         verify(repository).cancelLoginFlow()
+    }
+
+    @Test
+    fun `a login request answered after cancel is not saved`() {
+        val answer = CompletableDeferred<LoginResponse?>()
+        wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.doSuspendableAnswer { answer.await() }
+        viewModel.startWebBrowserLogin(BASE_URL)
+
+        viewModel.cancelLogin()
+        answer.complete(loginResponse)
+
+        assertNull(PendingBrowserLoginStore.active())
+        assertEquals(BrowserLoginActivityViewModel.InitialLoginViewState.None, viewModel.initialLoginRequestState.value)
+    }
+
+    @Test
+    fun `a failed poll ends the pending login with an error`() {
+        startAndLoseActivity()
+        wheneverBlocking { repository.pollLogin(any()) }.thenThrow(IllegalArgumentException("bad poll url"))
+
+        viewModel.handleWebBrowserLogin()
+
+        assertNull(PendingBrowserLoginStore.active())
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError, viewModel.postLoginState.value)
+    }
+
+    @Test
+    fun `a canceled poll keeps the login pending`() {
+        startAndLoseActivity()
+        wheneverBlocking { repository.pollLogin(any()) }.thenThrow(CancellationException("view model cleared"))
+
+        viewModel.handleWebBrowserLogin()
+
+        assertNotNull(PendingBrowserLoginStore.active())
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.None, viewModel.postLoginState.value)
     }
 
     @Test
