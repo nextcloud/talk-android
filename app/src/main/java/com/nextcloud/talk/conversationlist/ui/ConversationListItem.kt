@@ -262,7 +262,7 @@ private fun ConversationAvatarImage(model: ConversationModel, currentUser: User,
                 val request = remember(avatarContent.url, credentials) {
                     ImageRequest.Builder(context)
                         .data(avatarContent.url)
-                        .diskCacheKey("${avatarContent.url}#v2")
+                        .diskCacheKey(avatarContent.diskCacheKey)
                         .addHeader("Authorization", credentials)
                         .crossfade(true)
                         .listener(

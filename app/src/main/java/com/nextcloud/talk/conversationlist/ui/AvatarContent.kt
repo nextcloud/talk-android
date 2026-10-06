@@ -21,7 +21,17 @@ internal sealed class AvatarContent {
      * conversation avatars are versioned; a one-to-one room's avatar is the peer's user avatar,
      * which is outside the version scheme and must revalidate via the response cache headers.
      */
-    data class Url(val url: String, val versioned: Boolean) : AvatarContent()
+    data class Url(val url: String, val versioned: Boolean) : AvatarContent() {
+        /**
+         * The key of the avatar in the disk cache, so other places can use the avatar the list loaded.
+         *
+         * The suffix only names the cache entry, the request still goes to [url]. It keeps these entries apart from
+         * avatars cached under the plain URL elsewhere, and changing it makes all avatars cached with it unused, so
+         * they are loaded again.
+         */
+        val diskCacheKey: String
+            get() = "$url#v2"
+    }
     data class Res(@param:DrawableRes val resId: Int) : AvatarContent()
     object System : AvatarContent()
     object NoteToSelf : AvatarContent()
