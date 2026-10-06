@@ -22,14 +22,13 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.isPowerSaveMode
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -37,7 +36,9 @@ import javax.inject.Inject
  * Periodic worker that syncs the conversation list, and the messages that sync prefetches, for
  * every configured account.
  *
- * Accounts are synced one after another. The run is skipped in battery saver mode and while the app
+ * Accounts are synced one after another, in two passes: first the room list of every account,
+ * then the messages of each. A slow message prefetch therefore cannot keep another account's
+ * room list from being synced. The run is skipped in battery saver mode and while the app
  * is in the foreground, and a run in which any account failed is retried up to [MAX_RUN_ATTEMPTS]
  * times. Network availability is enforced by the [NetworkType.CONNECTED] constraint on the request
  * rather than checked here.
@@ -90,7 +91,14 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
         // the front keep the ones behind them from ever being reached
         val longestWaitingFirst = accounts.sortedBy { conversationsRepository.lastFullSyncAt(it.id!!) ?: 0L }
 
-        val failed = longestWaitingFirst.count { !syncAccount(it) }
+        // room lists first, for every account: they are what the conversation list shows. Messages
+        // are prefetched only after that, with the time the run has left
+        val syncedAccounts = longestWaitingFirst.map { it to syncAccount(it) }
+        syncedAccounts.forEach { (user, roomsWithNewMessages) ->
+            roomsWithNewMessages?.let { catchUpAccount(user, it) }
+        }
+
+        val failed = syncedAccounts.count { (_, roomsWithNewMessages) -> roomsWithNewMessages == null }
 
         return if (failed == 0) {
             Result.success()
@@ -101,28 +109,36 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
     }
 
     /**
-     * Syncs a single account, returning whether it succeeded. Failures are logged; the run being
-     * cancelled propagates.
+     * Syncs a single account's room list, returning the rooms whose messages should be caught up,
+     * or null when it failed. Failures are logged; the run being cancelled propagates.
      *
-     * The sync is given at most [ACCOUNT_TIMEOUT_MINUTES] minutes. An account that cannot finish
-     * would otherwise be able to spend the whole execution window WorkManager grants the run, and
-     * since its stored timestamp never advances it would keep sorting first and keep the accounts
-     * behind it from ever being reached.
+     * The sync is given at most [ROOM_LIST_TIMEOUT_MINUTES] minutes. An account whose list cannot be
+     * synced would otherwise be able to spend the whole execution window WorkManager grants the run,
+     * and since its stored timestamp never advances it would keep sorting first and keep the
+     * accounts behind it from ever being reached.
      */
-    private suspend fun syncAccount(user: User): Boolean =
+    private suspend fun syncAccount(user: User): List<ConversationEntity>? =
         runCatching {
-            withTimeout(TimeUnit.MINUTES.toMillis(ACCOUNT_TIMEOUT_MINUTES)) {
-                conversationsRepository.syncRooms(user)
-            }
+            conversationsRepository.syncRooms(
+                user,
+                roomListTimeoutMillis = TimeUnit.MINUTES.toMillis(ROOM_LIST_TIMEOUT_MINUTES)
+            )
         }.getOrElse { throwable ->
-            if (throwable is CancellationException && throwable !is TimeoutCancellationException) throw throwable
-            if (throwable is TimeoutCancellationException) {
-                Log.w(TAG, "Background conversation sync for account ${user.id} ran out of its time budget")
-            } else {
-                Log.e(TAG, "Background conversation sync failed for account ${user.id}", throwable)
-            }
-            false
+            if (throwable is CancellationException) throw throwable
+            Log.e(TAG, "Background conversation sync failed for account ${user.id}", throwable)
+            null
         }
+
+    /**
+     * Prefetches the messages of an account's [rooms]. A failure is logged and does not fail the
+     * run: the room list is stored already, and the messages load when the chat is opened.
+     */
+    private suspend fun catchUpAccount(user: User, rooms: List<ConversationEntity>) {
+        runCatching { conversationsRepository.catchUpRooms(user, rooms) }.onFailure { throwable ->
+            if (throwable is CancellationException) throw throwable
+            Log.e(TAG, "Background message catch-up failed for account ${user.id}", throwable)
+        }
+    }
 
     private fun retryOrFail(): Result = if (runAttemptCount < MAX_RUN_ATTEMPTS - 1) Result.retry() else Result.failure()
 
@@ -134,7 +150,7 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
     companion object {
         private val TAG: String = ConversationsSyncWorker::class.java.simpleName
         private const val MAX_RUN_ATTEMPTS = 3
-        private const val ACCOUNT_TIMEOUT_MINUTES = 2L
+        private const val ROOM_LIST_TIMEOUT_MINUTES = 2L
         private const val REPEAT_INTERVAL_MINUTES = 15L
         const val UNIQUE_WORK_NAME = "PeriodicConversationsSync"
 

@@ -29,6 +29,7 @@ import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -47,9 +48,11 @@ import org.mockito.Mockito.timeout
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
@@ -153,7 +156,50 @@ class OfflineFirstConversationsRepositoryTest {
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
 
-            assertEquals(false, repository.syncRooms(user()))
+            assertNull(repository.syncRooms(user()))
+        }
+
+    @Test
+    fun `syncRooms reports a room list sync that runs out of its time budget as failed`() =
+        runTest {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+            dao.stub {
+                onBlocking { syncConversationsForUser(any(), any(), any()) } doSuspendableAnswer { awaitCancellation() }
+            }
+
+            assertNull(repository.syncRooms(user(), roomListTimeoutMillis = ROOM_LIST_TIMEOUT_MILLIS))
+            verifyBlocking(chatMessageSyncer, never()) { catchUpRoom(any(), any(), anyOrNull(), any()) }
+        }
+
+    @Test
+    fun `syncRooms hands the rooms with new messages back instead of catching them up`() =
+        runBlocking {
+            stubCatchUpRoom()
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+
+            val roomsWithNewMessages = repository.syncRooms(user())
+
+            assertEquals(listOf(ROOM_TOKEN), roomsWithNewMessages?.map { it.token })
+            verifyBlocking(chatMessageSyncer, after(AFTER_DELAY_MILLIS).never()) {
+                catchUpRoom(any(), any(), anyOrNull(), any())
+            }
+        }
+
+    @Test
+    fun `catchUpRooms prefetches the messages of the rooms syncRooms handed back`() =
+        runBlocking {
+            stubCatchUpRoom()
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+            val roomsWithNewMessages = repository.syncRooms(user())!!
+
+            repository.catchUpRooms(user(), roomsWithNewMessages)
+
+            val targetCaptor = argumentCaptor<ChatMessageSyncer.SyncTarget>()
+            verifyBlocking(chatMessageSyncer) { catchUpRoom(targetCaptor.capture(), any(), anyOrNull(), any()) }
+            assertEquals(ROOM_TOKEN, targetCaptor.firstValue.roomToken)
         }
 
     @Test
@@ -470,6 +516,7 @@ class OfflineFirstConversationsRepositoryTest {
         private const val AWAIT_TIMEOUT_MILLIS = 2000L
         private const val POLL_INTERVAL_MILLIS = 50L
         private const val COLLECTOR_STARTUP_MILLIS = 100L
+        private const val ROOM_LIST_TIMEOUT_MILLIS = 1000L
     }
 }
 

@@ -35,6 +35,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -44,10 +45,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import kotlin.collections.map
+import kotlin.time.Duration.Companion.milliseconds
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
@@ -101,12 +104,19 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun getRooms(user: User, forceFullSync: Boolean): Job =
         scope.launch {
             if (networkMonitor.isOnline.value) {
-                getRoomsFromServer(user, forceFullSync = forceFullSync)
+                val roomsWithNewMessages = getRoomsFromServer(user, forceFullSync = forceFullSync)
+                    ?: return@launch
+                // a launch of its own, so the returned job completes without waiting for the catch-up
+                scope.launch { catchUpRooms(user, roomsWithNewMessages) }
             }
         }
 
-    override suspend fun syncRooms(user: User, forceFullSync: Boolean): Boolean =
-        getRoomsFromServer(user, forceFullSync = forceFullSync, awaitCatchUp = true) != null
+    override suspend fun syncRooms(
+        user: User,
+        forceFullSync: Boolean,
+        roomListTimeoutMillis: Long?
+    ): List<ConversationEntity>? =
+        getRoomsFromServer(user, forceFullSync = forceFullSync, roomListTimeoutMillis = roomListTimeoutMillis)
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getRoom(user: User, roomToken: String): Job =
@@ -158,10 +168,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private suspend fun getRoomsFromServer(
         user: User,
         forceFullSync: Boolean = false,
-        awaitCatchUp: Boolean = false
+        roomListTimeoutMillis: Long? = null
     ): List<ConversationEntity>? {
-        var conversationsFromSync: List<ConversationEntity>? = null
-
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load conversations from server")
             return null
@@ -170,66 +178,77 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val accountId = user.id!!
         val modifiedSince = modifiedSinceFor(user, forceFullSync)
 
-        val includeStatus = modifiedSince == null && isUserStatusAvailable(user)
-
-        try {
-            val roomList = withRetry(
-                retries = NETWORK_FETCH_RETRIES,
-                initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
-                maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
-            ) {
-                network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .blockingSingle()
-            }
-
-            conversationsFromSync = roomList.conversations.map {
-                it.asEntity(accountId)
-            }
-
-            val previousConversations = dao.getConversationsForUser(accountId).first()
-                .associateBy { it.internalId }
-
-            val serverItems = if (includeStatus) {
-                conversationsFromSync
+        return try {
+            if (roomListTimeoutMillis == null) {
+                syncRoomList(user, modifiedSince)
             } else {
-                keepCachedStatus(conversationsFromSync, previousConversations)
+                withTimeout(roomListTimeoutMillis.milliseconds) { syncRoomList(user, modifiedSince) }
             }
-
-            dao.syncConversationsForUser(
-                accountId = accountId,
-                serverItems = conversationListUpdater.preservePendingLocalState(
-                    previousConversations,
-                    serverItems
-                ),
-                conversationIdsToDelete = if (roomList.wasDelta) {
-                    emptyList()
-                } else {
-                    determineLeftConversationIds(previousConversations, conversationsFromSync)
-                }
-            )
-
-            rememberSyncedState(accountId, roomList)
-
-            val roomsWithNewMessages = getRoomsWithNewMessages(conversationsFromSync, previousConversations)
-            if (awaitCatchUp) {
-                catchUpRoomsWithNewMessages(user, roomsWithNewMessages)
-            } else {
-                scope.launch { catchUpRoomsWithNewMessages(user, roomsWithNewMessages) }
-            }
+        } catch (e: TimeoutCancellationException) {
+            // the caller's run goes on, so this is a failed sync rather than a cancellation
+            Log.w(TAG, "Room list sync for account $accountId ran out of its time budget")
+            null
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
             storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
-            conversationsFromSync = null
             val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
             if (!hasCachedConversations) {
                 _syncErrorFlow.emit(e)
             }
+            null
         }
-        return conversationsFromSync
+    }
+
+    /**
+     * Fetches [user]'s room list, filtered by [modifiedSince] when set, and stores it, returning the
+     * rooms whose messages should be caught up.
+     */
+    private suspend fun syncRoomList(user: User, modifiedSince: Long?): List<ConversationEntity> {
+        val accountId = user.id!!
+        val includeStatus = modifiedSince == null && isUserStatusAvailable(user)
+
+        val roomList = withRetry(
+            retries = NETWORK_FETCH_RETRIES,
+            initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
+            maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
+        ) {
+            network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .blockingSingle()
+        }
+
+        val conversationsFromSync = roomList.conversations.map {
+            it.asEntity(accountId)
+        }
+
+        val previousConversations = dao.getConversationsForUser(accountId).first()
+            .associateBy { it.internalId }
+
+        val serverItems = if (includeStatus) {
+            conversationsFromSync
+        } else {
+            keepCachedStatus(conversationsFromSync, previousConversations)
+        }
+
+        dao.syncConversationsForUser(
+            accountId = accountId,
+            serverItems = conversationListUpdater.preservePendingLocalState(
+                previousConversations,
+                serverItems
+            ),
+            conversationIdsToDelete = if (roomList.wasDelta) {
+                emptyList()
+            } else {
+                determineLeftConversationIds(previousConversations, conversationsFromSync)
+            }
+        )
+
+        rememberSyncedState(accountId, roomList)
+
+        return getRoomsWithNewMessages(conversationsFromSync, previousConversations)
     }
 
     override fun requireFullSync(accountId: Long) {
@@ -303,14 +322,14 @@ class OfflineFirstConversationsRepository @Inject constructor(
     /**
      * Prefetches the messages of [rooms] into the local database so they are instantly visible
      * when a chat is opened. Runs after the room list sync; failures are logged and never affect
-     * the conversation list itself.
+     * the conversation list itself, and cancellation propagates.
      *
      * The catch-up is skipped in battery saver mode and when background data is restricted on a
      * metered network (mirroring the Low Power Mode guard on iOS), and is bounded to the
      * [MAX_ROOMS_TO_CATCH_UP] most recently active rooms with [MAX_CONCURRENT_CATCH_UPS] parallel
      * requests, so a fresh install with many rooms cannot cause an unbounded request burst.
      */
-    private suspend fun catchUpRoomsWithNewMessages(user: User, rooms: List<ConversationEntity>) {
+    override suspend fun catchUpRooms(user: User, rooms: List<ConversationEntity>) {
         if (rooms.isEmpty() || !isCatchUpAllowed(user)) {
             return
         }

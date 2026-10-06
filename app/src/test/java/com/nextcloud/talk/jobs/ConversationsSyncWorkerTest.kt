@@ -14,25 +14,22 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
-import org.mockito.kotlin.argThat
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doSuspendableAnswer
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
-import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
@@ -40,6 +37,7 @@ import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [ConversationsSyncWorker]: which accounts a run syncs, when a run stands down without
@@ -56,14 +54,14 @@ class ConversationsSyncWorkerTest {
     fun `every account is synced, not just the current one`() {
         val worker = worker()
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2), user(3)))
-        wheneverBlocking { repository.syncRooms(any(), any()) }.thenReturn(true)
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
 
         val result = runBlocking { worker.sync() }
 
         assertEquals(ListenableWorker.Result.success(), result)
-        verifyBlocking(repository) { syncRooms(user(1), false) }
-        verifyBlocking(repository) { syncRooms(user(2), false) }
-        verifyBlocking(repository) { syncRooms(user(3), false) }
+        verifyBlocking(repository) { syncRooms(user(1), false, ROOM_LIST_TIMEOUT_MILLIS) }
+        verifyBlocking(repository) { syncRooms(user(2), false, ROOM_LIST_TIMEOUT_MILLIS) }
+        verifyBlocking(repository) { syncRooms(user(3), false, ROOM_LIST_TIMEOUT_MILLIS) }
     }
 
     @Test
@@ -76,7 +74,7 @@ class ConversationsSyncWorkerTest {
 
         assertEquals(ListenableWorker.Result.success(), result)
         verifyBlocking(userManager, never()) { getUsers() }
-        verifyBlocking(repository, never()) { syncRooms(any(), any()) }
+        verifyBlocking(repository, never()) { syncRooms(any(), any(), anyOrNull()) }
     }
 
     @Test
@@ -87,27 +85,60 @@ class ConversationsSyncWorkerTest {
         val result = runBlocking { worker.sync() }
 
         assertEquals(ListenableWorker.Result.success(), result)
-        verifyBlocking(repository, never()) { syncRooms(any(), any()) }
+        verifyBlocking(repository, never()) { syncRooms(any(), any(), anyOrNull()) }
     }
 
     @Test
     fun `a failed account asks for another attempt`() {
         val worker = worker(runAttempt = 0)
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
-        wheneverBlocking { repository.syncRooms(user(1), false) }.thenReturn(true)
-        wheneverBlocking { repository.syncRooms(user(2), false) }.thenReturn(false)
+        wheneverBlocking { repository.syncRooms(user(1), false, ROOM_LIST_TIMEOUT_MILLIS) }.thenReturn(NO_ROOMS)
+        wheneverBlocking { repository.syncRooms(user(2), false, ROOM_LIST_TIMEOUT_MILLIS) }.thenReturn(null)
 
         val result = runBlocking { worker.sync() }
 
         assertEquals(ListenableWorker.Result.retry(), result)
-        verifyBlocking(repository) { syncRooms(user(1), false) }
+        verifyBlocking(repository) { syncRooms(user(1), false, ROOM_LIST_TIMEOUT_MILLIS) }
+        verifyBlocking(repository) { catchUpRooms(user(1), NO_ROOMS) }
+        verifyBlocking(repository, never()) { catchUpRooms(eq(user(2)), any()) }
+    }
+
+    @Test
+    fun `every room list is synced before any messages are caught up`() {
+        val worker = worker()
+        wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
+
+        runBlocking { worker.sync() }
+
+        val order = inOrder(repository)
+        runBlocking {
+            order.verify(repository).syncRooms(eq(user(1)), any(), anyOrNull())
+            order.verify(repository).syncRooms(eq(user(2)), any(), anyOrNull())
+            order.verify(repository).catchUpRooms(user(1), NO_ROOMS)
+            order.verify(repository).catchUpRooms(user(2), NO_ROOMS)
+        }
+    }
+
+    @Test
+    fun `a failed message catch-up does not fail the run`() {
+        val worker = worker()
+        wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
+        wheneverBlocking { repository.catchUpRooms(eq(user(1)), any()) }
+            .thenThrow(IllegalStateException("database is gone"))
+
+        val result = runBlocking { worker.sync() }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(repository) { catchUpRooms(user(2), NO_ROOMS) }
     }
 
     @Test
     fun `a sync that keeps failing gives up instead of retrying for ever`() {
         val worker = worker(runAttempt = 2)
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1)))
-        wheneverBlocking { repository.syncRooms(any(), any()) }.thenReturn(false)
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(null)
 
         val result = runBlocking { worker.sync() }
 
@@ -121,31 +152,14 @@ class ConversationsSyncWorkerTest {
         whenever(repository.lastFullSyncAt(1)).thenReturn(300)
         whenever(repository.lastFullSyncAt(2)).thenReturn(null)
         whenever(repository.lastFullSyncAt(3)).thenReturn(100)
-        wheneverBlocking { repository.syncRooms(any(), any()) }.thenReturn(true)
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
 
         runBlocking { worker.sync() }
 
         val synced = argumentCaptor<User>()
-        verifyBlocking(repository, times(3)) { syncRooms(synced.capture(), any()) }
+        verifyBlocking(repository, times(3)) { syncRooms(synced.capture(), any(), anyOrNull()) }
         assertEquals(listOf(2L, 3L, 1L), synced.allValues.map { it.id })
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `an account that never finishes does not keep the others from syncing`() =
-        runTest {
-            val worker = worker()
-            wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
-            repository.stub {
-                onBlocking { syncRooms(argThat { id == 1L }, any()) } doSuspendableAnswer { awaitCancellation() }
-                onBlocking { syncRooms(argThat { id == 2L }, any()) } doReturn true
-            }
-
-            val result = worker.sync()
-
-            verifyBlocking(repository) { syncRooms(argThat { id == 2L }, any()) }
-            assertEquals(ListenableWorker.Result.retry(), result)
-        }
 
     @Test
     fun `a failed account lookup is retried rather than reported as a sync`() {
@@ -155,7 +169,7 @@ class ConversationsSyncWorkerTest {
         val result = runBlocking { worker.sync() }
 
         assertEquals(ListenableWorker.Result.retry(), result)
-        verifyBlocking(repository, never()) { syncRooms(any(), any()) }
+        verifyBlocking(repository, never()) { syncRooms(any(), any(), anyOrNull()) }
     }
 
     @Test
@@ -172,11 +186,12 @@ class ConversationsSyncWorkerTest {
     fun `a cancelled run stops instead of syncing the remaining accounts`() {
         val worker = worker()
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2), user(3)))
-        wheneverBlocking { repository.syncRooms(any(), any()) }.thenThrow(CancellationException("run stopped"))
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }
+            .thenThrow(CancellationException("run stopped"))
 
         assertThrows(CancellationException::class.java) { runBlocking { worker.sync() } }
 
-        verifyBlocking(repository, times(1)) { syncRooms(any(), any()) }
+        verifyBlocking(repository, times(1)) { syncRooms(any(), any(), anyOrNull()) }
     }
 
     private fun worker(runAttempt: Int = 0): ConversationsSyncWorker =
@@ -194,5 +209,7 @@ class ConversationsSyncWorkerTest {
 
     companion object {
         private const val BASE_URL = "https://server.example.com"
+        private val ROOM_LIST_TIMEOUT_MILLIS = TimeUnit.MINUTES.toMillis(2)
+        private val NO_ROOMS = emptyList<ConversationEntity>()
     }
 }
