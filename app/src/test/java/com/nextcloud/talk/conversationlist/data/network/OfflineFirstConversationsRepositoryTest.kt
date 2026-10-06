@@ -172,6 +172,21 @@ class OfflineFirstConversationsRepositoryTest {
         }
 
     @Test
+    fun `syncRooms does its blocking work off the caller's thread`() =
+        runBlocking {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            var requestThread: Thread? = null
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenAnswer {
+                requestThread = Thread.currentThread()
+                roomList(listOf(room))
+            }
+
+            repository.syncRooms(user())
+
+            assertTrue(requestThread != null && requestThread != Thread.currentThread())
+        }
+
+    @Test
     fun `getRooms reports a failed sync of an account without cached conversations`() =
         runBlocking {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)

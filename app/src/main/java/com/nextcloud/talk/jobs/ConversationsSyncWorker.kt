@@ -89,7 +89,10 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
 
         // WorkManager stops a run after ten minutes, so a fixed order would let slow accounts at
         // the front keep the ones behind them from ever being reached
-        val longestWaitingFirst = accounts.sortedBy { conversationsRepository.lastFullSyncAt(it.id!!) ?: 0L }
+        val longestWaitingFirst = accounts
+            .map { it to (conversationsRepository.lastFullSyncAt(it.id!!) ?: 0L) }
+            .sortedBy { (_, lastFullSyncAt) -> lastFullSyncAt }
+            .map { (user, _) -> user }
 
         // room lists first, for every account: they are what the conversation list shows. Messages
         // are prefetched only after that, with the time the run has left

@@ -45,6 +45,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import kotlin.collections.map
@@ -119,12 +120,15 @@ class OfflineFirstConversationsRepository @Inject constructor(
         forceFullSync: Boolean,
         roomListTimeoutMillis: Long?
     ): List<ConversationEntity>? =
-        getRoomsFromServer(
-            user,
-            forceFullSync = forceFullSync,
-            roomListTimeoutMillis = roomListTimeoutMillis,
-            reportSyncError = false
-        )
+        // the sync blocks its thread on the request and on stored state, so it must not run on the caller's
+        withContext(Dispatchers.IO) {
+            getRoomsFromServer(
+                user,
+                forceFullSync = forceFullSync,
+                roomListTimeoutMillis = roomListTimeoutMillis,
+                reportSyncError = false
+            )
+        }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getRoom(user: User, roomToken: String): Job =
@@ -266,7 +270,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
         storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, null)
     }
 
-    override fun lastFullSyncAt(accountId: Long): Long? = readTimestamp(accountId, KEY_LAST_FULL_SYNC_AT)
+    override suspend fun lastFullSyncAt(accountId: Long): Long? =
+        withContext(Dispatchers.IO) { readTimestamp(accountId, KEY_LAST_FULL_SYNC_AT) }
 
     /**
      * The value to send as `modifiedSince`, or null when this sync has to be a full one.

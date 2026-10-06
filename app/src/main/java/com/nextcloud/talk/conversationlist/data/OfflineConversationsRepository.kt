@@ -71,6 +71,8 @@ interface OfflineConversationsRepository {
      *
      * A failure is reported only through the return value, never on [syncErrorFlow]: that flow
      * feeds the conversation list, which must not show an error of an account it does not show.
+     *
+     * Safe to call from any thread: the blocking work runs on the IO dispatcher.
      */
     suspend fun syncRooms(
         user: User,
@@ -112,9 +114,9 @@ interface OfflineConversationsRepository {
 
     /**
      * When the conversation list of the account with the internal id [accountId] was last fetched
-     * in full, or null when it never was.
+     * in full, or null when it never was. Safe to call from any thread.
      */
-    fun lastFullSyncAt(accountId: Long): Long?
+    suspend fun lastFullSyncAt(accountId: Long): Long?
 
     fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult>
 }

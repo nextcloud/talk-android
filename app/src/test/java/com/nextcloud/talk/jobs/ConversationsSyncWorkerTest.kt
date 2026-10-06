@@ -36,7 +36,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verifyBlocking
-import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -166,9 +165,9 @@ class ConversationsSyncWorkerTest {
     fun `the account that waited longest is synced first`() {
         val worker = worker()
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2), user(3)))
-        whenever(repository.lastFullSyncAt(1)).thenReturn(300)
-        whenever(repository.lastFullSyncAt(2)).thenReturn(null)
-        whenever(repository.lastFullSyncAt(3)).thenReturn(100)
+        wheneverBlocking { repository.lastFullSyncAt(1) }.thenReturn(300)
+        wheneverBlocking { repository.lastFullSyncAt(2) }.thenReturn(null)
+        wheneverBlocking { repository.lastFullSyncAt(3) }.thenReturn(100)
         wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
 
         runBlocking { worker.sync() }
@@ -176,6 +175,9 @@ class ConversationsSyncWorkerTest {
         val synced = argumentCaptor<User>()
         verifyBlocking(repository, times(3)) { syncRooms(synced.capture(), any(), anyOrNull()) }
         assertEquals(listOf(2L, 3L, 1L), synced.allValues.map { it.id })
+        verifyBlocking(repository, times(1)) { lastFullSyncAt(1) }
+        verifyBlocking(repository, times(1)) { lastFullSyncAt(2) }
+        verifyBlocking(repository, times(1)) { lastFullSyncAt(3) }
     }
 
     @Test
