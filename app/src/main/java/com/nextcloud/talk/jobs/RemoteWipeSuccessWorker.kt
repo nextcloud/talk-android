@@ -9,6 +9,8 @@ package com.nextcloud.talk.jobs
 
 import android.content.Context
 import android.util.Log
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
@@ -46,5 +48,16 @@ class RemoteWipeSuccessWorker(context: Context, workerParams: WorkerParameters) 
         const val TAG = "RemoteWipeSuccessWorker"
         const val KEY_BASE_URL = "baseUrl"
         const val KEY_TOKEN = "token"
+
+        /** Reports to the server at [baseUrl] that the wipe it requested for the app password [token] is done. */
+        fun workRequest(baseUrl: String, token: String): OneTimeWorkRequest =
+            OneTimeWorkRequest.Builder(RemoteWipeSuccessWorker::class.java)
+                .setInputData(
+                    Data.Builder()
+                        .putString(KEY_BASE_URL, baseUrl)
+                        .putString(KEY_TOKEN, token)
+                        .build()
+                )
+                .build()
     }
 }

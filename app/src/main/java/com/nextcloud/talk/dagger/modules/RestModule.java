@@ -18,7 +18,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.RemoteWipeInterceptor;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
@@ -183,7 +182,6 @@ public class RestModule {
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
                                    CookieManager cookieManager,
                                    Dispatcher dispatcher,
-                                   UserManager userManager,
                                    LoggingHttpInterceptor loggingHttpInterceptor,
                                    AccountCookieInterceptor accountCookieInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -218,7 +216,6 @@ public class RestModule {
         }
 
         httpClient.addInterceptor(new HeadersInterceptor());
-        httpClient.addInterceptor(new RemoteWipeInterceptor(userManager, context, sslSocketFactoryCompat, trustManager));
         httpClient.addInterceptor(loggingHttpInterceptor);
         // Each account keeps its own cookies, so its server session is kept but never used by another account.
         httpClient.addNetworkInterceptor(accountCookieInterceptor);
