@@ -8,6 +8,7 @@
 package com.nextcloud.talk.conversationlist.data
 
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository.ConversationResult
+import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.Job
@@ -51,6 +52,41 @@ interface OfflineConversationsRepository {
     fun getRooms(user: User, forceFullSync: Boolean = false): Job
 
     /**
+     * Synchronizes [user]'s conversations with the server and returns once they are stored,
+     * handing back the rooms whose messages should be caught up, or null when the sync failed.
+     * The catch-up itself is left to the caller, through [catchUpRooms].
+     *
+     * [getRooms] launches into the repository's own scope and returns immediately, which is what
+     * the conversation list wants and what a background worker cannot use: WorkManager tears the
+     * process down once the worker returns, mid-request. This does not select the observed account
+     * either - that is what the conversation list screen shows, and a worker walking several
+     * accounts must not move it. Leaving the catch-up to the caller lets a worker sync the room
+     * lists of all accounts before it spends time on any account's messages.
+     *
+     * With [roomListTimeoutMillis] set, the sync is given at most that long and reports failure
+     * when it runs out.
+     *
+     * Connectivity is not pre-checked: the request is sent and a failure is reported like any
+     * other, so a network that is connected but not yet validated still gets its chance.
+     *
+     * A failure is reported only through the return value, never on [syncErrorFlow]: that flow
+     * feeds the conversation list, which must not show an error of an account it does not show.
+     *
+     * Safe to call from any thread: the blocking work runs on the IO dispatcher.
+     */
+    suspend fun syncRooms(
+        user: User,
+        forceFullSync: Boolean = false,
+        roomListTimeoutMillis: Long? = null
+    ): List<ConversationEntity>?
+
+    /**
+     * Prefetches the messages of [rooms], as returned by [syncRooms], into the local database and
+     * returns once that is done. Failures for single rooms are logged, not thrown.
+     */
+    suspend fun catchUpRooms(user: User, rooms: List<ConversationEntity>)
+
+    /**
      * Called once onStart to emit a conversation to [conversationFlow]
      * to be handled asynchronously.
      */
@@ -75,6 +111,12 @@ interface OfflineConversationsRepository {
      * survives locally until the next full sync falls due.
      */
     fun requireFullSync(accountId: Long)
+
+    /**
+     * When the conversation list of the account with the internal id [accountId] was last fetched
+     * in full, or null when it never was. Safe to call from any thread.
+     */
+    suspend fun lastFullSyncAt(accountId: Long): Long?
 
     fun observeConversation(accountId: Long, roomToken: String): Flow<ConversationResult>
 }
