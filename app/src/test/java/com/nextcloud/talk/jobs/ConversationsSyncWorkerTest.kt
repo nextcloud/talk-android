@@ -184,6 +184,21 @@ class ConversationsSyncWorkerTest {
     }
 
     @Test
+    fun `a failed read of the sync times keeps the account order and still syncs every account`() {
+        val worker = worker()
+        wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2), user(3)))
+        wheneverBlocking { repository.lastFullSyncAt(any()) }.thenThrow(IllegalStateException("database is gone"))
+        wheneverBlocking { repository.syncRooms(any(), any(), anyOrNull()) }.thenReturn(NO_ROOMS)
+
+        val result = runBlocking { worker.sync() }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        val synced = argumentCaptor<User>()
+        verifyBlocking(repository, times(3)) { syncRooms(synced.capture(), any(), anyOrNull()) }
+        assertEquals(listOf(1L, 2L, 3L), synced.allValues.map { it.id })
+    }
+
+    @Test
     fun `the app coming to the foreground stops the room lists but not the messages already due`() {
         val worker = worker()
         wheneverBlocking { userManager.getUsers() }.thenReturn(listOf(user(1), user(2)))
