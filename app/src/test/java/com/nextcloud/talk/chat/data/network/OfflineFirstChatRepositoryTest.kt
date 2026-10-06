@@ -33,12 +33,15 @@ import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
@@ -55,6 +58,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
@@ -106,6 +110,40 @@ class OfflineFirstChatRepositoryTest {
         )
         repository.initData(user(), CREDENTIALS, CHAT_URL, ROOM_TOKEN, null)
     }
+
+    @Test
+    fun `long polling waits before the next request after a rejected one`() =
+        runBlocking {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.error(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType())))
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            // shorter than the wait after a failed request, so only the first request may have been sent
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            polling.cancelAndJoin()
+
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `long polling does not wait longer after a failed request once the device is online again`() =
+        runBlocking {
+            val isOnline = MutableStateFlow(true)
+            whenever(networkMonitor.isOnline).thenReturn(isOnline)
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.error(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType())))
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            isOnline.value = false
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            isOnline.value = true
+            // still shorter than the wait after a failed request
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            polling.cancelAndJoin()
+
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+        }
 
     @Test
     fun `markPendingReadMarker registers the marker synchronously, without any suspension`() {
@@ -781,6 +819,8 @@ class OfflineFirstChatRepositoryTest {
         private const val ROOM_TOKEN = "room1"
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"
         private const val CREDENTIALS = "credentials"
+        private const val HTTP_UNAUTHORIZED = 401
+        private const val LONG_POLLING_OBSERVATION_MILLIS = 200L
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val MESSAGE_ID = 42L
         private const val SYSTEM_MESSAGE_ID = 43L

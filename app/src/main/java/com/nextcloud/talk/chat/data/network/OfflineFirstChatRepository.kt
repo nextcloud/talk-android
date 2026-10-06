@@ -30,7 +30,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.revertOnCancellation
 import com.nextcloud.talk.utils.withRetry
@@ -42,6 +41,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -52,9 +52,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.math.min
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -303,18 +305,25 @@ class OfflineFirstChatRepository @Inject constructor(
             lastKnown = initialMessageId.toInt()
         )
 
-        val networkParams = Bundle()
+        var failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
 
         while (true) {
             if (!networkMonitor.isOnline.value || itIsPaused) {
+                failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
                 delay(HALF_SECOND)
             } else {
                 // sync database with server
                 // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
-                networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-
                 Log.d(TAG, "Starting online request for long polling")
-                getAndPersistMessages(networkParams)
+                val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+
+                // A failed request returns right away, e.g. with rejected credentials, which the server counts as a
+                // failed login. Without waiting, the next requests would follow at once until the server throttles.
+                failureDelayMillis = if (outcome.syncFailed) {
+                    waitAfterFailedRequest(failureDelayMillis)
+                } else {
+                    LONG_POLLING_FAILURE_INITIAL_DELAY
+                }
 
                 val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
                     internalConversationId,
@@ -329,6 +338,24 @@ class OfflineFirstChatRepository @Inject constructor(
                     lastKnown = newestMessage
                 )
             }
+        }
+    }
+
+    /**
+     * Waits [delayMillis] after a failed long polling request, and returns how long to wait if the next one fails too.
+     * Requests that failed while the device went offline should not delay the next one, so the wait ends early once
+     * it is online again.
+     */
+    private suspend fun waitAfterFailedRequest(delayMillis: Long): Long {
+        Log.d(TAG, "Long polling failed, next request in $delayMillis ms")
+        val gotOnlineAgain = withTimeoutOrNull(delayMillis) {
+            networkMonitor.isOnline.drop(1).first { isOnline -> isOnline }
+        } != null
+
+        return if (gotOnlineAgain) {
+            LONG_POLLING_FAILURE_INITIAL_DELAY
+        } else {
+            min(delayMillis * 2, LONG_POLLING_FAILURE_MAX_DELAY)
         }
     }
 
@@ -561,16 +588,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 Log.e(TAG, "Failed to fetch parent message $id", e)
             }
         }
-    }
-
-    // Callers must put a KEY_FIELD_MAP (see getFieldMap/syncer.buildFieldMap) into bundle before
-    // calling this.
-    private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
-        val fieldMap = requireNotNull(bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as? HashMap<String, Int>) {
-            "getAndPersistMessages requires bundle to carry KEY_FIELD_MAP"
-        }
-        val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
-        return outcome.persistedNewMessages
     }
 
     private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageDto>): Boolean =
@@ -1273,6 +1290,8 @@ class OfflineFirstChatRepository @Inject constructor(
     companion object {
         val TAG: String = OfflineFirstChatRepository::class.java.simpleName
         private const val HALF_SECOND = 500L
+        private const val LONG_POLLING_FAILURE_INITIAL_DELAY = 1_000L
+        private const val LONG_POLLING_FAILURE_MAX_DELAY = 60_000L
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIES = 1000L
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
