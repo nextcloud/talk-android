@@ -104,8 +104,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun getRooms(user: User, forceFullSync: Boolean): Job =
         scope.launch {
             if (networkMonitor.isOnline.value) {
-                val roomsWithNewMessages = getRoomsFromServer(user, forceFullSync = forceFullSync)
-                    ?: return@launch
+                val roomsWithNewMessages = getRoomsFromServer(
+                    user,
+                    forceFullSync = forceFullSync,
+                    reportSyncError = true
+                ) ?: return@launch
                 // a launch of its own, so the returned job completes without waiting for the catch-up
                 scope.launch { catchUpRooms(user, roomsWithNewMessages) }
             }
@@ -116,7 +119,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
         forceFullSync: Boolean,
         roomListTimeoutMillis: Long?
     ): List<ConversationEntity>? =
-        getRoomsFromServer(user, forceFullSync = forceFullSync, roomListTimeoutMillis = roomListTimeoutMillis)
+        getRoomsFromServer(
+            user,
+            forceFullSync = forceFullSync,
+            roomListTimeoutMillis = roomListTimeoutMillis,
+            reportSyncError = false
+        )
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getRoom(user: User, roomToken: String): Job =
@@ -164,11 +172,20 @@ class OfflineFirstConversationsRepository @Inject constructor(
         return getConversation(id, roomToken)
     }
 
+    /**
+     * Syncs [user]'s room list, returning the rooms whose messages should be caught up, or null
+     * when the sync failed.
+     *
+     * [reportSyncError] lets a failure reach [syncErrorFlow]. That flow does not say which account
+     * failed and the conversation list shows whatever arrives there, so only a sync of the account
+     * the list shows may report to it.
+     */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun getRoomsFromServer(
         user: User,
         forceFullSync: Boolean = false,
-        roomListTimeoutMillis: Long? = null
+        roomListTimeoutMillis: Long? = null,
+        reportSyncError: Boolean
     ): List<ConversationEntity>? {
         val accountId = user.id!!
         val modifiedSince = modifiedSinceFor(user, forceFullSync)
@@ -188,8 +205,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
             storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
-            val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
-            if (!hasCachedConversations) {
+            if (reportSyncError && dao.getConversationsForUser(accountId).first().isEmpty()) {
                 _syncErrorFlow.emit(e)
             }
             null

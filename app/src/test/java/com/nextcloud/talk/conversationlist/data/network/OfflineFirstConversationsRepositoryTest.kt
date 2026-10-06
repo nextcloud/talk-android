@@ -172,6 +172,38 @@ class OfflineFirstConversationsRepositoryTest {
         }
 
     @Test
+    fun `getRooms reports a failed sync of an account without cached conversations`() =
+        runBlocking {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+            wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
+                .thenThrow(IllegalStateException("database is gone"))
+            val errors = mutableListOf<Throwable>()
+            val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
+
+            repository.getRooms(user()).join()
+
+            awaitUntil { errors.isNotEmpty() }
+            collector.cancel()
+        }
+
+    @Test
+    fun `syncRooms keeps a failed sync off the conversation list's error flow`() =
+        runBlocking {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
+            wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
+                .thenThrow(IllegalStateException("database is gone"))
+            val errors = mutableListOf<Throwable>()
+            val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
+
+            repository.syncRooms(user())
+
+            collector.cancel()
+            assertEquals(emptyList<Throwable>(), errors)
+        }
+
+    @Test
     fun `syncRooms reports a room list sync that runs out of its time budget as failed`() =
         runTest {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)

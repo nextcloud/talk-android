@@ -68,6 +68,9 @@ interface OfflineConversationsRepository {
      *
      * Connectivity is not pre-checked: the request is sent and a failure is reported like any
      * other, so a network that is connected but not yet validated still gets its chance.
+     *
+     * A failure is reported only through the return value, never on [syncErrorFlow]: that flow
+     * feeds the conversation list, which must not show an error of an account it does not show.
      */
     suspend fun syncRooms(
         user: User,
