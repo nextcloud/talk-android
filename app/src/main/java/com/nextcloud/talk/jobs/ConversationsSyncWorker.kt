@@ -76,21 +76,35 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
         }
 
     private suspend fun syncAccounts(): Result {
-        val accounts = runCatching { userManager.getUsers() }.getOrElse { throwable ->
+        val accounts = readAccounts()
+        return when {
+            accounts == null -> retryOrFail()
+
+            accounts.isEmpty() -> {
+                Log.d(TAG, "No account to sync")
+                Result.success()
+            }
+
+            else -> syncAccounts(longestWaitingFirst(accounts))
+        }
+    }
+
+    /** The accounts to sync, or null when they could not be read. */
+    private suspend fun readAccounts(): List<User>? =
+        runCatching { userManager.getUsers() }.getOrElse { throwable ->
             if (throwable is CancellationException) throw throwable
             Log.e(TAG, "Could not read the accounts to sync", throwable)
-            return retryOrFail()
+            null
         }
 
-        if (accounts.isEmpty()) {
-            Log.d(TAG, "No account to sync")
-            return Result.success()
-        }
-
-        // WorkManager stops a run after ten minutes, so a fixed order would let slow accounts at
-        // the front keep the ones behind them from ever being reached
-        // the order is only an optimisation, so a failed read must not keep any account from syncing
-        val longestWaitingFirst = runCatching {
+    /**
+     * [accounts] ordered by the time of their last full sync, oldest first. WorkManager stops a run
+     * after ten minutes, so a fixed order would let slow accounts at the front keep the ones behind
+     * them from ever being reached. The order is only an optimisation, so when the sync times
+     * cannot be read the accounts keep their own order.
+     */
+    private suspend fun longestWaitingFirst(accounts: List<User>): List<User> =
+        runCatching {
             accounts
                 .map { it to (conversationsRepository.lastFullSyncAt(it.id!!) ?: 0L) }
                 .sortedBy { (_, lastFullSyncAt) -> lastFullSyncAt }
@@ -101,9 +115,10 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
             accounts
         }
 
+    private suspend fun syncAccounts(accounts: List<User>): Result {
         // room lists first, for every account: they are what the conversation list shows. Messages
         // are prefetched only after that, with the time the run has left
-        val syncedAccounts = syncRoomLists(longestWaitingFirst)
+        val syncedAccounts = syncRoomLists(accounts)
         catchUpMessages(syncedAccounts)
 
         val failed = syncedAccounts.count { (_, roomsWithNewMessages) -> roomsWithNewMessages == null }
