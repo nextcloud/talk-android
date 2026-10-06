@@ -61,8 +61,8 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     // death the view model is new, so the login is started again.
     private var isLoginStarted = false
 
-    // A login request still in flight when the login is canceled must not save its response, which a later return
-    // via the launcher icon would resume.
+    // A login request or poll still in flight when the login is canceled must not save its response, which a later
+    // return via the launcher icon would resume, nor complete the login.
     private var isLoginCanceled = false
 
     private fun startLoginOnce(): Boolean {
@@ -117,6 +117,8 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
                         Log.e(TAG, "Polling the browser login failed", e)
                     }
                     .getOrNull()
+                // A login canceled while its poll was in flight is not completed.
+                if (isLoginCanceled) return@launch
                 // Only reached when the poll ended. If this view model is cleared first, the login stays pending.
                 PendingBrowserLoginStore.clear()
 

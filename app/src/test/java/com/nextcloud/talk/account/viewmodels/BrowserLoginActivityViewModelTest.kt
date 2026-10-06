@@ -8,6 +8,7 @@ package com.nextcloud.talk.account.viewmodels
 
 import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.data.PendingBrowserLoginStore
+import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -133,16 +134,6 @@ class BrowserLoginActivityViewModelTest {
     }
 
     @Test
-    fun `the pending login is gone after cancel`() {
-        startAndLoseActivity()
-
-        viewModel.cancelLogin()
-
-        assertNull(PendingBrowserLoginStore.active())
-        verify(repository).cancelLoginFlow()
-    }
-
-    @Test
     fun `a login request answered after cancel is not saved`() {
         val answer = CompletableDeferred<LoginResponse?>()
         wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.doSuspendableAnswer { answer.await() }
@@ -153,6 +144,22 @@ class BrowserLoginActivityViewModelTest {
 
         assertNull(PendingBrowserLoginStore.active())
         assertEquals(BrowserLoginActivityViewModel.InitialLoginViewState.None, viewModel.initialLoginRequestState.value)
+    }
+
+    @Test
+    fun `cancel ends the pending login, also when the poll answers after it`() {
+        startAndLoseActivity()
+        val answer = CompletableDeferred<LoginCompletion?>()
+        wheneverBlocking { repository.pollLogin(any()) }.doSuspendableAnswer { answer.await() }
+        viewModel.handleWebBrowserLogin()
+
+        viewModel.cancelLogin()
+        answer.complete(LoginCompletion(HTTP_OK, BASE_URL, "user", "app-password"))
+
+        verify(repository).cancelLoginFlow()
+        verifyBlocking(repository, never()) { parseAndLogin(any()) }
+        assertNull(PendingBrowserLoginStore.active())
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.None, viewModel.postLoginState.value)
     }
 
     @Test
@@ -195,6 +202,7 @@ class BrowserLoginActivityViewModelTest {
 
     companion object {
         private const val ACCOUNT = 7L
+        private const val HTTP_OK = 200
         private const val BASE_URL = "https://example.com"
         private const val URL = "https://example.com/login"
     }
