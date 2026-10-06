@@ -47,7 +47,8 @@ fun AppCompatActivity.adjustUIForAPILevel35(
  * default mode, the system moves the whole window away from a cutout that is not inside the status bar (e.g. a camera
  * hole of a foldable on the short edge in landscape), which leaves a black bar. With shortEdges the window uses the
  * full width, and the content only has to avoid the cutout itself. From API level 35 the edge to edge handling of the
- * screens does that, so this is only needed below.
+ * screens does that, so this is only needed below. Only for view based screens: a Compose screen avoids the cutout by
+ * WindowInsets.safeDrawing, and the padding here would be added to it.
  */
 fun AppCompatActivity.keepContentOutOfDisplayCutout() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {

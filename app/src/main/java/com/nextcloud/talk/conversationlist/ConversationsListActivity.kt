@@ -113,7 +113,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
-import com.nextcloud.talk.utils.keepContentOutOfDisplayCutout
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -231,7 +230,6 @@ class ConversationsListActivity : BaseActivity() {
                 callbacks = buildScreenCallbacks()
             )
         }
-        keepContentOutOfDisplayCutout()
 
         intent?.let {
             handleEcoSystemIntent(it)
