@@ -15,7 +15,10 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import androidx.work.testing.TestListenableWorkerBuilder
+import androidx.work.testing.WorkManagerTestInitHelper
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.user.model.User
@@ -227,6 +230,21 @@ class ConversationsSyncWorkerTest {
         assertThrows(CancellationException::class.java) { runBlocking { worker.sync() } }
 
         verifyBlocking(repository, times(1)) { syncRooms(any(), any(), anyOrNull()) }
+    }
+
+    @Test
+    fun `scheduling again updates the scheduled run instead of keeping or replacing it`() {
+        WorkManagerTestInitHelper.initializeTestWorkManager(applicationContext())
+        val workManager = WorkManager.getInstance(applicationContext())
+
+        ConversationsSyncWorker.schedule(applicationContext())
+        val first = workManager.getWorkInfosForUniqueWork(ConversationsSyncWorker.UNIQUE_WORK_NAME).get().single()
+        ConversationsSyncWorker.schedule(applicationContext())
+        val second = workManager.getWorkInfosForUniqueWork(ConversationsSyncWorker.UNIQUE_WORK_NAME).get().single()
+
+        assertEquals(first.id, second.id)
+        assertEquals(first.generation + 1, second.generation)
+        assertEquals(WorkInfo.State.ENQUEUED, second.state)
     }
 
     @After

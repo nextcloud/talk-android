@@ -191,7 +191,10 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
 
         /**
          * Schedules the worker to run every [REPEAT_INTERVAL_MINUTES] minutes while a network is
-         * available, leaving an already scheduled run in place.
+         * available. An already scheduled run is updated to this request rather than replaced, so
+         * a changed interval or constraint reaches existing installs while the period keeps its
+         * timing - replacing it would restart the period on every app start, and an app opened
+         * often would never reach a run.
          */
         fun schedule(context: Context) {
             val work = PeriodicWorkRequest.Builder(
@@ -204,7 +207,7 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 work
             )
         }
