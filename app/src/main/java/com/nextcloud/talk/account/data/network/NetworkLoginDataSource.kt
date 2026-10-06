@@ -26,6 +26,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
+        private const val HTTP_OK = 200
     }
 
     fun oneTimePasswordRequest(baseUrl: String, oneTimeCredentials: String): String? {
@@ -151,6 +152,8 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
                         val appPassword: String = jsonObject.get("appPassword").asString
 
                         LoginCompletion(status, server, loginName, appPassword)
+                    } else if (status == HTTP_OK) {
+                        null // Confirmed, but without the login data: unusable.
                     } else {
                         LoginCompletion(status, "", "", "")
                     }

@@ -168,6 +168,18 @@ class NetworkLoginDataSourceTest {
     }
 
     @Test
+    fun `testing performLoginFlowV2 empty 200 response`() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse())
+        server.start()
+        val httpUrl = server.url("login/v2/poll")
+        val loginResponse = LoginResponse(token = "token", pollUrl = httpUrl.toString(), loginUrl = "")
+
+        val loginCompletion = network.performLoginFlowV2(loginResponse)
+        assertNull(loginCompletion)
+    }
+
+    @Test
     fun `testing performLoginFlowV2 request failure is thrown`() {
         val server = MockWebServer()
         server.start()
