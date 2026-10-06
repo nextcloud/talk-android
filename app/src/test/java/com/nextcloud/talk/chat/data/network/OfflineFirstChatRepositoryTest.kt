@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
@@ -58,6 +59,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
@@ -130,19 +132,23 @@ class OfflineFirstChatRepositoryTest {
         runBlocking {
             val isOnline = MutableStateFlow(true)
             whenever(networkMonitor.isOnline).thenReturn(isOnline)
-            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
-                .thenReturn(Response.error(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType())))
+            val firstRequestSent = CompletableDeferred<Unit>()
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) } doSuspendableAnswer {
+                firstRequestSent.complete(Unit)
+                Response.error(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType()))
+            }
 
             val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
-            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            // only go offline once the first request failed, so its wait is what the reconnect has to end
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { firstRequestSent.await() }
             isOnline.value = false
             delay(LONG_POLLING_OBSERVATION_MILLIS)
             isOnline.value = true
-            // still shorter than the wait after a failed request
-            delay(LONG_POLLING_OBSERVATION_MILLIS)
-            polling.cancelAndJoin()
 
-            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), any()) }
+            // still shorter than the wait after a failed request
+            verify(network, timeout(LONG_POLLING_OBSERVATION_MILLIS * 2).times(2))
+                .pullChatMessages(any(), any(), any())
+            polling.cancelAndJoin()
         }
 
     @Test
@@ -821,6 +827,7 @@ class OfflineFirstChatRepositoryTest {
         private const val CREDENTIALS = "credentials"
         private const val HTTP_UNAUTHORIZED = 401
         private const val LONG_POLLING_OBSERVATION_MILLIS = 200L
+        private const val AWAIT_TIMEOUT_MILLIS = 2000L
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val MESSAGE_ID = 42L
         private const val SYSTEM_MESSAGE_ID = 43L
