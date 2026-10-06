@@ -50,6 +50,7 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.util.concurrent.ConcurrentHashMap
+import retrofit2.HttpException
 import javax.inject.Inject
 import kotlin.collections.map
 import kotlin.time.Duration.Companion.milliseconds
@@ -215,7 +216,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
             storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
-            if (reportSyncError && dao.getConversationsForUser(accountId).first().isEmpty()) {
+            val hasCachedConversations = dao.getConversationsForUser(accountId).first().isNotEmpty()
+            // Cached conversations do not help when the credentials were rejected, the user has to act on that.
+            if (reportSyncError && (!hasCachedConversations || e.isUnauthorized())) {
                 _syncErrorFlow.emit(e)
             }
             null
@@ -249,7 +252,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val roomList = withRetry(
             retries = NETWORK_FETCH_RETRIES,
             initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
-            maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS
+            maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS,
+            retryOn = { !it.isUnauthorized() }
         ) {
             network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
                 .subscribeOn(Schedulers.io())
@@ -347,6 +351,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private fun storeTimestamp(accountId: Long, key: String, value: Long?) {
         arbitraryStorageManager.storeStorageSetting(accountId, key, value?.toString(), "")
     }
+
+    private fun Exception.isUnauthorized(): Boolean = this is HttpException && code() == HTTP_UNAUTHORIZED
 
     /**
      * Determines the rooms whose messages should be caught up in the background: rooms with
@@ -498,6 +504,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         private const val NETWORK_FETCH_RETRIES = 3
         private const val NETWORK_FETCH_RETRY_INITIAL_DELAY_MS = 1000L
         private const val NETWORK_FETCH_RETRY_MAX_DELAY_MS = 8000L
+        private const val HTTP_UNAUTHORIZED = 401
         private const val FULL_SYNC_INTERVAL_MILLIS = 5 * 60 * 1000L
         private const val KEY_MODIFIED_SINCE = "conversation_list_modified_since"
         private const val KEY_LAST_FULL_SYNC_AT = "conversation_list_last_full_sync_at"

@@ -193,6 +193,7 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
     private var isDirectShareTarget = false
+    private var unauthorizedDialog: AlertDialog? = null
 
     lateinit var ecosystemManager: EcosystemManager
 
@@ -1402,6 +1403,8 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun showUnauthorizedDialog() {
+        if (unauthorizedDialog?.isShowing == true) return
+
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setIcon(
                 viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
@@ -1427,6 +1430,7 @@ class ConversationsListActivity : BaseActivity() {
 
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
         val dialog = dialogBuilder.show()
+        unauthorizedDialog = dialog
         viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
