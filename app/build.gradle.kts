@@ -25,6 +25,7 @@ plugins {
 val kotlinVersion: String by rootProject.extra
 
 val coilKtVersion = "2.7.0"
+val androidLibraryVersion = "a39cc946be9d7fde12544f0518c428d0ccf763da"
 val daggerVersion = "2.60.1"
 val emojiVersion = "1.6.0"
 val fidoVersion = "4.1.0-patch2"
@@ -127,6 +128,7 @@ android {
             excludes += setOf(
                 "META-INF/LICENSE.txt",
                 "META-INF/LICENSE",
+                "META-INF/LICENSE.md",
                 "META-INF/NOTICE.txt",
                 "META-INF/NOTICE",
                 "META-INF/DEPENDENCIES",
@@ -384,6 +386,11 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2026.08.00"))
+    androidTestImplementation("com.github.nextcloud:android-library:$androidLibraryVersion") {
+        // the app pins its own OkHttp 4 version; android-library is on OkHttp 5
+        exclude(group = "com.squareup.okhttp3")
+        exclude(group = "org.ogce", module = "xpp3") // Android comes with its own XmlPullParser
+    }
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
