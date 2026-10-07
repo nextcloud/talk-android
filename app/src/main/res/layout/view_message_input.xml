@@ -239,7 +239,8 @@
                 android:layout_alignParentEnd="true"
                 android:background="@color/transparent"
                 android:contentDescription="@string/nc_description_record_voice"
-                android:src="@drawable/ic_baseline_mic_24" />
+                android:src="@drawable/ic_baseline_mic_24"
+                app:tint="?attr/colorControlNormal" />
 
             <ImageButton
                 android:id="@+id/submitThreadButton"

@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.attachmentpreview
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,11 +24,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.PhotoCamera
-import androidx.compose.material.icons.outlined.PhotoLibrary
-import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -42,35 +36,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.nextcloud.talk.R
 import kotlin.math.roundToInt
 
-private const val STRIP_THUMBNAIL_SIZE_DP = 64
-private const val STRIP_ICON_SIZE_DP = 28
-private const val STRIP_PLAY_ICON_SIZE_DP = 28
+private const val STRIP_THUMBNAIL_SIZE_DP = 48
+private const val STRIP_ICON_SIZE_DP = 24
+private const val STRIP_PLAY_ICON_SIZE_DP = 24
 private const val STRIP_ITEM_SPACING_DP = 8
 private const val SELECTED_BORDER_WIDTH_DP = 2
 private const val INDICATOR_WIDTH_DP = 3
 private const val INDICATOR_GAP_OFFSET_DP = 5
 
-@Suppress("LongParameterList")
+/** Compact strip of the picked files above the caption bar: tap to jump to a file, long-press and drag to reorder. */
 @Composable
 internal fun ThumbnailStrip(
     descriptions: List<FileDescription>,
     selectedIndex: Int,
+    unselected: Set<String>,
     onSelect: (Int) -> Unit,
-    onRemove: (String) -> Unit,
-    onReorder: (from: Int, to: Int) -> Unit,
-    onAddMore: () -> Unit,
-    onTakePhoto: () -> Unit,
-    onTakeVideo: () -> Unit
+    onReorder: (from: Int, to: Int) -> Unit
 ) {
     val density = LocalDensity.current
     val itemExtentPx = remember(density) {
@@ -78,57 +71,22 @@ internal fun ThumbnailStrip(
     }
     val dragState = remember { DragReorderState() }
 
-    // With no file thumbnails shown (single-file case, handled below), the action tiles are the
-    // only content — center them instead of leaving them stuck to the start like a scrollable list.
-    val horizontalArrangement = if (descriptions.size > 1) {
-        Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp)
-    } else {
-        Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp, Alignment.CenterHorizontally)
-    }
-
     LazyRow(
-        horizontalArrangement = horizontalArrangement,
+        horizontalArrangement = Arrangement.spacedBy(STRIP_ITEM_SPACING_DP.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // With a single file it's already shown in full in the large preview above, and the
-        // "selected" thumbnail styling (dark overlay + trash icon) would otherwise cover the
-        // only thumbnail permanently — looking like the file is already marked for deletion
-        // rather than just being the one file that was picked.
-        if (descriptions.size > 1) {
-            itemsIndexed(descriptions, key = { _, description -> description.uri }) { index, description ->
-                DraggableStripItem(
-                    description = description,
-                    index = index,
-                    selected = index == selectedIndex,
-                    itemExtentPx = itemExtentPx,
-                    itemCount = descriptions.size,
-                    dragState = dragState,
-                    onSelect = onSelect,
-                    onRemove = onRemove,
-                    onReorder = onReorder
-                )
-            }
-        }
-        item {
-            ActionTile(
-                icon = Icons.Outlined.PhotoLibrary,
-                contentDescription = R.string.nc_add_more_files,
-                onClick = onAddMore
-            )
-        }
-        item {
-            ActionTile(
-                icon = Icons.Outlined.PhotoCamera,
-                contentDescription = R.string.take_photo,
-                onClick = onTakePhoto
-            )
-        }
-        item {
-            ActionTile(
-                icon = Icons.Outlined.Videocam,
-                contentDescription = R.string.nc_take_video,
-                onClick = onTakeVideo
+        itemsIndexed(descriptions, key = { _, description -> description.uri }) { index, description ->
+            DraggableStripItem(
+                description = description,
+                index = index,
+                current = index == selectedIndex,
+                included = description.uri !in unselected,
+                itemExtentPx = itemExtentPx,
+                itemCount = descriptions.size,
+                dragState = dragState,
+                onSelect = onSelect,
+                onReorder = onReorder
             )
         }
     }
@@ -152,12 +110,12 @@ private class DragReorderState {
 private fun DraggableStripItem(
     description: FileDescription,
     index: Int,
-    selected: Boolean,
+    current: Boolean,
+    included: Boolean,
     itemExtentPx: Float,
     itemCount: Int,
     dragState: DragReorderState,
     onSelect: (Int) -> Unit,
-    onRemove: (String) -> Unit,
     onReorder: (Int, Int) -> Unit
 ) {
     val isDragged = index == dragState.draggedIndex.value
@@ -166,9 +124,9 @@ private fun DraggableStripItem(
     Box {
         StripThumbnail(
             description = description,
-            selected = selected,
+            current = current,
+            included = included,
             onClick = { onSelect(index) },
-            onRemove = { onRemove(description.uri) },
             modifier = Modifier
                 .graphicsLayer { translationX = if (isDragged) dragState.dragOffsetX.value else 0f }
                 .zIndex(if (isDragged) 1f else 0f)
@@ -245,19 +203,24 @@ private fun DropIndicatorLine(modifier: Modifier = Modifier) {
 @Composable
 private fun StripThumbnail(
     description: FileDescription,
-    selected: Boolean,
+    current: Boolean,
+    included: Boolean,
     onClick: () -> Unit,
-    onRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+    val borderColor = if (current) Color.White else Color.Transparent
     val shape = RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
+    val excludedState = stringResource(R.string.nc_attachment_excluded)
     Box(
         modifier = modifier
             .size(STRIP_THUMBNAIL_SIZE_DP.dp)
             .clip(shape)
             .border(SELECTED_BORDER_WIDTH_DP.dp, borderColor, shape)
-            .clickable(onClick = if (selected) onRemove else onClick)
+            .clickable(onClick = onClick)
+            .semantics {
+                selected = current
+                if (!included) stateDescription = excludedState
+            }
     ) {
         FileThumbnailImage(
             description,
@@ -265,7 +228,7 @@ private fun StripThumbnail(
             modifier = Modifier.fillMaxSize()
         )
 
-        if (description.kind == MediaKind.VIDEO && !selected) {
+        if (description.kind == MediaKind.VIDEO) {
             Box(
                 modifier = Modifier
                     .size(STRIP_PLAY_ICON_SIZE_DP.dp)
@@ -283,39 +246,8 @@ private fun StripThumbnail(
             }
         }
 
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.nc_remove_file),
-                    tint = Color.White,
-                    modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
-                )
-            }
+        if (!included) {
+            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)))
         }
-    }
-}
-
-@Composable
-private fun ActionTile(icon: ImageVector, @StringRes contentDescription: Int, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(STRIP_THUMBNAIL_SIZE_DP.dp)
-            .clip(RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = stringResource(contentDescription),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.size(STRIP_ICON_SIZE_DP.dp)
-        )
     }
 }

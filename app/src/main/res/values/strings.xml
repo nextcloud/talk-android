@@ -693,7 +693,10 @@ How to translate with transifex:
     <string name="media_message_content_play">Play media file</string>
 
     <!-- Upload -->
-    <string name="nc_add_file">Add to conversation</string>
+    <string name="attachment_sheet_select_more">Select more photos and videos</string>
+    <string name="attachment_sheet_photo">Photo</string>
+    <string name="attachment_sheet_video">Video, %1$s</string>
+    <string name="attachment_sheet_send">Send (%1$d)</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_create_poll">Create poll</string>
@@ -743,6 +746,14 @@ How to translate with transifex:
     <string name="nc_voice_message_filename" translatable="false">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_description_record_voice">Record voice message</string>
+    <string name="nc_description_record_video">Record video message</string>
+    <string name="nc_voice_message_hold_to_record_info_switch_to_video">Hold to record, release to send. Tap to switch to video mode.</string>
+    <string name="nc_video_message_hold_to_record_info_switch_to_voice">Hold to record video, release to send. Tap to switch to voice mode.</string>
+    <string name="nc_video_message_recording_failed">Video recording failed</string>
+    <string name="nc_video_message_delete_recording">Delete video recording</string>
+    <string name="nc_video_message_send_recording">Send video recording</string>
+    <string name="nc_video_message_missing_permissions">Permissions for camera and audio recording are required</string>
+    <string name="nc_video_recording_switch_camera">Switch camera</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="play_pause_audio_file">Play/pause audio file</string>
@@ -838,6 +849,13 @@ How to translate with transifex:
 
     <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
+    <string name="nc_photo_capture_flash_off">Flash off</string>
+    <string name="nc_photo_capture_flash_auto">Flash automatic</string>
+    <string name="nc_photo_capture_flash_on">Flash on</string>
+    <string name="nc_photo_capture_mode_fast">Fast</string>
+    <string name="nc_photo_capture_mode_quality">Quality</string>
+    <string name="nc_photo_capture_mode_fast_description">Fast shutter. Tap to switch to maximum quality</string>
+    <string name="nc_photo_capture_mode_quality_description">Maximum quality. Tap to switch to fast shutter</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="camera_permission_granted">Camera permission granted. Please choose camera again.</string>
     <string name="nc_take_video">Take a video</string>
@@ -1009,7 +1027,25 @@ How to translate with transifex:
     <string name="nc_compress_images">Compress images and videos</string>
     <string name="nc_hq_toggle">HQ</string>
     <string name="nc_hq_toggle_description">High quality, no compression</string>
-    <string name="nc_remove_file">Remove file</string>
+    <string name="nc_attachment_position" translatable="false">%1$d / %2$d</string>
+    <string name="nc_attachment_include">Include this file</string>
+    <string name="nc_attachment_crop">Crop and rotate</string>
+    <string name="nc_attachment_draw">Draw</string>
+    <string name="media_viewer_counter">%1$d of %2$d</string>
+    <string name="media_viewer_counter_more">%1$d of %2$d+</string>
+    <string name="media_viewer_save_to_gallery">Save to gallery</string>
+    <string name="media_viewer_show_all_media">Show all media</string>
+    <string name="media_viewer_show_in_chat">Show in chat</string>
+    <string name="nc_attachment_undo">Undo</string>
+    <string name="nc_attachment_add_menu">Add photos or video</string>
+    <string name="nc_attachment_excluded">Not included in the message</string>
+    <string name="nc_attachment_edit_failed">Could not save the changes to the picture</string>
+    <string name="nc_attachment_color_white">White</string>
+    <string name="nc_attachment_color_black">Black</string>
+    <string name="nc_attachment_color_red">Red</string>
+    <string name="nc_attachment_color_yellow">Yellow</string>
+    <string name="nc_attachment_color_green">Green</string>
+    <string name="nc_attachment_color_blue">Blue</string>
     <string name="nc_add_more_files">Add more files</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="languages_error_message">Languages could not be retrieved</string>

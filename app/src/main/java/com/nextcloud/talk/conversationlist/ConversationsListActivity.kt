@@ -40,6 +40,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import com.nextcloud.android.common.core.utils.ecosystem.AccountReceiverCallback
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
 import com.nextcloud.talk.R
@@ -70,7 +71,9 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
+import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.mediaviewer.model.PendingFileForward
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -102,6 +105,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_FILE_KEY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
@@ -871,7 +875,10 @@ class ConversationsListActivity : BaseActivity() {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }
             } else if (forwardMessage) {
-                if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
+                val forwardFileKey = intent.getStringExtra(KEY_FORWARD_FILE_KEY)
+                if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!) && forwardFileKey != null) {
+                    confirmForwardFile(forwardFileKey)
+                } else if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
                     openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
                     forwardMessageState.value = false
                 } else {
@@ -883,6 +890,43 @@ class ConversationsListActivity : BaseActivity() {
                 openConversation()
             }
         }
+    }
+
+    /**
+     * Forwarding a file: after the confirmation the file is shared to the chosen conversation, with the share step the
+     * upload of attachments ends with. Nothing is uploaded again. The file comes from [PendingFileForward] by the key
+     * of the intent, never from the intent itself (this activity is exported); without an entry nothing is forwarded.
+     */
+    private fun confirmForwardFile(key: String) {
+        val conversation = selectedConversation ?: return
+        val entry = PendingFileForward.peek(key)
+        if (entry == null || entry.userId != currentUser.id) {
+            forwardMessageState.value = false
+            intent.removeExtra(KEY_FORWARD_FILE_KEY)
+            showSnackbar(getString(R.string.nc_common_error_sorry))
+            return
+        }
+        val title = String.format(resources.getString(R.string.nc_upload_confirm_send_single), conversation.displayName)
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(entry.remotePath.substringAfterLast('/'))
+            .setPositiveButton(R.string.nc_yes) { _, _ ->
+                // taken only now: until then a rotation (which drops the dialog) must not lose the file
+                val confirmed = PendingFileForward.take(key) ?: return@setPositiveButton
+                val caption = confirmed.caption
+                val metaData = if (caption.isNotEmpty()) Gson().toJson(mapOf("caption" to caption)) else null
+                ShareOperationWorker.shareFile(conversation.token, currentUser, confirmed.remotePath, metaData)
+                intent.removeExtra(KEY_FORWARD_FILE_KEY)
+                forwardMessageState.value = false
+                openConversation()
+            }
+            .setNegativeButton(R.string.nc_no, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun shouldShowLobby(conversation: ConversationModel): Boolean {

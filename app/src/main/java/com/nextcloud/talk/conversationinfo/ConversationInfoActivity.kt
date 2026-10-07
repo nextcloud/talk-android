@@ -396,19 +396,14 @@ class ConversationInfoActivity : BaseActivity() {
     private fun showSharedItems() {
         val conv = viewModel.uiState.value.conversation ?: return
         startActivity(
-            Intent(this, SharedItemsActivity::class.java).apply {
-                putExtra(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id)
-                putExtra(BundleKeys.KEY_CONVERSATION_NAME, conv.displayName)
-                putExtra(KEY_ROOM_TOKEN, conversationToken)
-                putExtra(
-                    SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
-                    ConversationUtils.isParticipantOwnerOrModerator(conv)
-                )
-                putExtra(
-                    SharedItemsActivity.KEY_IS_ONE_2_ONE,
-                    conv.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                )
-            }
+            SharedItemsActivity.createIntent(
+                context = this,
+                userId = conversationUser.id!!,
+                roomToken = conversationToken,
+                conversationName = conv.displayName,
+                isOwnerOrModerator = ConversationUtils.isParticipantOwnerOrModerator(conv),
+                isOneToOne = conv.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            )
         )
     }
 
