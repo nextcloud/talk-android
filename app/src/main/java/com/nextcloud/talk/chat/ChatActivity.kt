@@ -214,6 +214,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import com.nextcloud.talk.utils.keepContentOutOfDisplayCutout
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -606,6 +607,7 @@ class ChatActivity :
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        keepContentOutOfDisplayCutout()
 
         setupChatToolbarView()
         setupChatEmptyStateView()

@@ -9,6 +9,9 @@ package com.nextcloud.talk.utils
 
 import android.graphics.Color
 import android.os.Build
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,4 +38,38 @@ fun AppCompatActivity.adjustUIForAPILevel35(
         return
     }
     enableEdgeToEdge(statusBarStyle, navigationBarStyle)
+}
+
+/**
+ * Keeps the content of the window out of the display cutout (camera hole) on the left and right edge.
+ *
+ * Used together with a theme that has windowLayoutInDisplayCutoutMode=shortEdges (AppTheme.DisplayCutout). With the
+ * default mode, the system moves the whole window away from a cutout that is not inside the status bar (e.g. a camera
+ * hole of a foldable on the short edge in landscape), which leaves a black bar. With shortEdges the window uses the
+ * full width, and the content only has to avoid the cutout itself. From API level 35 the edge to edge handling of the
+ * screens does that, so this is only needed below. Only for view based screens: a Compose screen avoids the cutout by
+ * WindowInsets.safeDrawing, and the padding here would be added to it.
+ */
+fun AppCompatActivity.keepContentOutOfDisplayCutout() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        return
+    }
+    findViewById<View>(android.R.id.content).padForDisplayCutout()
+}
+
+/** Adds the left and right display cutout insets to the padding the view has now. */
+fun View.padForDisplayCutout() {
+    val basePaddingLeft = paddingLeft
+    val basePaddingRight = paddingRight
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+        view.setPadding(
+            basePaddingLeft + cutout.left,
+            view.paddingTop,
+            basePaddingRight + cutout.right,
+            view.paddingBottom
+        )
+        insets
+    }
+    ViewCompat.requestApplyInsets(this)
 }
