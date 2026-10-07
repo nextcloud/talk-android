@@ -98,6 +98,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -133,6 +135,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
+import java.net.HttpURLConnection
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -182,33 +185,40 @@ internal fun isCombinableFileShare(message: ChatMessageUi): Boolean {
         !MimetypeUtils.isAudioOnly(mimeType)
 }
 
-/** Two file shares belong to the same batch: same reply target and same upload-batch hash. */
+/**
+ * Two file shares belong to the same batch: both deleted or both not, same reply target and same
+ * upload-batch hash.
+ */
 internal fun canCombineFileShares(a: ChatMessageUi, b: ChatMessageUi): Boolean {
     val hash = groupHash(a.referenceId)
-    return a.parentMessage?.id == b.parentMessage?.id && hash != null && hash == groupHash(b.referenceId)
+    return a.isDeleted == b.isDeleted &&
+        a.parentMessage?.id == b.parentMessage?.id &&
+        hash != null &&
+        hash == groupHash(b.referenceId)
 }
 
 /**
  * Replaces consecutive file shares uploaded together in one batch with a single grouped unit.
  * A message that isn't a plain file share, a reply to a different message, or part of another
  * batch interrupts the run. A file share with a real caption (not just the "{file}" placeholder)
- * ends its group - the caption belongs to the group's last item, same as web.
+ * ends its group - the caption belongs to the group's last item, same as web. Deleted file shares
+ * of the same batch collapse into their last deleted message.
  */
 internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<CombinedUnit> {
     val result = mutableListOf<CombinedUnit>()
     var pending = mutableListOf<ChatMessageUi>()
 
     fun flush() {
-        when (pending.size) {
-            0 -> {}
-            1 -> result.add(CombinedUnit.Single(pending[0]))
+        when {
+            pending.isEmpty() -> {}
+            pending.size == 1 || pending[0].isDeleted -> result.add(CombinedUnit.Single(pending.last()))
             else -> result.add(CombinedUnit.Group(pending.toList()))
         }
         pending = mutableListOf()
     }
 
     for (message in uiMessages) {
-        if (!isCombinableFileShare(message)) {
+        if (!message.isDeleted && !isCombinableFileShare(message)) {
             flush()
             result.add(CombinedUnit.Single(message))
             continue
@@ -220,7 +230,7 @@ internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<Combi
 
         pending.add(message)
 
-        if (message.plainMessage != FILE_PLACEHOLDER_MESSAGE) {
+        if (!message.isDeleted && message.plainMessage != FILE_PLACEHOLDER_MESSAGE) {
             flush()
         }
     }
@@ -2023,26 +2033,31 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    fun deleteChatMessages(credentials: String, url: String, messageId: Int) {
+    fun messageIdsToDelete(messageId: Int): List<Int> = messageIdsToDelete(_uiState.value.items, messageId)
+
+    fun deleteChatMessages(credentials: String, urlsByMessageId: Map<Int, String>) {
         val deletedPlaceholder = NextcloudTalkApplication.sharedApplication!!
             .getString(R.string.message_deleted_by_you)
 
         viewModelScope.launch {
-            val result = chatRepository.deleteChatMessage(
-                credentials,
-                url,
-                messageId.toLong(),
-                deletedPlaceholder
-            )
+            val results = urlsByMessageId.map { (messageId, url) ->
+                async {
+                    chatRepository.deleteChatMessage(credentials, url, messageId.toLong(), deletedPlaceholder)
+                        .onFailure { throwable ->
+                            Log.e(TAG, "Failed to delete message with id $messageId", throwable)
+                        }
+                }
+            }.awaitAll()
 
-            result
-                .onSuccess { message ->
-                    message?.let { _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(it) }
-                }
-                .onFailure { throwable ->
-                    Log.e(TAG, "Something went wrong when trying to delete message with id $messageId", throwable)
-                    _deleteChatMessageViewState.value = DeleteChatMessageErrorState
-                }
+            if (results.any { it.isFailure }) {
+                _deleteChatMessageViewState.value = DeleteChatMessageErrorState
+                return@launch
+            }
+
+            val responses = results.mapNotNull { it.getOrNull() }
+            val response = responses.firstOrNull { it.ocs?.meta?.statusCode == HttpURLConnection.HTTP_ACCEPTED }
+                ?: responses.firstOrNull()
+            response?.let { _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(it) }
         }
     }
 
@@ -2688,6 +2703,19 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+
+        /**
+         * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the
+         * media group the message is shown in, or just the message itself.
+         */
+        internal fun messageIdsToDelete(items: List<ChatItem>, messageId: Int): List<Int> =
+            items
+                .filterIsInstance<ChatItem.MediaGroupItem>()
+                .firstOrNull { group -> group.messages.any { it.id == messageId } }
+                ?.messages
+                ?.filter { it.id == messageId || it.content !is MessageTypeContent.UploadingMedia }
+                ?.map { it.id }
+                ?: listOf(messageId)
 
         /**
          * Returns the read marker that makes [messageId] the first unread message: the id of the

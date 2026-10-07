@@ -3630,16 +3630,16 @@ class ChatActivity :
             // FIXME Fix API checking with guests?
             val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
-            chatViewModel.deleteChatMessages(
-                credentials!!,
+            val urlsByMessageId = chatViewModel.messageIdsToDelete(message.jsonMessageId).associateWith { id ->
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
                     conversationUser.baseUrl!!,
                     roomToken,
-                    message.jsonMessageId.toString()
-                ),
-                message.jsonMessageId
-            )
+                    id.toString()
+                )
+            }
+
+            chatViewModel.deleteChatMessages(credentials!!, urlsByMessageId)
         }
     }
 

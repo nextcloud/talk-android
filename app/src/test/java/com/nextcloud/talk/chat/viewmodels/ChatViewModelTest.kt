@@ -225,6 +225,90 @@ class ChatViewModelTest {
         assertTrue(result.all { it is CombinedUnit.Single })
     }
 
+    @Test
+    fun `deleted file shares of the same batch collapse into their last message`() {
+        val uploadId = "batch-10"
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1), isDeleted = true),
+            mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2), isDeleted = true),
+            mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3), isDeleted = true)
+        )
+
+        val result = combineFileShareGroups(messages)
+
+        assertEquals(1, result.size)
+        assertEquals(3, (result[0] as CombinedUnit.Single).message.id)
+    }
+
+    @Test
+    fun `deleted file shares of different batches do not collapse`() {
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId("batch-11", 1), isDeleted = true),
+            mediaMessage(2, refUtils.generateGroupedReferenceId("batch-12", 1), isDeleted = true),
+            mediaMessage(3, referenceId = null, isDeleted = true),
+            mediaMessage(4, referenceId = null, isDeleted = true)
+        )
+
+        val result = combineFileShareGroups(messages)
+
+        assertEquals(listOf(1, 2, 3, 4), result.flatMap { unit -> unit.messages.map { it.id } })
+        assertTrue(result.all { it is CombinedUnit.Single })
+    }
+
+    @Test
+    fun `a deleted file share does not combine with a file share of the same batch`() {
+        val uploadId = "batch-13"
+        val messages = listOf(
+            mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1), isDeleted = true),
+            mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2)),
+            mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3))
+        )
+
+        val result = combineFileShareGroups(messages)
+
+        assertEquals(2, result.size)
+        assertEquals(1, (result[0] as CombinedUnit.Single).message.id)
+        assertEquals(listOf(2, 3), (result[1] as CombinedUnit.Group).messages.map { it.id })
+    }
+
+    // Deleting a message shown in a media group deletes the whole group, same as web.
+
+    @Test
+    fun `deleting a message of a media group deletes every message of the group`() {
+        val uploadId = "batch-14"
+        val group = ChatViewModel.ChatItem.MediaGroupItem(
+            listOf(
+                mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1)),
+                mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2)),
+                mediaMessage(3, refUtils.generateGroupedReferenceId(uploadId, 3))
+            )
+        )
+        val items = listOf(messageItem(4), group)
+
+        assertEquals(listOf(1, 2, 3), ChatViewModel.messageIdsToDelete(items, messageId = 3))
+        assertEquals(listOf(1, 2, 3), ChatViewModel.messageIdsToDelete(items, messageId = 1))
+    }
+
+    @Test
+    fun `deleting a media group skips files that are still uploading`() {
+        val uploadId = "batch-15"
+        val group = ChatViewModel.ChatItem.MediaGroupItem(
+            listOf(
+                mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1)),
+                mediaMessage(-2, refUtils.generateGroupedReferenceId(uploadId, 2), isTemporary = true)
+            )
+        )
+
+        assertEquals(listOf(1), ChatViewModel.messageIdsToDelete(listOf(group), messageId = 1))
+    }
+
+    @Test
+    fun `deleting a message outside of a media group deletes only that message`() {
+        val items = listOf(messageItem(4), messageItem(5))
+
+        assertEquals(listOf(5), ChatViewModel.messageIdsToDelete(items, messageId = 5))
+    }
+
     // Marking a message as unread. The chat items run newest first, the way the chat renders them
     // bottom-up, so the message that must stay read follows the selected one in that order - taking
     // the other neighbour would leave the selected message read and lose one unread message per step.
