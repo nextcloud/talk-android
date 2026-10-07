@@ -16,10 +16,9 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -66,8 +66,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.nextcloud.talk.R
 
-private const val LARGE_MAX_HEIGHT_DP = 480
-private const val LARGE_VERTICAL_SPACING_DP = 12
 private const val LARGE_ICON_SIZE_DP = 96
 private const val LARGE_OTHER_BORDER_WIDTH_DP = 1
 private const val LARGE_OTHER_BORDER_PADDING_DP = 24
@@ -81,29 +79,29 @@ private const val CLOSE_BUTTON_SIZE_DP = 40
 private const val CLOSE_ICON_SIZE_DP = 20
 private const val CLOSE_BUTTON_PADDING_DP = 8
 
-/** The large, swipeable preview shown above the thumbnail strip. */
+/**
+ * The full-screen, swipeable preview. [videoPadding] keeps an inline video player's own controls and
+ * close button clear of the overlaid top and bottom bars; images simply run behind them.
+ */
 @Composable
-internal fun LargePreview(descriptions: List<FileDescription>, pagerState: PagerState, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = LARGE_VERTICAL_SPACING_DP.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        HorizontalPager(
-            state = pagerState,
-            key = { page -> descriptions.getOrNull(page)?.uri ?: page },
-            modifier = Modifier
-                .fillMaxSize()
-                .heightIn(max = LARGE_MAX_HEIGHT_DP.dp)
-        ) { page ->
-            descriptions.getOrNull(page)?.let { description -> LargePage(description) }
-        }
+internal fun LargePreview(
+    descriptions: List<FileDescription>,
+    pagerState: PagerState,
+    videoPadding: PaddingValues,
+    detailTopPadding: Dp,
+    modifier: Modifier = Modifier
+) {
+    HorizontalPager(
+        state = pagerState,
+        key = { page -> descriptions.getOrNull(page)?.uri ?: page },
+        modifier = modifier.fillMaxSize()
+    ) { page ->
+        descriptions.getOrNull(page)?.let { description -> LargePage(description, videoPadding, detailTopPadding) }
     }
 }
 
 @Composable
-private fun LargePage(description: FileDescription) {
+private fun LargePage(description: FileDescription, videoPadding: PaddingValues, detailTopPadding: Dp) {
     var isPlayingVideo by remember(description.uri, description.detail) { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -113,8 +111,8 @@ private fun LargePage(description: FileDescription) {
         } ?: Modifier.fillMaxSize()
 
         // Non-media files have no image content of their own to visually delimit the card, so
-        // without an explicit outline the icon would appear to float directly on the dialog's
-        // background instead of reading as a bounded preview, unlike images/videos.
+        // without an explicit outline the icon would appear to float directly on the dark screen
+        // instead of reading as a bounded preview, unlike images/videos.
         if (description.kind == MediaKind.OTHER) {
             cardModifier = cardModifier
                 .padding(LARGE_OTHER_BORDER_PADDING_DP.dp)
@@ -125,19 +123,23 @@ private fun LargePage(description: FileDescription) {
                 )
         }
 
-        Box(modifier = cardModifier) {
-            if (description.kind == MediaKind.VIDEO && isPlayingVideo) {
-                VideoPlayerCard(
-                    uri = description.uri,
-                    onStopped = { isPlayingVideo = false },
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else {
+        if (description.kind == MediaKind.VIDEO && isPlayingVideo) {
+            VideoPlayerCard(
+                uri = description.uri,
+                onStopped = { isPlayingVideo = false },
+                modifier = Modifier.fillMaxSize().padding(videoPadding)
+            )
+        } else {
+            Box(modifier = cardModifier) {
                 FileThumbnailImage(
                     description,
                     iconSize = LARGE_ICON_SIZE_DP.dp,
                     contentScale = ContentScale.Fit,
-                    backgroundColor = MaterialTheme.colorScheme.surface,
+                    shape = if (description.kind == MediaKind.OTHER) {
+                        RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
+                    } else {
+                        RectangleShape
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
 
@@ -147,16 +149,16 @@ private fun LargePage(description: FileDescription) {
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
+            }
 
-                description.detail?.let { detail ->
-                    LargeDetailOverlay(
-                        detail,
-                        description.alternateDetail,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(12.dp)
-                    )
-                }
+            description.detail?.let { detail ->
+                LargeDetailOverlay(
+                    detail,
+                    description.alternateDetail,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 12.dp, top = detailTopPadding)
+                )
             }
         }
     }
