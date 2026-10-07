@@ -207,6 +207,10 @@ class ConversationsListActivity : BaseActivity() {
     // only 10 wipe checks per 5 minutes from an IP and further ones with 429. So the server is asked once per list.
     private var isWipeChecked = false
 
+    // From starting to remove the account of this list until that ended. Meanwhile the account is not to be
+    // reauthorized or removed again.
+    private var isRemovingAccount = false
+
     lateinit var ecosystemManager: EcosystemManager
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -1419,7 +1423,9 @@ class ConversationsListActivity : BaseActivity() {
      * account is wiped if so, and otherwise the user can reauthorize or remove it.
      */
     private fun handleUnauthorized() {
-        if (unauthorizedHandling?.isActive == true || unauthorizedDialog?.isShowing == true) return
+        if (isRemovingAccount || unauthorizedHandling?.isActive == true || unauthorizedDialog?.isShowing == true) {
+            return
+        }
 
         unauthorizedHandling = lifecycleScope.launch {
             val isWipeRequested = !isWipeChecked && remoteWipeHandler.isWipeRequested(currentUser)
@@ -1470,6 +1476,7 @@ class ConversationsListActivity : BaseActivity() {
      * removed because its server requested a wipe, which is reported to the server with that token afterwards.
      */
     private fun removeAccountAndRestartApp(wipeToken: String? = null) {
+        isRemovingAccount = true
         lifecycleScope.launch {
             val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .setExpeditedIfSupported()
@@ -1508,6 +1515,7 @@ class ConversationsListActivity : BaseActivity() {
                         }
 
                         WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            isRemovingAccount = false
                             logger.e(TAG, "something went wrong when deleting user with id " + currentUser.userId)
 
                             Toast.makeText(
@@ -1525,6 +1533,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun showAccountRemovalFailed(e: Exception) {
+        isRemovingAccount = false
         logger.e(TAG, "Failed to remove user with id " + currentUser.userId, e)
         Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
     }
