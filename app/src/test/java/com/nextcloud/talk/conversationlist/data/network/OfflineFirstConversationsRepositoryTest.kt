@@ -28,6 +28,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
@@ -53,6 +54,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.stub
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
@@ -288,6 +290,70 @@ class OfflineFirstConversationsRepositoryTest {
 
             verifyBlocking(dao) {
                 syncConversationsForUser(eq(ACCOUNT_ID), any(), eq(listOf(leaving.internalId)))
+            }
+        }
+
+    @Test
+    fun `a full sync waits for a running delta sync, so the delta cannot bring back what it deletes`() =
+        runBlocking {
+            val staying = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0)
+            val leaving = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0)
+            whenever(dao.getConversationsForUser(ACCOUNT_ID))
+                .thenReturn(flowOf(listOf(staying.asEntity(ACCOUNT_ID), leaving.asEntity(ACCOUNT_ID))))
+            val deltaResponseHeld = CountDownLatch(1)
+            val deltaResponse = Observable.fromCallable {
+                deltaResponseHeld.await()
+                RoomListResult(listOf(staying, leaving), modifiedBefore = null, wasDelta = true)
+            }
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(deltaResponse, roomList(listOf(staying)))
+
+            try {
+                val deltaSync = repository.getRooms(user())
+                verify(network, timeout(AWAIT_TIMEOUT_MILLIS).times(1)).getRooms(any(), any(), any(), anyOrNull())
+                val fullSync = repository.getRooms(user(), forceFullSync = true)
+
+                verify(network, after(AFTER_DELAY_MILLIS).times(1)).getRooms(any(), any(), any(), anyOrNull())
+
+                deltaResponseHeld.countDown()
+                deltaSync.join()
+                fullSync.join()
+            } finally {
+                deltaResponseHeld.countDown()
+            }
+
+            val deletedIds = argumentCaptor<List<String>>()
+            verifyBlocking(dao, times(2)) {
+                syncConversationsForUser(eq(ACCOUNT_ID), any(), deletedIds.capture())
+            }
+            assertEquals(
+                listOf(emptyList(), listOf(leaving.asEntity(ACCOUNT_ID).internalId)),
+                deletedIds.allValues
+            )
+        }
+
+    @Test
+    fun `a sync of one account does not wait for a running sync of another`() =
+        runBlocking<Unit> {
+            val otherUser = user().copy(id = OTHER_ACCOUNT_ID)
+            whenever(dao.getConversationsForUser(OTHER_ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
+            val firstResponseHeld = CountDownLatch(1)
+            val heldResponse = Observable.fromCallable {
+                firstResponseHeld.await()
+                RoomListResult(emptyList(), modifiedBefore = null, wasDelta = false)
+            }
+            whenever(network.getRooms(eq(user()), any(), any(), anyOrNull())).thenReturn(heldResponse)
+            whenever(network.getRooms(eq(otherUser), any(), any(), anyOrNull())).thenReturn(roomList(emptyList()))
+
+            try {
+                repository.getRooms(user())
+                verify(network, timeout(AWAIT_TIMEOUT_MILLIS)).getRooms(eq(user()), any(), any(), anyOrNull())
+
+                repository.getRooms(otherUser).join()
+
+                verify(network).getRooms(eq(otherUser), any(), any(), anyOrNull())
+            } finally {
+                firstResponseHeld.countDown()
             }
         }
 
@@ -569,6 +635,7 @@ class OfflineFirstConversationsRepositoryTest {
 
     companion object {
         private const val ACCOUNT_ID = 1L
+        private const val OTHER_ACCOUNT_ID = 2L
         private const val BASE_URL = "https://server.example.com"
         private const val ROOM_TOKEN = "room1"
         private const val AFTER_DELAY_MILLIS = 300L

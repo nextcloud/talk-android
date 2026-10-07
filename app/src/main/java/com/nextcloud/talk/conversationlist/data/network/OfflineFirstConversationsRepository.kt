@@ -43,10 +43,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import kotlin.collections.map
 import kotlin.time.Duration.Companion.milliseconds
@@ -83,6 +86,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val _syncErrorFlow: MutableSharedFlow<Throwable> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
+
+    /** One lock per account, held for the whole of a room list sync. See [syncRoomListExclusively]. */
+    private val roomListSyncLocks = ConcurrentHashMap<Long, Mutex>()
 
     sealed interface ConversationResult {
         data class Found(val conversation: ConversationModel) : ConversationResult
@@ -192,13 +198,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
         reportSyncError: Boolean
     ): List<ConversationEntity>? {
         val accountId = user.id!!
-        val modifiedSince = modifiedSinceFor(user, forceFullSync)
 
         return try {
             if (roomListTimeoutMillis == null) {
-                syncRoomList(user, modifiedSince)
+                syncRoomListExclusively(user, forceFullSync)
             } else {
-                withTimeout(roomListTimeoutMillis.milliseconds) { syncRoomList(user, modifiedSince) }
+                // waiting for another sync of the account counts against the budget too
+                withTimeout(roomListTimeoutMillis.milliseconds) { syncRoomListExclusively(user, forceFullSync) }
             }
         } catch (e: TimeoutCancellationException) {
             // the caller's run goes on, so this is a failed sync rather than a cancellation
@@ -215,6 +221,22 @@ class OfflineFirstConversationsRepository @Inject constructor(
             null
         }
     }
+
+    /**
+     * Runs [syncRoomList] for [user] once no other sync of the same account is running.
+     *
+     * Each sync reads the stored conversations, merges its response into them and writes the
+     * result, and a full sync deletes what its response no longer has. Syncs of one account are
+     * started from several places (screen, pull to refresh, refresh tick, background worker), so
+     * they are run one after the other: interleaved, a delta response written after a full sync
+     * would put back a conversation the full sync had just deleted, and an older response would
+     * overwrite newer state. The waiting sync also picks its `modifiedSince` from what the previous
+     * one stored.
+     */
+    private suspend fun syncRoomListExclusively(user: User, forceFullSync: Boolean): List<ConversationEntity> =
+        roomListSyncLocks.getOrPut(user.id!!) { Mutex() }.withLock {
+            syncRoomList(user, modifiedSinceFor(user, forceFullSync))
+        }
 
     /**
      * Fetches [user]'s room list, filtered by [modifiedSince] when set, and stores it, returning the
