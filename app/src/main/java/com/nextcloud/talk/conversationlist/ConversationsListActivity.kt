@@ -992,7 +992,10 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun addFileToShareIfTrusted(uri: Uri?) {
-        if (uri != null && ContentResolver.SCHEME_CONTENT == uri.scheme && uri.authority != packageName) {
+        val isTrusted = uri != null &&
+            ContentResolver.SCHEME_CONTENT == uri.scheme &&
+            (uri.authority != packageName || FileUtils.isSharedAttachmentProviderPath(cacheDir, uri.pathSegments))
+        if (isTrusted) {
             filesToShare!!.add(uri.toString())
         } else {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
