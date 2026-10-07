@@ -220,7 +220,6 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.webrtc.Globals
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import com.nextcloud.talk.webrtc.WebSocketInstance
-import com.otaliastudios.autocomplete.Autocomplete
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -388,7 +387,6 @@ class ChatActivity :
     var currentConversation: ConversationModel? = null
     private var lastMessageClickTime = 0L
     private var lastMessageId = 0
-    var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
     var startCallFromNotification: Boolean = false
@@ -3023,10 +3021,6 @@ class ChatActivity :
             }
         } else {
             Log.d(TAG, "not leaving room...")
-        }
-
-        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
-            mentionAutocomplete?.dismissPopup()
         }
 
         // Updating remote last-read in onPause has a race condition with conversation loading.

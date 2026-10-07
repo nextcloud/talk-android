@@ -22,6 +22,15 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/mentionSuggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/standard_half_margin"
+        android:layout_marginBottom="@dimen/standard_half_margin"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/messageInputContainer"
         android:layout_width="match_parent"
