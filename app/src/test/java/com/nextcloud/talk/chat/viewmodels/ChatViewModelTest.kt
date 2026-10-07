@@ -237,7 +237,7 @@ class ChatViewModelTest {
         val result = combineFileShareGroups(messages)
 
         assertEquals(1, result.size)
-        assertEquals(3, (result[0] as CombinedUnit.Single).message.id)
+        assertEquals(listOf(1, 2, 3), (result[0] as CombinedUnit.Collapsed).messages.map { it.id })
     }
 
     @Test
@@ -269,6 +269,25 @@ class ChatViewModelTest {
         assertEquals(2, result.size)
         assertEquals(1, (result[0] as CombinedUnit.Single).message.id)
         assertEquals(listOf(2, 3), (result[1] as CombinedUnit.Group).messages.map { it.id })
+    }
+
+    @Test
+    fun `a collapsed deleted message still stands for the messages it hides`() {
+        val item = ChatViewModel.ChatItem.MessageItem(uiMessage(3), collapsedMessageIds = listOf(1, 2))
+
+        assertEquals(listOf(1, 2, 3), item.messageIds())
+        assertTrue(item.containsMessage(1))
+    }
+
+    @Test
+    fun `marking a collapsed deleted message as unread keeps the messages it hides read`() {
+        val items = listOf(
+            messageItem(4),
+            ChatViewModel.ChatItem.MessageItem(uiMessage(3), collapsedMessageIds = listOf(1, 2)),
+            messageItem(0)
+        )
+
+        assertEquals(2, ChatViewModel.readMarkerForMarkingUnread(items, messageId = 3))
     }
 
     // Deleting a message shown in a media group deletes the whole group, same as web.
