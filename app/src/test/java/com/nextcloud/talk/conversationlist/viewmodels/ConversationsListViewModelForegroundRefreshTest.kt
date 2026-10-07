@@ -36,9 +36,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -134,6 +136,39 @@ class ConversationsListViewModelForegroundRefreshTest {
 
         laterSync.complete()
         assertFalse(viewModel.isLoadingRooms.value)
+    }
+
+    @Test
+    fun `a sync started while the cadence is read still drops the tick`() {
+        whenever(repository.getRooms(any(), any())).thenReturn(completedJob(), Job())
+        viewModel.getRooms(USER)
+        repository.stub {
+            onBlocking { isPeriodicSyncDue(any()) } doSuspendableAnswer {
+                viewModel.getRooms(USER, forceFullSync = true)
+                true
+            }
+        }
+
+        runBlocking { viewModel.refreshRoomsIfIdle(USER) }
+
+        verify(repository, times(1)).getRooms(eq(USER), eq(false))
+        verify(repository, times(1)).getRooms(eq(USER), eq(true))
+    }
+
+    @Test
+    fun `a search opened while the cadence is read still drops the tick`() {
+        whenever(repository.getRooms(any(), any())).thenReturn(completedJob())
+        viewModel.getRooms(USER)
+        repository.stub {
+            onBlocking { isPeriodicSyncDue(any()) } doSuspendableAnswer {
+                viewModel.setIsSearchActive(true)
+                true
+            }
+        }
+
+        runBlocking { viewModel.refreshRoomsIfIdle(USER) }
+
+        verify(repository, times(1)).getRooms(eq(USER), eq(false))
     }
 
     @Test

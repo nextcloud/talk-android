@@ -582,9 +582,11 @@ class ConversationsListViewModel @AssistedInject constructor(
      *
      * Whether a sync is due is read from stored state, and a read that fails must not take the
      * refresh loop with it: this runs every tick for as long as the screen is open, and an
-     * exception would escape the loop's scope rather than skip one refresh.
+     * exception would escape the loop's scope rather than skip one refresh. That read suspends, so
+     * it is done before the other checks: a sync or a search started while it runs is still seen.
      */
     suspend fun refreshRoomsIfIdle(user: User) {
+        val syncDue = isPeriodicSyncDue(user)
         when {
             _isLoadingRooms.value ->
                 Log.d(TAG, "Foreground refresh skipped: a room list sync is already in flight")
@@ -592,7 +594,7 @@ class ConversationsListViewModel @AssistedInject constructor(
             _isSearchActiveFlow.value ->
                 Log.d(TAG, "Foreground refresh skipped: a search is active")
 
-            !isPeriodicSyncDue(user) ->
+            !syncDue ->
                 Log.d(TAG, "Foreground refresh skipped: no delta available and no full sync due")
 
             else -> getRooms(user)
