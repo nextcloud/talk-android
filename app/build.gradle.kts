@@ -31,7 +31,6 @@ val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
 val okhttpVersion = "4.12.0"
 val markwonVersion = "4.6.2"
-val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
 val roomVersion = "2.8.4"
@@ -289,11 +288,6 @@ dependencies {
 
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")
-
-    implementation("com.afollestad.material-dialogs:core:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:datetime:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogsVersion")
 
     implementation("com.google.code.gson:gson:2.14.0")
 
