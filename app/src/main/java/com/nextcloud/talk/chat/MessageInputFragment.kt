@@ -12,6 +12,8 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.text.Editable
 import android.text.InputFilter
@@ -25,6 +27,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -38,6 +41,7 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
+import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
@@ -55,7 +59,6 @@ import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -131,6 +134,12 @@ class MessageInputFragment : Fragment() {
     private lateinit var spreedCapabilities: SpreedCapabilityDto
     private var hasSharedText = false
 
+    private val recordButtonHandler = Handler(Looper.getMainLooper())
+    private var pendingRecordStart: Runnable? = null
+    private var recordingStartedAt = 0L
+    private var recordHintPopup: RecordHintPopup? = null
+    private var recordingUiShown = false
+
     private var lastQuotedJsonId: Int? = null
     private var lastEditMessageId: Int? = null
     private var lastIsThreadCreationInProgress: Boolean = false
@@ -155,8 +164,16 @@ class MessageInputFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        cancelPendingRecordStart()
+        super.onPause()
+    }
+
     override fun onDestroyView() {
         restoreKeyboardOnEmojiDismiss = false
+        cancelPendingRecordStart()
+        recordHintPopup?.dismiss()
+        recordHintPopup = null
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
@@ -272,6 +289,13 @@ class MessageInputFragment : Fragment() {
                 }
 
                 else -> {}
+            }
+        }
+
+        chatActivity.chatViewModel.getVoiceRecordingInProgress.observe(viewLifecycleOwner) { inProgress ->
+            if (inProgress != true && recordingUiShown) {
+                showRecordAudioUi(false)
+                resetSlider()
             }
         }
 
@@ -583,86 +607,78 @@ class MessageInputFragment : Fragment() {
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
     private fun initVoiceRecordButton() {
         handleButtonsVisibility()
+        updateRecordButtonMode()
 
         var prevDx = 0f
-        var voiceRecordStartTime = 0L
-        var voiceRecordEndTime: Long
+        val gesture = RecordButtonGesture(VOICE_RECORD_CANCEL_SLIDER_X.toFloat())
         binding.fragmentMessageInputView.recordAudioButton.setOnTouchListener { v, event ->
             v?.performClick()
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (!chatActivity.isRecordAudioPermissionGranted()) {
-                        chatActivity.requestRecordAudioPermissions()
-                        return@setOnTouchListener true
-                    }
-                    if (!chatActivity.permissionUtil.isFilesPermissionGranted()) {
-                        UploadAndShareFilesWorker.requestStoragePermission(chatActivity)
-                        return@setOnTouchListener true
-                    }
-
-                    val base = SystemClock.elapsedRealtime()
-                    voiceRecordStartTime = System.currentTimeMillis()
-                    binding.fragmentMessageInputView.audioRecordDuration.base = base
-                    messageInputViewModel.setRecordingTime(base)
-                    binding.fragmentMessageInputView.audioRecordDuration.start()
-                    chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
-                    showRecordAudioUi(true)
+                    // A tap only switches the mode, the recording starts only after the hold threshold.
+                    recordHintPopup?.dismiss()
                     prevDx = event.x
+                    gesture.down()
+                    scheduleRecordStart(gesture)
                 }
 
                 MotionEvent.ACTION_CANCEL -> {
                     Log.d(TAG, "ACTION_CANCEL")
-                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
-                        !chatActivity.isRecordAudioPermissionGranted()
+                    gesture.cancel()
+                    if (cancelPendingRecordStart() ||
+                        chatActivity.chatViewModel.getVoiceRecordingInProgress.value != true ||
+                        !isActiveRecordingPermissionGranted()
                     ) {
                         return@setOnTouchListener true
                     }
 
                     showRecordAudioUi(false)
                     if (chatActivity.chatViewModel.getVoiceRecordingLocked.value != true) { // can also be null
-                        chatActivity.chatViewModel.stopAndDiscardAudioRecording()
+                        chatActivity.stopAndDiscardRecording()
                     }
                 }
 
                 MotionEvent.ACTION_UP -> {
                     Log.d(TAG, "ACTION_UP")
-                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
+                    val release = gesture.up()
+                    if (cancelPendingRecordStart() && release == RecordButtonGesture.Release.TOGGLE_MODE) {
+                        toggleRecordInputMode()
+                        return@setOnTouchListener true
+                    }
+                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value != true ||
                         chatActivity.chatViewModel.getVoiceRecordingLocked.value == true ||
-                        !chatActivity.isRecordAudioPermissionGranted()
+                        !isActiveRecordingPermissionGranted()
                     ) {
                         return@setOnTouchListener false
                     }
                     showRecordAudioUi(false)
 
-                    voiceRecordEndTime = System.currentTimeMillis()
-                    val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
-                    if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
-                        Snackbar.make(
-                            binding.root,
-                            requireContext().getString(R.string.nc_voice_message_hold_to_record_info),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                        chatActivity.chatViewModel.stopAndDiscardAudioRecording()
+                    val isVideo = chatActivity.chatViewModel.activeRecordingMode == RecordInputMode.VIDEO
+                    if (isVideo) {
+                        chatActivity.stopAndSendRecording()
+                    } else if (isVoiceRecordTooShort()) {
+                        showRecordHint(R.string.nc_voice_message_hold_to_record_info)
+                        chatActivity.stopAndDiscardRecording()
                         return@setOnTouchListener false
                     } else {
-                        chatActivity.chatViewModel.stopAndSendAudioRecording(
-                            roomToken = chatActivity.roomToken,
-                            replyToMessageId = chatActivity.getReplyToMessageId(),
-                            displayName = chatActivity.currentConversation!!.displayName
-                        )
+                        chatActivity.stopAndSendRecording()
                     }
                     resetSlider()
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
-                        !chatActivity.isRecordAudioPermissionGranted()
+                    if (gesture.isPending) {
+                        if (gesture.move(event.x)) cancelPendingRecordStart()
+                        return@setOnTouchListener true
+                    }
+                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value != true ||
+                        !isActiveRecordingPermissionGranted()
                     ) {
                         return@setOnTouchListener false
                     }
 
                     if (event.x < VOICE_RECORD_CANCEL_SLIDER_X) {
-                        chatActivity.chatViewModel.stopAndDiscardAudioRecording()
+                        chatActivity.stopAndDiscardRecording()
                         showRecordAudioUi(false)
                         resetSlider()
                         return@setOnTouchListener true
@@ -686,6 +702,96 @@ class MessageInputFragment : Fragment() {
                 }
             }
             v?.onTouchEvent(event) != false
+        }
+    }
+
+    private fun isVoiceRecordTooShort(): Boolean =
+        RecordButtonGesture.isTooShort(recordingStartedAt, SystemClock.elapsedRealtime(), MINIMUM_VOICE_RECORD_DURATION)
+
+    private fun beginRecording(isVideo: Boolean) {
+        val base = SystemClock.elapsedRealtime()
+        if (isVideo) {
+            if (!chatActivity.startVideoRecording()) return
+        } else {
+            chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
+        }
+        // the minimum duration counts from the start of the recording, not from the touch which preceded the hold
+        recordingStartedAt = SystemClock.elapsedRealtime()
+        binding.fragmentMessageInputView.audioRecordDuration.base = base
+        messageInputViewModel.setRecordingTime(base)
+        binding.fragmentMessageInputView.audioRecordDuration.start()
+        showRecordAudioUi(true)
+    }
+
+    /**
+     * Neither the microphone nor the camera is opened before the hold threshold has passed, so that a tap on the
+     * record button can switch the mode without flashing the recording UI. After the threshold the permissions are
+     * checked: without them they are requested and nothing is recorded.
+     */
+    private fun scheduleRecordStart(gesture: RecordButtonGesture) {
+        cancelPendingRecordStart()
+        val runnable = Runnable {
+            pendingRecordStart = null
+            if (!gesture.holdElapsed()) return@Runnable
+            val isVideo = chatActivity.chatViewModel.recordInputMode == RecordInputMode.VIDEO
+            if (isVideo && !chatActivity.isVideoRecordPermissionGranted()) {
+                chatActivity.requestVideoRecordPermissions()
+            } else if (!isVideo && !chatActivity.isRecordAudioPermissionGranted()) {
+                chatActivity.requestRecordAudioPermissions()
+            } else if (!chatActivity.permissionUtil.isFilesPermissionGranted()) {
+                UploadAndShareFilesWorker.requestStoragePermission(chatActivity)
+            } else {
+                beginRecording(isVideo)
+            }
+        }
+        pendingRecordStart = runnable
+        recordButtonHandler.postDelayed(
+            runnable,
+            RecordButtonGesture.holdThresholdMs(ViewConfiguration.getLongPressTimeout())
+        )
+    }
+
+    private fun cancelPendingRecordStart(): Boolean {
+        val runnable = pendingRecordStart ?: return false
+        recordButtonHandler.removeCallbacks(runnable)
+        pendingRecordStart = null
+        return true
+    }
+
+    private fun isActiveRecordingPermissionGranted(): Boolean =
+        if (chatActivity.chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            chatActivity.isVideoRecordPermissionGranted()
+        } else {
+            chatActivity.isRecordAudioPermissionGranted()
+        }
+
+    private fun toggleRecordInputMode() {
+        val newMode = chatActivity.chatViewModel.toggleRecordInputMode()
+        updateRecordButtonMode()
+        showRecordHint(
+            if (newMode == RecordInputMode.VIDEO) {
+                R.string.nc_video_message_hold_to_record_info_switch_to_voice
+            } else {
+                R.string.nc_voice_message_hold_to_record_info_switch_to_video
+            }
+        )
+    }
+
+    private fun showRecordHint(@StringRes messageRes: Int) {
+        val popup = recordHintPopup ?: RecordHintPopup(binding.fragmentMessageInputView.recordAudioButton)
+            .also { recordHintPopup = it }
+        popup.show(messageRes)
+    }
+
+    private fun updateRecordButtonMode() {
+        val isVideo = chatActivity.chatViewModel.recordInputMode == RecordInputMode.VIDEO
+        binding.fragmentMessageInputView.recordAudioButton.apply {
+            setImageResource(
+                if (isVideo) R.drawable.ic_baseline_videocam_24 else R.drawable.ic_baseline_mic_24
+            )
+            contentDescription = context.getString(
+                if (isVideo) R.string.nc_description_record_video else R.string.nc_description_record_voice
+            )
         }
     }
 
@@ -820,6 +926,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun showRecordAudioUi(show: Boolean) {
+        recordingUiShown = show
         if (show) {
             restoreKeyboardOnEmojiDismiss = false
             binding.emojiPicker.isVisible = false

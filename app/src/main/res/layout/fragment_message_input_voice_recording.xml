@@ -64,6 +64,7 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/recordingControlsRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -80,6 +81,34 @@
             android:contentDescription="@string/delete_voice_recording"
             android:scaleType="centerInside"
             android:src="@drawable/ic_delete" />
+
+        <!-- Video only (compact row, see MessageInputVoiceRecordingFragment): red dot inside the progress ring of the
+             maximum recording length. The voice layout does not show it. -->
+        <FrameLayout
+            android:id="@+id/videoRecordingIndicator"
+            android:layout_width="@dimen/video_recording_indicator_size"
+            android:layout_height="@dimen/video_recording_indicator_size"
+            android:importantForAccessibility="noHideDescendants"
+            android:visibility="gone">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/videoRecordingProgress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:progress="0"
+                app:indicatorColor="@color/nc_darkRed"
+                app:indicatorInset="0dp"
+                app:indicatorSize="@dimen/video_recording_indicator_size"
+                app:trackColor="@color/transparent"
+                app:trackThickness="2dp" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/video_recording_dot" />
+        </FrameLayout>
 
         <com.nextcloud.talk.ui.MicInputCloud
             android:id="@+id/micInputCloud"
