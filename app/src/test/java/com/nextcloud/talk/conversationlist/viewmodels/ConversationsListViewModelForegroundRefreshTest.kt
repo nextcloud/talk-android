@@ -30,6 +30,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -104,6 +106,34 @@ class ConversationsListViewModelForegroundRefreshTest {
         runBlocking { viewModel.refreshRoomsIfIdle(USER) }
 
         verify(repository, times(1)).getRooms(eq(USER), eq(false))
+    }
+
+    @Test
+    fun `a tick is dropped while an earlier sync still runs, even after a later one finished`() {
+        val earlierSync = Job()
+        whenever(repository.getRooms(any(), any())).thenReturn(earlierSync, completedJob())
+        viewModel.getRooms(USER)
+        viewModel.getRooms(USER, forceFullSync = true)
+
+        runBlocking { viewModel.refreshRoomsIfIdle(USER) }
+
+        verify(repository, times(1)).getRooms(eq(USER), eq(false))
+        verify(repository, times(1)).getRooms(eq(USER), eq(true))
+    }
+
+    @Test
+    fun `the loading state ends only once the last overlapping sync finishes`() {
+        val earlierSync = Job()
+        val laterSync = Job()
+        whenever(repository.getRooms(any(), any())).thenReturn(earlierSync, laterSync)
+        viewModel.getRooms(USER)
+        viewModel.getRooms(USER, forceFullSync = true)
+
+        earlierSync.complete()
+        assertTrue(viewModel.isLoadingRooms.value)
+
+        laterSync.complete()
+        assertFalse(viewModel.isLoadingRooms.value)
     }
 
     @Test

@@ -161,8 +161,17 @@ class ConversationsListViewModel @AssistedInject constructor(
     private val _isLoadingRooms = MutableStateFlow(true)
 
     /**
-     * True while a [getRooms] call is in progress (from start until the fetch-Job completes,
-     * i.e. after both the local-DB and the network-sync emissions have been produced).
+     * Number of [getRooms] jobs that have not completed yet. Guarded by [roomSyncsLock], together
+     * with the matching update of [_isLoadingRooms]: [getRooms] is also called off the main thread,
+     * from a background event subscriber.
+     */
+    private var roomSyncsInFlight = 0
+    private val roomSyncsLock = Any()
+
+    /**
+     * True while any [getRooms] call is in progress (from start until the last overlapping
+     * fetch-Job completes, i.e. after both the local-DB and the network-sync emissions have been
+     * produced).
      */
     val isLoadingRooms: StateFlow<Boolean> = _isLoadingRooms.asStateFlow()
 
@@ -601,11 +610,24 @@ class ConversationsListViewModel @AssistedInject constructor(
     fun getRooms(user: User, forceFullSync: Boolean = false): Job {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        _isLoadingRooms.value = true
         val job = repository.getRooms(user, forceFullSync)
+        // overlapping syncs (resume, pull to refresh, a refresh tick) must not end the loading
+        // state while another one is still running, or pull to refresh stops spinning too early
+        synchronized(roomSyncsLock) {
+            roomSyncsInFlight++
+            _isLoadingRooms.value = true
+        }
         viewModelScope.launch {
-            job.join()
-            _isLoadingRooms.value = false
+            try {
+                job.join()
+            } finally {
+                synchronized(roomSyncsLock) {
+                    roomSyncsInFlight--
+                    if (roomSyncsInFlight == 0) {
+                        _isLoadingRooms.value = false
+                    }
+                }
+            }
         }
         return job
     }
