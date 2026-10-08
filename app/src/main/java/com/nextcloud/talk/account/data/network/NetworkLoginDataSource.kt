@@ -9,6 +9,7 @@ package com.nextcloud.talk.account.data.network
 
 import android.util.Log
 import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
@@ -26,6 +27,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
+        private const val HTTP_OK = 200
     }
 
     fun oneTimePasswordRequest(baseUrl: String, oneTimeCredentials: String): String? {
@@ -123,6 +125,10 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
         return result
     }
 
+    /**
+     * Returns null for a 200 response with an unusable body. Throws [IOException] if the request fails.
+     */
+    @Throws(IOException::class)
     fun performLoginFlowV2(response: LoginResponse): LoginCompletion? {
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", response.token)
@@ -147,17 +153,19 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
                         val appPassword: String = jsonObject.get("appPassword").asString
 
                         LoginCompletion(status, server, loginName, appPassword)
+                    } else if (status == HTTP_OK) {
+                        null // Confirmed, but without the login data: unusable.
                     } else {
                         LoginCompletion(status, "", "", "")
                     }
                 }
         }.getOrElse { e ->
             when (e) {
+                // An unusable body: the poll is over. An IOException is not caught, the caller retries.
                 is NullPointerException,
-                is SSLHandshakeException,
                 is IllegalStateException,
-                is java.net.UnknownHostException,
-                is IOException -> {
+                is UnsupportedOperationException,
+                is JsonParseException -> {
                     Log.e(TAG, "Error caught at performLoginFlowV2: with url ${request.url} $e")
                 }
 
