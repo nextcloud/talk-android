@@ -36,8 +36,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.dagger.modules.assistedViewModels
-import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -62,6 +60,7 @@ import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenCallbacks
 import com.nextcloud.talk.conversationlist.ui.ConversationsListScreenState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.conversationtags.viewmodels.ConversationTagsViewModel
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -115,17 +114,20 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CAT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -214,6 +216,8 @@ class ConversationsListActivity : BaseActivity() {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
             lifecycleScope.launch { userManager.setUserAsActive(currentUser) }
         }
+
+        startForegroundRefreshLoop()
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -712,6 +716,22 @@ class ConversationsListActivity : BaseActivity() {
 
     fun showSnackbar(text: String) {
         lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
+    }
+
+    /**
+     * Starts a loop that refreshes the conversation list every
+     * [FOREGROUND_REFRESH_INTERVAL_MILLIS] milliseconds while this screen is resumed, waiting one
+     * interval before the first refresh.
+     */
+    private fun startForegroundRefreshLoop() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (isActive) {
+                    delay(FOREGROUND_REFRESH_INTERVAL_MILLIS)
+                    currentUser?.let { conversationsListViewModel.refreshRoomsIfIdle(it) }
+                }
+            }
+        }
     }
 
     fun fetchRooms(forceFullSync: Boolean = false) {
@@ -1630,6 +1650,7 @@ class ConversationsListActivity : BaseActivity() {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
 
+        private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 30_000L
         const val BOTTOM_SHEET_DELAY: Long = 2500
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val HTTP_UNAUTHORIZED = 401

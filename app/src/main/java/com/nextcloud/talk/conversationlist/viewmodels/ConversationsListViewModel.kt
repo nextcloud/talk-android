@@ -51,6 +51,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -160,8 +161,17 @@ class ConversationsListViewModel @AssistedInject constructor(
     private val _isLoadingRooms = MutableStateFlow(true)
 
     /**
-     * True while a [getRooms] call is in progress (from start until the fetch-Job completes,
-     * i.e. after both the local-DB and the network-sync emissions have been produced).
+     * Number of [getRooms] jobs that have not completed yet. Guarded by [roomSyncsLock], together
+     * with the matching update of [_isLoadingRooms]: [getRooms] is also called off the main thread,
+     * from a background event subscriber.
+     */
+    private var roomSyncsInFlight = 0
+    private val roomSyncsLock = Any()
+
+    /**
+     * True while any [getRooms] call is in progress (from start until the last overlapping
+     * fetch-Job completes, i.e. after both the local-DB and the network-sync emissions have been
+     * produced).
      */
     val isLoadingRooms: StateFlow<Boolean> = _isLoadingRooms.asStateFlow()
 
@@ -562,14 +572,64 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Refreshes the conversation list, unless a room list sync is already running, a search is
+     * open, or the sync would fetch the whole list without the refresh cadence calling for it.
+     *
+     * The in-flight check covers the room list request only: [getRooms] completes once the list is
+     * stored and leaves the message catch-up running, so a tick can start while messages of the
+     * previous one are still being fetched. That is deliberate - the list is what this refreshes.
+     *
+     * Whether a sync is due is read from stored state, and a read that fails must not take the
+     * refresh loop with it: this runs every tick for as long as the screen is open, and an
+     * exception would escape the loop's scope rather than skip one refresh. That read suspends, so
+     * it is done before the other checks: a sync or a search started while it runs is still seen.
+     */
+    suspend fun refreshRoomsIfIdle(user: User) {
+        val syncDue = isPeriodicSyncDue(user)
+        when {
+            _isLoadingRooms.value ->
+                Log.d(TAG, "Foreground refresh skipped: a room list sync is already in flight")
+
+            _isSearchActiveFlow.value ->
+                Log.d(TAG, "Foreground refresh skipped: a search is active")
+
+            !syncDue ->
+                Log.d(TAG, "Foreground refresh skipped: no delta available and no full sync due")
+
+            else -> getRooms(user)
+        }
+    }
+
+    /** Whether the cadence calls for a sync, treating a failed read of the stored state as yes. */
+    private suspend fun isPeriodicSyncDue(user: User): Boolean =
+        runCatching { repository.isPeriodicSyncDue(user) }.getOrElse { throwable ->
+            if (throwable is CancellationException) throw throwable
+            Log.w(TAG, "Could not read when the last sync was, refreshing anyway", throwable)
+            true
+        }
+
     fun getRooms(user: User, forceFullSync: Boolean = false): Job {
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        _isLoadingRooms.value = true
         val job = repository.getRooms(user, forceFullSync)
+        // overlapping syncs (resume, pull to refresh, a refresh tick) must not end the loading
+        // state while another one is still running, or pull to refresh stops spinning too early
+        synchronized(roomSyncsLock) {
+            roomSyncsInFlight++
+            _isLoadingRooms.value = true
+        }
         viewModelScope.launch {
-            job.join()
-            _isLoadingRooms.value = false
+            try {
+                job.join()
+            } finally {
+                synchronized(roomSyncsLock) {
+                    roomSyncsInFlight--
+                    if (roomSyncsInFlight == 0) {
+                        _isLoadingRooms.value = false
+                    }
+                }
+            }
         }
         return job
     }

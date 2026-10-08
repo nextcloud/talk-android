@@ -7,7 +7,6 @@
 package com.nextcloud.talk.jobs
 
 import android.content.Context
-import android.os.PowerManager
 import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -22,6 +21,7 @@ import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.extensions.isPowerSaveMode
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.users.UserManager
@@ -71,7 +71,7 @@ class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters)
                 Result.failure()
             }
 
-            isPowerSaveMode() -> {
+            applicationContext.isPowerSaveMode() -> {
                 Log.d(TAG, "Battery saver is active, skipping message catch-up for room $roomToken")
                 Result.success()
             }
@@ -126,11 +126,6 @@ class ChatMessageCatchUpWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun retryOrFail(): Result = if (runAttemptCount < MAX_RUN_ATTEMPTS - 1) Result.retry() else Result.failure()
-
-    private fun isPowerSaveMode(): Boolean {
-        val powerManager = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-        return powerManager.isPowerSaveMode
-    }
 
     companion object {
         private val TAG: String = ChatMessageCatchUpWorker::class.java.simpleName

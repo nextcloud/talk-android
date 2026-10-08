@@ -480,7 +480,7 @@
     <string name="nc_remind">Pripomenúť neskôr</string>
     <string name="nc_remote_wipe_logged_out">Prihlasovacie údaje tohto účtu už nie sú platné</string>
     <string name="nc_remove_color">Odobrať farbu</string>
-    <string name="nc_remove_file">Ostrániť súbor</string>
+    <string name="nc_remove_file">Odstrániť súbor</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>

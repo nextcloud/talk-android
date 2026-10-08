@@ -214,6 +214,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import com.nextcloud.talk.utils.keepContentOutOfDisplayCutout
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -606,6 +607,7 @@ class ChatActivity :
 
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        keepContentOutOfDisplayCutout()
 
         setupChatToolbarView()
         setupChatEmptyStateView()
@@ -1891,8 +1893,13 @@ class ChatActivity :
             }
         }
 
+        // The observer also gets the current value when the activity is recreated: no feedback for that
+        var lastRecordingInProgress = chatViewModel.getVoiceRecordingInProgress.value
         chatViewModel.getVoiceRecordingInProgress.observe(this) { voiceRecordingInProgress ->
-            VibrationUtils.vibrateShort(context)
+            if (shouldVibrateOnRecordingChange(lastRecordingInProgress, voiceRecordingInProgress)) {
+                VibrationUtils.vibrateShort(context)
+            }
+            lastRecordingInProgress = voiceRecordingInProgress
             if (voiceRecordingInProgress) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
@@ -4363,3 +4370,9 @@ internal fun resolveReplyToMessageId(replyMessageId: Int?, draftQuotedJsonId: In
     val replyId = replyMessageId?.takeIf { it != 0 } ?: draftQuotedJsonId?.takeIf { it != 0 }
     return replyId ?: threadId ?: 0
 }
+
+/**
+ * Feedback is for the user starting or ending a recording, not for an activity which only shows the state again.
+ */
+internal fun shouldVibrateOnRecordingChange(previous: Boolean?, current: Boolean): Boolean =
+    current != (previous ?: false)
