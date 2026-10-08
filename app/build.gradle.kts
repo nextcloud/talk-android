@@ -342,7 +342,8 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.33.2")
     implementation("com.github.nextcloud.android-common:core:0.33.2")
-    implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
+    implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.0")
+    implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.10.1")
     "gplayImplementation"("com.google.firebase:firebase-messaging:25.1.2")

@@ -86,10 +86,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     val signalingMessageSender = ExternalSignalingMessageSender()
     private val signalingHttpClient: OkHttpClient by lazy { createSignalingHttpClient(okHttpClient!!) }
 
-    // Whether calls have to be end-to-end encrypted and this build can do it
+    // Whether calls have to be end-to-end encrypted
     private val isCallEncryptionEnabled =
-        CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability) &&
-            CallEncryptionFactory.IS_AVAILABLE
+        CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability)
 
     /**
      * The key exchange of the joined room, null until the room is joined with the MCU or when calls are not
