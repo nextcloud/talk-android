@@ -768,9 +768,7 @@ class ChatActivity :
 
     private fun scrollToMessageById(messageId: Long, logMiss: Boolean = true): Boolean {
         val items = chatViewModel.uiState.value.items
-        val targetIndex = items.indexOfFirst { item ->
-            (item as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
-        }
+        val targetIndex = items.indexOfFirst { it.containsMessage(messageId.toInt()) }
         val listState = chatListState
         val composeScope = chatListComposeScope
         val isReadyToScroll = targetIndex >= 0 && listState != null && composeScope != null
@@ -837,9 +835,7 @@ class ChatActivity :
 
             if (attempt < SEARCH_CENTER_STABILIZE_ATTEMPTS - 1) {
                 delay(SEARCH_CENTER_STABILIZE_DELAY_MS)
-                targetIndex = chatViewModel.uiState.value.items.indexOfFirst { item ->
-                    (item as? ChatViewModel.ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
-                }
+                targetIndex = chatViewModel.uiState.value.items.indexOfFirst { it.containsMessage(messageId.toInt()) }
             }
         }
     }
@@ -3632,16 +3628,16 @@ class ChatActivity :
             // FIXME Fix API checking with guests?
             val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
-            chatViewModel.deleteChatMessages(
-                credentials!!,
+            val urlsByMessageId = chatViewModel.messageIdsToDelete(message.jsonMessageId).associateWith { id ->
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
                     conversationUser.baseUrl!!,
                     roomToken,
-                    message.jsonMessageId.toString()
-                ),
-                message.jsonMessageId
-            )
+                    id.toString()
+                )
+            }
+
+            chatViewModel.deleteChatMessages(credentials!!, urlsByMessageId)
         }
     }
 
