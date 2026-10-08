@@ -15,7 +15,6 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.call.e2ee.CallEncryption
-import com.nextcloud.talk.call.e2ee.CallEncryptionFactory
 import com.nextcloud.talk.call.e2ee.EncryptionMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
@@ -87,11 +86,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     val signalingMessageSender = ExternalSignalingMessageSender()
     private val signalingHttpClient: OkHttpClient by lazy { createSignalingHttpClient(okHttpClient!!) }
 
-    // Whether calls have to be end-to-end encrypted and this build can do it, refreshed whenever this instance is
-    // handed out again
+    // Whether calls have to be end-to-end encrypted, refreshed whenever this instance is handed out again
     private var isCallEncryptionEnabled =
-        CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability) &&
-            CallEncryptionFactory.IS_AVAILABLE
+        CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability)
 
     /**
      * The key exchange of the joined room, null until the room is joined with the MCU or when calls are not
