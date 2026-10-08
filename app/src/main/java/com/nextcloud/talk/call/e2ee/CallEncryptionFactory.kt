@@ -14,15 +14,21 @@ import android.util.Log
 object CallEncryptionFactory {
     private val TAG = CallEncryptionFactory::class.java.simpleName
 
-    // ponytail: false until the WebRTC build with TalkKeyRing and the vodozemac AAR are available, then the two
-    // adapters (TalkKeyRing -> FrameCrypto, VodozemacAccount -> OlmCrypto) go here and this becomes true
-    const val IS_AVAILABLE = false
-
+    /**
+     * Returns null when the native libraries can not be used, the call then ends instead of being sent unencrypted.
+     */
+    @Suppress("TooGenericExceptionCaught")
     fun create(
         ownSessionId: String,
         sendMessage: (sessionId: String, message: EncryptionMessage) -> Unit
-    ): CallEncryption? {
-        Log.w(TAG, "Frame encryption is not available in this build, can not encrypt the call of $ownSessionId")
-        return null
-    }
+    ): CallEncryption? =
+        try {
+            CallEncryption(ownSessionId, VodozemacOlmCrypto(), TalkFrameCrypto, sendMessage)
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not set up the key exchange for $ownSessionId", e)
+            null
+        } catch (e: LinkageError) {
+            Log.e(TAG, "Could not load the native encryption libraries for $ownSessionId", e)
+            null
+        }
 }
