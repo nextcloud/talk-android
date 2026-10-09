@@ -53,6 +53,12 @@ object CallPushPayload {
         }
 
     /**
+     * A stale push is not shown before the server is asked: its age may come from a device clock that runs ahead.
+     * It rings only if the server confirms the call; otherwise, also without an answer, it is a missed call.
+     */
+    fun stateOfStalePush(hasCall: Boolean?): CallState = if (hasCall == true) CallState.RING else CallState.MISSED
+
+    /**
      * The incoming call as the notification and the call screens need it.
      *
      * [title] is the text of the push; [displayName] and [name] come from the conversation.

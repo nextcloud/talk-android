@@ -265,19 +265,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             ?.let { CallPushPayload.IncomingCall.fromConversation(it, pushMessage.subject, capabilities) }
             ?: CallPushPayload.IncomingCall.fromPush(roomToken, pushMessage.subject)
 
-        val sentTime = inputData.getLong(BundleKeys.KEY_NOTIFICATION_PUSH_SENT_TIME, 0L)
-        if (CallPushPayload.isStale(sentTime, pushMessage.timestamp)) {
-            Log.d(TAG, "Call push is older than ${CallPushPayload.MAX_PUSH_AGE_MS} ms, showing it as missed")
-            showMissedCallNotification(pushedCall.displayName, requireRingingCall = false)
-            return
-        }
-
         if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(capabilities)) {
             showEndToEndEncryptionUnsupportedNotification(pushedCall.displayName, roomToken)
             return
         }
 
-        showCallNotification(pushedCall, isUpdate = false)
+        val sentTime = inputData.getLong(BundleKeys.KEY_NOTIFICATION_PUSH_SENT_TIME, 0L)
+        val isStale = CallPushPayload.isStale(sentTime, pushMessage.timestamp)
+        if (isStale) {
+            Log.d(TAG, "Call push is older than ${CallPushPayload.MAX_PUSH_AGE_MS} ms, asking the server first")
+        } else {
+            showCallNotification(pushedCall, isUpdate = false)
+        }
 
         val conversation = try {
             runBlocking { chatNetworkDataSource?.getRoom(userBeingCalled!!, roomToken = roomToken) }
@@ -286,13 +285,18 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             null
         }
 
-        when (CallPushPayload.stateOf(conversation?.hasCall)) {
+        val state = if (isStale) {
+            CallPushPayload.stateOfStalePush(conversation?.hasCall)
+        } else {
+            CallPushPayload.stateOf(conversation?.hasCall)
+        }
+        when (state) {
             CallPushPayload.CallState.RING ->
-                if (NotificationUtils.isNotificationVisible(context, pushMessage.timestamp.toInt())) {
+                if (isStale || NotificationUtils.isNotificationVisible(context, pushMessage.timestamp.toInt())) {
                     val room = conversation!!
                     showCallNotification(
                         CallPushPayload.IncomingCall.fromConversation(room, pushMessage.subject, capabilities),
-                        isUpdate = true
+                        isUpdate = !isStale
                     )
                     checkIfCallIsActive(room)
                 } else {
@@ -301,7 +305,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
 
             CallPushPayload.CallState.MISSED -> {
-                showMissedCallNotification(conversation!!.displayName)
+                showMissedCallNotification(
+                    conversation?.displayName ?: pushedCall.displayName,
+                    requireRingingCall = !isStale
+                )
                 removeNotification(pushMessage.timestamp.toInt())
             }
 

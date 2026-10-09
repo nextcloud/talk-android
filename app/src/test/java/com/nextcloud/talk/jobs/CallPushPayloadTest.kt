@@ -53,6 +53,13 @@ class CallPushPayloadTest {
     }
 
     @Test
+    fun stalePushRingsOnlyWhenTheServerConfirmsTheCall() {
+        assertEquals(CallPushPayload.CallState.RING, CallPushPayload.stateOfStalePush(true))
+        assertEquals(CallPushPayload.CallState.MISSED, CallPushPayload.stateOfStalePush(false))
+        assertEquals(CallPushPayload.CallState.MISSED, CallPushPayload.stateOfStalePush(null))
+    }
+
+    @Test
     fun callWithoutCacheIsAnAnswerableAudioCall() {
         val call = CallPushPayload.IncomingCall.fromPush(TOKEN, SUBJECT)
 
