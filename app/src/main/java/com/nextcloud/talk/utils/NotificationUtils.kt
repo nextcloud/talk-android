@@ -15,9 +15,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.net.Uri
+import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -53,6 +55,7 @@ object NotificationUtils {
 
     const val DEFAULT_CALL_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_call"
+    const val CALL_NOTIFICATION_TIMEOUT_MS = 90_000L
     const val DEFAULT_MESSAGE_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_message"
 
@@ -232,6 +235,27 @@ object NotificationUtils {
             }
         }
     }
+
+    /**
+     * Makes the incoming call notification dismissable by a server "delete" push and bounds how long it rings.
+     *
+     * The extras let [cancelNotification] find the notification. The room token is left out on purpose:
+     * [cancelExistingNotificationsForRoom] would otherwise end the ringing when the chat is opened.
+     * The timeout ends the ringing (FLAG_INSISTENT) when nothing else removes the notification.
+     */
+    fun applyCallDismissal(
+        builder: NotificationCompat.Builder,
+        userId: Long,
+        serverNotificationId: Long?
+    ): NotificationCompat.Builder =
+        builder
+            .addExtras(
+                Bundle().apply {
+                    putLong(BundleKeys.KEY_INTERNAL_USER_ID, userId)
+                    serverNotificationId?.let { putLong(BundleKeys.KEY_NOTIFICATION_ID, it) }
+                }
+            )
+            .setTimeoutAfter(CALL_NOTIFICATION_TIMEOUT_MS)
 
     fun cancelAllNotificationsForAccount(context: Context?, conversationUser: User) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, _ ->
