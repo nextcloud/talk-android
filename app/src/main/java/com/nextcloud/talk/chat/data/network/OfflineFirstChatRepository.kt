@@ -367,6 +367,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
         while (true) {
             delay(INSURANCE_REQUEST_DELAY)
+            if (itIsPaused) {
+                // ChatViewModel.onResume fetches right away when the chat comes back to the foreground
+                Log.d(TAG, "skip insurance request while paused")
+                continue
+            }
             Log.d(TAG, "execute insurance request")
 
             fetchNewMessages()

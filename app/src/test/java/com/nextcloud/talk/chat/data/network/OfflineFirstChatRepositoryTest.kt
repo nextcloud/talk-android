@@ -43,6 +43,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
@@ -76,7 +78,7 @@ import java.io.IOException
  * last read message, otherwise the initial window is re-fetched — anchored at the boundary when
  * the unread backlog calls for it.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class OfflineFirstChatRepositoryTest {
 
     private val logger: Logger = mock()
@@ -243,6 +245,42 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(0, fieldMap["lookIntoFuture"])
             assertEquals(1, fieldMap["includeLastKnown"])
             assertFalse(fieldMap.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
+    fun `insurance requests are skipped while the chat is paused`() =
+        runTest {
+            repository.handleOnPause()
+            val polling = launch { repository.initInsuranceRequests() }
+
+            advanceTimeBy(INSURANCE_DELAY_MS * 5 + 1)
+            runCurrent()
+
+            // fetchNewMessages always starts by purging expired messages, so this counts its calls
+            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `insurance requests resume with the next tick after the chat is resumed`() =
+        runTest {
+            repository.handleOnPause()
+            val polling = launch { repository.initInsuranceRequests() }
+            advanceTimeBy(INSURANCE_DELAY_MS * 3 + 1)
+            runCurrent()
+            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+
+            repository.handleOnResume()
+            // the loop keeps its normal step: nothing fires before the next tick ...
+            advanceTimeBy(INSURANCE_DELAY_MS / 2)
+            runCurrent()
+            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+
+            // ... and the request is sent on it
+            advanceTimeBy(INSURANCE_DELAY_MS / 2)
+            runCurrent()
+            verifyBlocking(chatDao, times(1)) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            polling.cancelAndJoin()
         }
 
     @Test
@@ -862,6 +900,7 @@ class OfflineFirstChatRepositoryTest {
         private const val LONG_POLLING_OBSERVATION_MILLIS = 200L
         private const val AWAIT_TIMEOUT_MILLIS = 2000L
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
+        private const val INSURANCE_DELAY_MS = 2 * 60 * 1000L
         private const val MESSAGE_ID = 42L
         private const val SYSTEM_MESSAGE_ID = 43L
         private const val MESSAGE_URL = "$CHAT_URL/42"
