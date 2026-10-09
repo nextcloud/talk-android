@@ -385,7 +385,7 @@ fun ChatView(
             state = listState,
             reverseLayout = true,
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding = PaddingValues(bottom = 20.dp),
+            contentPadding = PaddingValues(top = state.stickyHeaderTopOffset, bottom = 20.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .semantics {

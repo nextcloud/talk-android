@@ -181,10 +181,6 @@ public interface AppPreferences {
 
     String getSorting();
 
-    void saveWaveFormForFile(String filename, Float[] array);
-
-    Float[] getWaveFormFromFile(String filename);
-
     void saveLastKnownId(String internalConversationId, int lastReadId);
 
     int getLastKnownId(String internalConversationId, int defaultValue);
@@ -194,6 +190,18 @@ public interface AppPreferences {
     void savePreferredPlayback(String userId, PlaybackSpeed speed);
 
     PlaybackSpeed getPreferredPlayback(String userId);
+
+    void saveAudioFilePlaybackSpeed(String userId, PlaybackSpeed speed);
+
+    PlaybackSpeed getAudioFilePlaybackSpeed(String userId);
+
+    boolean getChatAudioShuffle();
+
+    void setChatAudioShuffle(boolean value);
+
+    String getChatAudioRepeatMode();
+
+    void setChatAudioRepeatMode(String value);
 
     Long getNotificationWarningLastPostponedDate();
 

@@ -748,6 +748,23 @@ How to translate with transifex:
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="playback_speed_control">Playback speed control</string>
     <string name="delete_voice_recording">Delete voice recording</string>
+    <string name="nc_audio_seek">Playback position</string>
+    <string name="nc_audio_retry">Retry playback</string>
+    <string name="nc_audio_player_play_pause">Play/pause</string>
+    <string name="nc_audio_player_close">Stop playback</string>
+    <string name="nc_audio_player_show_message">Show message</string>
+    <string name="nc_audio_player_open">Open player</string>
+    <string name="nc_audio_player_previous">Previous</string>
+    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_shuffle">Shuffle</string>
+    <string name="nc_audio_player_repeat_off">Repeat off</string>
+    <string name="nc_audio_player_repeat_all">Repeat all</string>
+    <string name="nc_audio_player_repeat_one">Repeat one</string>
+    <string name="nc_audio_player_queue">Playlist</string>
+    <string name="nc_audio_error_network">Could not load the audio. Check your connection.</string>
+    <string name="nc_audio_error_unavailable">The audio file is not available</string>
+    <string name="nc_audio_error_unsupported">The audio format is not supported</string>
+    <string name="nc_audio_error_generic">Could not play the audio</string>
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>

@@ -27,9 +27,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.audio.ChatAudioKey
+import com.nextcloud.talk.chat.audio.ChatAudioMetadata
+import com.nextcloud.talk.chat.audio.ChatAudioPlaybackState
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 
 private const val QUOTE_HIGHLIGHT_INITIAL_ALPHA = 0.15f
 private const val PREVIEW_WAVEFORM_POINT_ONE = 0.1f
@@ -38,6 +43,10 @@ private const val PREVIEW_WAVEFORM_POINT_THREE = 0.4f
 private const val PREVIEW_WAVEFORM_POINT_FOUR = 0.15f
 private const val PREVIEW_WAVEFORM_POINT_FIVE = 0.3f
 private const val PREVIEW_WAVEFORM_POINT_SIX = 0.5f
+private const val PREVIEW_USER_ID = 1L
+private const val PREVIEW_ROOM_TOKEN = "preview"
+private const val PREVIEW_VOICE_DURATION_MS = 16_000L
+private const val PREVIEW_VOICE_POSITION_MS = 4_000L
 
 private val previewWaveform = listOf(
     PREVIEW_WAVEFORM_POINT_ONE,
@@ -65,7 +74,7 @@ data class ChatMessageCallbacks(
     val onFileClick: (Int) -> Unit = {},
     val onPollClick: (String, String) -> Unit = { _, _ -> },
     val onVoicePlayPauseClick: (Int) -> Unit = {},
-    val onVoiceSeek: (Int, Int) -> Unit = { _, _ -> },
+    val onVoiceSeek: (Int, Float) -> Unit = { _, _ -> },
     val onVoiceSpeedClick: (Int) -> Unit = {},
     val onReactionClick: (Int, String) -> Unit = { _, _ -> },
     val onReactionLongClick: (Int) -> Unit = {},
@@ -178,13 +187,10 @@ fun ChatMessageView(
 
                         is MessageTypeContent.Voice -> {
                             VoiceMessage(
-                                typeContent = content,
                                 message = message,
                                 isOneToOneConversation = context.isOneToOneConversation,
                                 conversationThreadId = context.conversationThreadId,
-                                onPlayPauseClick = callbacks.onVoicePlayPauseClick,
-                                onSeek = callbacks.onVoiceSeek,
-                                onSpeedClick = callbacks.onVoiceSpeedClick
+                                callbacks = callbacks
                             )
                         }
 
@@ -194,8 +200,7 @@ fun ChatMessageView(
                                 message = message,
                                 isOneToOneConversation = context.isOneToOneConversation,
                                 conversationThreadId = context.conversationThreadId,
-                                onPlayPauseClick = callbacks.onVoicePlayPauseClick,
-                                onSeek = callbacks.onVoiceSeek
+                                callbacks = callbacks
                             )
                         }
 
@@ -330,19 +335,25 @@ private fun ChatMessageViewGeolocationPreview() {
 @Composable
 private fun ChatMessageViewVoicePreview() {
     PreviewContainer {
-        val uiMessage = createBaseMessage(
-            MessageTypeContent.Voice(
-                actorId = "john",
-                isPlaying = false,
-                wasPlayed = false,
-                isDownloading = false,
-                durationSeconds = 16,
-                playedSeconds = 4,
-                seekbarProgress = 25,
-                waveform = previewWaveform
-            )
+        val uiMessage = createBaseMessage(MessageTypeContent.Voice).copy(roomToken = PREVIEW_ROOM_TOKEN)
+        val audioUi = ChatAudioUi(
+            playbackState = MutableStateFlow(ChatAudioPlaybackState()),
+            metadata = MutableStateFlow(
+                mapOf(
+                    ChatAudioKey(PREVIEW_USER_ID, PREVIEW_ROOM_TOKEN, uiMessage.id) to ChatAudioMetadata(
+                        durationMs = PREVIEW_VOICE_DURATION_MS,
+                        positionMs = PREVIEW_VOICE_POSITION_MS,
+                        waveform = previewWaveform
+                    )
+                )
+            ),
+            voiceSpeed = MutableStateFlow(PlaybackSpeed.NORMAL),
+            internalUserId = { PREVIEW_USER_ID },
+            loadMetadata = {}
         )
-        ChatMessageView(message = uiMessage)
+        CompositionLocalProvider(LocalChatAudioUi provides audioUi) {
+            ChatMessageView(message = uiMessage)
+        }
     }
 }
 
