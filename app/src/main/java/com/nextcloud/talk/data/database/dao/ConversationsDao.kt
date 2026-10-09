@@ -114,6 +114,19 @@ interface ConversationsDao {
     suspend fun updateUnreadMessages(internalId: String, unreadMessages: Int)
 
     /**
+     * Writes the last message read by all participants, as reported by the server in the
+     * X-Chat-Last-Common-Read header of the response to a read marker.
+     */
+    @Query(
+        """
+        UPDATE Conversations
+        SET lastCommonReadMessage = :lastCommonReadMessage
+        WHERE internalId = :internalId
+        """
+    )
+    suspend fun updateLastCommonRead(internalId: String, lastCommonReadMessage: Int)
+
+    /**
      * Deletes rows in the db matching the specified [conversationIds]
      */
     @Query(
