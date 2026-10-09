@@ -27,6 +27,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -80,19 +81,25 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
             return fail(userId, roomToken, lastReadMessage)
         }
 
-        val sent = runCatching {
+        val response = runCatching {
             val url = ApiUtils.getUrlForChatReadMarker(
                 ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1)),
                 user.baseUrl!!,
                 roomToken
             )
             chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage).blockingSingle()
+        }.mapCatching { httpResponse ->
+            check(httpResponse.isSuccessful) { "HTTP ${httpResponse.code()}" }
+            httpResponse
         }.onFailure { throwable ->
             Log.w(TAG, "Read marker $lastReadMessage for room $roomToken could not be sent: $throwable")
-        }.isSuccess
+        }.getOrNull()
 
-        return if (sent) {
+        return if (response != null) {
             Log.d(TAG, "Read marker $lastReadMessage sent for room $roomToken")
+            lastCommonReadOf(response)?.let {
+                conversationListUpdater.updateLastCommonRead("$userId@$roomToken", it)
+            }
             Result.success()
         } else {
             Log.w(TAG, "Sending read marker for room $roomToken failed (attempt ${runAttemptCount + 1})")
@@ -120,6 +127,14 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         private val TAG: String = ReadMarkerSyncWorker::class.java.simpleName
         private const val KEY_LAST_READ_MESSAGE = "KEY_LAST_READ_MESSAGE"
         private const val MAX_RUN_ATTEMPTS = 3
+        private const val LAST_COMMON_READ_HEADER = "X-Chat-Last-Common-Read"
+
+        /**
+         * The last message read by all participants, which the server sends along with the answer to a
+         * read marker; null when the header is missing or not a number.
+         */
+        internal fun lastCommonReadOf(response: Response<*>): Int? =
+            response.headers()[LAST_COMMON_READ_HEADER]?.toIntOrNull()
 
         fun enqueue(context: Context, userId: Long, roomToken: String, lastReadMessage: Int) {
             val data = Data.Builder()
