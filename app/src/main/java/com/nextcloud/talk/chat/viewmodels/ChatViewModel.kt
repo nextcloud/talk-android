@@ -98,6 +98,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -133,6 +135,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
+import java.net.HttpURLConnection
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -151,8 +154,9 @@ private const val VCARD_MIMETYPE = "text/vcard"
 internal fun groupHash(referenceId: String?): String? = groupHashOf(referenceId)
 
 // A run of consecutive single-file share messages from the same author, uploaded together in one
-// batch - whether still uploading or already synced - either kept as-is (Single) or merged into
-// one grouped "album" bubble (Group) - see ChatViewModel.combineFileShareGroups().
+// batch - whether still uploading or already synced - either kept as-is (Single), merged into
+// one grouped "album" bubble (Group) or, once deleted, shown as its last message only (Collapsed) -
+// see ChatViewModel.combineFileShareGroups().
 internal sealed interface CombinedUnit {
     val messages: List<ChatMessageUi>
 
@@ -161,6 +165,8 @@ internal sealed interface CombinedUnit {
     }
 
     data class Group(override val messages: List<ChatMessageUi>) : CombinedUnit
+
+    data class Collapsed(override val messages: List<ChatMessageUi>) : CombinedUnit
 }
 
 /**
@@ -168,7 +174,8 @@ internal sealed interface CombinedUnit {
  * (Media) or still mid-upload (UploadingMedia), so a batch groups into one bubble immediately as
  * it starts uploading rather than only once every file has synced. Mirrors web's
  * isCombinableFileMessage() otherwise: excludes system/voice/geo/poll/deck/text messages (via the
- * content-type check), deleted or failed messages, contact cards and audio files.
+ * content-type check), deleted or failed messages, contact cards and audio files. Deleted messages
+ * are collapsed separately by combineFileShareGroups().
  */
 internal fun isCombinableFileShare(message: ChatMessageUi): Boolean {
     val mimeType = when (val content = message.content) {
@@ -182,33 +189,41 @@ internal fun isCombinableFileShare(message: ChatMessageUi): Boolean {
         !MimetypeUtils.isAudioOnly(mimeType)
 }
 
-/** Two file shares belong to the same batch: same reply target and same upload-batch hash. */
+/**
+ * Two file shares belong to the same batch: both deleted or both not, same reply target and same
+ * upload-batch hash.
+ */
 internal fun canCombineFileShares(a: ChatMessageUi, b: ChatMessageUi): Boolean {
     val hash = groupHash(a.referenceId)
-    return a.parentMessage?.id == b.parentMessage?.id && hash != null && hash == groupHash(b.referenceId)
+    return a.isDeleted == b.isDeleted &&
+        a.parentMessage?.id == b.parentMessage?.id &&
+        hash != null &&
+        hash == groupHash(b.referenceId)
 }
 
 /**
  * Replaces consecutive file shares uploaded together in one batch with a single grouped unit.
  * A message that isn't a plain file share, a reply to a different message, or part of another
  * batch interrupts the run. A file share with a real caption (not just the "{file}" placeholder)
- * ends its group - the caption belongs to the group's last item, same as web.
+ * ends its group - the caption belongs to the group's last item, same as web. Deleted file shares
+ * of the same batch collapse into their last deleted message.
  */
 internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<CombinedUnit> {
     val result = mutableListOf<CombinedUnit>()
     var pending = mutableListOf<ChatMessageUi>()
 
     fun flush() {
-        when (pending.size) {
-            0 -> {}
-            1 -> result.add(CombinedUnit.Single(pending[0]))
+        when {
+            pending.isEmpty() -> {}
+            pending.size == 1 -> result.add(CombinedUnit.Single(pending[0]))
+            pending[0].isDeleted -> result.add(CombinedUnit.Collapsed(pending.toList()))
             else -> result.add(CombinedUnit.Group(pending.toList()))
         }
         pending = mutableListOf()
     }
 
     for (message in uiMessages) {
-        if (!isCombinableFileShare(message)) {
+        if (!message.isDeleted && !isCombinableFileShare(message)) {
             flush()
             result.add(CombinedUnit.Single(message))
             continue
@@ -220,7 +235,7 @@ internal fun combineFileShareGroups(uiMessages: List<ChatMessageUi>): List<Combi
 
         pending.add(message)
 
-        if (message.plainMessage != FILE_PLACEHOLDER_MESSAGE) {
+        if (!message.isDeleted && message.plainMessage != FILE_PLACEHOLDER_MESSAGE) {
             flush()
         }
     }
@@ -966,9 +981,7 @@ class ChatViewModel @AssistedInject constructor(
         val targetThreadId = result.threadId?.toLongOrNull()?.takeIf { result.isThreadReplyResult() }
 
         viewModelScope.launch {
-            val foundLocally = _uiState.value.items.any {
-                (it as? ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
-            }
+            val foundLocally = _uiState.value.items.any { it.containsMessage(messageId.toInt()) }
             if (!foundLocally) {
                 loadMessageContextAndSwitchMode(
                     messageId = messageId,
@@ -982,9 +995,7 @@ class ChatViewModel @AssistedInject constructor(
 
     fun jumpToQuotedMessage(messageId: Long) {
         viewModelScope.launch {
-            val foundLocally = _uiState.value.items.any {
-                (it as? ChatItem.MessageItem)?.uiMessage?.id == messageId.toInt()
-            }
+            val foundLocally = _uiState.value.items.any { it.containsMessage(messageId.toInt()) }
             if (!foundLocally) {
                 loadMessageContextAndSwitchMode(
                     messageId = messageId,
@@ -1423,6 +1434,9 @@ class ChatViewModel @AssistedInject constructor(
                         add(ChatItem.MessageItem(adjustedMessage))
                     }
                     is CombinedUnit.Group -> add(ChatItem.MediaGroupItem(messages))
+                    is CombinedUnit.Collapsed -> add(
+                        ChatItem.MessageItem(representative, collapsedMessageIds = messages.dropLast(1).map { it.id })
+                    )
                 }
             }
         }.asReversed()
@@ -2023,26 +2037,31 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    fun deleteChatMessages(credentials: String, url: String, messageId: Int) {
+    fun messageIdsToDelete(messageId: Int): List<Int> = messageIdsToDelete(_uiState.value.items, messageId)
+
+    fun deleteChatMessages(credentials: String, urlsByMessageId: Map<Int, String>) {
         val deletedPlaceholder = NextcloudTalkApplication.sharedApplication!!
             .getString(R.string.message_deleted_by_you)
 
         viewModelScope.launch {
-            val result = chatRepository.deleteChatMessage(
-                credentials,
-                url,
-                messageId.toLong(),
-                deletedPlaceholder
-            )
+            val results = urlsByMessageId.map { (messageId, url) ->
+                async {
+                    chatRepository.deleteChatMessage(credentials, url, messageId.toLong(), deletedPlaceholder)
+                        .onFailure { throwable ->
+                            Log.e(TAG, "Failed to delete message with id $messageId", throwable)
+                        }
+                }
+            }.awaitAll()
 
-            result
-                .onSuccess { message ->
-                    message?.let { _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(it) }
-                }
-                .onFailure { throwable ->
-                    Log.e(TAG, "Something went wrong when trying to delete message with id $messageId", throwable)
-                    _deleteChatMessageViewState.value = DeleteChatMessageErrorState
-                }
+            if (results.any { it.isFailure }) {
+                _deleteChatMessageViewState.value = DeleteChatMessageErrorState
+                return@launch
+            }
+
+            val responses = results.mapNotNull { it.getOrNull() }
+            val response = responses.firstOrNull { it.ocs?.meta?.statusCode == HttpURLConnection.HTTP_ACCEPTED }
+                ?: responses.firstOrNull()
+            response?.let { _deleteChatMessageViewState.value = DeleteChatMessageSuccessState(it) }
         }
     }
 
@@ -2690,6 +2709,19 @@ class ChatViewModel @AssistedInject constructor(
         private val TAG = ChatViewModel::class.java.simpleName
 
         /**
+         * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the
+         * media group the message is shown in, or just the message itself.
+         */
+        internal fun messageIdsToDelete(items: List<ChatItem>, messageId: Int): List<Int> =
+            items
+                .filterIsInstance<ChatItem.MediaGroupItem>()
+                .firstOrNull { group -> group.messages.any { it.id == messageId } }
+                ?.messages
+                ?.filter { it.id == messageId || it.content !is MessageTypeContent.UploadingMedia }
+                ?.map { it.id }
+                ?: listOf(messageId)
+
+        /**
          * Returns the read marker that makes [messageId] the first unread message: the id of the
          * message right before it, or 0 when it is the oldest message there is, which marks the whole
          * conversation as unread. Returns null when the message is not part of [items] at all.
@@ -2700,11 +2732,7 @@ class ChatViewModel @AssistedInject constructor(
          */
         internal fun readMarkerForMarkingUnread(items: List<ChatItem>, messageId: Int): Int? {
             val newestFirstIds = items.flatMap { item ->
-                when (item) {
-                    is ChatItem.MessageItem -> listOf(item.uiMessage.id)
-                    is ChatItem.MediaGroupItem -> item.messages.map { it.id }.asReversed()
-                    else -> emptyList()
-                }
+                item.messageIds().asReversed()
             }
 
             val selectedIndex = newestFirstIds.indexOf(messageId)
@@ -2793,6 +2821,17 @@ class ChatViewModel @AssistedInject constructor(
                 is MediaGroupItem -> messages.lastOrNull()
                 else -> null
             }
+
+        /** Ids of all messages this item stands for, oldest first. */
+        fun messageIds(): List<Int> =
+            when (this) {
+                is MessageItem -> collapsedMessageIds + uiMessage.id
+                is MediaGroupItem -> messages.map { it.id }
+                else -> emptyList()
+            }
+
+        fun containsMessage(messageId: Int): Boolean = messageId in messageIds()
+
         fun dateOrNull(): LocalDate? =
             when (this) {
                 is DateHeaderItem -> date
@@ -2809,7 +2848,10 @@ class ChatViewModel @AssistedInject constructor(
                 is LoadGapItem -> "load_gap_$anchorMessageId"
             }
 
-        data class MessageItem(val uiMessage: ChatMessageUi) : ChatItem
+        // collapsedMessageIds: the older deleted messages of the same upload batch that are shown as
+        // this one message only (see CombinedUnit.Collapsed), oldest first.
+        data class MessageItem(val uiMessage: ChatMessageUi, val collapsedMessageIds: List<Int> = emptyList()) :
+            ChatItem
 
         // A run of consecutive single-file share messages from the same author - whether still
         // uploading or already synced - uploaded together in one batch (matching referenceId hash,
