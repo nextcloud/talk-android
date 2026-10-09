@@ -137,6 +137,9 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _isLoadingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var newXChatLastCommonRead: Int? = null
+
+    // written on the main thread by handleOnPause/handleOnResume, read from fetch and polling coroutines
+    @Volatile
     private var itIsPaused = false
 
     lateinit var internalConversationId: String
@@ -337,6 +340,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
         while (true) {
             delay(INSURANCE_REQUEST_DELAY)
+            if (itIsPaused) {
+                // ChatViewModel.onResume fetches right away when the chat comes back to the foreground
+                Log.d(TAG, "skip insurance request while paused")
+                continue
+            }
             Log.d(TAG, "execute insurance request")
 
             fetchNewMessages()
