@@ -318,7 +318,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 // sync database with server
                 // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
                 Log.d(TAG, "Starting online request for long polling")
-                val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+                val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents) { !itIsPaused }
 
                 // A failed request returns right away, e.g. with rejected credentials, which the server counts as a
                 // failed login. Without waiting, the next requests would follow at once until the server throttles.
