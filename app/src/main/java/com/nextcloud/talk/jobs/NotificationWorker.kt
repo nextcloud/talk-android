@@ -76,7 +76,6 @@ import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -393,11 +392,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         if (conversation != null && userBeingCalled != null) {
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled.capabilities?.spreedCapability)) {
-                showEndToEndEncryptionUnsupportedNotification(conversation)
-            } else {
-                prepareCallNotificationScreen(conversation)
-            }
+            prepareCallNotificationScreen(conversation)
         }
     }
 
@@ -1282,34 +1277,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             notificationManager.notify(notificationId, notification)
             Log.d(TAG, "'you missed a call' notification was created")
         }
-    }
-
-    private fun showEndToEndEncryptionUnsupportedNotification(conversation: ConversationModel) {
-        val notificationBuilder = NotificationCompat.Builder(
-            context!!,
-            NotificationUtils.NotificationChannels
-                .NOTIFICATION_CHANNEL_MESSAGES_V4.name
-        )
-
-        val intent = createMainActivityIntent()
-
-        val notification: Notification = notificationBuilder
-            .setContentTitle(
-                String.format(
-                    context!!.resources.getString(R.string.nc_call_e2ee_not_supported_title),
-                    conversation.displayName
-                )
-            )
-            .setContentText(context!!.resources.getString(R.string.nc_call_e2ee_not_supported))
-            .setSmallIcon(R.drawable.ic_call_black_24dp)
-            .setOngoing(false)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setContentIntent(createUniquePendingIntent(intent))
-            .build()
-
-        sendNotification(pushMessage.timestamp.toInt(), notification)
-        Log.d(TAG, "'end-to-end-encryption not supported' notification was created for ${conversation.token}")
     }
 
     private fun createMainActivityIntent(): Intent {

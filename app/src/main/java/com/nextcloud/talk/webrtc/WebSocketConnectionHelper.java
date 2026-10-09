@@ -25,7 +25,7 @@ import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessageDto;
 import com.nextcloud.talk.utils.ApiUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +104,7 @@ public class WebSocketConnectionHelper {
         }
     }
 
-    HelloOverallWebSocketMessage getAssembledHelloModel(User user, String ticket) {
+    HelloOverallWebSocketMessage getAssembledHelloModel(User user, String ticket, boolean encryption) {
         int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[]{ApiUtils.API_V3, 2, 1});
 
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
@@ -120,24 +120,34 @@ public class WebSocketConnectionHelper {
         }
         authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
         helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
-
-        List<String> features = Collections.singletonList("chat-relay");
-        helloWebSocketMessage.setFeatures(features);
+        helloWebSocketMessage.setFeatures(getClientFeatures(encryption));
 
         helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
     }
 
-    HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId) {
+    HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId, boolean encryption) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessageDto helloWebSocketMessage = new HelloWebSocketMessageDto();
         helloWebSocketMessage.setVersion("1.0");
         helloWebSocketMessage.setResumeid(resumeId);
-        List<String> features = Collections.singletonList("chat-relay");
-        helloWebSocketMessage.setFeatures(features);
+        helloWebSocketMessage.setFeatures(getClientFeatures(encryption));
         helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
+    }
+
+    /**
+     * The features announced to the signaling server; "encryption" tells it and the SIP bridge that this client
+     * end-to-end encrypts its streams.
+     */
+    private static List<String> getClientFeatures(boolean encryption) {
+        List<String> features = new ArrayList<>();
+        features.add("chat-relay");
+        if (encryption) {
+            features.add("encryption");
+        }
+        return features;
     }
 
     RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId,
