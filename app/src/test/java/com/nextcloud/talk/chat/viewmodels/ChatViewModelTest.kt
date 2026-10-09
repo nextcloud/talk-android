@@ -396,8 +396,71 @@ class ChatViewModelTest {
         assertNull(ChatViewModel.readMarkerForMarkingUnread(items, messageId = 77))
     }
 
-    private fun messageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
-        ChatViewModel.ChatItem.MessageItem(uiMessage(id))
+    // Read marker after the user sent a message: the server moves the marker to the sent message, so the
+    // client must never send an older one. Sequence from the server log of a real chat: the user sent
+    // message 2624 while the client's local marker still was 2623.
+
+    @Test
+    fun `read marker is not sent below the own message just sent`() {
+        val items = listOf(messageItem(2624, incoming = false), messageItem(2623))
+
+        val marker = ChatViewModel.readMarkerToSend(
+            localLastReadMessage = 2623,
+            conversationLastReadMessage = 2620,
+            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
+            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
+        )
+
+        assertEquals(2624, marker)
+    }
+
+    @Test
+    fun `read marker is not sent while the sent message is not confirmed by the server yet`() {
+        val items = listOf(messageItem(-77, incoming = false), messageItem(2623))
+
+        val marker = ChatViewModel.readMarkerToSend(
+            localLastReadMessage = 2623,
+            conversationLastReadMessage = 2620,
+            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
+            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
+        )
+
+        assertNull(marker)
+    }
+
+    @Test
+    fun `read marker of the incoming messages is sent when the user sent nothing`() {
+        val items = listOf(messageItem(2623), messageItem(2622))
+
+        val marker = ChatViewModel.readMarkerToSend(
+            localLastReadMessage = 2623,
+            conversationLastReadMessage = 2620,
+            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
+            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
+        )
+
+        assertEquals(2623, marker)
+    }
+
+    @Test
+    fun `read marker is not sent when the server already has it`() {
+        assertNull(ChatViewModel.readMarkerToSend(2624, 2624, newestOwnMessageId = 2624, false))
+    }
+
+    @Test
+    fun `newest own message ignores incoming and temporary messages`() {
+        val items = listOf(
+            messageItem(2630),
+            messageItem(-5, incoming = false),
+            messageItem(2624, incoming = false),
+            messageItem(2610, incoming = false)
+        )
+
+        assertEquals(2624, ChatViewModel.newestOwnMessageId(items))
+    }
+
+    private fun messageItem(id: Int, incoming: Boolean = true): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(uiMessage(id).copy(incoming = incoming))
 
     private fun uiMessage(id: Int): ChatMessageUi =
         ChatMessageUi(
