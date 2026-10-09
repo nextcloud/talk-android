@@ -53,6 +53,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
@@ -206,36 +207,39 @@ class OfflineFirstChatRepositoryTest {
     @Test
     fun `insurance requests are skipped while the chat is paused`() =
         runTest {
+            givenHttpSyncedAnchor()
+            clearInvocations(network)
             repository.handleOnPause()
             val polling = launch { repository.initInsuranceRequests() }
 
             advanceTimeBy(INSURANCE_DELAY_MS * 5 + 1)
             runCurrent()
 
-            // fetchNewMessages always starts by purging expired messages, so this counts its calls
-            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
             polling.cancelAndJoin()
         }
 
     @Test
     fun `insurance requests resume with the next tick after the chat is resumed`() =
         runTest {
+            givenHttpSyncedAnchor()
+            clearInvocations(network)
             repository.handleOnPause()
             val polling = launch { repository.initInsuranceRequests() }
             advanceTimeBy(INSURANCE_DELAY_MS * 3 + 1)
             runCurrent()
-            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
 
             repository.handleOnResume()
-            // the loop keeps its normal step: nothing fires before the next tick ...
+            // the loop keeps its normal step: nothing is sent before the next tick ...
             advanceTimeBy(INSURANCE_DELAY_MS / 2)
             runCurrent()
-            verifyBlocking(chatDao, never()) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
 
             // ... and the request is sent on it
             advanceTimeBy(INSURANCE_DELAY_MS / 2)
             runCurrent()
-            verifyBlocking(chatDao, times(1)) { deleteExpiredMessages(eq(INTERNAL_CONVERSATION_ID), any()) }
+            verifyBlocking(network, times(1)) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), any()) }
             polling.cancelAndJoin()
         }
 
@@ -344,6 +348,15 @@ class OfflineFirstChatRepositoryTest {
     private fun givenLatestBlock(block: ChatBlockEntity?) {
         whenever(chatBlocksDao.getLatestChatBlock(INTERNAL_CONVERSATION_ID, null))
             .thenReturn(flowOf(block))
+    }
+
+    /** Records an HTTP sync anchor via the initial load, so fetchNewMessages does not skip. */
+    private suspend fun givenHttpSyncedAnchor() {
+        givenLatestBlock(block(oldest = 10, newest = 50))
+        repository.updateConversation(conversation(lastReadMessage = 40, unreadMessages = 5))
+        wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+            .thenReturn(Response.success(overall(message(51))))
+        repository.loadInitialMessages(Bundle())
     }
 
     private fun singleRequestFieldMap(): HashMap<String, Int> {
