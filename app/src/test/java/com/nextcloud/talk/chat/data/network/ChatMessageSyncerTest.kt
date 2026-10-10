@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.database.sqlite.SQLiteConstraintException
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
@@ -23,6 +24,7 @@ import com.nextcloud.talk.models.json.chat.ChatOCS
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -134,6 +136,18 @@ class ChatMessageSyncerTest {
             }
             // a retry must not shrink the page, otherwise a flaky connection leaves a stub block
             assertEquals(REQUESTED_LIMIT, fieldMapCaptor.lastValue["limit"])
+        }
+
+    @Test
+    fun `pullMessagesFlow does not retry a failed request once retrying is not allowed`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { false }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
         }
 
     @Test

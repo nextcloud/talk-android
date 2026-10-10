@@ -690,9 +690,15 @@ class ChatMessageSyncer @Inject constructor(
      * [MAX_PULL_ATTEMPTS] times with a linearly growing delay in between. The requested limit is
      * kept across retries: a background catch-up that succeeds on a later attempt must still
      * create a full chat block, and backing off in time rather than in payload size also keeps a
-     * struggling or rate-limiting server from being hammered.
+     * struggling or rate-limiting server from being hammered. A failed request is not retried
+     * once [canRetry] returns false, e.g. a long poll must not restart while the chat is in the
+     * background.
      */
-    fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
+    fun pullMessagesFlow(
+        target: SyncTarget,
+        fieldMap: HashMap<String, Int>,
+        canRetry: () -> Boolean = { true }
+    ): Flow<ChatPullResult> =
         flow {
             var attempts = 1
 
@@ -717,6 +723,10 @@ class ChatMessageSyncer @Inject constructor(
                     onFailure = { e ->
                         Log.e(TAG, "Attempt $attempts failed", e)
                         attempts++
+                        if (!canRetry()) {
+                            emit(ChatPullResult.Error(IllegalStateException("Retry cancelled")))
+                            return@flow
+                        }
                         if (attempts < MAX_PULL_ATTEMPTS) {
                             delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
                         }
@@ -734,7 +744,8 @@ class ChatMessageSyncer @Inject constructor(
     suspend fun pullAndPersistMessages(
         target: SyncTarget,
         fieldMap: HashMap<String, Int>,
-        events: Events = NO_EVENTS
+        events: Events = NO_EVENTS,
+        canRetry: () -> Boolean = { true }
     ): SyncOutcome {
         val isLongPoll = (fieldMap["timeout"] ?: 0) > 0
         if (!isLongPoll) events.onLoadingChanged(true)
@@ -746,7 +757,7 @@ class ChatMessageSyncer @Inject constructor(
             val queriedMessageId = fieldMap["lastKnownMessageId"]
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-            return when (val result = pullMessagesFlow(target, fieldMap).first()) {
+            return when (val result = pullMessagesFlow(target, fieldMap, canRetry).first()) {
                 is ChatPullResult.Success ->
                     handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
 
