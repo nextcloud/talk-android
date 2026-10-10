@@ -19,10 +19,10 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.math.BigInteger
 import java.security.MessageDigest
 
+@Suppress("TooManyFunctions")
 object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
@@ -142,7 +142,7 @@ object FileUtils {
     }
 
     @Suppress("ThrowsCount")
-    fun getFileFromUri(context: Context, sourceFileUri: Uri): File? {
+    fun getFileFromUri(context: Context, sourceFileUri: Uri, targetDir: File = context.cacheDir): File? {
         val fileName = getFileName(sourceFileUri, context)
         val scheme = sourceFileUri.scheme
 
@@ -150,7 +150,7 @@ object FileUtils {
             Log.d(TAG, "relative uri: " + sourceFileUri.path)
             throw IllegalArgumentException("relative paths are not supported")
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
-            copyFileToCache(context, sourceFileUri, fileName)
+            copyFileToCache(context, sourceFileUri, fileName, targetDir)
         } else if (ContentResolver.SCHEME_FILE == scheme) {
             val path = sourceFileUri.path
                 ?: throw IllegalArgumentException("uri does not contain path")
@@ -169,27 +169,43 @@ object FileUtils {
     }
 
     @Suppress("NestedBlockDepth")
-    fun copyFileToCache(context: Context, sourceFileUri: Uri, filename: String): File? {
-        val cachedFile = File(context.cacheDir, filename)
+    fun copyFileToCache(
+        context: Context,
+        sourceFileUri: Uri,
+        filename: String,
+        targetDir: File = context.cacheDir
+    ): File? {
+        val cachedFile = File(targetDir, filename)
 
-        if (!cachedFile.toPath().normalize().startsWith(context.cacheDir.toPath())) {
+        if (!cachedFile.toPath().normalize().startsWith(targetDir.toPath())) {
             Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.")
             cachedFile.delete()
             return null
         }
 
-        if (cachedFile.exists()) {
+        val ready = if (cachedFile.exists()) {
             Log.d(TAG, "file is already in cache")
+            true
         } else {
-            val outputStream = FileOutputStream(cachedFile)
+            copyToFile(context, sourceFileUri, cachedFile)
+        }
+        if (!ready) {
+            cachedFile.delete()
+        }
+        return cachedFile.takeIf { ready }
+    }
+
+    /** Returns false when the source could not be read completely, so the copy is not a usable file. */
+    @Suppress("NestedBlockDepth")
+    private fun copyToFile(context: Context, sourceFileUri: Uri, target: File): Boolean {
+        var copied = false
+        FileOutputStream(target).use { output ->
             try {
-                val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
-                inputStream?.use { input ->
-                    outputStream.use { output ->
-                        input.copyTo(output)
-                    }
+                context.contentResolver.openInputStream(sourceFileUri)?.use { input ->
+                    input.copyTo(output)
+                    copied = true
                 }
-                outputStream.flush()
+                output.flush()
             } catch (e: FileNotFoundException) {
                 Log.w(TAG, "failed to copy file to cache", e)
             } catch (e: SecurityException) {
@@ -199,8 +215,32 @@ object FileUtils {
                 Log.w(TAG, "no longer permitted to read $sourceFileUri", e)
             }
         }
-        return cachedFile
+        if (copied) {
+            // The size a provider reports is not reliable (transcoding, cloud providers), so it is only logged.
+            val reported = querySize(context, sourceFileUri)
+            if (reported != null && reported > 0 && reported != target.length()) {
+                Log.w(TAG, "copy of $sourceFileUri has ${target.length()} bytes, the provider reports $reported")
+            }
+        }
+        return copied && isCompleteCopy(target.length())
     }
+
+    /** An empty copy is a broken copy; a stream that broke off throws and never gets here. */
+    internal fun isCompleteCopy(copiedLength: Long): Boolean = copiedLength > 0
+
+    private fun querySize(context: Context, uri: Uri): Long? =
+        try {
+            context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use { cursor ->
+                val index = cursor.getColumnIndex(OpenableColumns.SIZE)
+                if (index >= 0 && cursor.moveToFirst() && !cursor.isNull(index)) cursor.getLong(index) else null
+            }
+        } catch (e: SecurityException) {
+            Log.w(TAG, "could not query the size of $uri", e)
+            null
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "could not query the size of $uri", e)
+            null
+        }
 
     fun getFileName(uri: Uri, context: Context?): String {
         var filename: String? = null
