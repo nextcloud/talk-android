@@ -194,7 +194,7 @@ After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new
 
 ## Static Analysis
 
-- **detekt**: config in `detekt.yml` (maxIssues: 80)
+- **detekt**: config in `detekt.yml`
 - **ktlint**: via `org.jlleitschuh.gradle.ktlint` plugin
 - **SpotBugs**: filter in `spotbugs-filter.xml`; FindSecBugs and fb-contrib active
 - **lint**: HTML report at `app/build/reports/lint/lint.html`
@@ -204,6 +204,8 @@ After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new
 - **Unit tests**: `app/src/test/` — JUnit 4/5, Mockito, Robolectric, MockWebServer. Uses `useJUnitPlatform()`.
 - **Instrumented tests**: `app/src/androidTest/` — Espresso. Integration tests need real server credentials in `gradle.properties` (`NC_TEST_SERVER_BASEURL`, etc.).
 - **Room migrations**: if you change the schema, add or update migration tests under `androidTest/data/`. See `data/source/local/TalkDatabase.kt` for migration declarations.
+- **A new test must fail without its fix**: a passing test is not evidence that it reached the code it names. Revert the change under test, confirm the test fails, then restore it. Tests have been merged here asserting behaviour they never exercised, because an earlier guard returned before the code under test ran — and running the suite cannot tell you that.
+- **Assertions come from the requirement, fixtures come from the code**: derive what the behaviour *should* be from the spec, but derive the setup from the code path, since only the code says which preconditions reach the branch. A fixture written from the description alone often puts the system in a state where the behaviour under test cannot occur at all.
 - **App startup workers**: `NextcloudTalkApplication.kt` schedules periodic workers (`CapabilitiesWorker`, signaling/WebSocket workers) at startup. Worker scheduling changes can cause subtle startup regressions.
 
 ## Commits
