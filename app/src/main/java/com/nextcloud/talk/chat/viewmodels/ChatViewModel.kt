@@ -1368,6 +1368,7 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
+                newestOwnMessageId(items)?.let(::advanceLocalLastReadMessageIfNeeded)
             }
             .launchIn(viewModelScope)
     }
@@ -2092,10 +2093,17 @@ class ChatViewModel @AssistedInject constructor(
         val conversationLastReadMessage = _uiState.value.conversation?.lastReadMessage ?: return
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
 
-        if (localLastReadMessage > conversationLastReadMessage) {
+        val items = _uiState.value.items
+        val marker = readMarkerToSend(
+            localLastReadMessage = localLastReadMessage,
+            conversationLastReadMessage = conversationLastReadMessage,
+            newestOwnMessageId = newestOwnMessageId(items),
+            hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(items)
+        )
+        if (marker != null) {
             Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage...")
 
-            setChatReadMessage(localLastReadMessage)
+            setChatReadMessage(marker)
         }
     }
 
@@ -2707,6 +2715,42 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+
+        /**
+         * Id of the newest message sent by the user that the server has already accepted, or null; the
+         * server marks everything up to it as read. Temporary messages (negative ids) are not accepted yet
+         * and are ignored.
+         */
+        internal fun newestOwnMessageId(items: List<ChatItem>): Int? =
+            items.mapNotNull { it.messageOrNull() }
+                .filter { !it.incoming && it.id > 0 }
+                .maxOfOrNull { it.id }
+
+        /**
+         * True while a message of the user was sent, but its server copy is not in [items] yet. The
+         * server has already moved the user's read marker to it by then, so this client must not
+         * send an older marker over it.
+         */
+        internal fun hasUnconfirmedOwnMessage(items: List<ChatItem>): Boolean =
+            items.mapNotNull { it.messageOrNull() }
+                .any { !it.incoming && it.id < 0 && it.statusIcon == MessageStatusIcon.SENT }
+
+        /**
+         * The read marker to send to the server, or null when nothing has to be sent. The server sets the
+         * marker to a message at the moment the user sends it, so the client never sends a marker
+         * below the newest own message: that would move the marker back and leave the message with a
+         * single check mark for the other participants.
+         */
+        internal fun readMarkerToSend(
+            localLastReadMessage: Int,
+            conversationLastReadMessage: Int,
+            newestOwnMessageId: Int?,
+            hasUnconfirmedOwnMessage: Boolean
+        ): Int? {
+            if (hasUnconfirmedOwnMessage) return null
+            val marker = maxOf(localLastReadMessage, newestOwnMessageId ?: 0)
+            return marker.takeIf { it > conversationLastReadMessage }
+        }
 
         /**
          * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the
