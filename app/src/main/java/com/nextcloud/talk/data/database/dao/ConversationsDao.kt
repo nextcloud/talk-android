@@ -22,6 +22,10 @@ interface ConversationsDao {
     @Query("SELECT * FROM Conversations where accountId = :accountId")
     fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>>
 
+    /** The internal ids of [accountId]'s conversations, without loading the conversations themselves. */
+    @Query("SELECT internalId FROM Conversations where accountId = :accountId")
+    suspend fun getConversationIdsForUser(accountId: Long): List<String>
+
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
     fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
