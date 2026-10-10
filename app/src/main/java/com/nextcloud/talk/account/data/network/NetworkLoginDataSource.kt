@@ -13,6 +13,7 @@ import com.google.gson.JsonParser
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.utils.ApiUtils
+import okhttp3.CookieJar
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -27,6 +28,8 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
     }
+
+    private val client = okHttpClient.newBuilder().cookieJar(CookieJar.NO_COOKIES).build()
 
     fun oneTimePasswordRequest(baseUrl: String, oneTimeCredentials: String): String? {
         val url = "$baseUrl/ocs/v2.php/core/getapppassword-onetime"
@@ -106,7 +109,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .header("User-Agent", ApiUtils.loginUserAgent)
             .build()
 
-        okHttpClient.newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
@@ -135,7 +138,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
         var result: LoginCompletion? = null
         runCatching {
-            okHttpClient.newCall(request).execute()
+            client.newCall(request).execute()
                 .use { response ->
                     val status: Int = response.code
                     val responseBody = response.body?.string()
