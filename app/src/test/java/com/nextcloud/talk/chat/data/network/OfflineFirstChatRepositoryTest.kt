@@ -51,6 +51,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
@@ -213,6 +214,22 @@ class OfflineFirstChatRepositoryTest {
         }
 
     @Test
+    fun `fetchNewMessages keeps notifications only while the chat is paused`() =
+        runTest {
+            givenHttpSyncedAnchor()
+            repository.fetchNewMessages()
+            assertFalse(lastRequestFieldMap().containsKey("markNotificationsAsRead"))
+
+            repository.handleOnPause()
+            repository.fetchNewMessages()
+            assertEquals(0, lastRequestFieldMap()["markNotificationsAsRead"])
+
+            repository.handleOnResume()
+            repository.fetchNewMessages()
+            assertFalse(lastRequestFieldMap().containsKey("markNotificationsAsRead"))
+        }
+
+    @Test
     fun `addTemporaryMessage upserts a pending local echo and emits it on success`() =
         runTest {
             repository.updateConversation(conversation(lastReadMessage = 0, unreadMessages = 0))
@@ -305,6 +322,22 @@ class OfflineFirstChatRepositoryTest {
     private fun givenLatestBlock(block: ChatBlockEntity?) {
         whenever(chatBlocksDao.getLatestChatBlock(INTERNAL_CONVERSATION_ID, null))
             .thenReturn(flowOf(block))
+    }
+
+    private fun lastRequestFieldMap(): HashMap<String, Int> {
+        val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+        verifyBlocking(network, atLeastOnce()) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+        assertEquals(51, fieldMapCaptor.lastValue["lastKnownMessageId"]) // insurance request, not the initial load
+        return fieldMapCaptor.lastValue
+    }
+
+    /** Records an HTTP sync anchor via the initial load, so fetchNewMessages does not skip. */
+    private suspend fun givenHttpSyncedAnchor() {
+        givenLatestBlock(block(oldest = 10, newest = 50))
+        repository.updateConversation(conversation(lastReadMessage = 40, unreadMessages = 5))
+        wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+            .thenReturn(Response.success(overall(message(51))))
+        repository.loadInitialMessages(Bundle())
     }
 
     private fun singleRequestFieldMap(): HashMap<String, Int> {
