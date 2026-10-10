@@ -24,6 +24,7 @@ import com.nextcloud.talk.activities.CallBaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -52,6 +53,8 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     var cache: Cache? = null
 
+    @Inject
+    lateinit var telecomManager: TelecomManager
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
     private var displayName: String? = null
@@ -79,6 +82,25 @@ class CallNotificationActivity : CallBaseActivity() {
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
         setupNotificationCanceledRoutine()
+        if (savedInstanceState == null && !roomToken.isNullOrBlank()) {
+            telecomManager.addIncomingCall(
+                displayName = displayName ?: "Nextcloud Talk Call",
+                roomToken = roomToken!!,
+                isVideo = isInCallWithVideo(callFlag),
+                onAnswerCall = {
+                    runOnUiThread {
+                        proceedToCall()
+                    }
+                },
+                onRejectCall = {
+                    runOnUiThread {
+                        if (!leavingScreen && !isFinishing && !isDestroyed) {
+                            hangup()
+                        }
+                    }
+                }
+            )
+        }
     }
 
     private fun handleExtras() {
