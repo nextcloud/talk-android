@@ -60,7 +60,7 @@ class CallPushPayloadTest {
     }
 
     @Test
-    fun callWithoutCacheIsAnAnswerableAudioCall() {
+    fun callWithoutCacheIsAnAnswerableCallOfUnknownType() {
         val call = CallPushPayload.IncomingCall.fromPush(TOKEN, SUBJECT)
 
         assertEquals(TOKEN, call.roomToken)
@@ -71,23 +71,20 @@ class CallPushPayloadTest {
         assertFalse(call.isModerator)
         assertTrue(call.canPublishAudio)
         assertTrue(call.canPublishVideo)
-        assertTrue((call.callFlag and ParticipantDto.InCallFlags.WITH_AUDIO) > 0)
+        assertFalse(CallPushPayload.isCallTypeKnown(call.callFlag))
     }
 
     @Test
-    fun callWithoutCacheCarriesWhatTheCallScreensRead() {
-        val bundle = CallPushPayload.IncomingCall.fromPush(TOKEN, SUBJECT).toBundle(USER_ID, NOTIFICATION_ID)
+    fun cachedConversationIsShownWithUnknownCallType() {
+        val cached = conversation(callFlag = VIDEO_CALL_FLAG)
 
-        assertEquals(TOKEN, bundle.getString(BundleKeys.KEY_ROOM_TOKEN))
-        assertEquals(NOTIFICATION_ID, bundle.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP))
-        assertEquals(USER_ID, bundle.getLong(BundleKeys.KEY_INTERNAL_USER_ID))
-        assertTrue(bundle.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL))
-        assertEquals(SUBJECT, bundle.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME))
-        assertEquals(SUBJECT, bundle.getString(BundleKeys.KEY_CONVERSATION_NAME))
-        assertTrue(bundle.getBoolean(BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO))
-        assertTrue(bundle.getBoolean(BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO))
-        assertFalse(bundle.getBoolean(BundleKeys.KEY_IS_MODERATOR, true))
-        assertFalse(bundle.getBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, true))
+        val call = CallPushPayload.IncomingCall.fromConversation(cached, SUBJECT, SpreedCapabilityDto())
+            .withUnknownCallType()
+
+        assertEquals(0, call.callFlag)
+        assertFalse(call.isVideoCall)
+        assertEquals("Alice", call.displayName)
+        assertEquals(TOKEN, call.roomToken)
     }
 
     @Test
@@ -188,5 +185,6 @@ class CallPushPayloadTest {
         const val SUBJECT = "Alice is calling you"
         const val USER_ID = 7L
         const val NOTIFICATION_ID = 123456
+        const val VIDEO_CALL_FLAG = ParticipantDto.InCallFlags.IN_CALL or ParticipantDto.InCallFlags.WITH_VIDEO
     }
 }
