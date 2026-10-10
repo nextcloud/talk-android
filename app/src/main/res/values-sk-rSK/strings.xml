@@ -693,7 +693,7 @@
     <string name="pin_message">Pripnúť správu</string>
     <string name="pinned">Pripnuté</string>
     <string name="pinned_by_author">%1$s (pripnuté používateľom %2$s)</string>
-    <string name="pinned_by_you">%1$s (pripli ste vy)</string>
+    <string name="pinned_by_you">%1$s (pripli ste si)</string>
     <string name="pinned_dismiss">Odmietnuť</string>
     <string name="pinned_go_to_message">Prejsť na správu</string>
     <string name="pinned_indefinitely">Pripnuté natrvalo</string>
