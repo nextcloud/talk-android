@@ -49,6 +49,9 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
         /** An existing account, reauthorized or not, or an account that is being removed. */
         data object ExistingAccount : LoginResult
 
+        /** The account is still being removed, so it can't be set up again yet. */
+        data object RemovalPending : LoginResult
+
         /** A reauthorization in which a different account than the one to reauthorize logged in. */
         data object DifferentAccount : LoginResult
     }
@@ -203,16 +206,22 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     }
 
     /**
-     * Returns [LoginResult.NewAccount] if the account is not scheduled for deletion and doesn't exist yet. During a
+     * Returns [LoginResult.NewAccount] if the account doesn't exist yet. An account that is scheduled for deletion is
+     * waited for first, [LoginResult.RemovalPending] if its removal does not finish in time. During a
      * reauthorization, [LoginResult.DifferentAccount] if another account than the one to reauthorize logged in, set
      * up or not, which is then left unchanged.
      */
     suspend fun parseAndLogin(loginData: LoginCompletion): LoginResult {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {
-            // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
+            // The account was removed just before and the removal did not finish yet. Make sure it runs and wait for
+            // it, as the account can then be set up again. Otherwise the login would end without any account.
             local.startAccountRemovalWorker()
-            return LoginResult.ExistingAccount
-        } else if (local.checkIfUserExists(loginData)) {
+            if (!local.awaitUserRemoval(loginData)) {
+                return LoginResult.RemovalPending
+            }
+        }
+
+        if (local.checkIfUserExists(loginData)) {
             if (shouldReauthorizeUser) {
                 if (!local.updateUser(loginData, accountToReauthorize)) {
                     Log.w(TAG, "Logged in with a different account than the one to reauthorize. Skipped update.")

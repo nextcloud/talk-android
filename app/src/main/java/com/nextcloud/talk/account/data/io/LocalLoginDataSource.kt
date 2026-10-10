@@ -17,10 +17,17 @@ import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 
 // local datasource for communicating with room through account manager
 // crucial for making sure the login process interacts with the db as expected.
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
+
+    companion object {
+        private const val REMOVAL_TIMEOUT_MILLIS = 30_000L
+        private const val REMOVAL_POLL_INTERVAL_MILLIS = 200L
+    }
 
     /**
      * Stores the new credentials of a reauthorized account. That is the account that logged in, found by its login
@@ -47,6 +54,19 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
 
         return WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
     }
+
+    /**
+     * Waits until the account of [data] is not scheduled for deletion anymore, i.e. the account removal finished, for
+     * at most [timeoutMillis]. Returns false if it still is. The removal also contacts the server and the push proxy,
+     * so it can take a while.
+     */
+    suspend fun awaitUserRemoval(data: LoginCompletion, timeoutMillis: Long = REMOVAL_TIMEOUT_MILLIS): Boolean =
+        withTimeoutOrNull(timeoutMillis) {
+            while (checkIfUserIsScheduledForDeletion(data)) {
+                delay(REMOVAL_POLL_INTERVAL_MILLIS)
+            }
+            true
+        } ?: false
 
     suspend fun checkIfUserIsScheduledForDeletion(data: LoginCompletion): Boolean =
         userManager.checkIfUserIsScheduledForDeletion(data.loginName, data.server)
