@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -51,6 +52,7 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ParticipantRoleUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.optimisticAction
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -409,6 +411,8 @@ class ConversationInfoViewModel @Inject constructor(
         val showSensitiveConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SENSITIVE_CONVERSATIONS)
         val sensitiveConversation = conversationModel.hasSensitive
+        confirmedSetting[IMPORTANT] = importantConversation
+        confirmedSetting[SENSITIVE] = sensitiveConversation
 
         val showArchiveConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)
@@ -821,10 +825,18 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     fun toggleCallNotifications() {
-        val newEnabled = !_uiState.value.callNotificationsEnabled
-        _uiState.update { it.copy(callNotificationsEnabled = newEnabled) }
+        val previousEnabled = _uiState.value.callNotificationsEnabled
+        val newEnabled = !previousEnabled
+        val change = startSettingChange("call notifications")
+
         viewModelScope.launch {
-            databaseStorageModule?.saveBoolean("call_notifications_switch", newEnabled)
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(callNotificationsEnabled = newEnabled) }
+                    undoIfNewest("call notifications", change) { it.copy(callNotificationsEnabled = previousEnabled) }
+                },
+                request = { databaseStorageModule?.saveBoolean("call_notifications_switch", newEnabled) }
+            ).onFailure { throwable -> reportSettingFailure("call notifications", throwable) }
         }
     }
 
@@ -832,11 +844,23 @@ class ConversationInfoViewModel @Inject constructor(
         val res = NextcloudTalkApplication.sharedApplication!!.resources
         val values = res.getStringArray(R.array.message_notification_levels_entry_values)
         val descriptions = res.getStringArray(R.array.message_notification_levels)
-        if (position in values.indices && position in descriptions.indices) {
-            _uiState.update { it.copy(notificationLevel = descriptions[position]) }
-            viewModelScope.launch {
-                databaseStorageModule?.saveString("conversation_info_message_notifications_dropdown", values[position])
-            }
+        if (position !in values.indices || position !in descriptions.indices) return
+
+        val previousLevel = _uiState.value.notificationLevel
+        val change = startSettingChange("notification level")
+        viewModelScope.launch {
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(notificationLevel = descriptions[position]) }
+                    undoIfNewest("notification level", change) { it.copy(notificationLevel = previousLevel) }
+                },
+                request = {
+                    databaseStorageModule?.saveString(
+                        "conversation_info_message_notifications_dropdown",
+                        values[position]
+                    )
+                }
+            ).onFailure { throwable -> reportSettingFailure("the notification level", throwable) }
         }
     }
 
@@ -844,12 +868,24 @@ class ConversationInfoViewModel @Inject constructor(
         val res = NextcloudTalkApplication.sharedApplication!!.resources
         val values = res.getStringArray(R.array.message_expiring_values)
         val descriptions = res.getStringArray(R.array.message_expiring_descriptions)
-        if (position in values.indices && position in descriptions.indices) {
-            _uiState.update { it.copy(messageExpirationLabel = descriptions[position]) }
-            viewModelScope.launch {
-                databaseStorageModule?.saveString("conversation_settings_dropdown", values[position])
-            }
+        if (position !in values.indices || position !in descriptions.indices) return
+
+        val previousLabel = _uiState.value.messageExpirationLabel
+        val change = startSettingChange("message expiration")
+        viewModelScope.launch {
+            optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(messageExpirationLabel = descriptions[position]) }
+                    undoIfNewest("message expiration", change) { it.copy(messageExpirationLabel = previousLabel) }
+                },
+                request = { databaseStorageModule?.saveString("conversation_settings_dropdown", values[position]) }
+            ).onFailure { throwable -> reportSettingFailure("the message expiration", throwable) }
         }
+    }
+
+    private suspend fun reportSettingFailure(setting: String, throwable: Throwable) {
+        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+        logger.e(TAG, "failed to save $setting", throwable)
     }
 
     fun setUpcomingEvent(summary: String?, time: String?) {
@@ -868,43 +904,149 @@ class ConversationInfoViewModel @Inject constructor(
         _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbarText(text))
     }
 
+    private var settingChanges = 0L
+
+    /** The newest change started for each setting, so an older one cannot undo it. */
+    private val newestSettingChange = mutableMapOf<String, Long>()
+
+    /** The order of the newest change the server has accepted for each setting. */
+    private val lastAcceptedChange = mutableMapOf<String, Long>()
+
+    /**
+     * The value the server last confirmed for each setting. An undo restores this rather than
+     * whatever was on screen when its own change started: two changes that both fail would
+     * otherwise leave the newer undo restoring the optimistic value of the older one.
+     */
+    private val confirmedSetting = mutableMapOf<String, Boolean>()
+
+    /**
+     * Stamps a new change to [setting] and returns its order, so everything that happens afterwards
+     * can tell whether it is still the newest change the user made to that setting.
+     */
+    @VisibleForTesting
+    internal fun startSettingChange(setting: String): Long {
+        val change = ++settingChanges
+        newestSettingChange[setting] = change
+        return change
+    }
+
+    /**
+     * The undo for [change], which only runs while no later change to [setting] has been started.
+     * Comparing the displayed value is not enough: a user who picks A, B, A, B leaves the first B
+     * holding a value that matches the screen again, and its failure would put A back over the B the
+     * server has since accepted.
+     */
+    @VisibleForTesting
+    internal fun undoIfNewest(
+        setting: String,
+        change: Long,
+        undo: (ConversationInfoUiState) -> ConversationInfoUiState
+    ): suspend () -> Unit = { if (isNewestChange(setting, change)) _uiState.update(undo) }
+
+    private fun isNewestChange(setting: String, change: Long) = newestSettingChange[setting] == change
+
+    /**
+     * An OCS payload can report a refusal in a response the HTTP layer calls a success, so the status
+     * code decides whether the optimistic change stands. A payload that carries no status code at all
+     * is taken at face value, since there is nothing in it to refuse with.
+     */
+    private fun accepted(response: GenericOverall): Boolean =
+        response.ocs?.meta?.statusCode.let { it == null || it == NO_STATUS_CODE || it == HTTP_OK }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
-        val previousValue = _uiState.value.importantConversation
-        val newValue = !previousValue
-        _uiState.update { it.copy(importantConversation = newValue) }
+        val displayedValue = _uiState.value.importantConversation
+        val newValue = !displayedValue
+        // the first change of a session is made from the value the screen was built with,
+        // which is the one the server last gave us
+        val confirmedValue = confirmedSetting.getOrPut(IMPORTANT) { displayedValue }
+        val change = startSettingChange(IMPORTANT)
+
         viewModelScope.launch {
-            try {
-                if (newValue) {
-                    conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
-                } else {
-                    conversationsRepository.markConversationAsUnImportant(credentials, baseUrl, roomToken)
+            val outcome = optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(importantConversation = newValue) }
+                    undoIfNewest(IMPORTANT, change) {
+                        it.copy(importantConversation = confirmedSetting[IMPORTANT] ?: confirmedValue)
+                    }
+                },
+                isConfirmed = ::accepted,
+                request = {
+                    if (newValue) {
+                        conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
+                    } else {
+                        conversationsRepository.markConversationAsUnImportant(credentials, baseUrl, roomToken)
+                    }
                 }
-            } catch (exception: Exception) {
-                _uiState.update { it.copy(importantConversation = previousValue) }
-                logger.e(TAG, "failed to toggle important conversation state", exception)
-                _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
-            }
+            )
+            reportSettingOutcome(outcome, IMPORTANT, change, newValue, "important")
         }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleSensitiveConversation(credentials: String, baseUrl: String, roomToken: String) {
-        val previousValue = _uiState.value.sensitiveConversation
-        val newValue = !previousValue
-        _uiState.update { it.copy(sensitiveConversation = newValue) }
+        val displayedValue = _uiState.value.sensitiveConversation
+        val newValue = !displayedValue
+        // the first change of a session is made from the value the screen was built with,
+        // which is the one the server last gave us
+        val confirmedValue = confirmedSetting.getOrPut(SENSITIVE) { displayedValue }
+        val change = startSettingChange(SENSITIVE)
+
         viewModelScope.launch {
-            try {
-                if (newValue) {
-                    conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
-                } else {
-                    conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
+            val outcome = optimisticAction(
+                apply = {
+                    _uiState.update { it.copy(sensitiveConversation = newValue) }
+                    undoIfNewest(SENSITIVE, change) {
+                        it.copy(sensitiveConversation = confirmedSetting[SENSITIVE] ?: confirmedValue)
+                    }
+                },
+                isConfirmed = ::accepted,
+                request = {
+                    if (newValue) {
+                        conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
+                    } else {
+                        conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
+                    }
                 }
-            } catch (exception: Exception) {
-                _uiState.update { it.copy(sensitiveConversation = previousValue) }
-                logger.e(TAG, "failed to toggle sensitive conversation state", exception)
-                _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+            )
+            reportSettingOutcome(outcome, SENSITIVE, change, newValue, "sensitive")
+        }
+    }
+
+    /**
+     * Records [newValue] as confirmed for [setting] when the server accepted it, and tells the user
+     * when it did not. A refusal the server reports in the payload leaves [optimisticAction]
+     * returning a success it has already taken back, so it needs reporting here as much as a
+     * request that threw.
+     *
+     * The baseline follows the newest change the server has *accepted*, not the newest the user has
+     * started. Two requests for one setting can be in flight at once and be accepted out of order, so
+     * an older acceptance arriving last must not overwrite a newer one - but while the newer one is
+     * still in flight, the older acceptance is the last thing the server agreed to, and dropping it
+     * would leave a later failure restoring a value the server no longer holds.
+     */
+    @Suppress("Detekt.LongParameterList")
+    private suspend fun reportSettingOutcome(
+        outcome: Result<GenericOverall>,
+        setting: String,
+        change: Long,
+        newValue: Boolean,
+        description: String
+    ) {
+        val response = outcome.getOrNull()
+        if (response != null && accepted(response)) {
+            if (change > (lastAcceptedChange[setting] ?: 0)) {
+                lastAcceptedChange[setting] = change
+                confirmedSetting[setting] = newValue
             }
+            return
+        }
+        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+        val cause = outcome.exceptionOrNull()
+        if (cause != null) {
+            logger.e(TAG, "failed to toggle $description conversation state", cause)
+        } else {
+            logger.e(TAG, "server refused to toggle $description conversation state")
         }
     }
 
@@ -923,8 +1065,12 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.java.simpleName
+        private const val HTTP_OK = 200
+        private const val NO_STATUS_CODE = 0
         private const val NEW_CONVERSATION_PARTICIPANTS_SEPARATOR = ", "
         private const val EXTENDED_CONVERSATION = "extended_conversation"
+        private const val IMPORTANT = "important"
+        private const val SENSITIVE = "sensitive"
         private const val GROUP_CONVERSATION_TYPE = "2"
         private const val MAX_ROOM_NAME_LENGTH = 255
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
