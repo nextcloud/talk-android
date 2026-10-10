@@ -64,6 +64,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
@@ -87,6 +90,7 @@ import java.time.format.DateTimeFormatter
 private const val LONG_1000 = 1000L
 private const val LOAD_MORE_BUFFER_ITEMS = 5
 private const val STICKY_HEADER_HIDE_DELAY_MILLIS = 1200L
+private const val READ_MARKER_DEBOUNCE_MILLIS = 1500L
 private const val UNREAD_MARKER_LAYOUT_TIMEOUT_MS = 500L
 private const val PREVIEW_SAMPLE_CHAT_COUNT = 50
 private const val PREVIEW_UNREAD_MARKER_OFFSET = 15
@@ -364,6 +368,7 @@ fun ChatView(
         }
     }
 
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     LaunchedEffect(isAtNewest, state.chatItems) {
         if (!isAtNewest) return@LaunchedEffect
 
@@ -372,6 +377,13 @@ fun ChatView(
             ?.let { newestId ->
                 callbacks.advanceLocalLastReadMessageIfNeeded?.invoke(newestId)
             }
+
+        // the newest messages are on the screen: tell the server now instead of only when the chat is left.
+        // Only while resumed, so that messages synced in the background are not marked as read.
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            delay(READ_MARKER_DEBOUNCE_MILLIS)
+            callbacks.updateRemoteLastReadMessageIfNeeded?.invoke()
+        }
     }
 
     val stickyDateHeaderAlpha by animateFloatAsState(
