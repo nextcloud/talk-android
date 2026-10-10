@@ -14,6 +14,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.SQLException
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -70,6 +71,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
+import com.nextcloud.talk.jobs.RemoteWipeSuccessWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
@@ -93,6 +95,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.RemoteWipeHandler
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -119,6 +122,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -154,6 +158,9 @@ class ConversationsListActivity : BaseActivity() {
 
     @Inject
     lateinit var contactsViewModelFactory: ContactsViewModel.Factory
+
+    @Inject
+    lateinit var remoteWipeHandler: RemoteWipeHandler
 
     val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser) }
 
@@ -193,6 +200,16 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
     private var isDirectShareTarget = false
+    private var unauthorizedDialog: AlertDialog? = null
+    private var unauthorizedHandling: Job? = null
+
+    // The list syncs again on every resume, e.g. after the unauthorized dialog was closed, while the server answers
+    // only 10 wipe checks per 5 minutes from an IP and further ones with 429. So the server is asked once per list.
+    private var isWipeChecked = false
+
+    // From starting to remove the account of this list until that ended. Meanwhile the account is not to be
+    // reauthorized or removed again.
+    private var isRemovingAccount = false
 
     lateinit var ecosystemManager: EcosystemManager
 
@@ -522,7 +539,7 @@ class ConversationsListActivity : BaseActivity() {
 
                     // Update Direct Share targets
                     lifecycleScope.launch {
-                        DirectShareHelper.publishShareTargetShortcuts(context, currentUser, list)
+                        DirectShareHelper.publishShareTargetShortcuts(this@ConversationsListActivity, currentUser, list)
                     }
 
                     // check for Direct Share
@@ -749,7 +766,7 @@ class ConversationsListActivity : BaseActivity() {
 
         if (throwable is HttpException) {
             when (throwable.code()) {
-                HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
+                HTTP_UNAUTHORIZED -> handleUnauthorized()
                 HTTP_CLIENT_UPGRADE_REQUIRED -> showOutdatedClientDialog()
                 HTTP_SERVICE_UNAVAILABLE -> showServiceUnavailableDialog(throwable)
                 else -> {
@@ -1401,6 +1418,26 @@ class ConversationsListActivity : BaseActivity() {
         )
     }
 
+    /**
+     * The server rejected the credentials of the account, which it also does once it requested a wipe of it. So the
+     * account is wiped if so, and otherwise the user can reauthorize or remove it.
+     */
+    private fun handleUnauthorized() {
+        if (isRemovingAccount || unauthorizedHandling?.isActive == true || unauthorizedDialog?.isShowing == true) {
+            return
+        }
+
+        unauthorizedHandling = lifecycleScope.launch {
+            val isWipeRequested = !isWipeChecked && remoteWipeHandler.isWipeRequested(currentUser)
+            isWipeChecked = true
+            if (isWipeRequested) {
+                removeAccountAndRestartApp(wipeToken = currentUser.token)
+            } else {
+                showUnauthorizedDialog()
+            }
+        }
+    }
+
     private fun showUnauthorizedDialog() {
         val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setIcon(
@@ -1413,7 +1450,7 @@ class ConversationsListActivity : BaseActivity() {
             .setMessage(R.string.nc_dialog_reauth_or_delete)
             .setCancelable(false)
             .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
-                deleteUserAndRestartApp()
+                removeAccountAndRestartApp()
             }
             .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
                 val intent = Intent(context, BrowserLoginActivity::class.java)
@@ -1427,38 +1464,58 @@ class ConversationsListActivity : BaseActivity() {
 
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
         val dialog = dialogBuilder.show()
+        unauthorizedDialog = dialog
         viewThemeUtils.platform.colorTextButtons(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )
     }
 
-    private fun deleteUserAndRestartApp() {
+    /**
+     * Removes the account of this list and restarts the app once it is removed. With [wipeToken], the account is
+     * removed because its server requested a wipe, which is reported to the server with that token afterwards.
+     */
+    private fun removeAccountAndRestartApp(wipeToken: String? = null) {
+        isRemovingAccount = true
         lifecycleScope.launch {
-            userManager.scheduleUserForDeletionWithId(currentUser.id!!)
             val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .setExpeditedIfSupported()
                 .build()
-            WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+            try {
+                userManager.scheduleUserForDeletionWithId(currentUser.id!!)
+                val removal = WorkManager.getInstance(applicationContext).beginWith(accountRemovalWork)
+                if (wipeToken == null) {
+                    removal.enqueue()
+                } else {
+                    removal.then(RemoteWipeSuccessWorker.workRequest(currentUser.baseUrl!!, wipeToken)).enqueue()
+                }
+            } catch (e: SQLException) {
+                showAccountRemovalFailed(e)
+                return@launch
+            } catch (e: IllegalStateException) {
+                showAccountRemovalFailed(e)
+                return@launch
+            }
 
             WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
                 .observeForever { workInfo: WorkInfo? ->
 
                     when (workInfo?.state) {
                         WorkInfo.State.SUCCEEDED -> {
-                            val text = String.format(
-                                context.resources.getString(R.string.nc_deleted_user),
-                                currentUser.displayName
-                            )
-                            Toast.makeText(
-                                context,
-                                text,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            val text = if (wipeToken == null) {
+                                String.format(
+                                    context.resources.getString(R.string.nc_deleted_user),
+                                    currentUser.displayName
+                                )
+                            } else {
+                                context.resources.getString(R.string.nc_remote_wipe_logged_out)
+                            }
+                            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
                             restartApp()
                         }
 
                         WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            isRemovingAccount = false
                             logger.e(TAG, "something went wrong when deleting user with id " + currentUser.userId)
 
                             Toast.makeText(
@@ -1473,6 +1530,12 @@ class ConversationsListActivity : BaseActivity() {
                     }
                 }
         }
+    }
+
+    private fun showAccountRemovalFailed(e: Exception) {
+        isRemovingAccount = false
+        logger.e(TAG, "Failed to remove user with id " + currentUser.userId, e)
+        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
     }
 
     private fun restartApp() {
@@ -1543,7 +1606,7 @@ class ConversationsListActivity : BaseActivity() {
             .setMessage(R.string.nc_settings_server_eol)
             .setCancelable(false)
             .setPositiveButton(R.string.nc_settings_remove_account) { _, _ ->
-                deleteUserAndRestartApp()
+                removeAccountAndRestartApp()
             }
 
         if (resources!!.getBoolean(R.bool.multiaccount_support) && runBlocking { userManager.getUsers() }.size > 1) {

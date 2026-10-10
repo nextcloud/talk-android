@@ -7,6 +7,7 @@
 package com.nextcloud.talk.account.viewmodels
 
 import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +21,7 @@ import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
@@ -65,6 +67,20 @@ class BrowserLoginActivityViewModelTest {
         viewModel.loginWithOTPQR("qr")
 
         verifyBlocking(repository, times(1)) { startOTPLoginFlow(any(), any(), anyOrNull()) }
+    }
+
+    @Test
+    fun `a login refused because of too many failed logins is reported as such`() {
+        wheneverBlocking { repository.startOTPLoginFlow(any(), any(), anyOrNull()) }
+            .thenReturn(LoginCompletion(LoginRepository.HTTP_TOO_MANY_REQUESTS, BASE_URL, "user", ""))
+
+        viewModel.loginWithOTPQR("qr")
+
+        assertEquals(
+            BrowserLoginActivityViewModel.PostLoginViewState.PostLoginTooManyLoginAttempts,
+            viewModel.postLoginState.value
+        )
+        verifyBlocking(repository, never()) { parseAndLogin(any()) }
     }
 
     companion object {

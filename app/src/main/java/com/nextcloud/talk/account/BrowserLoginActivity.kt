@@ -113,6 +113,11 @@ class BrowserLoginActivity : BaseActivity() {
                             logger.e(TAG, "Post login step failed")
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginTooManyLoginAttempts -> {
+                            logger.e(TAG, "Login refused because of too many failed logins")
+                            Snackbar.make(binding.root, R.string.nc_login_too_many_attempts, Snackbar.LENGTH_LONG)
+                                .show()
+                        }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
                         }

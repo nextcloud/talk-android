@@ -29,9 +29,16 @@ interface OfflineConversationsRepository {
      * slow network) while there are no locally cached conversations to fall back on for that
      * account, so the UI can tell the user why the list is empty instead of failing silently.
      * A failed sync while conversations are already cached does not emit here, since
-     * [roomListFlow] already has data to show and the sync is a best-effort background refresh.
+     * [roomListFlow] already has data to show and the sync is a best-effort background refresh,
+     * unless the server rejected the credentials, which the user has to act on.
+     *
+     * The repository is shared by all accounts and a sync can outlive the screen that started it,
+     * so each error carries the account it belongs to.
      */
-    val syncErrorFlow: Flow<Throwable>
+    val syncErrorFlow: Flow<SyncError>
+
+    /** A failed sync of the conversations of the account with [accountId]. */
+    data class SyncError(val accountId: Long, val throwable: Throwable)
 
     /**
      * Stream of a single conversation, for use in each conversations settings.
