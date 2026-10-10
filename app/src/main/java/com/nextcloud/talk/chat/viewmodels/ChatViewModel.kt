@@ -426,15 +426,15 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun cancelUpload(referenceId: String) {
-        // uploadReferenceToWorkId is session-local (never persisted) - after an app restart it's
-        // empty even for an upload that's still stuck showing as "uploading" from a previous
-        // session, so a placeholder must still be removable even when there's no known work id to
-        // also cancel. Without this, cancel silently did nothing for any such placeholder, leaving
-        // the user with no way to clear a permanently stuck upload.
-        uploadReferenceToWorkId.remove(referenceId)?.let { workId ->
+        // uploadReferenceToWorkId is session-local - after an app restart it's empty, then the work is
+        // found by its reference id. That lookup blocks, so it runs off the main thread.
+        // The placeholder below is removed whether or not a work is found.
+        // Both jobs run in appScope: leaving the chat right after the tap must not drop the cancellation.
+        val workId = uploadReferenceToWorkId.remove(referenceId)
+        appScope.launch(Dispatchers.IO) {
             UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
         }
-        viewModelScope.launch {
+        appScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
         }
         _uploadProgressMap.update { it - referenceId }
