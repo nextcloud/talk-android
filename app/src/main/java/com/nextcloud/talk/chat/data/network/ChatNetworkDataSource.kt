@@ -73,7 +73,11 @@ interface ChatNetworkDataSource {
 
     suspend fun deleteChatMessage(credentials: String, url: String): ChatOverallSingleMessage
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
-    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
+    fun setChatReadMarker(
+        credentials: String,
+        url: String,
+        previousMessageId: Int
+    ): Observable<Response<GenericOverall>>
     suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
     suspend fun getOutOfOfficeStatusForUser(credentials: String, baseUrl: String, userId: String): UserAbsenceOverall
     suspend fun getUpcomingEvents(credentials: String, baseUrl: String, roomToken: String): UpcomingEventsOverall

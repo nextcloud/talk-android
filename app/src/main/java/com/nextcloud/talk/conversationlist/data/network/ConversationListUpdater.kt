@@ -160,6 +160,15 @@ class ConversationListUpdater @Inject constructor(
     }
 
     /**
+     * Stores the last message read by all participants, which the server reports in the response to a
+     * read marker, so that the read check marks of the user's own messages are up to date without a
+     * further request.
+     */
+    suspend fun updateLastCommonRead(internalConversationId: String, lastCommonRead: Int) {
+        conversationsDao.updateLastCommonRead(internalConversationId, lastCommonRead)
+    }
+
+    /**
      * Writes the read state for a message the user marked as unread: the read marker moves back to
      * [lastReadMessage] and the conversation is left with at least one unread message, so the entry
      * shows as unread right away.
