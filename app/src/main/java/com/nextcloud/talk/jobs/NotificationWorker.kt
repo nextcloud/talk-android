@@ -58,11 +58,12 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.DirectShareHelper
+import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
@@ -78,7 +79,6 @@ import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharacterAvatarUtils
-import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
@@ -86,11 +86,9 @@ import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
 import com.nextcloud.talk.utils.NotificationUtils.findNotificationForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
-import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_DISMISS_RECORDING_URL
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
@@ -98,7 +96,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
@@ -108,6 +105,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
@@ -142,6 +140,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     var chatNetworkDataSource: ChatNetworkDataSource? = null
         @Inject set
+
+    @Inject
+    lateinit var conversationsDao: ConversationsDao
 
     @Inject
     lateinit var userManager: UserManager
@@ -249,156 +250,174 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         getNcDataAndShowNotification(mainActivityIntent)
     }
 
-    @Suppress("LongMethod", "TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught")
     private fun handleCallPushMessage() {
         val userBeingCalled = runBlocking { userManager.getUserWithId(user.id!!) }
+        val roomToken = pushMessage.id!!
+        val cachedConversation = try {
+            runBlocking { conversationsDao.getConversationForUser(user.id!!, roomToken).first() }?.toDomainModel()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to read cached conversation", e)
+            null
+        }
+        val capabilities = userBeingCalled?.capabilities?.spreedCapability
+        val pushedCall = (
+            cachedConversation
+                ?.let { CallPushPayload.IncomingCall.fromConversation(it, pushMessage.subject, capabilities) }
+                ?: CallPushPayload.IncomingCall.fromPush(roomToken, pushMessage.subject)
+            ).withUnknownCallType()
 
-        fun createBundle(conversation: ConversationModel): Bundle {
-            val bundle = Bundle()
-            bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-            bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
-            bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
-            bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
-
-            val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-
-            bundle.putBoolean(KEY_ROOM_ONE_TO_ONE, isOneToOneCall) // ggf change in Activity? not necessary????
-            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.name)
-            bundle.putString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, conversation.displayName)
-            bundle.putInt(BundleKeys.KEY_CALL_FLAG, conversation.callFlag)
-
-            val participantPermission = ParticipantPermissions(
-                userBeingCalled?.capabilities?.spreedCapability,
-                conversation
-            )
-            bundle.putBoolean(
-                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
-                participantPermission.canPublishAudio()
-            )
-            bundle.putBoolean(
-                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-                participantPermission.canPublishVideo()
-            )
-            bundle.putBoolean(
-                BundleKeys.KEY_IS_MODERATOR,
-                ConversationUtils.isParticipantOwnerOrModerator(conversation)
-            )
-            return bundle
+        if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(capabilities)) {
+            showEndToEndEncryptionUnsupportedNotification(pushedCall.displayName, roomToken)
+            return
         }
 
-        @Suppress("LongMethod")
-        fun prepareCallNotificationScreen(conversation: ConversationModel) {
-            val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
-            val bundle = createBundle(conversation)
-
-            fullScreenIntent.putExtras(bundle)
-            fullScreenIntent.flags = getIntentFlags()
-
-            val requestCode = System.currentTimeMillis().toInt()
-
-            val fullScreenPendingIntent = PendingIntent.getActivity(
-                context,
-                requestCode,
-                fullScreenIntent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                } else {
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                }
-            )
-
-            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
-
-            val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
-
-            val answerBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, !isVideoCall) }
-            val answerPendingIntentOffset =
-                if (isVideoCall) ANSWER_VIDEO_REQUEST_OFFSET else ANSWER_VOICE_REQUEST_OFFSET
-            val primaryAnswerIntent = PendingIntent.getActivity(
-                applicationContext,
-                requestCode + answerPendingIntentOffset,
-                Intent(applicationContext, CallActivity::class.java).apply {
-                    putExtras(answerBundle)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                },
-                pendingIntentFlags
-            )
-
-            val declinePendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                requestCode + DECLINE_CALL_REQUEST_OFFSET,
-                Intent(applicationContext, DeclineCallReceiver::class.java).apply {
-                    putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
-                },
-                pendingIntentFlags
-            )
-
-            val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
-            val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
-            val uri = user.baseUrl!!.toUri()
-            val baseUrl = uri.host
-
-            val callerPersonBuilder = Person.Builder()
-                .setName(conversation.displayName)
-                .setImportant(true)
-            if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                val avatarUrl = ApiUtils.getUrlForAvatar(
-                    user.baseUrl!!,
-                    conversation.name,
-                    false,
-                    darkMode = DisplayUtils.isDarkModeOn(applicationContext)
-                )
-                loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
-            }
-            val callerPerson = callerPersonBuilder.build()
-
-            val notification =
-                NotificationCompat.Builder(applicationContext, notificationChannelId)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_CALL)
-                    .setSmallIcon(R.drawable.ic_call_black_24dp)
-                    .setSubText(baseUrl)
-                    .setShowWhen(true)
-                    .setWhen(pushMessage.timestamp)
-                    .setContentTitle(EmojiCompat.get().process(pushMessage.subject))
-                    // auto cancel is set to false because notification (including sound) should continue while
-                    // CallNotificationActivity is active
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentIntent(fullScreenPendingIntent)
-                    .setFullScreenIntent(fullScreenPendingIntent, true)
-                    .setSound(soundUri)
-                    .setStyle(
-                        NotificationCompat.CallStyle
-                            .forIncomingCall(callerPerson, declinePendingIntent, primaryAnswerIntent)
-                            .setIsVideo(isVideoCall)
-                    )
-                    .build()
-            notification.flags = notification.flags or Notification.FLAG_INSISTENT
-
-            sendNotification(pushMessage.timestamp.toInt(), notification)
-
-            checkIfCallIsActive(conversation)
+        val sentTime = inputData.getLong(BundleKeys.KEY_NOTIFICATION_PUSH_SENT_TIME, 0L)
+        val isStale = CallPushPayload.isStale(sentTime, pushMessage.timestamp)
+        if (isStale) {
+            Log.d(TAG, "Call push is older than ${CallPushPayload.MAX_PUSH_AGE_MS} ms, asking the server first")
+        } else {
+            showCallNotification(pushedCall, isUpdate = false)
         }
 
         val conversation = try {
-            runBlocking { chatNetworkDataSource?.getRoom(userBeingCalled!!, roomToken = pushMessage.id!!) }
+            runBlocking { chatNetworkDataSource?.getRoom(userBeingCalled!!, roomToken = roomToken) }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get room", e)
             null
         }
 
-        if (conversation != null && userBeingCalled != null) {
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(userBeingCalled.capabilities?.spreedCapability)) {
-                showEndToEndEncryptionUnsupportedNotification(conversation)
-            } else {
-                prepareCallNotificationScreen(conversation)
-            }
+        val state = if (isStale) {
+            CallPushPayload.stateOfStalePush(conversation?.hasCall)
+        } else {
+            CallPushPayload.stateOf(conversation?.hasCall)
         }
+        when (state) {
+            CallPushPayload.CallState.RING ->
+                if (isStale || NotificationUtils.isNotificationVisible(context, pushMessage.timestamp.toInt())) {
+                    val room = conversation!!
+                    showCallNotification(
+                        CallPushPayload.IncomingCall.fromConversation(room, pushMessage.subject, capabilities),
+                        isUpdate = !isStale
+                    )
+                    checkIfCallIsActive(room)
+                } else {
+                    // declined, answered or deleted while the server was asked: do not ring again
+                    Log.d(TAG, "Call notification is gone, not showing it again")
+                }
+
+            CallPushPayload.CallState.MISSED -> {
+                showMissedCallNotification(
+                    conversation?.displayName ?: pushedCall.displayName,
+                    requireRingingCall = !isStale
+                )
+                removeNotification(pushMessage.timestamp.toInt())
+            }
+
+            CallPushPayload.CallState.UNKNOWN -> Log.d(TAG, "Call state unknown, keeping the call notification")
+        }
+    }
+
+    @Suppress("LongMethod")
+    private fun showCallNotification(call: CallPushPayload.IncomingCall, isUpdate: Boolean) {
+        val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
+        val bundle = call.toBundle(user.id!!, pushMessage.timestamp.toInt())
+
+        fullScreenIntent.putExtras(bundle)
+        fullScreenIntent.flags = getIntentFlags()
+
+        val requestCode = System.currentTimeMillis().toInt()
+
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            context,
+            requestCode,
+            fullScreenIntent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
+        val isVideoCall = call.isVideoCall
+
+        val answerBundle = Bundle(bundle).apply { putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, !isVideoCall) }
+        val answerPendingIntentOffset =
+            if (isVideoCall) ANSWER_VIDEO_REQUEST_OFFSET else ANSWER_VOICE_REQUEST_OFFSET
+        val primaryAnswerIntent = PendingIntent.getActivity(
+            applicationContext,
+            requestCode + answerPendingIntentOffset,
+            Intent(applicationContext, CallActivity::class.java).apply {
+                putExtras(answerBundle)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            },
+            pendingIntentFlags
+        )
+
+        val declinePendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            requestCode + DECLINE_CALL_REQUEST_OFFSET,
+            Intent(applicationContext, DeclineCallReceiver::class.java).apply {
+                putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+            },
+            pendingIntentFlags
+        )
+
+        val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
+        val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        val uri = user.baseUrl!!.toUri()
+        val baseUrl = uri.host
+
+        val callerPersonBuilder = Person.Builder()
+            .setName(call.displayName)
+            .setImportant(true)
+        if (call.isOneToOne && isUpdate) {
+            val avatarUrl = ApiUtils.getUrlForAvatar(
+                user.baseUrl!!,
+                call.name,
+                false,
+                darkMode = DisplayUtils.isDarkModeOn(applicationContext)
+            )
+            loadAvatarSync(avatarUrl, applicationContext)?.let { callerPersonBuilder.setIcon(it) }
+        }
+        val callerPerson = callerPersonBuilder.build()
+
+        val notificationBuilder =
+            NotificationCompat.Builder(applicationContext, notificationChannelId)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setSmallIcon(R.drawable.ic_call_black_24dp)
+                .setSubText(baseUrl)
+                .setShowWhen(true)
+                .setWhen(pushMessage.timestamp)
+                .setContentTitle(EmojiCompat.get().process(call.title))
+                // auto cancel is set to false because notification (including sound) should continue while
+                // CallNotificationActivity is active
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setOnlyAlertOnce(isUpdate)
+                .setContentIntent(fullScreenPendingIntent)
+                .setFullScreenIntent(fullScreenPendingIntent, true)
+                .setSound(soundUri)
+                .setStyle(
+                    NotificationCompat.CallStyle
+                        .forIncomingCall(callerPerson, declinePendingIntent, primaryAnswerIntent)
+                        .setIsVideo(isVideoCall)
+                )
+        val notification = NotificationUtils.applyCallDismissal(
+            notificationBuilder.addExtras(call.toNotificationExtras(user.id!!, pushMessage.timestamp.toInt())),
+            user.id!!,
+            pushMessage.notificationId
+        ).build()
+        notification.flags = notification.flags or Notification.FLAG_INSISTENT
+
+        sendNotification(pushMessage.timestamp.toInt(), notification)
     }
 
     private fun initNcApiAndCredentials() {
@@ -1207,7 +1226,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
 
                     if (!hasParticipantsInCall) {
-                        showMissedCallNotification(conversation)
+                        showMissedCallNotification(conversation.displayName)
                         Log.d(TAG, "no participants in call")
                         removeNotification(pushMessage.timestamp.toInt())
                     }
@@ -1221,7 +1240,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error in getPeersForCall", e)
                     if (isCallNotificationVisible) {
-                        showMissedCallNotification(conversation)
+                        showMissedCallNotification(conversation.displayName)
                     }
                     removeNotification(pushMessage.timestamp.toInt())
                 }
@@ -1229,7 +1248,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 override fun onComplete() {
                     if (isCallNotificationVisible) {
                         // this state can be reached when call timeout is reached.
-                        showMissedCallNotification(conversation)
+                        showMissedCallNotification(conversation.displayName)
                     }
 
                     removeNotification(pushMessage.timestamp.toInt())
@@ -1237,13 +1256,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             })
     }
 
-    fun showMissedCallNotification(conversation: ConversationModel) {
+    fun showMissedCallNotification(displayName: String, requireRingingCall: Boolean = true) {
         val isOngoingCallNotificationVisible = NotificationUtils.isNotificationVisible(
             context,
             pushMessage.timestamp.toInt()
         )
 
-        if (isOngoingCallNotificationVisible) {
+        if (isOngoingCallNotificationVisible || !requireRingingCall) {
             val notificationBuilder = NotificationCompat.Builder(
                 context!!,
                 NotificationUtils.NotificationChannels
@@ -1256,7 +1275,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setContentTitle(
                     String.format(
                         context!!.resources.getString(R.string.nc_missed_call),
-                        conversation.displayName
+                        displayName
                     )
                 )
                 .setSmallIcon(R.drawable.ic_baseline_phone_missed_24)
@@ -1284,7 +1303,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-    private fun showEndToEndEncryptionUnsupportedNotification(conversation: ConversationModel) {
+    private fun showEndToEndEncryptionUnsupportedNotification(displayName: String, roomToken: String) {
         val notificationBuilder = NotificationCompat.Builder(
             context!!,
             NotificationUtils.NotificationChannels
@@ -1297,7 +1316,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setContentTitle(
                 String.format(
                     context!!.resources.getString(R.string.nc_call_e2ee_not_supported_title),
-                    conversation.displayName
+                    displayName
                 )
             )
             .setContentText(context!!.resources.getString(R.string.nc_call_e2ee_not_supported))
@@ -1309,7 +1328,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .build()
 
         sendNotification(pushMessage.timestamp.toInt(), notification)
-        Log.d(TAG, "'end-to-end-encryption not supported' notification was created for ${conversation.token}")
+        Log.d(TAG, "'end-to-end-encryption not supported' notification was created for $roomToken")
     }
 
     private fun createMainActivityIntent(): Intent {
