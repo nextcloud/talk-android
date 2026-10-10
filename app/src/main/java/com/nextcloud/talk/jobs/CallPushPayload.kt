@@ -58,6 +58,59 @@ object CallPushPayload {
      */
     fun stateOfStalePush(hasCall: Boolean?): CallState = if (hasCall == true) CallState.RING else CallState.MISSED
 
+    /** What the call screen knows about the kind of the call. */
+    enum class CallType(val showsVoiceButton: Boolean, val showsVideoButton: Boolean) {
+        /** Both answer buttons, neutral text: the kind of the call is not known (yet). */
+        UNKNOWN(showsVoiceButton = true, showsVideoButton = true),
+        VOICE(showsVoiceButton = true, showsVideoButton = false),
+        VIDEO(showsVoiceButton = false, showsVideoButton = true)
+    }
+
+    /**
+     * The kind of a call is known only when the call flag says someone is in the call. A flag without
+     * [ParticipantDto.InCallFlags.IN_CALL] (0) was read before the call began or never read at all.
+     */
+    fun isCallTypeKnown(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.IN_CALL) != 0
+
+    /** A server without the call-flags capability cannot tell the kind of the call either. */
+    fun callTypeOf(callFlag: Int, hasCallFlagsCapability: Boolean): CallType =
+        when {
+            !hasCallFlagsCapability || !isCallTypeKnown(callFlag) -> CallType.UNKNOWN
+            (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0 -> CallType.VIDEO
+            else -> CallType.VOICE
+        }
+
+    private val CALL_DATA_KEYS = listOf(
+        BundleKeys.KEY_ROOM_ONE_TO_ONE,
+        BundleKeys.KEY_CONVERSATION_NAME,
+        BundleKeys.KEY_CONVERSATION_DISPLAY_NAME,
+        BundleKeys.KEY_CALL_FLAG,
+        BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
+        BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+        BundleKeys.KEY_IS_MODERATOR
+    )
+
+    /** Only the call data of [extras] (notification extras hold more), as `CallActivity` reads it. */
+    fun pickCallData(extras: Bundle): Bundle =
+        Bundle().apply {
+            CALL_DATA_KEYS.filter { extras.containsKey(it) }.forEach { key ->
+                @Suppress("DEPRECATION")
+                when (val value = extras.get(key)) {
+                    is Boolean -> putBoolean(key, value)
+                    is Int -> putInt(key, value)
+                    is String -> putString(key, value)
+                }
+            }
+        }
+
+    /** Whether [update] carries call data that differs from the call data [current] a call screen was opened with. */
+    fun isCallDataChanged(current: Bundle?, update: Bundle): Boolean {
+        val old = current?.let { pickCallData(it) } ?: Bundle()
+        val new = pickCallData(update)
+        @Suppress("DEPRECATION")
+        return new.keySet().any { old.get(it) != new.get(it) }
+    }
+
     /**
      * The incoming call as the notification and the call screens need it.
      *
@@ -76,6 +129,16 @@ object CallPushPayload {
     ) {
         val isVideoCall: Boolean
             get() = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
+
+        /** The call as shown before the server is asked: the kind of the call is not known. */
+        fun withUnknownCallType(): IncomingCall = copy(callFlag = 0)
+
+        /**
+         * The call data the notification carries for an open `CallNotificationActivity`. The room token
+         * is left out: with it `cancelExistingNotificationsForRoom` would take the call down on opening the chat.
+         */
+        fun toNotificationExtras(userId: Long, notificationTimestamp: Int): Bundle =
+            toBundle(userId, notificationTimestamp).apply { remove(BundleKeys.KEY_ROOM_TOKEN) }
 
         /** The extras of `CallNotificationActivity` and `CallActivity` (answer button). */
         fun toBundle(userId: Long, notificationTimestamp: Int): Bundle =
@@ -115,7 +178,7 @@ object CallPushPayload {
             }
 
             /**
-             * From the push alone, when the conversation is not cached. An audio call of a group
+             * From the push alone, when the conversation is not cached. A call of unknown kind in a group
              * that the user may answer: `CallActivity` reads missing publish permissions as "not
              * allowed" and would start without a microphone. The server enforces the real permissions.
              */
@@ -126,7 +189,7 @@ object CallPushPayload {
                     displayName = subject,
                     name = subject,
                     isOneToOne = false,
-                    callFlag = ParticipantDto.InCallFlags.IN_CALL or ParticipantDto.InCallFlags.WITH_AUDIO,
+                    callFlag = 0,
                     canPublishAudio = true,
                     canPublishVideo = true,
                     isModerator = false

@@ -261,9 +261,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             null
         }
         val capabilities = userBeingCalled?.capabilities?.spreedCapability
-        val pushedCall = cachedConversation
-            ?.let { CallPushPayload.IncomingCall.fromConversation(it, pushMessage.subject, capabilities) }
-            ?: CallPushPayload.IncomingCall.fromPush(roomToken, pushMessage.subject)
+        val pushedCall = (
+            cachedConversation
+                ?.let { CallPushPayload.IncomingCall.fromConversation(it, pushMessage.subject, capabilities) }
+                ?: CallPushPayload.IncomingCall.fromPush(roomToken, pushMessage.subject)
+            ).withUnknownCallType()
 
         if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(capabilities)) {
             showEndToEndEncryptionUnsupportedNotification(pushedCall.displayName, roomToken)
@@ -409,7 +411,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         .setIsVideo(isVideoCall)
                 )
         val notification = NotificationUtils.applyCallDismissal(
-            notificationBuilder,
+            notificationBuilder.addExtras(call.toNotificationExtras(user.id!!, pushMessage.timestamp.toInt())),
             user.id!!,
             pushMessage.notificationId
         ).build()
