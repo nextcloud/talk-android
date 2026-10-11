@@ -314,7 +314,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
                 Log.d(TAG, "Starting online request for long polling")
-                getAndPersistMessages(networkParams)
+                getAndPersistMessages(networkParams) { !itIsPaused }
 
                 val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
                     internalConversationId,
@@ -565,11 +565,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
     // Callers must put a KEY_FIELD_MAP (see getFieldMap/syncer.buildFieldMap) into bundle before
     // calling this.
-    private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
+    private suspend fun getAndPersistMessages(bundle: Bundle, canRetry: () -> Boolean = { true }): Boolean {
         val fieldMap = requireNotNull(bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as? HashMap<String, Int>) {
             "getAndPersistMessages requires bundle to carry KEY_FIELD_MAP"
         }
-        val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+        val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents, canRetry)
         return outcome.persistedNewMessages
     }
 
