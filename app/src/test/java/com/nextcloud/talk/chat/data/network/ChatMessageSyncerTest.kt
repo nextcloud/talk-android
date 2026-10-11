@@ -151,6 +151,20 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullMessagesFlow does not send the retry when the chat is paused during the backoff`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+            // allowed right after the failure, paused by the time the backoff delay has elapsed
+            val answers = mutableListOf(true, false)
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeFirst() }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
     fun `catchUpRoom marks the sync as failed when the server request errors`() =
         runTest {
             whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))

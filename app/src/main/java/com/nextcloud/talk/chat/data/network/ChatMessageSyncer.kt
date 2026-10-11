@@ -729,6 +729,11 @@ class ChatMessageSyncer @Inject constructor(
                         }
                         if (attempts < MAX_PULL_ATTEMPTS) {
                             delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
+                            // the chat may have been paused while backing off
+                            if (!canRetry()) {
+                                emit(ChatPullResult.Error(IllegalStateException("Retry cancelled")))
+                                return@flow
+                            }
                         }
                     }
                 )
