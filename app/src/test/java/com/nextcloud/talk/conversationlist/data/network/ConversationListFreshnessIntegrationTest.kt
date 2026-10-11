@@ -35,22 +35,31 @@ import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
@@ -65,7 +74,7 @@ import retrofit2.Response
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class ConversationListFreshnessIntegrationTest {
 
     private lateinit var db: TalkDatabase
@@ -365,6 +374,497 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `a room refresh requested before a sync cannot revert the entry the sync wrote`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val refreshRequested = CompletableDeferred<Unit>()
+            val refreshAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+                refreshRequested.complete(Unit)
+                refreshAnswer.await()
+                ConversationModel.mapToConversationModel(serverRoom(lastActivity = 12, lastRead = 10, unread = 2), user)
+            }
+            val refresh = repository.getRoom(user, ROOM_TOKEN)
+            refreshRequested.await()
+
+            val roomWithCall = serverRoom(lastActivity = 20, lastRead = 20, unread = 0).apply { hasCall = true }
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(roomList(listOf(roomWithCall)))
+            repository.getRooms(user).join()
+            refreshAnswer.complete(Unit)
+            refresh.join()
+
+            val conversation = conversationEntity()
+            assertEquals("the older answer must not revert the activity", 20L, conversation.lastActivity)
+            assertEquals("the older answer must not revert the read marker", 20, conversation.lastReadMessage)
+            assertEquals("the older answer must not bring back the unread count", 0, conversation.unreadMessages)
+            assertTrue("the older answer must not drop the call", conversation.hasCall)
+        }
+    }
+
+    @Test
+    fun `a sync requested before a room refresh cannot revert the entry the refresh wrote`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val syncRequested = CountDownLatch(1)
+            val syncAnswer = CountDownLatch(1)
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.fromCallable {
+                    syncRequested.countDown()
+                    syncAnswer.await()
+                    RoomListResult(
+                        listOf(serverRoom(lastActivity = 12, lastRead = 10, unread = 2)),
+                        modifiedBefore = null,
+                        wasDelta = false
+                    )
+                }
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { syncRequested.await() }
+
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(
+                    serverRoom(lastActivity = 20, lastRead = 20, unread = 0).apply { hasArchived = true },
+                    user
+                )
+            )
+            repository.getRoom(user, ROOM_TOKEN).join()
+            syncAnswer.countDown()
+            sync.join()
+
+            val conversation = conversationEntity()
+            assertEquals("the older sync must not revert the activity", 20L, conversation.lastActivity)
+            assertEquals("the older sync must not revert the read marker", 20, conversation.lastReadMessage)
+            assertEquals("the older sync must not bring back the unread count", 0, conversation.unreadMessages)
+            assertTrue("the older sync must not revert the archive flag", conversation.hasArchived)
+        }
+    }
+
+    @Test
+    fun `a sync requested before a catch-up cannot revert the message the catch-up stored`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val syncRequested = CountDownLatch(1)
+            val syncAnswer = CountDownLatch(1)
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.fromCallable {
+                    syncRequested.countDown()
+                    syncAnswer.await()
+                    RoomListResult(
+                        listOf(serverRoom(lastActivity = 10, lastRead = 10, unread = 0)),
+                        modifiedBefore = null,
+                        wasDelta = false
+                    )
+                }
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { syncRequested.await() }
+
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12))))
+            syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2)
+            syncAnswer.countDown()
+            sync.join()
+
+            val conversation = conversationEntity()
+            assertEquals("the older sync must not revert the activity", 12L, conversation.lastActivity)
+            assertEquals("the older sync must not revert the unread count", 2, conversation.unreadMessages)
+            assertEquals(12L, LoganSquare.parse(conversation.lastMessage, ChatMessageDto::class.java).id)
+        }
+    }
+
+    @Test
+    fun `a full sync requested before a room was refreshed does not delete it`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val syncRequested = CountDownLatch(1)
+            val syncAnswer = CountDownLatch(1)
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.fromCallable {
+                    syncRequested.countDown()
+                    syncAnswer.await()
+                    RoomListResult(
+                        listOf(serverRoom(lastActivity = 10, lastRead = 10, unread = 0)),
+                        modifiedBefore = null,
+                        wasDelta = false
+                    )
+                }
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { syncRequested.await() }
+
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(
+                    serverRoom(token = JOINED_ROOM_TOKEN, lastActivity = 15, lastRead = 15, unread = 0),
+                    user
+                )
+            )
+            repository.getRoom(user, JOINED_ROOM_TOKEN).join()
+            syncAnswer.countDown()
+            sync.join()
+
+            assertEquals(
+                "a room the sync could not know about must survive it",
+                15L,
+                db.conversationsDao().getConversationForUser(ACCOUNT_ID, JOINED_ROOM_TOKEN).first()?.lastActivity
+            )
+        }
+    }
+
+    @Test
+    fun `a room refresh requested before a full sync does not bring back a room the sync deleted`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val refreshRequested = CompletableDeferred<Unit>()
+            val refreshAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+                refreshRequested.complete(Unit)
+                refreshAnswer.await()
+                ConversationModel.mapToConversationModel(serverRoom(lastActivity = 10, lastRead = 10, unread = 0), user)
+            }
+            val refresh = repository.getRoom(user, ROOM_TOKEN)
+            refreshRequested.await()
+
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                roomList(listOf(serverRoom(token = JOINED_ROOM_TOKEN, lastActivity = 15, lastRead = 15, unread = 0)))
+            )
+            repository.getRooms(user).join()
+            assertNull(db.conversationsDao().getConversationForUser(ACCOUNT_ID, ROOM_TOKEN).first())
+            refreshAnswer.complete(Unit)
+            refresh.join()
+
+            assertNull(
+                "an answer older than the deletion must not bring the room back",
+                db.conversationsDao().getConversationForUser(ACCOUNT_ID, ROOM_TOKEN).first()
+            )
+        }
+    }
+
+    @Test
+    fun `a room refresh requested after the catch-up request is applied in full`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val catchUpRequested = CompletableDeferred<Unit>()
+            val catchUpAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                catchUpRequested.complete(Unit)
+                catchUpAnswer.await()
+                Response.success(overall(message(10), message(11), message(12)))
+            }
+            val catchUp = launch(Dispatchers.IO) {
+                syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2)
+            }
+            catchUpRequested.await()
+
+            val refreshRequested = CompletableDeferred<Unit>()
+            val refreshAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+                refreshRequested.complete(Unit)
+                refreshAnswer.await()
+                ConversationModel.mapToConversationModel(
+                    serverRoom(lastActivity = 12, lastRead = 10, unread = 2).apply { hasCall = true },
+                    user
+                )
+            }
+            val refresh = repository.getRoom(user, ROOM_TOKEN)
+            refreshRequested.await()
+            catchUpAnswer.complete(Unit)
+            catchUp.join()
+            refreshAnswer.complete(Unit)
+            refresh.join()
+
+            assertTrue("an answer requested after the catch-up request must apply", conversationEntity().hasCall)
+        }
+    }
+
+    @Test
+    fun `a room refresh requested before the catch-up request keeps the fields of the catch-up only`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val refreshRequested = CompletableDeferred<Unit>()
+            val refreshAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+                refreshRequested.complete(Unit)
+                refreshAnswer.await()
+                ConversationModel.mapToConversationModel(
+                    serverRoom(lastActivity = 10, lastRead = 10, unread = 0).apply { hasCall = true },
+                    user
+                )
+            }
+            val refresh = repository.getRoom(user, ROOM_TOKEN)
+            refreshRequested.await()
+
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12))))
+            syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2)
+            refreshAnswer.complete(Unit)
+            refresh.join()
+
+            val conversation = conversationEntity()
+            assertEquals("the older answer must not revert the activity", 12L, conversation.lastActivity)
+            assertEquals("the older answer must not revert the unread count", 2, conversation.unreadMessages)
+            assertEquals(12L, LoganSquare.parse(conversation.lastMessage, ChatMessageDto::class.java).id)
+            assertTrue("the rest of the answer is newer than the entry and applies", conversation.hasCall)
+        }
+    }
+
+    @Test
+    fun `a delta sync requested before a room refresh drops that room only`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val syncRequested = CountDownLatch(1)
+            val syncAnswer = CountDownLatch(1)
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.fromCallable {
+                    syncRequested.countDown()
+                    syncAnswer.await()
+                    RoomListResult(
+                        listOf(
+                            serverRoom(lastActivity = 12, lastRead = 10, unread = 2),
+                            serverRoom(token = JOINED_ROOM_TOKEN, lastActivity = 5, lastRead = 5, unread = 0)
+                        ),
+                        modifiedBefore = null,
+                        wasDelta = true
+                    )
+                }
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { syncRequested.await() }
+
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(serverRoom(lastActivity = 20, lastRead = 20, unread = 0), user)
+            )
+            repository.getRoom(user, ROOM_TOKEN).join()
+            syncAnswer.countDown()
+            sync.join()
+
+            assertEquals("the dropped room keeps the newer entry", 20L, conversationEntity().lastActivity)
+            assertEquals(
+                "the other rooms of the delta are written",
+                5L,
+                db.conversationsDao().getConversationForUser(ACCOUNT_ID, JOINED_ROOM_TOKEN).first()?.lastActivity
+            )
+        }
+    }
+
+    @Test
+    fun `accounts of one server do not order each other's responses`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val otherUser = user.copy(id = OTHER_ACCOUNT_ID, userId = "other", username = "other")
+        val repository = repository()
+        runBlocking {
+            db.usersDao().saveUser(
+                UserEntity(id = OTHER_ACCOUNT_ID, userId = "other", username = "other", baseUrl = BASE_URL)
+            )
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val refreshRequested = CompletableDeferred<Unit>()
+            val refreshAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+                refreshRequested.complete(Unit)
+                refreshAnswer.await()
+                ConversationModel.mapToConversationModel(
+                    serverRoom(lastActivity = 12, lastRead = 10, unread = 2),
+                    otherUser
+                )
+            }
+            val refresh = repository.getRoom(otherUser, ROOM_TOKEN)
+            refreshRequested.await()
+
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(roomList(listOf(serverRoom(lastActivity = 20, lastRead = 20, unread = 0))))
+            repository.getRooms(user).join()
+            refreshAnswer.complete(Unit)
+            refresh.join()
+
+            assertEquals(20L, conversationEntity().lastActivity)
+            assertEquals(
+                "an answer for the other account is not older than the entry of this one",
+                12L,
+                db.conversationsDao().getConversationForUser(OTHER_ACCOUNT_ID, ROOM_TOKEN).first()?.lastActivity
+            )
+        }
+    }
+
+    @Test
+    fun `a room refresh waits for the write of a sync it is judged against`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val mergeReached = CountDownLatch(1)
+        val refreshDone = CountDownLatch(1)
+        val updater = spy(conversationListUpdater)
+        val firstMerge = AtomicBoolean(true)
+        // the sync is held after it judged its response and before it writes it, the window the lock exists for
+        doAnswer { invocation ->
+            val superseded = invocation.callRealMethod()
+            if (firstMerge.getAndSet(false)) {
+                mergeReached.countDown()
+                refreshDone.await(LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)
+            }
+            superseded
+        }.whenever(updater).isSuperseded(any(), any())
+        val repository = OfflineFirstConversationsRepository(
+            db.conversationsDao(),
+            conversationsNetwork,
+            chatNetwork,
+            networkMonitor,
+            syncer,
+            updater,
+            ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
+            ApplicationProvider.getApplicationContext(),
+            mock<Logger>()
+        )
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            // a delta sync, so that its first judgement is the one of the merge
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.just(
+                    RoomListResult(
+                        listOf(serverRoom(lastActivity = 12, lastRead = 10, unread = 2)),
+                        modifiedBefore = null,
+                        wasDelta = true
+                    )
+                )
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { mergeReached.await() }
+
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(serverRoom(lastActivity = 20, lastRead = 20, unread = 0), user)
+            )
+            val refresh = repository.getRoom(user, ROOM_TOKEN)
+            launch(Dispatchers.IO) {
+                refresh.join()
+                refreshDone.countDown()
+            }
+            sync.join()
+            refresh.join()
+
+            assertEquals(
+                "the refresh was requested after the sync, so its write must come last",
+                20L,
+                conversationEntity().lastActivity
+            )
+        }
+    }
+
+    @Test
+    fun `a catch-up during a refresh derives unread again from the marker of the answer`() {
+        runBlocking {
+            // messages 11 and 12 were read on another device before the refresh was requested
+            refreshAcrossCatchUp(storedLastRead = 10, answer = serverRoom(lastActivity = 12, lastRead = 12, unread = 0))
+
+            val conversation = conversationEntity()
+            assertEquals(12, conversation.lastReadMessage)
+            assertEquals("the count follows the marker of the answer", 0, conversation.unreadMessages)
+            assertEquals("the preview stays the one of the catch-up", 12L, conversation.lastActivity)
+        }
+    }
+
+    @Test
+    fun `a catch-up during a refresh follows a chat marked as unread elsewhere`() {
+        runBlocking {
+            refreshAcrossCatchUp(storedLastRead = 12, answer = serverRoom(lastActivity = 12, lastRead = 10, unread = 2))
+
+            val conversation = conversationEntity()
+            assertEquals(10, conversation.lastReadMessage)
+            assertEquals("the count follows the marker of the answer", 2, conversation.unreadMessages)
+        }
+    }
+
+    @Test
+    fun `a catch-up during a refresh keeps its unread count while the marker is the same`() {
+        runBlocking {
+            refreshAcrossCatchUp(storedLastRead = 10, answer = serverRoom(lastActivity = 10, lastRead = 10, unread = 0))
+
+            val conversation = conversationEntity()
+            assertEquals(10, conversation.lastReadMessage)
+            assertEquals("the older answer cannot know the new messages", 2, conversation.unreadMessages)
+        }
+    }
+
+    @Test
+    fun `a lowered marker with an unknown count keeps the higher of the stored and the answered count`() {
+        runBlocking {
+            // the cached messages start above the marker of the answer, so the count cannot be derived
+            refreshAcrossCatchUp(
+                storedLastRead = 12,
+                answer = serverRoom(lastActivity = 15, lastRead = 10, unread = 2),
+                storedUnread = 3,
+                fetched = listOf(14, 15)
+            )
+
+            val conversation = conversationEntity()
+            assertEquals(10, conversation.lastReadMessage)
+            assertEquals("both counts are lower bounds", 3, conversation.unreadMessages)
+        }
+    }
+
+    /**
+     * Stores a room, requests a refresh, lets a catch-up that fetches messages 10 to 12 write the room
+     * while the refresh is under way, and then lets the refresh answer with [answer].
+     */
+    private suspend fun refreshAcrossCatchUp(
+        storedLastRead: Int,
+        answer: ConversationDto,
+        storedUnread: Int = 0,
+        fetched: List<Long> = listOf(10, 11, 12)
+    ) {
+        val user = user(withKeepNotificationsCapability = false)
+        seedConversation(lastActivity = 10, lastReadMessage = storedLastRead, unreadMessages = storedUnread)
+        val refreshRequested = CompletableDeferred<Unit>()
+        val refreshAnswer = CompletableDeferred<Unit>()
+        wheneverBlocking { chatNetwork.getRoom(any(), any()) }.doSuspendableAnswer {
+            refreshRequested.complete(Unit)
+            refreshAnswer.await()
+            ConversationModel.mapToConversationModel(answer, user)
+        }
+        val refresh = repository().getRoom(user, ROOM_TOKEN)
+        refreshRequested.await()
+
+        wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+            .thenReturn(Response.success(ChatOverall(ocs = ChatOCS(meta = null, data = fetched.map { message(it) }))))
+        syncer.catchUpRoom(target(), lastReadMessage = storedLastRead, unreadMessages = storedUnread)
+        refreshAnswer.complete(Unit)
+        refresh.join()
+    }
+
+    @Test
+    fun `a response requested after the last write applies unchanged`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(serverRoom(lastActivity = 20, lastRead = 20, unread = 0), user)
+            )
+            repository.getRoom(user, ROOM_TOKEN).join()
+
+            // the server moved on, e.g. the chat was marked as unread on another device
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(roomList(listOf(serverRoom(lastActivity = 20, lastRead = 15, unread = 5))))
+            repository.getRooms(user).join()
+
+            assertEquals(15, conversationEntity().lastReadMessage)
+            assertEquals(5, conversationEntity().unreadMessages)
+        }
+    }
+
+    @Test
     fun `room list flow reflects database writes reactively`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = OfflineFirstConversationsRepository(
@@ -424,6 +924,19 @@ class ConversationListFreshnessIntegrationTest {
             ArbitraryStorageManager(ArbitraryStoragesRepositoryImpl(db.arbitraryStoragesDao())),
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
+        )
+
+    private fun serverRoom(
+        lastActivity: Long,
+        lastRead: Int,
+        unread: Int,
+        token: String = ROOM_TOKEN
+    ): ConversationDto =
+        ConversationDto(
+            token = token,
+            lastActivity = lastActivity,
+            lastReadMessage = lastRead,
+            unreadMessages = unread
         )
 
     private fun staleServerRoom(
@@ -518,9 +1031,11 @@ class ConversationListFreshnessIntegrationTest {
         private const val OTHER_ACCOUNT_ID = 2L
         private const val BASE_URL = "https://server.example.com"
         private const val ROOM_TOKEN = "room1"
+        private const val JOINED_ROOM_TOKEN = "room2"
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"
         private const val TIMEOUT_MILLIS = 10_000L
         private const val POLL_INTERVAL_MILLIS = 50L
+        private const val LOCK_WAIT_MILLIS = 250L
     }
 }
 

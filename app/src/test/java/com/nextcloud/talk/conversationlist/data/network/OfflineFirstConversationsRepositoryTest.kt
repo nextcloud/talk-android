@@ -34,6 +34,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -53,7 +54,6 @@ import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
-import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
@@ -105,8 +105,10 @@ class OfflineFirstConversationsRepositoryTest {
         whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
         whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
             .thenReturn(Maybe.empty())
-        whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
+        wheneverBlocking { conversationListUpdater.preservePendingLocalState(any(), any(), any(), any()) }
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
+        wheneverBlocking { conversationListUpdater.withServerWriteLock<Any?>(any(), any()) }
+            .doSuspendableAnswer { invocation -> invocation.getArgument<suspend () -> Any?>(1).invoke() }
 
         repository = OfflineFirstConversationsRepository(
             dao,
@@ -225,9 +227,8 @@ class OfflineFirstConversationsRepositoryTest {
         runTest {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
-            dao.stub {
-                onBlocking { syncConversationsForUser(any(), any(), any()) } doSuspendableAnswer { awaitCancellation() }
-            }
+            // a write already under way is not interrupted by the budget, so the sync is held before it
+            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flow { awaitCancellation() })
 
             assertNull(repository.syncRooms(user(), roomListTimeoutMillis = ROOM_LIST_TIMEOUT_MILLIS))
             verifyBlocking(chatMessageSyncer, never()) { catchUpRoom(any(), any(), anyOrNull(), any()) }
@@ -369,7 +370,9 @@ class OfflineFirstConversationsRepositoryTest {
 
             val previousCaptor = argumentCaptor<Map<String, ConversationEntity>>()
             val serverCaptor = argumentCaptor<List<ConversationEntity>>()
-            verify(conversationListUpdater).preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture())
+            verifyBlocking(conversationListUpdater) {
+                preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture(), any(), any())
+            }
             assertEquals(mapOf(previous.internalId to previous), previousCaptor.firstValue)
             assertEquals(6L, serverCaptor.firstValue.first().lastActivity)
         }

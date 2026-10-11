@@ -109,16 +109,20 @@ class ConversationListUpdaterPinTest {
             assertNull(preserveHidden(serverHiddenId = null).hiddenPinnedId)
         }
 
-    private fun preserveHidden(serverHiddenId: Long?): ConversationEntity =
+    private suspend fun preserveHidden(serverHiddenId: Long?): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
-            conversationsFromServer = listOf(stored.copy(hiddenPinnedId = serverHiddenId))
+            conversationsFromServer = listOf(stored.copy(hiddenPinnedId = serverHiddenId)),
+            requestedAtNanos = System.nanoTime(),
+            ownUserId = "me"
         ).single()
 
-    private fun preserve(serverPinnedId: Long?): ConversationEntity =
+    private suspend fun preserve(serverPinnedId: Long?): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
-            conversationsFromServer = listOf(stored.copy(lastPinnedId = serverPinnedId))
+            conversationsFromServer = listOf(stored.copy(lastPinnedId = serverPinnedId)),
+            requestedAtNanos = System.nanoTime(),
+            ownUserId = "me"
         ).single()
 
     private fun givenCachedConversation(pinnedId: Long?) {
