@@ -27,6 +27,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import kotlinx.coroutines.CancellationException
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -58,7 +59,10 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
+        return send()
+    }
 
+    internal suspend fun send(): Result {
         val userId = inputData.getLong(KEY_INTERNAL_USER_ID, -1)
         val roomToken = inputData.getString(KEY_ROOM_TOKEN)
         val lastReadMessage = inputData.getInt(KEY_LAST_READ_MESSAGE, -1)
@@ -97,13 +101,25 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
 
         return if (response != null) {
             Log.d(TAG, "Read marker $lastReadMessage sent for room $roomToken")
-            lastCommonReadOf(response)?.let {
-                conversationListUpdater.updateLastCommonRead("$userId@$roomToken", it)
-            }
+            storeLastCommonRead(userId, roomToken, response)
             Result.success()
         } else {
             Log.w(TAG, "Sending read marker for room $roomToken failed (attempt ${runAttemptCount + 1})")
             retryOrFail(userId, roomToken, lastReadMessage)
+        }
+    }
+
+    /**
+     * The marker has reached the server by now, so a failure here must not send it again: the value
+     * only saves a request, and the next room list sync brings it anyway.
+     */
+    private suspend fun storeLastCommonRead(userId: Long, roomToken: String, response: Response<*>) {
+        val lastCommonRead = lastCommonReadOf(response) ?: return
+        runCatching {
+            conversationListUpdater.updateLastCommonRead("$userId@$roomToken", lastCommonRead)
+        }.onFailure { throwable ->
+            if (throwable is CancellationException) throw throwable
+            Log.w(TAG, "Last common read $lastCommonRead for room $roomToken could not be stored: $throwable")
         }
     }
 
