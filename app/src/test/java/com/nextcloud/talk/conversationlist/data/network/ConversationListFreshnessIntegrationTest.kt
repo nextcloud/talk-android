@@ -480,6 +480,40 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `a catch-up requested before a room refresh cannot revert the entry the refresh wrote`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 0)
+            val catchUpRequested = CompletableDeferred<Unit>()
+            val catchUpAnswer = CompletableDeferred<Unit>()
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                catchUpRequested.complete(Unit)
+                catchUpAnswer.await()
+                Response.success(overall(message(10), message(11), message(12)))
+            }
+            val catchUp = launch { syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2) }
+            catchUpRequested.await()
+
+            // message 12 was deleted meanwhile, so the newer answer has a lower activity than the catch-up
+            wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+                ConversationModel.mapToConversationModel(
+                    serverRoom(lastActivity = 11, lastRead = 11, unread = 0),
+                    user
+                )
+            )
+            repository.getRoom(user, ROOM_TOKEN).join()
+            catchUpAnswer.complete(Unit)
+            catchUp.join()
+
+            val conversation = conversationEntity()
+            assertEquals("the older catch-up must not revert the activity", 11L, conversation.lastActivity)
+            assertEquals("the older catch-up must not bring back the unread count", 0, conversation.unreadMessages)
+            assertEquals(11, conversation.lastReadMessage)
+        }
+    }
+
+    @Test
     fun `a full sync requested before a room was refreshed does not delete it`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = repository()
