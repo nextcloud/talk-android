@@ -118,12 +118,14 @@ class ConversationListUpdaterUnreadTest {
             assertEquals(0, readAgain.unreadMessages)
         }
 
-    private fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
+    private suspend fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
             conversationsFromServer = listOf(
                 stored.copy(lastReadMessage = serverLastRead, unreadMessages = serverUnread)
-            )
+            ),
+            requestedAtNanos = System.nanoTime(),
+            ownUserId = "me"
         ).single()
 
     private fun givenCachedMessagesNewerThanMarker(count: Int) {
