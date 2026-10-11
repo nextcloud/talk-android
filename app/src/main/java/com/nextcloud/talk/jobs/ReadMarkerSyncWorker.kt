@@ -60,7 +60,10 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
+        return send()
+    }
 
+    internal suspend fun send(): Result {
         val userId = inputData.getLong(KEY_INTERNAL_USER_ID, -1)
         val roomToken = inputData.getString(KEY_ROOM_TOKEN)
         val lastReadMessage = inputData.getInt(KEY_LAST_READ_MESSAGE, -1)
