@@ -7,9 +7,11 @@
 
 package com.nextcloud.talk.chat.viewmodels
 
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -398,48 +400,57 @@ class ChatViewModelTest {
 
     // Read marker after the user sent a message: the server moves the marker to the sent message, so the
     // client must never send an older one. Sequence from the server log of a real chat: the user sent
-    // message 2624 while the client's local marker still was 2623.
+    // message 2624 while the client's local marker still was 2623. The decision is made on the message
+    // list from the database, not on the rendered items, which lag behind it.
+
+    private fun readMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
+        ChatViewModel.readMarkerToSend(
+            localLastReadMessage = local,
+            conversationLastReadMessage = conversation,
+            newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages),
+            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(messages)
+        )
 
     @Test
     fun `read marker is not sent below the own message just sent`() {
-        val items = listOf(messageItem(2624, incoming = false), messageItem(2623))
-
-        val marker = ChatViewModel.readMarkerToSend(
-            localLastReadMessage = 2623,
-            conversationLastReadMessage = 2620,
-            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
-            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
-        )
-
-        assertEquals(2624, marker)
+        assertEquals(2624, readMarker(listOf(ownMessage(2624), incomingMessage(2623))))
     }
 
     @Test
-    fun `read marker is not sent while the sent message is not confirmed by the server yet`() {
-        val items = listOf(messageItem(-77, incoming = false), messageItem(2623))
+    fun `read marker is not sent while the own message is on its way to the server`() {
+        // the request is in flight: the server may have accepted the message, the answer is not processed yet
+        assertNull(readMarker(listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))))
+    }
 
-        val marker = ChatViewModel.readMarkerToSend(
-            localLastReadMessage = 2623,
-            conversationLastReadMessage = 2620,
-            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
-            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
-        )
+    @Test
+    fun `read marker is not sent while the own message waits for its server copy`() {
+        assertNull(readMarker(listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))))
+    }
 
-        assertNull(marker)
+    @Test
+    fun `read marker is sent when the own message failed to send`() {
+        assertEquals(2623, readMarker(listOf(ownMessage(-77, SendStatus.FAILED), incomingMessage(2623))))
+    }
+
+    @Test
+    fun `read marker is sent while a file of the user is still uploading`() {
+        val upload = ownMessage(-5, SendStatus.PENDING).apply {
+            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
+        }
+        assertEquals(2623, readMarker(listOf(upload, incomingMessage(2623))))
+    }
+
+    @Test
+    fun `read marker waits for a file of the user that was shared`() {
+        val shared = ownMessage(-5, SendStatus.SENT_PENDING_ACK).apply {
+            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
+        }
+        assertNull(readMarker(listOf(shared, incomingMessage(2623))))
     }
 
     @Test
     fun `read marker of the incoming messages is sent when the user sent nothing`() {
-        val items = listOf(messageItem(2623), messageItem(2622))
-
-        val marker = ChatViewModel.readMarkerToSend(
-            localLastReadMessage = 2623,
-            conversationLastReadMessage = 2620,
-            newestOwnMessageId = ChatViewModel.newestOwnMessageId(items),
-            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(items)
-        )
-
-        assertEquals(2623, marker)
+        assertEquals(2623, readMarker(listOf(incomingMessage(2623), incomingMessage(2622))))
     }
 
     @Test
@@ -449,18 +460,32 @@ class ChatViewModelTest {
 
     @Test
     fun `newest own message ignores incoming and temporary messages`() {
-        val items = listOf(
-            messageItem(2630),
-            messageItem(-5, incoming = false),
-            messageItem(2624, incoming = false),
-            messageItem(2610, incoming = false)
+        val messages = listOf(
+            incomingMessage(2630),
+            ownMessage(-5, SendStatus.PENDING),
+            ownMessage(2624),
+            ownMessage(2610)
         )
 
-        assertEquals(2624, ChatViewModel.newestOwnMessageId(items))
+        assertEquals(2624, ChatViewModel.newestOwnMessageId(messages))
     }
 
-    private fun messageItem(id: Int, incoming: Boolean = true): ChatViewModel.ChatItem.MessageItem =
-        ChatViewModel.ChatItem.MessageItem(uiMessage(id).copy(incoming = incoming))
+    private fun incomingMessage(id: Int): ChatMessage =
+        ChatMessage().apply {
+            jsonMessageId = id
+            incoming = true
+        }
+
+    private fun ownMessage(id: Int, status: SendStatus? = null): ChatMessage =
+        ChatMessage().apply {
+            jsonMessageId = id
+            incoming = false
+            isTemporary = id < 0
+            sendStatus = status
+        }
+
+    private fun messageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(uiMessage(id))
 
     private fun uiMessage(id: Int): ChatMessageUi =
         ChatMessageUi(

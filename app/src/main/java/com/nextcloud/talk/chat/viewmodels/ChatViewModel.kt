@@ -41,6 +41,7 @@ import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
@@ -353,6 +354,12 @@ class ChatViewModel @AssistedInject constructor(
     val noMoreSearchResults: MutableSharedFlow<Unit> = _noMoreSearchResults
 
     private var localLastReadMessage: Int = 0
+
+    // Newest message list from the database, updated before the throttled rebuild of the UI items. It is the
+    // source of truth for the user's own sends (temporary copy with its send status, then the accepted
+    // message) when the read marker is decided, see updateRemoteLastReadMessageIfNeeded.
+    @Volatile
+    private var latestMessages: List<ChatMessage> = emptyList()
 
     /**
      * Set once the user marked a message as unread, so the automatic read marker handling keeps its
@@ -1293,7 +1300,9 @@ class ChatViewModel @AssistedInject constructor(
         // getLastCommonReadFlow provides the "last read by all" value for read-receipt checkmarks.
         // These are two different concepts that must not be conflated.
         combine(
-            messagesFlow,
+            // the raw message list is tapped before the throttle and the UI mapping below: the read marker
+            // decisions must not depend on how far the rendered items lag behind the database
+            messagesFlow.onEach(::onMessagesChanged),
             getLastCommonReadFlow.onStart { emit(0) },
             parentMessagesFlow,
             combine(conversationFlow, _spreedCapabilities) { conv, caps -> conv to caps },
@@ -1368,7 +1377,6 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
-                newestOwnMessageId(items)?.let(::advanceLocalLastReadMessageIfNeeded)
             }
             .launchIn(viewModelScope)
     }
@@ -2066,6 +2074,13 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    // Runs on the background dispatcher of the rebuild pipeline (flowOn in observeMessages): it only
+    // publishes the immutable list through a volatile field. localLastReadMessage is written on the main
+    // thread only, so the own message is combined with it when the marker is decided (readMarkerToSend).
+    private fun onMessagesChanged(messages: List<ChatMessage>) {
+        latestMessages = messages
+    }
+
     fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
         Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
@@ -2093,12 +2108,12 @@ class ChatViewModel @AssistedInject constructor(
         val conversationLastReadMessage = _uiState.value.conversation?.lastReadMessage ?: return
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
 
-        val items = _uiState.value.items
+        val messages = latestMessages
         val marker = readMarkerToSend(
             localLastReadMessage = localLastReadMessage,
             conversationLastReadMessage = conversationLastReadMessage,
-            newestOwnMessageId = newestOwnMessageId(items),
-            hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(items)
+            newestOwnMessageId = newestOwnMessageId(messages),
+            hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(messages)
         )
         if (marker != null) {
             Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage...")
@@ -2721,19 +2736,26 @@ class ChatViewModel @AssistedInject constructor(
          * server marks everything up to it as read. Temporary messages (negative ids) are not accepted yet
          * and are ignored.
          */
-        internal fun newestOwnMessageId(items: List<ChatItem>): Int? =
-            items.mapNotNull { it.messageOrNull() }
-                .filter { !it.incoming && it.id > 0 }
-                .maxOfOrNull { it.id }
+        internal fun newestOwnMessageId(messages: List<ChatMessage>): Int? =
+            messages.filter { !it.incoming && it.jsonMessageId > 0 }
+                .maxOfOrNull { it.jsonMessageId }
 
         /**
-         * True while a message of the user was sent, but its server copy is not in [items] yet. The
-         * server has already moved the user's read marker to it by then, so this client must not
-         * send an older marker over it.
+         * True while a text message of the user is on its way to the server: its temporary copy is stored
+         * and not failed, so the server may have accepted it (and moved the user's read marker to it)
+         * already, while its server copy is not in [messages] yet. This client must not send an older
+         * marker over it. A file placeholder is not counted before its upload is finished: the server has
+         * no message for it until then.
          */
-        internal fun hasUnconfirmedOwnMessage(items: List<ChatItem>): Boolean =
-            items.mapNotNull { it.messageOrNull() }
-                .any { !it.incoming && it.id < 0 && it.statusIcon == MessageStatusIcon.SENT }
+        internal fun hasUnconfirmedOwnMessage(messages: List<ChatMessage>): Boolean =
+            messages.any { message ->
+                val isFileUploading = message.sendStatus != SendStatus.SENT_PENDING_ACK &&
+                    message.messageParameters.orEmpty().containsKey("file")
+                !message.incoming &&
+                    message.isTemporary &&
+                    message.sendStatus != SendStatus.FAILED &&
+                    !isFileUploading
+            }
 
         /**
          * The read marker to send to the server, or null when nothing has to be sent. The server sets the
