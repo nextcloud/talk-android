@@ -16,6 +16,8 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -47,6 +49,24 @@ class ConversationListUpdater @Inject constructor(
      * authority is restored either way and marking as unread from another device stays possible.
      */
     private val pendingReadMarkers = ConcurrentHashMap<String, Int>()
+
+    /**
+     * The last message read by all participants as the server reported it in the answer to a read
+     * marker, with the time that answer arrived. A room list response whose request started before
+     * that moment can carry an older value, so the merge keeps this one against it.
+     */
+    private data class CommonReadWrite(val lastCommonRead: Int, val writtenAtNanos: Long)
+
+    private val commonReadWrites = ConcurrentHashMap<String, CommonReadWrite>()
+
+    /**
+     * Held by a sync (or single room refresh) from the merge through the write of its response, and by
+     * [updateLastCommonRead] for its record and write. Without it a read marker answer arriving
+     * between the merge and the write is not seen by the merge and then overwritten by the write.
+     * With it, either the answer is recorded before the merge and the merge keeps it, or its write
+     * comes after the sync's write.
+     */
+    val syncWriteLock = Mutex()
 
     /**
      * Favorite flags applied locally but not yet confirmed by a server response; guarded in the
@@ -165,7 +185,10 @@ class ConversationListUpdater @Inject constructor(
      * further request.
      */
     suspend fun updateLastCommonRead(internalConversationId: String, lastCommonRead: Int) {
-        conversationsDao.updateLastCommonRead(internalConversationId, lastCommonRead)
+        syncWriteLock.withLock {
+            commonReadWrites[internalConversationId] = CommonReadWrite(lastCommonRead, System.nanoTime())
+            conversationsDao.updateLastCommonRead(internalConversationId, lastCommonRead)
+        }
     }
 
     /**
@@ -296,10 +319,15 @@ class ConversationListUpdater @Inject constructor(
      * the local state is kept; once the server confirms it (or moved past it, e.g. read further
      * or unfavorited on another device after confirmation) the pending change is released and
      * the server state applies unchanged, so the server stays the authority.
+     *
+     * [requestedAtNanos] is the [System.nanoTime] at which the request that produced
+     * [conversationsFromServer] was started; it tells whether such a response can predate the last
+     * message read by all participants that a read marker answer reported.
      */
     fun preservePendingLocalState(
         previousConversations: Map<String, ConversationEntity>,
-        conversationsFromServer: List<ConversationEntity>
+        conversationsFromServer: List<ConversationEntity>,
+        requestedAtNanos: Long
     ): List<ConversationEntity> =
         conversationsFromServer.map { serverItem ->
             val previous = previousConversations[serverItem.internalId]
@@ -311,8 +339,25 @@ class ConversationListUpdater @Inject constructor(
             guarded = guardPendingHiddenPinnedId(guarded, previous)
             guarded = guardPendingArchived(guarded, previous)
             guarded = guardPendingTags(guarded, previous)
-            guarded
+            guardLastCommonRead(guarded, requestedAtNanos)
         }
+
+    /**
+     * The server only moves the last message read by all participants back when someone marks a
+     * message as unread, so a response that is older than the value taken from a read marker answer
+     * must not lower it. A response whose request started after that answer arrived is current and
+     * applies unchanged, which also ends the guard for the room - nothing stays pinned.
+     */
+    private fun guardLastCommonRead(serverItem: ConversationEntity, requestedAtNanos: Long): ConversationEntity {
+        val write = commonReadWrites[serverItem.internalId] ?: return serverItem
+
+        return if (requestedAtNanos - write.writtenAtNanos < 0) {
+            serverItem.copy(lastCommonReadMessage = maxOf(serverItem.lastCommonReadMessage, write.lastCommonRead))
+        } else {
+            commonReadWrites.remove(serverItem.internalId, write)
+            serverItem
+        }
+    }
 
     private fun guardPendingReadMarker(
         serverItem: ConversationEntity,

@@ -103,6 +103,7 @@ interface ConversationsDao {
     /**
      * Writes the last message read by all participants, as reported by the server in the
      * X-Chat-Last-Common-Read header of the response to a read marker.
+     * The value can be lower than the stored one: marking a chat as unread lowers it on the server.
      */
     @Query(
         """
