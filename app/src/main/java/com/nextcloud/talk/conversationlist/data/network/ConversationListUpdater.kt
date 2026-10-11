@@ -578,8 +578,10 @@ class ConversationListUpdater @Inject constructor(
      * finishing room list sync can neither be overwritten with older data nor interleave with a
      * read-modify-write. It also holds [withServerWriteLock] and records its write as
      * [FieldGroup.PREVIEW], from the start of the request that fetched the message, so a response
-     * requested before that request cannot revert these fields. Thread catch-ups don't describe the
-     * room itself and are skipped.
+     * requested before that request cannot revert these fields. In turn, a catch-up whose request
+     * was started before the one behind the stored entry is [isSuperseded] and not applied: the
+     * activity guard above cannot see that, as a newer response can have a lower activity, e.g.
+     * after a message was deleted. Thread catch-ups don't describe the room itself and are skipped.
      *
      * Unlike [preservePendingLocalState], this path doesn't merge against a server response, so a
      * pending read marker can't be guarded the same way — but the marker is still consulted as the
@@ -603,6 +605,11 @@ class ConversationListUpdater @Inject constructor(
             val conversation =
                 conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
                     ?: return@withServerWriteLock
+            // the message was requested before the request of the stored entry, so the entry is newer
+            if (outcome.newestMessageRequestedAtNanos?.let { isSuperseded(conversation.internalId, it) } == true) {
+                Log.d(TAG, "Skipping a catch-up for room ${target.roomToken}: older than the stored entry")
+                return@withServerWriteLock
+            }
 
             val lastReadMessage = maxOf(
                 conversation.lastReadMessage,
