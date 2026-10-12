@@ -69,7 +69,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.FileUtils
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.launch
 import java.io.File
@@ -213,7 +212,9 @@ internal fun FileAttachmentPreviewContent(
                 onHighQualityChange = { highQuality -> compressImages = !highQuality },
                 onAllowUpdateChange = { allowUpdate = it },
                 sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing,
-                onSend = { onSend(viewModel.selectedFiles(), caption, compressImages, allowUpdate) }
+                onSend = {
+                    onSend(viewModel.selectedFiles(), caption, compressImages && hasCompressibleMedia, allowUpdate)
+                }
             )
         }
 
