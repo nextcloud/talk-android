@@ -30,6 +30,8 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.utils.Undo
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.optimisticAction
 import kotlinx.coroutines.Dispatchers
@@ -831,7 +833,7 @@ class OfflineFirstChatRepository @Inject constructor(
      * returns the action that restores the previous version. The revert only applies while the message
      * still carries the local edit, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalEdit(messageId: Long, text: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalEdit(messageId: Long, text: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.message == text) return null
 
@@ -904,7 +906,7 @@ class OfflineFirstChatRepository @Inject constructor(
      * or null when there was nothing to change. The revert only applies while the message still carries
      * the local deletion, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.messageType == MESSAGE_TYPE_DELETED) return null
 

@@ -41,6 +41,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.optimisticAction
 import dagger.assisted.Assisted
@@ -931,7 +932,7 @@ class ConversationsListViewModel @AssistedInject constructor(
      * The action that puts [original] back and releases whatever guard the caller registered, for
      * [optimisticAction] to run when the request finally fails or the screen is left mid-request.
      */
-    private fun revertTo(original: ConversationModel, releaseGuard: () -> Unit): suspend () -> Unit =
+    private fun revertTo(original: ConversationModel, releaseGuard: () -> Unit): Undo =
         {
             releaseGuard()
             applyLocally(original)

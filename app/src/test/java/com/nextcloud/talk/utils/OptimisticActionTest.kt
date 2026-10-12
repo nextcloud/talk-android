@@ -32,7 +32,7 @@ class OptimisticActionTest {
 
     private var state = "before"
 
-    private val applyChange: suspend () -> (suspend () -> Unit)? = {
+    private val applyChange: suspend () -> Undo? = {
         val previous = state
         state = "after"
         { state = previous }

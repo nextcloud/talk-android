@@ -52,6 +52,7 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ParticipantRoleUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.optimisticAction
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import io.reactivex.Observer
@@ -979,7 +980,7 @@ class ConversationInfoViewModel @Inject constructor(
         setting: String,
         change: Long,
         undo: (ConversationInfoUiState) -> ConversationInfoUiState
-    ): suspend () -> Unit = { if (isNewestChange(setting, change)) _uiState.update(undo) }
+    ): Undo = { if (isNewestChange(setting, change)) _uiState.update(undo) }
 
     private fun isNewestChange(setting: String, change: Long) = newestSettingChange[setting] == change
 

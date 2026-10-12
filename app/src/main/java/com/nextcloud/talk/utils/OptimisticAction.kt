@@ -17,6 +17,9 @@ private const val HTTP_TOO_MANY_REQUESTS = 429
 private const val HTTP_INTERNAL_SERVER_ERROR = 500
 private const val RETRY_DELAY_MS = 500L
 
+/** Takes an optimistic local change back again. */
+typealias Undo = suspend () -> Unit
+
 /**
  * Whether a failed request is worth another attempt: a connection problem, a rate limit or a server
  * error. An answer the server actually gave - a refusal, a permission error - is not.
@@ -43,14 +46,14 @@ fun isTransientFailure(error: Exception): Boolean =
  */
 @Suppress("TooGenericExceptionCaught")
 suspend fun <T> optimisticAction(
-    apply: suspend () -> (suspend () -> Unit)?,
+    apply: suspend () -> Undo?,
     isConfirmed: (T) -> Boolean = { true },
     request: suspend () -> T
 ): Result<T> {
     val revert = apply()
     // a revert that is itself cancelled would leave the change applied, which is the very thing it
     // is there to prevent
-    val revertUninterruptibly: suspend () -> Unit = { withContext(NonCancellable) { revert?.invoke() } }
+    val revertUninterruptibly: Undo = { withContext(NonCancellable) { revert?.invoke() } }
 
     val answer = try {
         revertOnCancellation(revertUninterruptibly) {

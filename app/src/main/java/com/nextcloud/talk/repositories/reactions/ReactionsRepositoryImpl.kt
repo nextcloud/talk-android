@@ -12,6 +12,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
+import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.optimisticAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -88,8 +89,7 @@ class ReactionsRepositoryImpl @Inject constructor(
             if (e.code() == HTTP_NOT_FOUND) HTTP_OK else throw e
         }
 
-    private fun revertWith(applied: Boolean, revert: suspend () -> Unit): (suspend () -> Unit)? =
-        revert.takeIf { applied }
+    private fun revertWith(applied: Boolean, revert: Undo): Undo? = revert.takeIf { applied }
 
     private fun <T> Result<T>.logFailure(): Result<T> = onFailure { Log.w(TAG, "Reaction request failed: $it") }
 
