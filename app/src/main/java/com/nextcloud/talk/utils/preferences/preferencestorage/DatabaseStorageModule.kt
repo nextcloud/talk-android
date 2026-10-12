@@ -16,6 +16,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.isAccepted
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
@@ -69,6 +71,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
             val notificationLevel = if (value) 1 else 0
             withContext(Dispatchers.IO) {
                 ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
+                    .requireAccepted("call notifications")
             }
         }
         if ("lobby_switch" != key) {
@@ -99,7 +102,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                 getCredentials(conversationUser.username, conversationUser.token)!!,
                 getUrlForMessageExpiration(apiVersion, conversationUser.baseUrl, conversationToken),
                 valueInt
-            )
+            ).requireAccepted("the message expiration")
             messageExpiration = valueInt
         }
     }
@@ -118,10 +121,15 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                     getCredentials(conversationUser.username, conversationUser.token)!!,
                     getUrlForRoomNotificationLevel(apiVersion, conversationUser.baseUrl, conversationToken),
                     notificationLevelOf(value)
-                )
+                ).requireAccepted("the notification level")
                 messageNotificationLevel = value
             }
         }
+    }
+
+    /** Fails the save when the server refused it in the payload, before anything is remembered locally. */
+    private fun GenericOverall.requireAccepted(setting: String) {
+        check(isAccepted()) { "The server refused to save $setting, OCS status ${ocs?.meta?.statusCode}" }
     }
 
     private fun notificationLevelOf(value: String): Int =

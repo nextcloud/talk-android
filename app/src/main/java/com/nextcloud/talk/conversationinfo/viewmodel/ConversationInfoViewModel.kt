@@ -31,6 +31,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.isAccepted
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType.EMAILS
@@ -821,7 +822,7 @@ class ConversationInfoViewModel @Inject constructor(
                     showLocked(newLocked)
                     undoLockIfNewest(change, confirmedLocked)
                 },
-                isConfirmed = ::accepted,
+                isConfirmed = GenericOverall::isAccepted,
                 request = {
                     val apiVersion = ApiUtils.getConversationApiVersion(
                         user,
@@ -1015,14 +1016,6 @@ class ConversationInfoViewModel @Inject constructor(
 
     private fun isNewestChange(setting: String, change: Long) = newestSettingChange[setting] == change
 
-    /**
-     * An OCS payload can report a refusal in a response the HTTP layer calls a success, so the status
-     * code decides whether the optimistic change stands. A payload that carries no status code at all
-     * is taken at face value, since there is nothing in it to refuse with.
-     */
-    private fun accepted(response: GenericOverall): Boolean =
-        response.ocs?.meta?.statusCode.let { it == null || it == NO_STATUS_CODE || it == HTTP_OK }
-
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
         val displayedValue = _uiState.value.importantConversation
         val newValue = !displayedValue
@@ -1037,7 +1030,7 @@ class ConversationInfoViewModel @Inject constructor(
                         it.copy(importantConversation = confirmedValueOf(IMPORTANT, confirmedValue))
                     }
                 },
-                isConfirmed = ::accepted,
+                isConfirmed = GenericOverall::isAccepted,
                 request = {
                     if (newValue) {
                         conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
@@ -1064,7 +1057,7 @@ class ConversationInfoViewModel @Inject constructor(
                         it.copy(sensitiveConversation = confirmedValueOf(SENSITIVE, confirmedValue))
                     }
                 },
-                isConfirmed = ::accepted,
+                isConfirmed = GenericOverall::isAccepted,
                 request = {
                     if (newValue) {
                         conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
@@ -1093,7 +1086,7 @@ class ConversationInfoViewModel @Inject constructor(
         @StringRes failureMessage: Int = R.string.nc_common_error_sorry
     ) {
         val response = outcome.getOrNull()
-        if (response != null && accepted(response)) {
+        if (response != null && response.isAccepted()) {
             recordAccepted(setting, change, newValue)
             return
         }
@@ -1121,8 +1114,6 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.java.simpleName
-        private const val HTTP_OK = 200
-        private const val NO_STATUS_CODE = 0
         private const val NEW_CONVERSATION_PARTICIPANTS_SEPARATOR = ", "
         private const val EXTENDED_CONVERSATION = "extended_conversation"
         private const val IMPORTANT = "important"
