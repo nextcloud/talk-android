@@ -38,6 +38,7 @@ import org.robolectric.annotation.Config
 import retrofit2.Response
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.thread
 
 /** A plain upload copies the file to the cache once it is sent; that must not happen on the main thread. */
@@ -77,19 +78,33 @@ class FileUploaderTest {
         whenever(ncApi.uploadFile(any(), any(), any()))
             .thenReturn(Observable.just(Response.success(GenericOverall())))
 
-        var result: Boolean? = null
+        val result = AtomicReference<Boolean?>()
+        val failure = AtomicReference<Throwable?>()
         val worker = thread {
-            result = uploader(file)
-                .upload(Uri.parse("content://" + AUTHORITY + "/photo.jpg"), "photo-copy.jpg", "/Talk/photo.jpg", null)
-                .blockingFirst()
+            try {
+                result.set(
+                    uploader(file)
+                        .upload(
+                            Uri.parse("content://" + AUTHORITY + "/photo.jpg"),
+                            "photo-copy.jpg",
+                            "/Talk/photo.jpg",
+                            null
+                        )
+                        .blockingFirst()
+                )
+            } catch (throwable: Throwable) {
+                failure.set(throwable)
+            }
         }
         val deadline = System.currentTimeMillis() + TIMEOUT_MS
         while (worker.isAlive && System.currentTimeMillis() < deadline) {
             shadowOf(Looper.getMainLooper()).idle()
-            worker.join(POLL_MS)
+            worker.join(minOf(POLL_MS, maxOf(1L, deadline - System.currentTimeMillis())))
         }
 
-        assertEquals("the upload succeeded", true, result)
+        assertTrue("the upload worker timed out", !worker.isAlive)
+        failure.get()?.let { throw it }
+        assertEquals("the upload succeeded", true, result.get())
         assertEquals("provider calls on the main thread", 0, SlowProvider.mainThreadCalls.get())
         assertTrue("the file was read from the provider", SlowProvider.otherCalls.get() >= 2)
     }
