@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -417,6 +418,7 @@ class ConversationInfoViewModel @Inject constructor(
         confirmedSetting[CALL_NOTIFICATIONS] = callNotificationsEnabled
         confirmedSetting[NOTIFICATION_LEVEL] = notificationLevelStr
         confirmedSetting[MESSAGE_EXPIRATION] = messageExpirationLabel
+        confirmedSetting[LOCKED] = isConversationLocked
 
         val showArchiveConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)
@@ -805,28 +807,54 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleLock(user: User, token: String) {
-        val previousLocked = _uiState.value.isConversationLocked
-        val newLocked = !previousLocked
-        _uiState.update { it.copy(isConversationLocked = newLocked) }
+        val newLocked = !_uiState.value.isConversationLocked
+        val confirmedLocked = confirmedValueOf(LOCKED, _uiState.value.isConversationLocked)
+        val change = startSettingChange(LOCKED)
+
         viewModelScope.launch {
-            databaseStorageModule?.saveBoolean("lock_switch", newLocked)
-            try {
-                val apiVersion = ApiUtils.getConversationApiVersion(
-                    user,
-                    intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, token)
-                conversationsRepository.setConversationReadOnly(user = user, url = url, state = if (newLocked) 1 else 0)
-            } catch (exception: Exception) {
-                logger.e(TAG, "Failed to toggle read-only lock state", exception)
-                _uiState.update { it.copy(isConversationLocked = previousLocked) }
-                databaseStorageModule?.saveBoolean("lock_switch", previousLocked)
-                _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.conversation_read_only_failed))
-            }
+            val outcome = optimisticAction(
+                apply = {
+                    showLocked(newLocked)
+                    undoLockIfNewest(change, confirmedLocked)
+                },
+                isConfirmed = ::accepted,
+                request = {
+                    val apiVersion = ApiUtils.getConversationApiVersion(
+                        user,
+                        intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1)
+                    )
+                    val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, token)
+                    conversationsRepository.setConversationReadOnly(
+                        user = user,
+                        url = url,
+                        state = if (newLocked) 1 else 0
+                    )
+                }
+            )
+            reportSettingOutcome(
+                outcome = outcome,
+                setting = LOCKED,
+                change = change,
+                newValue = newLocked,
+                description = "read-only lock",
+                failureMessage = R.string.conversation_read_only_failed
+            )
         }
     }
+
+    /** The lock state is shown from local storage as well, so both have to change together. */
+    private suspend fun showLocked(locked: Boolean) {
+        _uiState.update { it.copy(isConversationLocked = locked) }
+        databaseStorageModule?.saveBoolean("lock_switch", locked)
+    }
+
+    private fun undoLockIfNewest(change: Long, confirmedLocked: Boolean): Undo =
+        {
+            if (isNewestChange(LOCKED, change)) {
+                showLocked(confirmedValueOf(LOCKED, confirmedLocked))
+            }
+        }
 
     fun toggleCallNotifications() {
         val newEnabled = !_uiState.value.callNotificationsEnabled
@@ -1058,14 +1086,15 @@ class ConversationInfoViewModel @Inject constructor(
         setting: String,
         change: Long,
         newValue: Boolean,
-        description: String
+        description: String,
+        @StringRes failureMessage: Int = R.string.nc_common_error_sorry
     ) {
         val response = outcome.getOrNull()
         if (response != null && accepted(response)) {
             recordAccepted(setting, change, newValue)
             return
         }
-        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
+        _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(failureMessage))
         val cause = outcome.exceptionOrNull()
         if (cause != null) {
             logger.e(TAG, "failed to toggle $description conversation state", cause)
@@ -1098,6 +1127,7 @@ class ConversationInfoViewModel @Inject constructor(
         private const val CALL_NOTIFICATIONS = "call notifications"
         private const val NOTIFICATION_LEVEL = "notification level"
         private const val MESSAGE_EXPIRATION = "message expiration"
+        private const val LOCKED = "locked"
         private const val GROUP_CONVERSATION_TYPE = "2"
         private const val MAX_ROOM_NAME_LENGTH = 255
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
