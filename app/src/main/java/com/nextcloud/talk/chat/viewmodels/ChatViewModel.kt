@@ -2376,7 +2376,18 @@ class ChatViewModel @AssistedInject constructor(
             if (!isVoiceMessage) {
                 viewModelScope.launch {
                     // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
-                    val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) { resolveFileInfo(fileUri) }
+                    val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) {
+                        try {
+                            resolveFileInfo(fileUri)
+                        } catch (e: IllegalArgumentException) {
+                            // unknown or revoked uri: the worker reports the failed upload, the placeholder stays
+                            Log.w(TAG, "Could not resolve file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        } catch (e: SecurityException) {
+                            Log.w(TAG, "No access to the file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        }
+                    }
                     chatRepository.addUploadPlaceholderMessage(
                         localFileUri = fileUri,
                         fileName = fileName,

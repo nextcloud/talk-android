@@ -32,6 +32,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.robolectric.Robolectric
@@ -73,7 +74,7 @@ class ChatViewModelUploadFileTest {
         SlowProvider.reset()
         Robolectric.buildContentProvider(SlowProvider::class.java).create(AUTHORITY)
         runBlocking {
-            whenever(chatRepository.addUploadPlaceholderMessage(any(), any(), any(), any(), any(), any()))
+            whenever(chatRepository.addUploadPlaceholderMessage(any(), any(), any(), anyOrNull(), any(), any()))
                 .thenAnswer {
                     placeholderAdded.countDown()
                     flowOf<Result<ChatMessage?>>()
@@ -88,6 +89,22 @@ class ChatViewModelUploadFileTest {
 
     @Test
     fun `sending a file does not ask its provider on the main thread`() {
+        sendAndAwaitPlaceholder("document.pdf")
+
+        assertTrue("placeholder message is added", placeholderAdded.count == 0L)
+        assertEquals("provider calls on the main thread", 0, SlowProvider.mainThreadCalls.get())
+        assertTrue("provider is asked for the type and the name", SlowProvider.otherCalls.get() >= 2)
+    }
+
+    @Test
+    fun `a provider that rejects the uri still leaves a placeholder and does not crash`() {
+        sendAndAwaitPlaceholder("rejected.pdf")
+
+        assertTrue("placeholder message is added", placeholderAdded.count == 0L)
+        assertEquals("provider calls on the main thread", 0, SlowProvider.mainThreadCalls.get())
+    }
+
+    private fun sendAndAwaitPlaceholder(name: String) {
         val user = User().apply { id = 1L }
         val viewModel = ChatViewModel(
             logger = mock(),
@@ -111,7 +128,7 @@ class ChatViewModelUploadFileTest {
         }
 
         viewModel.uploadFile(
-            fileUri = "content://$AUTHORITY/document.pdf",
+            fileUri = "content://" + AUTHORITY + "/" + name,
             isVoiceMessage = false,
             displayName = "Team"
         )
@@ -121,10 +138,6 @@ class ChatViewModelUploadFileTest {
             shadowOf(Looper.getMainLooper()).idle()
             placeholderAdded.await(POLL_MS, TimeUnit.MILLISECONDS)
         }
-
-        assertTrue("placeholder message is added", placeholderAdded.count == 0L)
-        assertEquals("provider calls on the main thread", 0, SlowProvider.mainThreadCalls.get())
-        assertTrue("provider is asked for the type and the name", SlowProvider.otherCalls.get() >= 2)
     }
 
     class SlowProvider : ContentProvider() {
@@ -132,6 +145,7 @@ class ChatViewModelUploadFileTest {
 
         override fun getType(uri: Uri): String {
             count()
+            require(uri.lastPathSegment != "rejected.pdf") { "Unknown URL " + uri }
             return "application/pdf"
         }
 
