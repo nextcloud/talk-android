@@ -8,7 +8,6 @@
 
 package com.nextcloud.talk.utils
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,7 +15,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.lifecycleScope
 import androidx.core.content.FileProvider
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -27,6 +28,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +41,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PickImage(private val activity: Activity, private var currentUser: User?) {
+class PickImage(private val activity: ComponentActivity, private var currentUser: User?) {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -112,25 +116,19 @@ class PickImage(private val activity: Activity, private var currentUser: User?) 
         )
         downloadCall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                saveBitmapAndPassToImagePicker(
-                    startImagePickerForResult,
-                    BitmapFactory.decodeStream(response.body()!!.byteStream())
-                )
+                val body = response.body() ?: return
+                activity.lifecycleScope.launch {
+                    val file = withContext(Dispatchers.IO) {
+                        BitmapFactory.decodeStream(body.byteStream())?.let { saveBitmapToTempFile(it) }
+                    }
+                    file?.let { selectLocal(startImagePickerForResult, it) }
+                }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 // unused atm
             }
         })
-    }
-
-    // only possible with API26
-    private fun saveBitmapAndPassToImagePicker(
-        startImagePickerForResult: ActivityResultLauncher<Intent>,
-        bitmap: Bitmap
-    ) {
-        val file: File = saveBitmapToTempFile(bitmap) ?: return
-        selectLocal(startImagePickerForResult, file)
     }
 
     private fun saveBitmapToTempFile(bitmap: Bitmap): File? {
