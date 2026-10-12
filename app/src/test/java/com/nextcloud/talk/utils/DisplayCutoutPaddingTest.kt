@@ -24,7 +24,7 @@ import org.robolectric.annotation.Config
  * must be padded by the cutout, otherwise it is drawn below the camera.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(application = Application::class, sdk = [31])
+@Config(application = Application::class, sdk = [33])
 class DisplayCutoutPaddingTest {
 
     private fun dispatch(view: FrameLayout, cutout: Insets) {
