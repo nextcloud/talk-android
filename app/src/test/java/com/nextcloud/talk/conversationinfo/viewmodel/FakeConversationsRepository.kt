@@ -33,10 +33,17 @@ class FakeConversationsRepository : ConversationsRepository {
     var importantRequests = 0
 
     /** The OCS status code the important-conversation requests answer with. */
-    var importantResponseStatusCode = 200
+    var importantResponseStatusCode = HTTP_OK
 
     /** When set, the next important-conversation request waits for this before it answers. */
     var importantGate: CompletableDeferred<Unit>? = null
+
+    /** How many of the next read-only requests fail with a connection problem. */
+    var failingReadOnlyRequests = 0
+    var readOnlyRequests = 0
+
+    /** The OCS status code the read-only requests answer with. */
+    var readOnlyResponseStatusCode = HTTP_OK
 
     override suspend fun allowGuests(
         user: User,
@@ -79,8 +86,14 @@ class FakeConversationsRepository : ConversationsRepository {
 
     override suspend fun setPassword(user: User, url: String, password: String): GenericOverall = GenericOverall()
 
-    override suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall =
-        throw UnsupportedOperationException()
+    override suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall {
+        readOnlyRequests++
+        if (failingReadOnlyRequests > 0) {
+            failingReadOnlyRequests--
+            throw IOException("no connection")
+        }
+        return GenericOverall(GenericOCS(GenericMetaDto(statusCode = readOnlyResponseStatusCode)))
+    }
 
     override suspend fun clearChatHistory(user: User, url: String): GenericOverall =
         throw UnsupportedOperationException()
@@ -144,4 +157,8 @@ class FakeConversationsRepository : ConversationsRepository {
 
     override suspend fun removeConversationFromFavorites(credentials: String, url: String): GenericOverall =
         throw UnsupportedOperationException()
+
+    private companion object {
+        const val HTTP_OK = 200
+    }
 }

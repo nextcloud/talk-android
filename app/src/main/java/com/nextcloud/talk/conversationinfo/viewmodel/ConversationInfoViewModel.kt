@@ -116,7 +116,10 @@ class ConversationInfoViewModel @Inject constructor(
         get() = _getUnBanActorState
     private var currentUser: User? = null
     private var currentToken: String = ""
-    private var databaseStorageModule: DatabaseStorageModule? = null
+
+    @VisibleForTesting
+    internal var databaseStorageModule: DatabaseStorageModule? = null
+
     val passwordValidation = PasswordPolicyValidator(passwordPolicyRepository, viewModelScope) { currentUser }
     private val _uiState = MutableStateFlow(ConversationInfoUiState())
     val uiState: StateFlow<ConversationInfoUiState> = _uiState.asStateFlow()

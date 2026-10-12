@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.conversationinfo.viewmodel
 
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
@@ -15,6 +16,7 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.repositories.passwordpolicy.PasswordPolicyRepository
+import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +31,10 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 
+@Suppress("TooManyFunctions")
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConversationInfoViewModelTest {
 
@@ -283,6 +287,86 @@ class ConversationInfoViewModelTest {
             dispatcher.scheduler.advanceUntilIdle()
 
             assertTrue(model.uiState.value.importantConversation)
+        }
+
+    // toggleLock(): the read-only lock goes through the same optimistic path as the other settings,
+    // and also mirrors its state into local storage, which the screen is built from
+
+    @Test
+    fun `a lock the server never accepts goes back and says so`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingReadOnlyRequests = Int.MAX_VALUE }
+            val model = viewModel(repository)
+            val seen = mutableListOf<ConversationInfoUiEvent>()
+            val collector = launch { model.uiEvent.collect { seen.add(it) } }
+            dispatcher.scheduler.runCurrent()
+
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.runCurrent()
+            assertTrue(model.uiState.value.isConversationLocked)
+
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(model.uiState.value.isConversationLocked)
+            assertTrue(seen.contains(ConversationInfoUiEvent.ShowSnackbar(R.string.conversation_read_only_failed)))
+            collector.cancel()
+        }
+
+    @Test
+    fun `a lock survives a single connection problem`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingReadOnlyRequests = 1 }
+            val model = viewModel(repository)
+
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(ATTEMPTS_PER_REQUEST, repository.readOnlyRequests)
+            assertTrue(model.uiState.value.isConversationLocked)
+        }
+
+    @Test
+    fun `a lock the server refuses in the payload is taken back`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { readOnlyResponseStatusCode = HTTP_FORBIDDEN }
+            val model = viewModel(repository)
+
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(model.uiState.value.isConversationLocked)
+        }
+
+    @Test
+    fun `a failed lock takes the stored lock state back as well`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingReadOnlyRequests = Int.MAX_VALUE }
+            val storage = mock<DatabaseStorageModule>()
+            val model = viewModel(repository).apply { databaseStorageModule = storage }
+
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            val order = inOrder(storage)
+            order.verify(storage).saveBoolean("lock_switch", true)
+            order.verify(storage).saveBoolean("lock_switch", false)
+        }
+
+    @Test
+    fun `two lock changes that both fail go back to the value the server confirmed`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { failingReadOnlyRequests = Int.MAX_VALUE }
+            val model = viewModel(repository)
+
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.runCurrent()
+            model.toggleLock(user, "token")
+            dispatcher.scheduler.runCurrent()
+            assertFalse(model.uiState.value.isConversationLocked)
+
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(model.uiState.value.isConversationLocked)
         }
 
     private companion object {
