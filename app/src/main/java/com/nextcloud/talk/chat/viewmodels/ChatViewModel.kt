@@ -2374,8 +2374,9 @@ class ChatViewModel @AssistedInject constructor(
             require(fileUri.isNotEmpty())
 
             if (!isVoiceMessage) {
-                val (fileName, mimeType, fileSize) = resolveFileInfo(fileUri)
                 viewModelScope.launch {
+                    // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
+                    val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) { resolveFileInfo(fileUri) }
                     chatRepository.addUploadPlaceholderMessage(
                         localFileUri = fileUri,
                         fileName = fileName,
