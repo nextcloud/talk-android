@@ -56,21 +56,14 @@ object DirectShareHelper {
     }
 
     private suspend fun publish(context: Context, user: User, conversations: List<ConversationModel>) {
-        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
-
-        // Preserve shortcuts not managed by DirectShareHelper (e.g. Note to Self).
-        val existingOtherShortcuts = ShortcutManagerCompat.getDynamicShortcuts(context)
-            .filter { !it.id.startsWith(SHORTCUT_ID_PREFIX) }
-        val limit = (maxShortcuts - existingOtherShortcuts.size).coerceAtLeast(0)
-
         @Suppress("MagicNumber")
         val thirtyDaysAgoSeconds = System.currentTimeMillis() / 1000 - 30 * 24 * 60 * 60
-        val afterFilter = conversations
+        val candidates = conversations
             .filter { !ConversationUtils.isNoteToSelfConversation(it) }
             .filter { it.lastActivity >= thirtyDaysAgoSeconds }
-        val candidates = afterFilter
+            .distinctBy { it.token }
             .sortedByDescending { it.lastActivity }
-            .take(limit)
+            .take(ShortcutManagerCompat.getMaxShortcutCountPerActivity(context))
 
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         // Build shortcuts most-recent-first; setDynamicShortcuts uses index order (0 = most important).
@@ -81,7 +74,24 @@ object DirectShareHelper {
             prepShortcutBuilder(context, user, conversation.token, displayName, icon).build()
         }
 
-        ShortcutManagerCompat.setDynamicShortcuts(context, shareShortcuts + existingOtherShortcuts)
+        // Loading the avatars takes a while, and other shortcuts (e.g. Note to Self, conversation shortcuts or the
+        // ones of notifications) are pushed meanwhile. So the shortcuts to preserve and the free slots are only
+        // looked up now, right before replacing all dynamic shortcuts, which must not exceed the maximum.
+        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
+        val existingOtherShortcuts = ShortcutManagerCompat.getDynamicShortcuts(context)
+            .filter { !it.id.startsWith(SHORTCUT_ID_PREFIX) }
+            .take(maxShortcuts)
+        val limit = (maxShortcuts - existingOtherShortcuts.size).coerceAtLeast(0)
+
+        try {
+            ShortcutManagerCompat.setDynamicShortcuts(context, shareShortcuts.take(limit) + existingOtherShortcuts)
+        } catch (e: IllegalArgumentException) {
+            // Thrown if the maximum is exceeded anyway. Missing share targets must not crash the conversation list.
+            Log.w(TAG, "Failed to publish direct share shortcuts", e)
+        } catch (e: IllegalStateException) {
+            // Thrown while the user is locked
+            Log.w(TAG, "Failed to publish direct share shortcuts", e)
+        }
     }
 
     /**
