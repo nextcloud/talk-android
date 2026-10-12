@@ -170,6 +170,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean
 
     /**
+     * Marks the upload placeholder for [referenceId] as failed, but only while it's still PENDING.
+     * Does nothing if there is no such placeholder (yet).
+     */
+    suspend fun markUploadPlaceholderFailed(referenceId: String)
+
+    /**
      * Writes the new text into the local database before the server is asked, so the chat renders the
      * edit right away, and restores the previous text if the request fails or the server rejects the
      * edit (a message that is too old, for instance). The successful response is persisted as the

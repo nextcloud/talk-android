@@ -46,6 +46,7 @@ import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import androidx.lifecycle.asFlow
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
@@ -2388,9 +2389,13 @@ class ChatViewModel @AssistedInject constructor(
                 )
             }
 
-            if (isVoiceMessage) {
-                enqueueUpload()
-            } else {
+            // enqueued right here, in the order of the calls: the queue of a conversation is chained, and the
+            // slow lookup of the file info below must neither reorder the files nor die with the view model
+            val workerId = enqueueUpload()
+            if (!isVoiceMessage) {
+                uploadReferenceToWorkId[referenceId] = workerId
+                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+
                 viewModelScope.launch {
                     // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
                     val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) {
@@ -2414,10 +2419,8 @@ class ChatViewModel @AssistedInject constructor(
                         referenceId = referenceId
                     ).collect {}
 
-                    // the placeholder has to exist before the worker can report a failure for it
-                    val workerId = enqueueUpload()
-                    uploadReferenceToWorkId[referenceId] = workerId
-                    _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+                    // observed only now: a failure the worker reported before the placeholder existed is
+                    // delivered with the current state and marks the placeholder that was just added
                     observeUploadProgress(workerId, referenceId)
                 }
             }
@@ -2451,6 +2454,9 @@ class ChatViewModel @AssistedInject constructor(
                 val progress = workInfo.progress.getInt(UploadAndShareFilesWorker.PROGRESS_KEY, -1)
                 if (progress >= 0) {
                     _uploadProgressMap.update { it + (referenceId to progress) }
+                }
+                if (workInfo.state == WorkInfo.State.FAILED) {
+                    viewModelScope.launch { chatRepository.markUploadPlaceholderFailed(referenceId) }
                 }
                 if (workInfo.state.isFinished) {
                     _uploadProgressMap.update { it - referenceId }

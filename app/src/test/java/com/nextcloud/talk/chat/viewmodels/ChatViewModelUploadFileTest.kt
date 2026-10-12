@@ -13,15 +13,19 @@ import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
+import androidx.work.impl.WorkManagerImpl
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -41,6 +45,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -55,7 +60,7 @@ class ChatViewModelUploadFileTest {
 
     private val chatRepository: ChatMessageRepository = mock()
     private val placeholderAdded = CountDownLatch(1)
-    private var queuedWhenPlaceholderAdded = -1
+    private val placeholderMarkedFailed = CountDownLatch(1)
     private var previousApplication: NextcloudTalkApplication? = null
 
     // the setter of the singleton is protected: only the real application sets it
@@ -78,10 +83,12 @@ class ChatViewModelUploadFileTest {
         runBlocking {
             whenever(chatRepository.addUploadPlaceholderMessage(any(), any(), any(), anyOrNull(), any(), any()))
                 .thenAnswer {
-                    queuedWhenPlaceholderAdded = queuedUploads()
                     placeholderAdded.countDown()
                     flowOf<Result<ChatMessage?>>()
                 }
+            whenever(chatRepository.markUploadPlaceholderFailed(any())).thenAnswer {
+                placeholderMarkedFailed.countDown()
+            }
         }
     }
 
@@ -108,17 +115,61 @@ class ChatViewModelUploadFileTest {
     }
 
     @Test
-    fun `the upload worker is enqueued only after the placeholder message exists`() {
-        sendAndAwaitPlaceholder("document.pdf")
+    fun `the upload worker is enqueued at once, before the provider has answered`() {
+        val viewModel = newViewModel()
+
+        viewModel.send("slow-a.pdf", order = 1)
+
+        assertEquals("uploads queued while the provider is still asked", 1, queuedUploads())
+        assertEquals("placeholder is not added yet", 1L, placeholderAdded.count)
+    }
+
+    @Test
+    fun `a view model cleared while the provider answers still has its upload enqueued`() {
+        val viewModel = newViewModel()
+
+        viewModel.send("slow-a.pdf", order = 1)
+        viewModel.viewModelScope.cancel()
+
+        assertEquals("uploads queued", 1, queuedUploads())
+    }
+
+    @Test
+    fun `files are enqueued in the order they were sent whatever speed their providers answer with`() {
+        val viewModel = newViewModel()
+
+        viewModel.send("slow-a.pdf", order = 1)
+        viewModel.send("b.pdf", order = 2)
+
+        val workIds = viewModel.uploadWorkIds()
+        val first = workIds.getValue(referenceId(1))
+        val second = workIds.getValue(referenceId(2))
+        val dependents = (WorkManager.getInstance(RuntimeEnvironment.getApplication()) as WorkManagerImpl)
+            .workDatabase
+            .dependencyDao()
+            .getDependentWorkIds(first.toString())
+        assertEquals("the second file waits for the first one", listOf(second.toString()), dependents)
+    }
+
+    @Test
+    fun `a worker that fails before the placeholder exists does not leave the placeholder pending`() {
+        val viewModel = newViewModel()
+
+        viewModel.send("slow-a.pdf", order = 1)
+        val workId = viewModel.uploadWorkIds().getValue(referenceId(1))
+        WorkManagerTestInitHelper.getTestDriver(RuntimeEnvironment.getApplication())!!.setAllConstraintsMet(workId)
 
         val deadline = System.currentTimeMillis() + TIMEOUT_MS
-        while (queuedUploads() == 0 && System.currentTimeMillis() < deadline) {
+        while (placeholderAdded.count > 0 && System.currentTimeMillis() < deadline) {
             shadowOf(Looper.getMainLooper()).idle()
-            Thread.sleep(POLL_MS)
+            placeholderAdded.await(POLL_MS, TimeUnit.MILLISECONDS)
+        }
+        while (placeholderMarkedFailed.count > 0 && System.currentTimeMillis() < deadline) {
+            shadowOf(Looper.getMainLooper()).idle()
+            placeholderMarkedFailed.await(POLL_MS, TimeUnit.MILLISECONDS)
         }
 
-        assertEquals("uploads queued when the placeholder was added", 0, queuedWhenPlaceholderAdded)
-        assertEquals("the upload was enqueued afterwards", 1, queuedUploads())
+        assertEquals("the placeholder is marked as failed", 0L, placeholderMarkedFailed.count)
     }
 
     private fun queuedUploads(): Int =
@@ -127,7 +178,25 @@ class ChatViewModelUploadFileTest {
             .get()
             .size
 
-    private fun sendAndAwaitPlaceholder(name: String) {
+    private fun referenceId(order: Int) = SendMessageUtils().generateGroupedReferenceId(UPLOAD_ID, order)
+
+    @Suppress("UNCHECKED_CAST")
+    private fun ChatViewModel.uploadWorkIds(): Map<String, UUID> =
+        ChatViewModel::class.java.getDeclaredField("uploadReferenceToWorkId")
+            .apply { isAccessible = true }
+            .get(this) as Map<String, UUID>
+
+    private fun ChatViewModel.send(name: String, order: Int) {
+        uploadFile(
+            fileUri = "content://" + AUTHORITY + "/" + name,
+            isVoiceMessage = false,
+            displayName = "Team",
+            uploadId = UPLOAD_ID,
+            order = order
+        )
+    }
+
+    private fun newViewModel(): ChatViewModel {
         val user = User().apply { id = 1L }
         val viewModel = ChatViewModel(
             logger = mock(),
@@ -149,12 +218,11 @@ class ChatViewModelUploadFileTest {
         viewModel.participantPermissions = Mockito.mock(ParticipantPermissions::class.java).also {
             whenever(it.hasChatPermission()).thenReturn(true)
         }
+        return viewModel
+    }
 
-        viewModel.uploadFile(
-            fileUri = "content://" + AUTHORITY + "/" + name,
-            isVoiceMessage = false,
-            displayName = "Team"
-        )
+    private fun sendAndAwaitPlaceholder(name: String) {
+        newViewModel().send(name, order = 1)
 
         val deadline = System.currentTimeMillis() + TIMEOUT_MS
         while (placeholderAdded.count > 0 && System.currentTimeMillis() < deadline) {
@@ -167,7 +235,7 @@ class ChatViewModelUploadFileTest {
         override fun onCreate() = true
 
         override fun getType(uri: Uri): String {
-            count()
+            count(uri)
             require(uri.lastPathSegment != "rejected.pdf") { "Unknown URL " + uri }
             return "application/pdf"
         }
@@ -179,7 +247,7 @@ class ChatViewModelUploadFileTest {
             selectionArgs: Array<out String>?,
             sortOrder: String?
         ): Cursor {
-            count()
+            count(uri)
             return MatrixCursor(arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)).apply {
                 addRow(arrayOf<Any?>(uri.lastPathSegment, FILE_BYTES))
             }
@@ -191,10 +259,10 @@ class ChatViewModelUploadFileTest {
 
         override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?) = 0
 
-        private fun count() {
+        private fun count(uri: Uri) {
             val onMain = Looper.myLooper() == Looper.getMainLooper()
             (if (onMain) mainThreadCalls else otherCalls).incrementAndGet()
-            Thread.sleep(PROVIDER_DELAY_MS)
+            Thread.sleep(if (uri.lastPathSegment.orEmpty().startsWith("slow")) SLOW_DELAY_MS else PROVIDER_DELAY_MS)
         }
 
         companion object {
@@ -211,8 +279,10 @@ class ChatViewModelUploadFileTest {
     companion object {
         private const val AUTHORITY = "com.nextcloud.client.documentsfileprovider"
         private const val PROVIDER_DELAY_MS = 300L
+        private const val SLOW_DELAY_MS = 1500L
         private const val FILE_BYTES = 2048L
         private const val TIMEOUT_MS = 20_000L
         private const val POLL_MS = 50L
+        private const val UPLOAD_ID = "upload"
     }
 }

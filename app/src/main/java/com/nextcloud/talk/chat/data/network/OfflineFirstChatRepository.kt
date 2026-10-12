@@ -803,6 +803,13 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
         chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
 
+    override suspend fun markUploadPlaceholderFailed(referenceId: String) {
+        val entity = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
+        if (entity?.sendStatus == SendStatus.PENDING) {
+            chatDao.updateChatMessage(entity.copy(sendStatus = SendStatus.FAILED))
+        }
+    }
+
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
