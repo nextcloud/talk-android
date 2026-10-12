@@ -20,7 +20,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -75,7 +74,6 @@ class FileUploader(
             createRequestBody(sourceFileUri)
         )
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .flatMap { response ->
                 if (response.isSuccessful) {
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
