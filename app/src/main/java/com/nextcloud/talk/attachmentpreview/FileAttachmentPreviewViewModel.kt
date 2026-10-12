@@ -58,8 +58,8 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
         val snapshot = files.toList()
         viewModelScope.launch(Dispatchers.IO) {
             val described = snapshot.associateWith { describeFile(context, it, compress) }
-            _descriptionsByUri.clear()
             _descriptionsByUri.putAll(described)
+            _descriptionsByUri.keys.retainAll(described.keys)
         }
     }
 }
