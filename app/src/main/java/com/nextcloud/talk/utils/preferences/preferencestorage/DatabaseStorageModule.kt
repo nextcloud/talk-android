@@ -105,12 +105,13 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
     }
 
     private suspend fun saveNotificationLevel(value: String) {
-        val spreedCapability = conversationUser.capabilities?.spreedCapability ?: return
+        val spreedCapability = checkNotNull(conversationUser.capabilities?.spreedCapability) {
+            "No spreed capabilities to set the notification level with"
+        }
 
-        if (!hasSpreedFeatureCapability(spreedCapability, SpreedFeatures.NOTIFICATION_LEVELS)) {
-            // a server that cannot be told keeps the level as whatever this screen remembers
-            messageNotificationLevel = value
-        } else if (messageNotificationLevel != value) {
+        if (hasSpreedFeatureCapability(spreedCapability, SpreedFeatures.NOTIFICATION_LEVELS) &&
+            messageNotificationLevel != value
+        ) {
             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
             withContext(Dispatchers.IO) {
                 ncApiCoroutines!!.setNotificationLevel(
