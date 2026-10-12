@@ -2373,7 +2373,24 @@ class ChatViewModel @AssistedInject constructor(
         try {
             require(fileUri.isNotEmpty())
 
-            if (!isVoiceMessage) {
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            val enqueueUpload = {
+                UploadAndShareFilesWorker.upload(
+                    userId = currentUser.id!!,
+                    fileUri = fileUri,
+                    roomToken = room,
+                    conversationName = displayName,
+                    metaData = metaData,
+                    referenceId = referenceId,
+                    internalConversationId = internalConversationId,
+                    compressImages = compressImages,
+                    allowUpdate = allowUpdate
+                )
+            }
+
+            if (isVoiceMessage) {
+                enqueueUpload()
+            } else {
                 viewModelScope.launch {
                     // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
                     val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) {
@@ -2396,26 +2413,13 @@ class ChatViewModel @AssistedInject constructor(
                         fileSize = fileSize,
                         referenceId = referenceId
                     ).collect {}
+
+                    // the placeholder has to exist before the worker can report a failure for it
+                    val workerId = enqueueUpload()
+                    uploadReferenceToWorkId[referenceId] = workerId
+                    _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+                    observeUploadProgress(workerId, referenceId)
                 }
-            }
-
-            val internalConversationId = "${currentUser.id}@$chatRoomToken"
-            val workerId = UploadAndShareFilesWorker.upload(
-                userId = currentUser.id!!,
-                fileUri = fileUri,
-                roomToken = room,
-                conversationName = displayName,
-                metaData = metaData,
-                referenceId = referenceId,
-                internalConversationId = internalConversationId,
-                compressImages = compressImages,
-                allowUpdate = allowUpdate
-            )
-
-            if (!isVoiceMessage) {
-                uploadReferenceToWorkId[referenceId] = workerId
-                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
-                observeUploadProgress(workerId, referenceId)
             }
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)

@@ -13,6 +13,7 @@ import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
+import androidx.work.WorkManager
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.ChatMessageRepository
@@ -54,6 +55,7 @@ class ChatViewModelUploadFileTest {
 
     private val chatRepository: ChatMessageRepository = mock()
     private val placeholderAdded = CountDownLatch(1)
+    private var queuedWhenPlaceholderAdded = -1
     private var previousApplication: NextcloudTalkApplication? = null
 
     // the setter of the singleton is protected: only the real application sets it
@@ -76,6 +78,7 @@ class ChatViewModelUploadFileTest {
         runBlocking {
             whenever(chatRepository.addUploadPlaceholderMessage(any(), any(), any(), anyOrNull(), any(), any()))
                 .thenAnswer {
+                    queuedWhenPlaceholderAdded = queuedUploads()
                     placeholderAdded.countDown()
                     flowOf<Result<ChatMessage?>>()
                 }
@@ -103,6 +106,26 @@ class ChatViewModelUploadFileTest {
         assertTrue("placeholder message is added", placeholderAdded.count == 0L)
         assertEquals("provider calls on the main thread", 0, SlowProvider.mainThreadCalls.get())
     }
+
+    @Test
+    fun `the upload worker is enqueued only after the placeholder message exists`() {
+        sendAndAwaitPlaceholder("document.pdf")
+
+        val deadline = System.currentTimeMillis() + TIMEOUT_MS
+        while (queuedUploads() == 0 && System.currentTimeMillis() < deadline) {
+            shadowOf(Looper.getMainLooper()).idle()
+            Thread.sleep(POLL_MS)
+        }
+
+        assertEquals("uploads queued when the placeholder was added", 0, queuedWhenPlaceholderAdded)
+        assertEquals("the upload was enqueued afterwards", 1, queuedUploads())
+    }
+
+    private fun queuedUploads(): Int =
+        WorkManager.getInstance(RuntimeEnvironment.getApplication())
+            .getWorkInfosForUniqueWork("upload_queue_1@room")
+            .get()
+            .size
 
     private fun sendAndAwaitPlaceholder(name: String) {
         val user = User().apply { id = 1L }
