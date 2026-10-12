@@ -14,6 +14,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
@@ -29,6 +31,8 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -52,10 +56,9 @@ class FullScreenTextViewerActivity : BaseActivity() {
             finish()
             return
         }
-        val text = readFile(textFile)
-
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+            val text by produceState("", textFile) { value = withContext(Dispatchers.IO) { readFile(textFile) } }
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 FullScreenTextScreen(
