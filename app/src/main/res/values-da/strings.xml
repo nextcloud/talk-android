@@ -100,7 +100,7 @@
     <string name="location_services_disabled_msg">Aktiver venligst lokationsservice (GPS) for at bruge denne funktion</string>
     <string name="lock_conversation">Lås samtale</string>
     <string name="lock_symbol">Låsesymbol</string>
-    <string name="lower_hand">Sænk hånden</string>
+    <string name="lower_hand">Tag hånden ned</string>
     <string name="media_message_content_description">Forhåndsvisning af fil</string>
     <string name="media_message_content_play">Afspil mediefil</string>
     <string name="mention_open_chat_with">Åbn chat med %1$s</string>
@@ -221,7 +221,7 @@
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
-    <string name="nc_conversation_settings">Samtale indstillinger</string>
+    <string name="nc_conversation_settings">Samtaleindstillinger</string>
     <string name="nc_conversation_tags">Mærker</string>
     <string name="nc_conversation_tags_create">Opret</string>
     <string name="nc_conversation_tags_delete">Slet mærke</string>
@@ -250,7 +250,7 @@
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
-    <string name="nc_copy_message_link">Kopier besked link</string>
+    <string name="nc_copy_message_link">Kopiér link til besked</string>
     <string name="nc_copy_password">Kopier adgangskode</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
@@ -389,7 +389,7 @@
     <string name="nc_logs_total_size">Samlet logstørrelse: %d KB</string>
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_mark_as_read">Marker som læst</string>
-    <string name="nc_mark_as_unread">Marker som ulæst</string>
+    <string name="nc_mark_as_unread">Markér som ulæst</string>
     <string name="nc_media_quality_original">Original kvalitet</string>
     <string name="nc_media_quality_original_hint">Afsendelse i original kvalitet bruger mere mobildata.</string>
     <string name="nc_media_quality_reduced">Reduceret kvalitet</string>
@@ -410,7 +410,7 @@
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_conversation_visibility">Synlighed</string>
     <string name="nc_new_mention">Ulæste omtaler</string>
-    <string name="nc_new_messages">Ulæste beskedder</string>
+    <string name="nc_new_messages">Ulæste beskeder</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgængelig (Ikke installeret eller begrænset af admin)</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
@@ -583,7 +583,7 @@
     <string name="nc_settings_proxy_type_title">Proxy type</string>
     <string name="nc_settings_proxy_username_title">Proxy brugernavn</string>
     <string name="nc_settings_read_privacy_desc">Del min læsestatus og vis andres læsestatus</string>
-    <string name="nc_settings_read_privacy_title">Læse status</string>
+    <string name="nc_settings_read_privacy_title">Læsestatus</string>
     <string name="nc_settings_reauthorize">Genautoriser konto</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
@@ -720,7 +720,7 @@
     <string name="polls_voted_hidden_success">Stemme indsendt</string>
     <string name="previously_set">Tidligere sat</string>
     <string name="qr_code_error">QR koden kunne ikke læses</string>
-    <string name="raise_hand">Løft hånden</string>
+    <string name="raise_hand">Ræk hånden op</string>
     <string name="reaction_add_failed">Reaktionen kunne ikke tilføjes</string>
     <string name="reaction_delete_failed">Reaktionen kunne ikke fjernes</string>
     <string name="reaction_forbidden">Du må ikke tilføje eller fjerne reaktioner i denne samtale</string>
@@ -735,10 +735,10 @@
     <string name="record_stop_confirm_title">Stop opkaldsoptagelse</string>
     <string name="record_stop_description">Stop optagelse</string>
     <string name="record_stopping">Stopper optagelse ...</string>
-    <string name="recording_consent_all">Optagelsessamtykke er kræver for alle opkald</string>
-    <string name="recording_consent_description">Optagelsen kan indeholde din stemme, video fra kamera, og skærmdeling. Dit samtykke kræves inden du deltager i opkaldet. Ønsker du at samtykke?</string>
-    <string name="recording_consent_for_conversation_description">Kræv optagelsessamtykke inden deltagelse i opkaldet i denne samtale</string>
-    <string name="recording_consent_for_conversation_title">Optagelsessamtykke</string>
+    <string name="recording_consent_all">Samtykke til optagelse er påkrævet for alle opkald</string>
+    <string name="recording_consent_description">Optagelsen kan omfatte din stemme, video fra dit kamera og skærmdeling. Du skal give samtykke, før du deltager i opkaldet. Giver du samtykke?</string>
+    <string name="recording_consent_for_conversation_description">Kræv samtykke til optagelse, før der deltages i opkald i denne samtale</string>
+    <string name="recording_consent_for_conversation_title">Samtykke til optagelse</string>
     <string name="recording_consent_title">Opkaldes optages måske</string>
     <string name="recording_settings_title">Optagelse</string>
     <string name="renamed_conversation">Samtalen %1$s blev omdøbt</string>
