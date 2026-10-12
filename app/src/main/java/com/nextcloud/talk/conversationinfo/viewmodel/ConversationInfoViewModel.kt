@@ -413,6 +413,9 @@ class ConversationInfoViewModel @Inject constructor(
         val sensitiveConversation = conversationModel.hasSensitive
         confirmedSetting[IMPORTANT] = importantConversation
         confirmedSetting[SENSITIVE] = sensitiveConversation
+        confirmedSetting[CALL_NOTIFICATIONS] = callNotificationsEnabled
+        confirmedSetting[NOTIFICATION_LEVEL] = notificationLevelStr
+        confirmedSetting[MESSAGE_EXPIRATION] = messageExpirationLabel
 
         val showArchiveConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)
@@ -825,18 +828,22 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     fun toggleCallNotifications() {
-        val previousEnabled = _uiState.value.callNotificationsEnabled
-        val newEnabled = !previousEnabled
-        val change = startSettingChange("call notifications")
+        val newEnabled = !_uiState.value.callNotificationsEnabled
+        val confirmedEnabled = confirmedValueOf(CALL_NOTIFICATIONS, _uiState.value.callNotificationsEnabled)
+        val change = startSettingChange(CALL_NOTIFICATIONS)
 
         viewModelScope.launch {
             optimisticAction(
                 apply = {
                     _uiState.update { it.copy(callNotificationsEnabled = newEnabled) }
-                    undoIfNewest("call notifications", change) { it.copy(callNotificationsEnabled = previousEnabled) }
+                    undoIfNewest(CALL_NOTIFICATIONS, change) {
+                        it.copy(callNotificationsEnabled = confirmedValueOf(CALL_NOTIFICATIONS, confirmedEnabled))
+                    }
                 },
                 request = { databaseStorageModule?.saveBoolean("call_notifications_switch", newEnabled) }
-            ).onFailure { throwable -> reportSettingFailure("call notifications", throwable) }
+            )
+                .onSuccess { recordAccepted(CALL_NOTIFICATIONS, change, newEnabled) }
+                .onFailure { throwable -> reportSettingFailure("call notifications", throwable) }
         }
     }
 
@@ -846,13 +853,15 @@ class ConversationInfoViewModel @Inject constructor(
         val descriptions = res.getStringArray(R.array.message_notification_levels)
         if (position !in values.indices || position !in descriptions.indices) return
 
-        val previousLevel = _uiState.value.notificationLevel
-        val change = startSettingChange("notification level")
+        val confirmedLevel = confirmedValueOf(NOTIFICATION_LEVEL, _uiState.value.notificationLevel)
+        val change = startSettingChange(NOTIFICATION_LEVEL)
         viewModelScope.launch {
             optimisticAction(
                 apply = {
                     _uiState.update { it.copy(notificationLevel = descriptions[position]) }
-                    undoIfNewest("notification level", change) { it.copy(notificationLevel = previousLevel) }
+                    undoIfNewest(NOTIFICATION_LEVEL, change) {
+                        it.copy(notificationLevel = confirmedValueOf(NOTIFICATION_LEVEL, confirmedLevel))
+                    }
                 },
                 request = {
                     databaseStorageModule?.saveString(
@@ -860,7 +869,9 @@ class ConversationInfoViewModel @Inject constructor(
                         values[position]
                     )
                 }
-            ).onFailure { throwable -> reportSettingFailure("the notification level", throwable) }
+            )
+                .onSuccess { recordAccepted(NOTIFICATION_LEVEL, change, descriptions[position]) }
+                .onFailure { throwable -> reportSettingFailure("the notification level", throwable) }
         }
     }
 
@@ -870,16 +881,20 @@ class ConversationInfoViewModel @Inject constructor(
         val descriptions = res.getStringArray(R.array.message_expiring_descriptions)
         if (position !in values.indices || position !in descriptions.indices) return
 
-        val previousLabel = _uiState.value.messageExpirationLabel
-        val change = startSettingChange("message expiration")
+        val confirmedLabel = confirmedValueOf(MESSAGE_EXPIRATION, _uiState.value.messageExpirationLabel)
+        val change = startSettingChange(MESSAGE_EXPIRATION)
         viewModelScope.launch {
             optimisticAction(
                 apply = {
                     _uiState.update { it.copy(messageExpirationLabel = descriptions[position]) }
-                    undoIfNewest("message expiration", change) { it.copy(messageExpirationLabel = previousLabel) }
+                    undoIfNewest(MESSAGE_EXPIRATION, change) {
+                        it.copy(messageExpirationLabel = confirmedValueOf(MESSAGE_EXPIRATION, confirmedLabel))
+                    }
                 },
                 request = { databaseStorageModule?.saveString("conversation_settings_dropdown", values[position]) }
-            ).onFailure { throwable -> reportSettingFailure("the message expiration", throwable) }
+            )
+                .onSuccess { recordAccepted(MESSAGE_EXPIRATION, change, descriptions[position]) }
+                .onFailure { throwable -> reportSettingFailure("the message expiration", throwable) }
         }
     }
 
@@ -917,7 +932,30 @@ class ConversationInfoViewModel @Inject constructor(
      * whatever was on screen when its own change started: two changes that both fail would
      * otherwise leave the newer undo restoring the optimistic value of the older one.
      */
-    private val confirmedSetting = mutableMapOf<String, Boolean>()
+    private val confirmedSetting = mutableMapOf<String, Any>()
+
+    /**
+     * The value the server last confirmed for [setting]. The first change of a session is made from
+     * [displayed], the value the screen was built with and so the one the server last gave us.
+     */
+    private inline fun <reified T : Any> confirmedValueOf(setting: String, displayed: T): T =
+        confirmedSetting.getOrPut(setting) { displayed } as? T ?: displayed
+
+    /**
+     * Makes [value] the baseline for [setting] once the server accepted [change].
+     *
+     * The baseline follows the newest change the server has *accepted*, not the newest the user has
+     * started. Two requests for one setting can be in flight at once and be accepted out of order, so
+     * an older acceptance arriving last must not overwrite a newer one - but while the newer one is
+     * still in flight, the older acceptance is the last thing the server agreed to, and dropping it
+     * would leave a later failure restoring a value the server no longer holds.
+     */
+    private fun recordAccepted(setting: String, change: Long, value: Any) {
+        if (change > (lastAcceptedChange[setting] ?: 0)) {
+            lastAcceptedChange[setting] = change
+            confirmedSetting[setting] = value
+        }
+    }
 
     /**
      * Stamps a new change to [setting] and returns its order, so everything that happens afterwards
@@ -957,9 +995,7 @@ class ConversationInfoViewModel @Inject constructor(
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
         val displayedValue = _uiState.value.importantConversation
         val newValue = !displayedValue
-        // the first change of a session is made from the value the screen was built with,
-        // which is the one the server last gave us
-        val confirmedValue = confirmedSetting.getOrPut(IMPORTANT) { displayedValue }
+        val confirmedValue = confirmedValueOf(IMPORTANT, displayedValue)
         val change = startSettingChange(IMPORTANT)
 
         viewModelScope.launch {
@@ -967,7 +1003,7 @@ class ConversationInfoViewModel @Inject constructor(
                 apply = {
                     _uiState.update { it.copy(importantConversation = newValue) }
                     undoIfNewest(IMPORTANT, change) {
-                        it.copy(importantConversation = confirmedSetting[IMPORTANT] ?: confirmedValue)
+                        it.copy(importantConversation = confirmedValueOf(IMPORTANT, confirmedValue))
                     }
                 },
                 isConfirmed = ::accepted,
@@ -987,9 +1023,7 @@ class ConversationInfoViewModel @Inject constructor(
     fun toggleSensitiveConversation(credentials: String, baseUrl: String, roomToken: String) {
         val displayedValue = _uiState.value.sensitiveConversation
         val newValue = !displayedValue
-        // the first change of a session is made from the value the screen was built with,
-        // which is the one the server last gave us
-        val confirmedValue = confirmedSetting.getOrPut(SENSITIVE) { displayedValue }
+        val confirmedValue = confirmedValueOf(SENSITIVE, displayedValue)
         val change = startSettingChange(SENSITIVE)
 
         viewModelScope.launch {
@@ -997,7 +1031,7 @@ class ConversationInfoViewModel @Inject constructor(
                 apply = {
                     _uiState.update { it.copy(sensitiveConversation = newValue) }
                     undoIfNewest(SENSITIVE, change) {
-                        it.copy(sensitiveConversation = confirmedSetting[SENSITIVE] ?: confirmedValue)
+                        it.copy(sensitiveConversation = confirmedValueOf(SENSITIVE, confirmedValue))
                     }
                 },
                 isConfirmed = ::accepted,
@@ -1018,12 +1052,6 @@ class ConversationInfoViewModel @Inject constructor(
      * when it did not. A refusal the server reports in the payload leaves [optimisticAction]
      * returning a success it has already taken back, so it needs reporting here as much as a
      * request that threw.
-     *
-     * The baseline follows the newest change the server has *accepted*, not the newest the user has
-     * started. Two requests for one setting can be in flight at once and be accepted out of order, so
-     * an older acceptance arriving last must not overwrite a newer one - but while the newer one is
-     * still in flight, the older acceptance is the last thing the server agreed to, and dropping it
-     * would leave a later failure restoring a value the server no longer holds.
      */
     @Suppress("Detekt.LongParameterList")
     private suspend fun reportSettingOutcome(
@@ -1035,10 +1063,7 @@ class ConversationInfoViewModel @Inject constructor(
     ) {
         val response = outcome.getOrNull()
         if (response != null && accepted(response)) {
-            if (change > (lastAcceptedChange[setting] ?: 0)) {
-                lastAcceptedChange[setting] = change
-                confirmedSetting[setting] = newValue
-            }
+            recordAccepted(setting, change, newValue)
             return
         }
         _uiEvent.emit(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_common_error_sorry))
@@ -1071,6 +1096,9 @@ class ConversationInfoViewModel @Inject constructor(
         private const val EXTENDED_CONVERSATION = "extended_conversation"
         private const val IMPORTANT = "important"
         private const val SENSITIVE = "sensitive"
+        private const val CALL_NOTIFICATIONS = "call notifications"
+        private const val NOTIFICATION_LEVEL = "notification level"
+        private const val MESSAGE_EXPIRATION = "message expiration"
         private const val GROUP_CONVERSATION_TYPE = "2"
         private const val MAX_ROOM_NAME_LENGTH = 255
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
