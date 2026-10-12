@@ -51,7 +51,7 @@ class ReactionsRepositoryImpl @Inject constructor(
             },
             isConfirmed = { statusCode -> statusCode in ADD_SUCCESS_CODES },
             request = { ncApiCoroutines.sendReaction(credentials, url, emoji).ocs?.meta?.statusCode }
-        ).logFailure().getOrNull() in ADD_SUCCESS_CODES
+        ).isAccepted(ADD_SUCCESS_CODES)
 
         return ReactionAddedModel(message, emoji, confirmed)
     }
@@ -74,7 +74,7 @@ class ReactionsRepositoryImpl @Inject constructor(
             },
             isConfirmed = { statusCode -> statusCode in DELETE_SUCCESS_CODES },
             request = { deleteReactionStatusCode(credentials, url, emoji) }
-        ).logFailure().getOrNull() in DELETE_SUCCESS_CODES
+        ).isAccepted(DELETE_SUCCESS_CODES)
 
         return ReactionDeletedModel(message, emoji, confirmed)
     }
@@ -91,7 +91,21 @@ class ReactionsRepositoryImpl @Inject constructor(
 
     private fun revertWith(applied: Boolean, revert: Undo): Undo? = revert.takeIf { applied }
 
-    private fun <T> Result<T>.logFailure(): Result<T> = onFailure { Log.w(TAG, "Reaction request failed: $it") }
+    /** Whether the server applied the reaction. Every way it did not is logged. */
+    private fun Result<Int?>.isAccepted(successCodes: Set<Int>): Boolean =
+        fold(
+            onSuccess = { statusCode ->
+                val accepted = statusCode in successCodes
+                if (!accepted) {
+                    Log.w(TAG, "Reaction request answered with unexpected status code $statusCode")
+                }
+                accepted
+            },
+            onFailure = { error ->
+                Log.w(TAG, "Reaction request failed: $error")
+                false
+            }
+        )
 
     /**
      * Adds the reaction to the cached message and reports whether that changed anything. A reaction the
