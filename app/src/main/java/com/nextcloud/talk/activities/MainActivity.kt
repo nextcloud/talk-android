@@ -231,6 +231,8 @@ class MainActivity :
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
+        // the contact lookup is asynchronous: keep the new intent for a recreation before it finishes
+        setIntent(intent)
         handleIntent(intent)
     }
 
