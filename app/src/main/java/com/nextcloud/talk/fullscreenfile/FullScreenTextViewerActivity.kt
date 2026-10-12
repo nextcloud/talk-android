@@ -12,6 +12,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
@@ -34,6 +35,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : BaseActivity() {
@@ -58,7 +60,16 @@ class FullScreenTextViewerActivity : BaseActivity() {
         }
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
-            val text by produceState("", textFile) { value = withContext(Dispatchers.IO) { readFile(textFile) } }
+            val text by produceState("", textFile) {
+                value = withContext(Dispatchers.IO) { readFileOrNull(textFile) } ?: run {
+                    // the system may clear the cache directory while the viewer is not on screen
+                    Log.e(TAG, "Could not read the text file: ${textFile.name}")
+                    Toast.makeText(this@FullScreenTextViewerActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG)
+                        .show()
+                    finish()
+                    ""
+                }
+            }
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 FullScreenTextScreen(
@@ -114,7 +125,13 @@ class FullScreenTextViewerActivity : BaseActivity() {
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
 
-    private fun readFile(file: File) = file.inputStream().readBytes().toString(Charsets.UTF_8)
+    private fun readFileOrNull(file: File): String? =
+        try {
+            file.inputStream().use { it.readBytes().toString(Charsets.UTF_8) }
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to read the text file", e)
+            null
+        }
 
     companion object {
         private val TAG = FullScreenTextViewerActivity::class.java.simpleName
