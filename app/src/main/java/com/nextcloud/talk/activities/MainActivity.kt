@@ -43,7 +43,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
@@ -144,34 +146,42 @@ class MainActivity :
 
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
-            val cursor = contentResolver.query(intent.data!!, null, null, null, null)
-
-            var userId = ""
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    // userId @ server
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
-                }
-
-                cursor.close()
+            val contactUri = intent.data!!
+            lifecycleScope.launch {
+                val userId = withContext(Dispatchers.IO) { readUserIdOfContact(contactUri) }
+                openChatOfContact(userId, intent.type)
             }
+        }
+    }
 
-            when (intent.type) {
-                "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
-                    val user = userId.substringBeforeLast("@")
-                    val baseUrl = userId.substringAfterLast("@")
-                    val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
+    // the contacts provider lives in another process: a binder call, not for the main thread
+    private fun readUserIdOfContact(contactUri: Uri): String {
+        var userId = ""
+        contentResolver.query(contactUri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                // userId @ server
+                userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
+            }
+        }
+        return userId
+    }
 
-                    val currentUser = defaultAccountProvider.getDefaultUserBlocking()
-                    if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
-                        startConversation(user)
-                    } else {
-                        Snackbar.make(
-                            binding.root,
-                            R.string.nc_phone_book_integration_account_not_found,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
+    private fun openChatOfContact(userId: String, intentType: String?) {
+        when (intentType) {
+            "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
+                val user = userId.substringBeforeLast("@")
+                val baseUrl = userId.substringAfterLast("@")
+                val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
+
+                val currentUser = defaultAccountProvider.getDefaultUserBlocking()
+                if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                    startConversation(user)
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.nc_phone_book_integration_account_not_found,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }
