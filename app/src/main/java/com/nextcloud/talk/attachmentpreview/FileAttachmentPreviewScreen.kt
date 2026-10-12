@@ -111,6 +111,7 @@ internal fun FileAttachmentPreviewContent(
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
     // The type comes from the descriptions, which are read off the main thread: asking a content provider
     // (e.g. Nextcloud Files) for it during composition would block the main thread on every recomposition.
+    val allDescribed = fileDescriptions.size == currentFiles.size
     val hasCompressibleMedia = fileDescriptions.any { isCompressible(it.mimeType) }
 
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
@@ -207,7 +208,7 @@ internal fun FileAttachmentPreviewContent(
                 },
                 onHighQualityChange = { highQuality -> compressImages = !highQuality },
                 onAllowUpdateChange = { allowUpdate = it },
-                sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing,
+                sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing && allDescribed,
                 onSend = {
                     onSend(viewModel.selectedFiles(), caption, compressImages && hasCompressibleMedia, allowUpdate)
                 }
