@@ -178,7 +178,7 @@ internal fun FileAttachmentPreviewContent(
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
-                sendEnabled = currentFiles.isNotEmpty(),
+                sendEnabled = currentFiles.isNotEmpty() && fileDescriptions.size == currentFiles.size,
                 onSend = {
                     onSend(currentFiles.toList(), caption, compressImages && hasCompressibleMedia, allowUpdate)
                 }
