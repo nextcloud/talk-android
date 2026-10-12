@@ -992,7 +992,6 @@ class ConversationInfoViewModel @Inject constructor(
     private fun accepted(response: GenericOverall): Boolean =
         response.ocs?.meta?.statusCode.let { it == null || it == NO_STATUS_CODE || it == HTTP_OK }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleImportantConversation(credentials: String, baseUrl: String, roomToken: String) {
         val displayedValue = _uiState.value.importantConversation
         val newValue = !displayedValue
@@ -1020,7 +1019,6 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun toggleSensitiveConversation(credentials: String, baseUrl: String, roomToken: String) {
         val displayedValue = _uiState.value.sensitiveConversation
         val newValue = !displayedValue

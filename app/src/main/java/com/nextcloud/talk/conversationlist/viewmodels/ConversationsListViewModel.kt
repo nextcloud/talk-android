@@ -639,11 +639,6 @@ class ConversationsListViewModel @AssistedInject constructor(
     }
 
     /**
-     * Removes the room [token] that [user] has just left from the list. The room stays hidden
-     * until the full sync that deletes its row has finished; un-hiding it before would show the
-     * still stored row again for as long as the sync takes.
-     */
-    /**
      * Keeps a conversation the user left or deleted out of the list until the sync that drops it for
      * good has landed, so it cannot flash back in between the request succeeding and the list
      * catching up.
