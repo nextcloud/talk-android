@@ -52,20 +52,22 @@ suspend fun <T> optimisticAction(
     // is there to prevent
     val revertUninterruptibly: suspend () -> Unit = { withContext(NonCancellable) { revert?.invoke() } }
 
-    return try {
-        val answer = revertOnCancellation(revertUninterruptibly) {
+    val answer = try {
+        revertOnCancellation(revertUninterruptibly) {
             withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isTransientFailure) {
                 request()
             }
         }
-        if (!isConfirmed(answer)) {
-            revertUninterruptibly()
-        }
-        Result.success(answer)
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
         revertUninterruptibly()
-        Result.failure(e)
+        return Result.failure(e)
     }
+
+    // kept outside the try, so a revert that throws here is not caught and run a second time
+    if (!isConfirmed(answer)) {
+        revertUninterruptibly()
+    }
+    return Result.success(answer)
 }

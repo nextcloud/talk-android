@@ -105,6 +105,28 @@ class OptimisticActionTest {
         }
 
     @Test
+    fun `a revert that fails after a refusal in the payload is not run twice`() =
+        runTest {
+            var reverts = 0
+
+            val result = runCatching {
+                optimisticAction(
+                    apply = {
+                        {
+                            reverts++
+                            throw IllegalStateException("database closed")
+                        }
+                    },
+                    isConfirmed = { answer: String -> answer == "ok" },
+                    request = { "refused" }
+                )
+            }
+
+            assertTrue(result.exceptionOrNull() is IllegalStateException)
+            assertEquals(1, reverts)
+        }
+
+    @Test
     fun `nothing is taken back when nothing was applied`() =
         runTest {
             val result = optimisticAction<String>(apply = { null }, request = { throw forbidden() })
