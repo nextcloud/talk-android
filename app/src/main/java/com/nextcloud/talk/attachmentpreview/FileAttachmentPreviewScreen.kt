@@ -69,7 +69,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.FileUtils
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.launch
 import java.io.File
@@ -101,9 +100,8 @@ internal fun FileAttachmentPreviewContent(
 ) {
     val context = LocalContext.current
     val currentFiles = viewModel.files
-    val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
-    var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
+    var compressImages by rememberSaveable { mutableStateOf(initialCompressImages) }
     var allowUpdate by rememberSaveable { mutableStateOf(false) }
     var drawingUri by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -111,6 +109,9 @@ internal fun FileAttachmentPreviewContent(
         viewModel.describeFiles(compressImages)
     }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
+    // The type comes from the descriptions, which are read off the main thread: asking a content provider
+    // (e.g. Nextcloud Files) for it during composition would block the main thread on every recomposition.
+    val hasCompressibleMedia = fileDescriptions.any { isCompressible(it.mimeType) }
 
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
@@ -207,7 +208,9 @@ internal fun FileAttachmentPreviewContent(
                 onHighQualityChange = { highQuality -> compressImages = !highQuality },
                 onAllowUpdateChange = { allowUpdate = it },
                 sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing,
-                onSend = { onSend(viewModel.selectedFiles(), caption, compressImages, allowUpdate) }
+                onSend = {
+                    onSend(viewModel.selectedFiles(), caption, compressImages && hasCompressibleMedia, allowUpdate)
+                }
             )
         }
 
