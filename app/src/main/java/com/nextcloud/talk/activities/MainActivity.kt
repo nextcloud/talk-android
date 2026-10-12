@@ -44,6 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -64,6 +65,8 @@ class MainActivity :
     override val skipLockCheckOnResume: Boolean = true
 
     private val disposables = CompositeDisposable()
+
+    private var contactLookupJob: Job? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -147,7 +150,7 @@ class MainActivity :
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
             val contactUri = intent.data!!
-            lifecycleScope.launch {
+            contactLookupJob = lifecycleScope.launch {
                 val userId = withContext(Dispatchers.IO) { readUserIdOfContact(contactUri) }
                 openChatOfContact(userId, intent.type)
             }
@@ -233,6 +236,8 @@ class MainActivity :
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
         // the contact lookup is asynchronous: keep the new intent for a recreation before it finishes
         setIntent(intent)
+        // a slower lookup of an older intent must not open its chat after this newer intent
+        contactLookupJob?.cancel()
         handleIntent(intent)
     }
 
