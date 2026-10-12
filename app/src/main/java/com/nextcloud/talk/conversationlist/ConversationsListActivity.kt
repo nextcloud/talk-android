@@ -941,13 +941,17 @@ class ConversationsListActivity : BaseActivity() {
                 return
             }
 
+            val conversation = selectedConversation
+            val files = filesToShare ?: return
             lifecycleScope.launch {
                 // the share intent hands over uris of other apps: querying their names is a binder call
                 val fileNamesWithLineBreaks = withContext(Dispatchers.IO) {
-                    filesToShare!!.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
+                    files.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
                         FileUtils.getFileName(it.toUri(), context)
                     }
                 }
+                // another conversation was picked while the names were read: that click shows its own dialog
+                if (selectedConversation !== conversation || filesToShare !== files) return@launch
                 showSendFilesConfirmDialog(fileNamesWithLineBreaks)
             }
         } else {
