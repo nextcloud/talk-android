@@ -18,18 +18,25 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
+import java.io.IOException
 import java.net.URLDecoder
 
 @Suppress("TooManyFunctions", "ReturnCount")
-class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLoginDataSource) {
+class LoginRepository(
+    val network: NetworkLoginDataSource,
+    val local: LocalLoginDataSource,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
 
     companion object {
         val TAG: String = LoginRepository::class.java.simpleName
         private const val INTERVAL = 250L
+        private const val NETWORK_ERROR_INTERVAL = 3000L
         private const val HTTP_OK = 200
         private const val USER_KEY = "user:"
         private const val SERVER_KEY = "server:"
@@ -57,19 +64,27 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     private var accountToReauthorize: Long? = null
     private var shouldLoop = true
 
-    suspend fun pollLogin(response: LoginResponse): LoginCompletion? =
-        withContext(Dispatchers.IO) {
-            while (shouldLoop) {
-                val loginData = network.performLoginFlowV2(response)
-                if (loginData == null) {
-                    break
+    /**
+     * Polls until the login is confirmed. Responses other than 200 mean "not confirmed yet", and so does a failed
+     * request (no network, interrupted connection), which is retried after a longer pause. The poll ends with null
+     * when the server answers 200 with an unusable body, when the login is canceled, or when [keepPolling] is false.
+     * It is checked again after every pause.
+     */
+    suspend fun pollLogin(response: LoginResponse, keepPolling: () -> Boolean = { true }): LoginCompletion? =
+        withContext(ioDispatcher) {
+            while (shouldLoop && keepPolling()) {
+                val pause = try {
+                    val loginData = network.performLoginFlowV2(response) ?: return@withContext null
+                    if (loginData.status == HTTP_OK) {
+                        return@withContext loginData
+                    }
+                    INTERVAL // No response yet, retry
+                } catch (e: IOException) {
+                    Log.w(TAG, "Polling the login failed, retrying: $e")
+                    NETWORK_ERROR_INTERVAL
                 }
 
-                if (loginData.status == HTTP_OK) {
-                    return@withContext loginData
-                }
-
-                delay(INTERVAL) // No response yet, retry
+                delay(pause)
             }
             return@withContext null
         }
@@ -194,6 +209,14 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
             val response = network.anonymouslyPostLoginRequest(baseUrl)
             return@withContext response
         }
+
+    /**
+     * Continues a login that was already started, the next step is [pollLogin] with its response.
+     */
+    fun resumeLoginFlow(reAuth: Boolean, accountToReauthorize: Long?) {
+        shouldReauthorizeUser = reAuth
+        this.accountToReauthorize = accountToReauthorize
+    }
 
     /**
      * Ends normal login process by canceling the polling

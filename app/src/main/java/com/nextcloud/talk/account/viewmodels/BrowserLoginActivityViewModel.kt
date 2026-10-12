@@ -8,10 +8,13 @@
 package com.nextcloud.talk.account.viewmodels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.PendingBrowserLoginStore
 import com.nextcloud.talk.account.data.model.LoginResponse
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -58,6 +61,10 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     // death the view model is new, so the login is started again.
     private var isLoginStarted = false
 
+    // A login request or poll still in flight when the login is canceled must not save its response, which a later
+    // return via the launcher icon would resume, nor complete the login.
+    private var isLoginCanceled = false
+
     private fun startLoginOnce(): Boolean {
         if (isLoginStarted) return false
         isLoginStarted = true
@@ -68,6 +75,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         if (!startLoginOnce()) return
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth, accountToReauthorize)
+            if (isLoginCanceled) return@launch
             savedResponse = response
 
             if (response == null) {
@@ -75,15 +83,46 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
                 return@launch
             }
 
+            // Survives this view model, see PendingBrowserLoginStore.
+            PendingBrowserLoginStore.save(response, reAuth, accountToReauthorize)
+
             _initialLoginRequestState.value =
                 InitialLoginViewState.InitialLoginRequestSuccess(response.loginUrl)
         }
     }
 
+    /**
+     * Continues the browser login that a destroyed [com.nextcloud.talk.account.BrowserLoginActivity] left unfinished:
+     * no new login request and no new browser, only the polling of the saved response.
+     */
+    fun resumeWebBrowserLogin() {
+        if (!startLoginOnce()) return
+        val pending = PendingBrowserLoginStore.active()
+        if (pending == null) {
+            _postLoginState.value = PostLoginViewState.PostLoginError
+            return
+        }
+        savedResponse = pending.response
+        repository.resumeLoginFlow(pending.reAuth, pending.accountToReauthorize)
+        handleWebBrowserLogin()
+    }
+
     fun handleWebBrowserLogin() {
         savedResponse?.let { response ->
             viewModelScope.launch {
-                val loginCompletionResponse = repository.pollLogin(response)
+                // Canceled or expired logins stop the poll, also while it waits to retry.
+                val isLoginPending = { PendingBrowserLoginStore.active() != null }
+                val loginCompletionResponse = runCatching { repository.pollLogin(response, isLoginPending) }
+                    .onFailure { e ->
+                        // This view model is cleared: the login stays pending.
+                        if (e is CancellationException) throw e
+                        Log.e(TAG, "Polling the browser login failed", e)
+                    }
+                    .getOrNull()
+                // A login canceled while its poll was in flight is not completed.
+                if (isLoginCanceled) return@launch
+                // Only reached when the poll ended. If this view model is cleared first, the login stays pending.
+                PendingBrowserLoginStore.clear()
 
                 if (loginCompletionResponse == null) {
                     _postLoginState.value = PostLoginViewState.PostLoginError
@@ -128,5 +167,9 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
             LoginRepository.LoginResult.DifferentAccount -> PostLoginViewState.PostLoginDifferentAccount
         }
 
-    fun cancelLogin() = repository.cancelLoginFlow()
+    fun cancelLogin() {
+        isLoginCanceled = true
+        PendingBrowserLoginStore.clear()
+        repository.cancelLoginFlow()
+    }
 }

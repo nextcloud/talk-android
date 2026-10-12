@@ -20,6 +20,11 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +39,8 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.io.IOException
+import javax.net.ssl.SSLException
 
 @Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 @ExperimentalCoroutinesApi
@@ -61,6 +68,10 @@ class LoginRepositoryTest {
         MockitoAnnotations.openMocks(this)
         repo = LoginRepository(networkLoginDataSource, localLoginDataSource)
     }
+
+    // The poll runs on the scheduler of the test, so its pauses are virtual.
+    private fun TestScope.virtualTimeRepo() =
+        LoginRepository(networkLoginDataSource, localLoginDataSource, StandardTestDispatcher(testScheduler))
 
     // ========== pollLogin() Tests ==========
 
@@ -188,6 +199,67 @@ class LoginRepositoryTest {
             val result = repo.pollLogin(mockResponse)
 
             // Assert
+            assertNull(result)
+            verify(networkLoginDataSource, never()).performLoginFlowV2(any())
+        }
+
+    @Test
+    fun `pollLogin retries after a failed request and returns the login`() =
+        runTest {
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val successfulLoginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
+                .thenThrow(SSLException("Read error"))
+                .thenThrow(IOException("no network"))
+                .thenReturn(successfulLoginData)
+
+            val result = virtualTimeRepo().pollLogin(mockResponse)
+
+            assertEquals(successfulLoginData, result)
+            verify(networkLoginDataSource, times(3)).performLoginFlowV2(mockResponse)
+        }
+
+    @Test
+    fun `pollLogin pauses between retries of a failed request`() =
+        runTest {
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            whenever(networkLoginDataSource.performLoginFlowV2(mockResponse)).thenThrow(IOException("no network"))
+            val repository = virtualTimeRepo()
+
+            val job = backgroundScope.launch { repository.pollLogin(mockResponse) }
+            runCurrent()
+            verify(networkLoginDataSource, times(1)).performLoginFlowV2(mockResponse)
+            advanceTimeBy(1000)
+            verify(networkLoginDataSource, times(1)).performLoginFlowV2(mockResponse)
+            advanceTimeBy(3000)
+            runCurrent()
+            verify(networkLoginDataSource, times(2)).performLoginFlowV2(mockResponse)
+            job.cancel()
+        }
+
+    @Test
+    fun `pollLogin ends when keepPolling turns false during the retries`() =
+        runTest {
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            whenever(networkLoginDataSource.performLoginFlowV2(mockResponse)).thenThrow(IOException("no network"))
+            var keep = true
+
+            val result = virtualTimeRepo().pollLogin(mockResponse) {
+                // Becomes false after the first request, while the poll is in its pause.
+                keep.also { keep = false }
+            }
+
+            assertNull(result)
+            verify(networkLoginDataSource, times(1)).performLoginFlowV2(mockResponse)
+        }
+
+    @Test
+    fun `pollLogin does not request when keepPolling is already false`() =
+        runTest {
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+
+            val result = virtualTimeRepo().pollLogin(mockResponse) { false }
+
             assertNull(result)
             verify(networkLoginDataSource, never()).performLoginFlowV2(any())
         }
