@@ -1160,6 +1160,10 @@ class ChatActivity :
             val filePath = fileURI.toString()
 
             val duration = withContext(Dispatchers.IO) { getAudioDuration(file.absolutePath).toInt() }
+
+            // another voice message may have been selected while the duration was read
+            if (chatViewModel.currentVoiceMessage?.jsonMessageId != message.jsonMessageId) return true
+
             chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
 
             fun finishPreparing() {
@@ -3907,6 +3911,8 @@ class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
                         downloadFileToCache(message, false) {
