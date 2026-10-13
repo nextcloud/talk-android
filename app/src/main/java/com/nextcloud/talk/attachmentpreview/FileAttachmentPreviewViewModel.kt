@@ -11,7 +11,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.core.net.toUri
+import com.nextcloud.talk.utils.FileUtils
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +31,20 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
 
     private val _descriptionsByUri = mutableStateMapOf<String, FileDescription>()
     val descriptionsByUri: Map<String, FileDescription> get() = _descriptionsByUri
+
+    private val _mimeTypesByUri = mutableStateMapOf<String, String?>()
+
+    /** Cheap, type-only counterpart of [descriptionsByUri]; filled before the (slow) full descriptions. */
+    val mimeTypesByUri: Map<String, String?> get() = _mimeTypesByUri
+
+    internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    internal var describer: (Context, String, Boolean) -> FileDescription = ::describeFile
+    internal var mimeTypeResolver: (Context, String) -> String? = { ctx, uri ->
+        FileUtils.resolveMimeType(ctx, uri.toUri())
+    }
+
+    private var describeJob: Job? = null
+    private var mimeTypeJob: Job? = null
 
     /** No-op after the first call, so re-entering (e.g. after rotation) doesn't wipe edits made since. */
     fun setInitialFiles(initialFiles: List<String>) {
@@ -56,10 +74,26 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
      */
     fun describeFiles(compress: Boolean) {
         val snapshot = files.toList()
-        viewModelScope.launch(Dispatchers.IO) {
-            val described = snapshot.associateWith { describeFile(context, it, compress) }
+        // a stale job finishing last would retainAll away the description of a file added since
+        describeJob?.cancel()
+        describeJob = viewModelScope.launch(ioDispatcher) {
+            val described = snapshot.associateWith { describer(context, it, compress) }
             _descriptionsByUri.putAll(described)
             _descriptionsByUri.keys.retainAll(described.keys)
+        }
+    }
+
+    /**
+     * Resolves only the MIME type of every current file. Unlike [describeFiles] this does not copy
+     * content:// files into the cache, so it is quick enough not to hold anything back.
+     */
+    fun resolveMimeTypes() {
+        val snapshot = files.toList()
+        mimeTypeJob?.cancel()
+        mimeTypeJob = viewModelScope.launch(ioDispatcher) {
+            val resolved = snapshot.associateWith { mimeTypeResolver(context, it) }
+            _mimeTypesByUri.putAll(resolved)
+            _mimeTypesByUri.keys.retainAll(resolved.keys)
         }
     }
 }

@@ -95,10 +95,14 @@ internal fun FileAttachmentPreviewContent(
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
     }
+    LaunchedEffect(currentFiles.toSet()) {
+        viewModel.resolveMimeTypes()
+    }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
-    // The type comes from the descriptions, which are read off the main thread: asking a content provider
-    // (e.g. Nextcloud Files) for it during composition would block the main thread on every recomposition.
-    val hasCompressibleMedia = fileDescriptions.any { isCompressible(it.mimeType) }
+    // The type is resolved off the main thread, separately from the full descriptions: asking a content provider
+    // (e.g. Nextcloud Files) for it during composition would block the main thread on every recomposition,
+    // while waiting for the descriptions would hold Send back until large files are copied.
+    val hasCompressibleMedia = currentFiles.any { isCompressible(viewModel.mimeTypesByUri[it]) }
 
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
@@ -178,9 +182,9 @@ internal fun FileAttachmentPreviewContent(
             CaptionInputBar(
                 caption = caption,
                 onCaptionChange = { caption = it },
-                sendEnabled = currentFiles.isNotEmpty() && fileDescriptions.size == currentFiles.size,
+                sendEnabled = currentFiles.isNotEmpty(),
                 onSend = {
-                    onSend(currentFiles.toList(), caption, compressImages && hasCompressibleMedia, allowUpdate)
+                    onSend(currentFiles.toList(), caption, compressImages, allowUpdate)
                 }
             )
         }
