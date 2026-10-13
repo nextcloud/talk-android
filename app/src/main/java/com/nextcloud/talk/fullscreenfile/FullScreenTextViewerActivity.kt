@@ -60,14 +60,14 @@ class FullScreenTextViewerActivity : BaseActivity() {
         }
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
-            val text by produceState("", textFile) {
-                value = withContext(Dispatchers.IO) { readFileOrNull(textFile) } ?: run {
+            val text by produceState<String?>(null, textFile) {
+                value = withContext(Dispatchers.IO) { readTextFileOrNull(textFile) } ?: run {
                     // the system may clear the cache directory while the viewer is not on screen
                     Log.e(TAG, "Could not read the text file: ${textFile.name}")
                     Toast.makeText(this@FullScreenTextViewerActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG)
                         .show()
                     finish()
-                    ""
+                    null
                 }
             }
             MaterialTheme(colorScheme = colorScheme) {
@@ -125,15 +125,15 @@ class FullScreenTextViewerActivity : BaseActivity() {
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
 
-    private fun readFileOrNull(file: File): String? =
-        try {
-            file.inputStream().use { it.readBytes().toString(Charsets.UTF_8) }
-        } catch (e: IOException) {
-            Log.w(TAG, "Failed to read the text file", e)
-            null
-        }
-
     companion object {
         private val TAG = FullScreenTextViewerActivity::class.java.simpleName
+
+        internal fun readTextFileOrNull(file: File): String? =
+            try {
+                file.inputStream().use { it.readBytes().toString(Charsets.UTF_8) }
+            } catch (e: IOException) {
+                Log.w(TAG, "Failed to read the text file", e)
+                null
+            }
     }
 }
