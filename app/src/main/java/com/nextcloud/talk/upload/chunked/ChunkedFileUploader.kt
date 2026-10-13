@@ -60,6 +60,8 @@ class ChunkedFileUploader(
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
     private var remoteChunkUrl: String
+
+    @Volatile
     private var uploadFolderUri: String = ""
 
     @Volatile
@@ -81,25 +83,46 @@ class ChunkedFileUploader(
      */
     @Throws(IOException::class)
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
-        uploadFolderUri = folderUriOf(localFile)
-        return try {
-            uploadParts(localFile, mimeType, targetPath)
+        prepare(localFile)
+        return uploadMissingParts(localFile, mimeType) && assembleOrRestart(localFile, mimeType, targetPath)
+    }
+
+    /** @return false when the upload was stopped while it was sent again after a rejected assembly */
+    private fun assembleOrRestart(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
+        try {
+            assembleChunks(uploadFolderUri, targetPath, localFile.length())
         } catch (e: HttpException) {
             // The server refused the assembly (e.g. the length does not match its parts): the parts it holds are
             // not usable, so remove them once per upload (the worker remembers it) and send the file again.
+            // A rejected part is not this case and is thrown by uploadMissingParts.
             if (e.code != HTTP_BAD_REQUEST || isRestarted()) {
                 throw e
             }
             Log.w(TAG, "Server rejected the assembly, uploading the file again", e)
             deleteUploadFolder()
             markRestarted()
-            uploadParts(localFile, mimeType, targetPath)
+            if (!uploadMissingParts(localFile, mimeType)) {
+                return false
+            }
+            assembleChunks(uploadFolderUri, targetPath, localFile.length())
+        }
+        return true
+    }
+
+    /**
+     * Fixes the upload folder of [localFile], so that [abortUpload] can remove it. Done by [upload] when not called
+     * before; hashes the whole file once.
+     */
+    fun prepare(localFile: File) {
+        if (uploadFolderUri.isEmpty()) {
+            uploadFolderUri = folderUriOf(localFile)
         }
     }
 
     private fun folderUriOf(localFile: File) = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
 
-    private fun uploadParts(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
+    /** @return false when the upload was stopped before every missing part was sent */
+    private fun uploadMissingParts(localFile: File, mimeType: MediaType?): Boolean {
         val davResource = DavResource(
             okHttpClientNoRedirects!!,
             uploadFolderUri.toHttpUrlOrNull()!!
@@ -119,12 +142,7 @@ class ChunkedFileUploader(
             }
             uploadChunk(localFile, uploadFolderUri, mimeType, missingChunk, missingChunk.length())
         }
-
-        val isComplete = !isUploadAborted
-        if (isComplete) {
-            assembleChunks(uploadFolderUri, targetPath, localFile.length())
-        }
-        return isComplete
+        return !isUploadAborted
     }
 
     @Suppress("Detekt.ThrowsCount")
@@ -176,9 +194,10 @@ class ChunkedFileUploader(
                 Unit
             }
         } catch (e: DavException) {
-            if (e is HttpException && e.code >= HTTP_SERVER_ERROR) {
+            if (e is HttpException && (e.code >= HTTP_SERVER_ERROR || e.code in LISTING_ERROR_CODES)) {
                 throw e
             }
+            // Failures of the request itself (login, rate limit, server) are no answer about the parts either.
             // An IOException is not caught on purpose: a lost network must repeat the request,
             // not send the whole file again.
             // PROPFIND on Nextcloud chunked-upload folders can return unexpected responses
@@ -225,9 +244,10 @@ class ChunkedFileUploader(
 
     internal fun checkMissingChunks(chunks: List<Chunk>, length: Long): List<Chunk> {
         val missingChunks: MutableList<Chunk> = java.util.ArrayList()
+        val sortedChunks = chunks.sortedBy { it.start }
         var start: Long = 0
         while (start <= length) {
-            val nextChunk: Chunk? = findNextFittingChunk(chunks, start)
+            val nextChunk: Chunk? = findNextFittingChunk(sortedChunks, start)
             if (nextChunk == null) {
                 // create new chunk
                 val end: Long = if (start + CHUNK_SIZE <= length) {
@@ -508,6 +528,7 @@ class ChunkedFileUploader(
         private const val METHOD_NOT_ALLOWED_CODE: Int = 405
         private const val HTTP_BAD_REQUEST: Int = 400
         private const val HTTP_SERVER_ERROR: Int = 500
+        private val LISTING_ERROR_CODES = setOf(401, 403, 408, 429)
         private const val CHUNK_NUMBER_LENGTH = 16
         private val CHUNK_NAME_REGEX = Regex("^\\d{16}-\\d{16}$")
         private const val TOTAL_LENGTH_HEADER = "OC-Total-Length"

@@ -17,6 +17,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -29,6 +30,8 @@ import org.mockito.kotlin.eq
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.InputStream
 
 // Regression coverage for a crash: the system Photo Picker's ephemeral content:// uris can have
 // their read grant revoked at any point after being handed to us (e.g. while a batch upload is
@@ -105,6 +108,36 @@ class FileUtilsContentResolverTest {
     }
 
     @Test
+    fun `copyFileToCache leaves no partial file when the stream breaks off`() {
+        val context = mock(Context::class.java)
+        val resolver = mock(ContentResolver::class.java)
+        `when`(context.contentResolver).thenReturn(resolver)
+        `when`(resolver.openInputStream(contentUri)).thenReturn(BrokenStream(COPY_SIZE))
+
+        try {
+            FileUtils.copyFileToCache(context, contentUri, "photo.jpg", tempFolder.root)
+            fail("expected the copy to throw")
+        } catch (e: IOException) {
+            // the caller retries
+        }
+        assertFalse(java.io.File(tempFolder.root, "photo.jpg").exists())
+    }
+
+    @Test
+    fun `ensureInDir copies a file from outside and keeps one that is already inside`() {
+        val dir = tempFolder.newFolder("workspace")
+        val outside = tempFolder.newFile("camera.jpg").apply { writeBytes(ByteArray(COPY_SIZE)) }
+        val inside = java.io.File(dir, "inside.jpg").apply { writeBytes(ByteArray(COPY_SIZE)) }
+
+        val copy = FileUtils.ensureInDir(outside, dir)
+
+        assertEquals(dir.canonicalFile, copy.canonicalFile.parentFile)
+        assertEquals(COPY_SIZE.toLong(), copy.length())
+        assertTrue(outside.exists())
+        assertEquals(inside, FileUtils.ensureInDir(inside, dir))
+    }
+
+    @Test
     fun `a copy is complete when it is not empty`() {
         assertTrue(FileUtils.isCompleteCopy(10))
         assertFalse(FileUtils.isCompleteCopy(0))
@@ -129,6 +162,14 @@ class FileUtilsContentResolverTest {
         `when`(resolver.query(uri, null, null, null, null))
             .thenThrow(SecurityException("permission revoked"))
         return context
+    }
+
+    /** Delivers [size] bytes, then fails like a dropped connection. */
+    private class BrokenStream(private var size: Int) : InputStream() {
+        override fun read(): Int {
+            if (size-- <= 0) throw IOException("stream broke off")
+            return 0
+        }
     }
 
     companion object {

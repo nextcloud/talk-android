@@ -306,6 +306,37 @@ class ChunkedFileUploaderResumeTest {
     }
 
     @Test
+    fun `a rejected part is an error and keeps the parts on the server`() {
+        putResponseCode = BAD_REQUEST
+
+        try {
+            uploader.upload(file, null, "/Talk/video.mp4")
+            fail("expected the upload to throw")
+        } catch (e: HttpException) {
+            assertEquals(BAD_REQUEST, e.code)
+        }
+        assertEquals(0, requests.count { it.method == "DELETE" })
+        assertEquals(0, requests.count { it.method == "MOVE" })
+    }
+
+    @Test
+    fun `login, rate limit and timeout answers while listing the parts are errors`() {
+        for (code in listOf(401, 403, 408, 429)) {
+            requests.clear()
+            propfindResponseCode = code
+            val fresh = ChunkedFileUploader(client, user, mock(), mock())
+
+            try {
+                fresh.upload(file, null, "/Talk/video.mp4")
+                fail("expected the upload to throw for $code")
+            } catch (e: HttpException) {
+                assertEquals(code, e.code)
+            }
+            assertEquals(emptyList<String>(), putPaths())
+        }
+    }
+
+    @Test
     fun `an assembly rejected twice is an error`() {
         moveResponseCodes.addAll(listOf(BAD_REQUEST, BAD_REQUEST))
 
@@ -334,6 +365,15 @@ class ChunkedFileUploaderResumeTest {
     @Test
     fun `missing parts are planned around existing ones`() {
         val onServer = listOf(Chunk(0, CHUNK - 1L), Chunk(2L * CHUNK, FILE_SIZE.toLong()))
+
+        val missing = uploader.checkMissingChunks(onServer, FILE_SIZE.toLong())
+
+        assertEquals(listOf(Chunk(CHUNK.toLong(), 2L * CHUNK - 1)), missing)
+    }
+
+    @Test
+    fun `parts listed out of order are not uploaded again`() {
+        val onServer = listOf(Chunk(2L * CHUNK, FILE_SIZE.toLong()), Chunk(0, CHUNK - 1L))
 
         val missing = uploader.checkMissingChunks(onServer, FILE_SIZE.toLong())
 

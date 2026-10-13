@@ -181,6 +181,23 @@ object FileUtils {
         return file
     }
 
+    /**
+     * Returns [file] when it already lies in [dir], otherwise a copy of it there. A file:// source is the caller's
+     * own file in the cache; a copy in [dir] keeps the prepared upload independent of it.
+     */
+    fun ensureInDir(file: File, dir: File): File {
+        if (file.canonicalFile.parentFile == dir.canonicalFile) {
+            return file
+        }
+        val copy = File(dir, file.name)
+        try {
+            return file.copyTo(copy, overwrite = true)
+        } catch (e: IOException) {
+            copy.delete()
+            throw e
+        }
+    }
+
     @Suppress("NestedBlockDepth")
     fun copyFileToCache(
         context: Context,
@@ -200,7 +217,13 @@ object FileUtils {
             Log.d(TAG, "file is already in cache")
             true
         } else {
-            copyToFile(context, sourceFileUri, cachedFile)
+            try {
+                copyToFile(context, sourceFileUri, cachedFile)
+            } catch (e: IOException) {
+                // A later call would take the partial file for a finished copy.
+                cachedFile.delete()
+                throw e
+            }
         }
         if (!ready) {
             cachedFile.delete()
