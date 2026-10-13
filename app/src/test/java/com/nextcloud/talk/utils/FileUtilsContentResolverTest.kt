@@ -124,6 +124,33 @@ class FileUtilsContentResolverTest {
     }
 
     @Test
+    fun `copyFileToCache leaves no file when the copy dies with a runtime exception`() {
+        val context = mock(Context::class.java)
+        val resolver = mock(ContentResolver::class.java)
+        `when`(context.contentResolver).thenReturn(resolver)
+        `when`(resolver.openInputStream(contentUri)).thenReturn(CrashingStream(COPY_SIZE))
+
+        try {
+            FileUtils.copyFileToCache(context, contentUri, "photo.jpg", tempFolder.root)
+            fail("expected the copy to throw")
+        } catch (e: IllegalStateException) {
+            // the caller retries
+        }
+        assertEquals(0, tempFolder.root.list()!!.size)
+    }
+
+    @Test
+    fun `copyFileToCache copies again over an empty file left by an earlier run`() {
+        java.io.File(tempFolder.root, "photo.jpg").writeBytes(ByteArray(0))
+        val context = contextWithStream(ByteArray(COPY_SIZE))
+
+        val copy = FileUtils.copyFileToCache(context, contentUri, "photo.jpg", tempFolder.root)
+
+        assertEquals(COPY_SIZE.toLong(), copy!!.length())
+        assertEquals(listOf("photo.jpg"), tempFolder.root.list()!!.toList())
+    }
+
+    @Test
     fun `ensureInDir copies a file from outside and keeps one that is already inside`() {
         val dir = tempFolder.newFolder("workspace")
         val outside = tempFolder.newFile("camera.jpg").apply { writeBytes(ByteArray(COPY_SIZE)) }
@@ -168,6 +195,13 @@ class FileUtilsContentResolverTest {
     private class BrokenStream(private var size: Int) : InputStream() {
         override fun read(): Int {
             if (size-- <= 0) throw IOException("stream broke off")
+            return 0
+        }
+    }
+
+    private class CrashingStream(private var size: Int) : InputStream() {
+        override fun read(): Int {
+            if (size-- <= 0) throw IllegalStateException("provider crashed")
             return 0
         }
     }

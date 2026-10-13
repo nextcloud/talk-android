@@ -28,6 +28,7 @@ object FileUtils {
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
     private const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+    private const val PARTIAL_SUFFIX = ".part"
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -213,22 +214,26 @@ object FileUtils {
             return null
         }
 
-        val ready = if (cachedFile.exists()) {
+        val ready = if (cachedFile.exists() && isCompleteCopy(cachedFile.length())) {
             Log.d(TAG, "file is already in cache")
             true
         } else {
-            try {
-                copyToFile(context, sourceFileUri, cachedFile)
-            } catch (e: IOException) {
-                // A later call would take the partial file for a finished copy.
-                cachedFile.delete()
-                throw e
-            }
+            copyAside(context, sourceFileUri, cachedFile)
         }
         if (!ready) {
             cachedFile.delete()
         }
         return cachedFile.takeIf { ready }
+    }
+
+    /** Copies aside and renames after success: a copy that dies half way never becomes the cached file. */
+    private fun copyAside(context: Context, sourceFileUri: Uri, target: File): Boolean {
+        val partial = File(target.parentFile, "${target.name}.${System.nanoTime()}$PARTIAL_SUFFIX")
+        return try {
+            copyToFile(context, sourceFileUri, partial) && partial.renameTo(target)
+        } finally {
+            partial.delete()
+        }
     }
 
     /** Returns false when the source could not be read completely, so the copy is not a usable file. */
