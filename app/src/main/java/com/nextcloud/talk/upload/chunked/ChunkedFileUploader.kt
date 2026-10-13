@@ -64,7 +64,16 @@ class ChunkedFileUploader(
         remoteChunkUrl = ApiUtils.getUrlForChunkedUpload(currentUser.baseUrl!!, currentUser.userId!!)
     }
 
+    /**
+     * Uploads [localFile] in chunks, skipping chunks that are already on the server, and assembles them at
+     * [targetPath].
+     *
+     * @return false if the upload was aborted or the server answered with an HTTP error
+     * @throws IOException on I/O failures (e.g. connection loss or timeout) and chunk folder creation failures,
+     * so the caller can retry; chunks already on the server are skipped as long as [localFile] is unchanged
+     */
     @Suppress("Detekt.TooGenericExceptionCaught")
+    @Throws(IOException::class)
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
             var isUploadSuccessful = true
@@ -94,6 +103,8 @@ class ChunkedFileUploader(
                 assembleChunks(uploadFolderUri, targetPath)
             }
             return isUploadSuccessful
+        } catch (e: IOException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong in ChunkedFileUploader", e)
             return false

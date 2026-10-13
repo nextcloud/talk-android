@@ -7,6 +7,7 @@
 package com.nextcloud.talk.utils
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -167,6 +168,47 @@ class FileUtilsTest {
             val result = FileUtils.getSharedAttachmentsDirectory(baseDir)
 
             assertNull(result)
+        } finally {
+            baseDir.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun isSharedAttachmentProviderPath_acceptsFileInSharedAttachments() {
+        val baseDir = createTempDir()
+        try {
+            assertTrue(FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("shared_attachments", "image.jpg")))
+            assertTrue(
+                FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("shared_attachments", "42", "image.jpg"))
+            )
+        } finally {
+            baseDir.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun isSharedAttachmentProviderPath_rejectsOtherProviderPaths() {
+        val baseDir = createTempDir()
+        try {
+            assertFalse(FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("logs", "log.txt")))
+            assertFalse(FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("photos", "photo.jpg")))
+            assertFalse(FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("shared_attachments")))
+            assertFalse(FileUtils.isSharedAttachmentProviderPath(baseDir, emptyList()))
+        } finally {
+            baseDir.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun isSharedAttachmentProviderPath_rejectsTraversal() {
+        val baseDir = createTempDir()
+        try {
+            assertFalse(
+                FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("shared_attachments", "..", "secret.db"))
+            )
+            assertFalse(
+                FileUtils.isSharedAttachmentProviderPath(baseDir, listOf("shared_attachments", "../secret.db"))
+            )
         } finally {
             baseDir.deleteRecursively()
         }

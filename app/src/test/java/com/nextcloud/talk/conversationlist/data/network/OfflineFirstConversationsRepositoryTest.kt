@@ -13,6 +13,7 @@ import android.os.PowerManager
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -59,6 +61,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 import org.mockito.kotlin.whenever
+import retrofit2.HttpException
+import retrofit2.Response
 
 /**
  * Covers [OfflineFirstConversationsRepository] at the unit level, with all collaborators mocked.
@@ -195,7 +199,7 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.getRooms(user()).join()
@@ -211,13 +215,13 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.syncRooms(user())
 
             collector.cancel()
-            assertEquals(emptyList<Throwable>(), errors)
+            assertEquals(emptyList<OfflineConversationsRepository.SyncError>(), errors)
         }
 
     @Test
@@ -587,6 +591,29 @@ class OfflineFirstConversationsRepositoryTest {
             collector.cancel()
         }
 
+    @Test
+    fun `getRooms reports rejected credentials without retrying even when conversations are cached`() =
+        runBlocking {
+            val cached = conversation(token = ROOM_TOKEN, lastActivity = 1, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(cached)))
+            val unauthorized = HttpException(Response.error<Any>(HTTP_UNAUTHORIZED, "".toResponseBody()))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(Observable.error(unauthorized))
+
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
+            val collector = launch(Dispatchers.IO) {
+                repository.syncErrorFlow.collect { errors.add(it) }
+            }
+            // syncErrorFlow has no replay, so the collector must already be subscribed before the error is emitted
+            delay(COLLECTOR_STARTUP_MILLIS)
+
+            repository.getRooms(user()).join()
+
+            awaitUntil { errors.isNotEmpty() }
+            assertEquals(OfflineConversationsRepository.SyncError(ACCOUNT_ID, unauthorized), errors.first())
+            verify(network, times(1)).getRooms(any(), any(), any(), anyOrNull())
+            collector.cancel()
+        }
+
     private fun stubCatchUpRoom() {
         wheneverBlocking { chatMessageSyncer.catchUpRoom(any(), any(), anyOrNull(), any()) }
             .thenReturn(ChatMessageSyncer.SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null))
@@ -643,6 +670,7 @@ class OfflineFirstConversationsRepositoryTest {
         private const val POLL_INTERVAL_MILLIS = 50L
         private const val COLLECTOR_STARTUP_MILLIS = 100L
         private const val ROOM_LIST_TIMEOUT_MILLIS = 1000L
+        private const val HTTP_UNAUTHORIZED = 401
     }
 }
 

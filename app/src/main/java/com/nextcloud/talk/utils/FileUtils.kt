@@ -64,6 +64,19 @@ object FileUtils {
     }
 
     /**
+     * Checks whether the [pathSegments] of an own FileProvider uri point to a file inside the
+     * dedicated shared attachments cache directory.
+     */
+    fun isSharedAttachmentProviderPath(cacheDir: File, pathSegments: List<String>): Boolean {
+        if (pathSegments.size < 2 || pathSegments.first() != SHARED_ATTACHMENTS_DIRECTORY) return false
+        var resolvedFile: File? = File(cacheDir, SHARED_ATTACHMENTS_DIRECTORY)
+        for (segment in pathSegments.drop(1)) {
+            resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
+        }
+        return resolvedFile != null
+    }
+
+    /**
      * Resolves an untrusted file name inside [baseDirectory] and rejects traversal attempts.
      */
     fun resolveFileInDirectory(baseDirectory: File, untrustedFileName: String?): File? {
