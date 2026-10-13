@@ -8,6 +8,9 @@
 package com.nextcloud.talk.utils
 
 import android.graphics.Bitmap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -19,6 +22,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -65,5 +70,17 @@ class PickImageTest {
         assertNotNull(result)
         assertEquals(target, result)
         assertTrue(target.length() > 0)
+    }
+
+    @Test
+    fun bodyIsClosedWhenTheScopeIsAlreadyCancelled() {
+        val body = mock(ResponseBody::class.java)
+        var started = false
+        val scope = CoroutineScope(Job().apply { cancel() } + Dispatchers.Unconfined)
+
+        scope.launchClosing(body) { started = true }
+
+        assertTrue(!started)
+        verify(body).close()
     }
 }

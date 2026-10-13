@@ -30,7 +30,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -44,6 +46,16 @@ import java.io.InputStream
 import javax.inject.Inject
 
 private const val FULL_QUALITY: Int = 100
+
+/**
+ * Launches [block] and closes [body] when the job completes, including when the scope is already cancelled
+ * (e.g. the activity was destroyed) and [block] never starts. Closing twice is safe.
+ */
+internal fun CoroutineScope.launchClosing(body: ResponseBody?, block: suspend CoroutineScope.() -> Unit): Job {
+    val job = launch(block = block)
+    job.invokeOnCompletion { body?.close() }
+    return job
+}
 
 /**
  * Decodes the avatar thumbnail and writes it as PNG. Blocking, call off the main thread.
@@ -150,7 +162,7 @@ class PickImage(private val activity: ComponentActivity, private var currentUser
         downloadCall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 val body = response.body()
-                activity.lifecycleScope.launch {
+                activity.lifecycleScope.launchClosing(body) {
                     val file = withContext(Dispatchers.IO) {
                         decodeAvatarToFile(body) { createTempFileForAvatar() }
                     }
