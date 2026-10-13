@@ -34,6 +34,7 @@ object FileUtils {
     // named by their senders, so an attachment can't take the place of the copies. In the files directory, not in the
     // cache, which the system clears when the storage runs low, also while their uploads still wait for the network.
     internal const val SHARED_FILE_COPIES_DIRECTORY = "shared_file_copies"
+    private const val PARTIAL_SUFFIX = ".part"
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -263,22 +264,26 @@ object FileUtils {
             return null
         }
 
-        val ready = if (cachedFile.exists()) {
+        val ready = if (cachedFile.exists() && isCompleteCopy(cachedFile.length())) {
             Log.d(TAG, "file is already in cache")
             true
         } else {
-            try {
-                copyToFile(context, sourceFileUri, cachedFile)
-            } catch (e: IOException) {
-                // A later call would take the partial file for a finished copy.
-                cachedFile.delete()
-                throw e
-            }
+            copyAside(context, sourceFileUri, cachedFile)
         }
         if (!ready) {
             cachedFile.delete()
         }
         return cachedFile.takeIf { ready }
+    }
+
+    /** Copies aside and renames after success: a copy that dies half way never becomes the cached file. */
+    private fun copyAside(context: Context, sourceFileUri: Uri, target: File): Boolean {
+        val partial = File(target.parentFile, "${target.name}.${System.nanoTime()}$PARTIAL_SUFFIX")
+        return try {
+            copyToFile(context, sourceFileUri, partial) && partial.renameTo(target)
+        } finally {
+            partial.delete()
+        }
     }
 
     /** Returns false when the source could not be read completely, so the copy is not a usable file. */
