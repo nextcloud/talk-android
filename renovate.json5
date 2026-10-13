@@ -5,6 +5,9 @@
     ":gitSignOff"
   ],
   "timezone": "Europe/Berlin",
+  "prConcurrentLimit": 10,
+  "rebaseWhen": "conflicted",
+  "schedule": ["* 1-4 * * *"],
   "labels": [
     "dependencies",
     "3. to review"
