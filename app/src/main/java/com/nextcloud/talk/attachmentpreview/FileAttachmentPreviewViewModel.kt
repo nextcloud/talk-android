@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -38,6 +39,7 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
     val mimeTypesByUri: Map<String, String?> get() = _mimeTypesByUri
 
     internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    internal var mainDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     internal var describer: (Context, String, Boolean) -> FileDescription = ::describeFile
     internal var mimeTypeResolver: (Context, String) -> String? = { ctx, uri ->
         FileUtils.resolveMimeType(ctx, uri.toUri())
@@ -78,8 +80,12 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
         describeJob?.cancel()
         describeJob = viewModelScope.launch(ioDispatcher) {
             val described = snapshot.associateWith { describer(context, it, compress) }
-            _descriptionsByUri.putAll(described)
-            _descriptionsByUri.keys.retainAll(described.keys)
+            // the blocking copy above cannot be interrupted, so a cancelled job reaches this point too;
+            // withContext checks for cancellation and runs on main, where cancel() is also called
+            withContext(mainDispatcher) {
+                _descriptionsByUri.putAll(described)
+                _descriptionsByUri.keys.retainAll(described.keys)
+            }
         }
     }
 
@@ -92,8 +98,10 @@ internal class FileAttachmentPreviewViewModel @Inject constructor(private val co
         mimeTypeJob?.cancel()
         mimeTypeJob = viewModelScope.launch(ioDispatcher) {
             val resolved = snapshot.associateWith { mimeTypeResolver(context, it) }
-            _mimeTypesByUri.putAll(resolved)
-            _mimeTypesByUri.keys.retainAll(resolved.keys)
+            withContext(mainDispatcher) {
+                _mimeTypesByUri.putAll(resolved)
+                _mimeTypesByUri.keys.retainAll(resolved.keys)
+            }
         }
     }
 }

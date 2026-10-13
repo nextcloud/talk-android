@@ -17,6 +17,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -34,6 +36,7 @@ class FileAttachmentPreviewViewModelTest {
     fun setUp() {
         viewModel = FileAttachmentPreviewViewModel(mock(Context::class.java)).apply {
             ioDispatcher = StandardTestDispatcher(testScope.testScheduler)
+            mainDispatcher = StandardTestDispatcher(testScope.testScheduler)
             describer = { _, uri, _ ->
                 described.add(uri)
                 FileDescription(uri, uri, MediaKind.OTHER, "text/plain", null)
@@ -77,5 +80,40 @@ class FileAttachmentPreviewViewModelTest {
 
         assertEquals(listOf("content://a/1.txt", "content://a/2.txt"), described)
         assertEquals(setOf("content://a/1.txt", "content://a/2.txt"), viewModel.descriptionsByUri.keys)
+    }
+
+    @Test
+    fun `a cancelled describeFiles job that is still copying does not drop a newer description`() {
+        val started = CountDownLatch(1)
+        val release = CountDownLatch(1)
+        viewModel.ioDispatcher = kotlinx.coroutines.Dispatchers.IO
+        viewModel.describer = { _, uri, _ ->
+            if (uri == "content://a/1.txt" && started.count == 1L) {
+                started.countDown()
+                release.await(5, TimeUnit.SECONDS)
+            }
+            FileDescription(uri, uri, MediaKind.OTHER, "text/plain", null)
+        }
+        viewModel.setInitialFiles(listOf("content://a/1.txt"))
+        viewModel.describeFiles(true)
+        assertTrue(started.await(5, TimeUnit.SECONDS))
+
+        viewModel.addFiles(listOf("content://a/2.txt"))
+        viewModel.describeFiles(true)
+        Thread.sleep(300)
+        testScope.advanceUntilIdle()
+        assertEquals(
+            setOf("content://a/1.txt", "content://a/2.txt"),
+            viewModel.descriptionsByUri.keys
+        )
+
+        release.countDown()
+        Thread.sleep(300)
+        testScope.advanceUntilIdle()
+
+        assertEquals(
+            setOf("content://a/1.txt", "content://a/2.txt"),
+            viewModel.descriptionsByUri.keys
+        )
     }
 }
