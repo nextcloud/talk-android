@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,7 @@ import androidx.core.content.FileProvider
 import autodagger.AutoInjector
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -38,7 +40,38 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import javax.inject.Inject
+
+private const val FULL_QUALITY: Int = 100
+
+/**
+ * Decodes the avatar thumbnail and writes it as PNG. Blocking, call off the main thread.
+ * Returns null and logs the cause if the body is missing, does not decode or cannot be written.
+ */
+internal fun decodeAvatarToFile(
+    body: ResponseBody?,
+    decode: (InputStream) -> Bitmap? = { BitmapFactory.decodeStream(it) },
+    createFile: () -> File
+): File? {
+    val bitmap = body?.use { decode(it.byteStream()) }
+    if (bitmap == null) {
+        val cause = if (body == null) "request returned no body" else "could not be decoded"
+        Log.e("PickImage", "Avatar thumbnail $cause")
+        return null
+    }
+    return try {
+        val file = createFile()
+        val written = FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out)
+        }
+        if (!written) throw IOException("Bitmap.compress returned false")
+        file
+    } catch (e: IOException) {
+        Log.e("PickImage", "Error saving the avatar image", e)
+        null
+    }
+}
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PickImage(private val activity: ComponentActivity, private var currentUser: User?) {
@@ -116,36 +149,28 @@ class PickImage(private val activity: ComponentActivity, private var currentUser
         )
         downloadCall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val body = response.body() ?: return
+                val body = response.body()
                 activity.lifecycleScope.launch {
                     val file = withContext(Dispatchers.IO) {
-                        BitmapFactory.decodeStream(body.byteStream())?.let { saveBitmapToTempFile(it) }
+                        decodeAvatarToFile(body) { createTempFileForAvatar() }
                     }
-                    file?.let { selectLocal(startImagePickerForResult, it) }
+                    if (file != null) {
+                        selectLocal(startImagePickerForResult, file)
+                    } else {
+                        showAvatarError()
+                    }
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                // unused atm
+                Log.e(TAG, "Failed to download the avatar thumbnail", t)
+                showAvatarError()
             }
         })
     }
 
-    private fun saveBitmapToTempFile(bitmap: Bitmap): File? {
-        try {
-            val file = createTempFileForAvatar()
-            try {
-                FileOutputStream(file).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out)
-                }
-                return file
-            } catch (e: IOException) {
-                Log.e(TAG, "Error compressing bitmap", e)
-            }
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating temporary avatar image", e)
-        }
-        return null
+    private fun showAvatarError() {
+        Toast.makeText(activity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
     }
 
     private fun createTempFileForAvatar(): File {
@@ -193,7 +218,6 @@ class PickImage(private val activity: ComponentActivity, private var currentUser
         private const val MAX_SIZE: Int = 1024
         private const val AVATAR_PATH = "photos/avatar.png"
         private const val CAMERA_CAPTURE_PATH = "photos/camera_capture.jpg"
-        private const val FULL_QUALITY: Int = 100
         const val REQUEST_PERMISSION_CAMERA: Int = 1
     }
 }
