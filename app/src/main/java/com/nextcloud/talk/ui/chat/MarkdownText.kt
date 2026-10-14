@@ -24,8 +24,6 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.Patterns
 import android.util.TypedValue
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -131,36 +129,11 @@ fun MarkdownText(
             AndroidView(
                 modifier = if (hasTable) Modifier.fillMaxWidth() else Modifier,
                 factory = { ctx ->
-                    val longPressUpGuard = LongPressUpGuard()
-                    val gestureDetector = GestureDetector(
+                    val longPressListener = linkTouchListener(
                         ctx,
-                        object : GestureDetector.SimpleOnGestureListener() {
-                            override fun onSingleTapUp(e: MotionEvent): Boolean {
-                                onClickState.value?.invoke()
-                                return false
-                            }
-
-                            override fun onLongPress(e: MotionEvent) {
-                                longPressUpGuard.onLongPress()
-                                onLongClickState.value(messageId)
-                            }
-                        }
+                        onTap = { onClickState.value?.invoke() },
+                        onLongPress = { onLongClickState.value(messageId) }
                     )
-                    val longPressListener = View.OnTouchListener { view, event ->
-                        if (longPressUpGuard.shouldConsume(event.action)) {
-                            // Long press already opened the message menu: do not let LinkMovementMethod
-                            // treat this UP as a link tap. Send CANCEL so the pressed state and the link
-                            // highlight are cleared.
-                            gestureDetector.onTouchEvent(event)
-                            cancelTouchSequence(view, event)
-                            return@OnTouchListener true
-                        }
-                        if (event.action == MotionEvent.ACTION_UP) {
-                            view.performClick()
-                        }
-                        gestureDetector.onTouchEvent(event)
-                        false
-                    }
                     LongPressTextView(ctx).apply {
                         isFocusable = false
                         isFocusableInTouchMode = false

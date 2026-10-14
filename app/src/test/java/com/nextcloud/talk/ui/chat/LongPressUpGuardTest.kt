@@ -58,4 +58,23 @@ class LongPressUpGuardTest {
         assertFalse(guard.shouldConsume(MotionEvent.ACTION_MOVE))
         assertTrue(guard.shouldConsume(MotionEvent.ACTION_UP))
     }
+
+    @Test
+    fun `second finger up does not consume and does not reset the flag`() {
+        val guard = LongPressUpGuard()
+        guard.shouldConsume(MotionEvent.ACTION_DOWN)
+        guard.onLongPress()
+        assertFalse(guard.shouldConsume(MotionEvent.ACTION_POINTER_DOWN))
+        assertFalse(guard.shouldConsume(MotionEvent.ACTION_POINTER_UP))
+        assertTrue(guard.shouldConsume(MotionEvent.ACTION_UP))
+    }
+
+    @Test
+    fun `second finger down does not reset the flag`() {
+        val guard = LongPressUpGuard()
+        guard.shouldConsume(MotionEvent.ACTION_DOWN)
+        guard.onLongPress()
+        guard.shouldConsume(MotionEvent.ACTION_POINTER_DOWN)
+        assertTrue(guard.shouldConsume(MotionEvent.ACTION_UP))
+    }
 }
