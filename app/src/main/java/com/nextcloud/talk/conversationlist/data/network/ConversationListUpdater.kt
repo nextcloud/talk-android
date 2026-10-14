@@ -173,7 +173,8 @@ class ConversationListUpdater @Inject constructor(
             messageId = lastReadMessage.toLong(),
             excludedActorId = target.user.userId!!
         )
-        conversationsDao.updateReadState(conversation.internalId, conversation.lastReadMessage, unreadMessages)
+        // only the count: the marker read above must not be written back over one stored while counting
+        conversationsDao.updateUnreadMessages(conversation.internalId, unreadMessages)
         Log.d(TAG, "Local unread count for room ${target.roomToken}: unread=$unreadMessages (marker not sent yet)")
     }
 

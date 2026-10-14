@@ -304,6 +304,10 @@ class DummyConversationDaoImpl : ConversationsDao {
         /* */
     }
 
+    override suspend fun updateUnreadMessages(internalId: String, unreadMessages: Int) {
+        /* */
+    }
+
     override fun insertConversation(conversation: ConversationEntity) {
         /* */
     }

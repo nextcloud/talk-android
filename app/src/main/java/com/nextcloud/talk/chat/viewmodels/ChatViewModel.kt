@@ -2077,8 +2077,14 @@ class ChatViewModel @AssistedInject constructor(
     // Runs on the background dispatcher of the rebuild pipeline (flowOn in observeMessages): it only
     // publishes the immutable list through a volatile field. localLastReadMessage is written on the main
     // thread only, so the own message is combined with it when the marker is decided (readMarkerToSend).
+    //
+    // Only the list of the newest messages counts. A window around a quoted or searched message (search and
+    // old chat block mode) can lie far from them and miss the own message just sent, which must still be
+    // known when the chat is left from there.
     private fun onMessagesChanged(messages: List<ChatMessage>) {
-        latestMessages = messages
+        if (chatMode.value == ChatMode.DEFAULT_MODE || contextAnchorMessageId.value == null) {
+            latestMessages = messages
+        }
     }
 
     fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
