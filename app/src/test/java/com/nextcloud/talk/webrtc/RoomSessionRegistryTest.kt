@@ -72,15 +72,21 @@ class RoomSessionRegistryTest {
     }
 
     @Test
-    fun answerToLeaveDropsLateJoinOfTheLeftRoom() {
+    fun lateJoinOfTheLeftRoomIsNotAcceptedBeforeTheAnswerToLeave() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice", "alice", "Alice"))
         registry.reset()
 
         registry.onJoin(listOf(user("s-late", "bob", "Bob")))
+
+        assertTrue("no typing message to the late session", registry.sessionIdsExcept(null).isEmpty())
+        assertFalse("typing message of the late session is ignored", registry.contains("s-late"))
+
         registry.onRoomResponse("")
 
-        assertTrue(registry.sessionIdsExcept(null).isEmpty())
+        registry.onJoin(listOf(user("s-after-leave", "bob", "Bob")))
+
+        assertTrue("no join is accepted after the answer to the leave", registry.sessionIdsExcept(null).isEmpty())
     }
 
     @Test

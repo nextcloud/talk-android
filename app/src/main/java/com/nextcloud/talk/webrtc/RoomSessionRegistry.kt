@@ -53,8 +53,13 @@ class RoomSessionRegistry {
     /**
      * Processes the "join" list of a room event: maps with "sessionid", optional "userid" and optional "user"
      * (with "displayname"). A guest joins without "userid" and stays in the registry.
+     *
+     * Ignored while no room is known (after [reset] or the answer to a leave): the server sends the answer to a join
+     * before the list of the sessions, so a join arriving without a room is a late event of a room which was left.
      */
     fun onJoin(joinEvents: List<Map<String, Any>>?) {
+        if (roomToken.isNullOrEmpty()) return
+
         joinEvents?.forEach { event ->
             val sessionId = event["sessionid"] as? String ?: return@forEach
             val participant = ParticipantDto()
