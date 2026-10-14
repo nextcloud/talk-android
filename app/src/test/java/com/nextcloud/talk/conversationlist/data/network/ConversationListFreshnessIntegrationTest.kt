@@ -251,6 +251,24 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `unread count only write keeps the stored marker and registers nothing pending`() {
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 10, unreadMessages = 2)
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(
+                    Response.success(overall(message(10), message(11), message(12)))
+                )
+            syncer.catchUpRoom(target(), lastReadMessage = 10, unreadMessages = 2)
+
+            conversationListUpdater.updateLocalUnreadCountOnly(target(), lastReadMessage = 12)
+
+            assertEquals("the marker the server knows stays", 10, conversationEntity().lastReadMessage)
+            assertEquals("the list shows the messages as read", 0, conversationEntity().unreadMessages)
+            assertEquals(null, conversationListUpdater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+        }
+    }
+
+    @Test
     fun `a sync cannot revert the read state while its marker is pending`() {
         val user = user(withKeepNotificationsCapability = false)
         val repository = OfflineFirstConversationsRepository(
