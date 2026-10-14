@@ -131,6 +131,7 @@ fun MarkdownText(
             AndroidView(
                 modifier = if (hasTable) Modifier.fillMaxWidth() else Modifier,
                 factory = { ctx ->
+                    val longPressUpGuard = LongPressUpGuard()
                     val gestureDetector = GestureDetector(
                         ctx,
                         object : GestureDetector.SimpleOnGestureListener() {
@@ -140,11 +141,20 @@ fun MarkdownText(
                             }
 
                             override fun onLongPress(e: MotionEvent) {
+                                longPressUpGuard.onLongPress()
                                 onLongClickState.value(messageId)
                             }
                         }
                     )
                     val longPressListener = View.OnTouchListener { view, event ->
+                        if (longPressUpGuard.shouldConsume(event.action)) {
+                            // Long press already opened the message menu: do not let LinkMovementMethod
+                            // treat this UP as a link tap. Send CANCEL so the pressed state and the link
+                            // highlight are cleared.
+                            gestureDetector.onTouchEvent(event)
+                            cancelTouchSequence(view, event)
+                            return@OnTouchListener true
+                        }
                         if (event.action == MotionEvent.ACTION_UP) {
                             view.performClick()
                         }
