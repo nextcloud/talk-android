@@ -15,6 +15,12 @@
   ],
   "packageRules": [
     {
+      // 5.23.0 has a regression in the Maker implementation that breaks the Android tests.
+      // Remove this rule once a later release fixes it, so mockito can move again.
+      "matchPackageNames": ["org.mockito:mockito-core", "org.mockito:mockito-android"],
+      "allowedVersions": "!/^5[.]23[.]0$/"
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
     },
