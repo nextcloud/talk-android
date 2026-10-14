@@ -151,8 +151,10 @@ class MainActivity :
         if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
             val contactUri = intent.data!!
             contactLookupJob = lifecycleScope.launch {
-                val userId = withContext(Dispatchers.IO) { readUserIdOfContact(contactUri) }
-                openChatOfContact(userId, intent.type)
+                val (userId, currentUser) = withContext(Dispatchers.IO) {
+                    readUserIdOfContact(contactUri) to defaultAccountProvider.getDefaultUserBlocking()
+                }
+                openChatOfContact(userId, currentUser, intent.type)
             }
         }
     }
@@ -169,16 +171,15 @@ class MainActivity :
         return userId
     }
 
-    private fun openChatOfContact(userId: String, intentType: String?) {
+    private fun openChatOfContact(userId: String, currentUser: User?, intentType: String?) {
         when (intentType) {
             "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                 val user = userId.substringBeforeLast("@")
                 val baseUrl = userId.substringAfterLast("@")
                 val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
 
-                val currentUser = defaultAccountProvider.getDefaultUserBlocking()
                 if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
-                    startConversation(user)
+                    startConversation(user, currentUser)
                 } else {
                     Snackbar.make(
                         binding.root,
@@ -193,10 +194,8 @@ class MainActivity :
     private fun isTrustedContactsUri(uri: Uri): Boolean =
         uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority == ContactsContract.AUTHORITY
 
-    private fun startConversation(userId: String) {
+    private fun startConversation(userId: String, currentUser: User) {
         val roomType = "1"
-
-        val currentUser = defaultAccountProvider.getDefaultUserBlocking() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
