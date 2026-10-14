@@ -161,6 +161,19 @@ class UploadCancelCascadeTest {
         assertDelivered("ref-b", "ref-c")
     }
 
+    @Test
+    fun `a cancelled upload whose placeholder cannot be removed does not fail the uploads behind it`() {
+        val workManager = initWorkManager()
+        whenever(chatDao.deleteTempChatMessageIfPending(any(), any())).thenThrow(IllegalStateException("db closed"))
+        val (a, b, c) = enqueue("ref-a", "ref-b", "ref-c")
+
+        UploadAndShareFilesWorker.cancelUpload("ref-a", a)
+        awaitAllFinished(workManager, a, b, c)
+
+        assertAllSucceeded(workManager, a, b, c)
+        assertDelivered("ref-b", "ref-c")
+    }
+
     private fun assertAllSucceeded(workManager: WorkManager, vararg ids: UUID) {
         assertEquals(
             ids.map { WorkInfo.State.SUCCEEDED },

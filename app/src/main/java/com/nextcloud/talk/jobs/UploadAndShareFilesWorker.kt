@@ -302,11 +302,18 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
      * The user cancelled the upload. Removes the parts from the server (here, in the worker thread, not in
      * onStopped, which runs inside a WorkManager cancellation handler) and the placeholder message. Returns
      * success, not failure or cancelled: a failed or cancelled work in the queue of the conversation makes
-     * WorkManager delete the other uploads of that queue when the next file is sent.
+     * WorkManager delete the other uploads of that queue when the next file is sent. For the same reason nothing
+     * is thrown from here: an exception ends the work as failed, and WorkManager fails the uploads queued behind it.
      */
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelledResult(): Result {
         abortRemote(deleteUploadedFile = true)
-        deletePlaceholder()
+        try {
+            deletePlaceholder()
+        } catch (e: Exception) {
+            // The chat removes the placeholder of a cancelled upload itself; a failed write must not end the work.
+            Log.w(TAG, "Could not remove the placeholder of the cancelled upload", e)
+        }
         return Result.success()
     }
 
