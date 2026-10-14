@@ -2109,16 +2109,24 @@ class ChatViewModel @AssistedInject constructor(
         Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
 
         val messages = latestMessages
-        val marker = readMarkerToSend(
+        val newestOwnMessageId = newestOwnMessageId(messages)
+        val marker = localReadMarker(
             localLastReadMessage = localLastReadMessage,
             conversationLastReadMessage = conversationLastReadMessage,
-            newestOwnMessageId = newestOwnMessageId(messages),
-            hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(messages)
+            newestOwnMessageId = newestOwnMessageId
         )
         if (marker != null) {
-            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage...")
+            // The local read state is always written; only the server request waits for an own message
+            // that is still on its way (offline queue included), see readMarkerToSend.
+            val sendToServer = readMarkerToSend(
+                localLastReadMessage = localLastReadMessage,
+                conversationLastReadMessage = conversationLastReadMessage,
+                newestOwnMessageId = newestOwnMessageId,
+                hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(messages)
+            ) != null
+            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage, sendToServer: $sendToServer")
 
-            setChatReadMessage(marker)
+            setChatReadMessage(marker, sendToServer)
         }
     }
 
@@ -2161,7 +2169,7 @@ class ChatViewModel @AssistedInject constructor(
         )
     }
 
-    fun setChatReadMessage(lastReadMessage: Int) {
+    fun setChatReadMessage(lastReadMessage: Int, sendToServer: Boolean = true) {
         // marking as read is the explicit counterpart of marking as unread and hands the read marker
         // back to the automatic handling
         keepMarkedAsUnread = false
@@ -2170,6 +2178,7 @@ class ChatViewModel @AssistedInject constructor(
         viewModelScope.launch {
             chatRepository.updateLocalReadState(lastReadMessage)
         }
+        if (!sendToServer) return
         ReadMarkerSyncWorker.enqueue(
             context = NextcloudTalkApplication.sharedApplication!!.applicationContext,
             userId = currentUser.id!!,
@@ -2768,11 +2777,20 @@ class ChatViewModel @AssistedInject constructor(
             conversationLastReadMessage: Int,
             newestOwnMessageId: Int?,
             hasUnconfirmedOwnMessage: Boolean
-        ): Int? {
-            if (hasUnconfirmedOwnMessage) return null
-            val marker = maxOf(localLastReadMessage, newestOwnMessageId ?: 0)
-            return marker.takeIf { it > conversationLastReadMessage }
-        }
+        ): Int? =
+            localReadMarker(localLastReadMessage, conversationLastReadMessage, newestOwnMessageId)
+                .takeUnless { hasUnconfirmedOwnMessage }
+
+        /**
+         * The read marker to write into the local conversation state, or null when it has it already.
+         * Unlike [readMarkerToSend] it does not wait for an own message that is on its way: the local state
+         * is not sent anywhere, so the conversation list loses its unread count right away, also offline.
+         */
+        internal fun localReadMarker(
+            localLastReadMessage: Int,
+            conversationLastReadMessage: Int,
+            newestOwnMessageId: Int?
+        ): Int? = maxOf(localLastReadMessage, newestOwnMessageId ?: 0).takeIf { it > conversationLastReadMessage }
 
         /**
          * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the

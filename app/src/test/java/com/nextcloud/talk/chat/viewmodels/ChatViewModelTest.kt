@@ -427,6 +427,41 @@ class ChatViewModelTest {
         assertNull(readMarker(listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))))
     }
 
+    private fun localReadMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
+        ChatViewModel.localReadMarker(
+            localLastReadMessage = local,
+            conversationLastReadMessage = conversation,
+            newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages)
+        )
+
+    @Test
+    fun `local read state is still written while the own message waits to be sent offline`() {
+        // 5 unread messages read offline, then a reply that is only queued (PENDING): the server request
+        // has to wait, the conversation list must not keep showing the messages as unread
+        val messages = listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))
+
+        assertNull(readMarker(messages))
+        assertEquals(2623, localReadMarker(messages))
+    }
+
+    @Test
+    fun `local read state is still written while the own message waits for its server copy`() {
+        val messages = listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))
+
+        assertNull(readMarker(messages))
+        assertEquals(2623, localReadMarker(messages))
+    }
+
+    @Test
+    fun `local read state is not written below the own message just sent`() {
+        assertEquals(2624, localReadMarker(listOf(ownMessage(2624), incomingMessage(2623))))
+    }
+
+    @Test
+    fun `local read state is not written when the conversation already has it`() {
+        assertNull(localReadMarker(listOf(incomingMessage(2623)), local = 2620, conversation = 2620))
+    }
+
     @Test
     fun `read marker is sent when the own message failed to send`() {
         assertEquals(2623, readMarker(listOf(ownMessage(-77, SendStatus.FAILED), incomingMessage(2623))))
