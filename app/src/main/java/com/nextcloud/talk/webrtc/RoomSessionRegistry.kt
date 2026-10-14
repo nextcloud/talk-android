@@ -25,12 +25,13 @@ class RoomSessionRegistry {
     private val sessions = ConcurrentHashMap<String, ParticipantDto>()
 
     @Volatile
-    private var roomToken: String = ""
+    private var roomToken: String? = null
 
     /**
      * The server answers every room join/leave with a "room" message. It is sent before the list of the sessions
      * of the new room, so clearing here cannot drop sessions of the new room. The same room (re-sent for an
-     * unchanged join) keeps its sessions.
+     * unchanged join) keeps its sessions. After [reset] the room is unknown, so the answer to a leave (empty room)
+     * clears as well: it drops what late events of the left room added in between.
      */
     fun onRoomResponse(newRoomToken: String?) {
         val token = newRoomToken ?: ""
@@ -46,7 +47,7 @@ class RoomSessionRegistry {
      */
     fun reset() {
         sessions.clear()
-        roomToken = ""
+        roomToken = null
     }
 
     /**

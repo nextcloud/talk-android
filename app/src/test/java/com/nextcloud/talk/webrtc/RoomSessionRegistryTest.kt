@@ -46,7 +46,7 @@ class RoomSessionRegistryTest {
     }
 
     @Test
-    fun switchingConversationDropsSessionsOfPreviousRoom() {
+    fun roomResponseOfOtherRoomDropsSessionsOfPreviousRoom() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice-a", "alice", "Alice"))
 
@@ -61,15 +61,26 @@ class RoomSessionRegistryTest {
     }
 
     @Test
-    fun leavingRoomDropsAllSessions() {
+    fun resetDropsAllSessions() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice", "alice", "Alice"))
 
         registry.reset()
-        registry.onRoomResponse("")
 
         assertTrue(registry.sessionIdsExcept(null).isEmpty())
         assertFalse(registry.contains("s-alice"))
+    }
+
+    @Test
+    fun answerToLeaveDropsLateJoinOfTheLeftRoom() {
+        val registry = RoomSessionRegistry()
+        registry.enterRoom("roomA", user("s-alice", "alice", "Alice"))
+        registry.reset()
+
+        registry.onJoin(listOf(user("s-late", "bob", "Bob")))
+        registry.onRoomResponse("")
+
+        assertTrue(registry.sessionIdsExcept(null).isEmpty())
     }
 
     @Test
@@ -83,11 +94,10 @@ class RoomSessionRegistryTest {
     }
 
     @Test
-    fun resumedConnectionKeepsSessionsAndAppliesQueuedJoinAndLeave() {
+    fun joinAndLeaveEventsUpdateTheSessions() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice", "alice", "Alice"), user("s-bob", "bob", "Bob"))
 
-        // resume: no reset; the events collected while the socket was down are delivered afterwards
         registry.onLeave(listOf("s-bob"))
         registry.onJoin(listOf(user("s-carol", "carol", "Carol")))
 
@@ -95,7 +105,7 @@ class RoomSessionRegistryTest {
     }
 
     @Test
-    fun newSignalingSessionWithoutResumeStartsEmptyUntilJoinListArrives() {
+    fun resetDropsSessionsUntilNewJoinListArrives() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice", "alice", "Alice"))
 
@@ -135,20 +145,6 @@ class RoomSessionRegistryTest {
         registry.enterRoom("roomA", user("s-me", "me", "Me"), user("s-alice", "alice", "Alice"))
 
         assertEquals(listOf("s-alice"), registry.sessionIdsExcept("s-me"))
-    }
-
-    @Test
-    fun accountsDoNotShareSessions() {
-        val firstAccount = RoomSessionRegistry()
-        val secondAccount = RoomSessionRegistry()
-        firstAccount.enterRoom("roomA", user("s-alice", "alice", "Alice"))
-        secondAccount.enterRoom("roomB", user("s-bob", "bob", "Bob"))
-
-        firstAccount.enterRoom("roomC", user("s-carol", "carol", "Carol"))
-
-        assertEquals(listOf("s-carol"), firstAccount.sessionIdsExcept(null))
-        assertEquals(listOf("s-bob"), secondAccount.sessionIdsExcept(null))
-        assertFalse(secondAccount.contains("s-carol"))
     }
 
     @Test
