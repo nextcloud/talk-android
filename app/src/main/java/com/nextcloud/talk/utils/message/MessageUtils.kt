@@ -54,7 +54,7 @@ class MessageUtils(val context: Context) {
     }
 
     fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned =
-        buildMarkwon(context, textColor).toMarkdown(markdown)
+        buildMarkwon(context, textColor).toMarkdown(MarkdownTables.ensureBlankLineBeforeTables(markdown))
 
     companion object {
         private const val TAG = "MessageUtils"
