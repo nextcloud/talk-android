@@ -104,6 +104,15 @@ interface ConversationsDao {
     )
     suspend fun updateReadState(internalId: String, lastReadMessage: Int, unreadMessages: Int)
 
+    @Query(
+        """
+        UPDATE Conversations
+        SET unreadMessages = :unreadMessages
+        WHERE internalId = :internalId
+        """
+    )
+    suspend fun updateUnreadMessages(internalId: String, unreadMessages: Int)
+
     /**
      * Deletes rows in the db matching the specified [conversationIds]
      */

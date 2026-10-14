@@ -39,6 +39,7 @@ import org.robolectric.annotation.Config
  * local read state in the repository -> ReadMarkerSyncWorker. The repository is a fake that keeps the stored
  * read marker like Room does: the view model sees it as conversation.lastReadMessage afterwards.
  */
+@Suppress("TooManyFunctions")
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
 class ChatViewModelReadMarkerTest {
@@ -105,6 +106,44 @@ class ChatViewModelReadMarkerTest {
 
         assertEquals("marker is sent", 1, queuedMarkers())
         assertEquals("never below the own message", OWN_MESSAGE_ID, storedMarkerValue)
+    }
+
+    @Test
+    fun `a window around an old message does not make the view model forget a queued own message`() {
+        messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
+        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
+
+        viewModel.updateRemoteLastReadMessageIfNeeded()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertEquals("nothing is sent below the queued own message", 0, queuedMarkers())
+    }
+
+    @Test
+    fun `a window around an old message does not make the view model forget the own message just sent`() {
+        messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
+        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
+
+        viewModel.updateRemoteLastReadMessageIfNeeded()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertEquals("marker is sent", 1, queuedMarkers())
+        assertEquals("never below the own message", OWN_MESSAGE_ID, storedMarkerValue)
+    }
+
+    // the chat shows a window around a quoted or searched message that is far from the newest messages;
+    // the database then delivers that window instead of the newest messages
+    private fun openOldMessageWindow(vararg window: ChatMessage) {
+        fun field(name: String) = ChatViewModel::class.java.getDeclaredField(name).apply { isAccessible = true }
+
+        @Suppress("UNCHECKED_CAST")
+        (field("contextAnchorMessageId").get(viewModel) as MutableStateFlow<Long?>).value = OLD_MESSAGE_ID.toLong()
+        @Suppress("UNCHECKED_CAST")
+        (field("_chatMode").get(viewModel) as MutableStateFlow<ChatViewModel.ChatMode>).value =
+            ChatViewModel.ChatMode.OLD_CHATBLOCK_MODE
+        ChatViewModel::class.java.getDeclaredMethod("onMessagesChanged", List::class.java)
+            .apply { isAccessible = true }
+            .invoke(viewModel, window.toList())
     }
 
     private var storedMarkerValue = STORED_MARKER
@@ -178,5 +217,6 @@ class ChatViewModelReadMarkerTest {
         private const val STORED_MARKER = 2620
         private const val LOCAL_MARKER = 2623
         private const val OWN_MESSAGE_ID = 2624
+        private const val OLD_MESSAGE_ID = 1500
     }
 }
