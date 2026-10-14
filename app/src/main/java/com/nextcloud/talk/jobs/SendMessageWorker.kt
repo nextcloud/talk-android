@@ -27,6 +27,8 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -41,7 +43,12 @@ import javax.inject.Inject
  * potentially leaving a message stuck as PENDING with nothing left running to retry it. Work is
  * chained per conversation with [ExistingWorkPolicy.APPEND_OR_REPLACE] (mirroring
  * [UploadAndShareFilesWorker]) so messages typed in a row still arrive in the order they were
- * sent, and a failed/cancelled message ahead in the queue doesn't block the ones behind it.
+ * sent.
+ *
+ * A message that cannot be sent is recorded as [SendStatus.FAILED] on its own row and the work
+ * still finishes with [Result.success]. Reporting [Result.failure] would make WorkManager fail
+ * every work request already appended behind it: those never run, so their rows would stay
+ * [SendStatus.PENDING] with nothing left to send them.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class SendMessageWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -56,15 +63,19 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
     lateinit var chatDao: ChatMessagesDao
 
     override suspend fun doWork(): Result {
-        sharedApplication!!.componentApplication.inject(this)
+        // Invariant: dependencies that are already set (a test worker factory) are not overwritten.
+        if (!::chatDao.isInitialized) {
+            sharedApplication!!.componentApplication.inject(this)
+        }
 
         val internalConversationId = inputData.getString(KEY_INTERNAL_CONVERSATION_ID)
         val referenceId = inputData.getString(KEY_REFERENCE_ID)
         val threadTitle = inputData.getString(KEY_THREAD_TITLE)
 
         if (internalConversationId.isNullOrEmpty() || referenceId.isNullOrEmpty()) {
+            // Not Result.failure(): that would also fail the messages queued behind this one.
             Log.e(TAG, "Missing required input data, dropping message send")
-            return Result.failure()
+            return Result.success()
         }
 
         return sendMessage(internalConversationId, referenceId, threadTitle)
@@ -80,37 +91,55 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
         // than passed in via WorkManager's input data, so an edit made to a still-queued message
         // while offline (editTempChatMessage only updates this row) is picked up instead of sending
         // stale data.
-        val tempMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null)
-            .firstOrNull()
-        if (tempMessage == null) {
+        val tempMessage = try {
+            chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not read temporary message $referenceId", e)
+            // The row is unreadable, so it cannot be marked FAILED here. Retry; on the last attempt
+            // finish without failing, so the messages behind this one are still sent.
+            return if (runAttemptCount < MAX_SEND_ATTEMPTS - 1) Result.retry() else Result.success()
+        }
+        return if (tempMessage == null) {
             Log.d(TAG, "Temporary message $referenceId no longer exists, skipping send")
-            return Result.success()
-        }
-
-        val user = userManager.getUserWithId(tempMessage.accountId)
-        val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
-        if (user == null || credentials == null) {
-            Log.e(TAG, "No user or credentials found for account id ${tempMessage.accountId}, failing message send")
-            return failMessage(tempMessage)
-        }
-
-        val apiVersion = ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, tempMessage.token)
-
-        return try {
-            chatNetworkDataSource.sendChatMessage(
-                credentials,
-                url,
-                tempMessage.message,
-                tempMessage.actorDisplayName,
-                tempMessage.parentMessageId?.toInt() ?: 0,
-                tempMessage.silent,
-                referenceId,
-                threadTitle
-            )
-            updateStatus(tempMessage, SendStatus.SENT_PENDING_ACK)
-            Log.d(TAG, "sending chat message succeeded: ${tempMessage.message}")
             Result.success()
+        } else {
+            post(tempMessage, referenceId, threadTitle)
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun post(tempMessage: ChatMessageEntity, referenceId: String, threadTitle: String?): Result =
+        try {
+            val user = userManager.getUserWithId(tempMessage.accountId)
+            val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
+            if (user == null || credentials == null) {
+                Log.e(TAG, "No user or credentials for account id ${tempMessage.accountId}, failing message send")
+                failMessage(tempMessage)
+            } else {
+                val apiVersion =
+                    ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
+                val url = ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, tempMessage.token)
+
+                chatNetworkDataSource.sendChatMessage(
+                    credentials,
+                    url,
+                    tempMessage.message,
+                    tempMessage.actorDisplayName,
+                    tempMessage.parentMessageId?.toInt() ?: 0,
+                    tempMessage.silent,
+                    referenceId,
+                    threadTitle
+                )
+                updateStatus(tempMessage, SendStatus.SENT_PENDING_ACK)
+                Log.d(TAG, "sending chat message succeeded: ${tempMessage.message}")
+                Result.success()
+            }
+        } catch (e: CancellationException) {
+            // The run was stopped (lost constraint, time limit, ...) and WorkManager reschedules it,
+            // so the message is not failed; its row stays PENDING while the work request is alive.
+            throw e
         } catch (e: IOException) {
             Log.w(TAG, "Network error while sending message (attempt ${runAttemptCount + 1}/$MAX_SEND_ATTEMPTS)", e)
             retryOrFail(tempMessage)
@@ -118,7 +147,6 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
             Log.e(TAG, "Something went wrong when sending message", e)
             failMessage(tempMessage)
         }
-    }
 
     private fun retryOrFail(tempMessage: ChatMessageEntity): Result =
         if (runAttemptCount < MAX_SEND_ATTEMPTS - 1) {
@@ -127,14 +155,26 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
             failMessage(tempMessage)
         }
 
+    // Result.success(), not failure(): the failure is recorded on the row, and a failed work request
+    // would cascade to every request already queued behind it (see class doc).
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun failMessage(tempMessage: ChatMessageEntity): Result {
-        updateStatus(tempMessage, SendStatus.FAILED)
-        return Result.failure()
+        try {
+            updateStatus(tempMessage, SendStatus.FAILED)
+        } catch (e: Exception) {
+            // Still success: a failure here would fail the messages queued behind this one as well.
+            Log.e(TAG, "Could not mark message ${tempMessage.referenceId} as failed", e)
+        }
+        return Result.success()
     }
 
+    // Only the status is written: the row may be edited concurrently (editTempChatMessage).
     private fun updateStatus(tempMessage: ChatMessageEntity, status: SendStatus) {
-        tempMessage.sendStatus = status
-        chatDao.updateChatMessage(tempMessage)
+        chatDao.updateTempMessageSendStatus(
+            tempMessage.internalConversationId,
+            tempMessage.referenceId.orEmpty(),
+            status
+        )
     }
 
     companion object {
@@ -167,15 +207,24 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
 
             // Chained per conversation (not enqueueUniqueWork(referenceId, ...), which would run every
             // message fully independently) so several messages typed in a row still arrive in the
-            // order they were sent. APPEND_OR_REPLACE rather than APPEND: if the message ahead in the
-            // queue permanently failed, this starts a fresh chain instead of cascading that failure
-            // onto every message queued behind it.
+            // order they were sent. APPEND_OR_REPLACE rather than APPEND: if the chain already ended
+            // in a failed or cancelled request, this starts a
+            // fresh chain. It does not protect requests that are already appended behind a request
+            // that fails later; that is why doWork() never reports Result.failure().
             WorkManager.getInstance().enqueueUniqueWork(
                 sendQueueName(internalConversationId),
                 ExistingWorkPolicy.APPEND_OR_REPLACE,
                 sendWork
             )
         }
+
+        /**
+         * Whether a send of the conversation's queue is still waiting, running or blocked. A PENDING
+         * row without such work will never be sent.
+         */
+        suspend fun hasActiveSend(workManager: WorkManager, internalConversationId: String): Boolean =
+            workManager.getWorkInfosForUniqueWorkFlow(sendQueueName(internalConversationId)).first()
+                .any { !it.state.isFinished }
 
         private fun sendQueueName(internalConversationId: String) = "send_message_queue_$internalConversationId"
     }

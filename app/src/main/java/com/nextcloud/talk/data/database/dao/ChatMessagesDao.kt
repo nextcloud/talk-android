@@ -14,6 +14,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.SendStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -193,6 +194,52 @@ interface ChatMessagesDao {
         """
     )
     fun deleteTempChatMessageIfPending(internalConversationId: String, referenceId: String): Int
+
+    /*
+     * Marks the text messages of a conversation that are still PENDING and were created before
+     * [createdBefore] (epoch seconds, like ChatMessageEntity.timestamp) as FAILED. Upload placeholders
+     * are left alone: they carry a "file" entry in messageParameters, which is stored as "{}" (not NULL)
+     * for a row without parameters. Only call this when no send work is left for the conversation.
+     */
+    @Query(
+        value = """
+            UPDATE ChatMessages
+            SET sendStatus = 'FAILED'
+            WHERE internalConversationId = :internalConversationId
+            AND isTemporary = 1
+            AND sendStatus = 'PENDING'
+            AND timestamp < :createdBefore
+            AND (messageParameters IS NULL OR messageParameters NOT LIKE '%"file"%')
+        """
+    )
+    suspend fun failPendingTempTextMessages(internalConversationId: String, createdBefore: Long): Int
+
+    /*
+     * Writes only the send status of a temporary message, so a concurrent edit of its text is kept.
+     */
+    @Query(
+        value = """
+            UPDATE ChatMessages
+            SET sendStatus = :sendStatus
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId = :referenceId
+            AND isTemporary = 1
+        """
+    )
+    fun updateTempMessageSendStatus(internalConversationId: String, referenceId: String, sendStatus: SendStatus): Int
+
+    /*
+     * Writes only the text of a message, so a concurrent change of its send status is kept.
+     */
+    @Query(
+        value = """
+            UPDATE ChatMessages
+            SET message = :message
+            WHERE internalConversationId = :internalConversationId
+            AND id = :messageId
+        """
+    )
+    fun updateMessageText(internalConversationId: String, messageId: Long, message: String): Int
 
     @Update
     fun updateChatMessage(message: ChatMessageEntity)

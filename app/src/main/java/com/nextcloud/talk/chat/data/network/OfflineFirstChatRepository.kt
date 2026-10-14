@@ -701,6 +701,9 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    override suspend fun failPendingMessagesWithoutSendWork(createdBefore: Long): Int =
+        chatDao.failPendingTempTextMessages(internalConversationId, createdBefore)
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun addTemporaryMessage(
         message: CharSequence,
@@ -958,12 +961,16 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean> =
         flow {
             try {
+                // Only the text is written: the row is shared with SendMessageWorker, which sets sendStatus.
+                chatDao.updateMessageText(
+                    internalConversationId,
+                    message.jsonMessageId.toLong(),
+                    editedMessageText
+                )
                 val messageToEdit = chatDao.getChatMessageForConversation(
                     internalConversationId,
                     message.jsonMessageId.toLong()
                 ).first()
-                messageToEdit.message = editedMessageText
-                chatDao.upsertChatMessage(messageToEdit)
 
                 val editedMessageModel = messageToEdit.toDomainModel()
                 _updateMessageFlow.emit(editedMessageModel)
