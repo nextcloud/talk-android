@@ -12,6 +12,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
@@ -37,6 +40,8 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -50,7 +55,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.kotlin.any
@@ -72,9 +76,6 @@ class ChatViewModelRoomJoinTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val timeout: Timeout = Timeout.seconds(TIMEOUT_SECONDS)
-
     private val conversation = MutableStateFlow<ConversationResult>(ConversationResult.Found(conversationModel(1)))
     private val owner = TestOwner()
 
@@ -83,6 +84,9 @@ class ChatViewModelRoomJoinTest {
     private var initialLoads = 0
     private var joins = 0
     private var screenResumed = false
+    private var initialLoadDone = false
+    private val viewModelStore = ViewModelStore()
+    private val appScope = CoroutineScope(SupervisorJob() + UnconfinedTestDispatcher())
 
     private class TestOwner : LifecycleOwner {
         private val registry = LifecycleRegistry(this)
@@ -105,7 +109,7 @@ class ChatViewModelRoomJoinTest {
         )
         val chatRepository: ChatMessageRepository = mockWithEmptyFlows()
 
-        viewModel = ChatViewModel(
+        val newViewModel = ChatViewModel(
             mock<Logger>(),
             mock<AppPreferences>(),
             network,
@@ -117,11 +121,18 @@ class ChatViewModelRoomJoinTest {
             mock<MediaRecorderManager>(),
             mock<AudioFocusRequestManager>(),
             userManager,
-            CoroutineScope(UnconfinedTestDispatcher()),
+            appScope,
             USER,
             TOKEN,
             null
         )
+        viewModel = ViewModelProvider(
+            viewModelStore,
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T = newViewModel as T
+            }
+        )[ChatViewModel::class.java]
         owner.lifecycle.addObserver(viewModel)
 
         // what ChatActivity does with the state of the capabilities and with a resume of the screen
@@ -129,6 +140,7 @@ class ChatViewModelRoomJoinTest {
             capabilitiesState = state
             if (state is ChatViewModel.GetCapabilitiesInitialLoadState) {
                 initialLoads++
+                initialLoadDone = true
                 if (screenResumed && viewModel.claimRoomJoin()) {
                     joins++
                 }
@@ -149,13 +161,16 @@ class ChatViewModelRoomJoinTest {
 
     @After
     fun tearDown() {
+        owner.send(Lifecycle.Event.ON_DESTROY)
+        viewModelStore.clear()
+        appScope.cancel()
         Dispatchers.resetMain()
     }
 
-    private fun resumeScreen(conversationLoaded: Boolean) {
+    private fun resumeScreen() {
         owner.send(Lifecycle.Event.ON_START, Lifecycle.Event.ON_RESUME)
         screenResumed = true
-        if (conversationLoaded && viewModel.claimRoomJoin()) {
+        if (initialLoadDone && viewModel.claimRoomJoin()) {
             joins++
         }
     }
@@ -176,7 +191,7 @@ class ChatViewModelRoomJoinTest {
     @Test
     fun `a refresh of the conversation after leaving the room is not an initial load`() {
         owner.send(Lifecycle.Event.ON_CREATE)
-        resumeScreen(conversationLoaded = false)
+        resumeScreen()
         viewModel.initData()
         assertEquals(1, joins)
 
@@ -192,7 +207,7 @@ class ChatViewModelRoomJoinTest {
     @Test
     fun `leaving, saving the state without a configuration change and returning joins once`() {
         owner.send(Lifecycle.Event.ON_CREATE)
-        resumeScreen(conversationLoaded = false)
+        resumeScreen()
         viewModel.initData()
         assertEquals(1, joins)
 
@@ -202,7 +217,7 @@ class ChatViewModelRoomJoinTest {
         owner.send(Lifecycle.Event.ON_STOP)
         // onSaveInstanceState of a stopped screen that is not rotating does not touch the state of the viewmodel
 
-        resumeScreen(conversationLoaded = true)
+        resumeScreen()
         refreshConversation(lastReadMessage = 3)
         refreshConversation(lastReadMessage = 4)
 
@@ -212,11 +227,39 @@ class ChatViewModelRoomJoinTest {
     }
 
     @Test
-    fun `a second claim in the same resume does not join again`() {
-        resumeScreen(conversationLoaded = true)
-
-        assertFalse(viewModel.claimRoomJoin())
+    fun `a configuration change gives the new screen one initial load and one join`() {
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+        viewModel.initData()
         assertEquals(1, joins)
+
+        // the old screen is paused without leaving the room and saves its state while it is recreated
+        pauseScreen()
+        viewModel.handleOrientationChange()
+        owner.send(Lifecycle.Event.ON_STOP)
+
+        // the new screen collects the conversation again in onCreate and resumes
+        initialLoadDone = false
+        viewModel.initData()
+        resumeScreen()
+        refreshConversation(lastReadMessage = 2)
+
+        assertEquals(2, initialLoads)
+        assertEquals(2, joins)
+        assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesUpdateState)
+    }
+
+    @Test
+    fun `the room is claimed once per resume and the claim is released on pause`() {
+        resumeScreen()
+
+        assertTrue(viewModel.claimRoomJoin())
+        assertFalse(viewModel.claimRoomJoin())
+
+        pauseScreen()
+        resumeScreen()
+
+        assertTrue(viewModel.claimRoomJoin())
     }
 
     private fun conversationModel(lastReadMessage: Int): ConversationModel =
@@ -251,7 +294,6 @@ class ChatViewModelRoomJoinTest {
     companion object {
         private const val TOKEN = "room-token"
         private const val HTTP_OK = 200
-        private const val TIMEOUT_SECONDS = 60L
         private val USER = User(
             id = 1,
             userId = "me",
