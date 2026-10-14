@@ -558,27 +558,27 @@ class ChatActivity :
             val userIdOrGuestSession = userId ?: session
 
             if (isTypingStatusEnabled() &&
+                userIdOrGuestSession != null &&
                 conversationUser.userId != userIdOrGuestSession &&
                 webSocketInstance?.isSessionInCurrentRoom(session) == true
             ) {
-                var displayName = webSocketInstance?.getDisplayNameForSession(session)
+                var displayName = webSocketInstance?.getDisplayNameForSession(session).orEmpty()
+                if (displayName == "") {
+                    displayName = context.resources?.getString(R.string.nc_guest)!!
+                }
 
-                if (displayName != null && !typingParticipants.contains(userIdOrGuestSession)) {
-                    if (displayName == "") {
-                        displayName = context.resources?.getString(R.string.nc_guest)!!
-                    }
-
-                    runOnUiThread {
-                        val typingParticipant = TypingParticipant(userIdOrGuestSession!!, displayName) {
-                            typingParticipants.remove(userIdOrGuestSession)
-                            updateTypingIndicator()
-                        }
-
-                        typingParticipants[userIdOrGuestSession] = typingParticipant
+                runOnUiThread {
+                    val typingParticipant = typingParticipants[userIdOrGuestSession]
+                    if (typingParticipant != null) {
+                        typingParticipant.restartTimer()
+                    } else {
+                        typingParticipants[userIdOrGuestSession] =
+                            TypingParticipant(userIdOrGuestSession, displayName, session) {
+                                typingParticipants.remove(userIdOrGuestSession)
+                                updateTypingIndicator()
+                            }
                         updateTypingIndicator()
                     }
-                } else if (typingParticipants.contains(userIdOrGuestSession)) {
-                    typingParticipants[userIdOrGuestSession]?.restartTimer()
                 }
             }
         }
@@ -590,9 +590,19 @@ class ChatActivity :
                 conversationUser.userId != userId &&
                 webSocketInstance?.isSessionInCurrentRoom(session) == true
             ) {
-                typingParticipants[userIdOrGuestSession]?.cancelTimer()
-                typingParticipants.remove(userIdOrGuestSession)
-                updateTypingIndicator()
+                runOnUiThread {
+                    typingParticipants[userIdOrGuestSession]?.cancelTimer()
+                    typingParticipants.remove(userIdOrGuestSession)
+                    updateTypingIndicator()
+                }
+            }
+        }
+
+        override fun onSessionsLeft(sessions: List<String>) {
+            runOnUiThread {
+                if (TypingParticipant.removeSessions(typingParticipants, sessions)) {
+                    updateTypingIndicator()
+                }
             }
         }
 

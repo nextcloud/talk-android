@@ -8,7 +8,12 @@ package com.nextcloud.talk.chat
 
 import android.os.CountDownTimer
 
-class TypingParticipant(val userId: String, val name: String, val funToCallWhenTimeIsUp: (userId: String) -> Unit) {
+class TypingParticipant(
+    val userId: String,
+    val name: String,
+    val session: String?,
+    val funToCallWhenTimeIsUp: (userId: String) -> Unit
+) {
     var timer: CountDownTimer? = null
 
     init {
@@ -40,6 +45,19 @@ class TypingParticipant(val userId: String, val name: String, val funToCallWhenT
     }
 
     companion object {
+        /**
+         * Removes the typing participants which type with one of the [sessions] (which left the room).
+         * Returns whether any was removed.
+         */
+        fun removeSessions(participants: MutableMap<String, TypingParticipant>, sessions: Collection<String>): Boolean {
+            val left = participants.filterValues { it.session in sessions }
+            left.forEach { (key, participant) ->
+                participant.cancelTimer()
+                participants.remove(key)
+            }
+            return left.isNotEmpty()
+        }
+
         private const val TYPING_DURATION_TO_HIDE_TYPING_MESSAGE = 15000L
     }
 }
