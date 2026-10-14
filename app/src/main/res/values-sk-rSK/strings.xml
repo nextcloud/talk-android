@@ -267,7 +267,7 @@
     <string name="nc_delete_now">Odstrániť teraz</string>
     <string name="nc_deleted_user">Používateľ %1$s bol vymazaný</string>
     <string name="nc_deleted_user_display_name">Zmazaný užívateľ</string>
-    <string name="nc_demote">Odobrať moderovanie</string>
+    <string name="nc_demote">Odobrať rolu moderátora</string>
     <string name="nc_demote_owner_to_moderator">Zmeniť vlastníka na moderátora</string>
     <string name="nc_demote_owner_to_participant">Zmeniť vlastníka na účastníka</string>
     <string name="nc_description_record_voice">Nahrať hlasovú správu</string>
@@ -359,13 +359,14 @@
     <string name="nc_limit_hit">Limit maximálneho počtu znakov %s dosiahnutý</string>
     <string name="nc_lobby">Miestnosť</string>
     <string name="nc_lobby_start_date">Tento rozhovor je naplánovaný na %1$s</string>
-    <string name="nc_lobby_start_soon">Rozhovor začne čoskoro</string>
+    <string name="nc_lobby_start_soon">Stretnutie sa začne čoskoro</string>
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
     <string name="nc_location_current_position_description">Vaša súčasná poloha</string>
     <string name="nc_location_permission_required">vyžaduje sa prístup k polohe</string>
     <string name="nc_location_unknown">Neznáma poloha</string>
     <string name="nc_locked">Uzamknuté</string>
     <string name="nc_locked_tap_to_unlock">Dotknite sa pre odomknutie</string>
+    <string name="nc_login_too_many_attempts">Príliš veľa neúspešných pokusov o prihlásenie z tejto siete. Skúste to znova neskôr.</string>
     <string name="nc_logs_advanced_logging">Rozšírené zaznamenávanie</string>
     <string name="nc_logs_advanced_logging_disable">Zakázať rozšírené zaznamenávanie</string>
     <string name="nc_logs_advanced_logging_enable">Povoliť rozšírené zaznamenávanie</string>
@@ -531,7 +532,7 @@
     <string name="nc_sent_an_audio_you">Odoslali ste zvuk.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázok.</string>
     <string name="nc_sent_an_image_you">Odoslali ste obrázok.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s poslal kartu deck</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s poslal kartu z aplikácie Deck</string>
     <string name="nc_server_connect">Test serverového pripojenia</string>
     <string name="nc_server_db_upgrade_needed">Prosím, aktualizujte svoju databázu %1$s</string>
     <string name="nc_server_failed_to_import_account">Nepodarilo sa importovať vybraný účet</string>

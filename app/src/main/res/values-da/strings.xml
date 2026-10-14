@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Placering ukendt</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryk for at låse op</string>
+    <string name="nc_login_too_many_attempts">For mange mislykkede loginforsøg fra dette netværk. Prøv igen senere.</string>
     <string name="nc_logs_advanced_logging">Avanceret logning</string>
     <string name="nc_logs_advanced_logging_disable">Deaktiver avanceret logning</string>
     <string name="nc_logs_advanced_logging_enable">Aktivér avanceret logning</string>

@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Position unbekannt</string>
     <string name="nc_locked">Gesperrt</string>
     <string name="nc_locked_tap_to_unlock">Zum Entsperren antippen</string>
+    <string name="nc_login_too_many_attempts">Zu viele fehlgeschlagene Anmeldeversuche aus diesem Netzwerk. Bitte später noch einmal versuchen.</string>
     <string name="nc_logs_advanced_logging">Erweiterte Protokollierung</string>
     <string name="nc_logs_advanced_logging_disable">Erweiterte Protokollierung deaktivieren</string>
     <string name="nc_logs_advanced_logging_enable">Erweiterte Protokollierung aktivieren</string>

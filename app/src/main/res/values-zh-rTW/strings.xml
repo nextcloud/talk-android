@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">位置不明</string>
     <string name="nc_locked">已鎖定</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
+    <string name="nc_login_too_many_attempts">太多來自此網路的失敗登入嘗試。請稍後再試。</string>
     <string name="nc_logs_advanced_logging">進階紀錄</string>
     <string name="nc_logs_advanced_logging_disable">停用進階紀錄</string>
     <string name="nc_logs_advanced_logging_enable">啟用進階紀錄</string>

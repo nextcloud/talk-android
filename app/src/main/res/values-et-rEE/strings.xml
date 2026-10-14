@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Asukoht pole teada</string>
     <string name="nc_locked">Lukus</string>
     <string name="nc_locked_tap_to_unlock">Klõpsi lukustuse eemaldamiseks</string>
+    <string name="nc_login_too_many_attempts">Liiga palju vigaseid sisselogimiskatseid sinu võrgust. Palun proovi hiljem uuesti.</string>
     <string name="nc_logs_advanced_logging">Detailne logimine</string>
     <string name="nc_logs_advanced_logging_disable">Lülita detailne logimine välja</string>
     <string name="nc_logs_advanced_logging_enable">Lülita detailne logimine sisse</string>
