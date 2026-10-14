@@ -1083,25 +1083,27 @@ class ChatActivity :
         }
     }
 
+    private fun getAudioDuration(audioFilePath: String): Long {
+        val retriever = MediaMetadataRetriever()
+
+        return try {
+            retriever.setDataSource(audioFilePath)
+            val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            val durationLong = durationString?.toLong() ?: 0L
+
+            durationLong / ONE_SECOND_IN_MILLIS
+        } catch (e: IllegalArgumentException) {
+            logger.e(TAG, "Failed to read audio duration for $audioFilePath", e)
+            0L
+        } finally {
+            retriever.release()
+        }
+    }
+
+    private val voiceDurationLoader = VoiceMessageDurationLoader(Dispatchers.IO) { getAudioDuration(it).toInt() }
+
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
     private fun onVoiceClick(messageId: Int) {
-        fun getAudioDuration(audioFilePath: String): Long {
-            val retriever = MediaMetadataRetriever()
-
-            return try {
-                retriever.setDataSource(audioFilePath)
-                val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                val durationLong = durationString?.toLong() ?: 0L
-
-                durationLong / ONE_SECOND_IN_MILLIS
-            } catch (e: IllegalArgumentException) {
-                logger.e(TAG, "Failed to read audio duration for $audioFilePath", e)
-                0L
-            } finally {
-                retriever.release()
-            }
-        }
-
         fun setupAndPlay(controller: MediaController, message: ChatMessage, file: String) {
             val avatarUrl = chatViewModel.getAvatarUrl(message)
 
@@ -1159,13 +1161,6 @@ class ChatActivity :
             val fileURI = file.toUri()
             val filePath = fileURI.toString()
 
-            val duration = withContext(Dispatchers.IO) { getAudioDuration(file.absolutePath).toInt() }
-
-            // another voice message may have been selected while the duration was read
-            if (chatViewModel.currentVoiceMessage?.jsonMessageId != message.jsonMessageId) return true
-
-            chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
-
             fun finishPreparing() {
                 setupAndPlay(controller, message, filePath)
                 if (message.isVoiceMessage) {
@@ -1176,21 +1171,28 @@ class ChatActivity :
                 }
             }
 
-            val alreadyLoaded = controller.currentMediaItem?.mediaId == currentMessageId
-            if (!alreadyLoaded || !file.exists()) {
-                if (!file.exists()) {
-                    downloadFileToCache(message, true) {
-                        chatViewModel.syncVoiceMessageUiState(
-                            message.apply {
-                                voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
-                            }
-                        )
+            // another voice message may have been selected while the duration was read
+            fun isStale() = chatViewModel.currentVoiceMessage?.jsonMessageId != message.jsonMessageId
+
+            if (!file.exists()) {
+                downloadFileToCache(message, true) {
+                    lifecycleScope.launch {
+                        val duration = voiceDurationLoader.read(file)
+                        if (isStale()) return@launch
+                        chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
                         finishPreparing()
                     }
-                } else {
-                    finishPreparing()
                 }
+                return true
+            }
 
+            val duration = voiceDurationLoader.readOnce(message.jsonMessageId, file) ?: return true
+            if (isStale()) return true
+
+            chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
+
+            if (controller.currentMediaItem?.mediaId != currentMessageId) {
+                finishPreparing()
                 return true
             }
             return false
@@ -2666,7 +2668,16 @@ class ChatActivity :
     private fun onSelectContactResult(intent: Intent?) {
         val contactUri = intent?.data ?: return
         lifecycleScope.launch {
-            val file = withContext(Dispatchers.IO) { saveContactAsVcfFile(contactUri) } ?: return@launch
+            val file = runProviderCall(
+                onFailure = { e ->
+                    logger.e(TAG, "Failed to read contact $contactUri", e)
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+            ) {
+                withContext(Dispatchers.IO) { saveContactAsVcfFile(contactUri) }
+            } ?: return@launch
             val shareUri = FileProvider.getUriForFile(
                 this@ChatActivity,
                 BuildConfig.APPLICATION_ID,
