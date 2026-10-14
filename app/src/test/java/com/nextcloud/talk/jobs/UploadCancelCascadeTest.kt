@@ -15,6 +15,9 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import androidx.work.impl.Processor
+import androidx.work.impl.StartStopToken
+import androidx.work.impl.WorkManagerImpl
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -28,7 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +46,10 @@ import org.robolectric.annotation.Config
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The uploads of a conversation are chained behind each other (APPEND_OR_REPLACE). Cancelling one upload must
@@ -64,6 +70,7 @@ class UploadCancelCascadeTest {
     // Not a SynchronousExecutor: the worker looks up other works (deleteFinishedWorkspaces) and waits for the
     // answer, which a worker running on the thread of WorkManager's own task executor would never get.
     private val workerExecutor = Executors.newFixedThreadPool(2)
+    private val previousApplication = NextcloudTalkApplication.sharedApplication
     private val user: User = mock()
     private val userManager: UserManager = mock {
         on { runBlocking { getUserWithId(ACCOUNT_ID) } } doReturn user
@@ -91,7 +98,7 @@ class UploadCancelCascadeTest {
     @After
     fun tearDown() {
         workerExecutor.shutdownNow()
-        setSharedApplication(null)
+        setSharedApplication(previousApplication)
     }
 
     @Test
@@ -174,6 +181,69 @@ class UploadCancelCascadeTest {
         assertDelivered("ref-b", "ref-c")
     }
 
+    @Test
+    fun `an upload cancelled while WorkManager stops it is still cancelled in its next run`() {
+        val workManager = initWorkManager()
+        val firstRunInside = CountDownLatch(1)
+        val firstRunMayGo = CountDownLatch(1)
+        val lookups = AtomicInteger()
+        // The first run waits at the lookup of the account, as an upload that is busy when its network is lost.
+        whenever(runBlocking { userManager.getUserWithId(ACCOUNT_ID) }).thenAnswer {
+            if (lookups.getAndIncrement() == 0) {
+                firstRunInside.countDown()
+                firstRunMayGo.await(WAIT_MILLIS, TimeUnit.MILLISECONDS)
+            }
+            user
+        }
+        val (a) = enqueue("ref-a")
+        val driver = WorkManagerTestInitHelper.getTestDriver(context())!!
+
+        driver.setAllConstraintsMet(a)
+        assertTrue(firstRunInside.await(WAIT_MILLIS, TimeUnit.MILLISECONDS))
+        // The network is lost: WorkManager stops the run, which goes on in its thread, and the user cancels.
+        stopRun(a)
+        UploadAndShareFilesWorker.cancelUpload("ref-a", a)
+        firstRunMayGo.countDown()
+        awaitStoppedRunFinished(a)
+        assertTrue("the cancel flag survives the stopped run", File(workspaceDir(a), "cancelled").exists())
+
+        awaitAllFinished(workManager, a)
+
+        assertAllSucceeded(workManager, a)
+        assertCancelled("ref-a")
+        assertEquals("the second run looked the account up", 2, lookups.get())
+    }
+
+    // What WorkManager does when the network is lost: stops the run, whose thread goes on, and schedules the
+    // work again.
+    private fun stopRun(id: UUID) {
+        val processor = WorkManagerImpl.getInstance(context()).processor
+        // The processor knows a run by the token it started it with, so the token is taken from its map of runs.
+        val runs = Processor::class.java.getDeclaredField("mWorkRuns").apply { isAccessible = true }
+            .get(processor) as Map<*, *>
+        val token = (runs[id.toString()] as Set<*>).single() as StartStopToken
+        assertTrue(
+            "the run was stopped",
+            processor.stopWork(token, WorkInfo.STOP_REASON_CONSTRAINT_CONNECTIVITY)
+        )
+    }
+
+    // The run that WorkManager stopped is over when it released the lock of its workspace.
+    private fun awaitStoppedRunFinished(id: UUID) {
+        val deadline = System.currentTimeMillis() + WAIT_MILLIS
+        while (true) {
+            val workspace = UploadWorkspace(workspaceDir(id))
+            if (workspace.tryLock()) {
+                workspace.unlock()
+                return
+            }
+            check(System.currentTimeMillis() < deadline) { "the stopped run did not finish" }
+            Thread.sleep(POLL_MILLIS)
+        }
+    }
+
+    private fun workspaceDir(id: UUID) = File(File(context().noBackupFilesDir, "uploads"), id.toString())
+
     private fun assertAllSucceeded(workManager: WorkManager, vararg ids: UUID) {
         assertEquals(
             ids.map { WorkInfo.State.SUCCEEDED },
@@ -209,7 +279,7 @@ class UploadCancelCascadeTest {
                 referenceId = referenceId,
                 internalConversationId = CONVERSATION_ID
             )
-            UploadWorkspace(File(File(context().noBackupFilesDir, "uploads"), id.toString())).markShared()
+            UploadWorkspace(workspaceDir(id)).markShared()
             id
         }
 
@@ -270,7 +340,6 @@ class UploadCancelCascadeTest {
             }
             Thread.sleep(POLL_MILLIS)
         }
-        assertFalse(ids.isEmpty())
     }
 
     // The setter of sharedApplication is protected, and the real application is not started in this test.

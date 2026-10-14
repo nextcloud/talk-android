@@ -304,9 +304,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
      * success, not failure or cancelled: a failed or cancelled work in the queue of the conversation makes
      * WorkManager delete the other uploads of that queue when the next file is sent. For the same reason nothing
      * is thrown from here: an exception ends the work as failed, and WorkManager fails the uploads queued behind it.
+     *
+     * The result of a work that WorkManager stopped is ignored and the work runs again. That run has to find the
+     * cancel flag, so the workspace stays; it is removed by the run that ends without a stop.
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelledResult(): Result {
+        keepWorkspace = isStopped
         abortRemote(deleteUploadedFile = true)
         try {
             deletePlaceholder()
