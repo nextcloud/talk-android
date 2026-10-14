@@ -99,4 +99,30 @@ class VoiceMessageDurationLoaderTest {
             assertEquals(5, second)
             assertEquals(5, first.await())
         }
+
+    @Test
+    fun repeatedTapIsIgnoredWhileItsReadRunsAfterAnotherMessageFinished() =
+        runBlocking {
+            val readsOfA = AtomicInteger()
+            val started = CountDownLatch(1)
+            val release = CountDownLatch(1)
+            val loader = VoiceMessageDurationLoader(Dispatchers.Default) {
+                if (it.endsWith("a.ogg")) {
+                    readsOfA.incrementAndGet()
+                    started.countDown()
+                    release.await(5, TimeUnit.SECONDS)
+                }
+                6
+            }
+
+            val first = async(start = CoroutineStart.UNDISPATCHED) { loader.readOnce(1, File("a.ogg")) }
+            started.await(5, TimeUnit.SECONDS)
+            assertEquals(6, loader.readOnce(2, File("b.ogg")))
+            val repeated = loader.readOnce(1, File("a.ogg"))
+            release.countDown()
+
+            assertNull(repeated)
+            assertEquals(6, first.await())
+            assertEquals(1, readsOfA.get())
+        }
 }

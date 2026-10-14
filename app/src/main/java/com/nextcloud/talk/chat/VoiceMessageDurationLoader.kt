@@ -17,18 +17,17 @@ class VoiceMessageDurationLoader(
     private val ioDispatcher: CoroutineDispatcher,
     private val readDurationSeconds: (String) -> Int
 ) {
-    private var loadingMessageId: Int? = null
+    private val loadingMessageIds = mutableSetOf<Int>()
 
     suspend fun read(file: File): Int = withContext(ioDispatcher) { readDurationSeconds(file.absolutePath) }
 
     /** Returns null if the same message is already being read, so a repeated tap does not prepare it twice. */
     suspend fun readOnce(messageId: Int, file: File): Int? {
-        if (loadingMessageId == messageId) return null
-        loadingMessageId = messageId
+        if (!loadingMessageIds.add(messageId)) return null
         return try {
             read(file)
         } finally {
-            loadingMessageId = null
+            loadingMessageIds.remove(messageId)
         }
     }
 }
