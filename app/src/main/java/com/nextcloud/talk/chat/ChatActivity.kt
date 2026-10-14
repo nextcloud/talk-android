@@ -1150,18 +1150,21 @@ class ChatActivity :
             }
         }
 
-        suspend fun prepareVoiceMessage(controller: MediaController, message: ChatMessage): Boolean {
+        // The controller lives from onStart to onStop, so it is taken only after the duration was read:
+        // the one present before the read may already be released. Returns the controller to pause or
+        // resume when it already holds this message, null when nothing is left to do.
+        suspend fun prepareVoiceMessage(message: ChatMessage): MediaController? {
             val currentMessageId = message.jsonMessageId.toString()
             val filename = message.fileParameters.name
             if (filename.isEmpty()) {
-                return true
+                return null
             }
 
-            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename) ?: return true
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename) ?: return null
             val fileURI = file.toUri()
             val filePath = fileURI.toString()
 
-            fun finishPreparing() {
+            fun finishPreparing(controller: MediaController) {
                 setupAndPlay(controller, message, filePath)
                 if (message.isVoiceMessage) {
                     setUpWaveform(message, file)
@@ -1177,25 +1180,30 @@ class ChatActivity :
             if (!file.exists()) {
                 downloadFileToCache(message, true) {
                     lifecycleScope.launch {
-                        val duration = voiceDurationLoader.read(file)
-                        if (isStale()) return@launch
-                        chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
-                        finishPreparing()
+                        // the download is over, whether or not the message is still to be played
+                        message.isDownloadingVoiceMessage = false
+                        // null: a tap on the downloaded message reads it right now and prepares it itself
+                        val duration = voiceDurationLoader.readOnce(message.jsonMessageId, file)
+                        duration?.let { message.voiceMessageDuration = it }
+                        chatViewModel.syncVoiceMessageUiState(message)
+                        val controller = mediaController
+                        if (duration != null && controller != null && !isStale()) finishPreparing(controller)
                     }
                 }
-                return true
+                return null
             }
 
-            val duration = voiceDurationLoader.readOnce(message.jsonMessageId, file) ?: return true
-            if (isStale()) return true
+            val duration = voiceDurationLoader.readOnce(message.jsonMessageId, file) ?: return null
+            if (isStale()) return null
 
             chatViewModel.syncVoiceMessageUiState(message.apply { voiceMessageDuration = duration })
 
+            val controller = mediaController ?: return null
             if (controller.currentMediaItem?.mediaId != currentMessageId) {
-                finishPreparing()
-                return true
+                finishPreparing(controller)
+                return null
             }
-            return false
+            return controller
         }
 
         lifecycleScope.launch {
@@ -1209,13 +1217,13 @@ class ChatActivity :
                 chatViewModel.currentVoiceMessage = message
 
                 // If the controller is playing a new voice message, initialize
-                if (prepareVoiceMessage(controller, message)) return@launch
+                val sameMessageController = prepareVoiceMessage(message) ?: return@launch
 
                 // If the controller is playing the same voice message, pause/resume
-                if (controller.isPlaying) {
-                    controller.pause()
+                if (sameMessageController.isPlaying) {
+                    sameMessageController.pause()
                 } else {
-                    controller.play()
+                    sameMessageController.play()
                 }
             }
         }

@@ -41,7 +41,7 @@ class VoiceMessageDurationLoaderTest {
                 7
             }
 
-            assertEquals(7, loader.read(file))
+            assertEquals(7, loader.readOnce(1, file))
             assertTrue(readThread!!.startsWith("voice-io-test"))
             assertNotEquals(Thread.currentThread().name, readThread)
         }
