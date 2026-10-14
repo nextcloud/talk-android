@@ -5,11 +5,23 @@
     ":gitSignOff"
   ],
   "timezone": "Europe/Berlin",
+  "prConcurrentLimit": 10,
+  "rebaseWhen": "conflicted",
+  "schedule": ["* 1-4 * * *"],
+  "minimumReleaseAge": "10 days",
   "labels": [
     "dependencies",
     "3. to review"
   ],
   "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "matchPackageNames": ["/^com\\.github\\.nextcloud/", "nextcloud/**"],
+      "minimumReleaseAge": "0 days"
+    },
     {
       "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion", "com.fasterxml.jackson.core:jackson-core"],
       "automerge": false,
