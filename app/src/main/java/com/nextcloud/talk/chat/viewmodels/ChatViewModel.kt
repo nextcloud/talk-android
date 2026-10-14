@@ -2174,11 +2174,19 @@ class ChatViewModel @AssistedInject constructor(
         // back to the automatic handling
         keepMarkedAsUnread = false
         _uiState.update { it.copy(markedAsUnreadByUser = false) }
+        if (!sendToServer) {
+            // The marker waits for an own message that is on its way: show the lower unread count, but keep
+            // the stored marker and register nothing pending, so the marker is decided again (and sent) by
+            // the next call once the message is confirmed or failed.
+            viewModelScope.launch {
+                chatRepository.updateLocalUnreadCountOnly(lastReadMessage)
+            }
+            return
+        }
         chatRepository.markPendingReadMarker(lastReadMessage)
         viewModelScope.launch {
             chatRepository.updateLocalReadState(lastReadMessage)
         }
-        if (!sendToServer) return
         ReadMarkerSyncWorker.enqueue(
             context = NextcloudTalkApplication.sharedApplication!!.applicationContext,
             userId = currentUser.id!!,
