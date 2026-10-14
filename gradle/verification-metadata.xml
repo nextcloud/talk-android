@@ -44,6 +44,7 @@
             <trusting group="androidx.datastore"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.media3"/>
+            <trusting group="androidx.room"/>
             <trusting group="androidx.sqlite"/>
             <trusting group="androidx.work"/>
             <trusting group="com.google.android.gms"/>
