@@ -206,6 +206,7 @@
     <string name="nc_conversation_tags_create">Создать</string>
     <string name="nc_conversation_tags_delete">Удалить метку</string>
     <string name="nc_conversation_tags_empty">Нет ни одной метки</string>
+    <string name="nc_conversation_tags_error_generic">Что-то пошло не так, попробуйте ещё раз</string>
     <string name="nc_conversation_tags_favorites">Избранное</string>
     <string name="nc_conversation_tags_filter_all">Все</string>
     <string name="nc_conversation_tags_manage">Управление метками</string>
@@ -714,6 +715,7 @@
     <string name="thisWeek">Эта неделя</string>
     <string name="this_is_a_test_message">Это тестовое сообщение</string>
     <string name="this_weekend">Эти выходные</string>
+    <string name="thread">Тема</string>
     <string name="thread_cancel">Отменить создание темы</string>
     <string name="thread_notifications">Уведомления для темы</string>
     <string name="thread_reply">Ответ</string>

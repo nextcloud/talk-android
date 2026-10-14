@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Konum bilinmiyor</string>
     <string name="nc_locked">Kilitli</string>
     <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
+    <string name="nc_login_too_many_attempts">Bu ağdan çok sayıda başarısız oturum açma denemesi yapıldı. Bir süre sonra yeniden deneyin.</string>
     <string name="nc_logs_advanced_logging">Gelişmiş günlük kaydı</string>
     <string name="nc_logs_advanced_logging_disable">Gelişmiş günlük kaydını kapat</string>
     <string name="nc_logs_advanced_logging_enable">Gelişmiş günlük kaydını aç</string>
