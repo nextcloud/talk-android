@@ -557,7 +557,10 @@ class ChatActivity :
         override fun onStartTyping(userId: String?, session: String?) {
             val userIdOrGuestSession = userId ?: session
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userIdOrGuestSession) {
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userIdOrGuestSession &&
+                webSocketInstance?.isSessionInCurrentRoom(session) == true
+            ) {
                 var displayName = webSocketInstance?.getDisplayNameForSession(session)
 
                 if (displayName != null && !typingParticipants.contains(userIdOrGuestSession)) {
@@ -583,7 +586,10 @@ class ChatActivity :
         override fun onStopTyping(userId: String?, session: String?) {
             val userIdOrGuestSession = userId ?: session
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userId) {
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userId &&
+                webSocketInstance?.isSessionInCurrentRoom(session) == true
+            ) {
                 typingParticipants[userIdOrGuestSession]?.cancelTimer()
                 typingParticipants.remove(userIdOrGuestSession)
                 updateTypingIndicator()
