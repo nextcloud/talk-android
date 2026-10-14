@@ -11,12 +11,14 @@ import android.os.CountDownTimer
 class TypingParticipant(
     val userId: String,
     val name: String,
-    val session: String?,
+    session: String?,
     val funToCallWhenTimeIsUp: (userId: String) -> Unit
 ) {
+    private val sessions = mutableSetOf<String>()
     var timer: CountDownTimer? = null
 
     init {
+        addSession(session)
         startTimer()
     }
 
@@ -35,6 +37,11 @@ class TypingParticipant(
         }.start()
     }
 
+    /** Another signaling session of the same user, e.g. a second device, types in the room. */
+    fun addSession(session: String?) {
+        session?.let { sessions.add(it) }
+    }
+
     fun restartTimer() {
         timer?.cancel()
         timer?.start()
@@ -46,11 +53,13 @@ class TypingParticipant(
 
     companion object {
         /**
-         * Removes the typing participants which type with one of the [sessions] (which left the room).
-         * Returns whether any was removed.
+         * Forgets the [sessions] which left the room and removes the typing participants which have no session
+         * left (a user may type with several sessions). Returns whether any participant was removed.
          */
         fun removeSessions(participants: MutableMap<String, TypingParticipant>, sessions: Collection<String>): Boolean {
-            val left = participants.filterValues { it.session in sessions }
+            val left = participants.filterValues { participant ->
+                participant.sessions.removeAll(sessions.toSet()) && participant.sessions.isEmpty()
+            }
             left.forEach { (key, participant) ->
                 participant.cancelTimer()
                 participants.remove(key)

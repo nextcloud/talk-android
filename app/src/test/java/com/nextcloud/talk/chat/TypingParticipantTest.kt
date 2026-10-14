@@ -49,4 +49,39 @@ class TypingParticipantTest {
         assertFalse(removed)
         assertEquals(setOf("alice"), participants.keys)
     }
+
+    @Test
+    fun typingOfUserStaysWhileAnotherSessionOfTheUserStillTypes() {
+        val alice = typing("alice", "s-alice-phone")
+        alice.addSession("s-alice-laptop")
+        val participants = mutableMapOf("alice" to alice)
+
+        val removed = TypingParticipant.removeSessions(participants, listOf("s-alice-phone"))
+
+        assertFalse("the laptop session of alice is still in the room", removed)
+        assertEquals(setOf("alice"), participants.keys)
+    }
+
+    @Test
+    fun typingOfUserIsRemovedWhenAllItsSessionsLeft() {
+        val alice = typing("alice", "s-alice-phone")
+        alice.addSession("s-alice-laptop")
+        val participants = mutableMapOf("alice" to alice)
+
+        assertFalse(TypingParticipant.removeSessions(participants, listOf("s-alice-phone")))
+        assertTrue(TypingParticipant.removeSessions(participants, listOf("s-alice-laptop")))
+
+        assertTrue(participants.isEmpty())
+    }
+
+    @Test
+    fun typingOfUserIsRemovedWhenAllItsSessionsLeftAtOnce() {
+        val alice = typing("alice", "s-alice-phone")
+        alice.addSession("s-alice-laptop")
+        val participants = mutableMapOf("alice" to alice)
+
+        assertTrue(TypingParticipant.removeSessions(participants, listOf("s-alice-phone", "s-alice-laptop")))
+
+        assertTrue(participants.isEmpty())
+    }
 }
