@@ -69,6 +69,7 @@ class FileUploaderTest {
      * The worker blocks its own thread on the upload, so the file must not be copied on the main thread
      * while it waits: the source is the provider of another app, a binder call into its process.
      */
+    @Suppress("TooGenericExceptionCaught")
     @Test
     fun `a successful plain upload does not ask the provider on the main thread`() {
         SlowProvider.reset()
@@ -161,7 +162,7 @@ class FileUploaderTest {
 
     companion object {
         private const val AUTHORITY = "com.nextcloud.client.documentsfileprovider"
-        private const val PROVIDER_DELAY_MS = 300L
+        private const val PROVIDER_DELAY_MS = 50L
         private const val TIMEOUT_MS = 20_000L
         private const val POLL_MS = 50L
         private const val SIZE = 16
