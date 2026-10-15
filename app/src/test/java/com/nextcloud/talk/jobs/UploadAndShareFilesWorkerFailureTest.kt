@@ -198,6 +198,23 @@ class UploadAndShareFilesWorkerFailureTest {
     }
 
     @Test
+    fun `an upload restarted from the beginning is not failed for the progress it had before`() {
+        val worker = worker(source = fileUri(SMALL_FILE_SIZE), uploaded = false, draft = true)
+        probeRefusedByServer(503)
+        seedUnavailable(worker, since = now() - HOURS_25, point = 100, answers = ANSWERS)
+        val workspace = UploadWorkspace(workspaceDir(worker.id))
+        workspace.recordProgress(100)
+        // The server rejected the assembly: the chunks are sent again from 0 %, now at 30 %.
+        workspace.markRestarted()
+        workspace.recordProgress(30)
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
     fun `progress reported to the worker starts the 24 hours again`() {
         val id = UUID.randomUUID()
         val first = worker(id = id, source = fileUri(SMALL_FILE_SIZE), uploaded = false, draft = true)

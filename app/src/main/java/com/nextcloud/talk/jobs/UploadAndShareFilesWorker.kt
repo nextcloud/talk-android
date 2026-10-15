@@ -302,7 +302,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     // A workspace that cannot be written must not end the work as failed (that fails the uploads queued behind it):
-    // decide with what is known, the upload is tried again.
+    // decide with what is known, the upload is tried again. A write error that never goes away means a retry
+    // without a limit: this is on purpose, it is better than the FAILED cascade over the queue.
     private fun registerServerError(): Int =
         try {
             workspace.registerServerError()

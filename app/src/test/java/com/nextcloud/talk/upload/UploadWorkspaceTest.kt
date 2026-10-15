@@ -98,10 +98,12 @@ class UploadWorkspaceTest {
             ws.markUploaded("/Talk/$name", name)
             ws.markShared()
             ws.registerServerError()
+            ws.recordProgress(40)
+            ws.registerUnavailable(5_000L)
             val uploadId = ws.uploadId()
             assertFalse(workspace(name).tryLock())
 
-            assertEquals("$name", SIZE.toLong(), prepared.file.length())
+            assertEquals(name, SIZE.toLong(), prepared.file.length())
             assertEquals(name, prepared, workspace(name).prepareOnce { null })
             assertEquals(name, prepared, workspace(name).prepared())
             assertEquals(name, SIZE.toLong(), prepared.file.length())
@@ -112,6 +114,7 @@ class UploadWorkspaceTest {
             assertEquals(name, name, workspace(name).uploadedName())
             assertEquals(name, 1, workspace(name).serverErrors())
             assertEquals(name, uploadId, workspace(name).uploadId())
+            assertEquals(name, Unavailable(5_000L, 2), workspace(name).registerUnavailable(6_000L))
             assertFalse(workspace(name).tryLock())
             ws.unlock()
             assertTrue(workspace(name).tryLock())
@@ -311,14 +314,44 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `the clock and the progress survive a new preparation`() {
+    fun `the clock and the progress survive a run that reuses the prepared file`() {
+        workspace().prepareOnce { create(it, "a.jpg", 1_000) }
         workspace().recordProgress(40)
         workspace().registerUnavailable(1_000L)
-        workspace().prepareOnce { create(it, "a.jpg", 1_000) }
+
+        workspace().prepareOnce { create(it, "a.jpg", 2_000) }
 
         assertEquals(Unavailable(1_000L, 2), workspace().registerUnavailable(9_000L))
         workspace().recordProgress(41)
         assertEquals(Unavailable(9_500L, 1), workspace().registerUnavailable(9_500L))
+    }
+
+    @Test
+    fun `a restarted upload forgets the old progress and clock`() {
+        val ws = workspace()
+        ws.recordProgress(100)
+        repeat(ANSWERS) { ws.registerUnavailable(1_000L) }
+
+        ws.markRestarted()
+        ws.recordProgress(30)
+
+        // The upload sends from the beginning: 30 % is progress, the old 25 hours do not count.
+        assertEquals(Unavailable(90_000_000L, 1), workspace().registerUnavailable(90_000_000L))
+        assertTrue(workspace().isRestarted())
+    }
+
+    @Test
+    fun `a new preparation forgets the old progress and clock`() {
+        val ws = workspace()
+        val first = ws.prepareOnce { create(it, "a.jpg", 1_000) }!!
+        ws.recordProgress(100)
+        repeat(ANSWERS) { ws.registerUnavailable(1_000L) }
+        first.file.delete()
+
+        workspace().prepareOnce { create(it, "a.jpg", 2_000) }
+        workspace().recordProgress(30)
+
+        assertEquals(Unavailable(90_000_000L, 1), workspace().registerUnavailable(90_000_000L))
     }
 
     companion object {
@@ -337,5 +370,7 @@ class UploadWorkspaceTest {
             "unavailable",
             "progress"
         )
+
+        private const val ANSWERS = 10
     }
 }
