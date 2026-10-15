@@ -2573,7 +2573,11 @@ class ChatViewModel @AssistedInject constructor(
                 if (progress >= 0) {
                     _uploadProgressMap.update { it + (referenceId to progress) }
                 }
-                if (workInfo.state == WorkInfo.State.FAILED) {
+                // The worker ends a failed upload as SUCCEEDED (so the uploads queued behind it still run) and reports
+                // the failure in its output data; FAILED stays for a worker that crashed.
+                val failed = workInfo.state == WorkInfo.State.FAILED ||
+                    workInfo.outputData.getBoolean(UploadAndShareFilesWorker.KEY_UPLOAD_FAILED, false)
+                if (failed) {
                     viewModelScope.launch { chatRepository.markUploadPlaceholderFailed(referenceId) }
                 }
                 if (workInfo.state.isFinished) {
