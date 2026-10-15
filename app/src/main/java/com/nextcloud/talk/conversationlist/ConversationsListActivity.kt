@@ -711,11 +711,8 @@ class ConversationsListActivity : BaseActivity() {
     /** Opens the chat of an audio message at the message; messages of another account switch to that account. */
     private fun openAudioMessage(key: ChatAudioKey) {
         if (key.internalUserId == currentUser?.id) {
-            val intent = Intent(context, ChatActivity::class.java).apply {
-                putExtra(KEY_ROOM_TOKEN, key.roomToken)
-                putExtra(BundleKeys.KEY_MESSAGE_ID, key.messageId.toString())
-            }
-            startActivity(intent)
+            val extras = Bundle().apply { putString(BundleKeys.KEY_MESSAGE_ID, key.messageId.toString()) }
+            startActivity(ChatActivity.createIntent(context, key.internalUserId, key.roomToken, extras))
         } else {
             startActivity(key.openMessageIntent(this))
         }
