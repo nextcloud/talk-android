@@ -130,8 +130,10 @@ class UploadAndShareFilesWorkerFailureTest {
     fun `a server that stays unavailable for 24 hours fails the upload`() {
         val worker = worker()
         uploadedAndRefusedByServer(503)
-        // The first "unavailable" answer came 25 hours ago, and the upload did not move on since.
-        UploadWorkspace(workspaceDir(worker.id)).unavailableSince(now() - HOURS_25, UPLOADED_PROGRESS)
+        // The first "unavailable" answer came 25 hours ago, the server kept answering and the upload did not move on.
+        repeat(UploadRetryPolicy.MIN_UNAVAILABLE_ANSWERS) {
+            UploadWorkspace(workspaceDir(worker.id)).registerUnavailable(now() - HOURS_25)
+        }
 
         val result = worker.doWork()
 
@@ -141,16 +143,114 @@ class UploadAndShareFilesWorkerFailureTest {
     }
 
     @Test
-    fun `progress of the upload starts the 24 hours again`() {
+    fun `time without a network does not fail the upload at the first answer of the server`() {
         val worker = worker()
         uploadedAndRefusedByServer(503)
-        // The old answer was one step before the end of the upload; now the file is uploaded.
-        UploadWorkspace(workspaceDir(worker.id)).unavailableSince(now() - HOURS_25, UPLOADED_PROGRESS - 1)
+        // One answer 25 hours ago, then no network until now: this is the second answer.
+        UploadWorkspace(workspaceDir(worker.id)).registerUnavailable(now() - HOURS_25)
 
         val result = worker.doWork()
 
         assertEquals(ListenableWorker.Result.retry(), result)
         assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `a clock that went back starts the 24 hours again`() {
+        val worker = worker()
+        uploadedAndRefusedByServer(503)
+        repeat(ANSWERS) { UploadWorkspace(workspaceDir(worker.id)).registerUnavailable(now() + HOURS_25) }
+        val before = now()
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        val since = File(workspaceDir(worker.id), "unavailable").readLines().first().toLong()
+        assertTrue("the clock starts at the time of the answer", since in before..now())
+    }
+
+    @Test
+    fun `the file that got uploaded since the last answer starts the 24 hours again`() {
+        val worker = worker()
+        uploadedAndRefusedByServer(503)
+        // The last answers came before the file was uploaded (the point -1 is "nothing sent yet").
+        seedUnavailable(worker, since = now() - HOURS_25, point = -1, answers = ANSWERS)
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `progress made after the last answer keeps the upload alive in a later run`() {
+        // Run 1: unavailable at 10 %. The upload went on to 80 %, then the network was lost and the process killed.
+        // Run 2, 26 hours later: the first request of the run, the probe, is answered "unavailable".
+        val worker = worker(source = fileUri(SMALL_FILE_SIZE), uploaded = false, draft = true)
+        probeRefusedByServer(503)
+        seedUnavailable(worker, since = now() - HOURS_26, point = 10, answers = ANSWERS)
+        File(workspaceDir(worker.id), "progress").writeText("80")
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `progress reported to the worker starts the 24 hours again`() {
+        val id = UUID.randomUUID()
+        val first = worker(id = id, source = fileUri(SMALL_FILE_SIZE), uploaded = false, draft = true)
+        probeRefusedByServer(503)
+        assertEquals(ListenableWorker.Result.retry(), first.doWork())
+        // The upload sends data, the network is lost, 25 hours pass (the workspace of the retry is kept).
+        first.onTransferProgress(PROGRESS_PERCENT)
+        seedUnavailable(first, since = now() - HOURS_25, point = -1, answers = ANSWERS)
+
+        val second = worker(id = id, source = fileUri(SMALL_FILE_SIZE), uploaded = false, draft = true)
+        probeRefusedByServer(503)
+        val result = second.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `a workspace that cannot be written does not end the work as failed`() {
+        val worker = worker()
+        uploadedAndRefusedByServer(503)
+        // A directory in the place of the temporary file makes every write of this file fail.
+        File(workspaceDir(worker.id), "unavailable.tmp").mkdirs()
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `a server error that cannot be stored does not end the work as failed`() {
+        val worker = worker()
+        uploadedAndRefusedByServer(403)
+        File(workspaceDir(worker.id), "server_errors.tmp").mkdirs()
+
+        val result = worker.doWork()
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    // The file "unavailable" as the workspace writes it: the time, the progress point and the number of answers.
+    private fun seedUnavailable(worker: UploadAndShareFilesWorker, since: Long, point: Int, answers: Int) {
+        workspaceDir(worker.id).mkdirs()
+        File(workspaceDir(worker.id), "unavailable").writeText("$since\n$point\n$answers")
+    }
+
+    private fun probeRefusedByServer(code: Int) {
+        val error = HttpException(Response.error<Any>(code, "".toResponseBody()))
+        runBlocking {
+            whenever(ncApiCoroutines.probeConversationAttachmentFolder(any(), any(), any())).thenThrow(error)
+        }
     }
 
     @Test
@@ -428,7 +528,9 @@ class UploadAndShareFilesWorkerFailureTest {
         private const val CONVERSATION_ID = "1@room"
         private const val REFERENCE_ID = "ref-a"
         private const val HOURS_25 = 25L * 60 * 60 * 1000
-        private const val UPLOADED_PROGRESS = 101
+        private const val HOURS_26 = 26L * 60 * 60 * 1000
+        private const val ANSWERS = 10
+        private const val PROGRESS_PERCENT = 50
         private const val FORBIDDEN = 403
         private const val NO_CONTENT = 204
         private const val REQUEST_WAIT_SECONDS = 5L

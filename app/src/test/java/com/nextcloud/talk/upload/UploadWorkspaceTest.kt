@@ -268,25 +268,57 @@ class UploadWorkspaceTest {
     }
 
     @Test
-    fun `the first unavailable answer starts the clock and the same progress keeps it`() {
-        assertEquals(1_000L, workspace().unavailableSince(1_000L, 40))
-        assertEquals(1_000L, workspace().unavailableSince(5_000L, 40))
-        assertEquals(1_000L, workspace().unavailableSince(9_000L, 10))
+    fun `the first unavailable answer starts the clock and later answers keep it`() {
+        assertEquals(Unavailable(1_000L, 1), workspace().registerUnavailable(1_000L))
+        assertEquals(Unavailable(1_000L, 2), workspace().registerUnavailable(5_000L))
+        assertEquals(Unavailable(1_000L, 3), workspace().registerUnavailable(9_000L))
     }
 
     @Test
     fun `more progress of the upload starts the clock again`() {
-        assertEquals(1_000L, workspace().unavailableSince(1_000L, 40))
-        assertEquals(5_000L, workspace().unavailableSince(5_000L, 41))
-        assertEquals(5_000L, workspace().unavailableSince(9_000L, 41))
+        workspace().recordProgress(10)
+        assertEquals(Unavailable(1_000L, 1), workspace().registerUnavailable(1_000L))
+        workspace().recordProgress(80)
+        assertEquals(Unavailable(5_000L, 1), workspace().registerUnavailable(5_000L))
+        assertEquals(Unavailable(5_000L, 2), workspace().registerUnavailable(9_000L))
     }
 
     @Test
-    fun `the clock survives a new preparation`() {
-        workspace().unavailableSince(1_000L, 40)
+    fun `the uploaded file starts the clock again`() {
+        workspace().recordProgress(99)
+        workspace().registerUnavailable(1_000L)
+        workspace().markUploaded("/Talk/a.jpg", "a.jpg")
+
+        assertEquals(Unavailable(5_000L, 1), workspace().registerUnavailable(5_000L))
+    }
+
+    @Test
+    fun `a clock that went back starts the clock again`() {
+        workspace().registerUnavailable(10_000L)
+
+        assertEquals(Unavailable(2_000L, 1), workspace().registerUnavailable(2_000L))
+    }
+
+    @Test
+    fun `progress is kept as the furthest one`() {
+        workspace().recordProgress(40)
+        workspace().recordProgress(20)
+        workspace().registerUnavailable(1_000L)
+        workspace().recordProgress(40)
+
+        // 40 is not further than the 40 of the first answer.
+        assertEquals(Unavailable(1_000L, 2), workspace().registerUnavailable(2_000L))
+    }
+
+    @Test
+    fun `the clock and the progress survive a new preparation`() {
+        workspace().recordProgress(40)
+        workspace().registerUnavailable(1_000L)
         workspace().prepareOnce { create(it, "a.jpg", 1_000) }
 
-        assertEquals(1_000L, workspace().unavailableSince(9_000L, 40))
+        assertEquals(Unavailable(1_000L, 2), workspace().registerUnavailable(9_000L))
+        workspace().recordProgress(41)
+        assertEquals(Unavailable(9_500L, 1), workspace().registerUnavailable(9_500L))
     }
 
     companion object {

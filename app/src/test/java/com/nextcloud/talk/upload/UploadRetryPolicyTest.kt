@@ -157,37 +157,48 @@ class UploadRetryPolicyTest {
 
     @Test
     fun `network errors never use up attempts`() {
-        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.NETWORK, 0, 0L))
+        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.NETWORK, 0, 0L, 0))
         assertEquals(
             Decision.RETRY,
-            UploadRetryPolicy.decide(FailureKind.NETWORK, 0, UploadRetryPolicy.MAX_UNAVAILABLE_MILLIS * 2)
+            UploadRetryPolicy.decide(FailureKind.NETWORK, 0, UploadRetryPolicy.MAX_UNAVAILABLE_MILLIS * 2, 0)
         )
     }
 
     @Test
     fun `an unavailable server is waited for up to 24 hours`() {
         val limit = UploadRetryPolicy.MAX_UNAVAILABLE_MILLIS
+        val answers = UploadRetryPolicy.MIN_UNAVAILABLE_ANSWERS
         assertEquals(24L * 60 * 60 * 1000, limit)
-        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, 0L))
-        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit - 1))
-        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit))
-        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit + 1))
+        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, 0L, 1))
+        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit - 1, answers))
+        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit, answers))
+        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit + 1, answers))
+    }
+
+    @Test
+    fun `a few answers after a long wait do not fail the upload`() {
+        val limit = UploadRetryPolicy.MAX_UNAVAILABLE_MILLIS
+        val answers = UploadRetryPolicy.MIN_UNAVAILABLE_ANSWERS
+        assertEquals(10, answers)
+        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit * 2, 1))
+        assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit * 2, answers - 1))
+        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.UNAVAILABLE, 0, limit * 2, answers))
     }
 
     @Test
     fun `server errors are retried until the limit`() {
         for (count in 1 until UploadRetryPolicy.MAX_SERVER_ERRORS) {
-            assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.SERVER, count, 0L))
+            assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.SERVER, count, 0L, 0))
         }
         assertEquals(
             Decision.FAIL,
-            UploadRetryPolicy.decide(FailureKind.SERVER, UploadRetryPolicy.MAX_SERVER_ERRORS, 0L)
+            UploadRetryPolicy.decide(FailureKind.SERVER, UploadRetryPolicy.MAX_SERVER_ERRORS, 0L, 0)
         )
     }
 
     @Test
     fun `other errors fail at once`() {
-        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.OTHER, 0, 0L))
+        assertEquals(Decision.FAIL, UploadRetryPolicy.decide(FailureKind.OTHER, 0, 0L, 0))
     }
 
     private fun retrofit(code: Int) = RetrofitHttpException(Response.error<Any>(code, "".toResponseBody()))

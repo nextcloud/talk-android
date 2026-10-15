@@ -47,6 +47,7 @@ import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.UploadNotification
 import com.nextcloud.talk.upload.UploadProgressThrottle
 import com.nextcloud.talk.upload.UploadRetryPolicy
+import com.nextcloud.talk.upload.Unavailable
 import com.nextcloud.talk.upload.UploadWorkspace
 import com.nextcloud.talk.upload.PreparedUpload
 import com.nextcloud.talk.upload.normal.FileUploader
@@ -126,10 +127,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private lateinit var workspace: UploadWorkspace
     private val progressThrottle = UploadProgressThrottle()
     private var isForeground = false
-
-    // The furthest percent of the upload in this run; -1 until the first progress report.
-    @Volatile
-    private var furthestProgress = -1
     private var keepWorkspace = false
     private val notificationId = id.hashCode()
 
@@ -275,21 +272,22 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
         val kind = UploadRetryPolicy.classify(e)
         val serverErrors = if (kind == UploadRetryPolicy.FailureKind.SERVER) {
-            workspace.registerServerError()
+            registerServerError()
         } else {
             workspace.serverErrors()
         }
-        val unavailableFor = if (kind == UploadRetryPolicy.FailureKind.UNAVAILABLE) {
-            unavailableForMillis()
+        val unavailable = if (kind == UploadRetryPolicy.FailureKind.UNAVAILABLE) {
+            registerUnavailable()
         } else {
-            0L
+            Unavailable(System.currentTimeMillis(), 0)
         }
-        return when (UploadRetryPolicy.decide(kind, serverErrors, unavailableFor)) {
+        val unavailableFor = System.currentTimeMillis() - unavailable.sinceMillis
+        return when (UploadRetryPolicy.decide(kind, serverErrors, unavailableFor, unavailable.answers)) {
             UploadRetryPolicy.Decision.RETRY -> {
                 Log.w(
                     TAG,
-                    "Upload interrupted ($kind, server errors: $serverErrors, unavailable for $unavailableFor ms), " +
-                        "will resume",
+                    "Upload interrupted ($kind, server errors: $serverErrors, unavailable for $unavailableFor ms, " +
+                        "${unavailable.answers} answers), will resume",
                     e
                 )
                 keepWorkspace = true
@@ -303,15 +301,23 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    /**
-     * How long the server has been answering "unavailable" while the upload did not move on. The upload moves on
-     * when more of it is sent than at the first such answer; a finished upload counts as further than any percent.
-     */
-    private fun unavailableForMillis(): Long {
-        val now = System.currentTimeMillis()
-        val progress = if (workspace.uploadedPath() != null) UPLOADED_PROGRESS else furthestProgress
-        return now - workspace.unavailableSince(now, progress)
-    }
+    // A workspace that cannot be written must not end the work as failed (that fails the uploads queued behind it):
+    // decide with what is known, the upload is tried again.
+    private fun registerServerError(): Int =
+        try {
+            workspace.registerServerError()
+        } catch (e: IOException) {
+            Log.w(TAG, "Could not store the server error", e)
+            workspace.serverErrors() + 1
+        }
+
+    private fun registerUnavailable(): Unavailable =
+        try {
+            workspace.registerUnavailable(System.currentTimeMillis())
+        } catch (e: IOException) {
+            Log.w(TAG, "Could not store the unavailable answer", e)
+            Unavailable(System.currentTimeMillis(), 0)
+        }
 
     /**
      * A stop by the system keeps the parts on the server and the prepared file, so the next run resumes.
@@ -689,15 +695,24 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     override fun onTransferProgress(percentage: Int) {
-        furthestProgress = maxOf(furthestProgress, percentage)
         setProgressAsync(Data.Builder().putInt(PROGRESS_KEY, percentage).build())
         if (progressThrottle.shouldUpdate(percentage)) {
+            recordProgress(percentage)
             if (isCancelled()) {
                 // Interrupts the upload; doWork then sees the flag and aborts.
                 chunkedFileUploader?.stop()
             } else if (isForeground && !isStopped) {
                 notificationManager.notify(notificationId, progressNotification(percentage))
             }
+        }
+    }
+
+    // Called from the upload thread: a workspace that cannot be written must not break the upload.
+    private fun recordProgress(percentage: Int) {
+        try {
+            workspace.recordProgress(percentage)
+        } catch (e: IOException) {
+            Log.w(TAG, "Could not store the progress", e)
         }
     }
 
@@ -768,12 +783,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         /**
          * Output data: true when the upload failed for good. A failed upload ends as SUCCEEDED, not FAILED, because
          * WorkManager fails the works chained behind a failed one without running them. An observer of the work
-         * reads this flag instead. A cancelled upload does not set it.
+         * reads this flag instead. A cancelled upload does not set it. Read it from the output data only: the queue
+         * (APPEND_OR_REPLACE, OverwritingInputMerger) copies the output into the input data of the next work, and
+         * this worker does not read the flag in its input.
          */
         const val KEY_UPLOAD_FAILED = "UPLOAD_FAILED"
         private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
         private const val ALLOW_UPDATE = "ALLOW_UPDATE"
-        private const val UPLOADED_PROGRESS = 101
         private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024 * 1024
 
         private const val WORKSPACE_DIR = "uploads"

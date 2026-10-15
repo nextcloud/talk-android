@@ -13,6 +13,9 @@ import java.nio.channels.FileLock
 import java.nio.channels.OverlappingFileLockException
 import java.util.UUID
 
+/** Since when the server answers "unavailable" without the upload moving on, and how many answers came. */
+data class Unavailable(val sinceMillis: Long, val answers: Int)
+
 /** The file an upload sends and the name it gets on the server. */
 data class PreparedUpload(val file: File, val fileName: String)
 
@@ -36,6 +39,7 @@ class UploadWorkspace(private val dir: File) {
     private val lockFile = File(dir, LOCK_FILE)
     private val restartedFile = File(dir, RESTARTED_FILE)
     private val unavailableFile = File(dir, UNAVAILABLE_FILE)
+    private val progressFile = File(dir, PROGRESS_FILE)
 
     private var lockChannel: RandomAccessFile? = null
     private var lock: FileLock? = null
@@ -129,21 +133,45 @@ class UploadWorkspace(private val dir: File) {
 
     private fun uploadedLines(): List<String>? = runCatching { uploadedFile.readLines() }.getOrNull()
 
+    private class StoredUnavailable(val since: Long, val point: Int, val answers: Int)
+
+    private fun readUnavailable(): StoredUnavailable? {
+        val lines = runCatching { unavailableFile.readLines() }.getOrNull() ?: return null
+        val since = lines.getOrNull(0)?.toLongOrNull()
+        val point = lines.getOrNull(1)?.toIntOrNull()
+        val answers = lines.getOrNull(2)?.toIntOrNull()
+        return if (since != null && point != null && answers != null) StoredUnavailable(since, point, answers) else null
+    }
+
+    /** Remembers the furthest percent of the upload that was sent, in any run. Writes only when it grew. */
+    fun recordProgress(percent: Int) {
+        if (percent > storedProgress()) {
+            dir.mkdirs()
+            write(progressFile, percent.toString())
+        }
+    }
+
+    private fun storedProgress(): Int = readLong(progressFile)?.toInt() ?: NO_PROGRESS
+
+    /** How far the upload is: a finished upload counts as further than any percent. */
+    private fun progressPoint(): Int = if (uploadedPath() != null) UPLOADED_PROGRESS else storedProgress()
+
     /**
-     * The time since which the server answers "unavailable" without the upload moving on. [progress] says how far
-     * the upload is. The pair (time, progress) of the first such answer is kept; a later answer with more progress
-     * starts the time again, because the server took data in between. Returns the time to count from.
+     * Counts an answer "the server is unavailable". The first such answer after which the upload did not move on
+     * starts the time, together with the progress it had then. A later answer with more progress (more sent, or the
+     * file uploaded) starts it again, because the server took data in between; so does a clock that went back.
      */
-    fun unavailableSince(now: Long, progress: Int): Long {
-        val lines = runCatching { unavailableFile.readLines() }.getOrNull()
-        val since = lines?.getOrNull(0)?.toLongOrNull()
-        val stored = lines?.getOrNull(1)?.toIntOrNull()
-        if (since != null && stored != null && progress <= stored) {
-            return since
+    fun registerUnavailable(now: Long): Unavailable {
+        val stored = readUnavailable()
+        val current = progressPoint()
+        val result = if (stored == null || current > stored.point || stored.since > now) {
+            Unavailable(now, 1) to current
+        } else {
+            Unavailable(stored.since, stored.answers + 1) to stored.point
         }
         dir.mkdirs()
-        write(unavailableFile, "$now\n$progress")
-        return now
+        write(unavailableFile, "${result.first.sinceMillis}\n${result.second}\n${result.first.answers}")
+        return result.first
     }
 
     /** Whether the parts were already removed once after the server rejected the assembly. */
@@ -214,6 +242,11 @@ class UploadWorkspace(private val dir: File) {
         private const val LOCK_FILE = "lock"
         private const val RESTARTED_FILE = "restarted"
         private const val UNAVAILABLE_FILE = "unavailable"
+        private const val PROGRESS_FILE = "progress"
+        private const val NO_PROGRESS = -1
+
+        /** The progress of an upload that is complete on the server, further than any percent. */
+        private const val UPLOADED_PROGRESS = 101
         private const val DRAFT_MARK = "draft"
         private const val TMP_SUFFIX = ".tmp"
         private const val FILES_DIR = "file"
@@ -227,7 +260,8 @@ class UploadWorkspace(private val dir: File) {
             UPLOADED_FILE,
             SHARED_FILE,
             RESTARTED_FILE,
-            UNAVAILABLE_FILE
+            UNAVAILABLE_FILE,
+            PROGRESS_FILE
         )
 
         /**
