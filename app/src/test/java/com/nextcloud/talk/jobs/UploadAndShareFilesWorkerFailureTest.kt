@@ -31,6 +31,7 @@ import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachm
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOCS
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.upload.PreparedUpload
 import com.nextcloud.talk.upload.UploadRetryPolicy
 import com.nextcloud.talk.upload.UploadWorkspace
 import com.nextcloud.talk.users.UserManager
@@ -272,6 +273,44 @@ class UploadAndShareFilesWorkerFailureTest {
         assertEquals(0, foregroundRequests.get())
     }
 
+    @Test
+    fun `a later run takes the size from the prepared copy, not from the source`() {
+        // The source of unknown size would count as big; its copy is small.
+        val worker = worker(source = "content://media/photo.jpg", uploaded = false, preparedSize = SMALL_FILE_SIZE)
+
+        worker.doWork()
+
+        assertEquals(0, foregroundRequests.get())
+    }
+
+    @Test
+    fun `a later run with a big prepared copy runs as a foreground service`() {
+        val worker = worker(source = fileUri(SMALL_FILE_SIZE), uploaded = false, preparedSize = BIG_FILE_SIZE)
+
+        worker.doWork()
+
+        assertEquals(1, foregroundRequests.get())
+    }
+
+    @Test
+    fun `an empty file is uploaded without a foreground service`() {
+        val worker = worker(source = fileUri(0), uploaded = false)
+
+        worker.doWork()
+
+        assertEquals(0, foregroundRequests.get())
+    }
+
+    @Test
+    fun `an empty prepared copy is taken as it is and needs no foreground service`() {
+        // The source of unknown size would count as big; the copy is empty and small.
+        val worker = worker(source = "content://media/empty.txt", uploaded = false, preparedSize = 0)
+
+        worker.doWork()
+
+        assertEquals(0, foregroundRequests.get())
+    }
+
     private fun fileUri(size: Int): String =
         Uri.fromFile(File(context().cacheDir, "source-$size.bin").apply { writeBytes(ByteArray(size)) }).toString()
 
@@ -284,7 +323,9 @@ class UploadAndShareFilesWorkerFailureTest {
     private fun worker(
         source: String = "content://media/photo.jpg",
         uploaded: Boolean = true,
-        draft: Boolean = false
+        draft: Boolean = false,
+        id: UUID? = null,
+        preparedSize: Int? = null
     ): UploadAndShareFilesWorker {
         rows[REFERENCE_ID] = placeholder()
         if (draft) {
@@ -300,7 +341,7 @@ class UploadAndShareFilesWorkerFailureTest {
             }
         }
         // Without capabilities a run that has to upload ends at once, after the foreground service was asked for.
-        if (!uploaded) {
+        if (!uploaded && !draft) {
             whenever(user.capabilities).thenReturn(null)
         }
         val factory = object : WorkerFactory() {
@@ -328,6 +369,7 @@ class UploadAndShareFilesWorkerFailureTest {
         val worker = TestListenableWorkerBuilder<UploadAndShareFilesWorker>(contextWithStrings())
             .setInputData(input)
             .setWorkerFactory(factory)
+            .apply { id?.let { setId(it) } }
             .setForegroundUpdater { _, _, _ ->
                 foregroundRequests.incrementAndGet()
                 ResolvableFuture.create<Void>().also { it.set(null) }
@@ -336,6 +378,11 @@ class UploadAndShareFilesWorkerFailureTest {
         if (uploaded) {
             val path = if (draft) "/Talk/draft/id-photo.jpg" else "/Talk/photo.jpg"
             UploadWorkspace(workspaceDir(worker.id)).markUploaded(path, "photo.jpg", draft)
+        }
+        preparedSize?.let { size ->
+            UploadWorkspace(workspaceDir(worker.id)).prepareOnce { dir ->
+                PreparedUpload(File(dir, "photo.jpg").apply { writeBytes(ByteArray(size)) }, "photo.jpg")
+            }
         }
         return worker
     }
