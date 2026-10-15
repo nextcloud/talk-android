@@ -112,10 +112,20 @@ class UploadWorkspace(private val dir: File) {
     /** The name the uploaded file was shared under, kept because the prepared file may be gone by then. */
     fun uploadedName(): String? = uploadedLines()?.getOrNull(1)?.takeIf { it.isNotEmpty() }
 
-    fun markUploaded(path: String, fileName: String) {
+    /**
+     * @param draft the file went to the draft folder of the conversation, from where the server moves it when the
+     * message is posted; see [isDraftUploaded]
+     */
+    fun markUploaded(path: String, fileName: String, draft: Boolean = false) {
         dir.mkdirs()
-        write(uploadedFile, "$path\n$fileName")
+        write(uploadedFile, "$path\n$fileName" + if (draft) "\n$DRAFT_MARK" else "")
     }
+
+    /**
+     * Whether the uploaded file is in the draft folder, a file of this upload alone. The file in the attachment
+     * folder of Talk (the path without conversation subfolders) is a file of the user and is never removed.
+     */
+    fun isDraftUploaded(): Boolean = uploadedLines()?.getOrNull(2) == DRAFT_MARK
 
     private fun uploadedLines(): List<String>? = runCatching { uploadedFile.readLines() }.getOrNull()
 
@@ -204,6 +214,7 @@ class UploadWorkspace(private val dir: File) {
         private const val LOCK_FILE = "lock"
         private const val RESTARTED_FILE = "restarted"
         private const val UNAVAILABLE_FILE = "unavailable"
+        private const val DRAFT_MARK = "draft"
         private const val TMP_SUFFIX = ".tmp"
         private const val FILES_DIR = "file"
 

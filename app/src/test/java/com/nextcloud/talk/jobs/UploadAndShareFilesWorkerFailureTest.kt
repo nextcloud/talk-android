@@ -27,7 +27,11 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentDataDto
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOCS
+import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.upload.UploadRetryPolicy
 import com.nextcloud.talk.upload.UploadWorkspace
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -36,6 +40,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -54,6 +63,7 @@ import retrofit2.Response
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -71,6 +81,7 @@ class UploadAndShareFilesWorkerFailureTest {
     private val capabilities: CapabilitiesDto = mock { on { spreedCapability } doReturn spreed }
     private val user: User = mock {
         on { username } doReturn "alice"
+        on { userId } doReturn "alice"
         on { token } doReturn "secret"
         on { baseUrl } doReturn "https://cloud.example"
         on { capabilities } doReturn capabilities
@@ -79,6 +90,8 @@ class UploadAndShareFilesWorkerFailureTest {
         on { runBlocking { getUserWithId(ACCOUNT_ID) } } doReturn user
     }
     private val ncApi: NcApi = mock()
+    private val ncApiCoroutines: NcApiCoroutines = mock()
+    private val server = MockWebServer()
     private val chatDao: ChatMessagesDao = mock {
         on { getTempMessageForConversation(any(), any(), anyOrNull()) } doAnswer {
             flowOf(rows[it.getArgument<String>(1)])
@@ -93,6 +106,11 @@ class UploadAndShareFilesWorkerFailureTest {
             row?.let { found -> rows[referenceId] = found.copy(sendStatus = it.getArgument(2)) }
             if (row == null) 0 else 1
         }.whenever(chatDao).updateTempMessageSendStatus(any(), any(), any())
+    }
+
+    @After
+    fun tearDown() {
+        runCatching { server.shutdown() }
     }
 
     @Test
@@ -170,6 +188,63 @@ class UploadAndShareFilesWorkerFailureTest {
     }
 
     @Test
+    fun `a failed upload removes its file from the draft folder`() {
+        val server = startServer()
+        val worker = worker(draft = true)
+        refusePublishing(worker)
+
+        worker.doWork()
+
+        assertEquals(SendStatus.FAILED, rows[REFERENCE_ID]?.sendStatus)
+        val request = server.takeRequest(REQUEST_WAIT_SECONDS, TimeUnit.SECONDS)
+        assertEquals("DELETE", request?.method)
+        assertEquals("/remote.php/dav/files/alice/Talk/draft/id-photo.jpg", request?.path)
+    }
+
+    @Test
+    fun `a failed upload leaves the file in the attachment folder of Talk`() {
+        val server = startServer()
+        val worker = worker(draft = false)
+        refusePublishing(worker)
+
+        worker.doWork()
+
+        assertEquals(SendStatus.FAILED, rows[REFERENCE_ID]?.sendStatus)
+        assertEquals(0, server.requestCount)
+    }
+
+    @Test
+    fun `a cancelled upload still removes its draft file`() {
+        val server = startServer()
+        val worker = worker(draft = true)
+        UploadWorkspace(workspaceDir(worker.id)).markCancelled()
+
+        worker.doWork()
+
+        assertEquals("DELETE", server.takeRequest(REQUEST_WAIT_SECONDS, TimeUnit.SECONDS)?.method)
+    }
+
+    // Three server errors are counted already, so the next refusal of the server is the last one.
+    private fun refusePublishing(worker: UploadAndShareFilesWorker) {
+        val workspace = UploadWorkspace(workspaceDir(worker.id))
+        repeat(UploadRetryPolicy.MAX_SERVER_ERRORS - 1) { workspace.registerServerError() }
+        val forbidden = HttpException(Response.error<Any>(FORBIDDEN, "".toResponseBody()))
+        // The draft path publishes with postConversationAttachment, the attachment folder path shares.
+        whenever(runBlocking { ncApiCoroutines.postConversationAttachment(any(), any(), any()) }).thenThrow(forbidden)
+        whenever(ncApi.createRemoteShare(anyOrNull(), any(), any(), any(), any(), anyOrNull(), any()))
+            .thenReturn(Observable.error<GenericOverall>(forbidden))
+    }
+
+    private fun startServer(): MockWebServer {
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest) = MockResponse().setResponseCode(NO_CONTENT)
+        }
+        server.start()
+        whenever(user.baseUrl).thenReturn(server.url("/").toString().trimEnd('/'))
+        return server
+    }
+
+    @Test
     fun `a small file is uploaded without a foreground service`() {
         val worker = worker(source = fileUri(SMALL_FILE_SIZE), uploaded = false)
 
@@ -208,9 +283,22 @@ class UploadAndShareFilesWorkerFailureTest {
 
     private fun worker(
         source: String = "content://media/photo.jpg",
-        uploaded: Boolean = true
+        uploaded: Boolean = true,
+        draft: Boolean = false
     ): UploadAndShareFilesWorker {
         rows[REFERENCE_ID] = placeholder()
+        if (draft) {
+            // The draft folder path is used when the server has conversation subfolders.
+            val attachments = hashMapOf<String, Any>("conversation-subfolders" to true)
+            whenever(spreed.config).thenReturn(hashMapOf("attachments" to attachments))
+            runBlocking {
+                whenever(ncApiCoroutines.probeConversationAttachmentFolder(any(), any(), any())).thenReturn(
+                    ChatProbeAttachmentFolderOverall(
+                        ChatProbeAttachmentFolderOCS(null, ChatProbeAttachmentDataDto(folder = "Talk/draft"))
+                    )
+                )
+            }
+        }
         // Without capabilities a run that has to upload ends at once, after the foreground service was asked for.
         if (!uploaded) {
             whenever(user.capabilities).thenReturn(null)
@@ -225,7 +313,7 @@ class UploadAndShareFilesWorkerFailureTest {
                     it.userManager = userManager
                     it.chatDao = chatDao
                     it.ncApi = ncApi
-                    it.ncApiCoroutines = mock<NcApiCoroutines>()
+                    it.ncApiCoroutines = ncApiCoroutines
                     it.okHttpClient = OkHttpClient()
                 }
         }
@@ -246,7 +334,8 @@ class UploadAndShareFilesWorkerFailureTest {
             }
             .build()
         if (uploaded) {
-            UploadWorkspace(workspaceDir(worker.id)).markUploaded("/Talk/photo.jpg", "photo.jpg")
+            val path = if (draft) "/Talk/draft/id-photo.jpg" else "/Talk/photo.jpg"
+            UploadWorkspace(workspaceDir(worker.id)).markUploaded(path, "photo.jpg", draft)
         }
         return worker
     }
@@ -293,6 +382,9 @@ class UploadAndShareFilesWorkerFailureTest {
         private const val REFERENCE_ID = "ref-a"
         private const val HOURS_25 = 25L * 60 * 60 * 1000
         private const val UPLOADED_PROGRESS = 101
+        private const val FORBIDDEN = 403
+        private const val NO_CONTENT = 204
+        private const val REQUEST_WAIT_SECONDS = 5L
         private const val SMALL_FILE_SIZE = 10 * 1024
         private const val BIG_FILE_SIZE = 1024 * 1024 + 1
     }

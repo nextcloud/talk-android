@@ -505,10 +505,14 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
      * Ends the work as success, not failure: the failure is already shown (notification, FAILED placeholder), and
      * a failed work would make WorkManager fail the uploads queued behind it in the conversation without running
      * them, leaving their placeholders "sending" for ever.
+     *
+     * A file in the draft folder belongs to this upload alone and nobody posts it any more, so it is removed (the
+     * server moves it out of the draft folder when the message is posted; a file already moved is gone, which is
+     * fine). A file in the attachment folder of Talk is the user's file and stays.
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun failUpload(): Result {
-        abortRemote()
+        abortRemote(deleteUploadedFile = workspace.isDraftUploaded())
         updatePlaceholderStatus(SendStatus.FAILED)
         try {
             showFailedToUploadNotification()
@@ -622,7 +626,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 if (!uploadToDraftFolder(checkNotNull(sourceFileUri), tempRemotePath)) {
                     return@runBlocking false
                 }
-                workspace.markUploaded(tempRemotePath, fileName)
+                workspace.markUploaded(tempRemotePath, fileName, draft = true)
             }
             if (isCancelled()) {
                 return@runBlocking false

@@ -210,6 +210,21 @@ class UploadWorkspaceTest {
     }
 
     @Test
+    fun `an uploaded file is marked as draft only when it went to the draft folder`() {
+        val ws = workspace()
+        assertFalse(ws.isDraftUploaded())
+
+        ws.markUploaded("/Talk/a.jpg", "a.jpg")
+        assertFalse(workspace().isDraftUploaded())
+        assertEquals("a.jpg", workspace().uploadedName())
+
+        ws.markUploaded("/draft/id-a.jpg", "a.jpg", draft = true)
+        assertTrue(workspace().isDraftUploaded())
+        assertEquals("/draft/id-a.jpg", workspace().uploadedPath())
+        assertEquals("a.jpg", workspace().uploadedName())
+    }
+
+    @Test
     fun `the stages survive a new preparation after the prepared file is gone`() {
         val ws = workspace()
         val prepared = ws.prepareOnce { create(it, "a.jpg", 1_000) }!!
