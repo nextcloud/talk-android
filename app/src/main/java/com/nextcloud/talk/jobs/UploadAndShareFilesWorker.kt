@@ -125,6 +125,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private lateinit var workspace: UploadWorkspace
     private val progressThrottle = UploadProgressThrottle()
     private var isForeground = false
+
+    // The furthest percent of the upload in this run; -1 until the first progress report.
+    @Volatile
+    private var furthestProgress = -1
     private var keepWorkspace = false
     private val notificationId = id.hashCode()
 
@@ -272,18 +276,38 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         } else {
             workspace.serverErrors()
         }
-        return when (UploadRetryPolicy.decide(kind, serverErrors)) {
+        val unavailableFor = if (kind == UploadRetryPolicy.FailureKind.UNAVAILABLE) {
+            unavailableForMillis()
+        } else {
+            0L
+        }
+        return when (UploadRetryPolicy.decide(kind, serverErrors, unavailableFor)) {
             UploadRetryPolicy.Decision.RETRY -> {
-                Log.w(TAG, "Upload interrupted ($kind, server errors: $serverErrors), will resume", e)
+                Log.w(
+                    TAG,
+                    "Upload interrupted ($kind, server errors: $serverErrors, unavailable for $unavailableFor ms), " +
+                        "will resume",
+                    e
+                )
                 keepWorkspace = true
                 Result.retry()
             }
 
             UploadRetryPolicy.Decision.FAIL -> {
-                Log.e(TAG, "Something went wrong when trying to upload file", e)
+                Log.e(TAG, "Something went wrong when trying to upload file (unavailable for $unavailableFor ms)", e)
                 failUpload()
             }
         }
+    }
+
+    /**
+     * How long the server has been answering "unavailable" while the upload did not move on. The upload moves on
+     * when more of it is sent than at the first such answer; a finished upload counts as further than any percent.
+     */
+    private fun unavailableForMillis(): Long {
+        val now = System.currentTimeMillis()
+        val progress = if (workspace.uploadedPath() != null) UPLOADED_PROGRESS else furthestProgress
+        return now - workspace.unavailableSince(now, progress)
     }
 
     /**
@@ -639,6 +663,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     }
 
     override fun onTransferProgress(percentage: Int) {
+        furthestProgress = maxOf(furthestProgress, percentage)
         setProgressAsync(Data.Builder().putInt(PROGRESS_KEY, percentage).build())
         if (progressThrottle.shouldUpdate(percentage)) {
             if (isCancelled()) {
@@ -715,6 +740,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         const val PROGRESS_KEY = "UPLOAD_PROGRESS"
         private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
         private const val ALLOW_UPDATE = "ALLOW_UPDATE"
+        private const val UPLOADED_PROGRESS = 101
         private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024 * 1024
 
         private const val WORKSPACE_DIR = "uploads"

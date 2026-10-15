@@ -84,7 +84,7 @@ class FileUploaderTest {
             runBlocking { uploader(file).uploadToConversationSubfolder(Uri.fromFile(file), "/draft/photo.jpg") }
             fail("expected an HttpException")
         } catch (e: HttpException) {
-            assertEquals(UploadRetryPolicy.FailureKind.NETWORK, UploadRetryPolicy.classify(e))
+            assertEquals(UploadRetryPolicy.FailureKind.UNAVAILABLE, UploadRetryPolicy.classify(e))
         }
     }
 

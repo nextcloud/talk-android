@@ -23,12 +23,16 @@ import javax.net.ssl.SSLPeerUnverifiedException
  * Decides what an upload does after an error or after WorkManager stopped it.
  *
  * Network problems and stops by the system never use up attempts: the upload resumes once the network is back.
- * Only errors answered by the server count against [MAX_SERVER_ERRORS].
+ * A server that answers "unavailable" is waited for up to [MAX_UNAVAILABLE_MILLIS]. Other errors answered by the
+ * server count against [MAX_SERVER_ERRORS].
  */
 object UploadRetryPolicy {
 
     /** Server errors one upload may hit before it is marked as failed. */
     const val MAX_SERVER_ERRORS = 4
+
+    /** How long a server may keep answering "unavailable" without taking data before the upload fails: 24 hours. */
+    const val MAX_UNAVAILABLE_MILLIS = 24L * 60 * 60 * 1000
 
     private const val MAX_CAUSE_DEPTH = 8
     private const val HTTP_REQUEST_TIMEOUT = 408
@@ -39,21 +43,24 @@ object UploadRetryPolicy {
     private const val HTTP_INSUFFICIENT_STORAGE = 507
 
     // A server that cannot do the request or has a full quota does not change within the few attempts.
-    private val PERMANENT_SERVER_ERRORS = setOf(HTTP_NOT_IMPLEMENTED, HTTP_VERSION_NOT_SUPPORTED, HTTP_INSUFFICIENT_STORAGE)
+    private val PERMANENT_SERVER_ERRORS =
+        setOf(HTTP_NOT_IMPLEMENTED, HTTP_VERSION_NOT_SUPPORTED, HTTP_INSUFFICIENT_STORAGE)
 
     /**
-     * NETWORK: no connection or a server that is temporarily unavailable, retried without a limit.
+     * NETWORK: no connection, retried without a limit.
+     * UNAVAILABLE: the server answered that it is overloaded or restarting (5xx except 501, 505 and 507, 408, 429), retried
+     * until [MAX_UNAVAILABLE_MILLIS] pass without progress of the upload.
      * SERVER: an answer or a TLS problem that may not go away, retried up to [MAX_SERVER_ERRORS] times.
      * OTHER: a local problem, fails at once.
      */
-    enum class FailureKind { NETWORK, SERVER, OTHER }
+    enum class FailureKind { NETWORK, UNAVAILABLE, SERVER, OTHER }
 
     enum class Decision { RETRY, FAIL }
 
     /**
      * Looks through the whole chain of causes, because RxJava wraps a checked [IOException] in a RuntimeException.
      * An HTTP error wins over everything else. Errors of an overloaded or restarting server (5xx except 501, 505 and 507, 408,
-     * 429) are treated like a lost network: the upload waits and goes on without a limit. Other HTTP errors and
+     * 429) are UNAVAILABLE: the upload waits and goes on, but not for ever. Other HTTP errors and
      * certificate problems count against [MAX_SERVER_ERRORS]. Any other [SSLException] is a network error: on
      * Android a connection that drops in the middle of an HTTPS transfer arrives as an SSLException.
      */
@@ -61,7 +68,7 @@ object UploadRetryPolicy {
         val causes = causeChain(error)
         val httpCode = causes.firstNotNullOfOrNull(::httpCodeOf)
         return when {
-            httpCode != null -> if (isTransientHttpCode(httpCode)) FailureKind.NETWORK else FailureKind.SERVER
+            httpCode != null -> if (isTransientHttpCode(httpCode)) FailureKind.UNAVAILABLE else FailureKind.SERVER
             isCertificateProblem(causes) -> FailureKind.SERVER
             causes.any { it is IOException && it !is FileNotFoundException } -> FailureKind.NETWORK
             else -> FailureKind.OTHER
@@ -105,10 +112,12 @@ object UploadRetryPolicy {
 
     /**
      * @param serverErrorCount server errors of this upload so far, including the one being decided on
+     * @param unavailableForMillis how long the server has been answering "unavailable" without the upload moving on
      */
-    fun decide(kind: FailureKind, serverErrorCount: Int): Decision =
+    fun decide(kind: FailureKind, serverErrorCount: Int, unavailableForMillis: Long): Decision =
         when {
             kind == FailureKind.NETWORK -> Decision.RETRY
+            kind == FailureKind.UNAVAILABLE && unavailableForMillis < MAX_UNAVAILABLE_MILLIS -> Decision.RETRY
             kind == FailureKind.SERVER && serverErrorCount < MAX_SERVER_ERRORS -> Decision.RETRY
             else -> Decision.FAIL
         }

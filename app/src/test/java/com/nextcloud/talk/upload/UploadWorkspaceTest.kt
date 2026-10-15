@@ -252,6 +252,28 @@ class UploadWorkspaceTest {
         assertEquals(prepared, workspace().prepared())
     }
 
+    @Test
+    fun `the first unavailable answer starts the clock and the same progress keeps it`() {
+        assertEquals(1_000L, workspace().unavailableSince(1_000L, 40))
+        assertEquals(1_000L, workspace().unavailableSince(5_000L, 40))
+        assertEquals(1_000L, workspace().unavailableSince(9_000L, 10))
+    }
+
+    @Test
+    fun `more progress of the upload starts the clock again`() {
+        assertEquals(1_000L, workspace().unavailableSince(1_000L, 40))
+        assertEquals(5_000L, workspace().unavailableSince(5_000L, 41))
+        assertEquals(5_000L, workspace().unavailableSince(9_000L, 41))
+    }
+
+    @Test
+    fun `the clock survives a new preparation`() {
+        workspace().unavailableSince(1_000L, 40)
+        workspace().prepareOnce { create(it, "a.jpg", 1_000) }
+
+        assertEquals(1_000L, workspace().unavailableSince(9_000L, 40))
+    }
+
     companion object {
         private const val SIZE = 16
 

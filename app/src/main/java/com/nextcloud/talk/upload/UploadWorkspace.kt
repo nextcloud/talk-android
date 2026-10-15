@@ -35,6 +35,7 @@ class UploadWorkspace(private val dir: File) {
     private val uploadIdFile = File(dir, UPLOAD_ID_FILE)
     private val lockFile = File(dir, LOCK_FILE)
     private val restartedFile = File(dir, RESTARTED_FILE)
+    private val unavailableFile = File(dir, UNAVAILABLE_FILE)
 
     private var lockChannel: RandomAccessFile? = null
     private var lock: FileLock? = null
@@ -118,6 +119,23 @@ class UploadWorkspace(private val dir: File) {
 
     private fun uploadedLines(): List<String>? = runCatching { uploadedFile.readLines() }.getOrNull()
 
+    /**
+     * The time since which the server answers "unavailable" without the upload moving on. [progress] says how far
+     * the upload is. The pair (time, progress) of the first such answer is kept; a later answer with more progress
+     * starts the time again, because the server took data in between. Returns the time to count from.
+     */
+    fun unavailableSince(now: Long, progress: Int): Long {
+        val lines = runCatching { unavailableFile.readLines() }.getOrNull()
+        val since = lines?.getOrNull(0)?.toLongOrNull()
+        val stored = lines?.getOrNull(1)?.toIntOrNull()
+        if (since != null && stored != null && progress <= stored) {
+            return since
+        }
+        dir.mkdirs()
+        write(unavailableFile, "$now\n$progress")
+        return now
+    }
+
     /** Whether the parts were already removed once after the server rejected the assembly. */
     fun isRestarted(): Boolean = restartedFile.exists()
 
@@ -185,6 +203,7 @@ class UploadWorkspace(private val dir: File) {
         private const val UPLOAD_ID_FILE = "upload_id"
         private const val LOCK_FILE = "lock"
         private const val RESTARTED_FILE = "restarted"
+        private const val UNAVAILABLE_FILE = "unavailable"
         private const val TMP_SUFFIX = ".tmp"
         private const val FILES_DIR = "file"
 
@@ -196,7 +215,8 @@ class UploadWorkspace(private val dir: File) {
             UPLOAD_ID_FILE,
             UPLOADED_FILE,
             SHARED_FILE,
-            RESTARTED_FILE
+            RESTARTED_FILE,
+            UNAVAILABLE_FILE
         )
 
         /**

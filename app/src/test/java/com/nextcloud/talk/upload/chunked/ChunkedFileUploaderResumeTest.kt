@@ -198,10 +198,10 @@ class ChunkedFileUploaderResumeTest {
     fun `the worker tries again after a service unavailable answer to a part but not after a rejected part`() {
         putResponseCode = SERVICE_UNAVAILABLE
         val unavailable = assertThrows(HttpException::class.java) { uploader.upload(file, null, "/Talk/video.mp4") }
-        assertEquals(UploadRetryPolicy.FailureKind.NETWORK, UploadRetryPolicy.classify(unavailable))
+        assertEquals(UploadRetryPolicy.FailureKind.UNAVAILABLE, UploadRetryPolicy.classify(unavailable))
         assertEquals(
             UploadRetryPolicy.Decision.RETRY,
-            UploadRetryPolicy.decide(UploadRetryPolicy.classify(unavailable), UploadRetryPolicy.MAX_SERVER_ERRORS)
+            decideAfterManyServerErrors(unavailable)
         )
 
         putResponseCode = BAD_REQUEST
@@ -209,9 +209,13 @@ class ChunkedFileUploaderResumeTest {
         assertEquals(UploadRetryPolicy.FailureKind.SERVER, UploadRetryPolicy.classify(rejected))
         assertEquals(
             UploadRetryPolicy.Decision.FAIL,
-            UploadRetryPolicy.decide(UploadRetryPolicy.classify(rejected), UploadRetryPolicy.MAX_SERVER_ERRORS)
+            decideAfterManyServerErrors(rejected)
         )
     }
+
+    // The server errors are used up, the server answered "unavailable" for the first time.
+    private fun decideAfterManyServerErrors(error: Throwable) =
+        UploadRetryPolicy.decide(UploadRetryPolicy.classify(error), UploadRetryPolicy.MAX_SERVER_ERRORS, 0L, 1)
 
     @Test
     fun `a lost network while sending a part is an error and keeps the parts on the server`() {
