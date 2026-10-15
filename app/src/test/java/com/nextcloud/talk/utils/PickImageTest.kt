@@ -25,11 +25,13 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 class PickImageTest {
 
     @get:Rule
