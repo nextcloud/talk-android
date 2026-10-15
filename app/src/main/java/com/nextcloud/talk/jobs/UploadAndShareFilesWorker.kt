@@ -30,6 +30,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -496,7 +497,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             // The failure is recorded already; an exception here must not end the work as failed.
             Log.e(TAG, "Could not show the upload failed notification", e)
         }
-        return Result.success()
+        return Result.success(workDataOf(KEY_UPLOAD_FAILED to true))
     }
 
     /**
@@ -738,6 +739,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_REFERENCE_ID = "REFERENCE_ID"
         const val KEY_INTERNAL_CONVERSATION_ID = "INTERNAL_CONVERSATION_ID"
         const val PROGRESS_KEY = "UPLOAD_PROGRESS"
+
+        /**
+         * Output data: true when the upload failed for good. A failed upload ends as SUCCEEDED, not FAILED, because
+         * WorkManager fails the works chained behind a failed one without running them. An observer of the work
+         * reads this flag instead. A cancelled upload does not set it.
+         */
+        const val KEY_UPLOAD_FAILED = "UPLOAD_FAILED"
         private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
         private const val ALLOW_UPDATE = "ALLOW_UPDATE"
         private const val UPLOADED_PROGRESS = 101

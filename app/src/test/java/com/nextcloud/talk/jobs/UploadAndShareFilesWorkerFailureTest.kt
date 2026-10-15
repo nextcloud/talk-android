@@ -36,6 +36,7 @@ import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
@@ -111,7 +112,7 @@ class UploadAndShareFilesWorkerFailureTest {
 
         val result = worker.doWork()
 
-        assertEquals(ListenableWorker.Result.success(), result)
+        assertTrue(result is ListenableWorker.Result.Success)
         assertEquals(SendStatus.FAILED, rows[REFERENCE_ID]?.sendStatus)
         assertFalse("the workspace is removed", workspaceDir(worker.id).exists())
     }
@@ -127,6 +128,41 @@ class UploadAndShareFilesWorkerFailureTest {
 
         assertEquals(ListenableWorker.Result.retry(), result)
         assertEquals(SendStatus.PENDING, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `a failed upload reports the failure in the output data`() {
+        val worker = worker()
+        whenever(runBlocking { userManager.getUserWithId(ACCOUNT_ID) }).thenReturn(null)
+
+        val result = worker.doWork()
+
+        assertTrue(result is ListenableWorker.Result.Success)
+        assertEquals(true, result.outputData.getBoolean(UploadAndShareFilesWorker.KEY_UPLOAD_FAILED, false))
+        assertEquals(SendStatus.FAILED, rows[REFERENCE_ID]?.sendStatus)
+    }
+
+    @Test
+    fun `a cancelled upload does not report a failure`() {
+        val worker = worker()
+        UploadWorkspace(workspaceDir(worker.id)).markCancelled()
+
+        val result = worker.doWork()
+
+        assertTrue(result is ListenableWorker.Result.Success)
+        assertFalse(result.outputData.getBoolean(UploadAndShareFilesWorker.KEY_UPLOAD_FAILED, false))
+    }
+
+    @Test
+    fun `a delivered upload does not report a failure`() {
+        val worker = worker()
+        UploadWorkspace(workspaceDir(worker.id)).markShared()
+
+        val result = worker.doWork()
+
+        assertTrue(result is ListenableWorker.Result.Success)
+        assertFalse(result.outputData.getBoolean(UploadAndShareFilesWorker.KEY_UPLOAD_FAILED, false))
+        assertEquals(SendStatus.SENT_PENDING_ACK, rows[REFERENCE_ID]?.sendStatus)
     }
 
     /** The file is uploaded already and the server refuses the share with [code]. */
