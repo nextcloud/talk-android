@@ -38,7 +38,7 @@ val roomVersion = "2.8.5"
 val workVersion = "2.12.0"
 val espressoVersion = "3.7.0"
 val androidxTestVersion = "1.5.0"
-val media3Version = "1.11.0"
+val media3Version = "1.11.1"
 val coroutinesVersion = "1.11.0"
 val mockitoKotlinVersion = "6.4.0"
 
