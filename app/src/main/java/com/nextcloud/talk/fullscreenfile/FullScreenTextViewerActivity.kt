@@ -12,8 +12,11 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
@@ -29,7 +32,10 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : BaseActivity() {
@@ -52,10 +58,18 @@ class FullScreenTextViewerActivity : BaseActivity() {
             finish()
             return
         }
-        val text = readFile(textFile)
-
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+            val text by produceState<String?>(null, textFile) {
+                value = withContext(Dispatchers.IO) { readTextFileOrNull(textFile) } ?: run {
+                    // the system may clear the cache directory while the viewer is not on screen
+                    Log.e(TAG, "Could not read the text file: ${textFile.name}")
+                    Toast.makeText(this@FullScreenTextViewerActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG)
+                        .show()
+                    finish()
+                    null
+                }
+            }
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 FullScreenTextScreen(
@@ -111,9 +125,15 @@ class FullScreenTextViewerActivity : BaseActivity() {
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
 
-    private fun readFile(file: File) = file.inputStream().readBytes().toString(Charsets.UTF_8)
-
     companion object {
         private val TAG = FullScreenTextViewerActivity::class.java.simpleName
+
+        internal fun readTextFileOrNull(file: File): String? =
+            try {
+                file.inputStream().use { it.readBytes().toString(Charsets.UTF_8) }
+            } catch (e: IOException) {
+                Log.w(TAG, "Failed to read the text file", e)
+                null
+            }
     }
 }
