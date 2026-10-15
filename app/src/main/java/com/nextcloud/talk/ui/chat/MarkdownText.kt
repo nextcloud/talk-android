@@ -24,8 +24,6 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.Patterns
 import android.util.TypedValue
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -129,26 +127,11 @@ fun MarkdownText(
             AndroidView(
                 modifier = if (hasTable) Modifier.fillMaxWidth() else Modifier,
                 factory = { ctx ->
-                    val gestureDetector = GestureDetector(
+                    val longPressListener = linkTouchListener(
                         ctx,
-                        object : GestureDetector.SimpleOnGestureListener() {
-                            override fun onSingleTapUp(e: MotionEvent): Boolean {
-                                onClickState.value?.invoke()
-                                return false
-                            }
-
-                            override fun onLongPress(e: MotionEvent) {
-                                onLongClickState.value(messageId)
-                            }
-                        }
+                        onTap = { onClickState.value?.invoke() },
+                        onLongPress = { onLongClickState.value(messageId) }
                     )
-                    val longPressListener = View.OnTouchListener { view, event ->
-                        if (event.action == MotionEvent.ACTION_UP) {
-                            view.performClick()
-                        }
-                        gestureDetector.onTouchEvent(event)
-                        false
-                    }
                     LongPressTextView(ctx).apply {
                         isFocusable = false
                         isFocusableInTouchMode = false
