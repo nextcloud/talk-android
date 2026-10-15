@@ -811,7 +811,8 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun markUploadPlaceholderFailed(referenceId: String) {
         val entity = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
         if (entity?.sendStatus == SendStatus.PENDING) {
-            chatDao.updateChatMessage(entity.copy(sendStatus = SendStatus.FAILED))
+            // called from viewModelScope: updateChatMessage is a blocking Room call
+            withContext(Dispatchers.IO) { chatDao.updateChatMessage(entity.copy(sendStatus = SendStatus.FAILED)) }
         }
     }
 

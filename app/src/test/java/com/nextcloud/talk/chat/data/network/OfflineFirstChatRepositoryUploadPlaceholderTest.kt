@@ -46,6 +46,9 @@ import org.robolectric.annotation.Config
  * exists, so a sync can store the server copy of the shared file first; the placeholder must then not
  * be stored, because [com.nextcloud.talk.data.database.dao.ChatMessagesDao.upsertChatMessagesAndDeleteTemp]
  * only drops temporary messages that exist at the time the server copy is written.
+ *
+ * The database does not allow main thread queries: the test thread is the main looper thread under
+ * Robolectric, so a blocking DAO call made by the repository on its caller's thread fails the test.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -61,9 +64,7 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, TalkDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
+        db = Room.inMemoryDatabaseBuilder(context, TalkDatabase::class.java).build()
         runBlocking {
             db.usersDao().saveUser(UserEntity(id = ACCOUNT_ID, userId = "me", username = "me", baseUrl = BASE_URL))
             db.conversationsDao().upsertConversations(
@@ -156,6 +157,17 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
 
             assertNull(tempMessage(REFERENCE_ID))
             assertEquals(serverCopy, storedMessage(SERVER_MESSAGE_ID))
+        }
+
+    @Test
+    fun `marking a failed upload sets the pending placeholder to failed off the main thread`() =
+        runBlocking {
+            addPlaceholder(REFERENCE_ID)
+
+            // called from viewModelScope, i.e. the main thread; the update must not run there
+            repository.markUploadPlaceholderFailed(REFERENCE_ID)
+
+            assertEquals(SendStatus.FAILED, tempMessage(REFERENCE_ID)!!.sendStatus)
         }
 
     private suspend fun addPlaceholder(referenceId: String) =
