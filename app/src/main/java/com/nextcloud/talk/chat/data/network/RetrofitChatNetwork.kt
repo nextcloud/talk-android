@@ -177,7 +177,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         credentials: String,
         url: String,
         previousMessageId: Int
-    ): Observable<GenericOverall> = ncApi.setChatReadMarker(credentials, url, previousMessageId).map { it }
+    ): Observable<Response<GenericOverall>> = ncApi.setChatReadMarker(credentials, url, previousMessageId)
 
     override suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage =
         ncApiCoroutines.editChatMessage(credentials, url, text)

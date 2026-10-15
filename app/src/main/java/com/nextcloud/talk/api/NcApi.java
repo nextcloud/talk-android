@@ -504,9 +504,9 @@ public interface NcApi {
     // Url is: /api/{apiVersion}/chat/{token}/read
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization,
-                                                 @Url String url,
-                                                 @Nullable @Field("lastReadMessage") Integer lastReadMessage);
+    Observable<Response<GenericOverall>> setChatReadMarker(@Header("Authorization") String authorization,
+                                                           @Url String url,
+                                                           @Nullable @Field("lastReadMessage") Integer lastReadMessage);
 
     // Url is: /api/{apiVersion}/chat/{token}/read
     @DELETE

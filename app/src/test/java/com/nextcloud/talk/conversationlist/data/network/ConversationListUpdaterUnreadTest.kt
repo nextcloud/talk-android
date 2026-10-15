@@ -123,7 +123,8 @@ class ConversationListUpdaterUnreadTest {
             previousConversations = mapOf(stored.internalId to stored),
             conversationsFromServer = listOf(
                 stored.copy(lastReadMessage = serverLastRead, unreadMessages = serverUnread)
-            )
+            ),
+            requestedAtNanos = System.nanoTime()
         ).single()
 
     private fun givenCachedMessagesNewerThanMarker(count: Int) {
