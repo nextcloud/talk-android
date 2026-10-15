@@ -12,6 +12,7 @@ import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
@@ -91,6 +92,16 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     }
 
     override fun deleteTempChatMessageIfPending(internalConversationId: String, referenceId: String): Int = 0
+
+    override suspend fun failPendingTempTextMessages(internalConversationId: String, createdBefore: Long): Int = 0
+
+    override fun updateTempMessageSendStatus(
+        internalConversationId: String,
+        referenceId: String,
+        sendStatus: SendStatus
+    ): Int = 0
+
+    override fun updateMessageText(internalConversationId: String, messageId: Long, message: String): Int = 0
 
     override fun updateChatMessage(message: ChatMessageEntity) {
         /* */

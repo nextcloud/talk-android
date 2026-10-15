@@ -99,6 +99,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -298,6 +299,9 @@ class ChatViewModel @AssistedInject constructor(
 
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
+
+    // Epoch seconds like ChatMessageEntity.timestamp; see failOrphanedPendingMessages.
+    private val createdAtSeconds = System.currentTimeMillis() / MILLIS_PER_SECOND
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -1990,7 +1994,32 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A PENDING text message is only sent by SendMessageWorker. Without send work left for the
+     * conversation it would show the clock forever, so it is marked FAILED and the user can resend or
+     * delete it. Only messages created before this view model are considered: loadInitialMessages
+     * runs on every activity creation (e.g. rotation), and a message sent just now may not have its
+     * work written to WorkManager yet.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun failOrphanedPendingMessages() {
+        try {
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            if (!SendMessageWorker.hasActiveSend(WorkManager.getInstance(), internalConversationId)) {
+                val failed = chatRepository.failPendingMessagesWithoutSendWork(createdAtSeconds)
+                if (failed > 0) {
+                    Log.w(TAG, "Marked $failed pending message(s) without send work as failed")
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not check for pending messages without send work", e)
+        }
+    }
+
     suspend fun loadInitialMessages(withCredentials: String, withUrl: String) {
+        failOrphanedPendingMessages()
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
@@ -2601,16 +2630,19 @@ class ChatViewModel @AssistedInject constructor(
     fun resendMessage(message: ChatMessage) {
         val referenceId = message.referenceId.orEmpty()
         viewModelScope.launch {
-            chatRepository.markMessageForResend(referenceId).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "message marked pending for resend")
-                    SendMessageWorker.enqueue(
-                        internalConversationId = "${currentUser.id}@$chatRoomToken",
-                        referenceId = referenceId,
-                        threadTitle = null
-                    )
-                } else {
-                    Log.e(TAG, "resend failed")
+            // PENDING without send work is never sent: both steps run even if this scope is cancelled.
+            withContext(NonCancellable) {
+                chatRepository.markMessageForResend(referenceId).collect { result ->
+                    if (result.isSuccess) {
+                        Log.d(TAG, "message marked pending for resend")
+                        SendMessageWorker.enqueue(
+                            internalConversationId = "${currentUser.id}@$chatRoomToken",
+                            referenceId = referenceId,
+                            threadTitle = null
+                        )
+                    } else {
+                        Log.e(TAG, "resend failed")
+                    }
                 }
             }
         }
@@ -2711,6 +2743,7 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+        private const val MILLIS_PER_SECOND = 1000L
 
         /**
          * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the
