@@ -14,6 +14,7 @@ import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.utils.Undo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -195,7 +196,7 @@ class ConversationListUpdater @Inject constructor(
         target: ChatMessageSyncer.SyncTarget,
         messageId: Long,
         pinned: Boolean
-    ): (suspend () -> Unit)? {
+    ): Undo? {
         val conversation = withContext(Dispatchers.IO) {
             conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
         } ?: return null
@@ -234,10 +235,7 @@ class ConversationListUpdater @Inject constructor(
      * instead of after the request and the room refresh that follows it. Returns the action that
      * brings it back, or null when the conversation isn't cached.
      */
-    suspend fun updateLocalHiddenPinnedMessage(
-        target: ChatMessageSyncer.SyncTarget,
-        messageId: Long
-    ): (suspend () -> Unit)? {
+    suspend fun updateLocalHiddenPinnedMessage(target: ChatMessageSyncer.SyncTarget, messageId: Long): Undo? {
         val conversation = withContext(Dispatchers.IO) {
             conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
         } ?: return null

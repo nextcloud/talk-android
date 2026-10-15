@@ -30,11 +30,11 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import com.nextcloud.talk.utils.revertOnCancellation
-import com.nextcloud.talk.utils.withRetry
-import kotlinx.coroutines.Dispatchers
+import com.nextcloud.talk.utils.optimisticAction
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -809,39 +809,30 @@ class OfflineFirstChatRepository @Inject constructor(
         messageId: Long,
         text: String
     ): Result<ChatOverallSingleMessage> {
-        val restore = applyLocalEdit(messageId, text)
+        val result = optimisticAction(
+            apply = { applyLocalEdit(messageId, text) },
+            isConfirmed = ::editAccepted,
+            request = { network.editChatMessage(credentials, url, text) }
+        ).onFailure { logger.e(TAG, "Failed to edit chat message $messageId", it) }
 
-        return try {
-            val response = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
-                    network.editChatMessage(credentials, url, text)
-                }
-            }
-            val statusCode = response.ocs?.meta?.statusCode
-            if (statusCode != null && statusCode != HTTP_OK) {
-                // the server refused the edit, e.g. because the message is too old
-                restore?.invoke()
-            } else {
-                persistEditedMessage(messageId, response)
-            }
-            Result.success(response)
-        } catch (e: HttpException) {
-            logger.e(TAG, "Failed to edit chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            logger.e(TAG, "Failed to edit chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        }
+        result.getOrNull()?.takeIf(::editAccepted)?.let { persistEditedMessage(messageId, it) }
+
+        return result
     }
+
+    /**
+     * A status code other than 200 means the server refused the edit, for instance because the
+     * message is too old, and the optimistic edit has to be taken back.
+     */
+    private fun editAccepted(response: ChatOverallSingleMessage): Boolean =
+        response.ocs?.meta?.statusCode.let { it == null || it == HTTP_OK }
 
     /**
      * Writes [text] into the cached message together with the edit metadata the bubble shows, and
      * returns the action that restores the previous version. The revert only applies while the message
      * still carries the local edit, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalEdit(messageId: Long, text: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalEdit(messageId: Long, text: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.message == text) return null
 
@@ -893,39 +884,28 @@ class OfflineFirstChatRepository @Inject constructor(
         url: String,
         messageId: Long,
         deletedPlaceholder: String
-    ): Result<ChatOverallSingleMessage?> {
-        val restore = applyLocalDeletion(messageId, deletedPlaceholder)
-
-        return try {
-            val response = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+    ): Result<ChatOverallSingleMessage?> =
+        optimisticAction(
+            apply = { applyLocalDeletion(messageId, deletedPlaceholder) },
+            request = {
+                try {
                     network.deleteChatMessage(credentials, url)
+                } catch (e: HttpException) {
+                    if (e.code() != HTTP_NOT_FOUND) throw e
+                    // the server does not know the message any more, so it is gone either way and the
+                    // local deletion stands
+                    logger.w(TAG, "Message $messageId was already gone on the server when deleting it", e)
+                    null
                 }
             }
-            Result.success(response)
-        } catch (e: HttpException) {
-            if (e.code() == HTTP_NOT_FOUND) {
-                // the server does not know the message any more, so it is gone either way
-                logger.w(TAG, "Message $messageId was already gone on the server when deleting it", e)
-                Result.success(null)
-            } else {
-                logger.e(TAG, "Failed to delete chat message $messageId", e)
-                restore?.invoke()
-                Result.failure(e)
-            }
-        } catch (e: IOException) {
-            logger.e(TAG, "Failed to delete chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        }
-    }
+        ).onFailure { logger.e(TAG, "Failed to delete chat message $messageId", it) }
 
     /**
      * Renders the message as deleted in the local database and returns the action that puts it back,
      * or null when there was nothing to change. The revert only applies while the message still carries
      * the local deletion, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.messageType == MESSAGE_TYPE_DELETED) return null
 
@@ -1019,12 +999,6 @@ class OfflineFirstChatRepository @Inject constructor(
             network.unPinMessage(credentials, url)
         }
 
-    private fun isRetryable(error: Exception): Boolean =
-        when (error) {
-            is HttpException -> error.code() == HTTP_TOO_MANY_REQUESTS || error.code() >= HTTP_INTERNAL_SERVER_ERROR
-            else -> error is IOException
-        }
-
     private suspend fun withLocalPinnedMessage(
         messageId: Long,
         pinned: Boolean,
@@ -1038,23 +1012,14 @@ class OfflineFirstChatRepository @Inject constructor(
             null
         }
 
-        return try {
-            val overall = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) { request() }
+        return optimisticAction(apply = { restore }, request = request)
+            .onSuccess {
+                // the room refresh that follows is computed after this change reached the server, so
+                // the guard has done its job and must not outlive the request
+                conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
             }
-            // the room refresh that follows is computed after this change reached the server, so the
-            // guard has done its job and must not outlive the request
-            conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
-            Result.success(overall.ocs?.data?.toDomainModel())
-        } catch (e: HttpException) {
-            Log.e(TAG, "Error while pinning or unpinning a message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while pinning or unpinning a message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        }
+            .onFailure { logger.e(TAG, "Error while pinning or unpinning a message", it) }
+            .map { it.ocs?.data?.toDomainModel() }
     }
 
     private fun isChatDataInitialized(): Boolean =
@@ -1068,23 +1033,10 @@ class OfflineFirstChatRepository @Inject constructor(
             null
         }
 
-        return try {
-            revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
-                    network.hidePinnedMessage(credentials, url)
-                }
-            }
-            conversationListUpdater.clearPendingHiddenPinnedMessage(internalConversationId)
-            Result.success(true)
-        } catch (e: HttpException) {
-            Log.e(TAG, "Error while hiding the pinned message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while hiding the pinned message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        }
+        return optimisticAction(apply = { restore }, request = { network.hidePinnedMessage(credentials, url) })
+            .onSuccess { conversationListUpdater.clearPendingHiddenPinnedMessage(internalConversationId) }
+            .onFailure { logger.e(TAG, "Error while hiding the pinned message", it) }
+            .map { true }
     }
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
@@ -1301,8 +1253,5 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
         private const val HTTP_OK = 200
         private const val HTTP_NOT_FOUND = 404
-        private const val HTTP_TOO_MANY_REQUESTS = 429
-        private const val HTTP_INTERNAL_SERVER_ERROR = 500
-        private const val RETRY_DELAY_MS = 500L
     }
 }
