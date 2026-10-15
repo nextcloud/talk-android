@@ -34,15 +34,16 @@ class FileAttachmentPreviewViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FileAttachmentPreviewViewModel(mock(Context::class.java)).apply {
-            ioDispatcher = StandardTestDispatcher(testScope.testScheduler)
-            mainDispatcher = StandardTestDispatcher(testScope.testScheduler)
+        viewModel = FileAttachmentPreviewViewModel(
+            context = mock(Context::class.java),
+            ioDispatcher = StandardTestDispatcher(testScope.testScheduler),
+            mainDispatcher = StandardTestDispatcher(testScope.testScheduler),
             describer = { _, uri, _ ->
                 described.add(uri)
                 FileDescription(uri, uri, MediaKind.OTHER, "text/plain", null)
-            }
+            },
             mimeTypeResolver = { _, uri -> if (uri.endsWith(".mp4")) "video/mp4" else "text/plain" }
-        }
+        )
     }
 
     @Test
@@ -86,14 +87,18 @@ class FileAttachmentPreviewViewModelTest {
     fun `a cancelled describeFiles job that is still copying does not drop a newer description`() {
         val started = CountDownLatch(1)
         val release = CountDownLatch(1)
-        viewModel.ioDispatcher = kotlinx.coroutines.Dispatchers.IO
-        viewModel.describer = { _, uri, _ ->
-            if (uri == "content://a/1.txt" && started.count == 1L) {
-                started.countDown()
-                release.await(5, TimeUnit.SECONDS)
+        viewModel = FileAttachmentPreviewViewModel(
+            context = mock(Context::class.java),
+            ioDispatcher = kotlinx.coroutines.Dispatchers.IO,
+            mainDispatcher = StandardTestDispatcher(testScope.testScheduler),
+            describer = { _, uri, _ ->
+                if (uri == "content://a/1.txt" && started.count == 1L) {
+                    started.countDown()
+                    release.await(5, TimeUnit.SECONDS)
+                }
+                FileDescription(uri, uri, MediaKind.OTHER, "text/plain", null)
             }
-            FileDescription(uri, uri, MediaKind.OTHER, "text/plain", null)
-        }
+        )
         viewModel.setInitialFiles(listOf("content://a/1.txt"))
         viewModel.describeFiles(true)
         assertTrue(started.await(5, TimeUnit.SECONDS))
