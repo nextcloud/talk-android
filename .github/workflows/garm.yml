@@ -36,7 +36,7 @@ jobs:
 
             -   name: configure server
                 run: |
-                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
+                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-system-x86 --yes
                     sudo chmod 666 /dev/kvm
                     docker cp .github/workflows/configServer.sh server:/tmp/
                     docker exec server chmod +x /tmp/configServer.sh
