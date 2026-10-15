@@ -58,6 +58,7 @@ import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.ui.toDrawable
 import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.CharacterAvatarUtils
+import com.nextcloud.talk.utils.message.MarkdownTables
 import com.nextcloud.talk.utils.message.MessageUtils
 import io.noties.markwon.core.spans.LinkSpan
 import org.greenrobot.eventbus.EventBus
@@ -72,9 +73,6 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
-
-// GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
-private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
 
 val validLinkRegex = Regex(
     """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?::\d{1,5})?(?:/[^\s)]*)?""",
@@ -112,7 +110,7 @@ fun MarkdownText(
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
     val onClickState = rememberUpdatedState(onClick)
     val hasTable = remember(message.plainMessage) {
-        message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
+        MarkdownTables.containsTable(message.plainMessage)
     }
     val accessibleText = remember(message) { resolveMarkdownSource(message) }
 
@@ -171,7 +169,10 @@ fun MarkdownText(
                         textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing
                     )
                     val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
-                    markwon.setMarkdown(textView, resolveNonMentionParams(message))
+                    markwon.setMarkdown(
+                        textView,
+                        MarkdownTables.ensureBlankLineBeforeTables(resolveNonMentionParams(message))
+                    )
                     val ssb = SpannableStringBuilder(textView.text)
                     val hasClickableChips = applyMentionChips(
                         spannable = ssb,
