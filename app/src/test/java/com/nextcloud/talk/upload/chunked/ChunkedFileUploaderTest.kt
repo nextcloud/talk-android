@@ -10,6 +10,7 @@ import android.app.Application
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.upload.UploadRetryPolicy
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -128,6 +129,24 @@ class ChunkedFileUploaderTest {
         }
 
         assertEquals(listOf("MKCOL", "PROPFIND", "PUT", "MKCOL", "MOVE"), takeRequests().map { it.method })
+    }
+
+    @Test
+    fun `a chunk that cannot be read fails the upload at once`() {
+        val file = localFile(SMALL_FILE_SIZE)
+        enqueueFolderCreated()
+        enqueueNoChunksOnServer()
+        server.enqueue(MockResponse().setResponseCode(CREATED))
+        // An IOException while the chunk is written reaches the uploader as a FileNotFoundException.
+        val failingListener = object : OnDataTransferProgressListener {
+            override fun onTransferProgress(percentage: Int): Unit = throw IOException("EIO")
+        }
+
+        val error = assertThrows(IOException::class.java) {
+            ChunkedFileUploader(client, user, failingListener, ncApiCoroutines).upload(file, MIME_TYPE, TARGET_PATH)
+        }
+
+        assertEquals(UploadRetryPolicy.FailureKind.OTHER, UploadRetryPolicy.classify(error))
     }
 
     private fun uploader() = ChunkedFileUploader(client, user, progressListener, ncApiCoroutines)

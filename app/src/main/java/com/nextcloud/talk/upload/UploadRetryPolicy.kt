@@ -62,7 +62,8 @@ object UploadRetryPolicy {
      * An HTTP error wins over everything else. Errors of an overloaded or restarting server (5xx except 501, 505 and 507, 408,
      * 429) are UNAVAILABLE: the upload waits and goes on, but not for ever. Other HTTP errors and
      * certificate problems count against [MAX_SERVER_ERRORS]. Any other [SSLException] is a network error: on
-     * Android a connection that drops in the middle of an HTTPS transfer arrives as an SSLException.
+     * Android a connection that drops in the middle of an HTTPS transfer arrives as an SSLException. A
+     * [FileNotFoundException] anywhere in the chain is OTHER: the prepared file cannot be read.
      */
     fun classify(error: Throwable): FailureKind {
         val causes = causeChain(error)
@@ -70,7 +71,10 @@ object UploadRetryPolicy {
         return when {
             httpCode != null -> if (isTransientHttpCode(httpCode)) FailureKind.UNAVAILABLE else FailureKind.SERVER
             isCertificateProblem(causes) -> FailureKind.SERVER
-            causes.any { it is IOException && it !is FileNotFoundException } -> FailureKind.NETWORK
+            // ChunkFromFileRequestBody wraps every error of reading a chunk in a FileNotFoundException, also an
+            // IOException of the disk. The file is in noBackupFilesDir: waiting does not repair it.
+            causes.any { it is FileNotFoundException } -> FailureKind.OTHER
+            causes.any { it is IOException } -> FailureKind.NETWORK
             else -> FailureKind.OTHER
         }
     }

@@ -141,6 +141,21 @@ class UploadRetryPolicyTest {
     }
 
     @Test
+    fun `a chunk that cannot be read fails at once whatever its cause is`() {
+        // ChunkFromFileRequestBody wraps every IOException of reading the chunk in a FileNotFoundException.
+        val unreadable = FileNotFoundException("Exception reading source file").apply { initCause(IOException("EIO")) }
+        assertEquals(FailureKind.OTHER, UploadRetryPolicy.classify(unreadable))
+        assertEquals(FailureKind.OTHER, UploadRetryPolicy.classify(RuntimeException(unreadable)))
+        assertEquals(FailureKind.OTHER, UploadRetryPolicy.classify(IOException("outer", unreadable)))
+    }
+
+    @Test
+    fun `an http error wins over an unreadable file`() {
+        val error = FileNotFoundException("x").apply { initCause(DavHttpException(403, "no")) }
+        assertEquals(FailureKind.SERVER, UploadRetryPolicy.classify(error))
+    }
+
+    @Test
     fun `network errors never use up attempts`() {
         assertEquals(Decision.RETRY, UploadRetryPolicy.decide(FailureKind.NETWORK, 0, 0L))
         assertEquals(
