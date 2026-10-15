@@ -278,7 +278,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     implementation("org.parceler:parceler-api:$parcelerVersion")
-    implementation("org.apache.commons:commons-lang3:3.20.0")
+    implementation("org.apache.commons:commons-lang3:3.21.0")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("joda-time:joda-time:2.15.0")
     implementation("io.coil-kt:coil:$coilKtVersion")
