@@ -10,6 +10,8 @@ import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
+import android.net.Uri
+import androidx.concurrent.futures.ResolvableFuture
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Data
 import androidx.work.ListenableWorker
@@ -52,6 +54,7 @@ import retrofit2.Response
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * What an upload that fails leaves behind: the state of the work, the placeholder message of the chat and the
@@ -63,6 +66,7 @@ import java.util.concurrent.ConcurrentHashMap
 class UploadAndShareFilesWorkerFailureTest {
 
     private val rows = ConcurrentHashMap<String, ChatMessageEntity>()
+    private val foregroundRequests = AtomicInteger()
     private val spreed: SpreedCapabilityDto = mock()
     private val capabilities: CapabilitiesDto = mock { on { spreedCapability } doReturn spreed }
     private val user: User = mock {
@@ -165,14 +169,52 @@ class UploadAndShareFilesWorkerFailureTest {
         assertEquals(SendStatus.SENT_PENDING_ACK, rows[REFERENCE_ID]?.sendStatus)
     }
 
+    @Test
+    fun `a small file is uploaded without a foreground service`() {
+        val worker = worker(source = fileUri(SMALL_FILE_SIZE), uploaded = false)
+
+        worker.doWork()
+
+        assertEquals(0, foregroundRequests.get())
+    }
+
+    @Test
+    fun `a file that is uploaded in chunks runs as a foreground service`() {
+        val worker = worker(source = fileUri(BIG_FILE_SIZE), uploaded = false)
+
+        worker.doWork()
+
+        assertEquals(1, foregroundRequests.get())
+    }
+
+    @Test
+    fun `an upload that only needs the last request runs without a foreground service`() {
+        val worker = worker(source = fileUri(BIG_FILE_SIZE), uploaded = true)
+        uploadedAndRefusedByServer(500)
+
+        worker.doWork()
+
+        assertEquals(0, foregroundRequests.get())
+    }
+
+    private fun fileUri(size: Int): String =
+        Uri.fromFile(File(context().cacheDir, "source-$size.bin").apply { writeBytes(ByteArray(size)) }).toString()
+
     /** The file is uploaded already and the server refuses the share with [code]. */
     private fun uploadedAndRefusedByServer(code: Int) {
         whenever(ncApi.createRemoteShare(anyOrNull(), any(), any(), any(), any(), anyOrNull(), any()))
             .thenReturn(Observable.error<GenericOverall>(HttpException(Response.error<Any>(code, "".toResponseBody()))))
     }
 
-    private fun worker(): UploadAndShareFilesWorker {
+    private fun worker(
+        source: String = "content://media/photo.jpg",
+        uploaded: Boolean = true
+    ): UploadAndShareFilesWorker {
         rows[REFERENCE_ID] = placeholder()
+        // Without capabilities a run that has to upload ends at once, after the foreground service was asked for.
+        if (!uploaded) {
+            whenever(user.capabilities).thenReturn(null)
+        }
         val factory = object : WorkerFactory() {
             override fun createWorker(
                 appContext: Context,
@@ -189,7 +231,7 @@ class UploadAndShareFilesWorkerFailureTest {
         }
         val input = Data.Builder()
             .putLong(KEY_INTERNAL_USER_ID, ACCOUNT_ID)
-            .putString("DEVICE_SOURCE_FILE", "content://media/photo.jpg")
+            .putString("DEVICE_SOURCE_FILE", source)
             .putString("ROOM_TOKEN", "room")
             .putString("CONVERSATION_NAME", "Room")
             .putString(UploadAndShareFilesWorker.KEY_REFERENCE_ID, REFERENCE_ID)
@@ -198,8 +240,14 @@ class UploadAndShareFilesWorkerFailureTest {
         val worker = TestListenableWorkerBuilder<UploadAndShareFilesWorker>(contextWithStrings())
             .setInputData(input)
             .setWorkerFactory(factory)
+            .setForegroundUpdater { _, _, _ ->
+                foregroundRequests.incrementAndGet()
+                ResolvableFuture.create<Void>().also { it.set(null) }
+            }
             .build()
-        UploadWorkspace(workspaceDir(worker.id)).markUploaded("/Talk/photo.jpg", "photo.jpg")
+        if (uploaded) {
+            UploadWorkspace(workspaceDir(worker.id)).markUploaded("/Talk/photo.jpg", "photo.jpg")
+        }
         return worker
     }
 
@@ -245,5 +293,7 @@ class UploadAndShareFilesWorkerFailureTest {
         private const val REFERENCE_ID = "ref-a"
         private const val HOURS_25 = 25L * 60 * 60 * 1000
         private const val UPLOADED_PROGRESS = 101
+        private const val SMALL_FILE_SIZE = 10 * 1024
+        private const val BIG_FILE_SIZE = 1024 * 1024 + 1
     }
 }

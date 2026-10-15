@@ -269,7 +269,7 @@ object FileUtils {
         return target.length() > 0 || reported == null || reported <= 0
     }
 
-    private fun querySize(context: Context, uri: Uri): Long? =
+    internal fun querySize(context: Context, uri: Uri): Long? =
         try {
             context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use { cursor ->
                 val index = cursor.getColumnIndex(OpenableColumns.SIZE)

@@ -204,7 +204,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             if (workspace.isShared()) {
                 return successResult()
             }
-            startForeground()
+            if (needsForeground(sourceFileUri)) {
+                startForeground()
+            }
 
             val prepared = if (workspace.uploadedPath() != null) {
                 workspace.prepared()
@@ -400,6 +402,23 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         val refId = referenceId?.takeIf { it.isNotEmpty() } ?: return
         val convId = internalConversationId?.takeIf { it.isNotEmpty() } ?: return
         chatDao.deleteTempChatMessageIfPending(convId, refId)
+    }
+
+    /**
+     * The notification of a running upload is for files that are uploaded in chunks, which take long. A small file
+     * is one request: it does not need a foreground service. Unknown size counts as big. Nothing is needed when the
+     * file is uploaded already: one request is left.
+     */
+    private fun needsForeground(sourceFileUri: Uri): Boolean {
+        if (workspace.uploadedPath() != null) {
+            return false
+        }
+        val size = if (sourceFileUri.scheme == "file") {
+            sourceFileUri.path?.let { File(it).length() }
+        } else {
+            FileUtils.querySize(context, sourceFileUri)
+        }
+        return size == null || size > CHUNK_UPLOAD_THRESHOLD_SIZE
     }
 
     @SuppressLint("InlinedApi")
