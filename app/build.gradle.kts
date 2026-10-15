@@ -340,8 +340,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.sharetarget:sharetarget:1.2.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
-    implementation("com.github.nextcloud.android-common:ui:0.33.2")
-    implementation("com.github.nextcloud.android-common:core:0.33.2")
+    implementation("com.github.nextcloud.android-common:ui:0.34.0")
+    implementation("com.github.nextcloud.android-common:core:0.34.0")
     implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.11.0")
