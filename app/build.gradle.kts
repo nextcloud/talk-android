@@ -285,7 +285,6 @@ dependencies {
     implementation("io.coil-kt:coil-gif:$coilKtVersion")
     implementation("io.coil-kt:coil-svg:$coilKtVersion")
     implementation("io.coil-kt:coil-compose:$coilKtVersion")
-    implementation("com.github.natario1:Autocomplete:1.1.0")
 
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")

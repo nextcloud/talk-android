@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
 import com.nextcloud.talk.models.json.invitation.InvitationOverall
+import com.nextcloud.talk.models.json.mention.MentionOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
@@ -625,4 +626,13 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getUserProfile(@Header("Authorization") authorization: String, @Url url: String): UserProfileOverall
+
+    @GET
+    suspend fun getMentionAutocompleteSuggestions(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Query("search") query: String,
+        @Query("limit") limit: Int?,
+        @QueryMap fields: Map<String, String>
+    ): MentionOverall
 }
