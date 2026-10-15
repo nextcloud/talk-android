@@ -22,6 +22,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -104,18 +105,13 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
     fun `placeholder is not stored when the server copy of the file message already exists`() =
         runBlocking {
             // the sync stored the shared file before the placeholder insert ran
-            db.chatMessagesDao().upsertChatMessagesAndDeleteTemp(
-                INTERNAL_CONVERSATION_ID,
-                listOf(serverMessage(SERVER_MESSAGE_ID, REFERENCE_ID))
-            )
+            val serverCopy = storeServerCopy(SERVER_MESSAGE_ID, REFERENCE_ID)
 
             val results = addPlaceholder(REFERENCE_ID)
 
             assertTrue(results.isEmpty())
             assertNull(tempMessage(REFERENCE_ID))
-            val stored = db.chatMessagesDao().getChatMessageEntity(INTERNAL_CONVERSATION_ID, SERVER_MESSAGE_ID)
-            assertNotNull(stored)
-            assertEquals(false, stored!!.isTemporary)
+            assertEquals(serverCopy, storedMessage(SERVER_MESSAGE_ID))
         }
 
     @Test
@@ -132,10 +128,7 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
     @Test
     fun `server copy of another file does not block the placeholder`() =
         runBlocking {
-            db.chatMessagesDao().upsertChatMessagesAndDeleteTemp(
-                INTERNAL_CONVERSATION_ID,
-                listOf(serverMessage(SERVER_MESSAGE_ID, OTHER_REFERENCE_ID))
-            )
+            storeServerCopy(SERVER_MESSAGE_ID, OTHER_REFERENCE_ID)
 
             addPlaceholder(REFERENCE_ID)
 
@@ -148,30 +141,21 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
             addPlaceholder(REFERENCE_ID)
             assertNotNull(tempMessage(REFERENCE_ID))
 
-            db.chatMessagesDao().upsertChatMessagesAndDeleteTemp(
-                INTERNAL_CONVERSATION_ID,
-                listOf(serverMessage(SERVER_MESSAGE_ID, REFERENCE_ID))
-            )
+            storeServerCopy(SERVER_MESSAGE_ID, REFERENCE_ID)
 
             assertNull(tempMessage(REFERENCE_ID))
-            assertNotNull(db.chatMessagesDao().getChatMessageEntity(INTERNAL_CONVERSATION_ID, SERVER_MESSAGE_ID))
+            assertNotNull(storedMessage(SERVER_MESSAGE_ID))
         }
 
     @Test
-    fun `marking a failed upload does nothing when no placeholder exists`() =
+    fun `marking a failed upload leaves the server copy unchanged`() =
         runBlocking {
-            db.chatMessagesDao().upsertChatMessagesAndDeleteTemp(
-                INTERNAL_CONVERSATION_ID,
-                listOf(serverMessage(SERVER_MESSAGE_ID, REFERENCE_ID))
-            )
-            addPlaceholder(REFERENCE_ID)
+            val serverCopy = storeServerCopy(SERVER_MESSAGE_ID, REFERENCE_ID)
 
             repository.markUploadPlaceholderFailed(REFERENCE_ID)
 
             assertNull(tempMessage(REFERENCE_ID))
-            val stored = db.chatMessagesDao().getChatMessageEntity(INTERNAL_CONVERSATION_ID, SERVER_MESSAGE_ID)
-            assertEquals(false, stored!!.isTemporary)
-            assertNull(stored.sendStatus)
+            assertEquals(serverCopy, storedMessage(SERVER_MESSAGE_ID))
         }
 
     private suspend fun addPlaceholder(referenceId: String) =
@@ -187,21 +171,31 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
     private suspend fun tempMessage(referenceId: String): ChatMessageEntity? =
         db.chatMessagesDao().getTempMessageForConversation(INTERNAL_CONVERSATION_ID, referenceId, null).first()
 
-    private fun serverMessage(id: Long, referenceId: String): ChatMessageEntity =
-        ChatMessageEntity(
-            internalId = "$INTERNAL_CONVERSATION_ID@$id",
-            internalConversationId = INTERNAL_CONVERSATION_ID,
+    /**
+     * Stores the server copy the way the sync does: DTO -> [asEntity] -> upsertChatMessagesAndDeleteTemp. The
+     * mapper builds the conversation key itself, so the tests also prove it matches the repository's key.
+     *
+     * @return the stored row
+     */
+    private suspend fun storeServerCopy(id: Long, referenceId: String): ChatMessageEntity {
+        val entity = ChatMessageDto(
             id = id,
-            accountId = ACCOUNT_ID,
             token = ROOM_TOKEN,
-            actorDisplayName = "Me",
-            actorId = "me",
             actorType = "users",
+            actorId = "me",
+            actorDisplayName = "Me",
             message = "{file}",
             messageType = "comment",
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             referenceId = referenceId
-        )
+        ).asEntity(ACCOUNT_ID)
+        assertEquals(INTERNAL_CONVERSATION_ID, entity.internalConversationId)
+        db.chatMessagesDao().upsertChatMessagesAndDeleteTemp(entity.internalConversationId, listOf(entity))
+        return storedMessage(id)!!
+    }
+
+    private suspend fun storedMessage(id: Long): ChatMessageEntity? =
+        db.chatMessagesDao().getChatMessageEntity(INTERNAL_CONVERSATION_ID, id)
 
     private fun user(): User =
         User(
