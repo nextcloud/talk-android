@@ -14,9 +14,9 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.size.Size
-import com.nextcloud.talk.utils.AccountScopedAvatarInterceptor.Companion.accountScope
-import com.nextcloud.talk.utils.AccountScopedAvatarInterceptor.Companion.isConversationAvatarUrl
-import com.nextcloud.talk.utils.AccountScopedAvatarInterceptor.Companion.scopedCacheKey
+import com.nextcloud.talk.utils.AccountScopedImageInterceptor.Companion.accountScope
+import com.nextcloud.talk.utils.AccountScopedImageInterceptor.Companion.isAccountDependentUrl
+import com.nextcloud.talk.utils.AccountScopedImageInterceptor.Companion.scopedCacheKey
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -31,26 +31,28 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
-class AccountScopedAvatarInterceptorTest {
+class AccountScopedImageInterceptorTest {
 
     @Test
-    fun `conversation avatar urls are recognized`() {
+    fun `conversation avatar and file preview by path urls are recognized as account dependent`() {
         val baseUrl = "https://cloud.example.com"
-        assertTrue(isConversationAvatarUrl(ApiUtils.getUrlForConversationAvatar(1, baseUrl, TOKEN)))
+        assertTrue(isAccountDependentUrl(PREVIEW_BY_PATH_URL))
+        assertTrue(isAccountDependentUrl(ApiUtils.getUrlForConversationAvatar(1, baseUrl, TOKEN)))
         assertTrue(
-            isConversationAvatarUrl(ApiUtils.getUrlForConversationAvatarWithVersion(1, baseUrl, TOKEN, true, null))
+            isAccountDependentUrl(ApiUtils.getUrlForConversationAvatarWithVersion(1, baseUrl, TOKEN, true, null))
         )
         assertTrue(
-            isConversationAvatarUrl(ApiUtils.getUrlForConversationAvatarWithVersion(1, baseUrl, TOKEN, false, "5"))
+            isAccountDependentUrl(ApiUtils.getUrlForConversationAvatarWithVersion(1, baseUrl, TOKEN, false, "5"))
         )
     }
 
     @Test
-    fun `other urls are not recognized as conversation avatars`() {
+    fun `other urls are not recognized as account dependent`() {
         val baseUrl = "https://cloud.example.com"
-        assertFalse(isConversationAvatarUrl(ApiUtils.getUrlForAvatar(baseUrl, "alice", true)))
-        assertFalse(isConversationAvatarUrl(ApiUtils.getUrlForConversationEmojiAvatar(1, baseUrl, TOKEN)))
-        assertFalse(isConversationAvatarUrl(ApiUtils.getUrlForRoom(1, baseUrl, TOKEN)))
+        assertFalse(isAccountDependentUrl(ApiUtils.getUrlForFilePreviewWithFileId(baseUrl, "42", 64)))
+        assertFalse(isAccountDependentUrl(ApiUtils.getUrlForAvatar(baseUrl, "alice", true)))
+        assertFalse(isAccountDependentUrl(ApiUtils.getUrlForConversationEmojiAvatar(1, baseUrl, TOKEN)))
+        assertFalse(isAccountDependentUrl(ApiUtils.getUrlForRoom(1, baseUrl, TOKEN)))
     }
 
     @Test
@@ -69,8 +71,8 @@ class AccountScopedAvatarInterceptorTest {
     @Test
     fun `disk cache keys of conversation avatars differ between accounts and keep a custom key`() =
         runTest {
-            val aliceRequest = intercept(avatarRequest(ALICE, diskCacheKey = "$AVATAR_URL#v2"))
-            val bobRequest = intercept(avatarRequest(BOB, diskCacheKey = "$AVATAR_URL#v2"))
+            val aliceRequest = intercept(authorizedRequest(ALICE, diskCacheKey = "$AVATAR_URL#v2"))
+            val bobRequest = intercept(authorizedRequest(BOB, diskCacheKey = "$AVATAR_URL#v2"))
 
             assertNotEquals(aliceRequest.diskCacheKey, bobRequest.diskCacheKey)
             assertTrue(aliceRequest.diskCacheKey!!.endsWith(":$AVATAR_URL#v2"))
@@ -80,16 +82,26 @@ class AccountScopedAvatarInterceptorTest {
     @Test
     fun `disk cache key of conversation avatars falls back to the scoped url`() =
         runTest {
-            val request = intercept(avatarRequest(ALICE))
+            val request = intercept(authorizedRequest(ALICE))
 
             assertEquals(scopedCacheKey(accountScope(ALICE), AVATAR_URL), request.diskCacheKey)
         }
 
     @Test
+    fun `cache keys of file previews by path differ between accounts`() =
+        runTest {
+            val aliceRequest = intercept(authorizedRequest(ALICE, PREVIEW_BY_PATH_URL))
+            val bobRequest = intercept(authorizedRequest(BOB, PREVIEW_BY_PATH_URL))
+
+            assertNotEquals(aliceRequest.diskCacheKey, bobRequest.diskCacheKey)
+            assertNotEquals(aliceRequest.parameters.memoryCacheKeys(), bobRequest.parameters.memoryCacheKeys())
+        }
+
+    @Test
     fun `memory cache keys of conversation avatars differ between accounts`() =
         runTest {
-            val aliceRequest = intercept(avatarRequest(ALICE))
-            val bobRequest = intercept(avatarRequest(BOB))
+            val aliceRequest = intercept(authorizedRequest(ALICE))
+            val bobRequest = intercept(authorizedRequest(BOB))
 
             assertNotEquals(
                 aliceRequest.parameters.memoryCacheKeys(),
@@ -102,7 +114,7 @@ class AccountScopedAvatarInterceptorTest {
         runTest {
             val extras = mapOf("size" to "64")
             val request = intercept(
-                avatarRequest(ALICE).newBuilder().memoryCacheKey(MemoryCache.Key(AVATAR_URL, extras)).build()
+                authorizedRequest(ALICE).newBuilder().memoryCacheKey(MemoryCache.Key(AVATAR_URL, extras)).build()
             )
 
             assertNotEquals(AVATAR_URL, request.memoryCacheKey!!.key)
@@ -114,7 +126,7 @@ class AccountScopedAvatarInterceptorTest {
     fun `other requests are left unchanged`() =
         runTest {
             val userAvatarUrl = ApiUtils.getUrlForAvatar("https://cloud.example.com", "alice", true)
-            val request = imageRequest(userAvatarUrl).newBuilder().addHeader("Authorization", ALICE).build()
+            val request = authorizedRequest(ALICE, userAvatarUrl)
 
             val result = intercept(request)
 
@@ -134,15 +146,19 @@ class AccountScopedAvatarInterceptorTest {
     private fun imageRequest(url: String): ImageRequest =
         ImageRequest.Builder(RuntimeEnvironment.getApplication()).data(url).build()
 
-    private fun avatarRequest(authorization: String, diskCacheKey: String? = null): ImageRequest =
-        imageRequest(AVATAR_URL).newBuilder()
+    private fun authorizedRequest(
+        authorization: String,
+        url: String = AVATAR_URL,
+        diskCacheKey: String? = null
+    ): ImageRequest =
+        imageRequest(url).newBuilder()
             .addHeader("Authorization", authorization)
             .apply { diskCacheKey?.let { diskCacheKey(it) } }
             .build()
 
     private suspend fun intercept(request: ImageRequest): ImageRequest {
         val chain = RecordingChain(request)
-        AccountScopedAvatarInterceptor().intercept(chain)
+        AccountScopedImageInterceptor().intercept(chain)
         return chain.proceededRequest!!
     }
 
@@ -167,5 +183,7 @@ class AccountScopedAvatarInterceptorTest {
         private const val ALICE = "Basic YWxpY2U6dG9rZW4tYQ=="
         private const val BOB = "Basic Ym9iOnRva2VuLWI="
         private val AVATAR_URL = ApiUtils.getUrlForConversationAvatar(1, "https://cloud.example.com", TOKEN)
+        private val PREVIEW_BY_PATH_URL =
+            ApiUtils.getUrlForFilePreviewWithRemotePath("https://cloud.example.com", "/Photos/a.jpg", 64)
     }
 }

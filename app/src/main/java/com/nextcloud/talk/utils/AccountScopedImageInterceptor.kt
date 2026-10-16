@@ -12,20 +12,21 @@ import coil.request.ImageResult
 import okio.ByteString.Companion.encodeUtf8
 
 /**
- * Keeps conversation avatars of different accounts apart in Coil's memory and disk caches.
+ * Keeps images whose content depends on the requesting account apart per account in Coil's memory and disk caches.
  *
- * The conversation-avatar endpoint answers depending on the requesting account: for a one-to-one room it returns
- * the other participant's avatar. Accounts on the same server request the very same URL, so caches keyed by the URL
- * alone would show one account's image to another. This interceptor scopes the cache keys of these requests to the
- * account that sends them, identified by the request's Authorization header.
+ * Some endpoints answer the same URL differently per account: the conversation-avatar endpoint returns the other
+ * participant's avatar for a one-to-one room, and a file preview by path resolves the path in the requesting user's
+ * own files. Accounts on the same server request the very same URL, so caches keyed by the URL alone would show one
+ * account's image to another. This interceptor scopes the cache keys of these requests to the account that sends
+ * them, identified by the request's Authorization header.
  */
-class AccountScopedAvatarInterceptor : Interceptor {
+class AccountScopedImageInterceptor : Interceptor {
 
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
         val request = chain.request
         val url = request.data.toString()
         val authorization = request.headers[AUTHORIZATION_HEADER]
-        if (authorization.isNullOrEmpty() || !isConversationAvatarUrl(url)) {
+        if (authorization.isNullOrEmpty() || !isAccountDependentUrl(url)) {
             return chain.proceed(request)
         }
 
@@ -47,10 +48,12 @@ class AccountScopedAvatarInterceptor : Interceptor {
         private const val ACCOUNT_SCOPE_PARAMETER = "accountScope"
         private const val SCOPE_LENGTH = 16
 
-        private val CONVERSATION_AVATAR_PATH =
-            Regex("/apps/spreed/api/v\\d+/room/[^/?#]+/avatar(/dark)?/?([?#].*)?$")
+        private val ACCOUNT_DEPENDENT_URLS = listOf(
+            Regex("/apps/spreed/api/v\\d+/room/[^/?#]+/avatar(/dark)?/?([?#].*)?$"),
+            Regex("/index\\.php/core/preview\\.png\\?([^#]*&)?file=")
+        )
 
-        fun isConversationAvatarUrl(url: String): Boolean = CONVERSATION_AVATAR_PATH.containsMatchIn(url)
+        fun isAccountDependentUrl(url: String): Boolean = ACCOUNT_DEPENDENT_URLS.any { it.containsMatchIn(url) }
 
         /**
          * Identifies the account behind [authorization] without keeping the credentials themselves in cache keys.

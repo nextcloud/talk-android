@@ -57,7 +57,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.AccountScopedAvatarInterceptor
+import com.nextcloud.talk.utils.AccountScopedImageInterceptor
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -308,7 +308,7 @@ class NextcloudTalkApplication :
                     add(GifDecoder.Factory())
                 }
                 add(SvgDecoder.Factory())
-                add(AccountScopedAvatarInterceptor())
+                add(AccountScopedImageInterceptor())
             }
 
         if (BuildConfig.DEBUG) {
