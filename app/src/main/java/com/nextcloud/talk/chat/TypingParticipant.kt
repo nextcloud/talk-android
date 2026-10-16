@@ -11,19 +11,23 @@ import android.os.CountDownTimer
 class TypingParticipant(
     val userId: String,
     val name: String,
-    session: String?,
-    val funToCallWhenTimeIsUp: (userId: String) -> Unit
+    session: String,
+    val funToCallWhenTimeIsUp: (participant: TypingParticipant) -> Unit
 ) {
-    private val sessions = mutableSetOf<String>()
-    var timer: CountDownTimer? = null
+    // one timer per signaling session of the user (e.g. a device), the keys are the sessions which type
+    private val timers = mutableMapOf<String, CountDownTimer>()
 
     init {
         addSession(session)
-        startTimer()
     }
 
-    private fun startTimer() {
-        timer = object : CountDownTimer(
+    /**
+     * A session of the user types in the room. Starts the 15 s timer of the session or restarts it when the session
+     * types already. Each session expires on its own, the participant expires with its last session.
+     */
+    fun addSession(session: String) {
+        timers.remove(session)?.cancel()
+        timers[session] = object : CountDownTimer(
             TYPING_DURATION_TO_HIDE_TYPING_MESSAGE,
             TYPING_DURATION_TO_HIDE_TYPING_MESSAGE
         ) {
@@ -32,38 +36,45 @@ class TypingParticipant(
             }
 
             override fun onFinish() {
-                funToCallWhenTimeIsUp(userId)
+                if (timers.remove(session, this) && timers.isEmpty()) {
+                    funToCallWhenTimeIsUp(this@TypingParticipant)
+                }
             }
         }.start()
     }
 
-    /** Another signaling session of the same user, e.g. a second device, types in the room. */
-    fun addSession(session: String?) {
-        session?.let { sessions.add(it) }
-    }
-
-    fun restartTimer() {
-        timer?.cancel()
-        timer?.start()
-    }
-
-    fun cancelTimer() {
-        timer?.cancel()
+    /** Forgets the [left] sessions and cancels their timers. Returns whether the participant had any of them. */
+    private fun forgetSessions(left: Collection<String>): Boolean {
+        val known = left.filter { timers.containsKey(it) }
+        known.forEach { timers.remove(it)?.cancel() }
+        return known.isNotEmpty()
     }
 
     companion object {
+        /**
+         * A [session] of the participant [key] stopped typing: only this session is forgotten, the participant is
+         * removed with its last session. Returns whether the participant was removed.
+         */
+        fun stopTyping(participants: MutableMap<String, TypingParticipant>, key: String, session: String): Boolean {
+            val participant = participants[key]
+            val removed = participant != null &&
+                participant.forgetSessions(listOf(session)) &&
+                participant.timers.isEmpty()
+            if (removed) {
+                participants.remove(key)
+            }
+            return removed
+        }
+
         /**
          * Forgets the [sessions] which left the room and removes the typing participants which have no session
          * left (a user may type with several sessions). Returns whether any participant was removed.
          */
         fun removeSessions(participants: MutableMap<String, TypingParticipant>, sessions: Collection<String>): Boolean {
             val left = participants.filterValues { participant ->
-                participant.sessions.removeAll(sessions.toSet()) && participant.sessions.isEmpty()
+                participant.forgetSessions(sessions) && participant.timers.isEmpty()
             }
-            left.forEach { (key, participant) ->
-                participant.cancelTimer()
-                participants.remove(key)
-            }
+            left.keys.forEach { participants.remove(it) }
             return left.isNotEmpty()
         }
 

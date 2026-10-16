@@ -555,10 +555,12 @@ class ChatActivity :
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(userId: String?, session: String?) {
+            if (session == null) {
+                return
+            }
             val userIdOrGuestSession = userId ?: session
 
             if (isTypingStatusEnabled() &&
-                userIdOrGuestSession != null &&
                 conversationUser.userId != userIdOrGuestSession &&
                 webSocketInstance?.isSessionInCurrentRoom(session) == true
             ) {
@@ -571,11 +573,10 @@ class ChatActivity :
                     val typingParticipant = typingParticipants[userIdOrGuestSession]
                     if (typingParticipant != null) {
                         typingParticipant.addSession(session)
-                        typingParticipant.restartTimer()
                     } else {
                         typingParticipants[userIdOrGuestSession] =
-                            TypingParticipant(userIdOrGuestSession, displayName, session) {
-                                typingParticipants.remove(userIdOrGuestSession)
+                            TypingParticipant(userIdOrGuestSession, displayName, session) { participant ->
+                                typingParticipants.remove(userIdOrGuestSession, participant)
                                 updateTypingIndicator()
                             }
                         updateTypingIndicator()
@@ -585,16 +586,18 @@ class ChatActivity :
         }
 
         override fun onStopTyping(userId: String?, session: String?) {
-            val userIdOrGuestSession = userId ?: session
+            if (session == null) {
+                return
+            }
 
             if (isTypingStatusEnabled() &&
                 conversationUser.userId != userId &&
                 webSocketInstance?.isSessionInCurrentRoom(session) == true
             ) {
                 runOnUiThread {
-                    typingParticipants[userIdOrGuestSession]?.cancelTimer()
-                    typingParticipants.remove(userIdOrGuestSession)
-                    updateTypingIndicator()
+                    if (TypingParticipant.stopTyping(typingParticipants, userId ?: session, session)) {
+                        updateTypingIndicator()
+                    }
                 }
             }
         }
