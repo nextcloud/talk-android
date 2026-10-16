@@ -1112,8 +1112,9 @@ class ChatViewModel @AssistedInject constructor(
 
     var currentVoiceMessage: ChatMessage? = null
 
+    // Only updates how the message is shown. The message to play is selected by the tap on it, not by any update:
+    // a finished download or waveform of another message must not take over the progress of the one playing.
     fun syncVoiceMessageUiState(message: ChatMessage) {
-        currentVoiceMessage = message
         _uiState.update { current ->
             val updatedItems = current.items.map { item ->
                 if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
