@@ -13,39 +13,38 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509KeyManager;
-import kotlin.coroutines.EmptyCoroutineContext;
-import kotlinx.coroutines.BuildersKt;
 
 import androidx.annotation.Nullable;
 
-public class KeyManager implements X509KeyManager {
+public class KeyManager extends X509ExtendedKeyManager {
     private static final String TAG = "KeyManager";
     private final X509KeyManager keyManager;
 
-    private UserManager userManager;
+    private final ClientCertificateUsers clientCertificateUsers;
     private AppPreferences appPreferences;
     private Context context;
 
-    public KeyManager(X509KeyManager keyManager, UserManager userManager, AppPreferences appPreferences) {
+    public KeyManager(X509KeyManager keyManager, ClientCertificateUsers clientCertificateUsers,
+                      AppPreferences appPreferences) {
         this.keyManager = keyManager;
-        this.userManager = userManager;
+        this.clientCertificateUsers = clientCertificateUsers;
         this.appPreferences = appPreferences;
 
         context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
@@ -58,31 +57,25 @@ public class KeyManager implements X509KeyManager {
      */
     @Override
     public String chooseClientAlias(String[] strings, Principal[] principals, Socket socket) {
-        String alias;
-        List<User> users = new ArrayList<>();
-        User defaultUser = null;
-        try {
-            users = BuildersKt.runBlocking(
-                EmptyCoroutineContext.INSTANCE,
-                (scope, continuation) -> userManager.getUsers(continuation));
-            defaultUser = BuildersKt.runBlocking(
-                EmptyCoroutineContext.INSTANCE,
-                (scope, continuation) -> userManager.getDefaultUser(continuation));
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted while getting the users: " + e.getLocalizedMessage());
-            Thread.currentThread().interrupt();
-        }
-        if (!TextUtils.isEmpty(alias = ClientCertificateSelector.selectAlias(
-            getPeerHost(socket),
-            getPeerPort(socket),
-            users,
-            defaultUser)) ||
-            !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())
-                && new ArrayList<>(Arrays.asList(getClientAliases())).contains(alias)) {
+        return chooseAlias(getPeerHost(socket), getPeerPort(socket));
+    }
+
+    @Override
+    public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine) {
+        return engine == null ? chooseAlias(null, -1) : chooseAlias(engine.getPeerHost(), engine.getPeerPort());
+    }
+
+    /**
+     * Falls back to the certificate chosen during login, as the account it is for doesn't exist yet.
+     */
+    @Nullable
+    private String chooseAlias(@Nullable String host, int port) {
+        String alias = ClientCertificateSelector.selectAlias(host, port, clientCertificateUsers.getUsers());
+        if (!TextUtils.isEmpty(alias)) {
             return alias;
         }
-
-        return null;
+        alias = appPreferences.getTemporaryClientCertAlias();
+        return TextUtils.isEmpty(alias) ? null : alias;
     }
 
     private static int getPeerPort(@Nullable Socket socket) {
@@ -98,6 +91,10 @@ public class KeyManager implements X509KeyManager {
         return -1;
     }
 
+    /**
+     * The host name the connection was opened for. Unlike InetAddress.getHostName(), the fallback never does a reverse
+     * DNS lookup.
+     */
     @Nullable
     private static String getPeerHost(@Nullable Socket socket) {
         if (socket instanceof SSLSocket) {
@@ -106,8 +103,11 @@ public class KeyManager implements X509KeyManager {
                 return session.getPeerHost();
             }
         }
-        if (socket != null && socket.getInetAddress() != null) {
-            return socket.getInetAddress().getHostName();
+        if (socket != null) {
+            SocketAddress address = socket.getRemoteSocketAddress();
+            if (address instanceof InetSocketAddress) {
+                return ((InetSocketAddress) address).getHostString();
+            }
         }
         return null;
     }
@@ -152,7 +152,7 @@ public class KeyManager implements X509KeyManager {
 
     @Override
     public X509Certificate[] getCertificateChain(String s) {
-        if (new ArrayList<>(Arrays.asList(getClientAliases())).contains(s)) {
+        if (isClientAlias(s)) {
             return getCertificatesForAlias(s);
         }
 
@@ -160,28 +160,17 @@ public class KeyManager implements X509KeyManager {
     }
 
     private String[] getClientAliases() {
-        Set<String> aliases = new HashSet<>();
+        Set<String> aliases = new HashSet<>(ClientCertificateSelector.aliasesOf(clientCertificateUsers.getUsers()));
         String alias;
         if (!TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())) {
             aliases.add(alias);
         }
 
-        List<User> userEntities = new ArrayList<>();
-        try {
-            userEntities = BuildersKt.runBlocking(
-                EmptyCoroutineContext.INSTANCE,
-                (scope, continuation) -> userManager.getUsers(continuation));
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted while getting users: " + e.getLocalizedMessage());
-            Thread.currentThread().interrupt();
-        }
-        for (int i = 0; i < userEntities.size(); i++) {
-            if (!TextUtils.isEmpty(alias = userEntities.get(i).getClientCertificate())) {
-                aliases.add(alias);
-            }
-        }
-
         return aliases.toArray(new String[aliases.size()]);
+    }
+
+    private boolean isClientAlias(String alias) {
+        return Arrays.asList(getClientAliases()).contains(alias);
     }
 
     @Override
@@ -196,7 +185,7 @@ public class KeyManager implements X509KeyManager {
 
     @Override
     public PrivateKey getPrivateKey(String s) {
-        if (new ArrayList<>(Arrays.asList(getClientAliases())).contains(s)) {
+        if (isClientAlias(s)) {
             return getPrivateKeyForAlias(s);
         }
 
