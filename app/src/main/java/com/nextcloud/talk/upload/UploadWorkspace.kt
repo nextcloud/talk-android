@@ -76,12 +76,14 @@ class UploadWorkspace(private val dir: File) {
     /**
      * Returns the prepared file of an earlier run, or runs [prepare] once and keeps its result.
      * [prepare] gets an empty directory it may create files in, and returns null when the file cannot be prepared.
+     * The directory is a subdirectory of the workspace, so a file named like a file of the workspace itself
+     * ("prepared", "lock", "restarted", anything ending in ".tmp") cannot replace it.
      */
     fun prepareOnce(prepare: (File) -> PreparedUpload?): PreparedUpload? {
         stored()?.let { return it }
         resetFiles()
-        dir.mkdirs()
-        return prepare(dir)?.also { write(preparedFile, "${it.file.absolutePath}\n${it.fileName}") }
+        val filesDir = File(dir, FILES_DIR).apply { mkdirs() }
+        return prepare(filesDir)?.also { write(preparedFile, "${it.file.absolutePath}\n${it.fileName}") }
     }
 
     /** Whether the parts were already removed once after the server rejected the assembly. */
@@ -121,6 +123,7 @@ class UploadWorkspace(private val dir: File) {
         private const val LOCK_FILE = "lock"
         private const val RESTARTED_FILE = "restarted"
         private const val TMP_SUFFIX = ".tmp"
+        private const val FILES_DIR = "file"
 
         /** Not part of the prepared file: survive a new preparation. */
         private val KEPT_FILES = setOf(LOCK_FILE, RESTARTED_FILE)
