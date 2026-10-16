@@ -809,7 +809,12 @@ class OfflineFirstChatRepository @Inject constructor(
                     sendStatus = SendStatus.PENDING,
                     silent = false
                 )
-                chatDao.upsertChatMessage(entity)
+                // The worker is enqueued before this runs, so a sync may already have stored the server copy.
+                // upsertChatMessagesAndDeleteTemp removed temp messages only at that time, so a placeholder
+                // stored now would stay pending next to the real message.
+                if (!chatDao.upsertTempChatMessageUnlessServerCopyExists(entity)) {
+                    Log.d(TAG, "addUploadPlaceholderMessage: skipped, server copy of $referenceId already stored")
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "addUploadPlaceholderMessage failed for referenceId=$referenceId", e)
                 emit(Result.failure(e))
@@ -818,6 +823,14 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
         chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
+
+    override suspend fun markUploadPlaceholderFailed(referenceId: String) {
+        val entity = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
+        if (entity?.sendStatus == SendStatus.PENDING) {
+            // called from viewModelScope: updateChatMessage is a blocking Room call
+            withContext(Dispatchers.IO) { chatDao.updateChatMessage(entity.copy(sendStatus = SendStatus.FAILED)) }
+        }
+    }
 
     override suspend fun editChatMessage(
         credentials: String,

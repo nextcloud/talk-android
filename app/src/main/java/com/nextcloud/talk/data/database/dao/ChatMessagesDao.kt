@@ -113,6 +113,37 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
 
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1
+            FROM ChatMessages
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId = :referenceId
+            AND isTemporary = 0
+        )
+        """
+    )
+    suspend fun hasServerCopyOfReferenceId(internalConversationId: String, referenceId: String): Boolean
+
+    /**
+     * Stores a temporary message unless the server copy of it is already stored. The counterpart of
+     * [upsertChatMessagesAndDeleteTemp], which drops the temporary message once the server copy arrives:
+     * a temporary message stored after that would never be dropped again. Check and insert share one
+     * transaction, so a sync cannot store the server copy in between.
+     *
+     * @return true if the message was stored, false if the server copy already exists
+     */
+    @Transaction
+    suspend fun upsertTempChatMessageUnlessServerCopyExists(chatMessage: ChatMessageEntity): Boolean {
+        val referenceId = chatMessage.referenceId
+        if (referenceId != null && hasServerCopyOfReferenceId(chatMessage.internalConversationId, referenceId)) {
+            return false
+        }
+        upsertChatMessage(chatMessage)
+        return true
+    }
+
     @Deprecated("use getChatMessageEntity")
     @Query(
         """

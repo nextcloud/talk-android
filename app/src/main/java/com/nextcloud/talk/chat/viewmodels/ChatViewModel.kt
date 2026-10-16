@@ -47,6 +47,7 @@ import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import androidx.lifecycle.asFlow
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
@@ -2406,9 +2407,42 @@ class ChatViewModel @AssistedInject constructor(
         try {
             require(fileUri.isNotEmpty())
 
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            val enqueueUpload = {
+                UploadAndShareFilesWorker.upload(
+                    userId = currentUser.id!!,
+                    fileUri = fileUri,
+                    roomToken = room,
+                    conversationName = displayName,
+                    metaData = metaData,
+                    referenceId = referenceId,
+                    internalConversationId = internalConversationId,
+                    compressImages = compressImages,
+                    allowUpdate = allowUpdate
+                )
+            }
+
+            // enqueued right here, in the order of the calls: the queue of a conversation is chained, and the
+            // slow lookup of the file info below must neither reorder the files nor die with the view model
+            val workerId = enqueueUpload()
             if (!isVoiceMessage) {
-                val (fileName, mimeType, fileSize) = resolveFileInfo(fileUri)
+                uploadReferenceToWorkId[referenceId] = workerId
+                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+
                 viewModelScope.launch {
+                    // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
+                    val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) {
+                        try {
+                            resolveFileInfo(fileUri)
+                        } catch (e: IllegalArgumentException) {
+                            // unknown or revoked uri: the worker reports the failed upload, the placeholder stays
+                            Log.w(TAG, "Could not resolve file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        } catch (e: SecurityException) {
+                            Log.w(TAG, "No access to the file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        }
+                    }
                     chatRepository.addUploadPlaceholderMessage(
                         localFileUri = fileUri,
                         fileName = fileName,
@@ -2417,26 +2451,11 @@ class ChatViewModel @AssistedInject constructor(
                         fileSize = fileSize,
                         referenceId = referenceId
                     ).collect {}
+
+                    // observed only now: a failure the worker reported before the placeholder existed is
+                    // delivered with the current state and marks the placeholder that was just added
+                    observeUploadProgress(workerId, referenceId)
                 }
-            }
-
-            val internalConversationId = "${currentUser.id}@$chatRoomToken"
-            val workerId = UploadAndShareFilesWorker.upload(
-                userId = currentUser.id!!,
-                fileUri = fileUri,
-                roomToken = room,
-                conversationName = displayName,
-                metaData = metaData,
-                referenceId = referenceId,
-                internalConversationId = internalConversationId,
-                compressImages = compressImages,
-                allowUpdate = allowUpdate
-            )
-
-            if (!isVoiceMessage) {
-                uploadReferenceToWorkId[referenceId] = workerId
-                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
-                observeUploadProgress(workerId, referenceId)
             }
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -2468,6 +2487,9 @@ class ChatViewModel @AssistedInject constructor(
                 val progress = workInfo.progress.getInt(UploadAndShareFilesWorker.PROGRESS_KEY, -1)
                 if (progress >= 0) {
                     _uploadProgressMap.update { it + (referenceId to progress) }
+                }
+                if (workInfo.state == WorkInfo.State.FAILED) {
+                    viewModelScope.launch { chatRepository.markUploadPlaceholderFailed(referenceId) }
                 }
                 if (workInfo.state.isFinished) {
                     _uploadProgressMap.update { it - referenceId }
