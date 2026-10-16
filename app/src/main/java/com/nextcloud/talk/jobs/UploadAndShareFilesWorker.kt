@@ -28,6 +28,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import at.bitfire.dav4jvm.exception.HttpException
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -243,30 +244,40 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             Log.e(TAG, "Something went wrong when trying to upload file")
             failUpload()
-        } catch (e: IOException) {
-            // Transient network failures (connection reset, timeout, dropped Wi-Fi, ...) shouldn't
-            // require the user to manually resend - retry a few times with backoff instead, and only
-            // give up once we've exhausted the allowed attempts.
-            Log.w(
-                TAG,
-                "Network error while uploading file (attempt ${runAttemptCount + 1}/$MAX_UPLOAD_ATTEMPTS)",
-                e
-            )
-            if (isStopped || isCancelled()) {
-                stoppedResult()
-            } else if (runAttemptCount < MAX_UPLOAD_ATTEMPTS - 1) {
-                keepWorkspace = true
-                Result.retry()
-            } else {
-                failUpload()
-            }
         } catch (e: Exception) {
-            if (isStopped || isCancelled()) {
-                return stoppedResult()
+            if (isRetryable(e)) {
+                // Transient failures (connection reset, timeout, dropped Wi-Fi, a short outage of the server, ...)
+                // shouldn't require the user to manually resend - retry a few times with backoff instead, and only
+                // give up once we've exhausted the allowed attempts.
+                retryOrFail(e)
+            } else {
+                failOnException(e)
             }
-            Log.e(TAG, "Something went wrong when trying to upload file", e)
+        }
+    }
+
+    private fun retryOrFail(e: Exception): Result {
+        Log.w(
+            TAG,
+            "Upload interrupted, trying again later (attempt ${runAttemptCount + 1}/$MAX_UPLOAD_ATTEMPTS)",
+            e
+        )
+        return if (isStopped || isCancelled()) {
+            stoppedResult()
+        } else if (runAttemptCount < MAX_UPLOAD_ATTEMPTS - 1) {
+            keepWorkspace = true
+            Result.retry()
+        } else {
             failUpload()
         }
+    }
+
+    private fun failOnException(e: Exception): Result {
+        if (isStopped || isCancelled()) {
+            return stoppedResult()
+        }
+        Log.e(TAG, "Something went wrong when trying to upload file", e)
+        return failUpload()
     }
 
     // Result.success(), not failure(): the failure is recorded on the placeholder row, and a failed work
@@ -599,7 +610,32 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         // Total attempts allowed for a single upload (1 initial run + retries) before giving up on a
         // transient network failure and marking the placeholder FAILED.
         private const val MAX_UPLOAD_ATTEMPTS = 4
+        private const val HTTP_REQUEST_TIMEOUT = 408
+        private const val HTTP_TOO_MANY_REQUESTS = 429
+        private const val HTTP_SERVER_ERROR = 500
+        private val PERMANENT_SERVER_ERRORS = setOf(501, 505, 507)
         const val REQUEST_PERMISSION = 3123
+
+        /**
+         * Whether [e] is a lost connection or a refusal that says "not now" rather than "no". dav4jvm and Retrofit
+         * report a refused request as an HttpException, which is not an IOException.
+         */
+        internal fun isRetryable(e: Throwable): Boolean =
+            when (e) {
+                is IOException -> true
+                is HttpException -> isTransientHttpError(e.code)
+                is retrofit2.HttpException -> isTransientHttpError(e.code())
+                else -> false
+            }
+
+        /**
+         * 5xx, 408 and 429 are tried again. Not 501, 505 and 507: a quota that is full or a server that cannot
+         * do the request does not change within the few attempts.
+         */
+        internal fun isTransientHttpError(code: Int): Boolean =
+            (code >= HTTP_SERVER_ERROR && code !in PERMANENT_SERVER_ERRORS) ||
+                code == HTTP_REQUEST_TIMEOUT ||
+                code == HTTP_TOO_MANY_REQUESTS
 
         // referenceIds the user cancelled - set synchronously here, before cancelUniqueWork() is
         // even called, so doWork() can see it immediately instead of waiting for isStopped, which
