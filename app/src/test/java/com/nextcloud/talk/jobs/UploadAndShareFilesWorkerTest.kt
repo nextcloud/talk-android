@@ -28,7 +28,9 @@ import java.util.concurrent.Executors
 import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
@@ -37,6 +39,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
 import java.util.UUID
 
 /**
@@ -105,6 +108,22 @@ class UploadAndShareFilesWorkerTest {
     }
 
     private fun httpException(code: Int): HttpException = HttpException(Response.error<Any>(code, "".toResponseBody()))
+
+    @Test
+    fun `a short outage of the server and a lost connection are tried again and a refusal is not`() {
+        for (code in listOf(408, 429, 500, 502, 503, 504)) {
+            assertTrue("$code", UploadAndShareFilesWorker.isTransientHttpError(code))
+            assertTrue("retrofit $code", UploadAndShareFilesWorker.isRetryable(retrofitError(code)))
+        }
+        for (code in listOf(400, 401, 403, 404, 409, 412, 501, 505, 507)) {
+            assertFalse("$code", UploadAndShareFilesWorker.isTransientHttpError(code))
+            assertFalse("retrofit $code", UploadAndShareFilesWorker.isRetryable(retrofitError(code)))
+        }
+        assertTrue(UploadAndShareFilesWorker.isRetryable(IOException("connection reset")))
+        assertFalse(UploadAndShareFilesWorker.isRetryable(IllegalStateException("bug")))
+    }
+
+    private fun retrofitError(code: Int) = HttpException(Response.error<Any>(code, "".toResponseBody()))
 
     private fun upload(referenceId: String): UUID =
         UploadAndShareFilesWorker.upload(

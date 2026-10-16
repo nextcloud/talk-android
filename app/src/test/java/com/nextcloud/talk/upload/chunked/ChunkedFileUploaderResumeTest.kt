@@ -10,6 +10,7 @@ import android.app.Application
 import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -20,6 +21,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
@@ -185,6 +187,17 @@ class ChunkedFileUploaderResumeTest {
             assertEquals(SERVER_ERROR, e.code)
         }
         assertEquals(0, requests.count { it.method == "DELETE" })
+    }
+
+    @Test
+    fun `the worker tries again after a service unavailable answer to a part but not after a rejected part`() {
+        putResponseCode = SERVICE_UNAVAILABLE
+        val unavailable = assertThrows(HttpException::class.java) { uploader.upload(file, null, "/Talk/video.mp4") }
+        assertTrue(UploadAndShareFilesWorker.isRetryable(unavailable))
+
+        putResponseCode = BAD_REQUEST
+        val rejected = assertThrows(HttpException::class.java) { uploader.upload(file, null, "/Talk/video.mp4") }
+        assertFalse(UploadAndShareFilesWorker.isRetryable(rejected))
     }
 
     @Test
@@ -445,5 +458,6 @@ class ChunkedFileUploaderResumeTest {
         private const val NOT_FOUND = 404
         private const val BAD_REQUEST = 400
         private const val SERVER_ERROR = 500
+        private const val SERVICE_UNAVAILABLE = 503
     }
 }
