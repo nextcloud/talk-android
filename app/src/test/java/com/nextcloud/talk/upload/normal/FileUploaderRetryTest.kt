@@ -40,7 +40,7 @@ import retrofit2.Response
 /** An error answer of the server is thrown, so [UploadRetryPolicy] can tell an unavailable server from a refusal. */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
-class FileUploaderTest {
+class FileUploaderRetryTest {
 
     @get:Rule
     val tempFolder = TemporaryFolder()
