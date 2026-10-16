@@ -404,7 +404,6 @@ class ChatActivity :
     // (e.g. by a GetCapabilitiesInitialLoadState re-emitted after the leave reset it) is deferred until onResume.
     private var isChatResumed: Boolean = false
     private var isJoinRoomPending: Boolean = false
-    private var isJoinRoomInFlight: Boolean = false
 
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
@@ -1703,7 +1702,6 @@ class ChatActivity :
         chatViewModel.joinRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.JoinRoomSuccessState -> {
-                    isJoinRoomInFlight = false
                     currentConversation = state.conversationModel
                     sessionIdAfterRoomJoined = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
@@ -1729,9 +1727,7 @@ class ChatActivity :
                     }
                 }
 
-                is ChatViewModel.JoinRoomErrorState -> {
-                    isJoinRoomInFlight = false
-                }
+                is ChatViewModel.JoinRoomErrorState -> {}
 
                 else -> {}
             }
@@ -2959,8 +2955,6 @@ class ChatActivity :
         logConversationInfos("onPause")
 
         isChatResumed = false
-        // ChatViewModel.onPause disposes a join request that is still running, so it will never report back
-        isJoinRoomInFlight = false
 
         eventBus.unregister(this)
 
@@ -2978,6 +2972,10 @@ class ChatActivity :
                 Log.d(TAG, "not leaving room (leave already in progress)")
             } else if (validSessionId()) {
                 leaveRoom(null)
+            } else if (chatViewModel.requestLeaveAfterJoin()) {
+                Log.d(TAG, "join in progress -> leaving room once it completes")
+                isJoinRoomPending = true
+                ApplicationWideCurrentRoomHolder.getInstance().clear()
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
                 ApplicationWideCurrentRoomHolder.getInstance().clear()
@@ -3055,11 +3053,6 @@ class ChatActivity :
         }
 
         if (!validSessionId()) {
-            if (isJoinRoomInFlight) {
-                Log.d(TAG, "sessionID was not valid, but a join is already in progress -> skip joinRoom")
-                return
-            }
-            isJoinRoomInFlight = true
             Log.d(TAG, "sessionID was not valid -> joinRoom")
             val startNanoTime = System.nanoTime()
             Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: $startNanoTime")

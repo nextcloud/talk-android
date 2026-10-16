@@ -373,6 +373,12 @@ class ChatViewModel @AssistedInject constructor(
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
+    // A join request is not disposed when the chat is paused: the server may already have created the session,
+    // so if the chat was left in the meantime it is left again once the join completes (see [requestLeaveAfterJoin]).
+    var isJoinRoomInFlight: Boolean = false
+        private set
+    private var isLeaveAfterJoinRequested: Boolean = false
+
     var messageDraft: MessageDraft = MessageDraft()
     var hiddenUpcomingEvent: String? = null
     lateinit var participantPermissions: ParticipantPermissions
@@ -1861,12 +1867,47 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun joinRoom(user: User, token: String, roomPassword: String) {
+        if (isJoinRoomInFlight) {
+            // the chat was resumed again before the running join completed, so it keeps the joined session
+            Log.d(TAG, "joinRoom - join already in progress, not leaving the room after it")
+            isLeaveAfterJoinRequested = false
+            return
+        }
+        isJoinRoomInFlight = true
+        isLeaveAfterJoinRequested = false
         _joinRoomViewState.value = JoinRoomStartState
         chatNetworkDataSource.joinRoom(user, token, roomPassword)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
-            ?.subscribe(JoinRoomObserver())
+            ?.subscribe(JoinRoomObserver(user, token))
+    }
+
+    /**
+     * Requests leaving the room as soon as the running join request completes, instead of reporting the join.
+     * Returns false if no join request is running.
+     */
+    fun requestLeaveAfterJoin(): Boolean {
+        if (!isJoinRoomInFlight) {
+            return false
+        }
+        isLeaveAfterJoinRequested = true
+        return true
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun leaveRoomAfterJoin(user: User, token: String) {
+        val credentials = ApiUtils.getCredentials(user.username, user.token) ?: return
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
+        val url = ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl!!, token)
+        appScope.launch {
+            try {
+                val result = chatNetworkDataSource.leaveRoom(credentials, url)
+                Log.d(TAG, "leaveRoomAfterJoin completed with OCS status: ${result.ocs?.meta?.statusCode}")
+            } catch (e: Exception) {
+                Log.e(TAG, "leaveRoomAfterJoin - ERROR", e)
+            }
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
@@ -2542,17 +2583,26 @@ class ChatViewModel @AssistedInject constructor(
         return chatRepository.getMessage(messageId, bundle)
     }
 
-    inner class JoinRoomObserver : Observer<ConversationModel> {
+    inner class JoinRoomObserver(private val user: User, private val token: String) : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
+            // not added to disposableSet, see isJoinRoomInFlight
         }
 
         override fun onNext(conversationModel: ConversationModel) {
+            isJoinRoomInFlight = false
+            if (isLeaveAfterJoinRequested) {
+                isLeaveAfterJoinRequested = false
+                Log.d(TAG, "joinRoom completed after the chat was left -> leaving the room again")
+                leaveRoomAfterJoin(user, token)
+                return
+            }
             _joinRoomViewState.value = JoinRoomSuccessState(conversationModel)
         }
 
         override fun onError(e: Throwable) {
             Log.e(TAG, "Error when joining room")
+            isJoinRoomInFlight = false
+            isLeaveAfterJoinRequested = false
             _joinRoomViewState.value = JoinRoomErrorState
         }
 
