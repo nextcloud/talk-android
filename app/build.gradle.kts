@@ -155,7 +155,6 @@ android {
                 "AndroidGradlePluginVersion",
                 "GradleDependency",
                 "InvalidPackage",
-                "LogNotTimber",
                 "MissingTranslation",
                 "PrivateResource",
                 "UnusedQuantity",
