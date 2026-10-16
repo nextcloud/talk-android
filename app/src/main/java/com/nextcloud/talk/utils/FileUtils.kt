@@ -214,7 +214,7 @@ object FileUtils {
             return null
         }
 
-        val ready = if (cachedFile.exists() && isCompleteCopy(cachedFile.length())) {
+        val ready = if (cachedFile.exists() && cachedFile.length() > 0) {
             Log.d(TAG, "file is already in cache")
             true
         } else {
@@ -256,18 +256,18 @@ object FileUtils {
                 Log.w(TAG, "no longer permitted to read $sourceFileUri", e)
             }
         }
-        if (copied) {
-            // The size a provider reports is not reliable (transcoding, cloud providers), so it is only logged.
-            val reported = querySize(context, sourceFileUri)
-            if (reported != null && reported > 0 && reported != target.length()) {
-                Log.w(TAG, "copy of $sourceFileUri has ${target.length()} bytes, the provider reports $reported")
-            }
+        if (!copied) {
+            return false
         }
-        return copied && isCompleteCopy(target.length())
+        // The size a provider reports is not reliable (transcoding, cloud providers), so it is only logged.
+        val reported = querySize(context, sourceFileUri)
+        if (reported != null && reported > 0 && reported != target.length()) {
+            Log.w(TAG, "copy of $sourceFileUri has ${target.length()} bytes, the provider reports $reported")
+        }
+        // A stream that broke off throws and never gets here, so an empty copy of an empty source is complete.
+        // An empty copy of a source that reports content is a placeholder that was not loaded: not a usable file.
+        return target.length() > 0 || reported == null || reported <= 0
     }
-
-    /** An empty copy is a broken copy; a stream that broke off throws and never gets here. */
-    internal fun isCompleteCopy(copiedLength: Long): Boolean = copiedLength > 0
 
     private fun querySize(context: Context, uri: Uri): Long? =
         try {

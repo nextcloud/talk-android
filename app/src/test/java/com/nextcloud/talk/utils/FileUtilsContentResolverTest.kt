@@ -80,11 +80,22 @@ class FileUtilsContentResolverTest {
     }
 
     @Test
-    fun `copyFileToCache returns null and leaves no file when the source is empty`() {
+    fun `copyFileToCache copies an empty source to an empty file`() {
         val context = contextWithStream(ByteArray(0))
 
-        assertNull(FileUtils.copyFileToCache(context, contentUri, "photo.jpg", tempFolder.root))
-        assertFalse(java.io.File(tempFolder.root, "photo.jpg").exists())
+        val copy = FileUtils.copyFileToCache(context, contentUri, "empty.txt", tempFolder.root)
+
+        assertNotNull(copy)
+        assertEquals(0L, copy!!.length())
+        assertEquals(listOf("empty.txt"), tempFolder.root.list()!!.toList())
+    }
+
+    @Test
+    fun `copyFileToCache returns null for an empty copy of a source that reports content`() {
+        val context = contextWithStream(ByteArray(0), reportedSize = COPY_SIZE.toLong())
+
+        assertNull(FileUtils.copyFileToCache(context, contentUri, "placeholder.jpg", tempFolder.root))
+        assertEquals(0, tempFolder.root.list()!!.size)
     }
 
     @Test
@@ -162,12 +173,6 @@ class FileUtilsContentResolverTest {
         assertEquals(COPY_SIZE.toLong(), copy.length())
         assertTrue(outside.exists())
         assertEquals(inside, FileUtils.ensureInDir(inside, dir))
-    }
-
-    @Test
-    fun `a copy is complete when it is not empty`() {
-        assertTrue(FileUtils.isCompleteCopy(10))
-        assertFalse(FileUtils.isCompleteCopy(0))
     }
 
     private fun contextWithStream(bytes: ByteArray, reportedSize: Long? = null): Context {
