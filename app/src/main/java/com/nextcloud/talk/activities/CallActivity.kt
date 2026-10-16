@@ -257,6 +257,13 @@ class CallActivity : CallBaseActivity() {
     var isVoiceOnlyCall = false
     private var isCallWithoutNotification = false
     private var isIncomingCallFromNotification = false
+
+    /**
+     * Answering an incoming call by voice only gives up the own camera, not the video of the caller:
+     * the kind of the call may not be known when the call is answered.
+     */
+    private val receivesVideo: Boolean
+        get() = !isVoiceOnlyCall || isIncomingCallFromNotification
     private val callControlHandler = Handler()
     private val callInfosHandler = Handler()
     private val cameraSwitchHandler = Handler()
@@ -504,7 +511,7 @@ class CallActivity : CallBaseActivity() {
                     ParticipantGrid(
                         participantUiStates = participantUiStates,
                         eglBase = rootEglBase!!,
-                        isVoiceOnlyCall = isVoiceOnlyCall,
+                        isVoiceOnlyCall = !receivesVideo,
                         onClick = {},
                         onScreenShareIconClick = {
                             callViewModel.setActiveScreenShareSession(it)
@@ -1034,12 +1041,8 @@ class CallActivity : CallBaseActivity() {
         sdpConstraints = MediaConstraints()
         sdpConstraintsForMCUPublisher = MediaConstraints()
         sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        var offerToReceiveVideoString = "true"
-        if (isVoiceOnlyCall) {
-            offerToReceiveVideoString = "false"
-        }
         sdpConstraints!!.mandatory.add(
-            MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString)
+            MediaConstraints.KeyValuePair("OfferToReceiveVideo", receivesVideo.toString())
         )
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"))
@@ -2619,7 +2622,7 @@ class CallActivity : CallBaseActivity() {
             false
         } else {
             participant.inCall and ParticipantDto.InCallFlags.WITH_AUDIO.toLong() > 0 ||
-                !isVoiceOnlyCall &&
+                receivesVideo &&
                 participant.inCall and ParticipantDto.InCallFlags.WITH_VIDEO.toLong() > 0
         }
 

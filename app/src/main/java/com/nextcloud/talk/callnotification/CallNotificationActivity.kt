@@ -27,7 +27,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.jobs.CallPushPayload
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -73,10 +73,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
         handleExtras()
 
-        setupCallTypeDescription()
-        setupCallAnswerButtons()
-        binding!!.conversationNameTextView.text = displayName
-        setupAvatar(isOneToOneCall, conversationName)
+        showCallData()
         initClickListeners()
         setupNotificationCanceledRoutine()
     }
@@ -89,6 +86,13 @@ class CallNotificationActivity : CallBaseActivity() {
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
         isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
         conversationName = extras.getString(BundleKeys.KEY_CONVERSATION_NAME, "")
+    }
+
+    private fun showCallData() {
+        setupCallTypeDescription()
+        setupCallAnswerButtons()
+        binding!!.conversationNameTextView.text = displayName
+        setupAvatar(isOneToOneCall, conversationName)
     }
 
     private fun setupAvatar(isOneToOneCall: Boolean, conversationName: String?) {
@@ -121,49 +125,52 @@ class CallNotificationActivity : CallBaseActivity() {
             )
     }
 
+    private fun callType() = CallPushPayload.callTypeOf(callFlag, hasCallFlagsCapability())
+
     private fun setupCallTypeDescription() {
-        if (hasCallFlagsCapability()) {
-            if (isInCallWithVideo(callFlag)) {
-                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                    resources.getString(R.string.nc_call_video),
-                    resources.getString(R.string.nc_app_product_name)
-                )
-            } else {
-                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                    resources.getString(R.string.nc_call_voice),
-                    resources.getString(R.string.nc_app_product_name)
-                )
-            }
-        } else {
-            val callDescriptionWithoutTypeInfo = String.format(
-                resources.getString(R.string.nc_call_unknown),
-                resources.getString(R.string.nc_app_product_name)
-            )
-            binding!!.incomingCallVoiceOrVideoTextView.text = callDescriptionWithoutTypeInfo
+        val textId = when (callType()) {
+            CallPushPayload.CallType.VIDEO -> R.string.nc_call_video
+            CallPushPayload.CallType.VOICE -> R.string.nc_call_voice
+            CallPushPayload.CallType.UNKNOWN -> R.string.nc_call_unknown
         }
+        binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+            resources.getString(textId),
+            resources.getString(R.string.nc_app_product_name)
+        )
     }
 
     private fun setupCallAnswerButtons() {
-        if (hasCallFlagsCapability()) {
-            if (isInCallWithVideo(callFlag)) {
-                binding!!.callAnswerVoiceOnlyView.visibility = View.GONE
-            } else {
-                binding!!.callAnswerCameraView.visibility = View.GONE
-            }
-        }
+        val callType = callType()
+        binding!!.callAnswerVoiceOnlyView.visibility = if (callType.showsVoiceButton) View.VISIBLE else View.GONE
+        binding!!.callAnswerCameraView.visibility = if (callType.showsVideoButton) View.VISIBLE else View.GONE
     }
 
     private fun setupNotificationCanceledRoutine() {
         val notificationHandler = Handler(Looper.getMainLooper())
         notificationHandler.post(object : Runnable {
             override fun run() {
-                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationHandler.postDelayed(this, ONE_SECOND)
-                } else {
+                val extras = NotificationUtils.getActiveNotificationExtras(context, notificationTimestamp!!)
+                if (extras == null) {
                     finish()
+                } else {
+                    refreshCallData(extras)
+                    notificationHandler.postDelayed(this, ONE_SECOND)
                 }
             }
         })
+    }
+
+    /**
+     * The notification is shown again with the data of the server once it answers, but this screen may be open
+     * already. The notification is the only carrier of that data, so the screen follows it.
+     */
+    private fun refreshCallData(notificationExtras: Bundle) {
+        if (!CallPushPayload.isCallDataChanged(intent.extras, notificationExtras)) {
+            return
+        }
+        intent.putExtras(CallPushPayload.pickCallData(notificationExtras))
+        handleExtras()
+        showCallData()
     }
 
     override fun onStart() {
@@ -208,8 +215,6 @@ class CallNotificationActivity : CallBaseActivity() {
         callIntent.putExtras(intent.extras!!)
         startActivity(callIntent)
     }
-
-    private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
     override fun onStop() {
         val notificationManager = NotificationManagerCompat.from(context)
