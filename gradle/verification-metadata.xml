@@ -147,6 +147,7 @@
             <trusting group="org.maplibre.gl" name="android-sdk" version="13.0.2"/>
             <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.0.2"/>
             <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.6.1"/>
+            <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.7.1"/>
          </trusted-key>
          <trusted-key id="20723A6399BC060154283B37CFAE163B64AC9189">
             <trusting group="org.jetbrains.androidx.lifecycle"/>
