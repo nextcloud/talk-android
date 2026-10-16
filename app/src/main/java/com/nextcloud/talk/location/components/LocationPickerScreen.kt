@@ -21,6 +21,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -66,9 +67,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,6 +79,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -98,20 +100,21 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.location.viewmodels.LocationPickerViewModel
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.CameraUpdate
 import org.maplibre.compose.expressions.ast.ColorLiteral
 import org.maplibre.compose.expressions.ast.DpLiteral
 import org.maplibre.compose.layers.CircleLayer
-import org.maplibre.compose.map.LocalMapState
 import org.maplibre.compose.map.MapState
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.StyleLoadState
 import org.maplibre.compose.map.rememberMapState
 import org.maplibre.compose.material3.AttributionButtonDefaults
-import org.maplibre.compose.material3.ExpandingAttributionButton
+import org.maplibre.compose.overlay.attributions
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
@@ -461,17 +464,41 @@ private fun BoxScope.LocationPickerSearchCard(onBack: () -> Unit, onSearchClick:
         ) {
             LocationPickerSearchRow(onBack = onBack, onSearchClick = onSearchClick)
         }
-        // the button reads the map from LocalMapState, which is only provided inside MaplibreMap
-        CompositionLocalProvider(LocalMapState provides mapState) {
-            ExpandingAttributionButton(
-                modifier = Modifier.padding(top = 4.dp),
-                contentAlignment = Alignment.TopEnd,
-                toggleButton = { onToggle ->
-                    Box(modifier = Modifier.alpha(ATTRIBUTION_BUTTON_ALPHA)) {
-                        AttributionButtonDefaults.button(onToggle)
-                    }
-                }
-            )
+        LocationPickerAttribution(mapState = mapState, modifier = Modifier.padding(top = 4.dp))
+    }
+}
+
+// Own version of maplibre's ExpandingAttributionButton, which always starts expanded
+@Composable
+private fun LocationPickerAttribution(mapState: MapState, modifier: Modifier = Modifier) {
+    val attributions by remember(mapState) { derivedStateOf { mapState.style.attributions() } }
+    if (attributions.isEmpty()) return
+    var expanded by remember { mutableStateOf(false) }
+
+    // collapse once the user starts moving the map
+    LaunchedEffect(mapState) {
+        snapshotFlow { mapState.isCameraMoving && mapState.cameraMoveReason == CameraMoveReason.GESTURE }
+            .filter { it }
+            .collect { expanded = false }
+    }
+
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(28.dp))
+            .background(if (expanded) MaterialTheme.colorScheme.surface else Color.Transparent),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // weight: the links fill all available width otherwise and push the toggle button out of the row
+        AnimatedVisibility(visible = expanded, modifier = Modifier.weight(1f, fill = false)) {
+            Box(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
+                AttributionButtonDefaults.content(
+                    attributions,
+                    MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface)
+                )
+            }
+        }
+        Box(modifier = Modifier.alpha(ATTRIBUTION_BUTTON_ALPHA)) {
+            AttributionButtonDefaults.button { expanded = !expanded }
         }
     }
 }
