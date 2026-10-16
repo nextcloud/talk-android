@@ -29,6 +29,7 @@ val daggerVersion = "2.60.1"
 val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
+val maplibreComposeVersion = "0.19.0"
 val okhttpVersion = "4.12.0"
 val markwonVersion = "4.6.2"
 val materialDialogsVersion = "3.3.0"
@@ -322,16 +323,11 @@ dependencies {
     implementation("com.github.yalantis:ucrop:2.2.11")
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
-    // android-sdk 13.x defaults to a Vulkan renderer and declares a hard
-    // (required=true) android.hardware.vulkan.version uses-feature, which shrinks
-    // the Play Console "supported devices" count. Use the OpenGL ES variant instead.
-    implementation("org.maplibre.compose:maplibre-compose:0.19.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.19.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.gl:android-sdk-opengl:13.6.1")
+    implementation("org.maplibre.compose:maplibre-compose:$maplibreComposeVersion")
+    implementation("org.maplibre.compose:maplibre-compose-material3:$maplibreComposeVersion")
+    // The Vulkan runtime would need a Vulkan-capable device, which shrinks
+    // the Play Console "supported devices" count. Use the OpenGL ES runtime instead.
+    implementation("org.maplibre.compose:maplibre-compose-runtime-opengl-android:$maplibreComposeVersion")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
