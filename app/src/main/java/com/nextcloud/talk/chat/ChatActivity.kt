@@ -399,6 +399,9 @@ class ChatActivity :
 
     var myFirstMessage: CharSequence? = null
     private var isLeavingRoom: Boolean = false
+    private var isScreenResumed: Boolean = false
+    private var hasBeenPaused: Boolean = false
+    private var isInitialLoadDone: Boolean = false
 
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
@@ -1453,7 +1456,9 @@ class ChatActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        chatViewModel.handleOrientationChange()
+        if (isChangingConfigurations) {
+            chatViewModel.handleOrientationChange()
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -1594,6 +1599,7 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
+                    isInitialLoadDone = true
                     spreedCapabilities = state.spreedCapabilities
                     currentConversation = state.conversationModel
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
@@ -1609,37 +1615,14 @@ class ChatActivity :
                         }
                     }
 
-                    joinRoomWithPassword()
-
-                    if (sharedFilePaths.isNotEmpty()) {
-                        onChooseFileResult(sharedFilePaths.map { it.toUri() })
-                        sharedFilePaths = emptyList()
+                    if (isScreenResumed) {
+                        ensureJoined()
                     }
 
-                    refreshScheduledMessages()
+                    sendSharedFiles()
 
                     updateToolbarState()
-                    if (state.conversationModel.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                        state.conversationModel.status == "dnd"
-                    ) {
-                        conversationUser.let {
-                            val credentials = ApiUtils.getCredentials(it.username, it.token)
-                            chatViewModel.outOfOfficeStatusOfUser(
-                                credentials!!,
-                                it.baseUrl!!,
-                                state.conversationModel!!.name
-                            )
-                        }
-                    }
-
-                    conversationUser.let {
-                        val credentials = ApiUtils.getCredentials(it.username, it.token)
-                        chatViewModel.fetchUpcomingEvent(
-                            credentials!!,
-                            it.baseUrl!!,
-                            roomToken
-                        )
-                    }
+                    refreshConversationExtras(state.conversationModel)
 
                     if (state.conversationModel.objectType == ConversationEnums.ObjectType.EVENT &&
                         hasSpreedFeatureCapability(
@@ -2104,6 +2087,58 @@ class ChatActivity :
         binding.let { viewThemeUtils.material.themeFAB(it.voiceRecordingLock) }
 
         updateToolbarState()
+
+        isScreenResumed = true
+        currentConversation?.takeIf { isInitialLoadDone }?.let { conversation ->
+            ensureJoined()
+            if (hasBeenPaused) {
+                returnToChat(conversation)
+            }
+        }
+    }
+
+    /**
+     * Joining the room is the counterpart of leaving it in onPause: once per resume, as soon as the screen is shown
+     * and the capabilities are loaded. It does not depend on when the conversation is refreshed.
+     */
+    private fun ensureJoined() {
+        if (isInitialLoadDone && chatViewModel.claimRoomJoin()) {
+            joinRoomWithPassword()
+        }
+    }
+
+    private fun returnToChat(conversation: ConversationModel) {
+        sendSharedFiles()
+        if (focusInput && messageInputFragment.isAdded) {
+            messageInputFragment.binding.fragmentMessageInputView.requestFocus()
+        }
+        refreshConversationExtras(conversation)
+        updateRoomTimerHandler(MILLIS_250)
+    }
+
+    private fun sendSharedFiles() {
+        if (sharedFilePaths.isNotEmpty()) {
+            onChooseFileResult(sharedFilePaths.map { it.toUri() })
+            sharedFilePaths = emptyList()
+        }
+    }
+
+    private fun refreshConversationExtras(conversation: ConversationModel) {
+        refreshScheduledMessages()
+
+        if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+            conversation.status == "dnd"
+        ) {
+            conversationUser.let {
+                val credentials = ApiUtils.getCredentials(it.username, it.token)
+                chatViewModel.outOfOfficeStatusOfUser(credentials!!, it.baseUrl!!, conversation.name)
+            }
+        }
+
+        conversationUser.let {
+            val credentials = ApiUtils.getCredentials(it.username, it.token)
+            chatViewModel.fetchUpcomingEvent(credentials!!, it.baseUrl!!, roomToken)
+        }
     }
 
     private fun setupChatToolbarView() {
@@ -2941,6 +2976,9 @@ class ChatActivity :
         super.onPause()
 
         logConversationInfos("onPause")
+
+        isScreenResumed = false
+        hasBeenPaused = true
 
         eventBus.unregister(this)
 
