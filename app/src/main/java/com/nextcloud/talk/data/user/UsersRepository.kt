@@ -19,6 +19,7 @@ interface UsersRepository {
     suspend fun getActiveUser(): User?
     fun getActiveUserFlow(): Flow<User?>
     suspend fun getUsers(): List<User>
+    fun getUsersFlow(): Flow<List<User>>
     suspend fun getUserWithId(id: Long): User?
     fun getUserWithIdFlow(id: Long): Flow<User?>
     suspend fun repairMultipleActiveUsers(): Int

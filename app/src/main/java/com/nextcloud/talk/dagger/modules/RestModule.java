@@ -20,6 +20,7 @@ import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.RejectedCredentialsInterceptor;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.ssl.ClientCertificateUsers;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 import com.nextcloud.talk.utils.ssl.TrustManager;
@@ -130,7 +131,7 @@ public class RestModule {
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, null);
             X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
-            return new KeyManager(origKm, userManager, appPreferences);
+            return new KeyManager(origKm, new ClientCertificateUsers(userManager), appPreferences);
         } catch (KeyStoreException e) {
             Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
         } catch (CertificateException e) {
