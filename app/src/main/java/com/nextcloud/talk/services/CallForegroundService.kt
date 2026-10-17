@@ -54,7 +54,12 @@ class CallForegroundService : Service() {
      * afterwards (e.g. baseUrl falling back to the current user's baseUrl), and the room holder is
      * only populated once the call-join network request completes - both too late/unreliable for this.
      */
-    data class AvatarInfo(val roomToken: String?, val baseUrl: String?, val credentials: String?)
+    data class AvatarInfo(
+        val roomToken: String?,
+        val baseUrl: String?,
+        val credentials: String?,
+        val isOneToOne: Boolean
+    )
 
     private val handler = Handler(Looper.getMainLooper())
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -63,6 +68,7 @@ class CallForegroundService : Service() {
     private var currentRoomToken: String? = null
     private var currentBaseUrl: String? = null
     private var currentCredentials: String? = null
+    private var currentIsOneToOne = false
     private var conversationAvatarBitmap: Bitmap? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -79,6 +85,7 @@ class CallForegroundService : Service() {
         currentRoomToken = intent?.getStringExtra(EXTRA_ROOM_TOKEN)
         currentBaseUrl = intent?.getStringExtra(EXTRA_BASE_URL)
         currentCredentials = intent?.getStringExtra(EXTRA_CREDENTIALS)
+        currentIsOneToOne = intent?.getBooleanExtra(EXTRA_IS_ONE_TO_ONE, false) ?: false
         conversationAvatarBitmap = null
         val notification = buildNotification(conversationName, callExtras)
 
@@ -209,7 +216,8 @@ class CallForegroundService : Service() {
                 currentBaseUrl,
                 roomToken,
                 currentCredentials,
-                applicationContext
+                applicationContext,
+                currentIsOneToOne
             )
             Log.d(TAG, "loadConversationAvatarAsync: avatar bitmap loaded=${bitmap != null}")
             if (bitmap != null) {
@@ -321,6 +329,7 @@ class CallForegroundService : Service() {
         private const val EXTRA_ROOM_TOKEN = "extra_room_token"
         private const val EXTRA_BASE_URL = "extra_base_url"
         private const val EXTRA_CREDENTIALS = "extra_credentials"
+        private const val EXTRA_IS_ONE_TO_ONE = "extra_is_one_to_one"
         private const val CALL_DURATION_UPDATE_INTERVAL = 1000L
 
         fun start(context: Context, conversationName: String?, callIntentExtras: Bundle?, avatarInfo: AvatarInfo) {
@@ -329,6 +338,7 @@ class CallForegroundService : Service() {
                 putExtra(EXTRA_ROOM_TOKEN, avatarInfo.roomToken)
                 putExtra(EXTRA_BASE_URL, avatarInfo.baseUrl)
                 putExtra(EXTRA_CREDENTIALS, avatarInfo.credentials)
+                putExtra(EXTRA_IS_ONE_TO_ONE, avatarInfo.isOneToOne)
                 callIntentExtras?.let { putExtra(EXTRA_CALL_INTENT_EXTRAS, Bundle(it)) }
             }
             ContextCompat.startForegroundService(context, serviceIntent)
