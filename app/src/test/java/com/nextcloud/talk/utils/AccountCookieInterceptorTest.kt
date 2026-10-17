@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.utils
 
+import android.app.Application
 import okhttp3.Credentials
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
@@ -18,8 +19,13 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.net.CookieManager
 
+@RunWith(RobolectricTestRunner::class)
+@Config(application = Application::class, sdk = [33])
 class AccountCookieInterceptorTest {
 
     private val server = MockWebServer()
