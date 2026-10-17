@@ -10,7 +10,6 @@ package com.nextcloud.talk.api;
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.capabilities.RoomCapabilitiesOverall;
-import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
 import com.nextcloud.talk.models.json.chat.ChatShareOverall;
 import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall;
@@ -25,11 +24,9 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.participants.TalkBanOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.push.VapidOverall;
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall;
-import com.nextcloud.talk.models.json.reminder.ReminderOverall;
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
@@ -633,20 +630,6 @@ public interface NcApi {
     @GET
     Observable<LanguagesOverall> getLanguages(@Header("Authorization") String authorization,
                                               @Url String url);
-
-    @GET
-    Observable<ReminderOverall> getReminder(@Header("Authorization") String authorization,
-                                            @Url String url);
-
-    @DELETE
-    Observable<GenericOverall> deleteReminder(@Header("Authorization") String authorization,
-                                              @Url String url);
-
-    @FormUrlEncoded
-    @POST
-    Observable<ReminderOverall> setReminder(@Header("Authorization") String authorization,
-                                            @Url String url,
-                                            @Field("timestamp") int timestamp);
 
     @FormUrlEncoded
     @PUT

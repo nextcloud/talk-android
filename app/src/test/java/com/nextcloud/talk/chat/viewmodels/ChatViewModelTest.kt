@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.viewmodels
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -61,6 +62,41 @@ class ChatViewModelTest {
 
         assertNull(ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
     }
+
+    // holdsShare(): whether a share to the note to self that failed transiently already arrived.
+    // The server stores a reference id without ever looking at it again, so it deduplicates nothing
+    // and a second attempt that is not needed posts the message twice.
+
+    @Test
+    fun `a share the note to self already holds is not sent again`() {
+        val messages = listOf(messageWithReference("other-1"), messageWithReference("ours"))
+
+        assertEquals(true, ChatViewModel.holdsShare(messages, "ours"))
+    }
+
+    @Test
+    fun `a share that did not arrive is sent again`() {
+        val messages = listOf(messageWithReference("other-1"), messageWithReference("other-2"))
+
+        assertEquals(false, ChatViewModel.holdsShare(messages, "ours"))
+    }
+
+    @Test
+    fun `a lookup that could not be answered gives no verdict`() {
+        assertNull(ChatViewModel.holdsShare(null, "ours"))
+    }
+
+    @Test
+    fun `an empty note to self is proof the share did not arrive`() {
+        assertEquals(false, ChatViewModel.holdsShare(emptyList(), "ours"))
+    }
+
+    @Test
+    fun `messages without a reference id of their own are no proof either way`() {
+        assertEquals(false, ChatViewModel.holdsShare(listOf(messageWithReference(null)), "ours"))
+    }
+
+    private fun messageWithReference(referenceId: String?) = ChatMessageDto(referenceId = referenceId)
 
     // combineFileShareGroups(): combining batch-uploaded file shares into grouped "album" bubbles.
     // Mirrors web's combineFileMessages.ts tests - see https://github.com/nextcloud/spreed/pull/19040
