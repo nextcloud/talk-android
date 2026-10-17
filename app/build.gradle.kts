@@ -30,7 +30,7 @@ val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
 val maplibreComposeVersion = "0.20.0"
-val okhttpVersion = "4.12.0"
+val okhttpVersion = "5.5.0"
 val markwonVersion = "4.6.2"
 val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
@@ -386,7 +386,7 @@ dependencies {
     // no version: consistent resolution aligns it with the tink that org.unifiedpush.android:connector ships
     testImplementation("com.google.crypto.tink:tink")
     testImplementation("androidx.room:room-testing:$roomVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:$okhttpVersion")
     testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.60.1")
     testImplementation("org.robolectric:robolectric:4.17")
