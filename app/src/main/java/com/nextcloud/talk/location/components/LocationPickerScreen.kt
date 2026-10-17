@@ -166,7 +166,7 @@ fun LocationPickerScreen(
             Position(initialState.mapCenterLon, initialState.mapCenterLat)
 
         initialState.geocodingResult?.let { it.lat != COORDINATE_ZERO && it.lon != COORDINATE_ZERO } == true ->
-            Position(initialState.geocodingResult!!.lon, initialState.geocodingResult!!.lat)
+            Position(initialState.geocodingResult.lon, initialState.geocodingResult.lat)
 
         else -> null
     }
