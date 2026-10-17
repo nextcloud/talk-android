@@ -146,7 +146,7 @@ fun OpenStreetMap(latitude: Double, longitude: Double) {
 
     val mapState = rememberMapState(
         baseStyle = BaseStyle.Uri(styleUri),
-        initialCameraPosition = CameraPosition(target = Position(longitude, latitude), zoom = 12.0)
+        initialCameraPosition = CameraPosition(center = Position(longitude, latitude), zoom = 12.0)
     ) {
         val markerSource = rememberGeoJsonSource(
             GeoJsonData.JsonString(markerJson)

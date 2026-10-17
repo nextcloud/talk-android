@@ -106,8 +106,7 @@ import kotlinx.coroutines.yield
 import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.CameraUpdate
-import org.maplibre.compose.expressions.ast.ColorLiteral
-import org.maplibre.compose.expressions.ast.DpLiteral
+import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.map.MapState
 import org.maplibre.compose.map.MaplibreMap
@@ -181,7 +180,7 @@ fun LocationPickerScreen(
     val mapState = rememberMapState(
         baseStyle = BaseStyle.Uri(styleUri),
         initialCameraPosition = CameraPosition(
-            target = initialTarget ?: Position(FALLBACK_LON, FALLBACK_LAT),
+            center = initialTarget ?: Position(FALLBACK_LON, FALLBACK_LAT),
             zoom = if (initialTarget != null) initialZoom else ZOOM_LEVEL_FALLBACK
         )
     ) {
@@ -192,10 +191,10 @@ fun LocationPickerScreen(
         CircleLayer(
             id = USER_LOCATION_LAYER_ID,
             source = userLocationSource,
-            color = ColorLiteral.of(Color(COLOR_NC_BLUE_PACKED)),
-            radius = DpLiteral.of(7.5.dp),
-            strokeColor = ColorLiteral.of(Color.White),
-            strokeWidth = DpLiteral.of(2.dp)
+            color = const(Color(COLOR_NC_BLUE_PACKED)),
+            radius = const(7.5.dp),
+            strokeColor = const(Color.White),
+            strokeWidth = const(2.dp)
         )
     }
 
@@ -235,9 +234,9 @@ fun LocationPickerScreen(
                 // Ignore all camera events until the map style has finished loading
                 if (!isMapInitialized) return@collect
                 if (!isProgrammaticCameraMove) {
-                    viewModel.onMapScrolled(position.target.latitude, position.target.longitude)
+                    viewModel.onMapScrolled(position.center.latitude, position.center.longitude)
                 }
-                viewModel.updateMapCenter(position.target.latitude, position.target.longitude)
+                viewModel.updateMapCenter(position.center.latitude, position.center.longitude)
             }
     }
 
@@ -258,7 +257,7 @@ fun LocationPickerScreen(
             !hasZoomedToInitialLocation &&
             myLocation.latitude != COORDINATE_ZERO
         ) {
-            mapState.animateCamera(CameraUpdate(target = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
+            mapState.animateCamera(CameraUpdate(center = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
             viewModel.updateMapCenter(myLocation.latitude, myLocation.longitude)
             hasZoomedToInitialLocation = true
         }
@@ -299,7 +298,7 @@ fun LocationPickerScreen(
             // a gesture cancels animateCamera, so reset the flag in finally
             try {
                 mapState.animateCamera(
-                    CameraUpdate(target = Position(result.lon, result.lat), zoom = ZOOM_LEVEL_RECEIVED_RESULT)
+                    CameraUpdate(center = Position(result.lon, result.lat), zoom = ZOOM_LEVEL_RECEIVED_RESULT)
                 )
                 yield()
                 viewModel.updateMapCenter(result.lat, result.lon)
@@ -401,7 +400,7 @@ fun LocationPickerScreen(
                 }
             } else {
                 coroutineScope.launch {
-                    mapState.animateCamera(CameraUpdate(target = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
+                    mapState.animateCamera(CameraUpdate(center = myLocation, zoom = ZOOM_LEVEL_DEFAULT))
                 }
                 viewModel.onCenterLocationRequested()
             }
@@ -477,7 +476,7 @@ private fun LocationPickerAttribution(mapState: MapState, modifier: Modifier = M
 
     // collapse once the user starts moving the map
     LaunchedEffect(mapState) {
-        snapshotFlow { mapState.isCameraMoving && mapState.cameraMoveReason == CameraMoveReason.GESTURE }
+        snapshotFlow { mapState.isCameraMoving && mapState.cameraMoveReason == CameraMoveReason.Gesture }
             .filter { it }
             .collect { expanded = false }
     }
