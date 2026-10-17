@@ -383,7 +383,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.1.3") // DO NOT REMOVE
-    testImplementation("com.google.crypto.tink:tink:1.23.0")
+    // no version: consistent resolution aligns it with the tink that org.unifiedpush.android:connector ships
+    testImplementation("com.google.crypto.tink:tink")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
