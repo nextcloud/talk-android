@@ -108,6 +108,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXTS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
@@ -891,7 +892,10 @@ class ConversationsListActivity : BaseActivity() {
                 }
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
-                    openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
+                    openConversation(
+                        intent.getStringExtra(KEY_FORWARD_MSG_TEXT),
+                        intent.getStringArrayListExtra(KEY_FORWARD_MSG_TEXTS)
+                    )
                     forwardMessageState.value = false
                 } else {
                     showSnackbar(getString(R.string.send_to_forbidden))
@@ -1223,7 +1227,7 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun openConversation(textToPaste: String? = "") {
+    private fun openConversation(textToPaste: String? = "", messagesToSend: ArrayList<String>? = null) {
         if (CallActivity.active &&
             !ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(selectedConversation!!.token, currentUser.id)
         ) {
@@ -1233,6 +1237,9 @@ class ConversationsListActivity : BaseActivity() {
 
         val bundle = Bundle()
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
+        if (!messagesToSend.isNullOrEmpty()) {
+            bundle.putStringArrayList(BundleKeys.KEY_SHARED_MSG_TEXTS, messagesToSend)
+        }
         if (!filesToShare.isNullOrEmpty()) {
             bundle.putStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS, filesToShare)
         }

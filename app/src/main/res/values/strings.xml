@@ -640,6 +640,8 @@ How to translate with transifex:
     <string name="nc_copy_message">Copy</string>
     <string name="nc_copy_message_link">Copy message link</string>
     <string name="nc_forward_message">Forward</string>
+    <string name="nc_chat_selected_count">Selected: %1$d</string>
+    <string name="nc_chat_forward_text_only">Only text messages are forwarded; files and other messages were skipped</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
     <plurals name="nc_conversation_auto_delete_info">

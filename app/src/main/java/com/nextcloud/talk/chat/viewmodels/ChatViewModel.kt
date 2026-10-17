@@ -592,6 +592,8 @@ class ChatViewModel @AssistedInject constructor(
         _messageActionsMessageId.value = null
     }
 
+    val messageSelection = MessageSelection()
+
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     val isLoadingFlow = chatRepository.isLoadingFlow
@@ -2927,6 +2929,14 @@ class ChatViewModel @AssistedInject constructor(
             }
 
         fun containsMessage(messageId: Int): Boolean = messageId in messageIds()
+
+        /** Whether the row of this item shows the checkmark of a selection. A media group is selected by its last. */
+        fun isChecked(selectedMessageIds: Set<Int>): Boolean =
+            when (this) {
+                is MessageItem -> uiMessage.id in selectedMessageIds
+                is MediaGroupItem -> messages.last().id in selectedMessageIds
+                else -> false
+            }
 
         fun dateOrNull(): LocalDate? =
             when (this) {

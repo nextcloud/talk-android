@@ -369,7 +369,7 @@ private fun MessageBubbleWithReactions(
             )
         }
         Surface(
-            modifier = bubbleModifier,
+            modifier = bubbleModifier.openMenuOnClick(uiMessage.id),
             color = resolvedBubbleColor,
             shape = shape
         ) {
