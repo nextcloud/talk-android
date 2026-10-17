@@ -280,10 +280,12 @@ class OfflineFirstChatRepositoryTest {
             runCurrent()
             verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
 
-            // ... and the request is sent on it
+            // ... and the request is sent on it, from the pull flow on Dispatchers.IO that runCurrent doesn't wait for
             advanceTimeBy(INSURANCE_DELAY_MS / 2)
             runCurrent()
-            verifyBlocking(network, times(1)) { pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), any()) }
+            verifyBlocking(network, timeout(AWAIT_TIMEOUT_MILLIS).times(1)) {
+                pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), any())
+            }
             polling.cancelAndJoin()
         }
 
