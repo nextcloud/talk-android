@@ -10,10 +10,13 @@ package com.nextcloud.talk.models.json.signaling
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.AnyParceler
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.TypeParceler
 
 @Parcelize
 @JsonObject
+@TypeParceler<Any?, AnyParceler>
 data class NCMessagePayloadDto(
     @JsonField(name = ["type"])
     var type: String? = null,
@@ -30,8 +33,27 @@ data class NCMessagePayloadDto(
     @JsonField(name = ["timestamp"])
     var timestamp: Long? = null,
     @JsonField(name = ["reaction"])
-    var reaction: String? = null
+    var reaction: String? = null,
+    // Key exchange of end-to-end encrypted calls, see EncryptionMessage
+    @JsonField(name = ["id"])
+    var id: String? = null,
+    @JsonField(name = ["identity"])
+    var identity: String? = null,
+    /**
+     * String in "encryption.start" messages, Map with "type" and "body" in the other encryption messages.
+     * Use only for received messages
+     */
+    @JsonField(name = ["key"])
+    var key: Any? = null,
+    /** Use only to send "encryption.start" messages */
+    @JsonField(name = ["key"])
+    var keyOneTimeKey: String? = null,
+    /** Use only to send the other encryption messages */
+    @JsonField(name = ["key"])
+    var keyOlmMessage: OlmMessageDto? = null,
+    @JsonField(name = ["error"])
+    var error: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 }
