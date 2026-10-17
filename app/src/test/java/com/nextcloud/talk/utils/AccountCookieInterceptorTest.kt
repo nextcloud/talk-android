@@ -11,8 +11,8 @@ import okhttp3.Credentials
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -44,36 +44,36 @@ class AccountCookieInterceptorTest {
 
     @After
     fun tearDown() {
-        server.shutdown()
+        server.close()
     }
 
     @Test
     fun `an account keeps its server session between requests`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_A; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_A; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(CREDENTIALS_A)
         execute(CREDENTIALS_A)
 
         server.takeRequest()
-        assertEquals(SESSION_A, server.takeRequest().getHeader("Cookie"))
+        assertEquals(SESSION_A, server.takeRequest().headers["Cookie"])
     }
 
     @Test
     fun `another account on the same server doesn't get the session`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_A; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_A; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(CREDENTIALS_A)
         execute(CREDENTIALS_B)
 
         server.takeRequest()
-        assertNull(server.takeRequest().getHeader("Cookie"))
+        assertNull(server.takeRequest().headers["Cookie"])
     }
 
     @Test
     fun `a removed account's session isn't sent anymore`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_A; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_A; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(CREDENTIALS_A)
@@ -81,12 +81,12 @@ class AccountCookieInterceptorTest {
         execute(CREDENTIALS_A)
 
         server.takeRequest()
-        assertNull(server.takeRequest().getHeader("Cookie"))
+        assertNull(server.takeRequest().headers["Cookie"])
     }
 
     @Test
     fun `cookies of an account are kept out of the shared cookie store`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_A; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_A; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(CREDENTIALS_A)
@@ -94,31 +94,31 @@ class AccountCookieInterceptorTest {
 
         assertTrue(sharedCookieManager.cookieStore.cookies.isEmpty())
         server.takeRequest()
-        assertNull(server.takeRequest().getHeader("Cookie"))
+        assertNull(server.takeRequest().headers["Cookie"])
     }
 
     @Test
     fun `a session cookie of the shared store isn't sent with credentials`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_SHARED; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_SHARED; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(authorization = null)
         execute(CREDENTIALS_A)
 
         server.takeRequest()
-        assertNull(server.takeRequest().getHeader("Cookie"))
+        assertNull(server.takeRequest().headers["Cookie"])
     }
 
     @Test
     fun `requests without credentials keep using the shared cookie store`() {
-        server.enqueue(MockResponse().addHeader("Set-Cookie", "$SESSION_SHARED; Path=/"))
+        server.enqueue(MockResponse.Builder().addHeader("Set-Cookie", "$SESSION_SHARED; Path=/").build())
         server.enqueue(MockResponse())
 
         execute(authorization = null)
         execute(authorization = null)
 
         server.takeRequest()
-        assertEquals(SESSION_SHARED, server.takeRequest().getHeader("Cookie"))
+        assertEquals(SESSION_SHARED, server.takeRequest().headers["Cookie"])
     }
 
     private fun execute(authorization: String?) {

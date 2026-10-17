@@ -11,9 +11,9 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.SocketPolicy
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
+import mockwebserver3.SocketEffect
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -68,7 +68,7 @@ class ChunkedFileUploaderTest {
 
     @After
     fun tearDown() {
-        server.shutdown()
+        server.close()
     }
 
     @Test
@@ -76,9 +76,9 @@ class ChunkedFileUploaderTest {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
-        server.enqueue(MockResponse().setResponseCode(CREATED))
-        server.enqueue(MockResponse().setResponseCode(CREATED))
-        server.enqueue(MockResponse().setResponseCode(CREATED))
+        server.enqueue(MockResponse(code = CREATED))
+        server.enqueue(MockResponse(code = CREATED))
+        server.enqueue(MockResponse(code = CREATED))
 
         val result = uploader().upload(file, MIME_TYPE, TARGET_PATH)
 
@@ -91,7 +91,7 @@ class ChunkedFileUploaderTest {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
-        server.enqueue(MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AFTER_REQUEST })
+        server.enqueue(MockResponse.Builder().onResponseStart(SocketEffect.CloseSocket()).build())
 
         assertThrows(IOException::class.java) {
             uploader().upload(file, MIME_TYPE, TARGET_PATH)
@@ -105,7 +105,7 @@ class ChunkedFileUploaderTest {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
-        server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
+        server.enqueue(MockResponse(code = FORBIDDEN))
 
         val result = uploader().upload(file, MIME_TYPE, TARGET_PATH)
 
@@ -118,9 +118,9 @@ class ChunkedFileUploaderTest {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
-        server.enqueue(MockResponse().setResponseCode(CREATED))
-        server.enqueue(MockResponse().setResponseCode(CREATED))
-        server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
+        server.enqueue(MockResponse(code = CREATED))
+        server.enqueue(MockResponse(code = CREATED))
+        server.enqueue(MockResponse(code = FORBIDDEN))
 
         val result = uploader().upload(file, MIME_TYPE, TARGET_PATH)
 
@@ -133,11 +133,11 @@ class ChunkedFileUploaderTest {
     private fun localFile(size: Int): File = tempFolder.newFile("test.txt").apply { writeBytes(ByteArray(size)) }
 
     private fun enqueueFolderCreated() {
-        server.enqueue(MockResponse().setResponseCode(CREATED))
+        server.enqueue(MockResponse(code = CREATED))
     }
 
     private fun enqueueNoChunksOnServer() {
-        server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
+        server.enqueue(MockResponse(code = NOT_FOUND))
     }
 
     private fun takeRequests() = (0 until server.requestCount).map { server.takeRequest(1, TimeUnit.SECONDS)!! }
