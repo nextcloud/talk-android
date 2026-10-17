@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.login.data.network
 
+import android.app.Application
 import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import junit.framework.TestCase.assertNotNull
@@ -17,9 +18,14 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @Suppress("ktlint:standard:max-line-length", "MaxLineLength")
+@RunWith(RobolectricTestRunner::class)
+@Config(application = Application::class, sdk = [33])
 class NetworkLoginDataSourceTest {
 
     lateinit var network: NetworkLoginDataSource
