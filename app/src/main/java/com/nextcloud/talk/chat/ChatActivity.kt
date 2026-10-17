@@ -400,6 +400,11 @@ class ChatActivity :
     var myFirstMessage: CharSequence? = null
     private var isLeavingRoom: Boolean = false
 
+    // The room is only joined while the chat is resumed, as onPause leaves it. A join requested in between
+    // (e.g. by a GetCapabilitiesInitialLoadState re-emitted after the leave reset it) is deferred until onResume.
+    private var isChatResumed: Boolean = false
+    private var isJoinRoomPending: Boolean = false
+
     private var lastHandledHighlightNonce: Long? = null
     private var pendingHighlightedMessageId: Long? = null
     private var lastNoMoreResultsToastTime: Long = 0L
@@ -2089,6 +2094,8 @@ class ChatActivity :
 
         logConversationInfos("onResume")
 
+        isChatResumed = true
+
         pullChatMessagesPending = false
 
         // reset in case a previously started leave failed (success already resets this in leaveRoomObserver)
@@ -2104,6 +2111,11 @@ class ChatActivity :
         binding.let { viewThemeUtils.material.themeFAB(it.voiceRecordingLock) }
 
         updateToolbarState()
+
+        if (isJoinRoomPending) {
+            isJoinRoomPending = false
+            joinRoomWithPassword()
+        }
     }
 
     private fun setupChatToolbarView() {
@@ -2942,6 +2954,8 @@ class ChatActivity :
 
         logConversationInfos("onPause")
 
+        isChatResumed = false
+
         eventBus.unregister(this)
 
         webSocketInstance?.getSignalingMessageReceiver()?.removeListener(localParticipantMessageListener)
@@ -2958,6 +2972,10 @@ class ChatActivity :
                 Log.d(TAG, "not leaving room (leave already in progress)")
             } else if (validSessionId()) {
                 leaveRoom(null)
+            } else if (chatViewModel.requestLeaveAfterJoin()) {
+                Log.d(TAG, "join in progress -> leaving room once it completes")
+                isJoinRoomPending = true
+                ApplicationWideCurrentRoomHolder.getInstance().clear()
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
                 ApplicationWideCurrentRoomHolder.getInstance().clear()
@@ -3016,6 +3034,12 @@ class ChatActivity :
     }
 
     private fun joinRoomWithPassword() {
+        if (!isChatResumed) {
+            Log.d(TAG, "joinRoomWithPassword - chat is not resumed, deferring join until onResume")
+            isJoinRoomPending = true
+            return
+        }
+
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
         if (ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(
                 currentConversation!!.token,
@@ -3052,6 +3076,8 @@ class ChatActivity :
             webSocketInstance?.joinRoomWithRoomTokenAndSession("", sessionIdAfterRoomJoined)
         }
         sessionIdAfterRoomJoined = "0"
+        // rejoin on the next resume, even if no conversation update re-emits GetCapabilitiesInitialLoadState
+        isJoinRoomPending = true
 
         // FIXME Fix API checking with guests?
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
