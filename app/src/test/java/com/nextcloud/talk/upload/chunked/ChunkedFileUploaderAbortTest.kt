@@ -105,6 +105,19 @@ class ChunkedFileUploaderAbortTest {
     }
 
     @Test
+    fun `removes the folder of an uploader that is prepared but not yet uploading`() {
+        val file = tempFolder.newFile("prepared.txt").apply { writeBytes(ByteArray(FILE_SIZE)) }
+        val uploader = uploader()
+        uploader.prepare(file)
+        server.enqueue(MockResponse().setResponseCode(NO_CONTENT))
+
+        uploader.abortUpload { successCalls++ }
+
+        assertEquals(1, successCalls)
+        assertEquals("DELETE", server.takeRequest(1, TimeUnit.SECONDS)?.method)
+    }
+
+    @Test
     fun `reports success when the upload folder is deleted`() {
         val uploader = startedUploader()
         server.enqueue(MockResponse().setResponseCode(NO_CONTENT))
@@ -139,7 +152,7 @@ class ChunkedFileUploaderAbortTest {
         server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
         server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
         val uploader = uploader()
-        uploader.upload(file, "text/plain".toMediaType(), "/Talk/test.txt")
+        runCatching { uploader.upload(file, "text/plain".toMediaType(), "/Talk/test.txt") }
         repeat(server.requestCount) { server.takeRequest(1, TimeUnit.SECONDS) }
         return uploader
     }
