@@ -26,6 +26,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.IOException
@@ -125,7 +126,7 @@ class FileUploader(
     private fun createRequestBody(sourceFileUri: Uri): RequestBody? =
         try {
             val bytes = context.contentResolver.openInputStream(sourceFileUri)!!.use { it.readBytes() }
-            RequestBody.create("application/octet-stream".toMediaTypeOrNull(), bytes)
+            bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
         } catch (e: Exception) {
             Log.e(TAG, "failed to create RequestBody for $sourceFileUri", e)
             null
