@@ -77,13 +77,6 @@ object ApiUtils {
         return retrofitBucket
     }
 
-    fun getUrlForFilePreviewWithRemotePath(baseUrl: String, remotePath: String?, px: Int): String =
-        (
-            baseUrl + "/index.php/core/preview.png?file=" +
-                Uri.encode(remotePath, "UTF-8") +
-                "&x=" + px + "&y=" + px + "&a=1&mode=cover&forceIcon=1"
-            )
-
     fun getUrlForFilePreviewWithFileId(baseUrl: String, fileId: String, px: Int): String =
         (
             baseUrl + "/index.php/core/preview?fileId=" +

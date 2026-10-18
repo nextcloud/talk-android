@@ -64,9 +64,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.FileUtils
 import kotlinx.coroutines.launch
 
 private const val MAX_ADD_MORE_FILES = 10
@@ -89,17 +87,22 @@ internal fun FileAttachmentPreviewContent(
     onDismiss: () -> Unit,
     onSend: (files: List<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit
 ) {
-    val context = LocalContext.current
     val currentFiles = viewModel.files
-    val hasCompressibleMedia = currentFiles.any { isCompressible(FileUtils.resolveMimeType(context, it.toUri())) }
     var caption by rememberSaveable { mutableStateOf("") }
-    var compressImages by rememberSaveable { mutableStateOf(hasCompressibleMedia && initialCompressImages) }
+    var compressImages by rememberSaveable { mutableStateOf(initialCompressImages) }
     var allowUpdate by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(currentFiles.toSet(), compressImages) {
         viewModel.describeFiles(compressImages)
     }
+    LaunchedEffect(currentFiles.toSet()) {
+        viewModel.resolveMimeTypes()
+    }
     val fileDescriptions = currentFiles.mapNotNull { viewModel.descriptionsByUri[it] }
+    // The type is resolved off the main thread, separately from the full descriptions: asking a content provider
+    // (e.g. Nextcloud Files) for it during composition would block the main thread on every recomposition,
+    // while waiting for the descriptions would hold Send back until large files are copied.
+    val hasCompressibleMedia = currentFiles.any { isCompressible(viewModel.mimeTypesByUri[it]) }
 
     val pagerState = rememberPagerState(pageCount = { fileDescriptions.size })
     val coroutineScope = rememberCoroutineScope()
@@ -180,7 +183,9 @@ internal fun FileAttachmentPreviewContent(
                 caption = caption,
                 onCaptionChange = { caption = it },
                 sendEnabled = currentFiles.isNotEmpty(),
-                onSend = { onSend(currentFiles.toList(), caption, compressImages, allowUpdate) }
+                onSend = {
+                    onSend(currentFiles.toList(), caption, compressImages, allowUpdate)
+                }
             )
         }
     }

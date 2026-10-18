@@ -18,6 +18,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.imageLoader
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
@@ -106,8 +107,7 @@ object DirectShareHelper {
         displayName: String,
         isOneToOne: Boolean
     ) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val icon = loadAvatarIcon(context, user, token, displayName, credentials)
+        val icon = loadAvatarIcon(context, user, token, displayName, isOneToOne)
         val shortcut = prepShortcutBuilder(context, user, token, displayName, icon)
             .also { applyCapabilityBinding(it, MessageDirection.RECEIVE, isOneToOne) }
             .build()
@@ -125,8 +125,7 @@ object DirectShareHelper {
         displayName: String,
         isOneToOne: Boolean
     ) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val icon = loadAvatarIcon(context, user, token, displayName, credentials)
+        val icon = loadAvatarIcon(context, user, token, displayName, isOneToOne)
         val shortcut = prepShortcutBuilder(context, user, token, displayName, icon)
             .also { applyCapabilityBinding(it, MessageDirection.SEND, isOneToOne) }
             .build()
@@ -224,14 +223,20 @@ object DirectShareHelper {
         }
     }
 
+    /**
+     * The conversation-avatar endpoint answers a one-to-one room with the other participant of the
+     * requesting account, so the same URL returns a different image per account on the same server.
+     * Those avatars bypass the caches, which are keyed by URL only.
+     */
     private suspend fun loadAvatarIcon(
         context: Context,
         user: User,
         token: String,
         displayName: String,
-        credentials: String?
+        isOneToOne: Boolean
     ): IconCompat =
         try {
+            val credentials = ApiUtils.getCredentials(user.username, user.token)
             val avatarUrl = ApiUtils.getUrlForConversationAvatar(
                 version = 1,
                 baseUrl = user.baseUrl,
@@ -242,6 +247,11 @@ object DirectShareHelper {
                 .size(AVATAR_SIZE_PX)
                 .allowHardware(false)
                 .transformations(CircleCropTransformation())
+            if (isOneToOne) {
+                requestBuilder
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
+            }
             if (credentials != null) {
                 requestBuilder.addHeader("Authorization", credentials)
             }

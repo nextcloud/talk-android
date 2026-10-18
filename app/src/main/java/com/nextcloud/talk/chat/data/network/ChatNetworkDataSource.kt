@@ -26,32 +26,37 @@ interface ChatNetworkDataSource {
     suspend fun getRoom(user: User, roomToken: String): ConversationModel
     fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapabilityDto>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>
-    fun setReminder(
+    suspend fun setReminder(
         user: User,
         roomToken: String,
         messageId: String,
         timeStamp: Int,
         chatApiVersion: Int
-    ): Observable<ReminderDto>
+    ): ReminderDto
 
-    fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<ReminderDto>
-    fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
-    fun shareToNotes(
+    suspend fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): ReminderDto
+    suspend fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): GenericOverall
+
+    @Suppress("LongParameterList")
+    suspend fun shareToNotes(
         credentials: String,
         url: String,
         message: String,
-        displayName: String
-    ): Observable<ChatOverallSingleMessage>
+        displayName: String,
+        referenceId: String
+    ): ChatOverallSingleMessage
 
     suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
 
-    fun shareLocationToNotes(
+    @Suppress("LongParameterList")
+    suspend fun shareLocationToNotes(
         credentials: String,
         url: String,
         objectType: String,
         objectId: String,
-        metadata: String
-    ): Observable<GenericOverall>
+        metadata: String,
+        referenceId: String
+    ): GenericOverall
 
     suspend fun leaveRoom(credentials: String, url: String): GenericOverall
     suspend fun sendChatMessage(

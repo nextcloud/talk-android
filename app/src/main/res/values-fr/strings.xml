@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
+    <string name="nc_login_too_many_attempts">Trop de tentatives de connexion depuis ce réseau. Réessayez plus tard.</string>
     <string name="nc_logs_advanced_logging">Journalisation avancée</string>
     <string name="nc_logs_advanced_logging_disable">Désactiver la journalisation avancée</string>
     <string name="nc_logs_advanced_logging_enable">Activer la journalisation avancée</string>

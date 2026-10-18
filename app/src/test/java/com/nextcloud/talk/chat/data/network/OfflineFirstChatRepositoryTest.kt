@@ -43,6 +43,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
@@ -53,8 +55,11 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.after
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
@@ -75,7 +80,7 @@ import java.io.IOException
  * last read message, otherwise the initial window is re-fetched — anchored at the boundary when
  * the unread backlog calls for it.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class OfflineFirstChatRepositoryTest {
 
     private val logger: Logger = mock()
@@ -245,6 +250,53 @@ class OfflineFirstChatRepositoryTest {
         }
 
     @Test
+    fun `insurance requests are skipped while the chat is paused`() =
+        runTest {
+            givenHttpSyncedAnchor()
+            clearInvocations(network)
+            repository.handleOnPause()
+            val polling = launch { repository.initInsuranceRequests() }
+
+            advanceTimeBy(INSURANCE_DELAY_MS * 5 + 1)
+            runCurrent()
+
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `insurance requests resume with the next tick after the chat is resumed`() =
+        runTest {
+            givenHttpSyncedAnchor()
+            clearInvocations(network)
+            repository.handleOnPause()
+            val polling = launch { repository.initInsuranceRequests() }
+            advanceTimeBy(INSURANCE_DELAY_MS * 3 + 1)
+            runCurrent()
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
+
+            repository.handleOnResume()
+            // the loop keeps its normal step: nothing is sent before the next tick ...
+            advanceTimeBy(INSURANCE_DELAY_MS / 2)
+            runCurrent()
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
+
+            // ... and the request is sent on it, from the pull flow on Dispatchers.IO that runCurrent doesn't wait for
+            advanceTimeBy(INSURANCE_DELAY_MS / 2)
+            runCurrent()
+            verifyBlocking(network, timeout(AWAIT_TIMEOUT_MILLIS).times(1)) {
+                pullChatMessages(eq(CREDENTIALS), eq(CHAT_URL), any())
+            }
+            polling.cancelAndJoin()
+        }
+
+    @Test
     fun `fetchNewMessages skips the request when no HTTP-synced anchor exists yet`() =
         runTest {
             // a fresh ChatMessageSyncer has recorded no HTTP sync for any conversation yet, so
@@ -254,6 +306,22 @@ class OfflineFirstChatRepositoryTest {
 
             assertFalse(result)
             verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `fetchNewMessages keeps notifications only while the chat is paused`() =
+        runTest {
+            givenHttpSyncedAnchor()
+            repository.fetchNewMessages()
+            assertFalse(lastRequestFieldMap().containsKey("markNotificationsAsRead"))
+
+            repository.handleOnPause()
+            repository.fetchNewMessages()
+            assertEquals(0, lastRequestFieldMap()["markNotificationsAsRead"])
+
+            repository.handleOnResume()
+            repository.fetchNewMessages()
+            assertFalse(lastRequestFieldMap().containsKey("markNotificationsAsRead"))
         }
 
     @Test
@@ -349,6 +417,22 @@ class OfflineFirstChatRepositoryTest {
     private fun givenLatestBlock(block: ChatBlockEntity?) {
         whenever(chatBlocksDao.getLatestChatBlock(INTERNAL_CONVERSATION_ID, null))
             .thenReturn(flowOf(block))
+    }
+
+    private fun lastRequestFieldMap(): HashMap<String, Int> {
+        val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+        verifyBlocking(network, atLeastOnce()) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+        assertEquals(51, fieldMapCaptor.lastValue["lastKnownMessageId"]) // insurance request, not the initial load
+        return fieldMapCaptor.lastValue
+    }
+
+    /** Records an HTTP sync anchor via the initial load, so fetchNewMessages does not skip. */
+    private suspend fun givenHttpSyncedAnchor() {
+        givenLatestBlock(block(oldest = 10, newest = 50))
+        repository.updateConversation(conversation(lastReadMessage = 40, unreadMessages = 5))
+        wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+            .thenReturn(Response.success(overall(message(51))))
+        repository.loadInitialMessages(Bundle())
     }
 
     private fun singleRequestFieldMap(): HashMap<String, Int> {
@@ -829,6 +913,7 @@ class OfflineFirstChatRepositoryTest {
         private const val LONG_POLLING_OBSERVATION_MILLIS = 200L
         private const val AWAIT_TIMEOUT_MILLIS = 2000L
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
+        private const val INSURANCE_DELAY_MS = 2 * 60 * 1000L
         private const val MESSAGE_ID = 42L
         private const val SYSTEM_MESSAGE_ID = 43L
         private const val MESSAGE_URL = "$CHAT_URL/42"

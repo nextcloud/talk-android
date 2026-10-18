@@ -10,10 +10,10 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
-    id("com.google.devtools.ksp") version "2.3.11"
+    id("com.google.devtools.ksp") version "2.3.12"
     id("com.android.application")
     id("kotlin-parcelize")
     id("com.github.spotbugs")
@@ -26,21 +26,22 @@ val kotlinVersion: String by rootProject.extra
 
 val coilKtVersion = "2.7.0"
 val daggerVersion = "2.60.1"
-val emojiVersion = "1.6.0"
+val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
-val okhttpVersion = "4.12.0"
+val maplibreComposeVersion = "0.20.0"
+val okhttpVersion = "5.5.0"
 val markwonVersion = "4.6.2"
 val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
-val roomVersion = "2.8.4"
-val workVersion = "2.11.2"
+val roomVersion = "2.8.5"
+val workVersion = "2.12.0"
 val espressoVersion = "3.7.0"
 val androidxTestVersion = "1.5.0"
-val media3Version = "1.11.0"
+val media3Version = "1.11.1"
 val coroutinesVersion = "1.11.0"
-val mockitoKotlinVersion = "6.3.0"
+val mockitoKotlinVersion = "6.4.0"
 
 android {
     compileSdk = 37
@@ -154,7 +155,6 @@ android {
                 "AndroidGradlePluginVersion",
                 "GradleDependency",
                 "InvalidPackage",
-                "LogNotTimber",
                 "MissingTranslation",
                 "PrivateResource",
                 "UnusedQuantity",
@@ -186,7 +186,7 @@ configurations.configureEach {
     //
     // To analyse the dependencies:
     // `./gradlew :app:dependencyInsight --configuration genericDebugRuntimeClasspath --dependency com.google.protobuf:protobuf-java`
-    val protobufJava = "com.google.protobuf:protobuf-java:4.36.1"
+    val protobufJava = "com.google.protobuf:protobuf-java:4.36.2"
     resolutionStrategy {
         force(protobufJava)
         dependencySubstitution {
@@ -198,15 +198,15 @@ configurations.configureEach {
 
 dependencies {
     implementation("androidx.core:core-telecom:1.0.0")
-    implementation("androidx.media3:media3-session:1.11.0")
+    implementation("androidx.media3:media3-session:1.11.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
-    implementation("androidx.compose.foundation:foundation-layout:1.12.0")
+    implementation("androidx.compose.foundation:foundation-layout:1.12.1")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
     spotbugsPlugins("com.mebigfatguy.fb-contrib:fb-contrib:7.7.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 
-    implementation("androidx.compose.runtime:runtime:1.12.0")
+    implementation("androidx.compose.runtime:runtime:1.12.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.datastore:datastore-core:1.2.1")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
@@ -271,7 +271,7 @@ dependencies {
     kapt("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("net.zetetic:sqlcipher-android:4.18.0")
+    implementation("net.zetetic:sqlcipher-android:4.19.1")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-rxjava2:$roomVersion")
@@ -279,9 +279,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     implementation("org.parceler:parceler-api:$parcelerVersion")
-    implementation("org.apache.commons:commons-lang3:3.20.0")
+    implementation("org.apache.commons:commons-lang3:3.21.0")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("joda-time:joda-time:2.14.3")
+    implementation("joda-time:joda-time:2.15.0")
     implementation("io.coil-kt:coil:$coilKtVersion")
     implementation("io.coil-kt:coil-gif:$coilKtVersion")
     implementation("io.coil-kt:coil-svg:$coilKtVersion")
@@ -323,36 +323,31 @@ dependencies {
     implementation("com.github.yalantis:ucrop:2.2.11")
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
-    // android-sdk 13.x defaults to a Vulkan renderer and declares a hard
-    // (required=true) android.hardware.vulkan.version uses-feature, which shrinks
-    // the Play Console "supported devices" count. Use the OpenGL ES variant instead.
-    implementation("org.maplibre.compose:maplibre-compose:0.14.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.gl:android-sdk-opengl:13.0.2")
+    implementation("org.maplibre.compose:maplibre-compose:$maplibreComposeVersion")
+    implementation("org.maplibre.compose:maplibre-compose-material3:$maplibreComposeVersion")
+    // The Vulkan runtime would need a Vulkan-capable device, which shrinks
+    // the Play Console "supported devices" count. Use the OpenGL ES runtime instead.
+    implementation("org.maplibre.compose:maplibre-compose-runtime-opengl-android:$maplibreComposeVersion")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
     }
 
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.sharetarget:sharetarget:1.2.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
-    implementation("com.github.nextcloud.android-common:ui:0.33.2")
-    implementation("com.github.nextcloud.android-common:core:0.33.2")
+    implementation("com.github.nextcloud.android-common:ui:0.34.0")
+    implementation("com.github.nextcloud.android-common:core:0.34.0")
     implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
 
-    "gplayImplementation"("com.google.android.gms:play-services-base:18.10.1")
-    "gplayImplementation"("com.google.firebase:firebase-messaging:25.1.2")
+    "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
+    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
 
     implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
 
     // compose
-    implementation(platform("androidx.compose:compose-bom:2026.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.compose.material:material-icons-extended")
@@ -362,18 +357,18 @@ dependencies {
 
     // tests
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.12.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.12.1")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.22.0")
+    testImplementation("org.mockito:mockito-core:5.24.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     androidTestImplementation("androidx.test:core:1.7.0")
 
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
-    androidTestImplementation("org.mockito:mockito-android:5.22.0")
+    androidTestImplementation("org.mockito:mockito-android:5.24.0")
     testImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion") {
@@ -384,20 +379,21 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-accessibility:$espressoVersion")
     androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:2026.08.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.09.00"))
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.1.3") // DO NOT REMOVE
-    testImplementation("com.google.crypto.tink:tink:1.23.0")
+    // no version: consistent resolution aligns it with the tink that org.unifiedpush.android:connector ships
+    testImplementation("com.google.crypto.tink:tink")
     testImplementation("androidx.room:room-testing:$roomVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:$okhttpVersion")
     testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.60.1")
-    testImplementation("org.robolectric:robolectric:4.16.1")
+    testImplementation("org.robolectric:robolectric:4.17")
     // conscrypt-android provides Android JNI libs only; the openjdk-uber variant bundles
     // JVM host natives so Robolectric can initialise the security provider without crashing.
-    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.6.3")
+    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.7.0")
 }
 
 tasks.register<Copy>("installGitHooks") {

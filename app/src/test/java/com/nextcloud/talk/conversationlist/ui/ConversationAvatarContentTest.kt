@@ -36,64 +36,24 @@ class ConversationAvatarContentTest {
     }
 
     @Test
-    fun `one-to-one rooms use the unversioned conversation avatar endpoint with the avatar capability`() {
-        val content = buildAvatarContent(
-            conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, avatarVersion = "3"),
-            user(withAvatarCapability = true),
-            isDark = false
-        )
-
-        val url = content as AvatarContent.Url
-        assertFalse("one-to-one avatars are outside the version scheme", url.versioned)
-        assertTrue(url.url.contains("/room/$ROOM_TOKEN/avatar"))
-        assertFalse(url.url.contains("avatarVersion"))
-    }
-
-    @Test
-    fun `one-to-one endpoint selection depends on the capability only, not on the avatar version`() {
-        val content = buildAvatarContent(
-            conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, avatarVersion = ""),
-            user(withAvatarCapability = true),
-            isDark = false
-        )
-
-        val url = content as AvatarContent.Url
-        assertFalse(url.versioned)
-        assertTrue(url.url.contains("/room/$ROOM_TOKEN/avatar"))
-    }
-
-    @Test
-    fun `one-to-one avatar urls never carry an avatar version parameter`() {
-        listOf(
-            buildAvatarContent(
+    fun `one-to-one rooms use the unversioned user avatar endpoint with and without the capability`() {
+        listOf(true, false).forEach { withAvatarCapability ->
+            val content = buildAvatarContent(
                 conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, avatarVersion = "7"),
-                user(withAvatarCapability = true),
-                isDark = false
-            ),
-            buildAvatarContent(
-                conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, avatarVersion = "7"),
-                user(withAvatarCapability = false),
+                user(withAvatarCapability),
                 isDark = false
             )
-        ).forEach { content ->
+
+            // only the endpoint path is asserted: the name segment needs Uri.encode, which is stubbed here
             val url = content as AvatarContent.Url
-            assertFalse(url.versioned)
+            assertFalse("one-to-one avatars are outside the version scheme", url.versioned)
+            assertTrue(url.url.contains("/index.php/avatar/"))
+            assertFalse(
+                "the conversation avatar endpoint answers one-to-one rooms per requesting account",
+                url.url.contains("/room/$ROOM_TOKEN/avatar")
+            )
             assertFalse(url.url.contains("avatarVersion"))
         }
-    }
-
-    @Test
-    fun `one-to-one rooms fall back to the unversioned user avatar endpoint without the capability`() {
-        val content = buildAvatarContent(
-            conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL),
-            user(withAvatarCapability = false),
-            isDark = false
-        )
-
-        // only the endpoint path is asserted: the name segment needs Uri.encode, which is stubbed here
-        val url = content as AvatarContent.Url
-        assertFalse(url.versioned)
-        assertTrue(url.url.contains("/index.php/avatar/"))
     }
 
     @Test

@@ -26,4 +26,11 @@ data class RemoteFileBrowserItem(
     var isEncrypted: Boolean = false,
     var permissions: String? = null,
     var isAllowedToReShare: Boolean = false
-) : Parcelable
+) : Parcelable {
+    /**
+     * The server's numeric file id. [remoteId] is the oc:id property, the zero-padded file id
+     * followed by the instance id, which starts with "oc".
+     */
+    val fileId: String?
+        get() = remoteId?.takeWhile { it.isDigit() }?.toLongOrNull()?.toString()
+}

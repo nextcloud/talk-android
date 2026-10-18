@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Posição desconhecida</string>
     <string name="nc_locked">Trancado</string>
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
+    <string name="nc_login_too_many_attempts">Houve muitas tentativas de login malsucedidas desta rede. Tente novamente mais tarde.</string>
     <string name="nc_logs_advanced_logging">Registro avançado</string>
     <string name="nc_logs_advanced_logging_disable">Desativar o registro avançado</string>
     <string name="nc_logs_advanced_logging_enable">Ativar o registro avançado</string>

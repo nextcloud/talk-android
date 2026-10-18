@@ -123,12 +123,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -939,43 +941,54 @@ class ConversationsListActivity : BaseActivity() {
                 return
             }
 
-            val fileNamesWithLineBreaks = StringBuilder("\n")
-            for (file in filesToShare!!) {
-                val filename = FileUtils.getFileName(file.toUri(), context)
-                fileNamesWithLineBreaks.append(filename).append("\n")
-            }
-            val confirmationQuestion: String = if (filesToShare!!.size == 1) {
-                String.format(
-                    resources!!.getString(R.string.nc_upload_confirm_send_single),
-                    selectedConversation!!.displayName
-                )
-            } else {
-                String.format(
-                    resources!!.getString(R.string.nc_upload_confirm_send_multiple),
-                    selectedConversation!!.displayName
-                )
-            }
-            val dialogBuilder = MaterialAlertDialogBuilder(this)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
-                .setTitle(confirmationQuestion)
-                .setMessage(fileNamesWithLineBreaks.toString())
-                .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    openConversation()
+            val conversation = selectedConversation
+            val files = filesToShare ?: return
+            lifecycleScope.launch {
+                // the share intent hands over uris of other apps: querying their names is a binder call
+                val fileNamesWithLineBreaks = withContext(Dispatchers.IO) {
+                    files.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
+                        FileUtils.getFileName(it.toUri(), context)
+                    }
                 }
-                .setNegativeButton(R.string.nc_no) { _, _ ->
-                    Log.d(TAG, "sharing files aborted, going back to share-to screen")
-                }
-
-            viewThemeUtils.dialog
-                .colorMaterialAlertDialogBackground(this, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
+                // another conversation was picked while the names were read: that click shows its own dialog
+                if (selectedConversation !== conversation || filesToShare !== files) return@launch
+                showSendFilesConfirmDialog(fileNamesWithLineBreaks)
+            }
         } else {
             UploadAndShareFilesWorker.requestStoragePermission(this)
         }
+    }
+
+    private fun showSendFilesConfirmDialog(fileNamesWithLineBreaks: String) {
+        val confirmationQuestion: String = if (filesToShare!!.size == 1) {
+            String.format(
+                resources!!.getString(R.string.nc_upload_confirm_send_single),
+                selectedConversation!!.displayName
+            )
+        } else {
+            String.format(
+                resources!!.getString(R.string.nc_upload_confirm_send_multiple),
+                selectedConversation!!.displayName
+            )
+        }
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
+            .setTitle(confirmationQuestion)
+            .setMessage(fileNamesWithLineBreaks)
+            .setPositiveButton(R.string.nc_yes) { _, _ ->
+                openConversation()
+            }
+            .setNegativeButton(R.string.nc_no) { _, _ ->
+                Log.d(TAG, "sharing files aborted, going back to share-to screen")
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun clearIntentAction() {
@@ -1328,7 +1341,7 @@ class ConversationsListActivity : BaseActivity() {
     @SuppressLint("StringFormatInvalid")
     private fun showLeaveConversationSnackbar(conversation: ConversationModel) {
         val token = conversation.token ?: return
-        conversationsListViewModel.markConversationPendingLeave(token)
+        conversationsListViewModel.markConversationPendingRemoval(token)
         lifecycleScope.launch {
             val result = snackbarHostState.showSnackbar(
                 message = String.format(resources.getString(R.string.left_conversation), conversation.displayName),
@@ -1336,7 +1349,7 @@ class ConversationsListActivity : BaseActivity() {
                 duration = SnackbarDuration.Long
             )
             when (result) {
-                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingLeave(token)
+                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingRemoval(token)
                 SnackbarResult.Dismissed -> leaveConversation(conversation)
             }
         }
@@ -1364,11 +1377,11 @@ class ConversationsListActivity : BaseActivity() {
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    conversationsListViewModel.onConversationLeft(currentUser, token)
+                    conversationsListViewModel.onConversationRemoved(currentUser, token)
                 }
                 WorkInfo.State.FAILED -> {
                     logger.e(TAG, "LeaveConversationWorker failed for token $token")
-                    conversationsListViewModel.clearConversationPendingLeave(token)
+                    conversationsListViewModel.clearConversationPendingRemoval(token)
                     showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                 }
                 else -> {}
@@ -1385,6 +1398,7 @@ class ConversationsListActivity : BaseActivity() {
             .setTitle(R.string.nc_delete_call)
             .setMessage(R.string.nc_delete_conversation_more)
             .setPositiveButton(R.string.nc_delete) { _, _ ->
+                conversation.token?.let { conversationsListViewModel.markConversationPendingRemoval(it) }
                 deleteConversation(conversation)
             }
             .setNegativeButton(R.string.nc_cancel) { _, _ ->
@@ -1652,33 +1666,39 @@ class ConversationsListActivity : BaseActivity() {
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
             .observeForever { workInfo: WorkInfo? ->
-                if (workInfo != null) {
-                    when (workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            currentUser.id?.let { userId ->
-                                ShortcutManagerHelper.disableConversationShortcut(
-                                    context,
-                                    conversation.token,
-                                    userId,
-                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
-                                )
-                            }
-                            showSnackbar(
-                                String.format(
-                                    context.resources.getString(R.string.deleted_conversation),
-                                    conversation.displayName
-                                )
+                when (workInfo?.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        currentUser.id?.let { userId ->
+                            ShortcutManagerHelper.disableConversationShortcut(
+                                context,
+                                conversation.token,
+                                userId,
+                                context.resources.getString(R.string.nc_shortcut_conversation_deleted)
                             )
-                            fetchRooms(forceFullSync = true)
                         }
+                        // the worker only deletes the room on the server, so the entry has to stay
+                        // hidden until the full sync that drops it locally has landed
+                        conversation.token?.let { conversationsListViewModel.onConversationRemoved(currentUser, it) }
+                        showSnackbar(
+                            String.format(
+                                context.resources.getString(R.string.deleted_conversation),
+                                conversation.displayName
+                            )
+                        )
+                    }
 
-                        WorkInfo.State.FAILED -> {
-                            logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
-                            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-                        }
+                    WorkInfo.State.FAILED -> {
+                        logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                        showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    }
 
-                        else -> {
-                        }
+                    WorkInfo.State.CANCELLED -> {
+                        // nothing was deleted, so the entry must not stay hidden
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                    }
+
+                    else -> {
                     }
                 }
             }

@@ -43,7 +43,10 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
@@ -62,6 +65,8 @@ class MainActivity :
     override val skipLockCheckOnResume: Boolean = true
 
     private val disposables = CompositeDisposable()
+
+    private var contactLookupJob: Job? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -144,34 +149,43 @@ class MainActivity :
 
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
-            val cursor = contentResolver.query(intent.data!!, null, null, null, null)
-
-            var userId = ""
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    // userId @ server
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
+            val contactUri = intent.data!!
+            contactLookupJob = lifecycleScope.launch {
+                val (userId, currentUser) = withContext(Dispatchers.IO) {
+                    readUserIdOfContact(contactUri) to defaultAccountProvider.getDefaultUserBlocking()
                 }
-
-                cursor.close()
+                openChatOfContact(userId, currentUser, intent.type)
             }
+        }
+    }
 
-            when (intent.type) {
-                "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
-                    val user = userId.substringBeforeLast("@")
-                    val baseUrl = userId.substringAfterLast("@")
-                    val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
+    // the contacts provider lives in another process: a binder call, not for the main thread
+    private fun readUserIdOfContact(contactUri: Uri): String {
+        var userId = ""
+        contentResolver.query(contactUri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                // userId @ server
+                userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
+            }
+        }
+        return userId
+    }
 
-                    val currentUser = defaultAccountProvider.getDefaultUserBlocking()
-                    if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
-                        startConversation(user)
-                    } else {
-                        Snackbar.make(
-                            binding.root,
-                            R.string.nc_phone_book_integration_account_not_found,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
+    private fun openChatOfContact(userId: String, currentUser: User?, intentType: String?) {
+        when (intentType) {
+            "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
+                val user = userId.substringBeforeLast("@")
+                val baseUrl = userId.substringAfterLast("@")
+                val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
+
+                if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                    startConversation(user, currentUser)
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.nc_phone_book_integration_account_not_found,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -180,10 +194,8 @@ class MainActivity :
     private fun isTrustedContactsUri(uri: Uri): Boolean =
         uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority == ContactsContract.AUTHORITY
 
-    private fun startConversation(userId: String) {
+    private fun startConversation(userId: String, currentUser: User) {
         val roomType = "1"
-
-        val currentUser = defaultAccountProvider.getDefaultUserBlocking() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
@@ -221,6 +233,10 @@ class MainActivity :
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
+        // the contact lookup is asynchronous: keep the new intent for a recreation before it finishes
+        setIntent(intent)
+        // a slower lookup of an older intent must not open its chat after this newer intent
+        contactLookupJob?.cancel()
         handleIntent(intent)
     }
 

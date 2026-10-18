@@ -78,15 +78,14 @@ class RemoteFileBrowserItemsListViewHolder(
 
         val placeholder = viewThemeUtils.talk.getPlaceholderImage(binding.root.context, item.mimeType)
 
-        if (item.hasPreview) {
-            val path = ApiUtils.getUrlForFilePreviewWithRemotePath(
+        val fileId = item.fileId
+        if (item.hasPreview && fileId != null) {
+            val previewUrl = ApiUtils.getUrlForFilePreviewWithFileId(
                 currentUser.baseUrl!!,
-                item.path,
+                fileId,
                 fileIcon.context.resources.getDimensionPixelSize(R.dimen.small_item_height)
             )
-            if (path.isNotEmpty()) {
-                fileIcon.loadImage(path, currentUser, placeholder)
-            }
+            fileIcon.loadImage(previewUrl, currentUser, placeholder)
         } else {
             fileIcon.setImageDrawable(placeholder)
         }
