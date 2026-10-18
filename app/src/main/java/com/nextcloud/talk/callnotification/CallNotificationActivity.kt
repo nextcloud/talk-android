@@ -38,6 +38,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -82,26 +83,6 @@ class CallNotificationActivity : CallBaseActivity() {
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
         setupNotificationCanceledRoutine()
-        if (savedInstanceState == null && !roomToken.isNullOrBlank()) {
-            telecomManager.addIncomingCall(
-                displayName = displayName ?: "Nextcloud Talk Call",
-                roomToken = roomToken!!,
-                isVideo = isInCallWithVideo(callFlag),
-                onAnswerCall = {
-                    runOnUiThread {
-                        intent.putExtra(KEY_CALL_VOICE_ONLY, !isInCallWithVideo(callFlag))
-                        proceedToCall()
-                    }
-                },
-                onRejectCall = {
-                    runOnUiThread {
-                        if (!leavingScreen && !isFinishing && !isDestroyed) {
-                            hangup()
-                        }
-                    }
-                }
-            )
-        }
     }
 
     private fun handleExtras() {
@@ -183,6 +164,9 @@ class CallNotificationActivity : CallBaseActivity() {
                 if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
                     notificationHandler.postDelayed(this, ONE_SECOND)
                 } else {
+                    if (!leavingScreen) {
+                        telecomManager.endCurrentCall(roomToken)
+                    }
                     finish()
                 }
             }
@@ -217,6 +201,10 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun hangup() {
         leavingScreen = true
+        val declineIntent = Intent(this, DeclineCallReceiver::class.java).apply {
+            putExtra(BundleKeys.KEY_NOTIFICATION_TIMESTAMP, notificationTimestamp)
+        }
+        sendBroadcast(declineIntent)
         finish()
     }
 
