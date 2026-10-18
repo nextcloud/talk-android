@@ -55,6 +55,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.after
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.atLeastOnce
@@ -259,7 +260,9 @@ class OfflineFirstChatRepositoryTest {
             advanceTimeBy(INSURANCE_DELAY_MS * 5 + 1)
             runCurrent()
 
-            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
             polling.cancelAndJoin()
         }
 
@@ -272,13 +275,17 @@ class OfflineFirstChatRepositoryTest {
             val polling = launch { repository.initInsuranceRequests() }
             advanceTimeBy(INSURANCE_DELAY_MS * 3 + 1)
             runCurrent()
-            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
 
             repository.handleOnResume()
             // the loop keeps its normal step: nothing is sent before the next tick ...
             advanceTimeBy(INSURANCE_DELAY_MS / 2)
             runCurrent()
-            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).never()) {
+                pullChatMessages(any(), any(), any())
+            }
 
             // ... and the request is sent on it, from the pull flow on Dispatchers.IO that runCurrent doesn't wait for
             advanceTimeBy(INSURANCE_DELAY_MS / 2)

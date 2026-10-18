@@ -55,7 +55,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
-import okhttp3.internal.tls.OkHostnameVerifier;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -198,7 +197,8 @@ public class RestModule {
         // Trust own CA and all self-signed certs
         httpClient.sslSocketFactory(sslSocketFactoryCompat, trustManager);
         httpClient.retryOnConnectionFailure(true);
-        httpClient.hostnameVerifier(trustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
+        // okhttp's default verifier (OkHostnameVerifier), read through public API instead of okhttp3.internal
+        httpClient.hostnameVerifier(trustManager.getHostnameVerifier(new OkHttpClient().hostnameVerifier()));
 
         httpClient.dispatcher(dispatcher);
         if (!Proxy.NO_PROXY.equals(proxy)) {
