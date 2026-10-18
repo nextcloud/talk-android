@@ -8,14 +8,12 @@
 package com.nextcloud.talk.dagger.modules
 
 import android.content.Context
-import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class ManagerModule {
@@ -31,8 +29,4 @@ class ManagerModule {
 
     @Provides
     fun provideAudioFocusManager(context: Context): AudioFocusRequestManager = AudioFocusRequestManager(context)
-
-    @Provides
-    @Singleton
-    fun provideTelecomManager(context: Context): TelecomManager = TelecomManager(context)
 }

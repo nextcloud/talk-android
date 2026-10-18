@@ -206,4 +206,118 @@ class TelecomManagerTest {
         telecomManager.setCallActive("roomA")
         assertTrue(telecomManager.hasActiveCall("roomA"))
     }
+
+    @Test
+    fun testSetCallActiveUpdatesDisconnectHandler() {
+        var initialCallbackFired = false
+
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = { initialCallbackFired = true }
+        )
+
+        // CallActivity adopts the incoming call and passes its own disconnect handler
+        telecomManager.setCallActive("roomA", onDisconnectCall = {})
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // End current call
+        telecomManager.endCurrentCall("roomA")
+
+        // Active call registration is now cleared
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+        assertFalse(initialCallbackFired)
+    }
+
+    @Test
+    fun testEndCurrentCallClearsRegistrationAndAllowsSubsequentCall() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // When call is declined/ended, currentRoomToken is cleared
+        telecomManager.endCurrentCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+
+        // A new call for roomB can now be registered successfully
+        telecomManager.addIncomingCall(
+            displayName = "User 2",
+            roomToken = "roomB",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomB"))
+    }
+
+    @Test
+    fun testEndCurrentCallIgnoresNullOrBlankRoomTokenWhenCallIsActive() {
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // Null or blank room tokens must NOT disconnect an active answered/outgoing call
+        telecomManager.endCurrentCall(null)
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        telecomManager.endCurrentCall("")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // Explicit matching room token successfully ends the call
+        telecomManager.endCurrentCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testEndCurrentCallDisconnectsUnansweredRingingCallWithNullOrBlankToken() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // When a caller cancels before answer (null roomToken in push delete message),
+        // unanswered ringing call is cleanly terminated
+        telecomManager.endCurrentCall(null)
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testOnAnswerClearsIncomingFlagToPreventDuplicateAnswerCalls() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // Set call active after answering
+        telecomManager.setCallActive("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        // Ensure active call remains valid
+        telecomManager.endCurrentCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
 }

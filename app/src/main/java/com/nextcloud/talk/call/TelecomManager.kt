@@ -28,11 +28,21 @@ class TelecomManager @Inject constructor(private val context: Context) {
     private val callsManager = CallsManager(context)
     private val telecomScope = CoroutineScope(Dispatchers.Main)
 
-    private var currentCallControlScope: CallControlScope? = null
-    private var currentRoomToken: String? = null
-    private var currentRegistrationId: String? = null
-    private var isPendingSetActive: Boolean = false
-    private var isLocallyDisconnecting: Boolean = false
+    @Volatile private var currentCallControlScope: CallControlScope? = null
+
+    @Volatile private var currentRoomToken: String? = null
+
+    @Volatile private var currentRegistrationId: String? = null
+
+    @Volatile private var isPendingSetActive: Boolean = false
+
+    @Volatile private var currentDisconnectHandler: (() -> Unit)? = null
+
+    @Volatile private var isIncomingCall: Boolean = false
+
+    @Volatile private var isCallAnsweredOrActive: Boolean = false
+
+    @Volatile private var currentCallType: Int = CallAttributesCompat.CALL_TYPE_AUDIO_CALL
 
     fun registerAppWithTelecom() {
         telecomScope.launch(Dispatchers.IO) {
@@ -62,6 +72,10 @@ class TelecomManager @Inject constructor(private val context: Context) {
         onRejectCall: () -> Unit
     ) {
         val registrationId = prepareCallRegistration(roomToken, "Incoming") ?: return
+        currentDisconnectHandler = onRejectCall
+        isIncomingCall = true
+        isCallAnsweredOrActive = false
+        currentCallType = getCallType(isVideo)
 
         val callAttributes = CallAttributesCompat(
             displayName = displayName,
@@ -76,19 +90,17 @@ class TelecomManager @Inject constructor(private val context: Context) {
                 callsManager.addCall(
                     callAttributes = callAttributes,
                     onAnswer = { _ ->
+                        isIncomingCall = false
+                        isCallAnsweredOrActive = true
                         onAnswerCall()
-                        CallControlResult.Success()
                     },
                     onDisconnect = { _ ->
-                        val wasLocal = isLocallyDisconnecting
+                        val handlerToInvoke = currentDisconnectHandler
                         handleCallDisconnected(registrationId)
-                        if (!wasLocal) {
-                            onRejectCall()
-                        }
-                        CallControlResult.Success()
+                        handlerToInvoke?.invoke()
                     },
-                    onSetActive = { CallControlResult.Success() },
-                    onSetInactive = { CallControlResult.Success() }
+                    onSetActive = { },
+                    onSetInactive = { }
                 ) {
                     onScopeAssigned(registrationId, roomToken)
                 }
@@ -107,6 +119,10 @@ class TelecomManager @Inject constructor(private val context: Context) {
         onDisconnectCall: (() -> Unit)? = null
     ) {
         val registrationId = prepareCallRegistration(roomToken, "Outgoing") ?: return
+        currentDisconnectHandler = onDisconnectCall
+        isIncomingCall = false
+        isCallAnsweredOrActive = true
+        currentCallType = getCallType(isVideo)
 
         val callAttributes = CallAttributesCompat(
             displayName = displayName,
@@ -120,17 +136,14 @@ class TelecomManager @Inject constructor(private val context: Context) {
             try {
                 callsManager.addCall(
                     callAttributes = callAttributes,
-                    onAnswer = { CallControlResult.Success() },
+                    onAnswer = { },
                     onDisconnect = { _ ->
-                        val wasLocal = isLocallyDisconnecting
+                        val handlerToInvoke = currentDisconnectHandler
                         handleCallDisconnected(registrationId)
-                        if (!wasLocal) {
-                            onDisconnectCall?.invoke()
-                        }
-                        CallControlResult.Success()
+                        handlerToInvoke?.invoke()
                     },
-                    onSetActive = { CallControlResult.Success() },
-                    onSetInactive = { CallControlResult.Success() }
+                    onSetActive = { },
+                    onSetInactive = { }
                 ) {
                     onScopeAssigned(registrationId, roomToken, autoActivate = true)
                 }
@@ -143,37 +156,61 @@ class TelecomManager @Inject constructor(private val context: Context) {
     }
 
     fun endCurrentCall(roomToken: String? = null) {
-        if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
-            Log.d(TAG, "endCurrentCall ignored: target room $roomToken does not match active room $currentRoomToken")
+        val activeRoom = currentRoomToken ?: return
+        if (!roomToken.isNullOrBlank() && activeRoom != roomToken) {
+            Log.d(TAG, "endCurrentCall ignored: target room $roomToken does not match active room $activeRoom")
             return
         }
+        if (roomToken.isNullOrBlank() && isCallAnsweredOrActive) {
+            Log.d(TAG, "endCurrentCall ignored: blank roomToken provided for active call")
+            return
+        }
+
         val scopeToDisconnect = currentCallControlScope
         val registrationIdToClear = currentRegistrationId
-        isLocallyDisconnecting = true
         handleCallDisconnected(registrationIdToClear ?: "")
 
         telecomScope.launch {
-            try {
-                scopeToDisconnect?.disconnect(DisconnectCause(DisconnectCause.LOCAL))
-            } finally {
-                isLocallyDisconnecting = false
-            }
+            scopeToDisconnect?.disconnect(DisconnectCause(DisconnectCause.LOCAL))
         }
     }
 
-    fun setCallActive(roomToken: String? = null) {
+    fun setCallActive(roomToken: String? = null, onDisconnectCall: (() -> Unit)? = null) {
         if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
             Log.d(TAG, "setCallActive ignored: target room $roomToken does not match active room $currentRoomToken")
             return
         }
+
+        if (onDisconnectCall != null) {
+            currentDisconnectHandler = onDisconnectCall
+        }
+
+        isCallAnsweredOrActive = true
+
         val scope = currentCallControlScope
         if (scope != null) {
             telecomScope.launch {
-                scope.setActive()
+                activateScope(scope)
             }
         } else if (currentRoomToken != null) {
             isPendingSetActive = true
             Log.d(TAG, "setCallActive queued: registration pending for room $currentRoomToken")
+        }
+    }
+
+    private suspend fun activateScope(scope: CallControlScope) {
+        val result = if (isIncomingCall) {
+            val res = scope.answer(currentCallType)
+            isIncomingCall = false
+            res
+        } else {
+            scope.setActive()
+        }
+        if (result is CallControlResult.Error) {
+            Log.e(TAG, "Failed to activate call in Core-Telecom: $result")
+        } else {
+            isCallAnsweredOrActive = true
+            Log.d(TAG, "Call activated successfully in Core-Telecom")
         }
     }
 
@@ -202,7 +239,10 @@ class TelecomManager @Inject constructor(private val context: Context) {
             currentCallControlScope = null
             currentRoomToken = null
             currentRegistrationId = null
+            currentDisconnectHandler = null
             isPendingSetActive = false
+            isIncomingCall = false
+            isCallAnsweredOrActive = false
         }
     }
 
@@ -215,7 +255,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
             currentCallControlScope = this
             Log.d(TAG, "Call registered in CallControlScope for room $roomToken (id=$registrationId)")
             if (autoActivate || isPendingSetActive) {
-                launch { setActive() }
+                launch { activateScope(this@onScopeAssigned) }
                 isPendingSetActive = false
                 Log.d(TAG, "Call set active for room $roomToken (id=$registrationId)")
             }
