@@ -1483,6 +1483,8 @@ class ChatActivity :
         super.onStop()
         active = false
         orientationTracker.disable()
+        // reopened on the next start, so that the live camera preview follows the call state of that moment
+        attachmentSheetModel = null
         if (!changingConfigurations) {
             // the user leaves the chat: a video recording must not go on with camera and microphone
             chatViewModel.activeVideoMessageRecorder?.cancel()
@@ -3043,7 +3045,7 @@ class ChatActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isShareFileRequestGranted(grantResults, permissionUtil.isFilesPermissionGranted())) {
                 Log.d(TAG, "showing upload preview after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     showFileAttachmentPreview(filesToUpload)

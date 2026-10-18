@@ -89,6 +89,19 @@ fun shareFilePermissionsToRequest(sdkInt: Int): Array<String> =
     }
 
 /**
+ * Permissions asked for when a file that is already at hand (camera photo, upload preview) needs access to the
+ * files of the device. Android 13 and newer ask for the media permissions, with the user-selected grant on Android 14,
+ * so that a partial grant is possible and counts; before that the storage permission that [resolveMediaAccess]
+ * and the permission check of the platform look at.
+ */
+fun storagePermissionsToRequest(sdkInt: Int): Array<String> =
+    when {
+        sdkInt >= Build.VERSION_CODES.TIRAMISU -> shareFilePermissionsToRequest(sdkInt)
+        sdkInt > Build.VERSION_CODES.Q -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        else -> arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
+
+/**
  * Whether the result of the "file from device" request allows to pick a file. No single result is the answer:
  * Android 14 may grant only the selected photos, and before Android 10 the granted read permission differs from the
  * one [effectivelyGranted] checks. Any granted permission or an effective access is enough.
