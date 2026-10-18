@@ -7,6 +7,9 @@
 
 package com.nextcloud.talk.chat
 
+import android.view.MotionEvent
+import android.view.View
+
 /**
  * What the record button of the message input records while it is held.
  */
@@ -61,26 +64,15 @@ fun releasesVideoAudioFocusOnClear(activeMode: RecordInputMode, recordingInProgr
     activeMode == RecordInputMode.VIDEO && recordingInProgress
 
 /**
- * Routes the clicks on the record button. A touch is handled by the touch listener, which switches the mode itself;
- * the click the view generates from the same touch must not switch it again. A click which does not come from a
- * touch (TalkBack, Switch Access, keyboard) switches the mode.
+ * Lets the record button process a touch event, e.g. for its pressed state, without the click it would generate. The
+ * touch listener switches the mode itself, and the view posts its click only after the touch has been handled, so the
+ * release is consumed here and never reaches the view. A click which does not come from a touch (TalkBack, Switch
+ * Access, keyboard) is not affected and switches the mode through the click listener.
  */
-class RecordButtonClickRouter(private val onToggleMode: () -> Unit) {
-    private var forwardingTouch = false
-
-    fun onClick() {
-        if (!forwardingTouch) onToggleMode()
+fun forwardRecordButtonTouch(view: View, event: MotionEvent): Boolean =
+    if (event.action == MotionEvent.ACTION_UP) {
+        view.isPressed = false
+        true
+    } else {
+        view.onTouchEvent(event)
     }
-
-    /**
-     * Lets the view process a touch event, e.g. for its pressed state, without the click it may produce.
-     */
-    fun <T> forwardTouch(block: () -> T): T {
-        forwardingTouch = true
-        try {
-            return block()
-        } finally {
-            forwardingTouch = false
-        }
-    }
-}
