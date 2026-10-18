@@ -2994,11 +2994,9 @@ class ChatActivity :
                 error("Failed to get data from intent and uri")
             }
 
-            if (permissionUtil.isFilesPermissionGranted()) {
-                showFileAttachmentPreview(filesToUpload)
-            } else {
-                UploadAndShareFilesWorker.requestStoragePermission(this)
-            }
+            // The photo lives in the app cache and is handed over through the own file provider,
+            // so it needs no access to the media.
+            showFileAttachmentPreview(filesToUpload)
         } catch (e: IllegalStateException) {
             Snackbar.make(
                 binding.root,
@@ -3048,12 +3046,8 @@ class ChatActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "showing upload preview after permissions were granted")
-                if (filesToUpload.isNotEmpty()) {
-                    showFileAttachmentPreview(filesToUpload)
-                }
-            } else {
+            // Only the voice recording asks for this permission; the user taps the microphone again.
+            if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Snackbar
                     .make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
                     .show()
