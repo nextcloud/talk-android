@@ -212,9 +212,7 @@ internal fun FileAttachmentPreviewContent(
                 onHighQualityChange = { highQuality -> compressImages = !highQuality },
                 onAllowUpdateChange = { allowUpdate = it },
                 sendEnabled = viewModel.selectedFiles().isNotEmpty() && !viewModel.isEditing,
-                onSend = {
-                    onSend(viewModel.selectedFiles(), caption, compressImages && hasCompressibleMedia, allowUpdate)
-                }
+                onSend = { onSend(viewModel.selectedFiles(), caption, compressImages, allowUpdate) }
             )
         }
 
