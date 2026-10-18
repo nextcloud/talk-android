@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioManager
 import android.util.Log
 import android.view.OrientationEventListener
 import android.view.Surface
@@ -30,6 +31,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.nextcloud.talk.chat.data.io.MusicSilenceGate
 import java.io.File
 
 /**
@@ -83,6 +85,9 @@ class VideoMessageRecorder(context: Context) {
     internal var outputFile: File? = null
     private var lensFacing = CameraSelector.LENS_FACING_FRONT
     private var session = 0
+    private val musicSilenceGate = MusicSilenceGate(
+        (context.getSystemService(Context.AUDIO_SERVICE) as AudioManager)::isMusicActive
+    )
 
     /** The [Surface] rotation the video is recorded in. */
     var videoRotation = Surface.ROTATION_0
@@ -300,13 +305,19 @@ class VideoMessageRecorder(context: Context) {
         val options = FileOutputOptions.Builder(file)
             .setDurationLimitMillis(MAX_DURATION_MS)
             .build()
-        recording = videoUseCase.output
-            .prepareRecording(context, options)
-            .withAudioEnabled()
-            .asPersistentRecording()
-            .start(ContextCompat.getMainExecutor(context), ::onRecordEvent)
-        state = State.RECORDING
-        onFrameAspectChanged?.invoke()
+        // The microphone is opened when the music of another app is silent, which has lost the audio focus a moment
+        // ago. Stopping meanwhile ends the start: it takes the session away, see stop().
+        val startedSession = session
+        musicSilenceGate.whenSilent {
+            if (startedSession != session || state != State.STARTING) return@whenSilent
+            recording = videoUseCase.output
+                .prepareRecording(context, options)
+                .withAudioEnabled()
+                .asPersistentRecording()
+                .start(ContextCompat.getMainExecutor(context), ::onRecordEvent)
+            state = State.RECORDING
+            onFrameAspectChanged?.invoke()
+        }
     }
 
     private fun bindUseCases(provider: ProcessCameraProvider): Boolean {
@@ -341,6 +352,7 @@ class VideoMessageRecorder(context: Context) {
 
     internal fun finish(outcome: Outcome, fileToSend: File?) {
         val file = outputFile
+        musicSilenceGate.cancel()
         releaseCamera()
         recording = null
         outputFile = null
