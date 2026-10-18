@@ -1621,11 +1621,16 @@ class ChatActivity :
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     _participantPermissionsFlow.value =
                         ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    // a locked recording keeps its panel: the observer of the lock does not run again
+                    val recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        replace(
+                            R.id.fragment_container_activity_chat,
+                            if (recordingLocked) MessageInputVoiceRecordingFragment() else messageInputFragment
+                        )
                         runOnCommit {
-                            if (focusInput) {
+                            if (focusInput && !recordingLocked) {
                                 messageInputFragment.binding.fragmentMessageInputView.requestFocus()
                             }
                         }
