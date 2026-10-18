@@ -89,6 +89,7 @@ class CallNotificationActivity : CallBaseActivity() {
                 isVideo = isInCallWithVideo(callFlag),
                 onAnswerCall = {
                     runOnUiThread {
+                        intent.putExtra(KEY_CALL_VOICE_ONLY, !isInCallWithVideo(callFlag))
                         proceedToCall()
                     }
                 },
