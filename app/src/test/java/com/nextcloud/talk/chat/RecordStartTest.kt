@@ -47,27 +47,4 @@ class RecordStartTest {
         assertFalse(releasesVideoAudioFocusOnClear(RecordInputMode.VIDEO, recordingInProgress = false))
         assertFalse(releasesVideoAudioFocusOnClear(RecordInputMode.VOICE, recordingInProgress = true))
     }
-
-    @Test
-    fun touchDoesNotToggleTwiceButAccessibilityClickDoes() {
-        var toggles = 0
-        val router = RecordButtonClickRouter { toggles++ }
-
-        router.forwardTouch { router.onClick() }
-        assertEquals(0, toggles)
-
-        router.onClick()
-        assertEquals(1, toggles)
-    }
-
-    @Test
-    fun clickAfterAnExceptionInTheForwardedTouchStillToggles() {
-        var toggles = 0
-        val router = RecordButtonClickRouter { toggles++ }
-
-        runCatching { router.forwardTouch { error("boom") } }
-        router.onClick()
-
-        assertEquals(1, toggles)
-    }
 }

@@ -610,9 +610,8 @@ class MessageInputFragment : Fragment() {
         updateRecordButtonMode()
 
         var prevDx = 0f
-        val clickRouter = RecordButtonClickRouter { toggleRecordInputMode() }
         val gesture = RecordButtonGesture(VOICE_RECORD_CANCEL_SLIDER_X.toFloat())
-        binding.fragmentMessageInputView.recordAudioButton.setOnClickListener { clickRouter.onClick() }
+        binding.fragmentMessageInputView.recordAudioButton.setOnClickListener { toggleRecordInputMode() }
         binding.fragmentMessageInputView.recordAudioButton.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -702,7 +701,7 @@ class MessageInputFragment : Fragment() {
                     }
                 }
             }
-            clickRouter.forwardTouch { v?.onTouchEvent(event) != false }
+            v != null && event != null && forwardRecordButtonTouch(v, event)
         }
     }
 
