@@ -32,6 +32,26 @@ class ShareFilePermissionTest {
     }
 
     @Test
+    fun storageRequestOfAFileAtHandOffersTheSelectedPhotosFromAndroid14() {
+        val selected = READ_MEDIA_VISUAL_USER_SELECTED
+        assertTrue(selected in storagePermissionsToRequest(Build.VERSION_CODES.UPSIDE_DOWN_CAKE))
+        assertFalse(selected in storagePermissionsToRequest(Build.VERSION_CODES.TIRAMISU))
+        assertTrue(Manifest.permission.READ_MEDIA_IMAGES in storagePermissionsToRequest(Build.VERSION_CODES.TIRAMISU))
+    }
+
+    @Test
+    fun storageRequestBeforeAndroid13KeepsTheStoragePermissionTheCheckLooksAt() {
+        assertEquals(
+            listOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            storagePermissionsToRequest(Build.VERSION_CODES.R).toList()
+        )
+        assertEquals(
+            listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            storagePermissionsToRequest(Build.VERSION_CODES.Q).toList()
+        )
+    }
+
+    @Test
     fun anyGrantedPermissionAllowsThePicker() {
         // Android 14, "selected photos": the first result is denied, a later one is granted
         assertTrue(isShareFileRequestGranted(intArrayOf(denied, denied, granted), effectivelyGranted = false))

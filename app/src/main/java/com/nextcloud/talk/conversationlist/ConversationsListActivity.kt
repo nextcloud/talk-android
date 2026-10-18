@@ -51,6 +51,7 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.attachmentsheet.isShareFileRequestGranted
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -1057,7 +1058,7 @@ class ConversationsListActivity : BaseActivity() {
 
         when (requestCode) {
             UploadAndShareFilesWorker.REQUEST_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (isShareFileRequestGranted(grantResults, platformPermissionUtil.isFilesPermissionGranted())) {
                     Log.d(TAG, "upload starting after permissions were granted")
                     showSendFilesConfirmDialog()
                 } else {
