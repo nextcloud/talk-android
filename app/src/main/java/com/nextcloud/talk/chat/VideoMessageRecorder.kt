@@ -69,6 +69,7 @@ class VideoMessageRecorder(context: Context) {
     private var onFrameAspectChanged: (() -> Unit)? = null
     private var pendingResult: Finished? = null
     private var released = false
+    internal var sendAfterRelease: ((File) -> Unit)? = null
 
     private val ownerObserver = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_DESTROY) detach()
@@ -79,7 +80,7 @@ class VideoMessageRecorder(context: Context) {
     private var preview: Preview? = null
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
-    private var outputFile: File? = null
+    internal var outputFile: File? = null
     private var lensFacing = CameraSelector.LENS_FACING_FRONT
     private var session = 0
 
@@ -148,6 +149,18 @@ class VideoMessageRecorder(context: Context) {
     }
 
     /**
+     * Keeps the result of a recording which ended while the chat of the attached activity is not loaded yet. The
+     * next [attach] delivers it.
+     */
+    fun holdResult(outcome: Outcome, file: File?) {
+        if (released) {
+            file?.delete()
+        } else {
+            pendingResult = Finished(outcome, file)
+        }
+    }
+
+    /**
      * Lets go of the activity. A running recording continues with its camera and without a picture on the screen
      * until the next [attach].
      */
@@ -162,6 +175,8 @@ class VideoMessageRecorder(context: Context) {
 
     /**
      * Ends the recorder for good, when the chat is left: a running recording is discarded, nothing is delivered.
+     * A recording which was already stopped to be sent is the exception: it is finalized and handed to the
+     * `sendAfterRelease` given to [stopAndSend], which must not depend on the activity or the chat.
      */
     fun release() {
         released = true
@@ -169,10 +184,14 @@ class VideoMessageRecorder(context: Context) {
         pendingResult?.file?.delete()
         pendingResult = null
         cancel()
-        // Inside the window after a camera switch the stop is held back and the camera is not unbound: that would
-        // let CameraX set up the new surface while stopping. The finalization (or the end of the window) closes it.
-        if (!stopCoordinator.settling) releaseCamera()
+        // The camera of an accepted send stays bound until the file is finalized. Inside the window after a camera
+        // switch the stop is held back and the camera is not unbound: that would let CameraX set up the new surface
+        // while stopping. The finalization (or the end of the window) closes it.
+        if (!isSendAccepted && !stopCoordinator.settling) releaseCamera()
     }
+
+    private val isSendAccepted: Boolean
+        get() = state == State.RECORDING && stopCoordinator.action == StopAction.SEND && sendAfterRelease != null
 
     /**
      * @param targetRotation the [Surface] rotation the video is recorded in, see [videoTargetRotation]
@@ -183,6 +202,7 @@ class VideoMessageRecorder(context: Context) {
         session++
         val startedSession = session
         stopCoordinator.reset()
+        sendAfterRelease = null
         outputFile = file
         videoRotation = targetRotation
         lensFacing = CameraSelector.LENS_FACING_FRONT
@@ -197,7 +217,13 @@ class VideoMessageRecorder(context: Context) {
         }
     }
 
-    fun stopAndSend() {
+    /**
+     * @param sendAfterRelease sends the finalized file if the recorder is released before that happens
+     */
+    fun stopAndSend(sendAfterRelease: ((File) -> Unit)? = null) {
+        if (state == State.RECORDING && stopCoordinator.action == null) {
+            this.sendAfterRelease = sendAfterRelease
+        }
         stop(StopAction.SEND)
     }
 
@@ -243,6 +269,8 @@ class VideoMessageRecorder(context: Context) {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    @androidx.annotation.OptIn(ExperimentalPersistentRecording::class)
     private fun onCameraProviderReady(provider: ProcessCameraProvider) {
         if (state != State.STARTING) {
             return
@@ -257,17 +285,27 @@ class VideoMessageRecorder(context: Context) {
             )
             .setTargetVideoEncodingBitRate(TARGET_VIDEO_BIT_RATE)
             .build()
-        videoCapture = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
+        val videoUseCase = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
+        videoCapture = videoUseCase
         preview = Preview.Builder()
             .setTargetRotation(previewView?.let { displayRotation(it, videoRotation) } ?: videoRotation)
             .build()
             .also { it.surfaceProvider = previewView?.surfaceProvider }
 
-        if (!bindUseCases(provider)) {
+        val file = outputFile
+        if (file == null || !bindUseCases(provider)) {
             finish(Outcome.FAILED, null)
             return
         }
-        startRecording()
+        val options = FileOutputOptions.Builder(file)
+            .setDurationLimitMillis(MAX_DURATION_MS)
+            .build()
+        recording = videoUseCase.output
+            .prepareRecording(context, options)
+            .withAudioEnabled()
+            .asPersistentRecording()
+            .start(ContextCompat.getMainExecutor(context), ::onRecordEvent)
+        state = State.RECORDING
         onFrameAspectChanged?.invoke()
     }
 
@@ -278,22 +316,6 @@ class VideoMessageRecorder(context: Context) {
         val videoUseCase = videoCapture
         if (owner == null || previewUseCase == null || videoUseCase == null) return false
         return provider.bindSafely(owner, lensFacing, previewUseCase, videoUseCase) != null
-    }
-
-    @SuppressLint("MissingPermission")
-    @androidx.annotation.OptIn(ExperimentalPersistentRecording::class)
-    private fun startRecording() {
-        val file = outputFile ?: return
-        val videoUseCase = videoCapture ?: return
-        val options = FileOutputOptions.Builder(file)
-            .setDurationLimitMillis(MAX_DURATION_MS)
-            .build()
-        recording = videoUseCase.output
-            .prepareRecording(context, options)
-            .withAudioEnabled()
-            .asPersistentRecording()
-            .start(ContextCompat.getMainExecutor(context), ::onRecordEvent)
-        state = State.RECORDING
     }
 
     private fun onRecordEvent(event: VideoRecordEvent) {
@@ -317,16 +339,25 @@ class VideoMessageRecorder(context: Context) {
         }
     }
 
-    private fun finish(outcome: Outcome, fileToSend: File?) {
+    internal fun finish(outcome: Outcome, fileToSend: File?) {
         val file = outputFile
         releaseCamera()
         recording = null
         outputFile = null
         state = State.IDLE
-        if (fileToSend == null || released) {
+        val sendReleased = sendAfterRelease
+        sendAfterRelease = null
+        if (released) {
+            if (outcome == Outcome.SEND && fileToSend != null && sendReleased != null) {
+                sendReleased(fileToSend)
+            } else {
+                file?.delete()
+            }
+            return
+        }
+        if (fileToSend == null) {
             file?.delete()
         }
-        if (released) return
 
         val callback = onFinished
         if (callback != null) {
