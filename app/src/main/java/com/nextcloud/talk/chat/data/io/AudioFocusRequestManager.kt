@@ -69,8 +69,12 @@ class AudioFocusRequestManager(private val context: Context) {
      */
     fun audioFocusRequest(shouldRequestFocus: Boolean, onGranted: () -> Unit) {
         if (isPausedDueToBecomingNoisy) {
-            onGranted()
-            return
+            if (shouldRequestFocus) {
+                onGranted()
+                return
+            }
+            // the focus is still held, a paused-by-noise state must not keep it for good
+            isPausedDueToBecomingNoisy = false
         }
 
         val isGranted: Int =
