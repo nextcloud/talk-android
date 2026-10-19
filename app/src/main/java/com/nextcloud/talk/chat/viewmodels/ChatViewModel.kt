@@ -25,6 +25,8 @@ import com.google.gson.Gson
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.chat.RecordInputMode
+import com.nextcloud.talk.chat.VideoMessageRecorder
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
@@ -2380,6 +2382,7 @@ class ChatViewModel @AssistedInject constructor(
     private fun reactionLockFor(messageId: Int): Mutex = reactionLocks.getOrPut(messageId) { Mutex() }
 
     fun startAudioRecording(context: Context, currentConversation: ConversationModel) {
+        activeRecordingMode = RecordInputMode.VOICE
         audioFocusRequestManager.audioFocusRequest(true) {
             Log.d(TAG, "Recording Started")
             mediaRecorderManager.start(context, currentConversation)
@@ -2410,6 +2413,64 @@ class ChatViewModel @AssistedInject constructor(
                 displayName = displayName
             )
         }
+    }
+
+    private var storedRecordInputMode: RecordInputMode? = null
+
+    /**
+     * What the record button records while held. Persisted, so the choice survives leaving the chat.
+     */
+    val recordInputMode: RecordInputMode
+        get() = storedRecordInputMode
+            ?: RecordInputMode.fromVideoFlag(appPreferences.videoRecordMode).also { storedRecordInputMode = it }
+
+    /**
+     * What the recording that is currently in progress (or was last started) records.
+     */
+    var activeRecordingMode: RecordInputMode = RecordInputMode.VOICE
+        private set
+
+    fun toggleRecordInputMode(): RecordInputMode {
+        val newMode = recordInputMode.toggled()
+        storedRecordInputMode = newMode
+        appPreferences.videoRecordMode = newMode == RecordInputMode.VIDEO
+        return newMode
+    }
+
+    /**
+     * @return true if the audio focus was granted and the recording state was set
+     */
+    fun onVideoRecordingStarted(): Boolean {
+        activeRecordingMode = RecordInputMode.VIDEO
+        var granted = false
+        audioFocusRequestManager.audioFocusRequest(true) {
+            granted = true
+            _getVoiceRecordingInProgress.value = true
+        }
+        return granted
+    }
+
+    private var videoRecorder: VideoMessageRecorder? = null
+
+    /**
+     * The recorder of the video messages of this room. It lives here, not in the activity, so that it survives the
+     * recreation of the activity like the voice recorder does.
+     */
+    fun videoMessageRecorder(context: Context): VideoMessageRecorder =
+        videoRecorder ?: VideoMessageRecorder(context).also { videoRecorder = it }
+
+    val activeVideoMessageRecorder: VideoMessageRecorder?
+        get() = videoRecorder
+
+    override fun onCleared() {
+        super.onCleared()
+        videoRecorder?.release()
+        videoRecorder = null
+    }
+
+    fun onVideoRecordingEnded() {
+        audioFocusRequestManager.audioFocusRequest(false) {}
+        _getVoiceRecordingInProgress.value = false
     }
 
     fun stopAndDiscardAudioRecording() {

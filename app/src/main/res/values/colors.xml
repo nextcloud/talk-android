@@ -101,4 +101,5 @@
     <color name="badge_color">#EF3B02</color>
     <color name="secondary_button_background">#DBE2E9</color>
 
+    <color name="video_recording_scrim">#99000000</color>
 </resources>

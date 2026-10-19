@@ -40,6 +40,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Brush
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,6 +53,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -62,7 +65,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
@@ -81,9 +86,14 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.github.chrisbanes.photoview.PhotoView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.components.AppBarAction
+import com.nextcloud.talk.chat.ui.DeleteConfirmationDialog
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
+import com.nextcloud.talk.mediaviewer.model.MediaViewerChatAction
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
+import com.nextcloud.talk.mediaviewer.model.MediaViewerMenuState
+import com.nextcloud.talk.mediaviewer.model.mediaViewerMenuState
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -107,15 +117,21 @@ private val thumbnailSpacing = 4.dp
 private val thumbnailStripVerticalPadding = 12.dp
 private val controlsSlideDistance = 24.dp
 
+/** What the viewer's actions do; implemented by [MediaViewerActivity], which owns the intents. */
+data class MediaViewerCallbacks(
+    val onShare: (MediaViewerItem, String) -> Unit,
+    val onSave: (MediaViewerItem, String) -> Unit,
+    val onShowAllMedia: () -> Unit,
+    val onShowInChat: (MediaViewerItem) -> Unit,
+    /** Reply, delete, forward and draw run in the chat; the cached copy's path is given when it exists. */
+    val onChatAction: (MediaViewerChatAction, MediaViewerItem, String?) -> Unit,
+    val onControlsVisibilityChanged: (Boolean) -> Unit = {}
+)
+
 @Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaViewerScreen(
-    viewModel: MediaViewerViewModel,
-    onShare: (MediaViewerItem, String) -> Unit,
-    onSave: (MediaViewerItem, String) -> Unit,
-    onControlsVisibilityChanged: (Boolean) -> Unit = {}
-) {
+fun MediaViewerScreen(viewModel: MediaViewerViewModel, callbacks: MediaViewerCallbacks) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val items = uiState.flattenedItems
     if (items.isEmpty()) return
@@ -175,7 +191,7 @@ fun MediaViewerScreen(
     // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
     // of it.
     LaunchedEffect(showControls) {
-        onControlsVisibilityChanged(showControls)
+        callbacks.onControlsVisibilityChanged(showControls)
     }
 
     // Hoisted here (rather than inside ThumbnailStrip) so its scroll position survives showControls
@@ -185,6 +201,17 @@ fun MediaViewerScreen(
     val thumbnailListState = rememberLazyListState()
     val density = LocalDensity.current
     val slideOffsetPx = with(density) { controlsSlideDistance.roundToPx() }
+
+    var confirmDelete by rememberSaveable { mutableStateOf(false) }
+    if (confirmDelete && currentItem != null) {
+        DeleteConfirmationDialog(
+            onConfirm = {
+                confirmDelete = false
+                callbacks.onChatAction(MediaViewerChatAction.DELETE, currentItem, currentLocalPath)
+            },
+            onDismiss = { confirmDelete = false }
+        )
+    }
 
     val group = uiState.currentGroup
     val hasThumbnailStrip = group != null && group.items.size > 1
@@ -227,20 +254,33 @@ fun MediaViewerScreen(
                 navigationIconContentColor = Color.White,
                 actionIconContentColor = Color.White
             )
-            val menuItems = buildList {
-                if (currentItem != null && currentLocalPath != null) {
-                    add(stringResource(R.string.share) to { onShare(currentItem, currentLocalPath) })
-                    add(stringResource(R.string.nc_save_message) to { onSave(currentItem, currentLocalPath) })
-                }
+            val menuState = currentItem?.let {
+                mediaViewerMenuState(
+                    mimeType = it.mimeType,
+                    hasLocalFile = currentLocalPath != null,
+                    actions = uiState.actionStates[it.messageId]
+                )
             }
+            val menuItems = buildMenuItems(currentItem, currentLocalPath, menuState, callbacks) { confirmDelete = true }
+            val actionButtons = buildActionButtons(currentItem, currentLocalPath, menuState, callbacks)
             val sentDateTime = currentItem?.let {
                 dateUtils.getLocalDateTimeStringFromTimestamp(it.timestamp * DateConstants.SECOND_DIVIDER)
             }
+            val counter = uiState.counter
+            val counterText = when {
+                counter == null -> ""
+                counter.totalIsLowerBound ->
+                    stringResource(R.string.media_viewer_counter_more, counter.position, counter.total)
+                else -> stringResource(R.string.media_viewer_counter, counter.position, counter.total)
+            }
+            val sender = currentItem?.actorDisplayName.orEmpty()
             StandardAppBar(
-                title = currentItem?.actorDisplayName.orEmpty(),
+                title = counterText,
                 menuItems = menuItems,
                 colors = toolbarColors,
-                subtitle = sentDateTime
+                subtitle = listOf(sender, sentDateTime.orEmpty()).filter { it.isNotBlank() }.joinToString(", "),
+                centerTitle = true,
+                actionButtons = actionButtons
             )
         }
 
@@ -275,6 +315,71 @@ fun MediaViewerScreen(
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun buildMenuItems(
+    item: MediaViewerItem?,
+    localPath: String?,
+    state: MediaViewerMenuState?,
+    callbacks: MediaViewerCallbacks,
+    onDelete: () -> Unit
+): List<Pair<String, () -> Unit>> {
+    if (item == null || state == null) return emptyList()
+    return buildList {
+        if (state.saveToGallery && localPath != null) {
+            add(stringResource(R.string.media_viewer_save_to_gallery) to { callbacks.onSave(item, localPath) })
+        }
+        if (state.showAllMedia) {
+            add(stringResource(R.string.media_viewer_show_all_media) to { callbacks.onShowAllMedia() })
+        }
+        if (state.showInChat) {
+            add(stringResource(R.string.media_viewer_show_in_chat) to { callbacks.onShowInChat(item) })
+        }
+        if (state.reply) {
+            add(
+                stringResource(R.string.nc_reply) to {
+                    callbacks.onChatAction(MediaViewerChatAction.REPLY, item, localPath)
+                }
+            )
+        }
+        if (state.share && localPath != null) {
+            add(stringResource(R.string.share) to { callbacks.onShare(item, localPath) })
+        }
+        if (state.delete) {
+            add(stringResource(R.string.nc_delete) to onDelete)
+        }
+    }
+}
+
+@Composable
+private fun buildActionButtons(
+    item: MediaViewerItem?,
+    localPath: String?,
+    state: MediaViewerMenuState?,
+    callbacks: MediaViewerCallbacks
+): List<AppBarAction> {
+    if (item == null || state == null) return emptyList()
+    return buildList {
+        if (state.forward) {
+            add(
+                AppBarAction(
+                    icon = ImageVector.vectorResource(R.drawable.forward_24),
+                    contentDescription = stringResource(R.string.nc_forward_message),
+                    onClick = { callbacks.onChatAction(MediaViewerChatAction.FORWARD, item, localPath) }
+                )
+            )
+        }
+        if (state.draw) {
+            add(
+                AppBarAction(
+                    icon = Icons.Outlined.Brush,
+                    contentDescription = stringResource(R.string.nc_attachment_draw),
+                    onClick = { callbacks.onChatAction(MediaViewerChatAction.DRAW, item, localPath) }
+                )
+            )
         }
     }
 }

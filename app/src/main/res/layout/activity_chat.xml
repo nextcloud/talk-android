@@ -118,6 +118,47 @@
             app:fabCustomSize="@dimen/min_size_clickable_area"
             app:srcCompat="@drawable/ic_lock_open_grey600_24dp" />
 
+        <!-- Dims the chat area while a video message is recorded and swallows the touches. It is not announced by
+             TalkBack; the camera switch button inside stays accessible. -->
+        <FrameLayout
+            android:id="@+id/videoRecordingScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/video_recording_scrim"
+            android:clickable="true"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            android:elevation="@dimen/video_recording_scrim_elevation"
+            android:visibility="gone">
+
+            <!-- Size and position are set by ChatActivity.updateVideoRecordingPreviewLayout -->
+            <FrameLayout
+                android:id="@+id/videoRecordingContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:importantForAccessibility="no">
+
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/videoRecordingPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:implementationMode="compatible"
+                    app:scaleType="fillCenter" />
+
+                <ImageButton
+                    android:id="@+id/videoRecordingSwitchCamera"
+                    android:layout_width="@dimen/min_size_clickable_area"
+                    android:layout_height="@dimen/min_size_clickable_area"
+                    android:layout_gravity="top|end"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/nc_video_recording_switch_camera"
+                    android:src="@drawable/ic_baseline_flip_camera_android_24"
+                    app:tint="@color/white" />
+            </FrameLayout>
+        </FrameLayout>
+
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/typingIndicatorComposeView"
             android:layout_width="match_parent"
