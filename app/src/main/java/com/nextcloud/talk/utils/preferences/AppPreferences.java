@@ -211,5 +211,9 @@ public interface AppPreferences {
 
     long getConversationListLastUserId();
 
+    boolean getVideoRecordMode();
+
+    void setVideoRecordMode(boolean value);
+
     void clear();
 }

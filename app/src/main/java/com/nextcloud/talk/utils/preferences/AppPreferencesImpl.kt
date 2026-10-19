@@ -626,6 +626,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getVideoRecordMode(): Boolean =
+        runBlocking {
+            async { readBoolean(VIDEO_RECORD_MODE).first() }
+        }.getCompleted()
+
+    override fun setVideoRecordMode(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(VIDEO_RECORD_MODE, value)
+            }
+        }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =
@@ -708,6 +720,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
+        const val VIDEO_RECORD_MODE = "video_record_mode"
         const val MESSAGE_QUEUE = "@message_queue"
         const val PLAY_BACK = "_playback"
         const val VOICE_MESSAGE_PLAYBACK_SPEEDS = "voice_message_playback_speeds"
