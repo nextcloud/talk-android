@@ -55,19 +55,20 @@ private fun previewDescriptions() =
     )
 
 @Composable
-private fun ThumbnailStripPreviewContainer(descriptions: List<FileDescription>, selectedIndex: Int) {
+private fun ThumbnailStripPreviewContainer(
+    descriptions: List<FileDescription>,
+    selectedIndex: Int,
+    unselected: Set<String> = emptySet()
+) {
     val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     MaterialTheme(colorScheme = colorScheme) {
         Surface {
             ThumbnailStrip(
                 descriptions = descriptions,
                 selectedIndex = selectedIndex,
+                unselected = unselected,
                 onSelect = {},
-                onRemove = {},
-                onReorder = { _, _ -> },
-                onAddMore = {},
-                onTakePhoto = {},
-                onTakeVideo = {}
+                onReorder = { _, _ -> }
             )
         }
     }
@@ -81,7 +82,11 @@ private fun ThumbnailStripPreviewContainer(descriptions: List<FileDescription>, 
 )
 @Composable
 private fun ThumbnailStripPreview() {
-    ThumbnailStripPreviewContainer(descriptions = previewDescriptions(), selectedIndex = 0)
+    ThumbnailStripPreviewContainer(
+        descriptions = previewDescriptions(),
+        selectedIndex = 0,
+        unselected = setOf("file:///sdcard/Download/archive.zip")
+    )
 }
 
 /** The mimetype-icon tiles, where [mimetypeIconTint] decides whether an icon is themed or keeps its own colors. */
@@ -101,15 +106,5 @@ private fun ThumbnailStripDocumentsPreview() {
             previewDescription("file:///sdcard/Documents/letter.doc", "letter.doc", "application/msword", "34 kB")
         ),
         selectedIndex = 1
-    )
-}
-
-/** A single file shows no thumbnails at all - just the centered action tiles. */
-@Preview(name = "Single File", showBackground = true)
-@Composable
-private fun ThumbnailStripSingleFilePreview() {
-    ThumbnailStripPreviewContainer(
-        descriptions = previewDescriptions().take(1),
-        selectedIndex = 0
     )
 }
