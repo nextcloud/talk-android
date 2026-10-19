@@ -818,6 +818,7 @@ class ChatViewModel @AssistedInject constructor(
     private var lastReadMessage: Int = 0
 
     private var roomJoinClaimed = false
+    private var isInitialLoadDelivered = false
     private var leaveRoomJob: Job? = null
     private var joinRoomJob: Job? = null
 
@@ -1827,6 +1828,7 @@ class ChatViewModel @AssistedInject constructor(
                 conversationModel
             )
             if (isInitialLoadPending()) {
+                isInitialLoadDelivered = true
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     spreedCapability,
                     conversationModel
@@ -1850,6 +1852,7 @@ class ChatViewModel @AssistedInject constructor(
                             conversationModel
                         )
                         if (isInitialLoadPending()) {
+                            isInitialLoadDelivered = true
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
                                 conversationModel
@@ -1874,10 +1877,9 @@ class ChatViewModel @AssistedInject constructor(
 
     /**
      * A failed first load of the capabilities is retried by the next refresh of the conversation, which then is the
-     * initial load.
+     * initial load. A failed refresh after the initial load is not.
      */
-    private fun isInitialLoadPending(): Boolean =
-        _getCapabilitiesViewState.value.let { it == GetCapabilitiesStartState || it == GetCapabilitiesErrorState }
+    private fun isInitialLoadPending(): Boolean = !isInitialLoadDelivered
 
     /**
      * Joins after a leave that is still running, so the server never handles the leave after the join. The wait is
@@ -2607,6 +2609,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun handleOrientationChange() {
+        isInitialLoadDelivered = false
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 

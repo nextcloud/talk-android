@@ -337,6 +337,31 @@ class ChatViewModelRoomJoinTest {
         assertEquals(1, joins)
     }
 
+    @Test
+    fun `a failed refresh of federated capabilities after the initial load is not an initial load`() {
+        whenever(network.getCapabilities(any(), any())).thenReturn(
+            Observable.just(SpreedCapabilityDto()),
+            Observable.just(SpreedCapabilityDto()),
+            Observable.error(RuntimeException("federated server not reachable")),
+            Observable.just(SpreedCapabilityDto())
+        )
+        // the conversation flow ignores a conversation with an unchanged lastReadMessage
+        conversation.value = ConversationResult.Found(conversationModel(5, remoteServer = REMOTE_SERVER))
+
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+        viewModel.initData()
+        assertEquals(1, initialLoads)
+
+        conversation.value = ConversationResult.Found(conversationModel(6, remoteServer = REMOTE_SERVER))
+        assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesErrorState)
+
+        conversation.value = ConversationResult.Found(conversationModel(7, remoteServer = REMOTE_SERVER))
+
+        assertEquals(1, initialLoads)
+        assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesUpdateState)
+    }
+
     private fun conversationModel(lastReadMessage: Int, remoteServer: String = ""): ConversationModel =
         ConversationModel.mapToConversationModel(
             ConversationDto(
