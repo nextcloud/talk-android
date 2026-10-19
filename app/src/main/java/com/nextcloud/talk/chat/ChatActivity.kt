@@ -536,9 +536,6 @@ class ChatActivity :
                     getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
                 }
                 isLeavingRoom = false
-
-                // the join of a return to the chat waits for the leave, so it sets the holder again after this
-                ApplicationWideCurrentRoomHolder.getInstance().clear()
             }
 
             else -> {}
@@ -3097,6 +3094,8 @@ class ChatActivity :
             webSocketInstance?.joinRoomWithRoomTokenAndSession("", sessionIdAfterRoomJoined)
         }
         sessionIdAfterRoomJoined = "0"
+        // the session is left now, so a chat opened before the leave is answered must not reuse it
+        ApplicationWideCurrentRoomHolder.getInstance().clear()
 
         // FIXME Fix API checking with guests?
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
