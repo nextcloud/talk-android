@@ -395,9 +395,10 @@
     <string name="nc_media_quality_original_hint">Afsendelse i original kvalitet bruger mere mobildata.</string>
     <string name="nc_media_quality_reduced">Reduceret kvalitet</string>
     <string name="nc_meeting_ended">Mødet sluttede</string>
-    <string name="nc_message_added_to_notes">Besked til føjet til noter</string>
+    <string name="nc_message_added_to_notes">Beskeden er føjet til noter</string>
     <string name="nc_message_failed">Beskeden kunne ikke sendes</string>
     <string name="nc_message_failed_to_send">Kunne ikke sende besked:</string>
+    <string name="nc_message_not_added_to_notes">Beskeden kunne ikke tilføjes til noter</string>
     <string name="nc_message_quote_cancel_reply">Annuller svar</string>
     <string name="nc_message_read">Besked læst</string>
     <string name="nc_message_scheduled">Beskeden er planlagt</string>
@@ -684,7 +685,7 @@
     <string name="online_status">Online status</string>
     <string name="openConversations">Åbne samtaler</string>
     <string name="open_in_files_app">Åben i appe\'en filer</string>
-    <string name="open_notes">Åben noter</string>
+    <string name="open_notes">Åbn Noter</string>
     <string name="open_thread">Gå til tråd</string>
     <string name="pin_24hr">Fastgør i 24 timer</string>
     <string name="pin_30_days">Fastgør i 30 dage</string>

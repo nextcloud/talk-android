@@ -10,7 +10,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
     id("com.google.devtools.ksp") version "2.3.12"
@@ -62,8 +62,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010012
-        versionName = "25.1.0 Alpha 12"
+        versionCode = 250010013
+        versionName = "25.1.0 Alpha 13"
 
         vectorDrawables.useSupportLibrary = true
 
