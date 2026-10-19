@@ -37,6 +37,11 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import io.reactivex.Observable
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -58,7 +63,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
@@ -68,6 +77,7 @@ import org.robolectric.annotation.Config
  * The chat joins the room once per resume of its screen and leaves it on pause. A refresh of the conversation
  * must not join the room: it is not tied to the screen being shown.
  */
+@Suppress("TooManyFunctions")
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -78,6 +88,8 @@ class ChatViewModelRoomJoinTest {
 
     private val conversation = MutableStateFlow<ConversationResult>(ConversationResult.Found(conversationModel(1)))
     private val owner = TestOwner()
+    private val network: ChatNetworkDataSource = mock()
+    private var pendingLeave: CompletableDeferred<Unit>? = null
 
     private lateinit var viewModel: ChatViewModel
     private var capabilitiesState: ChatViewModel.ViewState? = null
@@ -98,15 +110,17 @@ class ChatViewModelRoomJoinTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.setMainThreadSchedulerHandler { Schedulers.trampoline() }
 
         val userManager: UserManager = mock()
         whenever(userManager.userFlow(USER.id!!)).thenReturn(MutableStateFlow(USER))
         val conversations: OfflineConversationsRepository = mockWithEmptyFlows()
         whenever(conversations.observeConversation(USER.id!!, TOKEN)).thenReturn(conversation)
-        val network: ChatNetworkDataSource = mock()
-        wheneverBlocking { network.leaveRoom(any(), any()) }.thenReturn(
+        wheneverBlocking { network.leaveRoom(any(), any()) }.doSuspendableAnswer {
+            pendingLeave?.await()
             GenericOverall(GenericOCS(GenericMetaDto(statusCode = HTTP_OK)))
-        )
+        }
         val chatRepository: ChatMessageRepository = mockWithEmptyFlows()
 
         val newViewModel = ChatViewModel(
@@ -164,6 +178,8 @@ class ChatViewModelRoomJoinTest {
         owner.send(Lifecycle.Event.ON_DESTROY)
         viewModelStore.clear()
         appScope.cancel()
+        RxJavaPlugins.reset()
+        RxAndroidPlugins.reset()
         Dispatchers.resetMain()
     }
 
@@ -262,10 +278,70 @@ class ChatViewModelRoomJoinTest {
         assertTrue(viewModel.claimRoomJoin())
     }
 
-    private fun conversationModel(lastReadMessage: Int): ConversationModel =
+    @Test
+    fun `a return to the chat during the leave joins only after the leave`() {
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+        viewModel.initData()
+
+        pendingLeave = CompletableDeferred()
+        pauseScreen()
+        leaveRoom()
+        resumeScreen()
+        viewModel.joinRoom(USER, TOKEN, "")
+
+        verify(network, never()).joinRoom(any(), any(), any())
+
+        pendingLeave!!.complete(Unit)
+
+        verify(network, times(1)).joinRoom(any(), any(), any())
+    }
+
+    @Test
+    fun `a pause while the join waits for the leave cancels the join`() {
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+
+        pendingLeave = CompletableDeferred()
+        pauseScreen()
+        leaveRoom()
+        resumeScreen()
+        viewModel.joinRoom(USER, TOKEN, "")
+        pauseScreen()
+
+        pendingLeave!!.complete(Unit)
+
+        verify(network, never()).joinRoom(any(), any(), any())
+    }
+
+    @Test
+    fun `a failed first load of federated capabilities is retried as the initial load`() {
+        whenever(network.getCapabilities(any(), any())).thenReturn(
+            Observable.error(RuntimeException("federated server not reachable")),
+            Observable.error(RuntimeException("federated server not reachable")),
+            Observable.just(SpreedCapabilityDto())
+        )
+        // the conversation flow ignores a conversation with an unchanged lastReadMessage
+        conversation.value = ConversationResult.Found(conversationModel(5, remoteServer = REMOTE_SERVER))
+
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+        viewModel.initData()
+
+        assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesErrorState)
+        assertEquals(0, joins)
+
+        conversation.value = ConversationResult.Found(conversationModel(6, remoteServer = REMOTE_SERVER))
+
+        assertEquals(1, initialLoads)
+        assertEquals(1, joins)
+    }
+
+    private fun conversationModel(lastReadMessage: Int, remoteServer: String = ""): ConversationModel =
         ConversationModel.mapToConversationModel(
             ConversationDto(
                 token = TOKEN,
+                remoteServer = remoteServer,
                 name = "room",
                 displayName = "room",
                 description = "",
@@ -294,6 +370,7 @@ class ChatViewModelRoomJoinTest {
     companion object {
         private const val TOKEN = "room-token"
         private const val HTTP_OK = 200
+        private const val REMOTE_SERVER = "https://remote.example.com"
         private val USER = User(
             id = 1,
             userId = "me",

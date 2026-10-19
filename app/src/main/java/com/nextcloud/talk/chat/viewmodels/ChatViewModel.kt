@@ -488,6 +488,7 @@ class ChatViewModel @AssistedInject constructor(
         super.onPause(owner)
         currentLifeCycleFlag = LifeCycleFlag.PAUSED
         roomJoinClaimed = false
+        joinRoomJob?.cancel()
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         searchRequestJob?.cancel()
@@ -817,6 +818,8 @@ class ChatViewModel @AssistedInject constructor(
     private var lastReadMessage: Int = 0
 
     private var roomJoinClaimed = false
+    private var leaveRoomJob: Job? = null
+    private var joinRoomJob: Job? = null
 
     // ------------------------------
     // Initialization
@@ -1823,7 +1826,7 @@ class ChatViewModel @AssistedInject constructor(
                 spreedCapability,
                 conversationModel
             )
-            if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+            if (isInitialLoadPending()) {
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     spreedCapability,
                     conversationModel
@@ -1846,7 +1849,7 @@ class ChatViewModel @AssistedInject constructor(
                             spreedCapabilities,
                             conversationModel
                         )
-                        if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                        if (isInitialLoadPending()) {
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
                                 conversationModel
@@ -1869,13 +1872,28 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A failed first load of the capabilities is retried by the next refresh of the conversation, which then is the
+     * initial load.
+     */
+    private fun isInitialLoadPending(): Boolean =
+        _getCapabilitiesViewState.value.let { it == GetCapabilitiesStartState || it == GetCapabilitiesErrorState }
+
+    /**
+     * Joins after a leave that is still running, so the server never handles the leave after the join. The wait is
+     * cancelled when the screen is paused.
+     */
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatNetworkDataSource.joinRoom(user, token, roomPassword)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.retry(JOIN_ROOM_RETRY_COUNT)
-            ?.subscribe(JoinRoomObserver())
+        joinRoomJob?.cancel()
+        joinRoomJob = viewModelScope.launch {
+            leaveRoomJob?.join()
+            chatNetworkDataSource.joinRoom(user, token, roomPassword)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.retry(JOIN_ROOM_RETRY_COUNT)
+                ?.subscribe(JoinRoomObserver())
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
@@ -1910,7 +1928,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
-        appScope.launch {
+        leaveRoomJob = appScope.launch {
             try {
                 val result = chatNetworkDataSource.leaveRoom(credentials, url)
                 if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
