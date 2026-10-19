@@ -41,7 +41,9 @@ fun resolveMediaAccess(sdkInt: Int, granted: Set<String>): MediaAccess =
 /**
  * Whether the "select more" action makes sense: the access is partial, or Android 14 holds the user-selected grant
  * next to only one of the per-type permissions (photos without videos or the other way round). [resolveMediaAccess]
- * reports FULL for that mix because media can be read, yet the second type is still limited to the picked items.
+ * reports FULL for that mix because media can be read, yet the second type shows only the files of the app itself:
+ * the picked items do not apply once one per-type permission is granted. The action opens the request again, where
+ * "allow all" is offered.
  */
 fun canSelectMoreMedia(sdkInt: Int, granted: Set<String>): Boolean =
     resolveMediaAccess(sdkInt, granted) == MediaAccess.PARTIAL ||
