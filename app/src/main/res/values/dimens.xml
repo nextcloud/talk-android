@@ -18,6 +18,12 @@
     <dimen name="small_item_height">48dp</dimen>
 
     <dimen name="min_size_clickable_area">48dp</dimen>
+    <dimen name="video_recording_preview_max_side">480dp</dimen>
+    <!-- below the lock button of the voice recording (6dp), above the messages -->
+    <dimen name="video_recording_scrim_elevation">2dp</dimen>
+    <dimen name="video_recording_indicator_size">24dp</dimen>
+    <!-- below this height of the area above the recording panel the preview keeps a smaller gap -->
+    <dimen name="video_recording_preview_short_area">200dp</dimen>
 
     <!-- Custom transition dimensions -->
     <dimen name="margin_between_elements">8dp</dimen>

@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
+import android.graphics.Outline
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -34,10 +35,14 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
+import android.view.Surface
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -48,6 +53,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
@@ -267,6 +273,8 @@ class ChatActivity :
     var active = false
 
     private lateinit var binding: ActivityChatBinding
+
+    private val orientationTracker by lazy { DeviceOrientationTracker(this) }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -668,6 +676,7 @@ class ChatActivity :
         messageInputViewModel.setData(chatViewModel.getChatRepository())
 
         initObservers()
+        resumeRecordingAfterRecreation()
 
         pendingTargetMessageId?.let { messageId ->
             lifecycleScope.launch {
@@ -1418,6 +1427,7 @@ class ChatActivity :
     override fun onStart() {
         super.onStart()
         active = true
+        orientationTracker.enable()
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(chatViewModel)
 
@@ -1458,8 +1468,14 @@ class ChatActivity :
     }
 
     override fun onStop() {
+        val changingConfigurations = isChangingConfigurations
         super.onStop()
         active = false
+        orientationTracker.disable()
+        if (!changingConfigurations) {
+            // the user leaves the chat: a video recording must not go on with camera and microphone
+            chatViewModel.activeVideoMessageRecorder?.cancel()
+        }
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
 
@@ -1605,17 +1621,27 @@ class ChatActivity :
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     _participantPermissionsFlow.value =
                         ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    // a locked recording keeps its panel: the observer of the lock does not run again
+                    val recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        replace(
+                            R.id.fragment_container_activity_chat,
+                            if (recordingLocked) MessageInputVoiceRecordingFragment() else messageInputFragment
+                        )
                         runOnCommit {
-                            if (focusInput) {
+                            if (focusInput && !recordingLocked) {
                                 messageInputFragment.binding.fragmentMessageInputView.requestFocus()
                             }
                         }
                     }
 
                     joinRoomWithPassword()
+
+                    // a video result which waited for the conversation and the capabilities of this activity
+                    chatViewModel.activeVideoMessageRecorder?.takeIf { it.hasPendingResult }?.let {
+                        attachVideoRecorder(it)
+                    }
 
                     if (sharedFilePaths.isNotEmpty()) {
                         onChooseFileResult(sharedFilePaths.map { it.toUri() })
@@ -2466,6 +2492,250 @@ class ChatActivity :
         )
     }
 
+    fun isVideoRecordPermissionGranted(): Boolean =
+        permissionUtil.isCameraPermissionGranted() && permissionUtil.isMicrophonePermissionGranted()
+
+    fun requestVideoRecordPermissions() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
+            ),
+            REQUEST_VIDEO_RECORD_PERMISSIONS
+        )
+    }
+
+    /**
+     * Starts recording a video message with the front camera. The recording shares the in-progress and locked state
+     * of the voice recording, so the gestures of the record button work the same for both.
+     *
+     * @return true if the recording was started
+     */
+    fun startVideoRecording(): Boolean {
+        val recorder = chatViewModel.videoMessageRecorder(this)
+        val file = if (recorder.isActive) null else createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
+        if (file == null || !chatViewModel.onVideoRecordingStarted()) {
+            return false
+        }
+        showVideoRecordingPreview(true)
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
+        recorder.start(
+            file,
+            VideoMessageRecorder.videoTargetRotation(
+                orientationTracker.degrees,
+                binding.videoRecordingPreview.display?.rotation ?: Surface.ROTATION_0
+            )
+        )
+        return true
+    }
+
+    fun stopAndSendRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            // captured by value: it outlives this activity when the chat is left before the file is finalized
+            val viewModel = chatViewModel
+            val room = roomToken
+            val replyTo = getReplyToMessageId()
+            val displayName = currentConversation!!.displayName
+            val appContext = context.applicationContext
+            viewModel.activeVideoMessageRecorder?.stopAndSend { file ->
+                viewModel.uploadFile(
+                    fileUri = FileProvider.getUriForFile(appContext, appContext.packageName, file).toString(),
+                    isVoiceMessage = false,
+                    roomToken = room,
+                    replyToMessageId = replyTo,
+                    displayName = displayName,
+                    uploadId = UUID.randomUUID().toString()
+                )
+            }
+        } else {
+            chatViewModel.stopAndSendAudioRecording(
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation!!.displayName
+            )
+        }
+    }
+
+    fun stopAndDiscardRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            chatViewModel.activeVideoMessageRecorder?.cancel()
+        } else {
+            chatViewModel.stopAndDiscardAudioRecording()
+        }
+    }
+
+    // the result of a recording is uploaded or previewed with the conversation and the capabilities
+    private fun isChatReady(): Boolean = currentConversation != null && ::spreedCapabilities.isInitialized
+
+    private fun onVideoRecordingFinished(outcome: VideoMessageRecorder.Outcome, file: File?) {
+        showVideoRecordingPreview(false)
+        if (chatViewModel.getVoiceRecordingInProgress.value == true) {
+            chatViewModel.onVideoRecordingEnded()
+        }
+        if (chatViewModel.getVoiceRecordingLocked.value == true) {
+            chatViewModel.setVoiceRecordingLocked(false)
+        }
+        if (!isChatReady()) {
+            chatViewModel.activeVideoMessageRecorder?.holdResult(outcome, file)
+            return
+        }
+        when (outcome) {
+            VideoMessageRecorder.Outcome.SEND -> file?.let {
+                uploadFiles(mutableListOf(FileProvider.getUriForFile(context, context.packageName, it).toString()))
+            }
+
+            VideoMessageRecorder.Outcome.TOO_SHORT ->
+                Snackbar.make(
+                    binding.root,
+                    R.string.nc_video_message_hold_to_record_info_switch_to_voice,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+            VideoMessageRecorder.Outcome.FAILED ->
+                Snackbar.make(binding.root, R.string.nc_video_message_recording_failed, Snackbar.LENGTH_LONG).show()
+
+            VideoMessageRecorder.Outcome.INTERRUPTED -> file?.let {
+                onChooseFileResult(listOf(FileProvider.getUriForFile(context, context.packageName, it)))
+            }
+
+            VideoMessageRecorder.Outcome.CANCELLED -> Unit
+        }
+    }
+
+    /**
+     * After a recreation of the activity: picks up the recording which went on in the view model of the chat. The
+     * finger of the record button is gone with the old activity, so a recording which was held is locked, and the
+     * locked recording UI (timer, stop, send, cancel) is shown by the observer of the locked state.
+     */
+    private fun resumeRecordingAfterRecreation() {
+        val recorder = chatViewModel.activeVideoMessageRecorder
+        val action = resolveRecordingResume(
+            recorderActive = recorder?.isActive == true,
+            hasPendingResult = recorder?.hasPendingResult == true,
+            recordingInProgress = chatViewModel.getVoiceRecordingInProgress.value == true,
+            recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true,
+            chatReady = isChatReady()
+        )
+        if (recorder != null && recorder.isActive) {
+            showVideoRecordingPreview(true)
+        }
+        val attach = action == RecordingResume.ATTACH ||
+            action == RecordingResume.ATTACH_AND_LOCK ||
+            action == RecordingResume.DELIVER_RESULT
+        if (recorder != null && attach) attachVideoRecorder(recorder)
+        if (action == RecordingResume.ATTACH_AND_LOCK) {
+            chatViewModel.setVoiceRecordingLocked(true)
+        }
+    }
+
+    private fun attachVideoRecorder(recorder: VideoMessageRecorder) {
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
+    }
+
+    private val accessibilityBeforeVideoRecording = HashMap<View, Int>()
+
+    // the update only touches the layout of the preview when its size changed, so it does not loop
+    private val videoScrimLayoutListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        updateVideoRecordingPreviewLayout()
+    }
+
+    /**
+     * Places the preview in the middle of the dimming layer, which covers the area of the chat above the recording
+     * panel: in the aspect of the recorded frame, fitted into the area. Called whenever the area changes its size
+     * (rotation, panels of a wide screen) and when the recorder knows the aspect of the frame.
+     */
+    private fun updateVideoRecordingPreviewLayout() {
+        val scrim = binding.videoRecordingScrim
+        if (scrim.width <= 0 || scrim.height <= 0) return
+        val resources = scrim.resources
+        val displayRotation = ContextCompat.getDisplayOrDefault(scrim.context)?.rotation ?: Surface.ROTATION_0
+        val placement = videoPreviewPlacement(
+            areaWidth = scrim.width,
+            areaHeight = scrim.height,
+            aspect = chatViewModel.activeVideoMessageRecorder
+                ?.let { screenFrameAspect(it.frameAspect, it.videoRotation, displayRotation) }
+                ?: fallbackVideoFrameAspect(displayRotation),
+            limits = VideoPreviewLimits(
+                margin = resources.getDimensionPixelSize(R.dimen.standard_margin),
+                maxWidthFraction = VIDEO_PREVIEW_MAX_WIDTH_FRACTION,
+                maxSide = resources.getDimensionPixelSize(R.dimen.video_recording_preview_max_side),
+                shortAreaHeight = resources.getDimensionPixelSize(R.dimen.video_recording_preview_short_area),
+                shortMargin = resources.getDimensionPixelSize(R.dimen.standard_half_margin)
+            )
+        )
+        val container = binding.videoRecordingContainer
+        val params = container.layoutParams as FrameLayout.LayoutParams
+        if (params.width != placement.width || params.height != placement.height) {
+            params.width = placement.width
+            params.height = placement.height
+            params.gravity = Gravity.CENTER
+            container.layoutParams = params
+            container.invalidateOutline()
+        }
+    }
+
+    /**
+     * TalkBack reaches the views under the dimming layer, which only swallows touches. While the video is recorded
+     * they are hidden from it; the values they had are put back afterwards. A new activity after a rotation starts
+     * with nothing saved and saves the defaults of its own fresh views.
+     */
+    private fun hideChatFromAccessibility(hide: Boolean) {
+        val parent = binding.videoRecordingScrim.parent as? ViewGroup ?: return
+        if (hide) {
+            if (accessibilityBeforeVideoRecording.isNotEmpty()) return
+            for (i in 0 until parent.childCount) {
+                val child = parent.getChildAt(i)
+                if (child === binding.videoRecordingScrim) continue
+                accessibilityBeforeVideoRecording[child] = child.importantForAccessibility
+                child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            }
+        } else {
+            accessibilityBeforeVideoRecording.forEach { (view, value) -> view.importantForAccessibility = value }
+            accessibilityBeforeVideoRecording.clear()
+        }
+    }
+
+    private fun showVideoRecordingPreview(show: Boolean) {
+        if (show) {
+            binding.videoRecordingScrim.removeOnLayoutChangeListener(videoScrimLayoutListener)
+            binding.videoRecordingScrim.addOnLayoutChangeListener(videoScrimLayoutListener)
+            binding.videoRecordingContainer.clipToOutline = true
+            binding.videoRecordingContainer.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    val radius = view.resources.getDimension(R.dimen.standard_margin)
+                    outline.setRoundRect(0, 0, view.width, view.height, radius)
+                }
+            }
+            binding.videoRecordingSwitchCamera.setOnClickListener {
+                chatViewModel.activeVideoMessageRecorder?.switchCamera()
+            }
+        }
+        hideChatFromAccessibility(show)
+        binding.videoRecordingScrim.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    private fun createAttachmentFile(@StringRes nameRes: Int, suffix: String): File? =
+        try {
+            val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
+                ?: throw IOException("Could not create shared attachments directory")
+            val date = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT).format(Date())
+            File(outputDir, "${context.resources.getString(nameRes, date)}$suffix")
+        } catch (e: IOException) {
+            logger.e(TAG, "error while creating attachment file", e)
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            null
+        }
+
     private fun requestCameraPermissions() {
         requestPermissions(
             arrayOf(
@@ -2724,11 +2994,9 @@ class ChatActivity :
                 error("Failed to get data from intent and uri")
             }
 
-            if (permissionUtil.isFilesPermissionGranted()) {
-                showFileAttachmentPreview(filesToUpload)
-            } else {
-                UploadAndShareFilesWorker.requestStoragePermission(this)
-            }
+            // The photo lives in the app cache and is handed over through the own file provider,
+            // so it needs no access to the media.
+            showFileAttachmentPreview(filesToUpload)
         } catch (e: IllegalStateException) {
             Snackbar.make(
                 binding.root,
@@ -2778,12 +3046,8 @@ class ChatActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "showing upload preview after permissions were granted")
-                if (filesToUpload.isNotEmpty()) {
-                    showFileAttachmentPreview(filesToUpload)
-                }
-            } else {
+            // Only the voice recording asks for this permission; the user taps the microphone again.
+            if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Snackbar
                     .make(binding.root, context.getString(R.string.read_storage_no_permission), Snackbar.LENGTH_LONG)
                     .show()
@@ -2816,6 +3080,14 @@ class ChatActivity :
                 Snackbar.make(
                     binding.root,
                     context.getString(R.string.nc_share_contact_permission),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        } else if (requestCode == REQUEST_VIDEO_RECORD_PERMISSIONS) {
+            if (grantResults.isEmpty() || grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.nc_video_message_missing_permissions),
                     Snackbar.LENGTH_LONG
                 ).show()
             }
@@ -4059,21 +4331,7 @@ class ChatActivity :
         } else {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                 takePictureIntent.resolveActivity(packageManager)?.also {
-                    val photoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val photoName = String.format(
-                            context.resources.getString(R.string.nc_picture_filename),
-                            date
-                        )
-                        File(outputDir, "$photoName$PICTURE_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating photo file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+                    val photoFile = createAttachmentFile(R.string.nc_picture_filename, PICTURE_SUFFIX)
 
                     photoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
@@ -4091,21 +4349,7 @@ class ChatActivity :
         } else {
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
                 takeVideoIntent.resolveActivity(packageManager)?.also {
-                    val videoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val videoName = String.format(
-                            context.resources.getString(R.string.nc_video_filename),
-                            date
-                        )
-                        File(outputDir, "$videoName$VIDEO_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating video file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+                    val videoFile = createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
 
                     videoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
@@ -4235,6 +4479,7 @@ class ChatActivity :
     }
 
     companion object {
+        private const val VIDEO_PREVIEW_MAX_WIDTH_FRACTION = 0.75f
         val TAG = ChatActivity::class.java.simpleName
 
         /**
@@ -4266,6 +4511,7 @@ class ChatActivity :
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
+        private const val REQUEST_VIDEO_RECORD_PERMISSIONS = 224
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val PICTURE_SUFFIX = ".jpg"
