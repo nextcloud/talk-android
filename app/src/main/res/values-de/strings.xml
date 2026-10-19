@@ -398,6 +398,7 @@
     <string name="nc_message_added_to_notes">Nachricht zu den Notizen hinzugefügt</string>
     <string name="nc_message_failed">Nachricht konnte nicht gesendet werden</string>
     <string name="nc_message_failed_to_send">Fehler beim Senden der Nachricht:</string>
+    <string name="nc_message_not_added_to_notes">Die Nachricht konnte nicht zu den Notizen hinzugefügt werden</string>
     <string name="nc_message_quote_cancel_reply">Antwort abbrechen</string>
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_scheduled">Nachricht geplant</string>
