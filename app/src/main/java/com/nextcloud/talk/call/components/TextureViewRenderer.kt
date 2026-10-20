@@ -129,6 +129,15 @@ class TextureViewRenderer(context: Context) :
         eglRenderer.onFrame(frame)
     }
 
+    override fun onVisibilityAggregated(isVisible: Boolean) {
+        super.onVisibilityAggregated(isVisible)
+        if (isVisible) {
+            eglRenderer.disableFpsReduction()
+        } else {
+            eglRenderer.pauseVideo()
+        }
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         val height = bottom - top

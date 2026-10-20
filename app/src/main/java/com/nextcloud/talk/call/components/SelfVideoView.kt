@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,7 +75,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.roundToInt
 
 private val selfVideoCornerRadius = 12.dp
@@ -96,7 +96,6 @@ private const val SELF_VIDEO_LARGE_SCALE = 0.85f
 private const val SELF_VIDEO_SCRIM_ALPHA = 0.6f
 private const val SELF_VIDEO_FLIP_DURATION_MS = 500
 private const val SELF_VIDEO_FLIP_HALF_DURATION_MS = SELF_VIDEO_FLIP_DURATION_MS / 2
-private const val SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS = 2000L
 private const val SELF_VIDEO_FLIP_HALF_ROTATION = 90f
 private const val SELF_VIDEO_FLIP_FULL_ROTATION = 180f
 private const val SELF_VIDEO_FLIP_CAMERA_DISTANCE = 12f
@@ -114,6 +113,9 @@ private enum class SelfVideoSize {
  *
  * Tapping the tile toggles between the regular and an enlarged size. The enlarged tile shows buttons to switch the
  * camera and to enlarge the tile even further.
+ *
+ * [onSwitchCamera] switches the camera and calls its callback with whether the front camera is used once switching
+ * finished, also if it failed. It is null if the camera can not be switched.
  */
 @Composable
 fun SelfVideoView(
@@ -121,11 +123,11 @@ fun SelfVideoView(
     videoTrack: VideoTrack?,
     isFrontCamera: Boolean,
     isVideoEnabled: Boolean,
-    onSwitchCamera: (onSwitched: () -> Unit) -> Unit
+    onSwitchCamera: ((onSwitched: (isFrontCamera: Boolean) -> Unit) -> Unit)?
 ) {
     var size by remember(isVideoEnabled) { mutableStateOf(SelfVideoSize.REGULAR) }
     val flip = rememberSelfVideoFlip()
-    var frameAspectRatio by remember { mutableStateOf(selfVideoRegularSize.width / selfVideoRegularSize.height) }
+    var frameAspectRatio by remember { mutableFloatStateOf(selfVideoRegularSize.width / selfVideoRegularSize.height) }
     val isRegular = size == SelfVideoSize.REGULAR
     val isLarge = size == SelfVideoSize.LARGE
 
@@ -178,7 +180,7 @@ fun SelfVideoView(
 
             SelfVideoControls(
                 size = size,
-                onSwitchCamera = { flip.start(onSwitchCamera) },
+                onSwitchCamera = onSwitchCamera?.let { switchCamera -> { flip.start(switchCamera) } },
                 onToggleLarge = { size = if (isLarge) SelfVideoSize.ENLARGED else SelfVideoSize.LARGE }
             )
         }
@@ -211,14 +213,25 @@ private fun Density.initialSelfVideoOffset(maxWidth: Dp): Offset =
 /**
  * Flips the self video around its vertical axis while switching the camera: it turns edge-on and then back to the
  * front from the other side. If the first frame of the switched camera is not rendered yet when the self video is
- * edge-on, [isWaitingForCamera] is set until it is, so the last frame of the prior camera can be covered.
+ * edge-on, [isWaitingForCamera] is set until it is, so the last frame of the prior camera can be covered. No further
+ * flip is started until then.
  */
 private class SelfVideoFlip(private val scope: CoroutineScope) {
     private val rotation = Animatable(0f)
     private var flipJob: Job? = null
 
     @Volatile
+    private var pendingSwitch: CompletableDeferred<Unit>? = null
+
+    @Volatile
     var renderer: TextureViewRenderer? = null
+        set(value) {
+            field = value
+            if (value == null) {
+                // a released renderer does not render the frame of the switched camera anymore
+                pendingSwitch?.complete(Unit)
+            }
+        }
 
     var isWaitingForCamera by mutableStateOf(false)
         private set
@@ -228,16 +241,18 @@ private class SelfVideoFlip(private val scope: CoroutineScope) {
             if (it <= SELF_VIDEO_FLIP_HALF_ROTATION) -it else SELF_VIDEO_FLIP_FULL_ROTATION - it
         }
 
-    fun start(switchCamera: (onSwitched: () -> Unit) -> Unit) {
+    fun start(switchCamera: (onSwitched: (isFrontCamera: Boolean) -> Unit) -> Unit) {
         if (flipJob?.isActive == true) {
             return
         }
         val switched = CompletableDeferred<Unit>()
-        switchCamera {
+        pendingSwitch = switched
+        switchCamera { isFrontCamera ->
             val currentRenderer = renderer
             if (currentRenderer == null) {
                 switched.complete(Unit)
             } else {
+                currentRenderer.setMirror(isFrontCamera)
                 currentRenderer.notifyOnNextFrameRendered { switched.complete(Unit) }
             }
         }
@@ -250,7 +265,7 @@ private class SelfVideoFlip(private val scope: CoroutineScope) {
             if (!switched.isCompleted) {
                 isWaitingForCamera = true
                 launch {
-                    withTimeoutOrNull(SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS) { switched.await() }
+                    switched.await()
                     isWaitingForCamera = false
                 }
             }
@@ -333,7 +348,7 @@ private fun BoxScope.SelfVideoGestureLayer(
 }
 
 @Composable
-private fun BoxScope.SelfVideoControls(size: SelfVideoSize, onSwitchCamera: () -> Unit, onToggleLarge: () -> Unit) {
+private fun BoxScope.SelfVideoControls(size: SelfVideoSize, onSwitchCamera: (() -> Unit)?, onToggleLarge: () -> Unit) {
     AnimatedVisibility(
         visible = size != SelfVideoSize.REGULAR,
         modifier = Modifier.matchParentSize(),
@@ -353,12 +368,14 @@ private fun BoxScope.SelfVideoControls(size: SelfVideoSize, onSwitchCamera: () -
                 onClick = onToggleLarge,
                 modifier = Modifier.align(Alignment.TopEnd)
             )
-            SelfVideoButton(
-                icon = Icons.Filled.Cameraswitch,
-                contentDescription = stringResource(R.string.nc_call_button_content_description_switch_camera),
-                onClick = onSwitchCamera,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
+            if (onSwitchCamera != null) {
+                SelfVideoButton(
+                    icon = Icons.Filled.Cameraswitch,
+                    contentDescription = stringResource(R.string.nc_call_button_content_description_switch_camera),
+                    onClick = onSwitchCamera,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
         }
     }
 }
