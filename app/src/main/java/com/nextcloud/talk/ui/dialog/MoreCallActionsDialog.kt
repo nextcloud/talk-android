@@ -88,12 +88,6 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         if (!ImageSegmenterHelper.isAvailable()) {
             binding.backgroundBlur.visibility = View.GONE
         }
-
-        if (callActivity.isAllowedToShareScreen) {
-            binding.shareScreen.visibility = View.VISIBLE
-        } else {
-            binding.shareScreen.visibility = View.GONE
-        }
     }
 
     private fun initClickListeners() {
@@ -218,6 +212,12 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 BlurBackgroundViewModel.BackgroundBlurOn -> {
                     binding.backgroundBlurText.text = context.getText(R.string.turn_off_background_blur)
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            callActivity.callViewModel.isScreenSharingAllowed.collect { isAllowed ->
+                binding.shareScreen.visibility = if (isAllowed) View.VISIBLE else View.GONE
             }
         }
 
