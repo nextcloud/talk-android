@@ -365,6 +365,7 @@
     <string name="nc_location_unknown">Post anaithnid</string>
     <string name="nc_locked">Faoi ghlas</string>
     <string name="nc_locked_tap_to_unlock">Tapáil chun díghlasáil</string>
+    <string name="nc_login_too_many_attempts">An iomarca iarrachtaí logála isteach nár éirigh leo ón líonra seo. Bain triail as arís níos déanaí.</string>
     <string name="nc_logs_advanced_logging">Logáil ardleibhéil</string>
     <string name="nc_logs_advanced_logging_disable">Díchumasaigh logáil ardleibhéil</string>
     <string name="nc_logs_advanced_logging_enable">Cumasaigh logáil ardleibhéil</string>

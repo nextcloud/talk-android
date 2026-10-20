@@ -88,7 +88,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
-            return response.body?.string()
+            return response.body.string()
         }
     }
 
@@ -129,7 +129,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
-            return response.body?.string()
+            return response.body.string()
         }
     }
 
@@ -157,9 +157,9 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             client.newCall(request).execute()
                 .use { response ->
                     val status: Int = response.code
-                    val responseBody = response.body?.string()
+                    val responseBody = response.body.string()
 
-                    result = if (response.isSuccessful && responseBody?.isNotEmpty() == true) {
+                    result = if (response.isSuccessful && responseBody.isNotEmpty()) {
                         val jsonObject = JsonParser.parseString(responseBody).asJsonObject
                         val server: String = jsonObject.get("server").asString
                         val loginName: String = jsonObject.get("loginName").asString

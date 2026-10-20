@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
     test:
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         services:
             server:
                 image: ${{ matrix.server == 'stable22' && 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.0:1' || 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.3:latest' }}
@@ -36,7 +36,7 @@ jobs:
 
             -   name: configure server
                 run: |
-                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
+                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-system-x86 --yes
                     sudo chmod 666 /dev/kvm
                     docker cp .github/workflows/configServer.sh server:/tmp/
                     docker exec server chmod +x /tmp/configServer.sh
@@ -47,17 +47,10 @@ jobs:
                     docker exec server /usr/local/bin/run.sh
 
             -   name: set up JDK 21
-                uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+                uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
                 with:
                     distribution: "temurin"
                     java-version: 25
-
-            -   name: Enable KVM group perms
-                run: |
-                    echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                    sudo udevadm control --reload-rules
-                    sudo udevadm trigger --name-match=kvm
-
 
             -   name: create AVD and generate snapshot for caching
                 uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0

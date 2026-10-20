@@ -240,7 +240,7 @@
     <string name="nc_conversation_tags_save">Kaydet</string>
     <string name="nc_conversation_type_defaults">Bu görüşme türünün varsayılan ayarları:</string>
     <string name="nc_conversation_type_defaults_hint">Görüşme oluşturulduktan sonra bu ayarlar değiştirilebilir</string>
-    <string name="nc_conversation_type_lobby">Girişi kullanıma alındı, görüşmeye katılım sorumlular ile kısıtlandı</string>
+    <string name="nc_conversation_type_lobby">Bekleme odası kullanıma alındı, görüşmeye katılım sorumlular ile kısıtlandı</string>
     <string name="nc_conversation_type_mentions_moderators">Yalnızca sorumlular herkesi anabilir</string>
     <string name="nc_conversation_type_message_expiration">İletiler %1$s geçersiz oluyor</string>
     <string name="nc_conversation_type_message_expiration_custom">İleti geçerlilik süresi açık</string>
@@ -356,10 +356,10 @@
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
-    <string name="nc_lobby">Giriş</string>
+    <string name="nc_lobby">Bekleme odası</string>
     <string name="nc_lobby_start_date">Bu toplantı %1$s zamanına ayarlanmış</string>
     <string name="nc_lobby_start_soon">Toplantı yakında başlayacak</string>
-    <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
+    <string name="nc_lobby_waiting">Şu anda bekleme odasında bekliyorsunuz</string>
     <string name="nc_location_current_position_description">Geçerli konumunuz</string>
     <string name="nc_location_permission_required">konum izinleri gerekli</string>
     <string name="nc_location_unknown">Konum bilinmiyor</string>
@@ -398,6 +398,7 @@
     <string name="nc_message_added_to_notes">İleti notlara eklendi</string>
     <string name="nc_message_failed">İleti gönderilemedi</string>
     <string name="nc_message_failed_to_send">İleti gönderilemedi.</string>
+    <string name="nc_message_not_added_to_notes">İleti notlara eklenemedi</string>
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <string name="nc_message_read">İleti okundu</string>
     <string name="nc_message_scheduled">İleti zamanlandı</string>
@@ -476,7 +477,7 @@
     <string name="nc_push_notification_error">Ne yazık ki bir sorun çıktı. Hata: %1$s</string>
     <string name="nc_push_notification_fetch_error">Ne yazık ki bir sorun çıktı. Deneme anında bildirimi alınamadı</string>
     <string name="nc_push_notification_message">Anında bildirim gönderildi. Bu aygıtta \'Anlık bildirimler denemesi\' konulu bir bildirim almalısınız</string>
-    <string name="nc_reauthorize_different_account">Farklı bir hesapla oturum açtınız. Yeniden yetkilendirmek istediğiniz hesap ile oturum açın.</string>
+    <string name="nc_reauthorize_different_account">Farklı bir hesapla oturum açtınız. Yeniden yetki vermek istediğiniz hesap ile oturum açın.</string>
     <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remote_wipe_logged_out">Bu hesabın kimlik doğrulama bilgileri artık geçerli değil</string>
     <string name="nc_remove_color">Rengi kaldır</string>
@@ -664,7 +665,7 @@
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
-    <string name="nc_webinar_description">Giriş ile kısıtlanmış görüşme, herkese açık internet toplantıları için ideal</string>
+    <string name="nc_webinar_description">Bekleme odası ile görüşme, herkese açık internet toplantıları için ideal</string>
     <string name="nc_yes">Evet</string>
     <string name="nc_zoom_in">Yakınlaştır</string>
     <string name="nc_zoom_out">Uzaklaştır</string>

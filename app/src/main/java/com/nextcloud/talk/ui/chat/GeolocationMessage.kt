@@ -37,19 +37,15 @@ import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import java.time.LocalDate
 import org.maplibre.compose.camera.CameraPosition
-import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.image
+import org.maplibre.compose.interaction.MapInteractions
 import org.maplibre.compose.layers.SymbolLayer
-import org.maplibre.compose.map.GestureOptions
-import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
-import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.map.rememberMapState
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
-import org.maplibre.compose.style.rememberStyleState
-import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.Position
 
 @Composable
@@ -132,9 +128,6 @@ fun OpenStreetMap(latitude: Double, longitude: Double) {
     } else {
         "asset://map_style_light.json"
     }
-    val cameraState =
-        rememberCameraState(CameraPosition(target = Position(longitude, latitude), zoom = 12.0))
-
     val markerJson = """
         {
           "type": "FeatureCollection",
@@ -151,21 +144,9 @@ fun OpenStreetMap(latitude: Double, longitude: Double) {
         }
     """.trimIndent()
 
-    MaplibreMap(
-        modifier = Modifier.height(200.dp),
+    val mapState = rememberMapState(
         baseStyle = BaseStyle.Uri(styleUri),
-        cameraState = cameraState,
-        styleState = rememberStyleState(),
-        onMapClick = { _, _ -> ClickResult.Pass },
-        options = MapOptions(
-            ornamentOptions = OrnamentOptions.AllDisabled,
-            gestureOptions = GestureOptions(
-                isScrollEnabled = false,
-                isZoomEnabled = false,
-                isRotateEnabled = false,
-                isTiltEnabled = false
-            )
-        )
+        initialCameraPosition = CameraPosition(center = Position(longitude, latitude), zoom = 12.0)
     ) {
         val markerSource = rememberGeoJsonSource(
             GeoJsonData.JsonString(markerJson)
@@ -180,6 +161,14 @@ fun OpenStreetMap(latitude: Double, longitude: Double) {
             iconAllowOverlap = const(true)
         )
     }
+
+    // static preview: no camera movement and no ornaments; taps are handled by the overlay in GeolocationContent
+    MaplibreMap(
+        modifier = Modifier.height(200.dp),
+        state = mapState,
+        interactions = MapInteractions.None,
+        overlay = {}
+    )
 }
 
 private fun openGeoLink(context: Context, geoLink: String) {

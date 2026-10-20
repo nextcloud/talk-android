@@ -1224,7 +1224,7 @@ class CallActivity : CallBaseActivity() {
                     applicationContext,
                     conversationName,
                     intent.extras,
-                    CallForegroundService.AvatarInfo(roomToken, baseUrl, credentials)
+                    CallForegroundService.AvatarInfo(roomToken, baseUrl, credentials, isOneToOneConversation)
                 )
             }
 

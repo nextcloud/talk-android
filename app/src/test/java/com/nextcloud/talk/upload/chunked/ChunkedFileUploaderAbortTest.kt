@@ -11,9 +11,9 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.SocketPolicy
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
+import mockwebserver3.SocketEffect
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -63,7 +63,7 @@ class ChunkedFileUploaderAbortTest {
 
     @After
     fun tearDown() {
-        server.shutdown()
+        server.close()
     }
 
     @Test
@@ -77,7 +77,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `does not throw and does not report success when the connection drops`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AFTER_REQUEST })
+        server.enqueue(MockResponse.Builder().onResponseStart(SocketEffect.CloseSocket()).build())
 
         uploader.abortUpload { successCalls++ }
 
@@ -87,7 +87,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `does not throw and does not report success on a server error`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().setResponseCode(SERVER_ERROR))
+        server.enqueue(MockResponse(code = SERVER_ERROR))
 
         uploader.abortUpload { successCalls++ }
 
@@ -97,7 +97,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `reports success when the upload folder is already gone`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
+        server.enqueue(MockResponse(code = NOT_FOUND))
 
         uploader.abortUpload { successCalls++ }
 
@@ -120,7 +120,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `reports success when the upload folder is deleted`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().setResponseCode(NO_CONTENT))
+        server.enqueue(MockResponse(code = NO_CONTENT))
 
         uploader.abortUpload { successCalls++ }
 
@@ -130,7 +130,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `does not throw when the success callback throws`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().setResponseCode(NO_CONTENT))
+        server.enqueue(MockResponse(code = NO_CONTENT))
 
         uploader.abortUpload { throw IllegalStateException("callback failed") }
     }
@@ -138,7 +138,7 @@ class ChunkedFileUploaderAbortTest {
     @Test
     fun `does not throw when the success callback throws for a folder that is already gone`() {
         val uploader = startedUploader()
-        server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
+        server.enqueue(MockResponse(code = NOT_FOUND))
 
         uploader.abortUpload { throw IllegalStateException("callback failed") }
     }
@@ -148,9 +148,9 @@ class ChunkedFileUploaderAbortTest {
     /** Runs a rejected upload so the uploader knows its upload folder, then drops the recorded requests. */
     private fun startedUploader(): ChunkedFileUploader {
         val file = tempFolder.newFile("test.txt").apply { writeBytes(ByteArray(FILE_SIZE)) }
-        server.enqueue(MockResponse().setResponseCode(CREATED))
-        server.enqueue(MockResponse().setResponseCode(NOT_FOUND))
-        server.enqueue(MockResponse().setResponseCode(FORBIDDEN))
+        server.enqueue(MockResponse(code = CREATED))
+        server.enqueue(MockResponse(code = NOT_FOUND))
+        server.enqueue(MockResponse(code = FORBIDDEN))
         val uploader = uploader()
         runCatching { uploader.upload(file, "text/plain".toMediaType(), "/Talk/test.txt") }
         repeat(server.requestCount) { server.takeRequest(1, TimeUnit.SECONDS) }

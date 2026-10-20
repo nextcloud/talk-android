@@ -925,7 +925,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun loadConversationAvatar(roomToken: String): Bitmap? =
-        NotificationUtils.loadConversationAvatarBitmapSync(user.baseUrl, roomToken, credentials, context!!)
+        NotificationUtils.loadConversationAvatarBitmapSync(
+            user.baseUrl,
+            roomToken,
+            credentials,
+            context!!,
+            isOneToOne = false
+        )
 
     private fun loadImageBitmapSync(imageUrl: String): Bitmap? {
         var bitmap: Bitmap? = null

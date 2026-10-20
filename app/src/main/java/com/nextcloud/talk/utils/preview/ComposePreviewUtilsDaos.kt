@@ -66,6 +66,9 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         /* */
     }
 
+    override suspend fun hasServerCopyOfReferenceId(internalConversationId: String, referenceId: String): Boolean =
+        false
+
     override fun getChatMessageForConversation(
         internalConversationId: String,
         messageId: Long
@@ -289,6 +292,8 @@ class DummyUserDaoImpl : UsersDao {
 
 class DummyConversationDaoImpl : ConversationsDao {
     override fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>> = flowOf()
+
+    override suspend fun getConversationIdsForUser(accountId: Long): List<String> = emptyList()
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
 

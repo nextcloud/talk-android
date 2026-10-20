@@ -10,7 +10,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
     id("com.google.devtools.ksp") version "2.3.12"
@@ -29,7 +29,8 @@ val daggerVersion = "2.60.1"
 val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
-val okhttpVersion = "4.12.0"
+val maplibreComposeVersion = "0.20.0"
+val okhttpVersion = "5.5.0"
 val markwonVersion = "4.6.2"
 val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
@@ -61,8 +62,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010012
-        versionName = "25.1.0 Alpha 12"
+        versionCode = 250010013
+        versionName = "25.1.0 Alpha 13"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -154,7 +155,6 @@ android {
                 "AndroidGradlePluginVersion",
                 "GradleDependency",
                 "InvalidPackage",
-                "LogNotTimber",
                 "MissingTranslation",
                 "PrivateResource",
                 "UnusedQuantity",
@@ -322,16 +322,11 @@ dependencies {
     implementation("com.github.yalantis:ucrop:2.2.11")
 
     implementation("io.github.elye:loaderviewlibrary:3.0.0")
-    // android-sdk 13.x defaults to a Vulkan renderer and declares a hard
-    // (required=true) android.hardware.vulkan.version uses-feature, which shrinks
-    // the Play Console "supported devices" count. Use the OpenGL ES variant instead.
-    implementation("org.maplibre.compose:maplibre-compose:0.14.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.compose:maplibre-compose-material3:0.14.0") {
-        exclude(group = "org.maplibre.gl", module = "android-sdk")
-    }
-    implementation("org.maplibre.gl:android-sdk-opengl:13.0.2")
+    implementation("org.maplibre.compose:maplibre-compose:$maplibreComposeVersion")
+    implementation("org.maplibre.compose:maplibre-compose-material3:$maplibreComposeVersion")
+    // The Vulkan runtime would need a Vulkan-capable device, which shrinks
+    // the Play Console "supported devices" count. Use the OpenGL ES runtime instead.
+    implementation("org.maplibre.compose:maplibre-compose-runtime-opengl-android:$maplibreComposeVersion")
     implementation("fr.dudie:nominatim-api:3.4") {
         //noinspection DuplicatePlatformClasses
         exclude(group = "org.apache.httpcomponents", module = "httpclient")
@@ -342,10 +337,10 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.34.0")
     implementation("com.github.nextcloud.android-common:core:0.34.0")
-    implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
+    implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.1")
 
-    "gplayImplementation"("com.google.android.gms:play-services-base:18.11.0")
-    "gplayImplementation"("com.google.firebase:firebase-messaging:25.1.3")
+    "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
+    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
 
     implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
@@ -365,14 +360,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.22.0")
+    testImplementation("org.mockito:mockito-core:5.24.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     androidTestImplementation("androidx.test:core:1.7.0")
 
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
-    androidTestImplementation("org.mockito:mockito-android:5.22.0")
+    androidTestImplementation("org.mockito:mockito-android:5.24.0")
     testImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion") {
@@ -388,9 +383,10 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.1.3") // DO NOT REMOVE
-    testImplementation("com.google.crypto.tink:tink:1.23.0")
+    // no version: consistent resolution aligns it with the tink that org.unifiedpush.android:connector ships
+    testImplementation("com.google.crypto.tink:tink")
     testImplementation("androidx.room:room-testing:$roomVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:$okhttpVersion")
     testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.60.1")
     testImplementation("org.robolectric:robolectric:4.17")
