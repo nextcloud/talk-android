@@ -33,7 +33,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
-            if (isPipModePossible()) {
+            if (shouldEnterPipModeAutomatically()) {
                 enterPipMode();
             } else {
                 moveTaskToBack(true);
@@ -110,7 +110,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
                 + " isInPictureInPictureMode=" + isInPictureInPictureMode());
         if (isTopResumedActivity || isInPictureInPictureMode()
-                || !isPipModePossible()
+                || !shouldEnterPipModeAutomatically()
                 || isChangingConfigurations()
                 || isFinishing()) {
             return;
@@ -129,7 +129,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         // On API 29+, onTopResumedActivityChanged already handled this.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
                 && !isInPictureInPictureMode()
-                && isPipModePossible()
+                && shouldEnterPipModeAutomatically()
                 && !isChangingConfigurations()
                 && !isFinishing()) {
             enterPipMode();
@@ -152,7 +152,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         // moveTaskToBack here: onUserLeaveHint also fires when a transient overlay like the
         // permission dialog appears at call start, which would throw the call to the background.
         if (!isInPipMode
-                && isPipModePossible()
+                && shouldEnterPipModeAutomatically()
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             enterPipMode();
         }
@@ -170,6 +170,30 @@ public abstract class CallBaseActivity extends BaseActivity {
             // If PIP is not available, move to background instead of finishing
             Log.d(TAG, "PIP is not available, moving call to background.");
             moveTaskToBack(true);
+        }
+    }
+
+    /**
+     * Whether picture in picture should not be entered when the user leaves the activity (for example, with the back
+     * or home buttons). Picture in picture can still be entered explicitly.
+     * <p>
+     * {@link #updatePipAutoEnter()} must be called whenever the returned value changes.
+     */
+    protected boolean isAutomaticPipModeSuppressed() {
+        return false;
+    }
+
+    private boolean shouldEnterPipModeAutomatically() {
+        return isPipModePossible() && !isAutomaticPipModeSuppressed();
+    }
+
+    /**
+     * Updates whether the system enters picture in picture automatically when leaving the activity.
+     */
+    void updatePipAutoEnter() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isPipModePossible()) {
+            mPictureInPictureParamsBuilder.setAutoEnterEnabled(!isAutomaticPipModeSuppressed());
+            setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
     }
 

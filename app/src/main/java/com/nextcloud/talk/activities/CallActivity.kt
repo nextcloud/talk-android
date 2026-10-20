@@ -3782,6 +3782,7 @@ class CallActivity : CallBaseActivity() {
             localScreenStream = stream
         }
         callViewModel.setLocalScreenSharing(true)
+        updatePipAutoEnter()
 
         if (hasMCU) {
             addScreenSharePeerConnection(webSocketClient!!.sessionId)
@@ -3818,7 +3819,14 @@ class CallActivity : CallBaseActivity() {
 
         CallForegroundService.stopScreenSharing(applicationContext)
         callViewModel.setLocalScreenSharing(false)
+        runOnUiThread { updatePipAutoEnter() }
     }
+
+    /**
+     * Picture in picture would be shown on top of the shared screen, so the call is just moved to the background
+     * while sharing; the call notification shows that the screen is being shared.
+     */
+    override fun isAutomaticPipModeSuppressed(): Boolean = localScreenStream != null
 
     private fun releaseScreenCapture() {
         getSystemService(DisplayManager::class.java).unregisterDisplayListener(screenCaptureDisplayListener)

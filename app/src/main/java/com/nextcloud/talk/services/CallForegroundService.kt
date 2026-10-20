@@ -208,10 +208,16 @@ class CallForegroundService : Service() {
             return buildCallStyleNotification(contentTitle, pendingIntent)
         }
 
+        val contentText = if (isScreenSharing) {
+            getString(R.string.nc_call_ongoing_notification_screen_sharing)
+        } else {
+            getString(R.string.nc_call_ongoing_notification_content)
+        }
+
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
-            .setContentText(getString(R.string.nc_call_ongoing_notification_content))
-            .setSmallIcon(R.drawable.ic_call_white_24dp)
+            .setContentText(contentText)
+            .setSmallIcon(getSmallIcon())
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -248,7 +254,7 @@ class CallForegroundService : Service() {
 
         return Notification.Builder(this, channelId)
             .setStyle(callStyle)
-            .setSmallIcon(R.drawable.ic_call_white_24dp)
+            .setSmallIcon(getSmallIcon())
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_CALL)
@@ -260,9 +266,22 @@ class CallForegroundService : Service() {
                     builder.setWhen(callStartTime)
                     builder.setShowWhen(true)
                 }
+                if (isScreenSharing) {
+                    builder.setContentText(getString(R.string.nc_call_ongoing_notification_screen_sharing))
+                }
             }
             .build()
     }
+
+    /**
+     * The small icon is shown in the status bar, so it indicates when the screen is being shared.
+     */
+    private fun getSmallIcon(): Int =
+        if (isScreenSharing) {
+            R.drawable.ic_screen_share_white_24dp
+        } else {
+            R.drawable.ic_call_white_24dp
+        }
 
     /**
      * The CallStyle notification's Person icon defaults to a generic phone icon; this fetches the
