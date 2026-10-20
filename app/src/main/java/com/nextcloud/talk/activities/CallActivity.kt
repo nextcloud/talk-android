@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
+import android.hardware.display.DisplayManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioRecord
@@ -42,6 +43,7 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Display
 import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
@@ -299,9 +301,16 @@ class CallActivity : CallBaseActivity() {
     private var screenCapturer: ScreenCapturerAndroid? = null
     private var screenSurfaceTextureHelper: SurfaceTextureHelper? = null
     private var screenVideoSource: VideoSource? = null
+    private var screenCaptureSize: Pair<Int, Int>? = null
+    private val screenCaptureDisplayListener = ScreenCaptureDisplayListener()
 
-    // Guards localScreenStream and screenSharePeerConnectionWrapperList, which are changed both from the main thread
-    // and from the signaling thread.
+    private var conversationScreenSharePermission = false
+
+    // The permission from signaling is more recent than the one from the conversation, so it takes precedence.
+    private var signalingScreenSharePermission: Boolean? = null
+
+    // Guards the screen sharing state (stream, peer connections and capturer), which is changed both from the main
+    // thread and from the signaling thread.
     private val screenShareLock = Any()
 
     @Volatile
@@ -467,14 +476,12 @@ class CallActivity : CallBaseActivity() {
     private var currentConversation: ConversationDto? = null
         set(value) {
             field = value
-            isAllowedToShareScreen = value != null &&
+            conversationScreenSharePermission = value != null &&
                 ParticipantPermissions(
                     conversationUser.capabilities?.spreedCapability,
                     ConversationModel.mapToConversationModel(value, conversationUser)
                 ).canPublishScreen()
-            if (binding != null) {
-                initFeaturesVisibility()
-            }
+            applyScreenSharePermission()
         }
 
     private lateinit var micInputAudioRecorder: AudioRecord
@@ -3415,6 +3422,22 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private inner class ScreenCaptureDisplayListener : DisplayManager.DisplayListener {
+        override fun onDisplayAdded(displayId: Int) {
+            // unused atm
+        }
+
+        override fun onDisplayRemoved(displayId: Int) {
+            // unused atm
+        }
+
+        override fun onDisplayChanged(displayId: Int) {
+            if (displayId == Display.DEFAULT_DISPLAY) {
+                updateScreenCaptureSize()
+            }
+        }
+    }
+
     private inner class ScreenSharePublisherPeerConnectionObserver : PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream) {
             // unused atm
@@ -3713,10 +3736,6 @@ class CallActivity : CallBaseActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         eventBus.post(ConfigurationChangeEvent())
-        screenCapturer?.let {
-            val (width, height) = getScreenCaptureSize()
-            it.changeCaptureFormat(width, height, SCREEN_SHARE_FRAME_RATE)
-        }
     }
 
     @Volatile
@@ -3740,18 +3759,33 @@ class CallActivity : CallBaseActivity() {
     private fun updateScreenSharePermission(participants: List<ParticipantDto?>) {
         val ownSessionId = webSocketClient?.sessionId ?: callSession
         val permissions = participants.firstOrNull { it?.sessionId == ownSessionId }?.participantPermissions ?: return
-        val isAllowed = (permissions and ParticipantPermissions.PUBLISH_SCREEN) == ParticipantPermissions.PUBLISH_SCREEN
+        val isAllowed = ParticipantPermissions.canPublishScreen(
+            conversationUser.capabilities?.spreedCapability,
+            permissions
+        )
 
         runOnUiThread {
-            if (isAllowed == isAllowedToShareScreen) {
-                return@runOnUiThread
-            }
-            isAllowedToShareScreen = isAllowed
-            initFeaturesVisibility()
-            if (!isAllowed && localScreenStream != null) {
-                stopScreenSharing()
-                Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_allowed, Snackbar.LENGTH_LONG).show()
-            }
+            signalingScreenSharePermission = isAllowed
+            applyScreenSharePermission()
+        }
+    }
+
+    /**
+     * Must be called on the main thread.
+     */
+    private fun applyScreenSharePermission() {
+        val isAllowed = signalingScreenSharePermission ?: conversationScreenSharePermission
+        if (isAllowed == isAllowedToShareScreen) {
+            return
+        }
+        isAllowedToShareScreen = isAllowed
+        if (binding == null) {
+            return
+        }
+        initFeaturesVisibility()
+        if (!isAllowed && localScreenStream != null) {
+            stopScreenSharing()
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_allowed, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -3776,6 +3810,10 @@ class CallActivity : CallBaseActivity() {
         val permissionResultData = result.data
         if (result.resultCode != RESULT_OK || permissionResultData == null) {
             Log.d(TAG, "Screen sharing permission was not granted")
+            return
+        }
+        if (!isConnectionEstablished || currentCallStatus === CallStatus.LEAVING) {
+            Log.d(TAG, "Call ended while asking for the screen sharing permission")
             return
         }
 
@@ -3813,21 +3851,33 @@ class CallActivity : CallBaseActivity() {
         )
         val surfaceTextureHelper = SurfaceTextureHelper.create("ScreenCaptureThread", rootEglBase!!.eglBaseContext)
         val videoSource = peerConnectionFactory!!.createVideoSource(true)
-        screenCapturer = capturer
-        screenSurfaceTextureHelper = surfaceTextureHelper
-        screenVideoSource = videoSource
+        val captureSize = getScreenCaptureSize()
+        synchronized(screenShareLock) {
+            screenCapturer = capturer
+            screenSurfaceTextureHelper = surfaceTextureHelper
+            screenVideoSource = videoSource
+            screenCaptureSize = captureSize
+        }
 
         capturer.initialize(surfaceTextureHelper, applicationContext, videoSource.capturerObserver)
-        try {
-            val (width, height) = getScreenCaptureSize()
-            capturer.startCapture(width, height, SCREEN_SHARE_FRAME_RATE)
+        // The media projection may fail to start, for example, if the permission expired or was revoked.
+        val captureError = try {
+            capturer.startCapture(captureSize.first, captureSize.second, SCREEN_SHARE_FRAME_RATE)
+            null
         } catch (e: SecurityException) {
-            Log.e(TAG, "Failed to start screen capture", e)
+            e
+        } catch (e: IllegalStateException) {
+            e
+        }
+        if (captureError != null) {
+            Log.e(TAG, "Failed to start screen capture", captureError)
             releaseScreenCapture()
             CallForegroundService.stopScreenSharing(applicationContext)
             showScreenSharingError()
             return
         }
+        getSystemService(DisplayManager::class.java)
+            .registerDisplayListener(screenCaptureDisplayListener, Handler(Looper.getMainLooper()))
 
         val stream = peerConnectionFactory!!.createLocalMediaStream("NCSS")
         stream.addTrack(peerConnectionFactory!!.createVideoTrack("NCs0", videoSource))
@@ -3874,7 +3924,22 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun releaseScreenCapture() {
-        screenCapturer?.let {
+        getSystemService(DisplayManager::class.java).unregisterDisplayListener(screenCaptureDisplayListener)
+
+        val capturer: ScreenCapturerAndroid?
+        val videoSource: VideoSource?
+        val surfaceTextureHelper: SurfaceTextureHelper?
+        synchronized(screenShareLock) {
+            capturer = screenCapturer
+            videoSource = screenVideoSource
+            surfaceTextureHelper = screenSurfaceTextureHelper
+            screenCapturer = null
+            screenVideoSource = null
+            screenSurfaceTextureHelper = null
+            screenCaptureSize = null
+        }
+
+        capturer?.let {
             try {
                 it.stopCapture()
             } catch (e: InterruptedException) {
@@ -3882,11 +3947,20 @@ class CallActivity : CallBaseActivity() {
             }
             it.dispose()
         }
-        screenCapturer = null
-        screenVideoSource?.dispose()
-        screenVideoSource = null
-        screenSurfaceTextureHelper?.dispose()
-        screenSurfaceTextureHelper = null
+        videoSource?.dispose()
+        surfaceTextureHelper?.dispose()
+    }
+
+    private fun updateScreenCaptureSize() {
+        val captureSize = getScreenCaptureSize()
+        synchronized(screenShareLock) {
+            val capturer = screenCapturer ?: return
+            if (captureSize == screenCaptureSize) {
+                return
+            }
+            screenCaptureSize = captureSize
+            capturer.changeCaptureFormat(captureSize.first, captureSize.second, SCREEN_SHARE_FRAME_RATE)
+        }
     }
 
     private fun showScreenSharingError() {
@@ -3894,23 +3968,17 @@ class CallActivity : CallBaseActivity() {
     }
 
     /**
-     * Returns the size of the whole display, independently of the size of the call window (for example, in picture
-     * in picture or split screen), scaled down to [SCREEN_SHARE_MAX_DIMENSION].
+     * Returns the size of the whole display in its current rotation, independently of the size of the call window
+     * (for example, in picture in picture or split screen) and of whether the call is visible, scaled down to
+     * [SCREEN_SHARE_MAX_DIMENSION].
      */
     private fun getScreenCaptureSize(): Pair<Int, Int> {
-        val displayWidth: Int
-        val displayHeight: Int
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val bounds = windowManager.maximumWindowMetrics.bounds
-            displayWidth = bounds.width()
-            displayHeight = bounds.height()
-        } else {
-            val displayMetrics = DisplayMetrics()
-            @Suppress("DEPRECATION")
-            windowManager.defaultDisplay.getRealMetrics(displayMetrics)
-            displayWidth = displayMetrics.widthPixels
-            displayHeight = displayMetrics.heightPixels
-        }
+        val displayMetrics = DisplayMetrics()
+        // The configuration of the activity is not updated while it is stopped, so the display is queried directly.
+        @Suppress("DEPRECATION")
+        getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY).getRealMetrics(displayMetrics)
+        val displayWidth = displayMetrics.widthPixels
+        val displayHeight = displayMetrics.heightPixels
 
         val scale = max(1f, max(displayWidth, displayHeight).toFloat() / SCREEN_SHARE_MAX_DIMENSION)
         // Video encoders expect even dimensions.
