@@ -81,6 +81,18 @@
                         tools:visibility="visible">
                     </ImageView>
 
+                    <ImageView
+                        android:id="@+id/call_screen_sharing_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standard_quarter_margin"
+                        android:contentDescription="@string/nc_stop_screen_sharing"
+                        android:src="@drawable/screen_share_indicator"
+                        android:translationZ="2dp"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+                    </ImageView>
+
                     <TextView
                         android:id="@+id/call_duration"
                         android:layout_width="wrap_content"

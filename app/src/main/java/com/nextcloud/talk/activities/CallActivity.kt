@@ -617,6 +617,7 @@ class CallActivity : CallBaseActivity() {
 
         initRaiseHandViewModel()
         initCallRecordingViewModel(extras.getInt(KEY_RECORDING_STATE, 0))
+        initScreenSharingIndicator()
 
         initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
@@ -696,6 +697,31 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
+    }
+
+    private fun initScreenSharingIndicator() {
+        lifecycleScope.launch {
+            callViewModel.isLocalScreenSharing.collect { isSharing ->
+                binding?.callScreenSharingIndicator?.visibility = if (isSharing) View.VISIBLE else View.GONE
+            }
+        }
+        binding!!.callScreenSharingIndicator.setOnClickListener { showStopScreenSharingDialog() }
+    }
+
+    private fun showStopScreenSharingDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_stop_screen_sharing)
+            .setMessage(R.string.nc_stop_screen_sharing_confirm_message)
+            .setPositiveButton(R.string.nc_stop_screen_sharing) { _: DialogInterface?, _: Int ->
+                stopScreenSharing()
+            }
+            .setNegativeButton(R.string.nc_common_dismiss, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun initRaiseHandViewModel() {
