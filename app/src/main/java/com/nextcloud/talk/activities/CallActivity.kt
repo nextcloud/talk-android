@@ -1134,7 +1134,7 @@ class CallActivity : CallBaseActivity() {
                 videoTrack = localVideoTrack,
                 isFrontCamera = isFrontCamera,
                 isVideoEnabled = isSelfVideoEnabled,
-                onSwitchCamera = { switchCamera() }
+                onSwitchCamera = { onSwitched -> switchCamera(onSwitched) }
             )
         }
 
@@ -1497,15 +1497,24 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    fun switchCamera() {
+    /**
+     * Switches between the available cameras. [onSwitched] is called when switching finished, also if it failed.
+     */
+    fun switchCamera(onSwitched: () -> Unit = {}) {
         val cameraVideoCapturer = videoCapturer as CameraVideoCapturer?
-        cameraVideoCapturer?.switchCamera(object : CameraSwitchHandler {
+        if (cameraVideoCapturer == null) {
+            onSwitched()
+            return
+        }
+        cameraVideoCapturer.switchCamera(object : CameraSwitchHandler {
             override fun onCameraSwitchDone(currentCameraIsFront: Boolean) {
                 isFrontCamera = currentCameraIsFront
+                onSwitched()
             }
 
             override fun onCameraSwitchError(s: String) {
                 Log.e(TAG, "Error while switching camera: $s")
+                onSwitched()
             }
         })
     }

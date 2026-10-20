@@ -40,12 +40,20 @@ class TextureViewRenderer(context: Context) :
     private val isFirstFrameRendered = AtomicBoolean(false)
     private var onFirstFrameRendered: (() -> Unit)? = null
 
+    private val nextFrameLock = Any()
+    private var onNextFrameRendered: (() -> Unit)? = null
+    private var isNextFrameReceived = false
+
     init {
         surfaceTextureListener = this
         eglRenderer.addRenderListener {
             if (isFirstFrameRendered.compareAndSet(false, true)) {
                 mainHandler.post { onFirstFrameRendered?.invoke() }
             }
+            val callback = synchronized(nextFrameLock) {
+                if (isNextFrameReceived) onNextFrameRendered.also { onNextFrameRendered = null } else null
+            }
+            callback?.invoke()
         }
     }
 
@@ -66,6 +74,17 @@ class TextureViewRenderer(context: Context) :
         onFirstFrameRendered = listener
     }
 
+    /**
+     * Calls [callback] once the first frame received after this call was rendered. The callback is called on the
+     * render thread.
+     */
+    fun notifyOnNextFrameRendered(callback: () -> Unit) {
+        synchronized(nextFrameLock) {
+            onNextFrameRendered = callback
+            isNextFrameReceived = false
+        }
+    }
+
     fun setMirror(mirror: Boolean) {
         eglRenderer.setMirror(mirror)
     }
@@ -84,6 +103,11 @@ class TextureViewRenderer(context: Context) :
     }
 
     override fun onFrame(frame: VideoFrame) {
+        synchronized(nextFrameLock) {
+            if (onNextFrameRendered != null) {
+                isNextFrameReceived = true
+            }
+        }
         eglRenderer.onFrame(frame)
     }
 

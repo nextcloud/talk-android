@@ -8,8 +8,12 @@
 package com.nextcloud.talk.call.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -37,6 +41,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +51,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
@@ -61,6 +67,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import org.webrtc.EglBase
 import org.webrtc.VideoTrack
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.roundToInt
 
 private val selfVideoCornerRadius = 12.dp
@@ -80,6 +91,11 @@ private val selfVideoShadowElevation = 8.dp
 private const val SELF_VIDEO_BORDER_ALPHA = 0.4f
 private const val SELF_VIDEO_LARGE_SCALE = 0.85f
 private const val SELF_VIDEO_SCRIM_ALPHA = 0.6f
+private const val SELF_VIDEO_FLIP_DURATION_MS = 500
+private const val SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS = 2000L
+private const val SELF_VIDEO_FLIP_HALF_ROTATION = 90f
+private const val SELF_VIDEO_FLIP_FULL_ROTATION = 180f
+private const val SELF_VIDEO_FLIP_CAMERA_DISTANCE = 12f
 
 private enum class SelfVideoSize {
     REGULAR,
@@ -101,9 +117,10 @@ fun SelfVideoView(
     videoTrack: VideoTrack?,
     isFrontCamera: Boolean,
     isVideoEnabled: Boolean,
-    onSwitchCamera: () -> Unit
+    onSwitchCamera: (onSwitched: () -> Unit) -> Unit
 ) {
     var size by remember { mutableStateOf(SelfVideoSize.REGULAR) }
+    val flip = rememberSelfVideoFlip()
     val isRegular = size == SelfVideoSize.REGULAR
     val isLarge = size == SelfVideoSize.LARGE
 
@@ -136,11 +153,12 @@ fun SelfVideoView(
 
         Box(
             modifier = Modifier.selfVideoTile(
+                rotationY = { flip.rotationY },
                 offset = lerp(clampedOffset, largeOffset, largeFraction),
                 size = lerp(DpSize(tileWidth, tileHeight), largeSize, largeFraction)
             )
         ) {
-            SelfVideoRenderer(eglBase, videoTrack, isFrontCamera)
+            SelfVideoRenderer(eglBase, videoTrack, isFrontCamera, flip.isWaitingForCamera) { flip.renderer = it }
 
             SelfVideoGestureLayer(
                 gestureKey = orientation,
@@ -158,7 +176,7 @@ fun SelfVideoView(
 
             SelfVideoControls(
                 size = size,
-                onSwitchCamera = onSwitchCamera,
+                onSwitchCamera = { flip.start(onSwitchCamera) },
                 onToggleLarge = { size = if (isLarge) SelfVideoSize.ENLARGED else SelfVideoSize.LARGE }
             )
         }
@@ -172,11 +190,76 @@ private fun Density.initialSelfVideoOffset(maxWidth: Dp): Offset =
         selfVideoInitialOffsetY.toPx()
     )
 
-private fun Modifier.selfVideoTile(offset: Offset, size: DpSize): Modifier {
+/**
+ * Flips the self video around its vertical axis while switching the camera: it turns edge-on and then back to the
+ * front from the other side. If the first frame of the switched camera is not rendered yet when the self video is
+ * edge-on, [isWaitingForCamera] is set until it is.
+ */
+private class SelfVideoFlip(private val scope: CoroutineScope) {
+    private val rotation = Animatable(0f)
+    private var flipJob: Job? = null
+
+    @Volatile
+    var renderer: TextureViewRenderer? = null
+
+    var isWaitingForCamera by mutableStateOf(false)
+        private set
+
+    val rotationY: Float
+        get() = rotation.value.let {
+            if (it <= SELF_VIDEO_FLIP_HALF_ROTATION) -it else SELF_VIDEO_FLIP_FULL_ROTATION - it
+        }
+
+    fun start(switchCamera: (onSwitched: () -> Unit) -> Unit) {
+        if (flipJob?.isActive == true) {
+            return
+        }
+        val switched = CompletableDeferred<Unit>()
+        switchCamera {
+            val currentRenderer = renderer
+            if (currentRenderer == null) {
+                switched.complete(Unit)
+            } else {
+                currentRenderer.notifyOnNextFrameRendered { switched.complete(Unit) }
+            }
+        }
+        flipJob = scope.launch {
+            rotation.snapTo(0f)
+            rotation.animateTo(
+                SELF_VIDEO_FLIP_HALF_ROTATION,
+                tween(durationMillis = SELF_VIDEO_FLIP_DURATION_MS / 2, easing = EaseIn)
+            )
+            if (!switched.isCompleted) {
+                isWaitingForCamera = true
+                launch {
+                    withTimeoutOrNull(SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS) { switched.await() }
+                    isWaitingForCamera = false
+                }
+            }
+            rotation.animateTo(
+                SELF_VIDEO_FLIP_FULL_ROTATION,
+                tween(durationMillis = SELF_VIDEO_FLIP_DURATION_MS / 2, easing = EaseOut)
+            )
+            rotation.snapTo(0f)
+        }
+    }
+}
+
+@Composable
+private fun rememberSelfVideoFlip(): SelfVideoFlip {
+    val scope = rememberCoroutineScope()
+    return remember { SelfVideoFlip(scope) }
+}
+
+private fun Modifier.selfVideoTile(rotationY: () -> Float, offset: Offset, size: DpSize): Modifier {
     val shape = RoundedCornerShape(selfVideoCornerRadius)
     return this
         .absoluteOffset { IntOffset(offset.x.roundToInt(), offset.y.roundToInt()) }
         .size(size)
+        .graphicsLayer {
+            this.rotationY = rotationY()
+            cameraDistance = SELF_VIDEO_FLIP_CAMERA_DISTANCE * density
+        }
         .shadow(selfVideoShadowElevation, shape)
         .border(selfVideoBorderWidth, Color.White.copy(alpha = SELF_VIDEO_BORDER_ALPHA), shape)
         .clip(shape)
@@ -288,7 +371,13 @@ private fun SelfVideoButton(
 }
 
 @Composable
-private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?, isFrontCamera: Boolean) {
+private fun SelfVideoRenderer(
+    eglBase: EglBase.Context,
+    videoTrack: VideoTrack?,
+    isFrontCamera: Boolean,
+    isLoading: Boolean,
+    onRendererCreated: (TextureViewRenderer) -> Unit
+) {
     var renderer: TextureViewRenderer? by remember { mutableStateOf(null) }
     var isFirstFrameRendered by remember { mutableStateOf(false) }
     val cornerRadius = with(LocalDensity.current) { selfVideoCornerRadius.toPx() }
@@ -301,6 +390,7 @@ private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?,
                 setMirror(isFrontCamera)
                 setOnFirstFrameRenderedListener { isFirstFrameRendered = true }
                 renderer = this
+                onRendererCreated(this)
             }
         },
         modifier = Modifier.fillMaxSize(),
@@ -312,7 +402,7 @@ private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?,
         }
     )
 
-    if (!isFirstFrameRendered) {
+    if (isLoading || !isFirstFrameRendered) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
