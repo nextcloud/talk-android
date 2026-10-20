@@ -8,6 +8,7 @@
 package com.nextcloud.talk.call.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
@@ -38,6 +39,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +72,7 @@ import org.webrtc.VideoTrack
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.roundToInt
@@ -93,6 +96,7 @@ private const val SELF_VIDEO_LARGE_SCALE = 0.85f
 private const val SELF_VIDEO_SCRIM_ALPHA = 0.6f
 private const val SELF_VIDEO_FLIP_DURATION_MS = 500
 private const val SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS = 2000L
+private const val SELF_VIDEO_SWITCH_SPINNER_DELAY_MS = 1000L
 private const val SELF_VIDEO_FLIP_HALF_ROTATION = 90f
 private const val SELF_VIDEO_FLIP_FULL_ROTATION = 180f
 private const val SELF_VIDEO_FLIP_CAMERA_DISTANCE = 12f
@@ -119,7 +123,7 @@ fun SelfVideoView(
     isVideoEnabled: Boolean,
     onSwitchCamera: (onSwitched: () -> Unit) -> Unit
 ) {
-    var size by remember { mutableStateOf(SelfVideoSize.REGULAR) }
+    var size by remember(isVideoEnabled) { mutableStateOf(SelfVideoSize.REGULAR) }
     val flip = rememberSelfVideoFlip()
     val isRegular = size == SelfVideoSize.REGULAR
     val isLarge = size == SelfVideoSize.LARGE
@@ -141,8 +145,8 @@ fun SelfVideoView(
 
         val orientation = LocalConfiguration.current.orientation
         var draggedOffset by remember(orientation) { mutableStateOf<Offset?>(null) }
-        val offset = draggedOffset ?: density.initialSelfVideoOffset(maxWidth)
-        val clampedOffset = Offset(offset.x.coerceIn(0f, maxOffset.x), offset.y.coerceIn(0f, maxOffset.y))
+        val initialOffset = density.initialSelfVideoOffset(maxWidth)
+        val clampedOffset = (draggedOffset ?: initialOffset).coerceWithin(maxOffset)
         val largeSize = DpSize(maxWidth * SELF_VIDEO_LARGE_SCALE, maxHeight * SELF_VIDEO_LARGE_SCALE)
         val largeOffset =
             with(density) { Offset((maxWidth - largeSize.width).toPx(), (maxHeight - largeSize.height).toPx()) } / 2f
@@ -165,13 +169,13 @@ fun SelfVideoView(
                 isRegular = isRegular,
                 onDrag = { dragAmount ->
                     if (!isLarge) {
-                        draggedOffset = Offset(
-                            (clampedOffset.x + dragAmount.x).coerceIn(0f, maxOffset.x),
-                            (clampedOffset.y + dragAmount.y).coerceIn(0f, maxOffset.y)
-                        )
+                        val currentOffset = (draggedOffset ?: initialOffset).coerceWithin(maxOffset)
+                        draggedOffset = (currentOffset + dragAmount).coerceWithin(maxOffset)
                     }
                 },
-                onTap = { size = if (isRegular) SelfVideoSize.ENLARGED else SelfVideoSize.REGULAR }
+                onTap = {
+                    size = if (size == SelfVideoSize.ENLARGED) SelfVideoSize.REGULAR else SelfVideoSize.ENLARGED
+                }
             )
 
             SelfVideoControls(
@@ -183,6 +187,8 @@ fun SelfVideoView(
     }
 }
 
+private fun Offset.coerceWithin(max: Offset): Offset = Offset(x.coerceIn(0f, max.x), y.coerceIn(0f, max.y))
+
 /** Places the regular sized self video in the upper right corner. */
 private fun Density.initialSelfVideoOffset(maxWidth: Dp): Offset =
     Offset(
@@ -193,7 +199,7 @@ private fun Density.initialSelfVideoOffset(maxWidth: Dp): Offset =
 /**
  * Flips the self video around its vertical axis while switching the camera: it turns edge-on and then back to the
  * front from the other side. If the first frame of the switched camera is not rendered yet when the self video is
- * edge-on, [isWaitingForCamera] is set until it is.
+ * edge-on, [isWaitingForCamera] is set until it is, so the last frame of the prior camera can be covered.
  */
 private class SelfVideoFlip(private val scope: CoroutineScope) {
     private val rotation = Animatable(0f)
@@ -370,13 +376,41 @@ private fun SelfVideoButton(
     }
 }
 
+/**
+ * Covers the self video while no frame of the current camera was rendered yet. The loading indicator is only shown
+ * after [spinnerDelayMillis].
+ */
+@Composable
+private fun SelfVideoLoadingOverlay(spinnerDelayMillis: Long) {
+    var isSpinnerVisible by remember { mutableStateOf(spinnerDelayMillis == 0L) }
+    LaunchedEffect(Unit) {
+        delay(spinnerDelayMillis)
+        isSpinnerVisible = true
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.DarkGray),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isSpinnerVisible) {
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = selfVideoLoadingStrokeWidth,
+                modifier = Modifier.size(selfVideoLoadingIndicatorSize)
+            )
+        }
+    }
+}
+
 @Composable
 private fun SelfVideoRenderer(
     eglBase: EglBase.Context,
     videoTrack: VideoTrack?,
     isFrontCamera: Boolean,
-    isLoading: Boolean,
-    onRendererCreated: (TextureViewRenderer) -> Unit
+    isSwitchingCamera: Boolean,
+    onRendererChanged: (TextureViewRenderer?) -> Unit
 ) {
     var renderer: TextureViewRenderer? by remember { mutableStateOf(null) }
     var isFirstFrameRendered by remember { mutableStateOf(false) }
@@ -390,31 +424,28 @@ private fun SelfVideoRenderer(
                 setMirror(isFrontCamera)
                 setOnFirstFrameRenderedListener { isFirstFrameRendered = true }
                 renderer = this
-                onRendererCreated(this)
+                onRendererChanged(this)
             }
         },
         modifier = Modifier.fillMaxSize(),
         update = { it.setMirror(isFrontCamera) },
         onRelease = { view ->
+            onRendererChanged(null)
             videoTrack?.removeSink(view)
             view.clearImage()
             view.release()
         }
     )
 
-    if (isLoading || !isFirstFrameRendered) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.DarkGray),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                color = Color.White,
-                strokeWidth = selfVideoLoadingStrokeWidth,
-                modifier = Modifier.size(selfVideoLoadingIndicatorSize)
-            )
-        }
+    AnimatedVisibility(
+        visible = isSwitchingCamera || !isFirstFrameRendered,
+        modifier = Modifier.fillMaxSize(),
+        enter = EnterTransition.None,
+        exit = fadeOut()
+    ) {
+        SelfVideoLoadingOverlay(
+            spinnerDelayMillis = if (isFirstFrameRendered) SELF_VIDEO_SWITCH_SPINNER_DELAY_MS else 0L
+        )
     }
 
     DisposableEffect(videoTrack, renderer) {
