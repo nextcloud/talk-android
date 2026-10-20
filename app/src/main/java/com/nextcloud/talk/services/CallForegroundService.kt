@@ -73,6 +73,7 @@ class CallForegroundService : Service() {
     private var currentIsOneToOne = false
     private var conversationAvatarBitmap: Bitmap? = null
     private var isScreenSharing = false
+    private var isCallStarted = false
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -80,10 +81,9 @@ class CallForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand called")
 
-        if (handleScreenSharingAction(intent)) {
-            return START_STICKY
-        }
+        handleScreenSharingAction(intent, startId)?.let { return it }
 
+        isCallStarted = true
         handler.removeCallbacksAndMessages(null)
 
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
@@ -111,24 +111,38 @@ class CallForegroundService : Service() {
         return START_STICKY
     }
 
-    private fun handleScreenSharingAction(intent: Intent?): Boolean =
-        when (intent?.action) {
-            ACTION_START_SCREEN_SHARING -> {
-                val resultReceiver =
-                    IntentCompat.getParcelableExtra(intent, EXTRA_RESULT_RECEIVER, ResultReceiver::class.java)
-                setScreenSharing(true, resultReceiver)
-                true
+    /**
+     * Returns the value to return from onStartCommand if the intent was a screen sharing action, or null otherwise.
+     *
+     * Screen sharing actions are ignored if the service was started by them rather than by an ongoing call (for
+     * example, if the call ended in the meantime), as the service must not be kept running in that case.
+     */
+    private fun handleScreenSharingAction(intent: Intent?, startId: Int): Int? {
+        val action = intent?.action
+        val resultReceiver = intent?.let {
+            IntentCompat.getParcelableExtra(it, EXTRA_RESULT_RECEIVER, ResultReceiver::class.java)
+        }
+
+        return when {
+            action != ACTION_START_SCREEN_SHARING && action != ACTION_STOP_SCREEN_SHARING -> null
+
+            !isCallStarted -> {
+                Log.w(TAG, "Ignoring screen sharing action without an ongoing call")
+                resultReceiver?.send(RESULT_SCREEN_SHARING_FAILED, null)
+                stopSelf(startId)
+                START_NOT_STICKY
             }
 
-            ACTION_STOP_SCREEN_SHARING -> {
-                if (isScreenSharing) {
+            else -> {
+                if (action == ACTION_START_SCREEN_SHARING) {
+                    setScreenSharing(true, resultReceiver)
+                } else if (isScreenSharing) {
                     setScreenSharing(false, null)
                 }
-                true
+                START_STICKY
             }
-
-            else -> false
         }
+    }
 
     /**
      * Updates the foreground service type to include or exclude media projection, which is required to capture the

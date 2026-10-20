@@ -51,10 +51,8 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
         viewThemeUtils.platform.themeDialogDark(binding.root)
 
-        initItemsVisibility()
         initEmojiBar()
         initClickListeners()
-        initObservers()
     }
 
     override fun onStart() {
@@ -62,6 +60,10 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        // The dialog may be shown again after being dismissed, which destroys its lifecycle and thus the observers.
+        initItemsVisibility()
+        initObservers()
     }
 
     private fun initItemsVisibility() {
