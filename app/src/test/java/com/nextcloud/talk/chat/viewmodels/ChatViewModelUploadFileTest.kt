@@ -6,108 +6,24 @@
  */
 package com.nextcloud.talk.chat.viewmodels
 
-import android.content.ContentProvider
-import android.content.ContentValues
-import android.content.Context
-import android.database.Cursor
-import android.database.MatrixCursor
-import android.net.Uri
 import android.os.Looper
-import android.provider.OpenableColumns
 import androidx.lifecycle.viewModelScope
-import androidx.work.Configuration
-import androidx.work.Data
-import androidx.work.ListenableWorker
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerFactory
-import androidx.work.WorkerParameters
 import androidx.work.impl.WorkManagerImpl
-import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import androidx.work.workDataOf
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.utils.ParticipantPermissions
-import com.nextcloud.talk.utils.message.SendMessageUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.mockito.Mockito.RETURNS_DEEP_STUBS
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
-import org.robolectric.Robolectric
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
-import java.util.UUID
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The name, type and size of a file to send come from the provider of the app that owns it (Nextcloud Files):
  * a blocking binder call into another process. Sending a file must not make it on the main thread.
  */
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [33])
-class ChatViewModelUploadFileTest {
-
-    private val chatRepository: ChatMessageRepository = mock()
-    private val placeholderAdded = CountDownLatch(1)
-    private val placeholderMarkedFailed = CountDownLatch(1)
-    private var previousApplication: NextcloudTalkApplication? = null
-
-    // the setter of the singleton is protected: only the real application sets it
-    private val sharedApplicationField = NextcloudTalkApplication::class.java
-        .getDeclaredField("sharedApplication")
-        .apply { isAccessible = true }
-
-    @Before
-    fun setUp() {
-        val context = RuntimeEnvironment.getApplication()
-        WorkManagerTestInitHelper.initializeTestWorkManager(context)
-        previousApplication = sharedApplicationField.get(null) as NextcloudTalkApplication?
-        val application = mock<NextcloudTalkApplication>()
-        whenever(application.contentResolver).thenReturn(context.contentResolver)
-        whenever(application.applicationContext).thenReturn(context)
-        sharedApplicationField.set(null, application)
-
-        SlowProvider.reset()
-        Robolectric.buildContentProvider(SlowProvider::class.java).create(AUTHORITY)
-        runBlocking {
-            whenever(chatRepository.addUploadPlaceholderMessage(any(), any(), any(), anyOrNull(), any(), any()))
-                .thenAnswer {
-                    placeholderAdded.countDown()
-                    flowOf<Result<ChatMessage?>>()
-                }
-            whenever(chatRepository.markUploadPlaceholderFailed(any())).thenAnswer {
-                placeholderMarkedFailed.countDown()
-            }
-        }
-    }
-
-    @After
-    fun tearDown() {
-        sharedApplicationField.set(null, previousApplication)
-    }
-
+class ChatViewModelUploadFileTest : ChatViewModelUploadTestBase() {
     @Test
     fun `sending a file does not ask its provider on the main thread`() {
         sendAndAwaitPlaceholder("document.pdf")
@@ -181,187 +97,5 @@ class ChatViewModelUploadFileTest {
         }
 
         assertEquals("the placeholder is marked as failed", 0L, placeholderMarkedFailed.count)
-    }
-
-    @Test
-    fun `an upload that reports its failure before the placeholder exists does not leave the placeholder pending`() {
-        // The worker ends a failed upload as SUCCEEDED, so the uploads queued behind it still run, and reports the
-        // failure in its output data.
-        useUploadWorkerResult(workDataOf(UploadAndShareFilesWorker.KEY_UPLOAD_FAILED to true))
-
-        val workId = sendSlowFileAndRunItsWorker()
-        awaitPlaceholderMarkedFailed()
-
-        val workInfo = WorkManager.getInstance(RuntimeEnvironment.getApplication()).getWorkInfoById(workId).get()
-        assertEquals(WorkInfo.State.SUCCEEDED, workInfo?.state)
-        assertEquals("the placeholder is marked as failed", 0L, placeholderMarkedFailed.count)
-    }
-
-    @Test
-    fun `an upload that succeeds does not mark its placeholder as failed`() {
-        useUploadWorkerResult(Data.EMPTY)
-
-        val workId = sendSlowFileAndRunItsWorker()
-        awaitPlaceholderMarkedFailed()
-
-        val workInfo = WorkManager.getInstance(RuntimeEnvironment.getApplication()).getWorkInfoById(workId).get()
-        assertEquals(WorkInfo.State.SUCCEEDED, workInfo?.state)
-        assertEquals("the placeholder is left alone", 1L, placeholderMarkedFailed.count)
-    }
-
-    // Every upload work ends at once with the given output, before the slow provider let the placeholder in.
-    private fun useUploadWorkerResult(output: Data) {
-        val factory = object : WorkerFactory() {
-            override fun createWorker(
-                appContext: Context,
-                workerClassName: String,
-                workerParameters: WorkerParameters
-            ): ListenableWorker =
-                object : Worker(appContext, workerParameters) {
-                    override fun doWork(): Result = Result.success(output)
-                }
-        }
-        val configuration = Configuration.Builder()
-            .setExecutor(SynchronousExecutor())
-            .setWorkerFactory(factory)
-            .build()
-        WorkManagerTestInitHelper.initializeTestWorkManager(RuntimeEnvironment.getApplication(), configuration)
-    }
-
-    private fun sendSlowFileAndRunItsWorker(): UUID {
-        val viewModel = newViewModel()
-        viewModel.send("slow-a.pdf", order = 1)
-        val workId = viewModel.uploadWorkIds().getValue(referenceId(1))
-        WorkManagerTestInitHelper.getTestDriver(RuntimeEnvironment.getApplication())!!.setAllConstraintsMet(workId)
-        return workId
-    }
-
-    // Waits for the placeholder, then gives the observer the time to mark it.
-    private fun awaitPlaceholderMarkedFailed() {
-        val deadline = System.currentTimeMillis() + TIMEOUT_MS
-        while (placeholderAdded.count > 0 && System.currentTimeMillis() < deadline) {
-            shadowOf(Looper.getMainLooper()).idle()
-            placeholderAdded.await(POLL_MS, TimeUnit.MILLISECONDS)
-        }
-        val markDeadline = System.currentTimeMillis() + MARK_WAIT_MS
-        while (placeholderMarkedFailed.count > 0 && System.currentTimeMillis() < markDeadline) {
-            shadowOf(Looper.getMainLooper()).idle()
-            placeholderMarkedFailed.await(POLL_MS, TimeUnit.MILLISECONDS)
-        }
-    }
-
-    private fun queuedUploads(): Int =
-        WorkManager.getInstance(RuntimeEnvironment.getApplication())
-            .getWorkInfosForUniqueWork("upload_queue_1@room")
-            .get()
-            .size
-
-    private fun referenceId(order: Int) = SendMessageUtils().generateGroupedReferenceId(UPLOAD_ID, order)
-
-    @Suppress("UNCHECKED_CAST")
-    private fun ChatViewModel.uploadWorkIds(): Map<String, UUID> =
-        ChatViewModel::class.java.getDeclaredField("uploadReferenceToWorkId")
-            .apply { isAccessible = true }
-            .get(this) as Map<String, UUID>
-
-    private fun ChatViewModel.send(name: String, order: Int) {
-        uploadFile(
-            fileUri = "content://" + AUTHORITY + "/" + name,
-            isVoiceMessage = false,
-            displayName = "Team",
-            uploadId = UPLOAD_ID,
-            order = order
-        )
-    }
-
-    private fun newViewModel(): ChatViewModel {
-        val user = User().apply { id = 1L }
-        val viewModel = ChatViewModel(
-            logger = mock(),
-            appPreferences = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            chatNetworkDataSource = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            chatRepository = chatRepository,
-            threadsRepository = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            conversationRepository = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            reactionsRepository = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            unifiedSearchRepository = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            mediaRecorderManager = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            audioFocusRequestManager = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            userManager = mock(defaultAnswer = RETURNS_DEEP_STUBS),
-            appScope = CoroutineScope(Dispatchers.Unconfined),
-            initialUser = user,
-            chatRoomToken = "room",
-            conversationThreadId = null
-        )
-        viewModel.participantPermissions = Mockito.mock(ParticipantPermissions::class.java).also {
-            whenever(it.hasChatPermission()).thenReturn(true)
-        }
-        return viewModel
-    }
-
-    private fun sendAndAwaitPlaceholder(name: String) {
-        newViewModel().send(name, order = 1)
-
-        val deadline = System.currentTimeMillis() + TIMEOUT_MS
-        while (placeholderAdded.count > 0 && System.currentTimeMillis() < deadline) {
-            shadowOf(Looper.getMainLooper()).idle()
-            placeholderAdded.await(POLL_MS, TimeUnit.MILLISECONDS)
-        }
-    }
-
-    class SlowProvider : ContentProvider() {
-        override fun onCreate() = true
-
-        override fun getType(uri: Uri): String {
-            count(uri)
-            require(uri.lastPathSegment != "rejected.pdf") { "Unknown URL " + uri }
-            return "application/pdf"
-        }
-
-        override fun query(
-            uri: Uri,
-            projection: Array<out String>?,
-            selection: String?,
-            selectionArgs: Array<out String>?,
-            sortOrder: String?
-        ): Cursor {
-            count(uri)
-            return MatrixCursor(arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)).apply {
-                addRow(arrayOf<Any?>(uri.lastPathSegment, FILE_BYTES))
-            }
-        }
-
-        override fun insert(uri: Uri, values: ContentValues?): Uri? = null
-
-        override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
-
-        override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?) = 0
-
-        private fun count(uri: Uri) {
-            val onMain = Looper.myLooper() == Looper.getMainLooper()
-            (if (onMain) mainThreadCalls else otherCalls).incrementAndGet()
-            Thread.sleep(if (uri.lastPathSegment.orEmpty().startsWith("slow")) SLOW_DELAY_MS else PROVIDER_DELAY_MS)
-        }
-
-        companion object {
-            val mainThreadCalls = AtomicInteger()
-            val otherCalls = AtomicInteger()
-
-            fun reset() {
-                mainThreadCalls.set(0)
-                otherCalls.set(0)
-            }
-        }
-    }
-
-    companion object {
-        private const val AUTHORITY = "com.nextcloud.client.documentsfileprovider"
-        private const val PROVIDER_DELAY_MS = 300L
-        private const val SLOW_DELAY_MS = 1500L
-        private const val FILE_BYTES = 2048L
-        private const val TIMEOUT_MS = 20_000L
-        private const val POLL_MS = 50L
-        private const val MARK_WAIT_MS = 3_000L
-        private const val UPLOAD_ID = "upload"
     }
 }
