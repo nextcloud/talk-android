@@ -1122,6 +1122,8 @@ How to translate with transifex:
     <string name="nc_start_screen_sharing">Share screen</string>
     <string name="nc_stop_screen_sharing">Stop screen sharing</string>
     <string name="nc_screen_sharing_failed">Screen sharing could not be started</string>
+    <string name="nc_screen_sharing_not_allowed">You are not allowed to share your screen</string>
+    <string name="nc_screen_sharing_not_connected">You can share your screen once the call is connected</string>
     <string name="nc_no_account_found">Account not found</string>
     <string name="nc_password_secure">Password is secure</string>
 </resources>

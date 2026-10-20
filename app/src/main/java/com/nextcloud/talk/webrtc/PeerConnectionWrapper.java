@@ -120,9 +120,9 @@ public class PeerConnectionWrapper {
     }
 
     /**
-     * @param isScreenSharer true if the local screen is sent directly (without MCU) to the remote participant. The
-     *                       connection then always sends the offer and ignores offers from the remote participant,
-     *                       as those belong to the connection receiving the screen of the remote participant.
+     * @param isScreenSharer true if the connection sends the local screen, either directly to the remote participant
+     *                       or, with MCU, to the own publisher. The connection then always sends the offer and does
+     *                       not open data channels.
      */
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
@@ -148,7 +148,10 @@ public class PeerConnectionWrapper {
         peerConnection = peerConnectionFactory.createPeerConnection(configuration, new InitialPeerConnectionObserver());
 
         this.signalingMessageReceiver = signalingMessageReceiver;
-        this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType);
+        this.signalingMessageReceiver.addListener(
+            webRtcMessageListener,
+            sessionId,
+            isScreenSharer ? SignalingMessageReceiver.ROOM_TYPE_SCREEN_SHARING : videoStreamType);
 
         this.signalingMessageSender = signalingMessageSender;
 
@@ -468,18 +471,10 @@ public class PeerConnectionWrapper {
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
         public void onOffer(String sdp, String nick) {
-            if (isScreenSharer) {
-                return;
-            }
             onOfferOrAnswer("offer", sdp);
         }
 
         public void onAnswer(String sdp, String nick) {
-            // Answers for "screen" are meant for the connection sharing the local screen, not for the one receiving
-            // the screen of the remote participant.
-            if ("screen".equals(videoStreamType) && !isScreenSharer && !isMCUPublisher) {
-                return;
-            }
             onOfferOrAnswer("answer", sdp);
         }
 
