@@ -39,6 +39,8 @@ class TextureViewRenderer(context: Context) :
     private val mainHandler = Handler(Looper.getMainLooper())
     private val isFirstFrameRendered = AtomicBoolean(false)
     private var onFirstFrameRendered: (() -> Unit)? = null
+    private var onFrameAspectRatioChanged: ((Float) -> Unit)? = null
+    private var frameAspectRatio = 0f
 
     private val nextFrameLock = Any()
     private var onNextFrameRendered: (() -> Unit)? = null
@@ -63,6 +65,7 @@ class TextureViewRenderer(context: Context) :
 
     fun release() {
         onFirstFrameRendered = null
+        onFrameAspectRatioChanged = null
         mainHandler.removeCallbacksAndMessages(null)
         eglRenderer.release()
     }
@@ -72,6 +75,14 @@ class TextureViewRenderer(context: Context) :
      */
     fun setOnFirstFrameRenderedListener(listener: () -> Unit) {
         onFirstFrameRendered = listener
+    }
+
+    /**
+     * Sets a listener that is called on the main thread with the aspect ratio (width / height) of the received frames,
+     * taking their rotation into account, whenever it changes.
+     */
+    fun setOnFrameAspectRatioChangedListener(listener: (Float) -> Unit) {
+        onFrameAspectRatioChanged = listener
     }
 
     /**
@@ -103,6 +114,13 @@ class TextureViewRenderer(context: Context) :
     }
 
     override fun onFrame(frame: VideoFrame) {
+        if (frame.rotatedHeight > 0) {
+            val aspectRatio = frame.rotatedWidth / frame.rotatedHeight.toFloat()
+            if (aspectRatio != frameAspectRatio) {
+                frameAspectRatio = aspectRatio
+                mainHandler.post { onFrameAspectRatioChanged?.invoke(aspectRatio) }
+            }
+        }
         synchronized(nextFrameLock) {
             if (onNextFrameRendered != null) {
                 isNextFrameReceived = true

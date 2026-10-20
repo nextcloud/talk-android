@@ -105,7 +105,7 @@ private enum class SelfVideoSize {
     REGULAR,
     ENLARGED,
 
-    /** Covers most of the available area, centered above a scrim. */
+    /** Covers most of the available area in the aspect ratio of the video, centered above a scrim. */
     LARGE
 }
 
@@ -125,6 +125,7 @@ fun SelfVideoView(
 ) {
     var size by remember(isVideoEnabled) { mutableStateOf(SelfVideoSize.REGULAR) }
     val flip = rememberSelfVideoFlip()
+    var frameAspectRatio by remember { mutableStateOf(selfVideoRegularSize.width / selfVideoRegularSize.height) }
     val isRegular = size == SelfVideoSize.REGULAR
     val isLarge = size == SelfVideoSize.LARGE
 
@@ -136,20 +137,14 @@ fun SelfVideoView(
         val largeFraction by animateFloatAsState(if (isLarge) 1f else 0f, label = "selfVideoLargeFraction")
 
         val density = LocalDensity.current
-        val maxOffset = with(density) {
-            Offset(
-                (maxWidth - tileWidth).toPx().coerceAtLeast(0f),
-                (maxHeight - tileHeight).toPx().coerceAtLeast(0f)
-            )
-        }
+        val maxOffset = density.positiveOffset(maxWidth - tileWidth, maxHeight - tileHeight)
 
         val orientation = LocalConfiguration.current.orientation
         var draggedOffset by remember(orientation) { mutableStateOf<Offset?>(null) }
         val initialOffset = density.initialSelfVideoOffset(maxWidth)
         val clampedOffset = (draggedOffset ?: initialOffset).coerceWithin(maxOffset)
-        val largeSize = DpSize(maxWidth * SELF_VIDEO_LARGE_SCALE, maxHeight * SELF_VIDEO_LARGE_SCALE)
-        val largeOffset =
-            with(density) { Offset((maxWidth - largeSize.width).toPx(), (maxHeight - largeSize.height).toPx()) } / 2f
+        val largeSize = largeSelfVideoSize(maxWidth, maxHeight, frameAspectRatio)
+        val largeOffset = density.positiveOffset(maxWidth - largeSize.width, maxHeight - largeSize.height) / 2f
 
         if (!isVideoEnabled) return@BoxWithConstraints
 
@@ -162,7 +157,10 @@ fun SelfVideoView(
                 size = lerp(DpSize(tileWidth, tileHeight), largeSize, largeFraction)
             )
         ) {
-            SelfVideoRenderer(eglBase, videoTrack, isFrontCamera, flip.isWaitingForCamera) { flip.renderer = it }
+            SelfVideoRenderer(eglBase, videoTrack, isFrontCamera, flip.isWaitingForCamera) { renderer ->
+                flip.renderer = renderer
+                renderer?.setOnFrameAspectRatioChangedListener { frameAspectRatio = it }
+            }
 
             SelfVideoGestureLayer(
                 gestureKey = orientation,
@@ -186,6 +184,20 @@ fun SelfVideoView(
         }
     }
 }
+
+/** The largest size with the given aspect ratio that fits into [SELF_VIDEO_LARGE_SCALE] of the available size. */
+private fun largeSelfVideoSize(maxWidth: Dp, maxHeight: Dp, aspectRatio: Float): DpSize {
+    val width = maxWidth * SELF_VIDEO_LARGE_SCALE
+    val height = maxHeight * SELF_VIDEO_LARGE_SCALE
+    return if (width / height > aspectRatio) {
+        DpSize(height * aspectRatio, height)
+    } else {
+        DpSize(width, width / aspectRatio)
+    }
+}
+
+private fun Density.positiveOffset(x: Dp, y: Dp): Offset =
+    Offset(x.toPx().coerceAtLeast(0f), y.toPx().coerceAtLeast(0f))
 
 private fun Offset.coerceWithin(max: Offset): Offset = Offset(x.coerceIn(0f, max.x), y.coerceIn(0f, max.y))
 
