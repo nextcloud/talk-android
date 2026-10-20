@@ -15,6 +15,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
+import com.nextcloud.talk.chat.audio.ChatAudioStore;
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao;
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao;
 import com.nextcloud.talk.data.database.dao.ConversationsDao;
@@ -73,6 +74,8 @@ public class AccountRemovalWorker extends Worker {
     @Inject Logger logger;
 
     @Inject AccountCookieInterceptor accountCookieInterceptor;
+
+    @Inject ChatAudioStore chatAudioStore;
 
     NcApi ncApi;
 
@@ -198,6 +201,7 @@ public class AccountRemovalWorker extends Worker {
             long id = user.getId();
             DirectShareHelper.INSTANCE.removeShortcutsForUser(getApplicationContext(), id);
             WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(id);
+            chatAudioStore.forgetAccount(id);
 
             try {
                 arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(id);
