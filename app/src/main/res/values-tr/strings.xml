@@ -240,7 +240,7 @@
     <string name="nc_conversation_tags_save">Kaydet</string>
     <string name="nc_conversation_type_defaults">Bu görüşme türünün varsayılan ayarları:</string>
     <string name="nc_conversation_type_defaults_hint">Görüşme oluşturulduktan sonra bu ayarlar değiştirilebilir</string>
-    <string name="nc_conversation_type_lobby">Girişi kullanıma alındı, görüşmeye katılım sorumlular ile kısıtlandı</string>
+    <string name="nc_conversation_type_lobby">Bekleme odası kullanıma alındı, görüşmeye katılım sorumlular ile kısıtlandı</string>
     <string name="nc_conversation_type_mentions_moderators">Yalnızca sorumlular herkesi anabilir</string>
     <string name="nc_conversation_type_message_expiration">İletiler %1$s geçersiz oluyor</string>
     <string name="nc_conversation_type_message_expiration_custom">İleti geçerlilik süresi açık</string>
@@ -356,10 +356,10 @@
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
-    <string name="nc_lobby">Giriş</string>
+    <string name="nc_lobby">Bekleme odası</string>
     <string name="nc_lobby_start_date">Bu toplantı %1$s zamanına ayarlanmış</string>
     <string name="nc_lobby_start_soon">Toplantı yakında başlayacak</string>
-    <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
+    <string name="nc_lobby_waiting">Şu anda bekleme odasında bekliyorsunuz</string>
     <string name="nc_location_current_position_description">Geçerli konumunuz</string>
     <string name="nc_location_permission_required">konum izinleri gerekli</string>
     <string name="nc_location_unknown">Konum bilinmiyor</string>
@@ -665,7 +665,7 @@
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
-    <string name="nc_webinar_description">Giriş ile kısıtlanmış görüşme, herkese açık internet toplantıları için ideal</string>
+    <string name="nc_webinar_description">Bekleme odası ile görüşme, herkese açık internet toplantıları için ideal</string>
     <string name="nc_yes">Evet</string>
     <string name="nc_zoom_in">Yakınlaştır</string>
     <string name="nc_zoom_out">Uzaklaştır</string>

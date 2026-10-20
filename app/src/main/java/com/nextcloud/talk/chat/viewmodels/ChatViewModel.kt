@@ -487,6 +487,8 @@ class ChatViewModel @AssistedInject constructor(
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         currentLifeCycleFlag = LifeCycleFlag.PAUSED
+        roomJoinClaimed = false
+        joinRoomJob?.cancel()
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         searchRequestJob?.cancel()
@@ -814,6 +816,11 @@ class ChatViewModel @AssistedInject constructor(
     // Last read message cache
     // ------------------------------
     private var lastReadMessage: Int = 0
+
+    private var roomJoinClaimed = false
+    private var isInitialLoadDelivered = false
+    private var leaveRoomJob: Job? = null
+    private var joinRoomJob: Job? = null
 
     // ------------------------------
     // Initialization
@@ -1820,7 +1827,8 @@ class ChatViewModel @AssistedInject constructor(
                 spreedCapability,
                 conversationModel
             )
-            if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+            if (isInitialLoadPending()) {
+                isInitialLoadDelivered = true
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     spreedCapability,
                     conversationModel
@@ -1843,7 +1851,8 @@ class ChatViewModel @AssistedInject constructor(
                             spreedCapabilities,
                             conversationModel
                         )
-                        if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                        if (isInitialLoadPending()) {
+                            isInitialLoadDelivered = true
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
                                 conversationModel
@@ -1866,13 +1875,27 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A failed first load of the capabilities is retried by the next refresh of the conversation, which then is the
+     * initial load. A failed refresh after the initial load is not.
+     */
+    private fun isInitialLoadPending(): Boolean = !isInitialLoadDelivered
+
+    /**
+     * Joins after a leave that is still running, so the server never handles the leave after the join. The wait is
+     * cancelled when the screen is paused.
+     */
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatNetworkDataSource.joinRoom(user, token, roomPassword)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.retry(JOIN_ROOM_RETRY_COUNT)
-            ?.subscribe(JoinRoomObserver())
+        joinRoomJob?.cancel()
+        joinRoomJob = viewModelScope.launch {
+            leaveRoomJob?.join()
+            chatNetworkDataSource.joinRoom(user, token, roomPassword)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.retry(JOIN_ROOM_RETRY_COUNT)
+                ?.subscribe(JoinRoomObserver())
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
@@ -1907,7 +1930,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
-        appScope.launch {
+        leaveRoomJob = appScope.launch {
             try {
                 val result = chatNetworkDataSource.leaveRoom(credentials, url)
                 if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
@@ -1917,7 +1940,6 @@ class ChatViewModel @AssistedInject constructor(
                 }
                 withContext(Dispatchers.Main) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState
-                    _getCapabilitiesViewState.value = GetCapabilitiesStartState
                     functionToCallAfterLeave?.invoke()
                 }
             } catch (e: Exception) {
@@ -2574,7 +2596,20 @@ class ChatViewModel @AssistedInject constructor(
         _getVoiceRecordingLocked.postValue(boolean)
     }
 
+    /**
+     * Allows one join of the room per resume of the chat screen. The claim is released when the screen is paused,
+     * where the chat leaves the room.
+     */
+    fun claimRoomJoin(): Boolean {
+        if (roomJoinClaimed) {
+            return false
+        }
+        roomJoinClaimed = true
+        return true
+    }
+
     fun handleOrientationChange() {
+        isInitialLoadDelivered = false
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 

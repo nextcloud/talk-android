@@ -398,6 +398,7 @@
     <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
     <string name="nc_message_failed">Kunde inte skicka meddelandet</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
+    <string name="nc_message_not_added_to_notes">Kunde inte lägga till meddelandet i anteckningar</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_read">Meddelande läst</string>
     <string name="nc_message_scheduled">Meddelande schemalagt</string>
