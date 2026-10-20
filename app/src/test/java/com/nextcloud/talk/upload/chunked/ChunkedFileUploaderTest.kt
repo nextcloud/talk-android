@@ -136,7 +136,7 @@ class ChunkedFileUploaderTest {
         val file = localFile(SMALL_FILE_SIZE)
         enqueueFolderCreated()
         enqueueNoChunksOnServer()
-        server.enqueue(MockResponse().setResponseCode(CREATED))
+        server.enqueue(MockResponse(code = CREATED))
         // An IOException while the chunk is written reaches the uploader as a FileNotFoundException.
         val failingListener = object : OnDataTransferProgressListener {
             override fun onTransferProgress(percentage: Int): Unit = throw IOException("EIO")

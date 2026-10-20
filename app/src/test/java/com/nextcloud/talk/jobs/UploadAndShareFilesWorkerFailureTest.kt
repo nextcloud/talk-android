@@ -37,14 +37,19 @@ import com.nextcloud.talk.upload.UploadWorkspace
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import io.reactivex.Observable
+import java.io.File
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import mockwebserver3.Dispatcher
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
+import mockwebserver3.RecordedRequest
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -61,11 +66,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.HttpException
 import retrofit2.Response
-import java.io.File
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * What an upload that fails leaves behind: the state of the work, the placeholder message of the chat and the
@@ -111,7 +111,7 @@ class UploadAndShareFilesWorkerFailureTest {
 
     @After
     fun tearDown() {
-        runCatching { server.shutdown() }
+        runCatching { server.close() }
     }
 
     @Test
@@ -316,7 +316,7 @@ class UploadAndShareFilesWorkerFailureTest {
         assertEquals(SendStatus.FAILED, rows[REFERENCE_ID]?.sendStatus)
         val request = server.takeRequest(REQUEST_WAIT_SECONDS, TimeUnit.SECONDS)
         assertEquals("DELETE", request?.method)
-        assertEquals("/remote.php/dav/files/alice/Talk/draft/id-photo.jpg", request?.path)
+        assertEquals("/remote.php/dav/files/alice/Talk/draft/id-photo.jpg", request?.target)
     }
 
     @Test
@@ -355,7 +355,7 @@ class UploadAndShareFilesWorkerFailureTest {
 
     private fun startServer(): MockWebServer {
         server.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest) = MockResponse().setResponseCode(NO_CONTENT)
+            override fun dispatch(request: RecordedRequest) = MockResponse(code = NO_CONTENT)
         }
         server.start()
         whenever(user.baseUrl).thenReturn(server.url("/").toString().trimEnd('/'))

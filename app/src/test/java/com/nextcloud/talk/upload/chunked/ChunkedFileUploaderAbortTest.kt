@@ -109,7 +109,7 @@ class ChunkedFileUploaderAbortTest {
         val file = tempFolder.newFile("prepared.txt").apply { writeBytes(ByteArray(FILE_SIZE)) }
         val uploader = uploader()
         uploader.prepare(file)
-        server.enqueue(MockResponse().setResponseCode(NO_CONTENT))
+        server.enqueue(MockResponse(code = NO_CONTENT))
 
         uploader.abortUpload { successCalls++ }
 
