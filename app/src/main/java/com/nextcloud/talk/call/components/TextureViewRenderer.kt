@@ -8,8 +8,11 @@
 package com.nextcloud.talk.call.components
 
 import android.content.Context
+import android.graphics.Outline
 import android.graphics.SurfaceTexture
 import android.view.TextureView
+import android.view.View
+import android.view.ViewOutlineProvider
 import org.webrtc.EglBase
 import org.webrtc.EglRenderer
 import org.webrtc.GlRectDrawer
@@ -45,6 +48,15 @@ class TextureViewRenderer(context: Context) :
 
     fun setMirror(mirror: Boolean) {
         eglRenderer.setMirror(mirror)
+    }
+
+    fun setCornerRadius(radius: Float) {
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(0, 0, view.width, view.height, radius)
+            }
+        }
+        clipToOutline = radius > 0
     }
 
     fun clearImage() {

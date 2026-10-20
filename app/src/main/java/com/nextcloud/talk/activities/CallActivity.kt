@@ -440,6 +440,7 @@ class CallActivity : CallBaseActivity() {
     private var recordingConsentGiven = false
 
     private var isFrontCamera by mutableStateOf(true)
+    private var isSelfVideoEnabled by mutableStateOf(false)
 
     @SuppressLint("ClickableViewAccessibility", "Detekt.LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1132,6 +1133,7 @@ class CallActivity : CallBaseActivity() {
                 eglBase = rootEglBase!!.eglBaseContext,
                 videoTrack = localVideoTrack,
                 isFrontCamera = isFrontCamera,
+                isVideoEnabled = isSelfVideoEnabled,
                 onSwitchCamera = { switchCamera() }
             )
         }
@@ -1530,6 +1532,7 @@ class CallActivity : CallBaseActivity() {
                 localStream!!.videoTracks[0].setEnabled(enable)
                 localCallParticipantModel.isVideoEnabled = enable
             }
+            isSelfVideoEnabled = enable
             if (enable) {
                 binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE

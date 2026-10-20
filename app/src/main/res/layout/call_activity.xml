@@ -169,6 +169,17 @@
 
                     </LinearLayout>
 
+                    <FrameLayout
+                        android:id="@+id/selfVideoViewWrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.compose.ui.platform.ComposeView
+                            android:id="@+id/selfVideoComposeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="visible" />
+                    </FrameLayout>
                 </RelativeLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -268,18 +279,6 @@
                         app:tint="@color/white" />
                 </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/selfVideoViewWrapper"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.compose.ui.platform.ComposeView
-                    android:id="@+id/selfVideoComposeView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible" />
-            </FrameLayout>
 
             <View
                 android:id="@+id/verticalCenter"

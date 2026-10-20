@@ -9,9 +9,11 @@ package com.nextcloud.talk.call.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,16 +41,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import org.webrtc.EglBase
@@ -63,10 +68,20 @@ private val selfVideoButtonIconSize = 20.dp
 private val selfVideoButtonPadding = 8.dp
 private const val SELF_VIDEO_BUTTON_BACKGROUND_ALPHA = 0.5f
 
-private enum class SelfVideoSize(val width: Dp, val height: Dp) {
-    REGULAR(100.dp, 130.dp),
-    ENLARGED(160.dp, 208.dp),
-    LARGE(240.dp, 312.dp)
+private val selfVideoRegularSize = DpSize(100.dp, 130.dp)
+private val selfVideoEnlargedSize = DpSize(160.dp, 208.dp)
+private val selfVideoBorderWidth = 1.dp
+private val selfVideoShadowElevation = 8.dp
+private const val SELF_VIDEO_BORDER_ALPHA = 0.4f
+private const val SELF_VIDEO_LARGE_SCALE = 0.85f
+private const val SELF_VIDEO_SCRIM_ALPHA = 0.6f
+
+private enum class SelfVideoSize {
+    REGULAR,
+    ENLARGED,
+
+    /** Covers most of the available area, centered above a scrim. */
+    LARGE
 }
 
 /**
@@ -80,22 +95,27 @@ fun SelfVideoView(
     eglBase: EglBase.Context,
     videoTrack: VideoTrack?,
     isFrontCamera: Boolean,
+    isVideoEnabled: Boolean,
     onSwitchCamera: () -> Unit
 ) {
     var size by remember { mutableStateOf(SelfVideoSize.REGULAR) }
     val isRegular = size == SelfVideoSize.REGULAR
-    val toggleLabel =
-        stringResource(if (isRegular) R.string.nc_call_self_video_enlarge else R.string.nc_call_self_video_shrink)
+    val isLarge = size == SelfVideoSize.LARGE
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val scale = minOf(1f, maxWidth / size.width, maxHeight / size.height)
-        val width by animateDpAsState(size.width * scale, label = "selfVideoWidth")
-        val height by animateDpAsState(size.height * scale, label = "selfVideoHeight")
+        val tileSize = if (isRegular) selfVideoRegularSize else selfVideoEnlargedSize
+        val scale = minOf(1f, maxWidth / tileSize.width, maxHeight / tileSize.height)
+        val tileWidth by animateDpAsState(tileSize.width * scale, label = "selfVideoWidth")
+        val tileHeight by animateDpAsState(tileSize.height * scale, label = "selfVideoHeight")
+        val largeFraction by animateFloatAsState(if (isLarge) 1f else 0f, label = "selfVideoLargeFraction")
 
         val density = LocalDensity.current
-        val maxOffsetX = with(density) { (maxWidth - width).toPx() }.coerceAtLeast(0f)
-        val maxOffsetY = with(density) { (maxHeight - height).toPx() }.coerceAtLeast(0f)
-        val currentMaxOffset by rememberUpdatedState(Offset(maxOffsetX, maxOffsetY))
+        val maxOffset = with(density) {
+            Offset(
+                (maxWidth - tileWidth).toPx().coerceAtLeast(0f),
+                (maxHeight - tileHeight).toPx().coerceAtLeast(0f)
+            )
+        }
 
         val orientation = LocalConfiguration.current.orientation
         var offset by remember(orientation) {
@@ -103,47 +123,103 @@ fun SelfVideoView(
                 with(density) { Offset(selfVideoInitialOffsetX.toPx(), selfVideoInitialOffsetY.toPx()) }
             )
         }
-        val clampedOffset = Offset(offset.x.coerceIn(0f, maxOffsetX), offset.y.coerceIn(0f, maxOffsetY))
+        val clampedOffset = Offset(offset.x.coerceIn(0f, maxOffset.x), offset.y.coerceIn(0f, maxOffset.y))
+        val largeSize = DpSize(maxWidth * SELF_VIDEO_LARGE_SCALE, maxHeight * SELF_VIDEO_LARGE_SCALE)
+        val largeOffset =
+            with(density) { Offset((maxWidth - largeSize.width).toPx(), (maxHeight - largeSize.height).toPx()) } / 2f
+
+        if (!isVideoEnabled) return@BoxWithConstraints
+
+        SelfVideoScrim(largeFraction = largeFraction, onTap = { size = SelfVideoSize.ENLARGED })
 
         Box(
-            modifier = Modifier
-                .offset { IntOffset(clampedOffset.x.roundToInt(), clampedOffset.y.roundToInt()) }
-                .size(width, height)
-                .clip(RoundedCornerShape(selfVideoCornerRadius))
+            modifier = Modifier.selfVideoTile(
+                offset = lerp(clampedOffset, largeOffset, largeFraction),
+                size = lerp(DpSize(tileWidth, tileHeight), largeSize, largeFraction)
+            )
         ) {
             SelfVideoRenderer(eglBase, videoTrack, isFrontCamera)
 
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .pointerInput(orientation) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            val max = currentMaxOffset
-                            offset = Offset(
-                                (offset.x.coerceIn(0f, max.x) + dragAmount.x).coerceIn(0f, max.x),
-                                (offset.y.coerceIn(0f, max.y) + dragAmount.y).coerceIn(0f, max.y)
-                            )
-                        }
+            SelfVideoGestureLayer(
+                gestureKey = orientation,
+                isRegular = isRegular,
+                onDrag = { dragAmount ->
+                    if (!isLarge) {
+                        offset = Offset(
+                            (clampedOffset.x + dragAmount.x).coerceIn(0f, maxOffset.x),
+                            (clampedOffset.y + dragAmount.y).coerceIn(0f, maxOffset.y)
+                        )
                     }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClickLabel = toggleLabel
-                    ) {
-                        size = if (isRegular) SelfVideoSize.ENLARGED else SelfVideoSize.REGULAR
-                    }
+                },
+                onTap = { size = if (isRegular) SelfVideoSize.ENLARGED else SelfVideoSize.REGULAR }
             )
 
             SelfVideoControls(
                 size = size,
                 onSwitchCamera = onSwitchCamera,
-                onToggleLarge = {
-                    size = if (size == SelfVideoSize.LARGE) SelfVideoSize.ENLARGED else SelfVideoSize.LARGE
-                }
+                onToggleLarge = { size = if (isLarge) SelfVideoSize.ENLARGED else SelfVideoSize.LARGE }
             )
         }
     }
+}
+
+private fun Modifier.selfVideoTile(offset: Offset, size: DpSize): Modifier {
+    val shape = RoundedCornerShape(selfVideoCornerRadius)
+    return this
+        .offset { IntOffset(offset.x.roundToInt(), offset.y.roundToInt()) }
+        .size(size)
+        .shadow(selfVideoShadowElevation, shape)
+        .border(selfVideoBorderWidth, Color.White.copy(alpha = SELF_VIDEO_BORDER_ALPHA), shape)
+        .clip(shape)
+}
+
+/**
+ * Dims the views behind the self video while it is shown large. Tapping it shrinks the self video again.
+ */
+@Composable
+private fun SelfVideoScrim(largeFraction: Float, onTap: () -> Unit) {
+    if (largeFraction > 0f) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = SELF_VIDEO_SCRIM_ALPHA * largeFraction))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClickLabel = stringResource(R.string.nc_call_self_video_shrink),
+                    onClick = onTap
+                )
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.SelfVideoGestureLayer(
+    gestureKey: Any,
+    isRegular: Boolean,
+    onDrag: (Offset) -> Unit,
+    onTap: () -> Unit
+) {
+    val currentOnDrag by rememberUpdatedState(onDrag)
+
+    Box(
+        modifier = Modifier
+            .matchParentSize()
+            .pointerInput(gestureKey) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    currentOnDrag(dragAmount)
+                }
+            }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClickLabel = stringResource(
+                    if (isRegular) R.string.nc_call_self_video_enlarge else R.string.nc_call_self_video_shrink
+                ),
+                onClick = onTap
+            )
+    )
 }
 
 @Composable
@@ -205,11 +281,13 @@ private fun SelfVideoButton(
 @Composable
 private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?, isFrontCamera: Boolean) {
     var renderer: TextureViewRenderer? by remember { mutableStateOf(null) }
+    val cornerRadius = with(LocalDensity.current) { selfVideoCornerRadius.toPx() }
 
     AndroidView(
         factory = { context ->
             TextureViewRenderer(context).apply {
                 init(eglBase)
+                setCornerRadius(cornerRadius)
                 setMirror(isFrontCamera)
                 renderer = this
             }
