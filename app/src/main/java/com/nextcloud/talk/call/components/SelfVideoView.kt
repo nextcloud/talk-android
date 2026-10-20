@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -50,6 +50,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -61,7 +63,7 @@ import org.webrtc.VideoTrack
 import kotlin.math.roundToInt
 
 private val selfVideoCornerRadius = 12.dp
-private val selfVideoInitialOffsetX = 20.dp
+private val selfVideoInitialMarginEnd = 20.dp
 private val selfVideoInitialOffsetY = 100.dp
 private val selfVideoButtonSize = 36.dp
 private val selfVideoButtonIconSize = 20.dp
@@ -118,11 +120,8 @@ fun SelfVideoView(
         }
 
         val orientation = LocalConfiguration.current.orientation
-        var offset by remember(orientation) {
-            mutableStateOf(
-                with(density) { Offset(selfVideoInitialOffsetX.toPx(), selfVideoInitialOffsetY.toPx()) }
-            )
-        }
+        var draggedOffset by remember(orientation) { mutableStateOf<Offset?>(null) }
+        val offset = draggedOffset ?: density.initialSelfVideoOffset(maxWidth)
         val clampedOffset = Offset(offset.x.coerceIn(0f, maxOffset.x), offset.y.coerceIn(0f, maxOffset.y))
         val largeSize = DpSize(maxWidth * SELF_VIDEO_LARGE_SCALE, maxHeight * SELF_VIDEO_LARGE_SCALE)
         val largeOffset =
@@ -145,7 +144,7 @@ fun SelfVideoView(
                 isRegular = isRegular,
                 onDrag = { dragAmount ->
                     if (!isLarge) {
-                        offset = Offset(
+                        draggedOffset = Offset(
                             (clampedOffset.x + dragAmount.x).coerceIn(0f, maxOffset.x),
                             (clampedOffset.y + dragAmount.y).coerceIn(0f, maxOffset.y)
                         )
@@ -163,10 +162,17 @@ fun SelfVideoView(
     }
 }
 
+/** Places the regular sized self video in the upper right corner. */
+private fun Density.initialSelfVideoOffset(maxWidth: Dp): Offset =
+    Offset(
+        (maxWidth - selfVideoRegularSize.width - selfVideoInitialMarginEnd).toPx().coerceAtLeast(0f),
+        selfVideoInitialOffsetY.toPx()
+    )
+
 private fun Modifier.selfVideoTile(offset: Offset, size: DpSize): Modifier {
     val shape = RoundedCornerShape(selfVideoCornerRadius)
     return this
-        .offset { IntOffset(offset.x.roundToInt(), offset.y.roundToInt()) }
+        .absoluteOffset { IntOffset(offset.x.roundToInt(), offset.y.roundToInt()) }
         .size(size)
         .shadow(selfVideoShadowElevation, shape)
         .border(selfVideoBorderWidth, Color.White.copy(alpha = SELF_VIDEO_BORDER_ALPHA), shape)
