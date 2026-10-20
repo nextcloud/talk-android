@@ -66,6 +66,8 @@ public final class PeerConnectionWrapper {
     private final SdpObserver sdpObserver;
 
     private final boolean isMCUPublisher;
+    private final boolean isScreenSharer;
+    private final String localSession;
     private final String videoStreamType;
 
     // Keys of the remote participant when the call is end-to-end encrypted, attached to every receiver
@@ -132,6 +134,27 @@ public final class PeerConnectionWrapper {
                                  boolean encryptionRequired,
                                  @Nullable FrameKeyRing senderKeyRing,
                                  @Nullable FrameKeyRing receiverKeyRing) {
+        this(peerConnectionFactory, iceServerList, mediaConstraints, sessionId, localSession, localStream,
+             isMCUPublisher, hasMCU, videoStreamType, signalingMessageReceiver, signalingMessageSender,
+             encryptionRequired, senderKeyRing, receiverKeyRing, false);
+    }
+
+    /**
+     * @param isScreenSharer true if the local screen is sent directly (without MCU) to the remote participant. The
+     *                       connection then always sends the offer and ignores offers from the remote participant,
+     *                       as those belong to the connection receiving the screen of the remote participant.
+     */
+    public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
+                                 List<PeerConnection.IceServer> iceServerList,
+                                 MediaConstraints mediaConstraints,
+                                 String sessionId, String localSession, @Nullable MediaStream localStream,
+                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
+                                 SignalingMessageReceiver signalingMessageReceiver,
+                                 SignalingMessageSender signalingMessageSender,
+                                 boolean encryptionRequired,
+                                 @Nullable FrameKeyRing senderKeyRing,
+                                 @Nullable FrameKeyRing receiverKeyRing,
+                                 boolean isScreenSharer) {
         boolean missingSenderKeys = (isMCUPublisher || localStream != null) && senderKeyRing == null;
         boolean missingReceiverKeys = !isMCUPublisher && receiverKeyRing == null;
         if (encryptionRequired && (missingSenderKeys || missingReceiverKeys)) {
@@ -140,6 +163,8 @@ public final class PeerConnectionWrapper {
         }
 
         this.videoStreamType = videoStreamType;
+        this.isScreenSharer = isScreenSharer;
+        this.localSession = localSession;
         this.receiverKeyRing = receiverKeyRing;
         this.preferredVideoCodec = senderKeyRing != null || receiverKeyRing != null ? "VP8" : "H264";
 
@@ -181,7 +206,9 @@ public final class PeerConnectionWrapper {
                 }
             }
 
-            if (hasMCU || hasInitiated) {
+            if (isScreenSharer) {
+                peerConnection.createOffer(sdpObserver, mediaConstraints);
+            } else if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
 
@@ -474,6 +501,9 @@ public final class PeerConnectionWrapper {
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setRoomType(videoStreamType);
         ncSignalingMessage.setType(type);
+        if (isScreenSharer) {
+            ncSignalingMessage.setBroadcaster(localSession);
+        }
 
         return ncSignalingMessage;
     }
@@ -481,10 +511,18 @@ public final class PeerConnectionWrapper {
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
         public void onOffer(String sdp, String nick) {
+            if (isScreenSharer) {
+                return;
+            }
             onOfferOrAnswer("offer", sdp);
         }
 
         public void onAnswer(String sdp, String nick) {
+            // Answers for "screen" are meant for the connection sharing the local screen, not for the one receiving
+            // the screen of the remote participant.
+            if ("screen".equals(videoStreamType) && !isScreenSharer && !isMCUPublisher) {
+                return;
+            }
             onOfferOrAnswer("answer", sdp);
         }
 

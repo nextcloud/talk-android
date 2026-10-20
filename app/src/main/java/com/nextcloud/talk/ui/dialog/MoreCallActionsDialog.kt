@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.emoji2.widget.EmojiTextView
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -28,6 +29,7 @@ import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -84,6 +86,12 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         if (!ImageSegmenterHelper.isAvailable()) {
             binding.backgroundBlur.visibility = View.GONE
         }
+
+        if (callActivity.isAllowedToShareScreen) {
+            binding.shareScreen.visibility = View.VISIBLE
+        } else {
+            binding.shareScreen.visibility = View.GONE
+        }
     }
 
     private fun initClickListeners() {
@@ -97,6 +105,11 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
         binding.backgroundBlur.setOnClickListener {
             callActivity.toggleBackgroundBlur()
+        }
+
+        binding.shareScreen.setOnClickListener {
+            callActivity.toggleScreenSharing()
+            dismiss()
         }
     }
 
@@ -202,6 +215,22 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
                 BlurBackgroundViewModel.BackgroundBlurOn -> {
                     binding.backgroundBlurText.text = context.getText(R.string.turn_off_background_blur)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            callActivity.callViewModel.isLocalScreenSharing.collect { isSharing ->
+                if (isSharing) {
+                    binding.shareScreenText.text = context.getText(R.string.nc_stop_screen_sharing)
+                    binding.shareScreenIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_stop_screen_share_24)
+                    )
+                } else {
+                    binding.shareScreenText.text = context.getText(R.string.nc_start_screen_sharing)
+                    binding.shareScreenIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_screen_share_24)
+                    )
                 }
             }
         }
