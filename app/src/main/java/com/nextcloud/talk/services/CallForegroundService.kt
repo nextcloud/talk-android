@@ -167,6 +167,10 @@ class CallForegroundService : Service() {
             Log.e(TAG, "Failed to update foreground service type for screen sharing", e)
             isScreenSharing = false
             resultCode = RESULT_SCREEN_SHARING_FAILED
+            // The type may not be changed while in background, but the notification must not keep stating that the
+            // screen is shared.
+            getSystemService(NotificationManager::class.java)
+                .notify(NOTIFICATION_ID, buildNotification(currentConversationName, currentCallExtras))
         }
 
         resultReceiver?.send(resultCode, null)
@@ -208,15 +212,9 @@ class CallForegroundService : Service() {
             return buildCallStyleNotification(contentTitle, pendingIntent)
         }
 
-        val contentText = if (isScreenSharing) {
-            getString(R.string.nc_call_ongoing_notification_screen_sharing)
-        } else {
-            getString(R.string.nc_call_ongoing_notification_content)
-        }
-
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
-            .setContentText(contentText)
+            .setContentText(getScreenSharingText() ?: getString(R.string.nc_call_ongoing_notification_content))
             .setSmallIcon(getSmallIcon())
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -266,12 +264,20 @@ class CallForegroundService : Service() {
                     builder.setWhen(callStartTime)
                     builder.setShowWhen(true)
                 }
-                if (isScreenSharing) {
-                    builder.setContentText(getString(R.string.nc_call_ongoing_notification_screen_sharing))
-                }
+                getScreenSharingText()?.let { builder.setContentText(it) }
             }
             .build()
     }
+
+    /**
+     * Returns the text shown while the screen is shared, or null to use the default text of the notification.
+     */
+    private fun getScreenSharingText(): String? =
+        if (isScreenSharing) {
+            getString(R.string.nc_call_ongoing_notification_screen_sharing)
+        } else {
+            null
+        }
 
     /**
      * The small icon is shown in the status bar, so it indicates when the screen is being shared.
