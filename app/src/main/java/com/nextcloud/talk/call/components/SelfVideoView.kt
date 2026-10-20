@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.CloseFullscreen
 import androidx.compose.material.icons.filled.OpenInFull
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -68,6 +69,8 @@ private val selfVideoInitialOffsetY = 100.dp
 private val selfVideoButtonSize = 36.dp
 private val selfVideoButtonIconSize = 20.dp
 private val selfVideoButtonPadding = 8.dp
+private val selfVideoLoadingIndicatorSize = 24.dp
+private val selfVideoLoadingStrokeWidth = 2.dp
 private const val SELF_VIDEO_BUTTON_BACKGROUND_ALPHA = 0.5f
 
 private val selfVideoRegularSize = DpSize(100.dp, 130.dp)
@@ -287,6 +290,7 @@ private fun SelfVideoButton(
 @Composable
 private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?, isFrontCamera: Boolean) {
     var renderer: TextureViewRenderer? by remember { mutableStateOf(null) }
+    var isFirstFrameRendered by remember { mutableStateOf(false) }
     val cornerRadius = with(LocalDensity.current) { selfVideoCornerRadius.toPx() }
 
     AndroidView(
@@ -295,6 +299,7 @@ private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?,
                 init(eglBase)
                 setCornerRadius(cornerRadius)
                 setMirror(isFrontCamera)
+                setOnFirstFrameRenderedListener { isFirstFrameRendered = true }
                 renderer = this
             }
         },
@@ -306,6 +311,21 @@ private fun SelfVideoRenderer(eglBase: EglBase.Context, videoTrack: VideoTrack?,
             view.release()
         }
     )
+
+    if (!isFirstFrameRendered) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.DarkGray),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = selfVideoLoadingStrokeWidth,
+                modifier = Modifier.size(selfVideoLoadingIndicatorSize)
+            )
+        }
+    }
 
     DisposableEffect(videoTrack, renderer) {
         val sink = renderer

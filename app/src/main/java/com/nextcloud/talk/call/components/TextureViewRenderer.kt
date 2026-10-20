@@ -10,6 +10,8 @@ package com.nextcloud.talk.call.components
 import android.content.Context
 import android.graphics.Outline
 import android.graphics.SurfaceTexture
+import android.os.Handler
+import android.os.Looper
 import android.view.TextureView
 import android.view.View
 import android.view.ViewOutlineProvider
@@ -20,6 +22,7 @@ import org.webrtc.ThreadUtils
 import org.webrtc.VideoFrame
 import org.webrtc.VideoSink
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Renders a WebRTC video track into a [TextureView].
@@ -33,9 +36,17 @@ class TextureViewRenderer(context: Context) :
     VideoSink {
 
     private val eglRenderer = EglRenderer(TAG)
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val isFirstFrameRendered = AtomicBoolean(false)
+    private var onFirstFrameRendered: (() -> Unit)? = null
 
     init {
         surfaceTextureListener = this
+        eglRenderer.addRenderListener {
+            if (isFirstFrameRendered.compareAndSet(false, true)) {
+                mainHandler.post { onFirstFrameRendered?.invoke() }
+            }
+        }
     }
 
     fun init(sharedContext: EglBase.Context?) {
@@ -43,7 +54,16 @@ class TextureViewRenderer(context: Context) :
     }
 
     fun release() {
+        onFirstFrameRendered = null
+        mainHandler.removeCallbacksAndMessages(null)
         eglRenderer.release()
+    }
+
+    /**
+     * Sets a listener that is called on the main thread once the first frame was rendered.
+     */
+    fun setOnFirstFrameRenderedListener(listener: () -> Unit) {
+        onFirstFrameRendered = listener
     }
 
     fun setMirror(mirror: Boolean) {
