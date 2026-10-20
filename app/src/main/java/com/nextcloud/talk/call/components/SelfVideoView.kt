@@ -95,8 +95,8 @@ private const val SELF_VIDEO_BORDER_ALPHA = 0.4f
 private const val SELF_VIDEO_LARGE_SCALE = 0.85f
 private const val SELF_VIDEO_SCRIM_ALPHA = 0.6f
 private const val SELF_VIDEO_FLIP_DURATION_MS = 500
+private const val SELF_VIDEO_FLIP_HALF_DURATION_MS = SELF_VIDEO_FLIP_DURATION_MS / 2
 private const val SELF_VIDEO_FLIP_SWITCH_TIMEOUT_MS = 2000L
-private const val SELF_VIDEO_SWITCH_SPINNER_DELAY_MS = 1000L
 private const val SELF_VIDEO_FLIP_HALF_ROTATION = 90f
 private const val SELF_VIDEO_FLIP_FULL_ROTATION = 180f
 private const val SELF_VIDEO_FLIP_CAMERA_DISTANCE = 12f
@@ -245,7 +245,7 @@ private class SelfVideoFlip(private val scope: CoroutineScope) {
             rotation.snapTo(0f)
             rotation.animateTo(
                 SELF_VIDEO_FLIP_HALF_ROTATION,
-                tween(durationMillis = SELF_VIDEO_FLIP_DURATION_MS / 2, easing = EaseIn)
+                tween(durationMillis = SELF_VIDEO_FLIP_HALF_DURATION_MS, easing = EaseIn)
             )
             if (!switched.isCompleted) {
                 isWaitingForCamera = true
@@ -256,7 +256,7 @@ private class SelfVideoFlip(private val scope: CoroutineScope) {
             }
             rotation.animateTo(
                 SELF_VIDEO_FLIP_FULL_ROTATION,
-                tween(durationMillis = SELF_VIDEO_FLIP_DURATION_MS / 2, easing = EaseOut)
+                tween(durationMillis = SELF_VIDEO_FLIP_HALF_DURATION_MS, easing = EaseOut)
             )
             rotation.snapTo(0f)
         }
@@ -455,8 +455,10 @@ private fun SelfVideoRenderer(
         enter = EnterTransition.None,
         exit = fadeOut()
     ) {
+        // While switching the camera, the overlay appears when the self video is edge-on. Show the loading indicator
+        // as soon as the flip finished.
         SelfVideoLoadingOverlay(
-            spinnerDelayMillis = if (isFirstFrameRendered) SELF_VIDEO_SWITCH_SPINNER_DELAY_MS else 0L
+            spinnerDelayMillis = if (isFirstFrameRendered) SELF_VIDEO_FLIP_HALF_DURATION_MS.toLong() else 0L
         )
     }
 
