@@ -28,11 +28,14 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.media.projection.MediaProjection
+import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.ResultReceiver
 import android.provider.Settings
 import android.text.TextUtils
 import android.text.format.DateUtils
@@ -44,6 +47,7 @@ import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -103,6 +107,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.models.json.signaling.SignalingDto
 import com.nextcloud.talk.models.json.signaling.SignalingOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
@@ -191,6 +196,7 @@ import org.webrtc.PeerConnection
 import org.webrtc.PeerConnection.IceConnectionState
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.RendererCommon
+import org.webrtc.ScreenCapturerAndroid
 import org.webrtc.SoftwareVideoDecoderFactory
 import org.webrtc.SoftwareVideoEncoderFactory
 import org.webrtc.SurfaceTextureHelper
@@ -204,6 +210,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.math.abs
+import kotlin.math.max
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("TooManyFunctions", "ReturnCount", "LargeClass")
@@ -283,6 +290,20 @@ class CallActivity : CallBaseActivity() {
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
 
+    private var screenCapturer: ScreenCapturerAndroid? = null
+    private var screenSurfaceTextureHelper: SurfaceTextureHelper? = null
+    private var screenVideoSource: VideoSource? = null
+
+    @Volatile
+    private var localScreenStream: MediaStream? = null
+
+    // Without MCU there is one connection per remote participant, with MCU just the own publisher connection.
+    private val screenSharePeerConnectionWrapperList: MutableList<PeerConnectionWrapper> = CopyOnWriteArrayList()
+
+    @Volatile
+    private var isScreenSharePublisherConnected = false
+    private val screenSharePublisherObserver: PeerConnectionObserver = ScreenSharePublisherPeerConnectionObserver()
+
     private val callParticipantListObserver: CallParticipantList.Observer = object : CallParticipantList.Observer {
         override fun onCallParticipantsChanged(
             joined: Collection<ParticipantDto>,
@@ -361,6 +382,12 @@ class CallActivity : CallBaseActivity() {
     private var audioOutputDialog: AudioOutputDialog? = null
     private var moreCallActionsDialog: MoreCallActionsDialog? = null
     private var elapsedSeconds: Long = 0
+
+    private val screenSharingPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        onScreenSharingPermissionResult(result)
+    }
 
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -855,7 +882,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initFeaturesVisibility() {
-        if (isAllowedToStartOrStopRecording || isAllowedToRaiseHand) {
+        if (isAllowedToStartOrStopRecording || isAllowedToRaiseHand || isAllowedToShareScreen) {
             binding!!.moreCallActions.visibility = View.VISIBLE
         } else {
             binding!!.moreCallActions.visibility = View.GONE
@@ -2218,6 +2245,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
+        stopScreenSharing()
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2525,6 +2553,7 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "   session that will be removed is: $session")
             endPeerConnection(session, "video")
             endPeerConnection(session, "screen")
+            endScreenSharePeerConnection(session)
             removeCallParticipant(session)
         }
     }
@@ -2788,6 +2817,8 @@ class CallActivity : CallBaseActivity() {
         // Pass the live StateFlow so LocalStateBroadcasterNoMcu can observe ICE state changes
         // and send the local state exactly when the data channel becomes ready.
         localStateBroadcaster!!.handleCallParticipantAdded(callViewModel.getParticipant(sessionId)!!.uiState)
+
+        shareScreenWithJoinedParticipant(sessionId)
 
         initPipMode()
     }
@@ -3261,6 +3292,32 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private inner class ScreenSharePublisherPeerConnectionObserver : PeerConnectionObserver {
+        override fun onStreamAdded(mediaStream: MediaStream) {
+            // unused atm
+        }
+
+        override fun onStreamRemoved(mediaStream: MediaStream) {
+            // unused atm
+        }
+
+        override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
+            runOnUiThread {
+                if (localScreenStream == null) {
+                    return@runOnUiThread
+                }
+                if (iceConnectionState == IceConnectionState.CONNECTED && !isScreenSharePublisherConnected) {
+                    isScreenSharePublisherConnected = true
+                    getParticipantSessionKeys().forEach { requestScreenShareOffer(it) }
+                } else if (iceConnectionState == IceConnectionState.FAILED) {
+                    Log.e(TAG, "Screen share publisher connection failed")
+                    stopScreenSharing()
+                    showScreenSharingError()
+                }
+            }
+        }
+    }
+
     private inner class CallActivitySelfPeerConnectionObserver : PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream) {
             // unused atm
@@ -3533,6 +3590,212 @@ class CallActivity : CallBaseActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         eventBus.post(ConfigurationChangeEvent())
+        screenCapturer?.let {
+            val (width, height) = getScreenCaptureSize()
+            it.changeCaptureFormat(width, height, SCREEN_SHARE_FRAME_RATE)
+        }
+    }
+
+    val isAllowedToShareScreen: Boolean
+        get() {
+            val conversation = currentConversation ?: return false
+            return ParticipantPermissions(
+                conversationUser.capabilities?.spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, conversationUser)
+            ).canPublishScreen()
+        }
+
+    fun toggleScreenSharing() {
+        if (localScreenStream != null) {
+            stopScreenSharing()
+            return
+        }
+        if (!isAllowedToShareScreen || !isConnectionEstablished) {
+            Log.w(TAG, "Screen sharing is not allowed or the call is not established")
+            return
+        }
+        val mediaProjectionManager = getSystemService(MediaProjectionManager::class.java)
+        screenSharingPermissionLauncher.launch(mediaProjectionManager.createScreenCaptureIntent())
+    }
+
+    private fun onScreenSharingPermissionResult(result: ActivityResult) {
+        val permissionResultData = result.data
+        if (result.resultCode != RESULT_OK || permissionResultData == null) {
+            Log.d(TAG, "Screen sharing permission was not granted")
+            return
+        }
+
+        // On Android 14+ the media projection can only be started once the foreground service has the media
+        // projection type, which in turn requires the permission to have been granted.
+        val resultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
+            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                if (resultCode == CallForegroundService.RESULT_SCREEN_SHARING_READY) {
+                    startScreenSharing(permissionResultData)
+                } else {
+                    showScreenSharingError()
+                }
+            }
+        }
+        CallForegroundService.startScreenSharing(applicationContext, resultReceiver)
+    }
+
+    private fun startScreenSharing(permissionResultData: Intent) {
+        if (localScreenStream != null || !isConnectionEstablished || currentCallStatus === CallStatus.LEAVING) {
+            CallForegroundService.stopScreenSharing(applicationContext)
+            return
+        }
+
+        val capturer = ScreenCapturerAndroid(
+            permissionResultData,
+            object : MediaProjection.Callback() {
+                override fun onStop() {
+                    runOnUiThread { stopScreenSharing() }
+                }
+            }
+        )
+        val surfaceTextureHelper = SurfaceTextureHelper.create("ScreenCaptureThread", rootEglBase!!.eglBaseContext)
+        val videoSource = peerConnectionFactory!!.createVideoSource(true)
+        screenCapturer = capturer
+        screenSurfaceTextureHelper = surfaceTextureHelper
+        screenVideoSource = videoSource
+
+        capturer.initialize(surfaceTextureHelper, applicationContext, videoSource.capturerObserver)
+        try {
+            val (width, height) = getScreenCaptureSize()
+            capturer.startCapture(width, height, SCREEN_SHARE_FRAME_RATE)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Failed to start screen capture", e)
+            releaseScreenCapture()
+            CallForegroundService.stopScreenSharing(applicationContext)
+            showScreenSharingError()
+            return
+        }
+
+        val stream = peerConnectionFactory!!.createLocalMediaStream("NCSS")
+        stream.addTrack(peerConnectionFactory!!.createVideoTrack("NCs0", videoSource))
+        localScreenStream = stream
+        callViewModel.setLocalScreenSharing(true)
+
+        if (hasMCU) {
+            addScreenSharePeerConnection(webSocketClient!!.sessionId)
+        } else {
+            getParticipantSessionKeys().forEach { addScreenSharePeerConnection(it) }
+        }
+    }
+
+    fun stopScreenSharing() {
+        val stream = localScreenStream ?: return
+        localScreenStream = null
+
+        getParticipantSessionKeys().forEach { sessionId ->
+            messageSender?.send(
+                NCSignalingMessageDto(type = "unshareScreen", roomType = VIDEO_STREAM_TYPE_SCREEN),
+                sessionId
+            )
+        }
+
+        for (peerConnectionWrapper in screenSharePeerConnectionWrapperList) {
+            peerConnectionWrapper.removeObserver(screenSharePublisherObserver)
+            peerConnectionWrapper.removePeerConnection()
+        }
+        screenSharePeerConnectionWrapperList.clear()
+        isScreenSharePublisherConnected = false
+
+        releaseScreenCapture()
+        stream.dispose()
+
+        CallForegroundService.stopScreenSharing(applicationContext)
+        callViewModel.setLocalScreenSharing(false)
+    }
+
+    private fun releaseScreenCapture() {
+        screenCapturer?.let {
+            try {
+                it.stopCapture()
+            } catch (e: InterruptedException) {
+                Log.e(TAG, "Failed to stop screen capture", e)
+            }
+            it.dispose()
+        }
+        screenCapturer = null
+        screenVideoSource?.dispose()
+        screenVideoSource = null
+        screenSurfaceTextureHelper?.dispose()
+        screenSurfaceTextureHelper = null
+    }
+
+    private fun showScreenSharingError() {
+        Snackbar.make(binding!!.root, R.string.nc_screen_sharing_failed, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun getScreenCaptureSize(): Pair<Int, Int> {
+        val displayMetrics = resources.displayMetrics
+        val scale = max(
+            1f,
+            max(displayMetrics.widthPixels, displayMetrics.heightPixels).toFloat() / SCREEN_SHARE_MAX_DIMENSION
+        )
+        // Video encoders expect even dimensions.
+        val width = (displayMetrics.widthPixels / scale).toInt() and 1.inv()
+        val height = (displayMetrics.heightPixels / scale).toInt() and 1.inv()
+        return Pair(width, height)
+    }
+
+    private fun shareScreenWithJoinedParticipant(sessionId: String) {
+        if (localScreenStream == null) {
+            return
+        }
+        if (hasMCU) {
+            // Participants joining before the publisher is connected are requested once it is connected.
+            if (isScreenSharePublisherConnected) {
+                requestScreenShareOffer(sessionId)
+            }
+        } else {
+            addScreenSharePeerConnection(sessionId)
+        }
+    }
+
+    /**
+     * With MCU the offer for the screen publisher is sent by the MCU to the remote participant on request.
+     */
+    private fun requestScreenShareOffer(sessionId: String) {
+        messageSender?.send(
+            NCSignalingMessageDto(type = "sendoffer", roomType = VIDEO_STREAM_TYPE_SCREEN),
+            sessionId
+        )
+    }
+
+    private fun addScreenSharePeerConnection(sessionId: String?) {
+        val stream = localScreenStream ?: return
+        if (sessionId == null || screenSharePeerConnectionWrapperList.any { it.sessionId == sessionId }) {
+            return
+        }
+
+        val peerConnectionWrapper = PeerConnectionWrapper(
+            peerConnectionFactory,
+            iceServers,
+            sdpConstraintsForMCUPublisher,
+            sessionId,
+            if (webSocketClient != null) webSocketClient!!.sessionId else callSession,
+            stream,
+            hasMCU,
+            hasMCU,
+            VIDEO_STREAM_TYPE_SCREEN,
+            signalingMessageReceiver,
+            signalingMessageSender,
+            !hasMCU
+        )
+        if (hasMCU) {
+            peerConnectionWrapper.addObserver(screenSharePublisherObserver)
+        }
+        screenSharePeerConnectionWrapperList.add(peerConnectionWrapper)
+    }
+
+    private fun endScreenSharePeerConnection(sessionId: String?) {
+        val peerConnectionWrapper = screenSharePeerConnectionWrapperList.firstOrNull { it.sessionId == sessionId }
+            ?: return
+        peerConnectionWrapper.removeObserver(screenSharePublisherObserver)
+        peerConnectionWrapper.removePeerConnection()
+        screenSharePeerConnectionWrapperList.remove(peerConnectionWrapper)
     }
 
     val isAllowedToStartOrStopRecording: Boolean
@@ -3566,6 +3829,7 @@ class CallActivity : CallBaseActivity() {
         var active = false
 
         const val VIDEO_STREAM_TYPE_VIDEO = "video"
+        const val VIDEO_STREAM_TYPE_SCREEN = "screen"
         private val TAG = CallActivity::class.java.simpleName
         private val PERMISSIONS_CAMERA = arrayOf(
             Manifest.permission.CAMERA
@@ -3593,6 +3857,8 @@ class CallActivity : CallBaseActivity() {
         private const val MICROPHONE_VALUE_SLEEP: Long = 1000
 
         private const val FRAME_RATE: Int = 30
+        private const val SCREEN_SHARE_FRAME_RATE: Int = 15
+        private const val SCREEN_SHARE_MAX_DIMENSION: Int = 1920
         private const val WIDTH_16_TO_9_RATIO: Int = 1280
         private const val HEIGHT_16_TO_9_RATIO: Int = 720
         private const val WIDTH_4_TO_3_RATIO: Int = 640

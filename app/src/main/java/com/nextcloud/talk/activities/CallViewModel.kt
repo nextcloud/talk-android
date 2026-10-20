@@ -27,6 +27,9 @@ class CallViewModel @Inject constructor() : ViewModel() {
     private val _activeScreenShareSession = MutableStateFlow<ParticipantUiState?>(null)
     val activeScreenShareSession: StateFlow<ParticipantUiState?> = _activeScreenShareSession.asStateFlow()
 
+    private val _isLocalScreenSharing = MutableStateFlow(false)
+    val isLocalScreenSharing: StateFlow<Boolean> = _isLocalScreenSharing.asStateFlow()
+
     fun getParticipant(sessionId: String?): ParticipantHandler? {
         if (sessionId == null) {
             Log.w(TAG, "Attempted to get participant with null sessionId.")
@@ -86,6 +89,10 @@ class CallViewModel @Inject constructor() : ViewModel() {
         _activeScreenShareSession.value = session?.let {
             participantHandlers[it]?.uiState?.value
         }
+    }
+
+    fun setLocalScreenSharing(isSharing: Boolean) {
+        _isLocalScreenSharing.value = isSharing
     }
 
     public override fun onCleared() {

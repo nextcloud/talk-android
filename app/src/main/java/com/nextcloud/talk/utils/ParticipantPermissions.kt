@@ -63,6 +63,13 @@ class ParticipantPermissions(
             true
         }
 
+    fun canPublishScreen(): Boolean =
+        if (hasConversationPermissions()) {
+            canPublishScreen
+        } else {
+            true
+        }
+
     fun hasChatPermission(): Boolean {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {
             return hasChatPermission

@@ -64,6 +64,8 @@ public class PeerConnectionWrapper {
     private final SdpObserver sdpObserver;
 
     private final boolean isMCUPublisher;
+    private final boolean isScreenSharer;
+    private final String localSession;
     private final String videoStreamType;
 
     // It is assumed that there will be at most one remote stream at each time.
@@ -113,7 +115,26 @@ public class PeerConnectionWrapper {
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
                                  SignalingMessageReceiver signalingMessageReceiver,
                                  SignalingMessageSender signalingMessageSender) {
+        this(peerConnectionFactory, iceServerList, mediaConstraints, sessionId, localSession, localStream,
+             isMCUPublisher, hasMCU, videoStreamType, signalingMessageReceiver, signalingMessageSender, false);
+    }
+
+    /**
+     * @param isScreenSharer true if the local screen is sent directly (without MCU) to the remote participant. The
+     *                       connection then always sends the offer and ignores offers from the remote participant,
+     *                       as those belong to the connection receiving the screen of the remote participant.
+     */
+    public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
+                                 List<PeerConnection.IceServer> iceServerList,
+                                 MediaConstraints mediaConstraints,
+                                 String sessionId, String localSession, @Nullable MediaStream localStream,
+                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
+                                 SignalingMessageReceiver signalingMessageReceiver,
+                                 SignalingMessageSender signalingMessageSender,
+                                 boolean isScreenSharer) {
         this.videoStreamType = videoStreamType;
+        this.isScreenSharer = isScreenSharer;
+        this.localSession = localSession;
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
@@ -142,7 +163,9 @@ public class PeerConnectionWrapper {
                 }
             }
 
-            if (hasMCU || hasInitiated) {
+            if (isScreenSharer) {
+                peerConnection.createOffer(sdpObserver, mediaConstraints);
+            } else if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
 
@@ -435,6 +458,9 @@ public class PeerConnectionWrapper {
         ncSignalingMessage.setTo(sessionId);
         ncSignalingMessage.setRoomType(videoStreamType);
         ncSignalingMessage.setType(type);
+        if (isScreenSharer) {
+            ncSignalingMessage.setBroadcaster(localSession);
+        }
 
         return ncSignalingMessage;
     }
@@ -442,10 +468,18 @@ public class PeerConnectionWrapper {
     private class WebRtcMessageListener implements SignalingMessageReceiver.WebRtcMessageListener {
 
         public void onOffer(String sdp, String nick) {
+            if (isScreenSharer) {
+                return;
+            }
             onOfferOrAnswer("offer", sdp);
         }
 
         public void onAnswer(String sdp, String nick) {
+            // Answers for "screen" are meant for the connection sharing the local screen, not for the one receiving
+            // the screen of the remote participant.
+            if ("screen".equals(videoStreamType) && !isScreenSharer && !isMCUPublisher) {
+                return;
+            }
             onOfferOrAnswer("answer", sdp);
         }
 
