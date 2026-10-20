@@ -191,6 +191,10 @@ public abstract class CallBaseActivity extends BaseActivity {
      * Updates whether the system enters picture in picture automatically when leaving the activity.
      */
     void updatePipAutoEnter() {
+        // It may be called from a task posted before the activity was destroyed.
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
         // The builder is only created if picture in picture was possible when the activity was created.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && mPictureInPictureParamsBuilder != null) {
             mPictureInPictureParamsBuilder.setAutoEnterEnabled(!isAutomaticPipModeSuppressed());

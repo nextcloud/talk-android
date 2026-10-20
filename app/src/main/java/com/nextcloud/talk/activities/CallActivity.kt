@@ -321,7 +321,11 @@ class CallActivity : CallBaseActivity() {
 
     @Volatile
     private var isScreenSharePublisherConnected = false
-    private val screenSharePublisherObserver: PeerConnectionObserver = ScreenSharePublisherPeerConnectionObserver()
+    private val screenSharePublisherObservers: MutableMap<PeerConnectionWrapper, PeerConnectionObserver> = HashMap()
+
+    // Screen sharing needs the foreground service, which is not started without microphone and notification permission.
+    @Volatile
+    private var isCallForegroundServiceStarted = false
 
     private val callParticipantListObserver: CallParticipantList.Observer = object : CallParticipantList.Observer {
         override fun onCallParticipantsChanged(
@@ -1275,6 +1279,7 @@ class CallActivity : CallBaseActivity() {
                     SEC_10
                 ).show()
             } else {
+                isCallForegroundServiceStarted = true
                 CallForegroundService.start(
                     applicationContext,
                     conversationName,
@@ -1639,6 +1644,7 @@ class CallActivity : CallBaseActivity() {
             if (currentCallStatus !== CallStatus.LEAVING) {
                 hangup(true, false)
             }
+            isCallForegroundServiceStarted = false
             CallForegroundService.stop(applicationContext)
 
             powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
@@ -2313,6 +2319,7 @@ class CallActivity : CallBaseActivity() {
 
         if (shutDownView) {
             Log.d(TAG, "Stopping foreground service from hangup()")
+            isCallForegroundServiceStarted = false
             CallForegroundService.stop(applicationContext)
         }
 
@@ -3340,7 +3347,9 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private inner class ScreenSharePublisherPeerConnectionObserver : PeerConnectionObserver {
+    private inner class ScreenSharePublisherPeerConnectionObserver(
+        private val peerConnectionWrapper: PeerConnectionWrapper
+    ) : PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream) {
             // unused atm
         }
@@ -3351,7 +3360,11 @@ class CallActivity : CallBaseActivity() {
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
-                if (localScreenStream == null) {
+                // The event may have been queued before the publisher was closed, even if sharing started again.
+                val isCurrentPublisher = synchronized(screenShareLock) {
+                    screenSharePeerConnectionWrapperList.contains(peerConnectionWrapper)
+                }
+                if (!isCurrentPublisher) {
                     return@runOnUiThread
                 }
                 if (iceConnectionState == IceConnectionState.CONNECTED && !isScreenSharePublisherConnected) {
@@ -3681,6 +3694,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
         isAllowedToShareScreen = isAllowed
+        callViewModel.setScreenSharingAllowed(isAllowed)
         if (binding == null) {
             return
         }
@@ -3705,6 +3719,10 @@ class CallActivity : CallBaseActivity() {
         }
         if (!isConnectionEstablished) {
             Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_connected, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (!isCallForegroundServiceStarted) {
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_permissions_missing, Snackbar.LENGTH_LONG).show()
             return
         }
         // The permission dialog moves the call to the background, which must not enter picture in picture.
@@ -3769,14 +3787,14 @@ class CallActivity : CallBaseActivity() {
             return
         }
 
-        val videoSource = startScreenCapture(permissionResultData) ?: return
-        publishScreenShare(videoSource)
+        val (factory, videoSource) = startScreenCapture(permissionResultData) ?: return
+        publishScreenShare(factory, videoSource)
     }
 
     /**
-     * Returns the video source of the started capture, or null if it could not be started.
+     * Returns the factory used and the video source of the started capture, or null if it could not be started.
      */
-    private fun startScreenCapture(permissionResultData: Intent): VideoSource? {
+    private fun startScreenCapture(permissionResultData: Intent): Pair<PeerConnectionFactory, VideoSource>? {
         val capturer = ScreenCapturerAndroid(
             permissionResultData,
             object : MediaProjection.Callback() {
@@ -3785,8 +3803,16 @@ class CallActivity : CallBaseActivity() {
                 }
             }
         )
-        val surfaceTextureHelper = SurfaceTextureHelper.create("ScreenCaptureThread", rootEglBase!!.eglBaseContext)
-        val videoSource = peerConnectionFactory!!.createVideoSource(true)
+        // Both are released when hanging up, which may happen in parallel from the signaling thread.
+        val eglBase = rootEglBase
+        val factory = peerConnectionFactory
+        if (eglBase == null || factory == null) {
+            cancelPendingScreenSharing()
+            CallForegroundService.stopScreenSharing(applicationContext)
+            return null
+        }
+        val surfaceTextureHelper = SurfaceTextureHelper.create("ScreenCaptureThread", eglBase.eglBaseContext)
+        val videoSource = factory.createVideoSource(true)
         val captureSize = getScreenCaptureSize()
         synchronized(screenShareLock) {
             screenCapturer = capturer
@@ -3815,12 +3841,12 @@ class CallActivity : CallBaseActivity() {
         }
         getSystemService(DisplayManager::class.java)
             .registerDisplayListener(screenCaptureDisplayListener, Handler(Looper.getMainLooper()))
-        return videoSource
+        return Pair(factory, videoSource)
     }
 
-    private fun publishScreenShare(videoSource: VideoSource) {
-        val stream = peerConnectionFactory!!.createLocalMediaStream("NCSS")
-        stream.addTrack(peerConnectionFactory!!.createVideoTrack("NCs0", videoSource))
+    private fun publishScreenShare(factory: PeerConnectionFactory, videoSource: VideoSource) {
+        val stream = factory.createLocalMediaStream("NCSS")
+        stream.addTrack(factory.createVideoTrack("NCs0", videoSource))
         val isCancelled = synchronized(screenShareLock) {
             // stopScreenSharing() may have been called from the signaling thread while the capture was being started.
             if (isScreenSharingPending) {
@@ -4007,7 +4033,9 @@ class CallActivity : CallBaseActivity() {
                 true
             )
             if (hasMCU) {
-                peerConnectionWrapper.addObserver(screenSharePublisherObserver)
+                val observer = ScreenSharePublisherPeerConnectionObserver(peerConnectionWrapper)
+                screenSharePublisherObservers[peerConnectionWrapper] = observer
+                peerConnectionWrapper.addObserver(observer)
             }
             screenSharePeerConnectionWrapperList.add(peerConnectionWrapper)
         }
@@ -4022,7 +4050,9 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun closeScreenSharePeerConnection(peerConnectionWrapper: PeerConnectionWrapper) {
-        peerConnectionWrapper.removeObserver(screenSharePublisherObserver)
+        synchronized(screenShareLock) {
+            screenSharePublisherObservers.remove(peerConnectionWrapper)
+        }?.let { peerConnectionWrapper.removeObserver(it) }
         peerConnectionWrapper.removePeerConnection()
     }
 
