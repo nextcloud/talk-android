@@ -80,8 +80,8 @@ import kotlin.math.roundToInt
 private val selfVideoCornerRadius = 12.dp
 private val selfVideoInitialMarginEnd = 20.dp
 private val selfVideoInitialOffsetY = 100.dp
-private val selfVideoButtonSize = 36.dp
-private val selfVideoButtonIconSize = 20.dp
+private val selfVideoButtonSize = 44.dp
+private val selfVideoButtonIconSize = 24.dp
 private val selfVideoButtonPadding = 8.dp
 private val selfVideoLoadingIndicatorSize = 24.dp
 private val selfVideoLoadingStrokeWidth = 2.dp
