@@ -157,6 +157,32 @@ class ConversationListUpdaterUnreadTest {
         assertEquals(3, unread.unreadMessages)
     }
 
+    @Test
+    fun `reading in the chat releases a mark as unread from the list`() =
+        runTest {
+            wheneverBlocking { chatDao.countMessagesNewerThan(any(), any(), any()) }.thenReturn(0)
+            updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
+
+            updater.updateLocalReadState(target(), MARKER)
+
+            // read further elsewhere: with the unread guard left behind, the local marker would stay
+            val readElsewhere = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
+            assertEquals(READ_UP_TO_NEWEST, readElsewhere.lastReadMessage)
+        }
+
+    @Test
+    fun `marking a message unread in the chat drops a read marker from the list`() =
+        runTest {
+            givenCachedMessagesNewerThanMarker(3)
+            updater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+
+            updater.updateLocalUnreadState(target(), MARKER)
+
+            assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+            // a new message arrived: with the read marker left behind, the unread count would stay at 3
+            assertEquals(4, preserve(serverLastRead = MARKER, serverUnread = 4).unreadMessages)
+        }
+
     private fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
