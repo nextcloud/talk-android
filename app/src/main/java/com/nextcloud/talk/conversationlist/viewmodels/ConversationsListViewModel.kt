@@ -33,7 +33,6 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -44,9 +43,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.optimisticAction
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -85,7 +82,6 @@ class ConversationsListViewModel @AssistedInject constructor(
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
-    private val conversationsRepository: ConversationsRepository,
     private val conversationListUpdater: ConversationListUpdater,
     private val conversationActionScheduler: ConversationActionScheduler,
     private val logger: Logger,
@@ -862,44 +858,34 @@ class ConversationsListViewModel @AssistedInject constructor(
         _readUnreadState.value = ConversationReadUnreadUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    /**
+     * Marking read and marking unread share one work slot per room, so the later one replaces the earlier
+     * instead of racing it to the server. The replaced work is cancelled and never releases its guard,
+     * which is why each of them releases the other's here.
+     */
     fun markConversationAsRead(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false)
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser.capabilities?.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
         viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
-                    }
-                },
-                request = { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
-            )
+            conversationListUpdater.clearPendingUnread(conversation.internalId)
+            messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
+            applyLocally(conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false))
 
-            _readUnreadState.value = result.fold(
-                onSuccess = { ConversationReadUnreadUiState.Success },
-                onFailure = {
-                    logger.e(TAG, "Failed to mark conversation as read", it)
-                    ConversationReadUnreadUiState.Error
-                }
-            )
+            handOver(conversation, ConversationAction.MARK_READ, lastReadMessage = messageId) {
+                _readUnreadState.value = ConversationReadUnreadUiState.Error
+            }
+            _readUnreadState.value = ConversationReadUnreadUiState.Success
         }
     }
 
     fun markConversationAsUnread(conversation: ConversationModel) {
         viewModelScope.launch {
+            conversationListUpdater.pendingReadMarker(conversation.internalId)?.let {
+                conversationListUpdater.clearPendingReadMarker(conversation.internalId, it)
+            }
             conversationListUpdater.markPendingUnread(conversation.internalId)
             applyLocally(conversation.copy(unreadMessages = 1))
 
-            handOver(conversation, ConversationAction.MARK_UNREAD, "mark a conversation as unread") {
+            handOver(conversation, ConversationAction.MARK_UNREAD) {
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
             _readUnreadState.value = ConversationReadUnreadUiState.Success
@@ -916,6 +902,11 @@ class ConversationsListViewModel @AssistedInject constructor(
         val current = repository.getLocallyStoredConversation(currentUser, original.token) ?: original
         applyLocally(
             when (action) {
+                ConversationAction.MARK_READ -> current.copy(
+                    unreadMessages = original.unreadMessages,
+                    unreadMention = original.unreadMention,
+                    unreadMentionDirect = original.unreadMentionDirect
+                )
                 ConversationAction.MARK_UNREAD -> current.copy(unreadMessages = original.unreadMessages)
                 ConversationAction.FAVORITE -> current.copy(favorite = original.favorite)
                 ConversationAction.ARCHIVE -> current.copy(hasArchived = original.hasArchived)
@@ -926,16 +917,6 @@ class ConversationsListViewModel @AssistedInject constructor(
     private suspend fun applyLocally(conversation: ConversationModel) {
         withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
     }
-
-    /**
-     * The action that puts [original] back and releases whatever guard the caller registered, for
-     * [optimisticAction] to run when the request finally fails or the screen is left mid-request.
-     */
-    private fun revertTo(original: ConversationModel, releaseGuard: () -> Unit): Undo =
-        {
-            releaseGuard()
-            applyLocally(original)
-        }
 
     fun resetFavoriteState() {
         _favoriteState.value = FavoriteUiState.None
@@ -952,7 +933,7 @@ class ConversationsListViewModel @AssistedInject constructor(
             conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
             applyLocally(conversation.copy(hasArchived = desiredArchived))
 
-            handOver(conversation, ConversationAction.ARCHIVE, "archive a conversation", desiredArchived) {
+            handOver(conversation, ConversationAction.ARCHIVE, desiredArchived) {
                 _archiveState.value = ArchiveUiState.Error
             }
             _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
@@ -972,7 +953,7 @@ class ConversationsListViewModel @AssistedInject constructor(
             conversationListUpdater.markPendingFavorite(conversation.internalId, favorite)
             applyLocally(conversation.copy(favorite = favorite))
 
-            handOver(conversation, ConversationAction.FAVORITE, "favorite a conversation", favorite) {
+            handOver(conversation, ConversationAction.FAVORITE, favorite) {
                 _favoriteState.value = FavoriteUiState.Error
             }
             _favoriteState.value = FavoriteUiState.Success
@@ -988,8 +969,8 @@ class ConversationsListViewModel @AssistedInject constructor(
     private fun handOver(
         conversation: ConversationModel,
         action: ConversationAction,
-        description: String,
         enabled: Boolean = true,
+        lastReadMessage: Int? = null,
         onFailed: () -> Unit
     ) {
         viewModelScope.launch {
@@ -997,11 +978,12 @@ class ConversationsListViewModel @AssistedInject constructor(
                 userId = currentUser.id!!,
                 roomToken = conversation.token,
                 action = action,
-                enabled = enabled
+                enabled = enabled,
+                lastReadMessage = lastReadMessage
             )
 
             if (!sent) {
-                logger.e(TAG, "Failed to $description")
+                logger.e(TAG, "Failed to send $action for a conversation")
                 restore(conversation, action)
                 onFailed()
             }

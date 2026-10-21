@@ -17,7 +17,6 @@ import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.jobs.ConversationActionScheduler
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
@@ -78,7 +77,6 @@ class ConversationsListViewModelForegroundRefreshTest {
             mock<InvitationsRepository>(),
             mock<ArbitraryStorageManager>(),
             mock<UserManager>(),
-            mock<ConversationsRepository>(),
             mock<ConversationListUpdater>(),
             mock<ConversationActionScheduler>(),
             mock<Logger>(),

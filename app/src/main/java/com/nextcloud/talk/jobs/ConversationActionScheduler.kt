@@ -23,13 +23,20 @@ import javax.inject.Inject
 class ConversationActionScheduler @Inject constructor(private val context: Context) {
 
     /** Whether the change finally went through; false once the worker has given up on it. */
-    suspend fun send(userId: Long, roomToken: String, action: ConversationAction, enabled: Boolean): Boolean {
+    suspend fun send(
+        userId: Long,
+        roomToken: String,
+        action: ConversationAction,
+        enabled: Boolean,
+        lastReadMessage: Int? = null
+    ): Boolean {
         val workId = ConversationActionWorker.enqueue(
             context = context,
             userId = userId,
             roomToken = roomToken,
             action = action,
-            enabled = enabled
+            enabled = enabled,
+            lastReadMessage = lastReadMessage
         )
 
         val outcome = WorkManager.getInstance(context).getWorkInfoByIdFlow(workId)

@@ -135,10 +135,17 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
                 .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
-                "read-marker-sync-$userId@$roomToken",
+                uniqueWorkName(userId, roomToken),
                 ExistingWorkPolicy.REPLACE,
                 readMarkerWork
             )
         }
+
+        /**
+         * The one slot a room's read state goes through. [ConversationActionWorker] marks read and unread
+         * under it as well, so whichever of them the user did last replaces the others instead of racing
+         * them to the server.
+         */
+        fun uniqueWorkName(userId: Long, roomToken: String): String = "read-marker-sync-$userId@$roomToken"
     }
 }

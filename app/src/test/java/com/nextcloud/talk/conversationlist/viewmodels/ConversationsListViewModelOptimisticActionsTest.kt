@@ -23,10 +23,10 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
@@ -43,8 +43,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -66,8 +64,6 @@ import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import retrofit2.HttpException
-import retrofit2.Response
 
 /**
  * The conversation list's optimistic actions: marking read or unread, favoriting and archiving are
@@ -81,7 +77,6 @@ import retrofit2.Response
 class ConversationsListViewModelOptimisticActionsTest {
 
     private val repository: OfflineConversationsRepository = mock()
-    private val conversationsRepository: ConversationsRepository = mock()
     private val conversationListUpdater: ConversationListUpdater = mock()
     private val conversationActionScheduler: ConversationActionScheduler = mock()
     private val rooms = MutableStateFlow(listOf(CONVERSATION))
@@ -103,7 +98,6 @@ class ConversationsListViewModelOptimisticActionsTest {
             mock<InvitationsRepository>(),
             mock<ArbitraryStorageManager>(),
             mock<UserManager>(),
-            conversationsRepository,
             conversationListUpdater,
             conversationActionScheduler,
             mock<Logger>(),
@@ -159,17 +153,52 @@ class ConversationsListViewModelOptimisticActionsTest {
     @Test
     fun `marking read that the server refuses is taken back`() {
         val unread = CONVERSATION.copy(unreadMessages = UNREAD_MESSAGES)
-        conversationsRepository.stub {
-            onBlocking { markConversationAsRead(any(), any(), anyOrNull()) } doSuspendableAnswer { throw forbidden() }
+        givenTheWorker(gotThrough = false)
+
+        viewModel.markConversationAsRead(unread)
+
+        awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
+        assertTakenBack(unread.copy(unreadMessages = 0), original = unread)
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, null)
         }
+    }
+
+    @Test
+    fun `marking read hands the read marker to the worker and releases a pending unread`() {
+        val unread = CONVERSATION.copy(
+            unreadMessages = UNREAD_MESSAGES,
+            lastMessage = ChatMessageDto(id = LAST_MESSAGE)
+        )
+        givenTheWorker(gotThrough = true)
 
         viewModel.markConversationAsRead(unread)
 
         assertEquals(
-            ConversationReadUnreadUiState.Error,
+            ConversationReadUnreadUiState.Success,
             awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
         )
-        assertTakenBack(unread.copy(unreadMessages = 0), original = unread)
+        // the unread work this replaces is cancelled and will never release its guard itself
+        verify(conversationListUpdater).clearPendingUnread(CONVERSATION.internalId)
+        verify(conversationListUpdater).markPendingReadMarker(CONVERSATION.internalId, LAST_MESSAGE.toInt())
+        verifyBlocking(conversationActionScheduler) {
+            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, LAST_MESSAGE.toInt())
+        }
+    }
+
+    @Test
+    fun `marking unread releases a read marker it replaces`() {
+        whenever(conversationListUpdater.pendingReadMarker(CONVERSATION.internalId)).thenReturn(LAST_MESSAGE.toInt())
+        givenTheWorker(gotThrough = true)
+
+        viewModel.markConversationAsUnread(CONVERSATION)
+
+        assertEquals(
+            ConversationReadUnreadUiState.Success,
+            awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
+        )
+        verify(conversationListUpdater).clearPendingReadMarker(CONVERSATION.internalId, LAST_MESSAGE.toInt())
+        verify(conversationListUpdater).markPendingUnread(CONVERSATION.internalId)
     }
 
     @Test
@@ -259,7 +288,7 @@ class ConversationsListViewModelOptimisticActionsTest {
      */
     private fun givenTheWorker(gotThrough: Boolean) {
         conversationActionScheduler.stub {
-            onBlocking { send(any(), any(), any(), any()) } doSuspendableAnswer {
+            onBlocking { send(any(), any(), any(), any(), anyOrNull()) } doSuspendableAnswer {
                 withContext(Dispatchers.IO) { gotThrough }
             }
         }
@@ -284,11 +313,8 @@ class ConversationsListViewModelOptimisticActionsTest {
         }
     }
 
-    private fun forbidden(): HttpException =
-        HttpException(Response.error<Any>(HTTP_FORBIDDEN, "".toResponseBody("text/plain".toMediaType())))
-
     companion object {
-        private const val HTTP_FORBIDDEN = 403
+        private const val LAST_MESSAGE = 42L
         private const val UNREAD_MESSAGES = 3
         private const val TIMEOUT_MS = 5_000L
 
