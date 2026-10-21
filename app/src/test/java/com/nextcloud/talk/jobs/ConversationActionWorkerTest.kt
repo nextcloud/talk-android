@@ -50,6 +50,7 @@ import org.robolectric.annotation.Config
  * renaming and hard to notice at runtime, because a change that is dropped looks exactly like one the
  * server refused.
  */
+@Suppress("TooManyFunctions")
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
 class ConversationActionWorkerTest {
@@ -251,13 +252,32 @@ class ConversationActionWorkerTest {
         verifyBlocking(conversationsRepository, never()) { addConversationToFavorites(any(), any()) }
     }
 
+    @Test
+    fun `marking read on a server with only the chat api does not ask for the conversation api`() {
+        val chatOnly = USER.copy(
+            capabilities = CapabilitiesDto().apply {
+                spreedCapability = SpreedCapabilityDto().apply { features = listOf("chat-v2") }
+            }
+        )
+        val conversationsRepository: ConversationsRepository = mock()
+        val worker = worker(conversationsRepository, mock(), user = chatOnly)
+
+        val result = runBlocking {
+            worker.send(Change(USER_ID, "room1", ConversationAction.MarkRead(LAST_READ_MESSAGE)))
+        }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(conversationsRepository) { markConversationAsRead(any(), any(), eq(LAST_READ_MESSAGE)) }
+    }
+
     private fun worker(
         conversationsRepository: ConversationsRepository,
         conversationListUpdater: ConversationListUpdater,
-        runAttemptCount: Int = 0
+        runAttemptCount: Int = 0,
+        user: User = USER
     ): ConversationActionWorker {
         val userManager: UserManager = mock()
-        wheneverBlocking { userManager.getUserWithId(USER_ID) }.thenReturn(USER)
+        wheneverBlocking { userManager.getUserWithId(USER_ID) }.thenReturn(user)
         return TestListenableWorkerBuilder<ConversationActionWorker>(ApplicationProvider.getApplicationContext())
             .setRunAttemptCount(runAttemptCount)
             .build()

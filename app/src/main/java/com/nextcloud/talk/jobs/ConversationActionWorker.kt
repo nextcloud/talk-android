@@ -122,7 +122,6 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
     private suspend fun perform(user: User, credentials: String, change: Change) {
         val roomToken = change.roomToken
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         when (val action = change.action) {
             is ConversationAction.MarkRead ->
@@ -136,7 +135,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
                 conversationsRepository.markConversationAsUnread(credentials, readMarkerUrl(user, roomToken))
 
             is ConversationAction.Favorite -> {
-                val url = ApiUtils.getUrlForRoomFavorite(apiVersion, user.baseUrl, roomToken)
+                val url = ApiUtils.getUrlForRoomFavorite(conversationApiVersion(user), user.baseUrl, roomToken)
                 if (action.favorite) {
                     conversationsRepository.addConversationToFavorites(credentials, url)
                 } else {
@@ -145,7 +144,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
             }
 
             is ConversationAction.Archive -> {
-                val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, roomToken)
+                val url = ApiUtils.getUrlForArchive(conversationApiVersion(user), user.baseUrl, roomToken)
                 if (action.archived) {
                     conversationsRepository.archiveConversation(credentials, url)
                 } else {
@@ -154,6 +153,13 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
             }
         }
     }
+
+    /**
+     * Only favoriting and archiving speak the conversation api. Asking for its version up front would
+     * fail marking read and unread on a server that has only the chat api, which is all they need.
+     */
+    private fun conversationApiVersion(user: User): Int =
+        ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
     private fun readMarkerUrl(user: User, roomToken: String): String {
         val chatApiVersion = ApiUtils.getChatApiVersion(
