@@ -69,8 +69,8 @@ import java.util.UUID
 
 /**
  * The conversation list's optimistic actions: marking read or unread, favoriting and archiving are
- * shown at once and taken back when the server does not accept them, and a conversation being left
- * or deleted stays out of the list until its removal has gone through or failed.
+ * shown at once, handed to a worker and taken back when the worker gives up on them, and a
+ * conversation being left or deleted stays out of the list until its removal has gone through or failed.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("TooManyFunctions")
@@ -113,7 +113,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `a favorite the server accepts stays applied`() {
+    fun `a favorite the worker gets through stays applied`() {
         givenTheWorker(gotThrough = true)
 
         viewModel.addConversationToFavorites(CONVERSATION)
@@ -149,7 +149,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `a favorite the server refuses is taken back`() {
+    fun `a favorite the worker gives up on is taken back`() {
         givenTheWorker(gotThrough = false)
 
         viewModel.addConversationToFavorites(CONVERSATION)
@@ -159,7 +159,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `an unfavorite the server refuses is taken back`() {
+    fun `an unfavorite the worker gives up on is taken back`() {
         val favorite = CONVERSATION.copy(favorite = true)
         givenTheWorker(gotThrough = false)
         wheneverBlocking { repository.getLocallyStoredConversation(any(), any()) }.thenReturn(null)
@@ -173,7 +173,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `marking read that the server refuses is taken back`() {
+    fun `marking read that the worker gives up on is taken back`() {
         val unread = CONVERSATION.copy(unreadMessages = UNREAD_MESSAGES)
         givenTheWorker(gotThrough = false)
 
@@ -218,7 +218,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `marking unread that the server refuses is taken back`() {
+    fun `marking unread that the worker gives up on is taken back`() {
         givenTheWorker(gotThrough = false)
 
         viewModel.markConversationAsUnread(CONVERSATION)
@@ -230,7 +230,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     }
 
     @Test
-    fun `an archive the server refuses is taken back`() {
+    fun `an archive the worker gives up on is taken back`() {
         givenTheWorker(gotThrough = false)
 
         viewModel.toggleConversationArchive(CONVERSATION)
