@@ -39,12 +39,15 @@ class ConversationActionScheduler @Inject constructor(private val context: Conte
             ConversationActionWorker.Change(userId, roomToken, action, enabled, lastReadMessage)
         )
 
-    /** Whether the change finally went through; false once the worker has given up on it. */
-    suspend fun awaitOutcome(workId: UUID): Boolean {
+    /**
+     * Waits until the worker is done with the change, and tells whether it gave up on it. A change that went
+     * through, or was replaced by a newer one, was not given up on.
+     */
+    suspend fun awaitWorkerGaveUp(workId: UUID): Boolean {
         val outcome = WorkManager.getInstance(context).getWorkInfoByIdFlow(workId)
             .filterNotNull()
             .first { it.state.isFinished }
 
-        return outcome.state != WorkInfo.State.FAILED
+        return outcome.state == WorkInfo.State.FAILED
     }
 }

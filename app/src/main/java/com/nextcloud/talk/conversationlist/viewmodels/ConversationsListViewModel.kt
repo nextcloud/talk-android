@@ -952,7 +952,7 @@ class ConversationsListViewModel @AssistedInject constructor(
             applyLocally(optimistic)
             onApplied()
 
-            if (!conversationActionScheduler.awaitOutcome(workId)) {
+            if (conversationActionScheduler.awaitWorkerGaveUp(workId)) {
                 logger.e(TAG, "Failed to send $action for a conversation")
                 restore(original, action)
                 onFailed()

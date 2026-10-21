@@ -299,7 +299,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     private fun givenTheWorker(gotThrough: Boolean) {
         conversationActionScheduler.stub {
             on { enqueue(any(), any(), any(), any(), anyOrNull()) } doReturn WORK_ID
-            onBlocking { awaitOutcome(WORK_ID) } doReturn gotThrough
+            onBlocking { awaitWorkerGaveUp(WORK_ID) } doReturn !gotThrough
         }
     }
 
