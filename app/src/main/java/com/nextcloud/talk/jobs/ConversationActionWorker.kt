@@ -108,24 +108,22 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
     ): Result {
         val user = userManager.getUserWithId(userId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
+        if (user == null || credentials == null) {
+            Log.e(TAG, "No user or credentials found for user id $userId, dropping the conversation action")
+            // a missing user is not worth another attempt, it will still be missing
+            return giveUp(userId, roomToken, action, enabled, lastReadMessage)
+        }
 
-        val sent = when {
-            user == null || credentials == null -> {
-                Log.e(TAG, "No user or credentials found for user id $userId, dropping the conversation action")
-                false
-            }
-
-            // not runCatching: it would swallow the CancellationException that WorkManager throws
-            // when this work is replaced, and turn being superseded into a failure
-            else -> try {
-                perform(user, credentials, roomToken, action, enabled, lastReadMessage)
-                true
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.w(TAG, "$action for room $roomToken could not be sent: $e")
-                false
-            }
+        // not runCatching: it would swallow the CancellationException that WorkManager throws
+        // when this work is replaced, and turn being superseded into a failure
+        val sent = try {
+            perform(user, credentials, roomToken, action, enabled, lastReadMessage)
+            true
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "$action for room $roomToken could not be sent: $e")
+            false
         }
 
         return when {
@@ -138,8 +136,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
                 Result.success()
             }
 
-            // a missing user is not worth another attempt, it will still be missing
-            credentials != null && runAttemptCount < MAX_RUN_ATTEMPTS - 1 -> Result.retry()
+            runAttemptCount < MAX_RUN_ATTEMPTS - 1 -> Result.retry()
 
             else -> giveUp(userId, roomToken, action, enabled, lastReadMessage)
         }

@@ -36,6 +36,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -165,6 +166,19 @@ class ConversationActionWorkerTest {
         verify(conversationListUpdater).clearPendingReadMarker("$USER_ID@room1", LAST_READ_MESSAGE)
     }
 
+    @Test
+    fun `a change for a user that is gone is given up at once rather than retried`() {
+        val conversationsRepository: ConversationsRepository = mock()
+        val conversationListUpdater: ConversationListUpdater = mock()
+        val worker = worker(conversationsRepository, conversationListUpdater)
+
+        val result = runBlocking { worker.send(REMOVED_USER_ID, "room1", ConversationAction.FAVORITE, enabled = true) }
+
+        assertEquals(ListenableWorker.Result.failure(), result)
+        verify(conversationListUpdater).clearPendingFavorite("$REMOVED_USER_ID@room1", true)
+        verifyBlocking(conversationsRepository, never()) { addConversationToFavorites(any(), any()) }
+    }
+
     private fun worker(
         conversationsRepository: ConversationsRepository,
         conversationListUpdater: ConversationListUpdater,
@@ -184,6 +198,7 @@ class ConversationActionWorkerTest {
 
     private companion object {
         const val USER_ID = 1L
+        const val REMOVED_USER_ID = 2L
         const val LAST_READ_MESSAGE = 42
 
         // MAX_RUN_ATTEMPTS is 3, counted from 0
