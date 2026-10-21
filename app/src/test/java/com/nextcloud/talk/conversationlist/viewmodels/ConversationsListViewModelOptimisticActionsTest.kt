@@ -52,7 +52,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.inOrder
@@ -123,7 +122,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         verifyBlocking(repository, never()) { updateConversation(CONVERSATION) }
         verify(conversationListUpdater, never()).clearPendingFavorite(any(), any())
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, true)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.Favorite(true))
     }
 
     @Test
@@ -138,7 +137,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         val order = inOrder(conversationListUpdater, conversationActionScheduler)
         order.verify(conversationListUpdater).markPendingArchived(CONVERSATION.internalId, true)
         order.verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.Archive(true))
         assertEquals(ArchiveUiState.None, viewModel.archiveState.value)
 
         localWrite.complete(Unit)
@@ -169,7 +168,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         awaitFinal(viewModel.favoriteState, FavoriteUiState.Error)
         assertTakenBack(CONVERSATION, original = favorite)
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, false)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.Favorite(false))
     }
 
     @Test
@@ -182,7 +181,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
         assertTakenBack(unread.copy(unreadMessages = 0), original = unread)
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, null)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MarkRead(null))
     }
 
     @Test
@@ -201,7 +200,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         )
         verify(conversationListUpdater).switchToPendingMarkAsRead(CONVERSATION.internalId, LAST_MESSAGE.toInt())
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, LAST_MESSAGE.toInt())
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MarkRead(LAST_MESSAGE.toInt()))
     }
 
     @Test
@@ -226,7 +225,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
         assertTakenBack(CONVERSATION.copy(unreadMessages = 1))
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_UNREAD, true)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MarkUnread)
     }
 
     @Test
@@ -238,7 +237,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         awaitFinal(viewModel.archiveState, ArchiveUiState.Error)
         assertTakenBack(CONVERSATION.copy(hasArchived = true))
         verify(conversationActionScheduler)
-            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.Archive(true))
     }
 
     @Test
@@ -269,7 +268,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
             .thenReturn(archivedSinceTheSnapshot)
 
-        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.FAVORITE) }
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.Favorite(true)) }
 
         verifyBlocking(repository) { updateConversation(CONVERSATION.copy(hasArchived = true)) }
     }
@@ -280,7 +279,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
             .thenReturn(unreadSinceTheSnapshot)
 
-        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.ARCHIVE) }
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.Archive(true)) }
 
         verifyBlocking(repository) { updateConversation(CONVERSATION.copy(unreadMessages = UNREAD_MESSAGES)) }
     }
@@ -290,7 +289,7 @@ class ConversationsListViewModelOptimisticActionsTest {
         wheneverBlocking { repository.getLocallyStoredConversation(eq(USER), eq(CONVERSATION.token)) }
             .thenReturn(null)
 
-        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.MARK_UNREAD) }
+        runBlocking { viewModel.restore(CONVERSATION, ConversationAction.MarkUnread) }
 
         verifyBlocking(repository) { updateConversation(CONVERSATION) }
     }
@@ -298,7 +297,7 @@ class ConversationsListViewModelOptimisticActionsTest {
     /** The worker either got the change through or finally gave up on it; there is nothing in between. */
     private fun givenTheWorker(gotThrough: Boolean) {
         conversationActionScheduler.stub {
-            on { enqueue(any(), any(), any(), any(), anyOrNull()) } doReturn WORK_ID
+            on { enqueue(any(), any(), any()) } doReturn WORK_ID
             onBlocking { awaitWorkerGaveUp(WORK_ID) } doReturn !gotThrough
         }
     }

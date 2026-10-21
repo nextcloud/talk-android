@@ -27,17 +27,8 @@ import javax.inject.Inject
 class ConversationActionScheduler @Inject constructor(private val context: Context) {
 
     /** Hands the change over right away and returns the id of the work that carries it. */
-    fun enqueue(
-        userId: Long,
-        roomToken: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int? = null
-    ): UUID =
-        ConversationActionWorker.enqueue(
-            context,
-            ConversationActionWorker.Change(userId, roomToken, action, enabled, lastReadMessage)
-        )
+    fun enqueue(userId: Long, roomToken: String, action: ConversationAction): UUID =
+        ConversationActionWorker.enqueue(context, ConversationActionWorker.Change(userId, roomToken, action))
 
     /**
      * Waits until the worker is done with the change, and tells whether it gave up on it. A change that went

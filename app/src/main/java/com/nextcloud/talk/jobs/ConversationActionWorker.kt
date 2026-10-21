@@ -56,48 +56,29 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
     @Inject
     lateinit var conversationListUpdater: ConversationListUpdater
 
-    enum class ConversationAction {
-        MARK_READ,
-        MARK_UNREAD,
-        FAVORITE,
-        ARCHIVE
+    /** What to do to a conversation, together with the value it sets. */
+    sealed interface ConversationAction {
+        data class MarkRead(val lastReadMessage: Int?) : ConversationAction
+        data object MarkUnread : ConversationAction
+        data class Favorite(val favorite: Boolean) : ConversationAction
+        data class Archive(val archived: Boolean) : ConversationAction
     }
 
-    /**
-     * One change to send: [action] on the conversation [roomToken] of [userId]. [enabled] is the value a
-     * favorite or archive is set to, [lastReadMessage] the message marking read sets the read marker to.
-     */
-    data class Change(
-        val userId: Long,
-        val roomToken: String,
-        val action: ConversationAction,
-        val enabled: Boolean = true,
-        val lastReadMessage: Int? = null
-    ) {
+    /** One change to send: [action] on the conversation [roomToken] of [userId]. */
+    data class Change(val userId: Long, val roomToken: String, val action: ConversationAction) {
         val internalConversationId: String get() = "$userId@$roomToken"
     }
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
-        val userId = inputData.getLong(KEY_INTERNAL_USER_ID, -1)
-        val roomToken = inputData.getString(KEY_ROOM_TOKEN)
-        val action = actionOf(inputData.getString(KEY_ACTION))
-
-        if (userId < 0 || roomToken.isNullOrEmpty() || action == null) {
+        val change = changeOf(inputData)
+        if (change == null) {
             Log.e(TAG, "Missing user id, room token or action, dropping the conversation action")
             return Result.failure()
         }
 
-        return send(
-            Change(
-                userId = userId,
-                roomToken = roomToken,
-                action = action,
-                enabled = inputData.getBoolean(KEY_ENABLED, true),
-                lastReadMessage = inputData.getInt(KEY_LAST_READ_MESSAGE, -1).takeIf { it >= 0 }
-            )
-        )
+        return send(change)
     }
 
     @VisibleForTesting
@@ -127,7 +108,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
             sent -> {
                 Log.d(TAG, "${change.action} sent for room ${change.roomToken}")
                 // a read marker stays guarded until a sync shows it, like the one ReadMarkerSyncWorker sends
-                if (change.action != ConversationAction.MARK_READ) {
+                if (change.action !is ConversationAction.MarkRead) {
                     releaseGuard(change)
                 }
                 Result.success()
@@ -143,29 +124,29 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
         val roomToken = change.roomToken
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
-        when (change.action) {
-            ConversationAction.MARK_READ ->
+        when (val action = change.action) {
+            is ConversationAction.MarkRead ->
                 conversationsRepository.markConversationAsRead(
                     credentials,
                     readMarkerUrl(user, roomToken),
-                    change.lastReadMessage
+                    action.lastReadMessage
                 )
 
-            ConversationAction.MARK_UNREAD ->
+            ConversationAction.MarkUnread ->
                 conversationsRepository.markConversationAsUnread(credentials, readMarkerUrl(user, roomToken))
 
-            ConversationAction.FAVORITE -> {
+            is ConversationAction.Favorite -> {
                 val url = ApiUtils.getUrlForRoomFavorite(apiVersion, user.baseUrl, roomToken)
-                if (change.enabled) {
+                if (action.favorite) {
                     conversationsRepository.addConversationToFavorites(credentials, url)
                 } else {
                     conversationsRepository.removeConversationFromFavorites(credentials, url)
                 }
             }
 
-            ConversationAction.ARCHIVE -> {
+            is ConversationAction.Archive -> {
                 val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, roomToken)
-                if (change.enabled) {
+                if (action.archived) {
                     conversationsRepository.archiveConversation(credentials, url)
                 } else {
                     conversationsRepository.unarchiveConversation(credentials, url)
@@ -184,15 +165,15 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
     private fun releaseGuard(change: Change) {
         val internalConversationId = change.internalConversationId
-        when (change.action) {
-            ConversationAction.MARK_READ -> change.lastReadMessage?.let {
+        when (val action = change.action) {
+            is ConversationAction.MarkRead -> action.lastReadMessage?.let {
                 conversationListUpdater.clearPendingReadMarker(internalConversationId, it)
             }
-            ConversationAction.MARK_UNREAD -> conversationListUpdater.clearPendingUnread(internalConversationId)
-            ConversationAction.FAVORITE ->
-                conversationListUpdater.clearPendingFavorite(internalConversationId, change.enabled)
-            ConversationAction.ARCHIVE ->
-                conversationListUpdater.clearPendingArchived(internalConversationId, change.enabled)
+            ConversationAction.MarkUnread -> conversationListUpdater.clearPendingUnread(internalConversationId)
+            is ConversationAction.Favorite ->
+                conversationListUpdater.clearPendingFavorite(internalConversationId, action.favorite)
+            is ConversationAction.Archive ->
+                conversationListUpdater.clearPendingArchived(internalConversationId, action.archived)
         }
     }
 
@@ -203,26 +184,24 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
     companion object {
         private val TAG: String = ConversationActionWorker::class.java.simpleName
+        private const val MAX_RUN_ATTEMPTS = 3
+
+        // the work input of enqueued work outlives an app update, so these must not change
         private const val KEY_ACTION = "KEY_ACTION"
         private const val KEY_ENABLED = "KEY_ENABLED"
         private const val KEY_LAST_READ_MESSAGE = "KEY_LAST_READ_MESSAGE"
-        private const val MAX_RUN_ATTEMPTS = 3
+        private const val ACTION_MARK_READ = "MARK_READ"
+        private const val ACTION_MARK_UNREAD = "MARK_UNREAD"
+        private const val ACTION_FAVORITE = "FAVORITE"
+        private const val ACTION_ARCHIVE = "ARCHIVE"
 
         /**
          * Hands the change over and returns the id of the work that carries it, so a caller that is
          * still on screen can tell the user when it finally did not go through.
          */
         fun enqueue(context: Context, change: Change): UUID {
-            val data = Data.Builder()
-                .putLong(KEY_INTERNAL_USER_ID, change.userId)
-                .putString(KEY_ROOM_TOKEN, change.roomToken)
-                .putString(KEY_ACTION, change.action.name)
-                .putBoolean(KEY_ENABLED, change.enabled)
-                .apply { change.lastReadMessage?.let { putInt(KEY_LAST_READ_MESSAGE, it) } }
-                .build()
-
             val work = OneTimeWorkRequest.Builder(ConversationActionWorker::class.java)
-                .setInputData(data)
+                .setInputData(inputDataOf(change))
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 .build()
@@ -238,17 +217,61 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
         /**
          * The name that decides what replaces what: the same action on the same conversation supersedes
-         * an older intent, while a different action on it is carried separately - except for read and
-         * unread, which supersede each other and the chat's read marker.
+         * an older intent whatever value it sets, while a different action on it is carried separately -
+         * except for read and unread, which supersede each other and the chat's read marker.
          */
         fun uniqueWorkName(userId: Long, roomToken: String, action: ConversationAction): String =
             when (action) {
-                ConversationAction.MARK_READ,
-                ConversationAction.MARK_UNREAD -> ReadMarkerSyncWorker.uniqueWorkName(userId, roomToken)
-                else -> "conversation-action-${action.name}-$userId@$roomToken"
+                is ConversationAction.MarkRead,
+                ConversationAction.MarkUnread -> ReadMarkerSyncWorker.uniqueWorkName(userId, roomToken)
+                is ConversationAction.Favorite,
+                is ConversationAction.Archive -> "conversation-action-${nameOf(action)}-$userId@$roomToken"
             }
 
-        /** The action an enqueued work item carries, or null when it carries nothing we know. */
-        fun actionOf(name: String?): ConversationAction? = ConversationAction.entries.firstOrNull { it.name == name }
+        private fun nameOf(action: ConversationAction): String =
+            when (action) {
+                is ConversationAction.MarkRead -> ACTION_MARK_READ
+                ConversationAction.MarkUnread -> ACTION_MARK_UNREAD
+                is ConversationAction.Favorite -> ACTION_FAVORITE
+                is ConversationAction.Archive -> ACTION_ARCHIVE
+            }
+
+        @VisibleForTesting
+        internal fun inputDataOf(change: Change): Data =
+            Data.Builder()
+                .putLong(KEY_INTERNAL_USER_ID, change.userId)
+                .putString(KEY_ROOM_TOKEN, change.roomToken)
+                .putString(KEY_ACTION, nameOf(change.action))
+                .apply {
+                    when (val action = change.action) {
+                        is ConversationAction.MarkRead ->
+                            action.lastReadMessage?.let { putInt(KEY_LAST_READ_MESSAGE, it) }
+                        ConversationAction.MarkUnread -> Unit
+                        is ConversationAction.Favorite -> putBoolean(KEY_ENABLED, action.favorite)
+                        is ConversationAction.Archive -> putBoolean(KEY_ENABLED, action.archived)
+                    }
+                }
+                .build()
+
+        /** The change enqueued work carries, or null when it is incomplete or carries an action we do not know. */
+        @VisibleForTesting
+        internal fun changeOf(data: Data): Change? {
+            val userId = data.getLong(KEY_INTERNAL_USER_ID, -1)
+            val roomToken = data.getString(KEY_ROOM_TOKEN)
+            val action = when (data.getString(KEY_ACTION)) {
+                ACTION_MARK_READ ->
+                    ConversationAction.MarkRead(data.getInt(KEY_LAST_READ_MESSAGE, -1).takeIf { it >= 0 })
+                ACTION_MARK_UNREAD -> ConversationAction.MarkUnread
+                ACTION_FAVORITE -> ConversationAction.Favorite(data.getBoolean(KEY_ENABLED, true))
+                ACTION_ARCHIVE -> ConversationAction.Archive(data.getBoolean(KEY_ENABLED, true))
+                else -> null
+            }
+
+            return if (userId < 0 || roomToken.isNullOrEmpty() || action == null) {
+                null
+            } else {
+                Change(userId, roomToken, action)
+            }
+        }
     }
 }

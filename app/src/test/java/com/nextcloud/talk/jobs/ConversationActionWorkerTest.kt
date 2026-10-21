@@ -9,8 +9,10 @@ package com.nextcloud.talk.jobs
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
+import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
+import androidx.work.workDataOf
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ConversationActionWorker.Change
@@ -44,56 +46,123 @@ import org.robolectric.annotation.Config
 
 /**
  * What the enqueued work is named decides which change supersedes which, and the action travels to
- * the worker as a string. Both are easy to break by renaming and hard to notice at runtime, because
- * a change that is dropped looks exactly like one the server refused.
+ * the worker as strings in its work input, which outlives an app update. Both are easy to break by
+ * renaming and hard to notice at runtime, because a change that is dropped looks exactly like one the
+ * server refused.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
 class ConversationActionWorkerTest {
 
     @Test
-    fun `favoriting the same conversation twice replaces the older intent`() {
+    fun `favoriting and unfavoriting the same conversation replace each other`() {
         assertEquals(
-            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.FAVORITE),
-            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.FAVORITE)
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Favorite(true)),
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Favorite(false))
         )
     }
 
     @Test
     fun `archiving a conversation does not replace marking it unread`() {
         assertNotEquals(
-            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.ARCHIVE),
-            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.MARK_UNREAD)
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Archive(true)),
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.MarkUnread)
         )
     }
 
     @Test
     fun `the same conversation token on two accounts is two changes`() {
         assertNotEquals(
-            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.ARCHIVE),
-            ConversationActionWorker.uniqueWorkName(2, "room1", ConversationAction.ARCHIVE)
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Archive(true)),
+            ConversationActionWorker.uniqueWorkName(2, "room1", ConversationAction.Archive(true))
         )
     }
 
     @Test
     fun `marking read and unread go through the room's read marker slot`() {
         val readMarkerSlot = ReadMarkerSyncWorker.uniqueWorkName(1, "room1")
-        listOf(ConversationAction.MARK_READ, ConversationAction.MARK_UNREAD).forEach { action ->
+        listOf(
+            ConversationAction.MarkRead(LAST_READ_MESSAGE),
+            ConversationAction.MarkRead(null),
+            ConversationAction.MarkUnread
+        ).forEach { action ->
             assertEquals(readMarkerSlot, ConversationActionWorker.uniqueWorkName(1, "room1", action))
         }
     }
 
     @Test
+    fun `work enqueued before an update is still replaced by a newer intent`() {
+        assertEquals(
+            "conversation-action-FAVORITE-1@room1",
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Favorite(true))
+        )
+        assertEquals(
+            "conversation-action-ARCHIVE-1@room1",
+            ConversationActionWorker.uniqueWorkName(1, "room1", ConversationAction.Archive(false))
+        )
+    }
+
+    @Test
     fun `every action survives the trip through the work input`() {
-        ConversationAction.entries.forEach { action ->
-            assertEquals(action, ConversationActionWorker.actionOf(action.name))
+        listOf(
+            ConversationAction.MarkRead(LAST_READ_MESSAGE),
+            ConversationAction.MarkRead(null),
+            ConversationAction.MarkUnread,
+            ConversationAction.Favorite(true),
+            ConversationAction.Favorite(false),
+            ConversationAction.Archive(true),
+            ConversationAction.Archive(false)
+        ).forEach { action ->
+            val change = Change(USER_ID, "room1", action)
+            assertEquals(change, ConversationActionWorker.changeOf(ConversationActionWorker.inputDataOf(change)))
         }
     }
 
     @Test
+    fun `work enqueued before an update still runs`() {
+        // written the way the previous version wrote it, which always set KEY_ENABLED
+        fun previous(action: String, enabled: Boolean, lastReadMessage: Int? = null) =
+            Data.Builder()
+                .putLong("KEY_INTERNAL_USER_ID", USER_ID)
+                .putString("KEY_ROOM_TOKEN", "room1")
+                .putString("KEY_ACTION", action)
+                .putBoolean("KEY_ENABLED", enabled)
+                .apply { lastReadMessage?.let { putInt("KEY_LAST_READ_MESSAGE", it) } }
+                .build()
+
+        assertEquals(
+            Change(USER_ID, "room1", ConversationAction.MarkRead(LAST_READ_MESSAGE)),
+            ConversationActionWorker.changeOf(previous("MARK_READ", enabled = true, LAST_READ_MESSAGE))
+        )
+        assertEquals(
+            Change(USER_ID, "room1", ConversationAction.MarkRead(null)),
+            ConversationActionWorker.changeOf(previous("MARK_READ", enabled = true))
+        )
+        assertEquals(
+            Change(USER_ID, "room1", ConversationAction.MarkUnread),
+            ConversationActionWorker.changeOf(previous("MARK_UNREAD", enabled = true))
+        )
+        assertEquals(
+            Change(USER_ID, "room1", ConversationAction.Favorite(false)),
+            ConversationActionWorker.changeOf(previous("FAVORITE", enabled = false))
+        )
+        assertEquals(
+            Change(USER_ID, "room1", ConversationAction.Archive(true)),
+            ConversationActionWorker.changeOf(previous("ARCHIVE", enabled = true))
+        )
+    }
+
+    @Test
     fun `an action the worker does not know is dropped rather than guessed`() {
-        assertNull(ConversationActionWorker.actionOf("SOMETHING_ELSE"))
-        assertNull(ConversationActionWorker.actionOf(null))
+        val unknown = workDataOf(
+            "KEY_INTERNAL_USER_ID" to USER_ID,
+            "KEY_ROOM_TOKEN" to "room1",
+            "KEY_ACTION" to "SOMETHING_ELSE"
+        )
+        val missing = workDataOf("KEY_INTERNAL_USER_ID" to USER_ID, "KEY_ROOM_TOKEN" to "room1")
+
+        assertNull(ConversationActionWorker.changeOf(unknown))
+        assertNull(ConversationActionWorker.changeOf(missing))
     }
 
     @Test
@@ -108,7 +177,7 @@ class ConversationActionWorkerTest {
         }
 
         assertThrows(CancellationException::class.java) {
-            runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)) }
+            runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.Favorite(true))) }
         }
 
         // the guard belongs to the work that replaced this one, so being superseded must not release it
@@ -126,7 +195,7 @@ class ConversationActionWorkerTest {
             }
         }
 
-        val result = runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)) }
+        val result = runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.Favorite(true))) }
 
         assertEquals(ListenableWorker.Result.retry(), result)
     }
@@ -141,7 +210,7 @@ class ConversationActionWorkerTest {
         }
 
         val result = runBlocking {
-            worker.send(Change(USER_ID, "room1", ConversationAction.MARK_READ, lastReadMessage = LAST_READ_MESSAGE))
+            worker.send(Change(USER_ID, "room1", ConversationAction.MarkRead(LAST_READ_MESSAGE)))
         }
 
         assertEquals(ListenableWorker.Result.success(), result)
@@ -160,7 +229,7 @@ class ConversationActionWorkerTest {
         }
 
         val result = runBlocking {
-            worker.send(Change(USER_ID, "room1", ConversationAction.MARK_READ, lastReadMessage = LAST_READ_MESSAGE))
+            worker.send(Change(USER_ID, "room1", ConversationAction.MarkRead(LAST_READ_MESSAGE)))
         }
 
         assertEquals(ListenableWorker.Result.failure(), result)
@@ -173,7 +242,7 @@ class ConversationActionWorkerTest {
         val conversationListUpdater: ConversationListUpdater = mock()
         val worker = worker(conversationsRepository, conversationListUpdater)
 
-        val change = Change(REMOVED_USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)
+        val change = Change(REMOVED_USER_ID, "room1", ConversationAction.Favorite(true))
 
         val result = runBlocking { worker.send(change) }
 

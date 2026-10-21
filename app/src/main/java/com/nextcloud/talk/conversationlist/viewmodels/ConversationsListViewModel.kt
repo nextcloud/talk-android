@@ -871,10 +871,9 @@ class ConversationsListViewModel @AssistedInject constructor(
         val lastReadMessage =
             if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         applyAndSend(
-            action = ConversationAction.MARK_READ,
+            action = ConversationAction.MarkRead(lastReadMessage),
             original = conversation,
             optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false),
-            lastReadMessage = lastReadMessage,
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
             onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
         )
@@ -882,7 +881,7 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     fun markConversationAsUnread(conversation: ConversationModel) {
         applyAndSend(
-            action = ConversationAction.MARK_UNREAD,
+            action = ConversationAction.MarkUnread,
             original = conversation,
             optimistic = conversation.copy(unreadMessages = 1),
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
@@ -893,10 +892,9 @@ class ConversationsListViewModel @AssistedInject constructor(
     fun toggleConversationArchive(conversation: ConversationModel) {
         val desiredArchived = !conversation.hasArchived
         applyAndSend(
-            action = ConversationAction.ARCHIVE,
+            action = ConversationAction.Archive(desiredArchived),
             original = conversation,
             optimistic = conversation.copy(hasArchived = desiredArchived),
-            enabled = desiredArchived,
             onApplied = { _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName) },
             onFailed = { _archiveState.value = ArchiveUiState.Error }
         )
@@ -912,10 +910,9 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     private fun setFavorite(conversation: ConversationModel, favorite: Boolean) {
         applyAndSend(
-            action = ConversationAction.FAVORITE,
+            action = ConversationAction.Favorite(favorite),
             original = conversation,
             optimistic = conversation.copy(favorite = favorite),
-            enabled = favorite,
             onApplied = { _favoriteState.value = FavoriteUiState.Success },
             onFailed = { _favoriteState.value = FavoriteUiState.Error }
         )
@@ -929,24 +926,15 @@ class ConversationsListViewModel @AssistedInject constructor(
      * - Showing the change and waiting only happen while the screen is there. If the worker gives up, [original]
      *   is put back and [onFailed] is called; if the screen is gone by then, the next sync restores it instead.
      */
-    @Suppress("LongParameterList")
     private fun applyAndSend(
         action: ConversationAction,
         original: ConversationModel,
         optimistic: ConversationModel,
-        enabled: Boolean = true,
-        lastReadMessage: Int? = null,
         onApplied: () -> Unit,
         onFailed: () -> Unit
     ) {
-        markPending(original.internalId, action, enabled, lastReadMessage)
-        val workId = conversationActionScheduler.enqueue(
-            userId = currentUser.id!!,
-            roomToken = original.token,
-            action = action,
-            enabled = enabled,
-            lastReadMessage = lastReadMessage
-        )
+        markPending(original.internalId, action)
+        val workId = conversationActionScheduler.enqueue(currentUser.id!!, original.token, action)
 
         viewModelScope.launch {
             applyLocally(optimistic)
@@ -961,21 +949,16 @@ class ConversationsListViewModel @AssistedInject constructor(
     }
 
     /** Sets the guard for [action]; the worker releases it once the change went through or failed. */
-    private fun markPending(
-        internalConversationId: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int?
-    ) {
+    private fun markPending(internalConversationId: String, action: ConversationAction) {
         when (action) {
-            ConversationAction.MARK_READ ->
-                conversationListUpdater.switchToPendingMarkAsRead(internalConversationId, lastReadMessage)
-            ConversationAction.MARK_UNREAD ->
+            is ConversationAction.MarkRead ->
+                conversationListUpdater.switchToPendingMarkAsRead(internalConversationId, action.lastReadMessage)
+            ConversationAction.MarkUnread ->
                 conversationListUpdater.switchToPendingMarkAsUnread(internalConversationId)
-            ConversationAction.FAVORITE ->
-                conversationListUpdater.markPendingFavorite(internalConversationId, enabled)
-            ConversationAction.ARCHIVE ->
-                conversationListUpdater.markPendingArchived(internalConversationId, enabled)
+            is ConversationAction.Favorite ->
+                conversationListUpdater.markPendingFavorite(internalConversationId, action.favorite)
+            is ConversationAction.Archive ->
+                conversationListUpdater.markPendingArchived(internalConversationId, action.archived)
         }
     }
 
@@ -993,14 +976,14 @@ class ConversationsListViewModel @AssistedInject constructor(
         val current = repository.getLocallyStoredConversation(currentUser, original.token) ?: original
         applyLocally(
             when (action) {
-                ConversationAction.MARK_READ -> current.copy(
+                is ConversationAction.MarkRead -> current.copy(
                     unreadMessages = original.unreadMessages,
                     unreadMention = original.unreadMention,
                     unreadMentionDirect = original.unreadMentionDirect
                 )
-                ConversationAction.MARK_UNREAD -> current.copy(unreadMessages = original.unreadMessages)
-                ConversationAction.FAVORITE -> current.copy(favorite = original.favorite)
-                ConversationAction.ARCHIVE -> current.copy(hasArchived = original.hasArchived)
+                ConversationAction.MarkUnread -> current.copy(unreadMessages = original.unreadMessages)
+                is ConversationAction.Favorite -> current.copy(favorite = original.favorite)
+                is ConversationAction.Archive -> current.copy(hasArchived = original.hasArchived)
             }
         )
     }
