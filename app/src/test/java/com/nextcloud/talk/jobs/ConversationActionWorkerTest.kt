@@ -13,6 +13,7 @@ import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.jobs.ConversationActionWorker.Change
 import com.nextcloud.talk.jobs.ConversationActionWorker.ConversationAction
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
@@ -107,7 +108,7 @@ class ConversationActionWorkerTest {
         }
 
         assertThrows(CancellationException::class.java) {
-            runBlocking { worker.send(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true) }
+            runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)) }
         }
 
         // the guard belongs to the work that replaced this one, so being superseded must not release it
@@ -125,7 +126,7 @@ class ConversationActionWorkerTest {
             }
         }
 
-        val result = runBlocking { worker.send(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true) }
+        val result = runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)) }
 
         assertEquals(ListenableWorker.Result.retry(), result)
     }
@@ -140,7 +141,7 @@ class ConversationActionWorkerTest {
         }
 
         val result = runBlocking {
-            worker.send(USER_ID, "room1", ConversationAction.MARK_READ, enabled = true, LAST_READ_MESSAGE)
+            worker.send(Change(USER_ID, "room1", ConversationAction.MARK_READ, lastReadMessage = LAST_READ_MESSAGE))
         }
 
         assertEquals(ListenableWorker.Result.success(), result)
@@ -159,7 +160,7 @@ class ConversationActionWorkerTest {
         }
 
         val result = runBlocking {
-            worker.send(USER_ID, "room1", ConversationAction.MARK_READ, enabled = true, LAST_READ_MESSAGE)
+            worker.send(Change(USER_ID, "room1", ConversationAction.MARK_READ, lastReadMessage = LAST_READ_MESSAGE))
         }
 
         assertEquals(ListenableWorker.Result.failure(), result)
@@ -172,7 +173,9 @@ class ConversationActionWorkerTest {
         val conversationListUpdater: ConversationListUpdater = mock()
         val worker = worker(conversationsRepository, conversationListUpdater)
 
-        val result = runBlocking { worker.send(REMOVED_USER_ID, "room1", ConversationAction.FAVORITE, enabled = true) }
+        val change = Change(REMOVED_USER_ID, "room1", ConversationAction.FAVORITE, enabled = true)
+
+        val result = runBlocking { worker.send(change) }
 
         assertEquals(ListenableWorker.Result.failure(), result)
         verify(conversationListUpdater).clearPendingFavorite("$REMOVED_USER_ID@room1", true)

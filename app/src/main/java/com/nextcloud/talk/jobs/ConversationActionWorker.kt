@@ -63,6 +63,20 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
         ARCHIVE
     }
 
+    /**
+     * One change to send: [action] on the conversation [roomToken] of [userId]. [enabled] is the value a
+     * favorite or archive is set to, [lastReadMessage] the message marking read sets the read marker to.
+     */
+    data class Change(
+        val userId: Long,
+        val roomToken: String,
+        val action: ConversationAction,
+        val enabled: Boolean = true,
+        val lastReadMessage: Int? = null
+    ) {
+        val internalConversationId: String get() = "$userId@$roomToken"
+    }
+
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
@@ -76,76 +90,65 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
         }
 
         return send(
-            userId,
-            roomToken,
-            action,
-            inputData.getBoolean(KEY_ENABLED, true),
-            inputData.getInt(KEY_LAST_READ_MESSAGE, -1).takeIf { it >= 0 }
+            Change(
+                userId = userId,
+                roomToken = roomToken,
+                action = action,
+                enabled = inputData.getBoolean(KEY_ENABLED, true),
+                lastReadMessage = inputData.getInt(KEY_LAST_READ_MESSAGE, -1).takeIf { it >= 0 }
+            )
         )
     }
 
     @VisibleForTesting
     @Suppress("TooGenericExceptionCaught")
-    internal suspend fun send(
-        userId: Long,
-        roomToken: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int? = null
-    ): Result {
-        val user = userManager.getUserWithId(userId)
+    internal suspend fun send(change: Change): Result {
+        val user = userManager.getUserWithId(change.userId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
-            Log.e(TAG, "No user or credentials found for user id $userId, dropping the conversation action")
+            Log.e(TAG, "No user or credentials found for user id ${change.userId}, dropping the conversation action")
             // a missing user is not worth another attempt, it will still be missing
-            return giveUp(userId, roomToken, action, enabled, lastReadMessage)
+            return giveUp(change)
         }
 
         // not runCatching: it would swallow the CancellationException that WorkManager throws
         // when this work is replaced, and turn being superseded into a failure
         val sent = try {
-            perform(user, credentials, roomToken, action, enabled, lastReadMessage)
+            perform(user, credentials, change)
             true
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.w(TAG, "$action for room $roomToken could not be sent: $e")
+            Log.w(TAG, "${change.action} for room ${change.roomToken} could not be sent: $e")
             false
         }
 
         return when {
             sent -> {
-                Log.d(TAG, "$action sent for room $roomToken")
+                Log.d(TAG, "${change.action} sent for room ${change.roomToken}")
                 // a read marker stays guarded until a sync shows it, like the one ReadMarkerSyncWorker sends
-                if (action != ConversationAction.MARK_READ) {
-                    releaseGuard(userId, roomToken, action, enabled, lastReadMessage)
+                if (change.action != ConversationAction.MARK_READ) {
+                    releaseGuard(change)
                 }
                 Result.success()
             }
 
             runAttemptCount < MAX_RUN_ATTEMPTS - 1 -> Result.retry()
 
-            else -> giveUp(userId, roomToken, action, enabled, lastReadMessage)
+            else -> giveUp(change)
         }
     }
 
-    @Suppress("LongParameterList")
-    private suspend fun perform(
-        user: User,
-        credentials: String,
-        roomToken: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int?
-    ) {
+    private suspend fun perform(user: User, credentials: String, change: Change) {
+        val roomToken = change.roomToken
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
-        when (action) {
+        when (change.action) {
             ConversationAction.MARK_READ ->
                 conversationsRepository.markConversationAsRead(
                     credentials,
                     readMarkerUrl(user, roomToken),
-                    lastReadMessage
+                    change.lastReadMessage
                 )
 
             ConversationAction.MARK_UNREAD ->
@@ -153,7 +156,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
             ConversationAction.FAVORITE -> {
                 val url = ApiUtils.getUrlForRoomFavorite(apiVersion, user.baseUrl, roomToken)
-                if (enabled) {
+                if (change.enabled) {
                     conversationsRepository.addConversationToFavorites(credentials, url)
                 } else {
                     conversationsRepository.removeConversationFromFavorites(credentials, url)
@@ -162,7 +165,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
             ConversationAction.ARCHIVE -> {
                 val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, roomToken)
-                if (enabled) {
+                if (change.enabled) {
                     conversationsRepository.archiveConversation(credentials, url)
                 } else {
                     conversationsRepository.unarchiveConversation(credentials, url)
@@ -179,33 +182,22 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
         return ApiUtils.getUrlForChatReadMarker(chatApiVersion, user.baseUrl, roomToken)
     }
 
-    private fun releaseGuard(
-        userId: Long,
-        roomToken: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int?
-    ) {
-        val internalConversationId = "$userId@$roomToken"
-        when (action) {
-            ConversationAction.MARK_READ ->
-                lastReadMessage?.let { conversationListUpdater.clearPendingReadMarker(internalConversationId, it) }
+    private fun releaseGuard(change: Change) {
+        val internalConversationId = change.internalConversationId
+        when (change.action) {
+            ConversationAction.MARK_READ -> change.lastReadMessage?.let {
+                conversationListUpdater.clearPendingReadMarker(internalConversationId, it)
+            }
             ConversationAction.MARK_UNREAD -> conversationListUpdater.clearPendingUnread(internalConversationId)
             ConversationAction.FAVORITE ->
-                conversationListUpdater.clearPendingFavorite(internalConversationId, enabled)
+                conversationListUpdater.clearPendingFavorite(internalConversationId, change.enabled)
             ConversationAction.ARCHIVE ->
-                conversationListUpdater.clearPendingArchived(internalConversationId, enabled)
+                conversationListUpdater.clearPendingArchived(internalConversationId, change.enabled)
         }
     }
 
-    private fun giveUp(
-        userId: Long,
-        roomToken: String,
-        action: ConversationAction,
-        enabled: Boolean,
-        lastReadMessage: Int?
-    ): Result {
-        releaseGuard(userId, roomToken, action, enabled, lastReadMessage)
+    private fun giveUp(change: Change): Result {
+        releaseGuard(change)
         return Result.failure()
     }
 
@@ -220,21 +212,13 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
          * Hands the change over and returns the id of the work that carries it, so a caller that is
          * still on screen can tell the user when it finally did not go through.
          */
-        @Suppress("LongParameterList")
-        fun enqueue(
-            context: Context,
-            userId: Long,
-            roomToken: String,
-            action: ConversationAction,
-            enabled: Boolean = true,
-            lastReadMessage: Int? = null
-        ): UUID {
+        fun enqueue(context: Context, change: Change): UUID {
             val data = Data.Builder()
-                .putLong(KEY_INTERNAL_USER_ID, userId)
-                .putString(KEY_ROOM_TOKEN, roomToken)
-                .putString(KEY_ACTION, action.name)
-                .putBoolean(KEY_ENABLED, enabled)
-                .apply { lastReadMessage?.let { putInt(KEY_LAST_READ_MESSAGE, it) } }
+                .putLong(KEY_INTERNAL_USER_ID, change.userId)
+                .putString(KEY_ROOM_TOKEN, change.roomToken)
+                .putString(KEY_ACTION, change.action.name)
+                .putBoolean(KEY_ENABLED, change.enabled)
+                .apply { change.lastReadMessage?.let { putInt(KEY_LAST_READ_MESSAGE, it) } }
                 .build()
 
             val work = OneTimeWorkRequest.Builder(ConversationActionWorker::class.java)
@@ -244,7 +228,7 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
                 .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
-                uniqueWorkName(userId, roomToken, action),
+                uniqueWorkName(change.userId, change.roomToken, change.action),
                 ExistingWorkPolicy.REPLACE,
                 work
             )

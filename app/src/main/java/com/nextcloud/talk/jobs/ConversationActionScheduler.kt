@@ -35,12 +35,8 @@ class ConversationActionScheduler @Inject constructor(private val context: Conte
         lastReadMessage: Int? = null
     ): UUID =
         ConversationActionWorker.enqueue(
-            context = context,
-            userId = userId,
-            roomToken = roomToken,
-            action = action,
-            enabled = enabled,
-            lastReadMessage = lastReadMessage
+            context,
+            ConversationActionWorker.Change(userId, roomToken, action, enabled, lastReadMessage)
         )
 
     /** Whether the change finally went through; false once the worker has given up on it. */
