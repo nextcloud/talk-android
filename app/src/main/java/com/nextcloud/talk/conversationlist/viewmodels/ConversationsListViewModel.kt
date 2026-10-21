@@ -871,9 +871,9 @@ class ConversationsListViewModel @AssistedInject constructor(
         val lastReadMessage =
             if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         applyAndSend(
+            action = ConversationAction.MARK_READ,
             original = conversation,
             optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false),
-            action = ConversationAction.MARK_READ,
             lastReadMessage = lastReadMessage,
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
             onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
@@ -882,9 +882,9 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     fun markConversationAsUnread(conversation: ConversationModel) {
         applyAndSend(
+            action = ConversationAction.MARK_UNREAD,
             original = conversation,
             optimistic = conversation.copy(unreadMessages = 1),
-            action = ConversationAction.MARK_UNREAD,
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
             onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
         )
@@ -893,9 +893,9 @@ class ConversationsListViewModel @AssistedInject constructor(
     fun toggleConversationArchive(conversation: ConversationModel) {
         val desiredArchived = !conversation.hasArchived
         applyAndSend(
+            action = ConversationAction.ARCHIVE,
             original = conversation,
             optimistic = conversation.copy(hasArchived = desiredArchived),
-            action = ConversationAction.ARCHIVE,
             enabled = desiredArchived,
             onApplied = { _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName) },
             onFailed = { _archiveState.value = ArchiveUiState.Error }
@@ -912,9 +912,9 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     private fun setFavorite(conversation: ConversationModel, favorite: Boolean) {
         applyAndSend(
+            action = ConversationAction.FAVORITE,
             original = conversation,
             optimistic = conversation.copy(favorite = favorite),
-            action = ConversationAction.FAVORITE,
             enabled = favorite,
             onApplied = { _favoriteState.value = FavoriteUiState.Success },
             onFailed = { _favoriteState.value = FavoriteUiState.Error }
@@ -931,9 +931,9 @@ class ConversationsListViewModel @AssistedInject constructor(
      */
     @Suppress("LongParameterList")
     private fun applyAndSend(
+        action: ConversationAction,
         original: ConversationModel,
         optimistic: ConversationModel,
-        action: ConversationAction,
         enabled: Boolean = true,
         lastReadMessage: Int? = null,
         onApplied: () -> Unit,
