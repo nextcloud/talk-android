@@ -35,26 +35,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Sends a conversation change the user made in the list - marking it read or unread, favoriting it,
- * archiving it - to the server, the way [ReadMarkerSyncWorker] sends the read marker.
+ * Sends a change the user made in the conversation list - read, unread, favorite, archive - to the server.
+ * It waits for a connection and retries, so the change survives being offline and the process being killed.
  *
- * The caller writes the change to the local conversation entry first, so the list reacts to the tap,
- * and hands the request over here. That buys two things the caller cannot do on its own: the change
- * outlives the process, and a change made offline waits for a connection instead of being reverted
- * within a second of a tap the user meant.
- *
- * Every action here sets a value rather than moving one, so repeating it changes nothing and a retry
- * is always safe. Work is unique per conversation and action with [ExistingWorkPolicy.REPLACE], so
- * favoriting and unfavoriting in quick succession leaves only the last intent to be sent.
- *
- * Marking read and marking unread are the exception to "per action": they set the same read marker,
- * so the order they reach the server in decides the outcome. Both go through the room's read state
- * slot that [ReadMarkerSyncWorker] uses too, which leaves the last of them - from the list or from
- * the chat - as the only one still to be sent.
- *
- * When the attempts are used up, the pending guard is released and the server state applies again at
- * the next room list sync - the same fallback [ReadMarkerSyncWorker] uses, rather than a local revert
- * that would have to guess what the entry looked like before.
+ * Each action sets a value, so a retry is always safe. Work is unique per conversation and action, so a newer
+ * tap replaces one that was not sent yet; read and unread share the read marker slot of [ReadMarkerSyncWorker],
+ * so the last of them wins. When the attempts are used up, the guard is released and the next room list sync
+ * brings the server state back.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationActionWorker(context: Context, workerParams: WorkerParameters) :
@@ -154,23 +141,15 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
         when (action) {
-            ConversationAction.MARK_READ -> {
-                val chatApiVersion = ApiUtils.getChatApiVersion(
-                    user.capabilities!!.spreedCapability!!,
-                    intArrayOf(ApiUtils.API_V1)
+            ConversationAction.MARK_READ ->
+                conversationsRepository.markConversationAsRead(
+                    credentials,
+                    readMarkerUrl(user, roomToken),
+                    lastReadMessage
                 )
-                val url = ApiUtils.getUrlForChatReadMarker(chatApiVersion, user.baseUrl, roomToken)
-                conversationsRepository.markConversationAsRead(credentials, url, lastReadMessage)
-            }
 
-            ConversationAction.MARK_UNREAD -> {
-                val chatApiVersion = ApiUtils.getChatApiVersion(
-                    user.capabilities!!.spreedCapability!!,
-                    intArrayOf(ApiUtils.API_V1)
-                )
-                val url = ApiUtils.getUrlForChatReadMarker(chatApiVersion, user.baseUrl, roomToken)
-                conversationsRepository.markConversationAsUnread(credentials, url)
-            }
+            ConversationAction.MARK_UNREAD ->
+                conversationsRepository.markConversationAsUnread(credentials, readMarkerUrl(user, roomToken))
 
             ConversationAction.FAVORITE -> {
                 val url = ApiUtils.getUrlForRoomFavorite(apiVersion, user.baseUrl, roomToken)
@@ -190,6 +169,14 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
                 }
             }
         }
+    }
+
+    private fun readMarkerUrl(user: User, roomToken: String): String {
+        val chatApiVersion = ApiUtils.getChatApiVersion(
+            user.capabilities!!.spreedCapability!!,
+            intArrayOf(ApiUtils.API_V1)
+        )
+        return ApiUtils.getUrlForChatReadMarker(chatApiVersion, user.baseUrl, roomToken)
     }
 
     private fun releaseGuard(
