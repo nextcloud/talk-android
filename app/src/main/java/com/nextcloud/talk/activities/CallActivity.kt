@@ -59,6 +59,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
@@ -1103,7 +1104,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hideEndCallPopupMenuOnTouchOutside(event: MotionEvent) {
         val endCallPopupMenu = binding?.endCallPopupMenu ?: return
-        if (endCallPopupMenu.visibility == View.VISIBLE) {
+        if (endCallPopupMenu.isVisible) {
             val location = IntArray(2)
             endCallPopupMenu.getLocationOnScreen(location)
             val popupMenuBounds = Rect(
