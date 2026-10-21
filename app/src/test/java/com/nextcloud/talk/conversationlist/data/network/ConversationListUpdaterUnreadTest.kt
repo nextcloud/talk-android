@@ -18,6 +18,7 @@ import com.nextcloud.talk.models.json.conversations.ConversationDto
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -117,6 +118,44 @@ class ConversationListUpdaterUnreadTest {
             assertEquals(READ_UP_TO_NEWEST, readAgain.lastReadMessage)
             assertEquals(0, readAgain.unreadMessages)
         }
+
+    @Test
+    fun `marking read releases a pending unread, so the server's read state applies`() {
+        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+        updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
+
+        updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+
+        assertEquals(READ_UP_TO_NEWEST, updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+        val read = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
+        assertEquals(READ_UP_TO_NEWEST, read.lastReadMessage)
+        assertEquals(0, read.unreadMessages)
+    }
+
+    @Test
+    fun `marking read without a marker, as in a federated conversation, still releases a pending unread`() {
+        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+        updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
+
+        updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, lastReadMessage = null)
+
+        assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+        assertEquals(0, preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0).unreadMessages)
+    }
+
+    @Test
+    fun `marking unread drops a pending read marker and guards the unread state instead`() {
+        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+        updater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+
+        updater.switchToPendingMarkAsUnread(INTERNAL_CONVERSATION_ID)
+
+        assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+        // a response that still reports the conversation read does not overwrite the local unread state
+        val unread = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
+        assertEquals(MARKER, unread.lastReadMessage)
+        assertEquals(3, unread.unreadMessages)
+    }
 
     private fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
         updater.preservePendingLocalState(

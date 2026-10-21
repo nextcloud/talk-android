@@ -178,17 +178,14 @@ class ConversationsListViewModelOptimisticActionsTest {
             ConversationReadUnreadUiState.Success,
             awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
         )
-        // the unread work this replaces is cancelled and will never release its guard itself
-        verify(conversationListUpdater).clearPendingUnread(CONVERSATION.internalId)
-        verify(conversationListUpdater).markPendingReadMarker(CONVERSATION.internalId, LAST_MESSAGE.toInt())
+        verify(conversationListUpdater).switchToPendingMarkAsRead(CONVERSATION.internalId, LAST_MESSAGE.toInt())
         verifyBlocking(conversationActionScheduler) {
             send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, LAST_MESSAGE.toInt())
         }
     }
 
     @Test
-    fun `marking unread releases a read marker it replaces`() {
-        whenever(conversationListUpdater.pendingReadMarker(CONVERSATION.internalId)).thenReturn(LAST_MESSAGE.toInt())
+    fun `marking unread replaces a pending read marker`() {
         givenTheWorker(gotThrough = true)
 
         viewModel.markConversationAsUnread(CONVERSATION)
@@ -197,8 +194,7 @@ class ConversationsListViewModelOptimisticActionsTest {
             ConversationReadUnreadUiState.Success,
             awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
         )
-        verify(conversationListUpdater).clearPendingReadMarker(CONVERSATION.internalId, LAST_MESSAGE.toInt())
-        verify(conversationListUpdater).markPendingUnread(CONVERSATION.internalId)
+        verify(conversationListUpdater).switchToPendingMarkAsUnread(CONVERSATION.internalId)
     }
 
     @Test

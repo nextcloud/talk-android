@@ -860,14 +860,12 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     /**
      * Marking read and marking unread share one work slot per room, so the later one replaces the earlier
-     * instead of racing it to the server. The replaced work is cancelled and never releases its guard,
-     * which is why each of them releases the other's here.
+     * instead of racing it to the server.
      */
     fun markConversationAsRead(conversation: ConversationModel) {
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         viewModelScope.launch {
-            conversationListUpdater.clearPendingUnread(conversation.internalId)
-            messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
+            conversationListUpdater.switchToPendingMarkAsRead(conversation.internalId, messageId)
             applyLocally(conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false))
 
             handOver(conversation, ConversationAction.MARK_READ, lastReadMessage = messageId) {
@@ -879,10 +877,7 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     fun markConversationAsUnread(conversation: ConversationModel) {
         viewModelScope.launch {
-            conversationListUpdater.pendingReadMarker(conversation.internalId)?.let {
-                conversationListUpdater.clearPendingReadMarker(conversation.internalId, it)
-            }
-            conversationListUpdater.markPendingUnread(conversation.internalId)
+            conversationListUpdater.switchToPendingMarkAsUnread(conversation.internalId)
             applyLocally(conversation.copy(unreadMessages = 1))
 
             handOver(conversation, ConversationAction.MARK_UNREAD) {

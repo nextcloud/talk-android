@@ -115,6 +115,21 @@ class ConversationListUpdater @Inject constructor(
         pendingUnreadFlags.remove(internalConversationId)
     }
 
+    /**
+     * Marking read replaces a pending mark as unread of the same conversation, whose work is cancelled
+     * and never releases its guard. Federated conversations send no [lastReadMessage] to guard.
+     */
+    fun switchToPendingMarkAsRead(internalConversationId: String, lastReadMessage: Int?) {
+        clearPendingUnread(internalConversationId)
+        lastReadMessage?.let { markPendingReadMarker(internalConversationId, it) }
+    }
+
+    /** Marking unread replaces a pending read marker of the same conversation, for the same reason. */
+    fun switchToPendingMarkAsUnread(internalConversationId: String) {
+        pendingReadMarkers.remove(internalConversationId)
+        markPendingUnread(internalConversationId)
+    }
+
     fun markPendingArchived(internalConversationId: String, archived: Boolean) {
         pendingArchivedFlags[internalConversationId] = archived
     }
