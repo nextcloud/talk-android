@@ -70,6 +70,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 @Suppress("LongParameterList", "TooManyFunctions", "LargeClass")
@@ -864,26 +865,30 @@ class ConversationsListViewModel @AssistedInject constructor(
      */
     fun markConversationAsRead(conversation: ConversationModel) {
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
-        viewModelScope.launch {
-            conversationListUpdater.switchToPendingMarkAsRead(conversation.internalId, messageId)
-            applyLocally(conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false))
+        conversationListUpdater.switchToPendingMarkAsRead(conversation.internalId, messageId)
+        val workId = handOver(conversation, ConversationAction.MARK_READ, lastReadMessage = messageId)
 
-            handOver(conversation, ConversationAction.MARK_READ, lastReadMessage = messageId) {
+        viewModelScope.launch {
+            applyLocally(conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false))
+            _readUnreadState.value = ConversationReadUnreadUiState.Success
+
+            if (!awaitSent(workId, conversation, ConversationAction.MARK_READ)) {
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
-            _readUnreadState.value = ConversationReadUnreadUiState.Success
         }
     }
 
     fun markConversationAsUnread(conversation: ConversationModel) {
-        viewModelScope.launch {
-            conversationListUpdater.switchToPendingMarkAsUnread(conversation.internalId)
-            applyLocally(conversation.copy(unreadMessages = 1))
+        conversationListUpdater.switchToPendingMarkAsUnread(conversation.internalId)
+        val workId = handOver(conversation, ConversationAction.MARK_UNREAD)
 
-            handOver(conversation, ConversationAction.MARK_UNREAD) {
+        viewModelScope.launch {
+            applyLocally(conversation.copy(unreadMessages = 1))
+            _readUnreadState.value = ConversationReadUnreadUiState.Success
+
+            if (!awaitSent(workId, conversation, ConversationAction.MARK_UNREAD)) {
                 _readUnreadState.value = ConversationReadUnreadUiState.Error
             }
-            _readUnreadState.value = ConversationReadUnreadUiState.Success
         }
     }
 
@@ -923,15 +928,16 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     fun toggleConversationArchive(conversation: ConversationModel) {
         val desiredArchived = !conversation.hasArchived
+        conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
+        val workId = handOver(conversation, ConversationAction.ARCHIVE, desiredArchived)
 
         viewModelScope.launch {
-            conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
             applyLocally(conversation.copy(hasArchived = desiredArchived))
+            _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
 
-            handOver(conversation, ConversationAction.ARCHIVE, desiredArchived) {
+            if (!awaitSent(workId, conversation, ConversationAction.ARCHIVE)) {
                 _archiveState.value = ArchiveUiState.Error
             }
-            _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName)
         }
     }
 
@@ -944,45 +950,50 @@ class ConversationsListViewModel @AssistedInject constructor(
     }
 
     private fun setFavorite(conversation: ConversationModel, favorite: Boolean) {
-        viewModelScope.launch {
-            conversationListUpdater.markPendingFavorite(conversation.internalId, favorite)
-            applyLocally(conversation.copy(favorite = favorite))
+        conversationListUpdater.markPendingFavorite(conversation.internalId, favorite)
+        val workId = handOver(conversation, ConversationAction.FAVORITE, favorite)
 
-            handOver(conversation, ConversationAction.FAVORITE, favorite) {
+        viewModelScope.launch {
+            applyLocally(conversation.copy(favorite = favorite))
+            _favoriteState.value = FavoriteUiState.Success
+
+            if (!awaitSent(workId, conversation, ConversationAction.FAVORITE)) {
                 _favoriteState.value = FavoriteUiState.Error
             }
-            _favoriteState.value = FavoriteUiState.Success
         }
     }
 
     /**
      * Hands the change to [ConversationActionScheduler], which sends it even if this screen or the whole
-     * process is gone by then. While this screen is still around, a change the worker finally gave up
-     * on puts [conversation] back and reports itself through [onFailed]; when it is not, the worker
-     * has released the guard and the next room list sync brings the server state back instead.
+     * process is gone by then. It is called right away rather than from [viewModelScope], after the guard
+     * is set: leaving the screen at any point after the tap must not keep the change from being sent.
      */
     private fun handOver(
         conversation: ConversationModel,
         action: ConversationAction,
         enabled: Boolean = true,
-        lastReadMessage: Int? = null,
-        onFailed: () -> Unit
-    ) {
-        viewModelScope.launch {
-            val sent = conversationActionScheduler.send(
-                userId = currentUser.id!!,
-                roomToken = conversation.token,
-                action = action,
-                enabled = enabled,
-                lastReadMessage = lastReadMessage
-            )
+        lastReadMessage: Int? = null
+    ): UUID =
+        conversationActionScheduler.enqueue(
+            userId = currentUser.id!!,
+            roomToken = conversation.token,
+            action = action,
+            enabled = enabled,
+            lastReadMessage = lastReadMessage
+        )
 
-            if (!sent) {
-                logger.e(TAG, "Failed to send $action for a conversation")
-                restore(conversation, action)
-                onFailed()
-            }
+    /**
+     * Waits for the work while this screen is still around. When the worker finally gave up, the change is
+     * put back and false returned; when the screen is gone first, the worker has released the guard and the
+     * next room list sync brings the server state back instead.
+     */
+    private suspend fun awaitSent(workId: UUID, conversation: ConversationModel, action: ConversationAction): Boolean {
+        if (conversationActionScheduler.awaitOutcome(workId)) {
+            return true
         }
+        logger.e(TAG, "Failed to send $action for a conversation")
+        restore(conversation, action)
+        return false
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {

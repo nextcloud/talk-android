@@ -30,6 +30,7 @@ import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -41,7 +42,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -51,6 +51,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
@@ -64,6 +65,7 @@ import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.util.UUID
 
 /**
  * The conversation list's optimistic actions: marking read or unread, favoriting and archiving are
@@ -120,9 +122,30 @@ class ConversationsListViewModelOptimisticActionsTest {
         verifyBlocking(repository) { updateConversation(CONVERSATION.copy(favorite = true)) }
         verifyBlocking(repository, never()) { updateConversation(CONVERSATION) }
         verify(conversationListUpdater, never()).clearPendingFavorite(any(), any())
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, true)
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, true)
+    }
+
+    @Test
+    fun `a change is handed over before it is written locally, so leaving the screen cannot drop it`() {
+        givenTheWorker(gotThrough = true)
+        val localWrite = CompletableDeferred<Unit>()
+        wheneverBlocking { repository.updateConversation(any()) }.doSuspendableAnswer { localWrite.await() }
+
+        viewModel.toggleConversationArchive(CONVERSATION)
+
+        // the guard comes first, so a worker that is done at once releases it rather than finding none
+        val order = inOrder(conversationListUpdater, conversationActionScheduler)
+        order.verify(conversationListUpdater).markPendingArchived(CONVERSATION.internalId, true)
+        order.verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
+        assertEquals(ArchiveUiState.None, viewModel.archiveState.value)
+
+        localWrite.complete(Unit)
+        assertEquals(
+            ArchiveUiState.Success(true, CONVERSATION.displayName),
+            awaitOutcome(viewModel.archiveState, ArchiveUiState.None)
+        )
     }
 
     @Test
@@ -145,9 +168,8 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         awaitFinal(viewModel.favoriteState, FavoriteUiState.Error)
         assertTakenBack(CONVERSATION, original = favorite)
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, false)
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.FAVORITE, false)
     }
 
     @Test
@@ -159,9 +181,8 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
         assertTakenBack(unread.copy(unreadMessages = 0), original = unread)
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, null)
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, null)
     }
 
     @Test
@@ -179,9 +200,8 @@ class ConversationsListViewModelOptimisticActionsTest {
             awaitOutcome(viewModel.readUnreadState, ConversationReadUnreadUiState.None)
         )
         verify(conversationListUpdater).switchToPendingMarkAsRead(CONVERSATION.internalId, LAST_MESSAGE.toInt())
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, LAST_MESSAGE.toInt())
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_READ, true, LAST_MESSAGE.toInt())
     }
 
     @Test
@@ -205,9 +225,8 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         awaitFinal(viewModel.readUnreadState, ConversationReadUnreadUiState.Error)
         assertTakenBack(CONVERSATION.copy(unreadMessages = 1))
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.MARK_UNREAD, true)
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.MARK_UNREAD, true)
     }
 
     @Test
@@ -218,9 +237,8 @@ class ConversationsListViewModelOptimisticActionsTest {
 
         awaitFinal(viewModel.archiveState, ArchiveUiState.Error)
         assertTakenBack(CONVERSATION.copy(hasArchived = true))
-        verifyBlocking(conversationActionScheduler) {
-            send(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
-        }
+        verify(conversationActionScheduler)
+            .enqueue(USER.id!!, CONVERSATION.token, ConversationAction.ARCHIVE, true)
     }
 
     @Test
@@ -277,16 +295,11 @@ class ConversationsListViewModelOptimisticActionsTest {
         verifyBlocking(repository) { updateConversation(CONVERSATION) }
     }
 
-    /**
-     * The worker either got the change through or finally gave up on it; there is nothing in between.
-     * It answers off the caller's thread, because the real one waits for WorkManager and never comes
-     * back before the action has reported the change as applied.
-     */
+    /** The worker either got the change through or finally gave up on it; there is nothing in between. */
     private fun givenTheWorker(gotThrough: Boolean) {
         conversationActionScheduler.stub {
-            onBlocking { send(any(), any(), any(), any(), anyOrNull()) } doSuspendableAnswer {
-                withContext(Dispatchers.IO) { gotThrough }
-            }
+            on { enqueue(any(), any(), any(), any(), anyOrNull()) } doReturn WORK_ID
+            onBlocking { awaitOutcome(WORK_ID) } doReturn gotThrough
         }
     }
 
@@ -311,6 +324,7 @@ class ConversationsListViewModelOptimisticActionsTest {
 
     companion object {
         private const val LAST_MESSAGE = 42L
+        private val WORK_ID: UUID = UUID.randomUUID()
         private const val UNREAD_MESSAGES = 3
         private const val TIMEOUT_MS = 5_000L
 
