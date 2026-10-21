@@ -858,17 +858,23 @@ class ConversationsListViewModel @AssistedInject constructor(
         _readUnreadState.value = ConversationReadUnreadUiState.None
     }
 
-    /**
-     * Marking read and marking unread share one work slot per room, so the later one replaces the earlier
-     * instead of racing it to the server.
-     */
+    fun resetFavoriteState() {
+        _favoriteState.value = FavoriteUiState.None
+    }
+
+    fun resetArchiveState() {
+        _archiveState.value = ArchiveUiState.None
+    }
+
     fun markConversationAsRead(conversation: ConversationModel) {
-        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
+        // a federated conversation sends no message id, so the server marks it read up to its last message
+        val lastReadMessage =
+            if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
         applyAndSend(
             original = conversation,
             optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false),
             action = ConversationAction.MARK_READ,
-            lastReadMessage = messageId,
+            lastReadMessage = lastReadMessage,
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
             onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
         )
@@ -882,40 +888,6 @@ class ConversationsListViewModel @AssistedInject constructor(
             onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
             onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
         )
-    }
-
-    /**
-     * Puts back only the field [action] owns, on top of whatever the entry holds by now. Each action is
-     * carried by its own work, so writing the whole captured conversation back would undo a different
-     * action that succeeded while this one was still in flight.
-     */
-    @VisibleForTesting
-    internal suspend fun restore(original: ConversationModel, action: ConversationAction) {
-        val current = repository.getLocallyStoredConversation(currentUser, original.token) ?: original
-        applyLocally(
-            when (action) {
-                ConversationAction.MARK_READ -> current.copy(
-                    unreadMessages = original.unreadMessages,
-                    unreadMention = original.unreadMention,
-                    unreadMentionDirect = original.unreadMentionDirect
-                )
-                ConversationAction.MARK_UNREAD -> current.copy(unreadMessages = original.unreadMessages)
-                ConversationAction.FAVORITE -> current.copy(favorite = original.favorite)
-                ConversationAction.ARCHIVE -> current.copy(hasArchived = original.hasArchived)
-            }
-        )
-    }
-
-    private suspend fun applyLocally(conversation: ConversationModel) {
-        withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
-    }
-
-    fun resetFavoriteState() {
-        _favoriteState.value = FavoriteUiState.None
-    }
-
-    fun resetArchiveState() {
-        _archiveState.value = ArchiveUiState.None
     }
 
     fun toggleConversationArchive(conversation: ConversationModel) {
@@ -952,12 +924,10 @@ class ConversationsListViewModel @AssistedInject constructor(
     /**
      * Sends [action] through [ConversationActionScheduler] and shows [optimistic] meanwhile.
      *
-     * The guard is set before the work is enqueued, so a worker that is done at once finds it to release. The
-     * work is enqueued right away, outside [viewModelScope], so leaving the screen at any point after the tap
-     * cannot keep the change from being sent. Showing it and waiting for the outcome only matter while the
-     * screen is there: when the worker finally gave up, [original] is put back and [onFailed] is called; when
-     * the screen is gone first, the worker has released the guard and the next room list sync brings the
-     * server state back instead.
+     * - The guard is set first, so a worker that is done at once finds it to release.
+     * - The work is enqueued outside [viewModelScope], so leaving the screen cannot keep it from being sent.
+     * - Showing the change and waiting only happen while the screen is there. If the worker gives up, [original]
+     *   is put back and [onFailed] is called; if the screen is gone by then, the next sync restores it instead.
      */
     @Suppress("LongParameterList")
     private fun applyAndSend(
@@ -1007,6 +977,32 @@ class ConversationsListViewModel @AssistedInject constructor(
             ConversationAction.ARCHIVE ->
                 conversationListUpdater.markPendingArchived(internalConversationId, enabled)
         }
+    }
+
+    private suspend fun applyLocally(conversation: ConversationModel) {
+        withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
+    }
+
+    /**
+     * Puts back only the field [action] owns, on top of whatever the entry holds by now. Each action is
+     * carried by its own work, so writing the whole captured conversation back would undo a different
+     * action that succeeded while this one was still in flight.
+     */
+    @VisibleForTesting
+    internal suspend fun restore(original: ConversationModel, action: ConversationAction) {
+        val current = repository.getLocallyStoredConversation(currentUser, original.token) ?: original
+        applyLocally(
+            when (action) {
+                ConversationAction.MARK_READ -> current.copy(
+                    unreadMessages = original.unreadMessages,
+                    unreadMention = original.unreadMention,
+                    unreadMentionDirect = original.unreadMentionDirect
+                )
+                ConversationAction.MARK_UNREAD -> current.copy(unreadMessages = original.unreadMessages)
+                ConversationAction.FAVORITE -> current.copy(favorite = original.favorite)
+                ConversationAction.ARCHIVE -> current.copy(hasArchived = original.hasArchived)
+            }
+        )
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
