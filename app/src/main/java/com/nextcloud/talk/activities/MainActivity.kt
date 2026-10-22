@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
@@ -69,6 +70,9 @@ class MainActivity :
 
     private var contactLookupJob: Job? = null
 
+    // the splash screen stays until the intent is routed, so this activity's empty layout never shows in between
+    private var isRouting = true
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
@@ -76,6 +80,8 @@ class MainActivity :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // before super.onCreate(), it switches from the launch theme to postSplashScreenTheme
+        installSplashScreen().setKeepOnScreenCondition { isRouting }
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
         super.onCreate(savedInstanceState)
@@ -84,8 +90,6 @@ class MainActivity :
             Toast.makeText(this, "Build flavor: " + BuildConfig.FLAVOR, Toast.LENGTH_LONG).show()
         }
 
-        // Set the default theme to replace the launch screen theme.
-        setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -299,7 +303,7 @@ class MainActivity :
                     ).show()
                 }
             }
-        }
+        }.invokeOnCompletion { isRouting = false }
     }
 
     /**
@@ -374,7 +378,7 @@ class MainActivity :
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }
+        }.invokeOnCompletion { isRouting = false }
 
         return true
     }
