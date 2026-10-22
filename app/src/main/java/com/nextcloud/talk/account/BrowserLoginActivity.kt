@@ -146,9 +146,10 @@ class BrowserLoginActivity : BaseActivity() {
         // The account to reauthorize, so a login with another account doesn't change it.
         val accountToReauthorize = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
 
-        if (extras.getBoolean(BundleKeys.KEY_RESUME_BROWSER_LOGIN, false)) {
-            viewModel.resumeWebBrowserLogin()
-        } else if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
+        // If the saved login can't be continued, it is started again below with the same extras.
+        if (extras.getBoolean(BundleKeys.KEY_RESUME_BROWSER_LOGIN, false) && viewModel.resumeWebBrowserLogin()) return
+
+        if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
             val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
 
             if (uri.startsWith(LoginRepository.ONE_TIME_PREFIX)) {

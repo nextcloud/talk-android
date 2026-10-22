@@ -14,6 +14,7 @@ import com.nextcloud.talk.account.data.model.LoginResponse
  */
 data class PendingBrowserLogin(
     val response: LoginResponse,
+    val baseUrl: String,
     val reAuth: Boolean,
     val accountToReauthorize: Long?,
     val startedAtMillis: Long
@@ -35,8 +36,8 @@ object PendingBrowserLoginStore {
     @Volatile
     private var pending: PendingBrowserLogin? = null
 
-    fun save(response: LoginResponse, reAuth: Boolean, accountToReauthorize: Long?) {
-        pending = PendingBrowserLogin(response, reAuth, accountToReauthorize, clock())
+    fun save(response: LoginResponse, baseUrl: String, reAuth: Boolean, accountToReauthorize: Long?) {
+        pending = PendingBrowserLogin(response, baseUrl, reAuth, accountToReauthorize, clock())
     }
 
     /** The unfinished login, or null if there is none or it expired. */

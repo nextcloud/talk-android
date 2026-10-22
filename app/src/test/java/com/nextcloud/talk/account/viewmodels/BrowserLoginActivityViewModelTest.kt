@@ -17,8 +17,10 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -113,8 +115,8 @@ class BrowserLoginActivityViewModelTest {
         wheneverBlocking { newRepository.pollLogin(any()) }.thenReturn(null)
         val newViewModel = BrowserLoginActivityViewModel(newRepository)
 
-        newViewModel.resumeWebBrowserLogin()
-        newViewModel.resumeWebBrowserLogin()
+        assertTrue(newViewModel.resumeWebBrowserLogin())
+        assertTrue(newViewModel.resumeWebBrowserLogin())
 
         verifyBlocking(newRepository, times(1)) { pollLogin(any()) }
     }
@@ -149,11 +151,21 @@ class BrowserLoginActivityViewModelTest {
         val newRepository: LoginRepository = mock()
         val newViewModel = BrowserLoginActivityViewModel(newRepository)
 
-        newViewModel.resumeWebBrowserLogin()
+        assertFalse(newViewModel.resumeWebBrowserLogin())
 
         assertNull(PendingBrowserLoginStore.active())
         verifyBlocking(newRepository, never()) { pollLogin(any()) }
-        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError, newViewModel.postLoginState.value)
+    }
+
+    @Test
+    fun `without a saved login the login can be started again`() {
+        wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.thenReturn(loginResponse)
+
+        assertFalse(viewModel.resumeWebBrowserLogin())
+        viewModel.startWebBrowserLogin(BASE_URL, reAuth = true, accountToReauthorize = ACCOUNT)
+
+        verifyBlocking(repository) { startLoginFlow(BASE_URL, true, ACCOUNT) }
+        assertEquals(BASE_URL, PendingBrowserLoginStore.active()!!.baseUrl)
     }
 
     @Test

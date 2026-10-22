@@ -79,7 +79,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
             }
 
             // Survives this view model, see PendingBrowserLoginStore.
-            PendingBrowserLoginStore.save(response, reAuth, accountToReauthorize)
+            PendingBrowserLoginStore.save(response, baseUrl, reAuth, accountToReauthorize)
 
             _initialLoginRequestState.value =
                 InitialLoginViewState.InitialLoginRequestSuccess(response.loginUrl)
@@ -89,17 +89,19 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     /**
      * Continues the browser login that a destroyed [com.nextcloud.talk.account.BrowserLoginActivity] left unfinished:
      * no new login request and no new browser, only the polling of the saved response.
+     *
+     * Returns false if there is nothing to continue (expired, or lost by process death), then the login has to be
+     * started again.
      */
-    fun resumeWebBrowserLogin() {
-        if (!startLoginOnce()) return
-        val pending = PendingBrowserLoginStore.active()
-        if (pending == null) {
-            _postLoginState.value = PostLoginViewState.PostLoginError
-            return
+    fun resumeWebBrowserLogin(): Boolean {
+        if (!isLoginStarted) {
+            val pending = PendingBrowserLoginStore.active() ?: return false
+            startLoginOnce()
+            savedResponse = pending.response
+            repository.resumeLoginFlow(pending.reAuth, pending.accountToReauthorize)
+            handleWebBrowserLogin()
         }
-        savedResponse = pending.response
-        repository.resumeLoginFlow(pending.reAuth, pending.accountToReauthorize)
-        handleWebBrowserLogin()
+        return true
     }
 
     fun handleWebBrowserLogin() {

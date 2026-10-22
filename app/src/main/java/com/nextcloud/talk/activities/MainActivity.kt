@@ -26,6 +26,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.data.PendingBrowserLogin
 import com.nextcloud.talk.account.data.PendingBrowserLoginStore
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -120,9 +121,13 @@ class MainActivity :
      * The app was opened again (e.g. by the launcher icon) while a login via the browser was unfinished. That
      * destroyed the login screens, so they are opened again, with the saved login continued instead of a new one.
      */
-    private fun resumeBrowserLogin(hasAccounts: Boolean) {
+    private fun resumeBrowserLogin(pending: PendingBrowserLogin, hasAccounts: Boolean) {
         val loginIntent = Intent(context, BrowserLoginActivity::class.java)
         loginIntent.putExtra(BundleKeys.KEY_RESUME_BROWSER_LOGIN, true)
+        // To start the login again if the saved one is lost by process death.
+        loginIntent.putExtra(BundleKeys.KEY_BASE_URL, pending.baseUrl)
+        loginIntent.putExtra(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, pending.reAuth)
+        pending.accountToReauthorize?.let { loginIntent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it) }
 
         val screenBelow = when {
             hasAccounts -> Intent(context, ConversationsListActivity::class.java)
@@ -301,8 +306,9 @@ class MainActivity :
                     }
                     if (isFinishing || isDestroyed) return@launch
 
-                    if (PendingBrowserLoginStore.active() != null) {
-                        resumeBrowserLogin(users.isNotEmpty())
+                    val pendingBrowserLogin = PendingBrowserLoginStore.active()
+                    if (pendingBrowserLogin != null) {
+                        resumeBrowserLogin(pendingBrowserLogin, users.isNotEmpty())
                     } else if (users.isNotEmpty()) {
                         openConversationList()
                     } else {
