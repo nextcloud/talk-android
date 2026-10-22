@@ -29,6 +29,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.isTransientFailure
 import kotlinx.coroutines.CancellationException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -94,18 +95,18 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
 
         // not runCatching: it would swallow the CancellationException that WorkManager throws
         // when this work is replaced, and turn being superseded into a failure
-        val sent = try {
+        val failure = try {
             perform(user, credentials, change)
-            true
+            null
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "${change.action} for room ${change.roomToken} could not be sent: $e")
-            false
+            e
         }
 
         return when {
-            sent -> {
+            failure == null -> {
                 Log.d(TAG, "${change.action} sent for room ${change.roomToken}")
                 // a read marker stays guarded until a sync shows it, like the one ReadMarkerSyncWorker sends
                 if (change.action !is ConversationAction.MarkRead) {
@@ -114,7 +115,9 @@ class ConversationActionWorker(context: Context, workerParams: WorkerParameters)
                 Result.success()
             }
 
-            runAttemptCount < MAX_RUN_ATTEMPTS - 1 -> Result.retry()
+            // an answer the server gave will be the same next time, so only a connection problem, a rate
+            // limit or a server error is worth another attempt
+            isTransientFailure(failure) && runAttemptCount < MAX_RUN_ATTEMPTS - 1 -> Result.retry()
 
             else -> giveUp(change)
         }

@@ -22,6 +22,8 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.users.UserManager
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -43,6 +45,9 @@ import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 
 /**
  * What the enqueued work is named decides which change supersedes which, and the action travels to
@@ -186,13 +191,46 @@ class ConversationActionWorkerTest {
     }
 
     @Test
-    fun `a request the server refuses is retried rather than treated as a cancellation`() {
+    fun `a connection problem is retried while attempts are left`() {
         val conversationsRepository: ConversationsRepository = mock()
         val conversationListUpdater: ConversationListUpdater = mock()
         val worker = worker(conversationsRepository, conversationListUpdater)
         conversationsRepository.stub {
             onBlocking { addConversationToFavorites(any(), any()) } doSuspendableAnswer {
-                throw IllegalStateException("refused")
+                throw IOException("no connection")
+            }
+        }
+
+        val result = runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.Favorite(true))) }
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        verify(conversationListUpdater, never()).clearPendingFavorite(any(), any())
+    }
+
+    @Test
+    fun `a refusal the server will repeat is given up on instead of retried`() {
+        val conversationsRepository: ConversationsRepository = mock()
+        val conversationListUpdater: ConversationListUpdater = mock()
+        val worker = worker(conversationsRepository, conversationListUpdater)
+        conversationsRepository.stub {
+            onBlocking { addConversationToFavorites(any(), any()) } doSuspendableAnswer { throw forbidden() }
+        }
+
+        val result = runBlocking { worker.send(Change(USER_ID, "room1", ConversationAction.Favorite(true))) }
+
+        assertEquals(ListenableWorker.Result.failure(), result)
+        // the guard goes at once, so the next sync shows what the server actually holds
+        verify(conversationListUpdater).clearPendingFavorite(INTERNAL_ID, true)
+    }
+
+    @Test
+    fun `a server error is retried, as it may be gone by the next attempt`() {
+        val conversationsRepository: ConversationsRepository = mock()
+        val conversationListUpdater: ConversationListUpdater = mock()
+        val worker = worker(conversationsRepository, conversationListUpdater)
+        conversationsRepository.stub {
+            onBlocking { addConversationToFavorites(any(), any()) } doSuspendableAnswer {
+                throw httpError(HTTP_INTERNAL_SERVER_ERROR)
             }
         }
 
@@ -270,6 +308,11 @@ class ConversationActionWorkerTest {
         verifyBlocking(conversationsRepository) { markConversationAsRead(any(), any(), eq(LAST_READ_MESSAGE)) }
     }
 
+    private fun forbidden(): HttpException = httpError(HTTP_FORBIDDEN)
+
+    private fun httpError(code: Int): HttpException =
+        HttpException(Response.error<Any>(code, "".toResponseBody("text/plain".toMediaType())))
+
     private fun worker(
         conversationsRepository: ConversationsRepository,
         conversationListUpdater: ConversationListUpdater,
@@ -292,6 +335,9 @@ class ConversationActionWorkerTest {
         const val USER_ID = 1L
         const val REMOVED_USER_ID = 2L
         const val LAST_READ_MESSAGE = 42
+        const val INTERNAL_ID = "1@room1"
+        const val HTTP_FORBIDDEN = 403
+        const val HTTP_INTERNAL_SERVER_ERROR = 500
 
         // MAX_RUN_ATTEMPTS is 3, counted from 0
         const val LAST_ATTEMPT = 2
