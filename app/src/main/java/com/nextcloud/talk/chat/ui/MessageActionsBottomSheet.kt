@@ -69,6 +69,7 @@ import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.emoji2.emojipicker.RecentEmojiProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.viewmodels.isSelectableMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
@@ -124,6 +125,7 @@ data class MessageActionsState(
     val showReply: Boolean,
     val showReplyPrivately: Boolean,
     val showOpenThread: Boolean,
+    val showSelect: Boolean,
     val showForward: Boolean,
     val showEdit: Boolean,
     val showCopy: Boolean,
@@ -240,6 +242,11 @@ internal fun buildMessageActionsState(
             isOnline &&
             !isClassifiedRoom,
         showOpenThread = message.isThread && conversationThreadId == null,
+        showSelect = isSelectableMessage(
+            isSystemMessage = ChatMessage.MessageType.SYSTEM_MESSAGE == messageType,
+            isDeleted = message.isDeleted,
+            messageId = message.jsonMessageId
+        ),
         showForward = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == messageType &&
             !(message.isDeletedCommentMessage || message.isDeleted) &&
             isOnline &&
@@ -284,6 +291,7 @@ fun MessageActionsBottomSheet(
     onReply: () -> Unit,
     onReplyPrivately: () -> Unit,
     onOpenThread: () -> Unit,
+    onSelect: () -> Unit,
     onForward: () -> Unit,
     onEdit: () -> Unit,
     onCopy: () -> Unit,
@@ -339,6 +347,7 @@ fun MessageActionsBottomSheet(
                 onReply = onReply,
                 onReplyPrivately = onReplyPrivately,
                 onOpenThread = onOpenThread,
+                onSelect = onSelect,
                 onForward = onForward,
                 onEdit = onEdit,
                 onCopy = onCopy,
@@ -369,6 +378,7 @@ internal fun MessageActionsSheetContent(
     onReply: () -> Unit,
     onReplyPrivately: () -> Unit,
     onOpenThread: () -> Unit,
+    onSelect: () -> Unit,
     onForward: () -> Unit,
     onEdit: () -> Unit,
     onCopy: () -> Unit,
@@ -441,6 +451,16 @@ internal fun MessageActionsSheetContent(
                     text = stringResource(R.string.open_thread),
                     onClick = {
                         onOpenThread()
+                        onDismiss()
+                    }
+                )
+            }
+            if (actionsState.showSelect) {
+                MessageActionItem(
+                    iconRes = R.drawable.ic_check_circle_outlined,
+                    text = stringResource(R.string.nc_select_message),
+                    onClick = {
+                        onSelect()
                         onDismiss()
                     }
                 )
@@ -833,6 +853,7 @@ private fun PreviewMessageActionsSheetContent() {
         showReply = true,
         showReplyPrivately = true,
         showOpenThread = false,
+        showSelect = true,
         showForward = true,
         showEdit = true,
         showCopy = true,
@@ -858,6 +879,7 @@ private fun PreviewMessageActionsSheetContent() {
                 onReply = {},
                 onReplyPrivately = {},
                 onOpenThread = {},
+                onSelect = {},
                 onForward = {},
                 onEdit = {},
                 onCopy = {},
@@ -893,6 +915,7 @@ private fun PreviewMessageActionsSheetPinned() {
                     showReply = false,
                     showReplyPrivately = false,
                     showOpenThread = false,
+                    showSelect = false,
                     showForward = false,
                     showEdit = false,
                     showCopy = true,
@@ -914,6 +937,7 @@ private fun PreviewMessageActionsSheetPinned() {
                 onReply = {},
                 onReplyPrivately = {},
                 onOpenThread = {},
+                onSelect = {},
                 onForward = {},
                 onEdit = {},
                 onCopy = {},

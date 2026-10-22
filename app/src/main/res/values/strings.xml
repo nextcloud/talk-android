@@ -639,6 +639,9 @@ How to translate with transifex:
     <!-- Chat -->
     <string name="nc_copy_message">Copy</string>
     <string name="nc_copy_message_link">Copy message link</string>
+    <string name="nc_select_message">Select</string>
+    <string name="nc_chat_selection_message_limit">You can select up to 100 messages</string>
+    <string name="nc_chat_selection_text_limit">Selected messages can contain up to 32,000 characters in total</string>
     <string name="nc_forward_message">Forward</string>
     <string name="nc_chat_selected_count">Selected: %1$d</string>
     <string name="nc_chat_forward_text_only">Only text messages are forwarded; files and other messages were skipped</string>
