@@ -23,7 +23,6 @@ import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
@@ -33,7 +32,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -53,11 +51,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MainActivity :
-    BaseActivity(),
-    ActionBarProvider {
-
-    lateinit var binding: ActivityMainBinding
+class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -70,7 +64,7 @@ class MainActivity :
 
     private var contactLookupJob: Job? = null
 
-    // the splash screen stays until the intent is routed, so this activity's empty layout never shows in between
+    // the splash screen stays until the intent is routed, so no empty window shows in between
     private var isRouting = true
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -90,12 +84,7 @@ class MainActivity :
             Toast.makeText(this, "Build flavor: " + BuildConfig.FLAVOR, Toast.LENGTH_LONG).show()
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
-        setSupportActionBar(binding.toolbar)
 
         handleIntent(intent)
 
@@ -188,11 +177,9 @@ class MainActivity :
                 if (account != null) {
                     startConversation(contactUserId, account)
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        R.string.nc_phone_book_integration_account_not_found,
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    // a toast, as the conversation list opened by handleIntent() covers this activity
+                    Toast.makeText(context, R.string.nc_phone_book_integration_account_not_found, Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
