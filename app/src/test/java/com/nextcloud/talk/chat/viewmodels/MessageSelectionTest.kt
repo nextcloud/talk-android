@@ -8,10 +8,13 @@
 package com.nextcloud.talk.chat.viewmodels
 
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.IOException
 
 class MessageSelectionTest {
 
@@ -61,6 +64,50 @@ class MessageSelectionTest {
     @Test
     fun `back without a selection is not handled`() {
         assertFalse(selection.consumeBack())
+    }
+
+    @Test
+    fun `ids that left the chat are dropped from the selection`() {
+        selection.toggle(-3)
+        selection.toggle(7)
+        selection.toggle(8)
+
+        selection.retainOnly(setOf(7, 8, 9))
+        selection.retainOnly(setOf(7, 9))
+
+        assertEquals(setOf(7), selection.ids.value)
+    }
+
+    @Test
+    fun `dropping the last selected id ends the selection`() {
+        selection.toggle(-3)
+
+        selection.retainOnly(setOf(7))
+
+        assertFalse(selection.isActive)
+    }
+
+    @Test
+    fun `a pending message with a negative id cannot be selected`() {
+        assertFalse(isSelectableMessageId(-1))
+        assertFalse(isSelectableMessageId(0))
+        assertTrue(isSelectableMessageId(1))
+    }
+
+    @Test
+    fun `a message that fails to load is left out of the loaded selection`() {
+        val loaded = runBlocking {
+            loadSelected(listOf(-3, 7, 8)) { id ->
+                if (id < 0) throw IOException("HTTP 404") else id
+            }
+        }
+
+        assertEquals(listOf(7, 8), loaded)
+    }
+
+    @Test(expected = CancellationException::class)
+    fun `cancellation is not swallowed while loading the selection`() {
+        runBlocking { loadSelected(listOf(7)) { throw CancellationException("cancelled") } }
     }
 }
 

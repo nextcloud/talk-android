@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.viewmodels
 
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -29,6 +30,11 @@ class MessageSelection {
 
     fun clear() {
         _ids.value = emptySet()
+    }
+
+    /** Drops the ids that are not in [existing] any more, e.g. a pending message replaced by its server copy. */
+    fun retainOnly(existing: Set<Int>) {
+        _ids.update { ids -> ids.filterTo(HashSet()) { it in existing } }
     }
 
     /** Ends an active selection for the back action. Returns false, when there is none and back is not handled. */
@@ -62,3 +68,27 @@ fun planForward(messages: List<ChatMessage>, canForward: (ChatMessage) -> Boolea
         .filter { it.isNotBlank() }
     return ForwardPlan(texts, messages.size - texts.size)
 }
+
+/** Whether a message with [messageId] can be selected. Pending messages have a negative id until the server answers. */
+fun isSelectableMessageId(messageId: Int): Boolean = messageId > 0
+
+/**
+ * Loads the selected messages with [load] in the order of [ids]. A message that cannot be loaded, e.g. one deleted
+ * meanwhile, is left out instead of failing the whole selection and reported to [onFailure].
+ */
+@Suppress("TooGenericExceptionCaught")
+suspend fun <T> loadSelected(
+    ids: Collection<Int>,
+    onFailure: (Int, Exception) -> Unit = { _, _ -> },
+    load: suspend (Int) -> T
+): List<T> =
+    ids.mapNotNull { id ->
+        try {
+            load(id)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            onFailure(id, e)
+            null
+        }
+    }

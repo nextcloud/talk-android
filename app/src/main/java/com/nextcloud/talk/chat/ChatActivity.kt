@@ -128,6 +128,7 @@ import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.chat.viewmodels.ForwardOutcome
+import com.nextcloud.talk.chat.viewmodels.loadSelected
 import com.nextcloud.talk.chat.viewmodels.planForward
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
@@ -3661,7 +3662,10 @@ class ChatActivity :
     }
 
     private suspend fun loadSelectedMessages(ids: Set<Int>): List<ChatMessage> =
-        ids.map { chatViewModel.getMessageById(it.toLong()).first() }.sortedBy { it.jsonMessageId }
+        loadSelected(
+            ids,
+            onFailure = { id, e -> Log.w(TAG, "selected message $id could not be loaded", e) }
+        ) { chatViewModel.getMessageById(it.toLong()).first() }.sortedBy { it.jsonMessageId }
 
     private fun forwardSelectedMessages() {
         lifecycleScope.launch {
