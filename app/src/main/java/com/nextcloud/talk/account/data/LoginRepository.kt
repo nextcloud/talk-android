@@ -49,7 +49,7 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
         /** A new account, to be verified and stored with the data in [bundle]. */
         data class NewAccount(val bundle: Bundle) : LoginResult
 
-        /** An existing account, reauthorized or not, or an account that is being removed. */
+        /** An existing account, reauthorized or not. */
         data object ExistingAccount : LoginResult
 
         /** The account is still being removed, so it can't be set up again yet. */

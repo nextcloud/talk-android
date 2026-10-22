@@ -120,8 +120,10 @@ class BrowserLoginActivity : BaseActivity() {
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRemovalPending -> {
                             logger.e(TAG, "Account removal did not finish in time")
-                            Snackbar.make(binding.root, R.string.nc_account_removal_pending, Snackbar.LENGTH_LONG)
-                                .show()
+                            // This login can't be retried here. Back on the previous screen, it can be started again,
+                            // so the message must outlive this activity.
+                            Toast.makeText(context, R.string.nc_account_removal_pending, Toast.LENGTH_LONG).show()
+                            finish()
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
