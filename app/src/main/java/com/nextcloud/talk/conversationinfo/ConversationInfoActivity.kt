@@ -282,6 +282,10 @@ class ConversationInfoActivity : BaseActivity() {
                 onClose()
                 viewModel.setLobbyTimerAndSubmit(conversationUser, conversationToken, seconds)
             },
+            onClear = {
+                onClose()
+                viewModel.setLobbyTimerAndSubmit(conversationUser, conversationToken, 0L)
+            },
             onDismiss = onClose
         )
     }

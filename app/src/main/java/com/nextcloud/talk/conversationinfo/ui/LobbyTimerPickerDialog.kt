@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationinfo.ui
 import android.content.res.Configuration
 import android.text.format.DateFormat
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -46,9 +47,15 @@ import java.time.ZonedDateTime
  *
  * @param initialEpochSeconds the current lobby timer in seconds, or 0 if none is set
  * @param onConfirm called with the chosen point in time in epoch seconds, never earlier than now
+ * @param onClear called when the user removes the current lobby timer, only offered if one is set
  */
 @Composable
-fun LobbyTimerPickerDialog(initialEpochSeconds: Long, onConfirm: (epochSeconds: Long) -> Unit, onDismiss: () -> Unit) {
+fun LobbyTimerPickerDialog(
+    initialEpochSeconds: Long,
+    onConfirm: (epochSeconds: Long) -> Unit,
+    onClear: () -> Unit,
+    onDismiss: () -> Unit
+) {
     val zone = ZoneId.systemDefault()
     val initial = remember(initialEpochSeconds) {
         if (initialEpochSeconds != 0L) {
@@ -61,7 +68,12 @@ fun LobbyTimerPickerDialog(initialEpochSeconds: Long, onConfirm: (epochSeconds: 
 
     val date = selectedDate
     if (date == null) {
-        LobbyDatePicker(initial.toLocalDate(), onDateSelected = { selectedDate = it }, onDismiss = onDismiss)
+        LobbyDatePicker(
+            initial.toLocalDate(),
+            onDateSelected = { selectedDate = it },
+            onClear = onClear.takeIf { initialEpochSeconds != 0L },
+            onDismiss = onDismiss
+        )
     } else {
         LobbyTimePicker(
             initial.toLocalTime(),
@@ -76,7 +88,12 @@ fun LobbyTimerPickerDialog(initialEpochSeconds: Long, onConfirm: (epochSeconds: 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LobbyDatePicker(initialDate: LocalDate, onDateSelected: (LocalDate) -> Unit, onDismiss: () -> Unit) {
+private fun LobbyDatePicker(
+    initialDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit,
+    onClear: (() -> Unit)?,
+    onDismiss: () -> Unit
+) {
     // The date picker works with UTC midnight millis of the selected day
     val today = remember { LocalDate.now() }
     val todayUtcMillis = today.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
@@ -100,7 +117,12 @@ private fun LobbyDatePicker(initialDate: LocalDate, onDateSelected: (LocalDate) 
             ) { Text(stringResource(R.string.nc_ok)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.nc_cancel)) }
+            Row {
+                onClear?.let {
+                    TextButton(onClick = it) { Text(stringResource(R.string.nc_delete)) }
+                }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.nc_cancel)) }
+            }
         }
     ) {
         DatePicker(state = datePickerState)
@@ -136,6 +158,6 @@ private fun LobbyTimePicker(initialTime: LocalTime, onTimeSelected: (LocalTime) 
 private fun LobbyTimerPickerDialogPreview() {
     val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     MaterialTheme(colorScheme = colorScheme) {
-        LobbyTimerPickerDialog(initialEpochSeconds = 0L, onConfirm = {}, onDismiss = {})
+        LobbyTimerPickerDialog(initialEpochSeconds = 0L, onConfirm = {}, onClear = {}, onDismiss = {})
     }
 }
