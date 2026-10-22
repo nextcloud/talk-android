@@ -130,6 +130,7 @@
     <string name="nc_call_button_content_description_hangup">ئېسىلىڭ</string>
     <string name="nc_call_button_content_description_microphone">مىكروفوننى ئالماشتۇرۇڭ</string>
     <string name="nc_call_button_content_description_pip">رەسىمدىكى ھالەتنى ئېچىڭ</string>
+    <string name="nc_call_button_content_description_switch_camera">كامېرا ئالماشتۇرۇش</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">ئۆزى سىنغا ئالماشتۇرۇڭ</string>
     <string name="nc_call_incoming">كەلگەن</string>
     <string name="nc_call_name">سۆھبەت ئىسمى</string>

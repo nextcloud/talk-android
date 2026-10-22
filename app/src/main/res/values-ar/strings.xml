@@ -118,6 +118,7 @@
     <string name="nc_call_button_content_description_hangup">إنهاء المكالمة</string>
     <string name="nc_call_button_content_description_microphone">تبديل لاقط الصوت</string>
     <string name="nc_call_button_content_description_pip">فتح وضعية \"صورة في صورة\" PIP</string>
+    <string name="nc_call_button_content_description_switch_camera">تبديل الكاميرا</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">تبديل إلى الفيديو الذاتي</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_name">اسم المحادثة</string>

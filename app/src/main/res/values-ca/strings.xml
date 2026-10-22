@@ -121,6 +121,7 @@
     <string name="nc_call_button_content_description_hangup">Penja</string>
     <string name="nc_call_button_content_description_microphone">Commuta el micròfon</string>
     <string name="nc_call_button_content_description_pip">Obre la imatge en mode d\'imatge</string>
+    <string name="nc_call_button_content_description_switch_camera">Canviar la càmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Canviar al vídeo propi</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversa</string>

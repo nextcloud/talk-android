@@ -136,6 +136,7 @@
     <string name="nc_call_button_content_description_hangup">Пакласці слухаўку</string>
     <string name="nc_call_button_content_description_microphone">Укл./выкл. мікрафон</string>
     <string name="nc_call_button_content_description_pip">Адкрыць рэжым «Picture-in-Picture»</string>
+    <string name="nc_call_button_content_description_switch_camera">Пераключыць камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Пераключыцца на відэа з сабой</string>
     <string name="nc_call_incoming">УВАХОДНЫ</string>
     <string name="nc_call_name">Назва размовы</string>

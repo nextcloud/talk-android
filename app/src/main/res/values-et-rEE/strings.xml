@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Lõpeta kõne</string>
     <string name="nc_call_button_content_description_microphone">Lülita mikrofon sisse/välja</string>
     <string name="nc_call_button_content_description_pip">Ava pilt-pildis vaade</string>
+    <string name="nc_call_button_content_description_switch_camera">Vaheta kaamerat</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
     <string name="nc_call_e2ee_not_supported">Kuna serveris on kasutusel läbiv krüptimine, siis helistamine pole hetkel toetatud</string>
     <string name="nc_call_e2ee_not_supported_title">Helistamine pole saadaval: %s</string>

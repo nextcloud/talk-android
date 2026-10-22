@@ -92,6 +92,7 @@
     <string name="nc_call_button_content_description_hangup">Končaj klic</string>
     <string name="nc_call_button_content_description_microphone">Preklopi mikrofon</string>
     <string name="nc_call_button_content_description_pip">Odpri način slike v sliki</string>
+    <string name="nc_call_button_content_description_switch_camera">Preklopi kamero</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Preklopi na pogled sebe</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>

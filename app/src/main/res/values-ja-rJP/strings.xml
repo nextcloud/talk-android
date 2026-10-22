@@ -105,6 +105,7 @@
     <string name="nc_call_button_content_description_hangup">通話終了</string>
     <string name="nc_call_button_content_description_microphone">マイクロフォンを切り替える</string>
     <string name="nc_call_button_content_description_pip">ピクチャーインピクチャーモードを開く</string>
+    <string name="nc_call_button_content_description_switch_camera">カメラ切替</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">セルフビデオに切り替える</string>
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>

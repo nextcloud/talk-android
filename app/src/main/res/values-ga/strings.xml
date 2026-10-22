@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Croch suas</string>
     <string name="nc_call_button_content_description_microphone">Scoránaigh micreafón</string>
     <string name="nc_call_button_content_description_pip">Oscail mód pictiúr-i-pictiúr</string>
+    <string name="nc_call_button_content_description_switch_camera">Athraigh ceamara</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Athraigh go físeán féin</string>
     <string name="nc_call_e2ee_not_supported">Ní thacaítear le glaonna faoi láthair toisc go bhfuil criptiú ceann go ceann cumasaithe ar an bhfreastalaí.</string>
     <string name="nc_call_e2ee_not_supported_title">Níl glao ó %s ar fáil</string>

@@ -145,6 +145,7 @@
     <string name="nc_call_button_content_description_hangup">Hívás letétele</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon be/ki</string>
     <string name="nc_call_button_content_description_pip">Megnyitás kép a képben módban</string>
+    <string name="nc_call_button_content_description_switch_camera">Kamera váltása</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Váltás a saját videóra</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
