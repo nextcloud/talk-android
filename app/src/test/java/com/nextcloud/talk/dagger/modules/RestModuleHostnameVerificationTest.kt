@@ -123,13 +123,21 @@ class RestModuleHostnameVerificationTest {
     }
 
     @Test
-    fun `a certificate for another host is only accepted once the user trusted it`() {
+    fun `a certificate for another host is accepted once the user trusted it for the requested host`() {
         val certificate = certificateFor(OTHER_HOST)
         assertFalse(hostnameVerifier.verify(SERVER_HOST, sessionWith(certificate)))
 
-        trustManager.addCertInTrustStore(certificate)
+        trustManager.addCertInTrustStore(SERVER_HOST, certificate)
 
         assertTrue(hostnameVerifier.verify(SERVER_HOST, sessionWith(certificate)))
+    }
+
+    @Test
+    fun `a certificate the user trusted for one host is rejected for another host`() {
+        val certificate = certificateFor(SERVER_HOST)
+        trustManager.addCertInTrustStore(SERVER_HOST, certificate)
+
+        assertFalse(hostnameVerifier.verify(OTHER_HOST, sessionWith(certificate)))
     }
 
     private fun certificateFor(host: String): X509Certificate =
