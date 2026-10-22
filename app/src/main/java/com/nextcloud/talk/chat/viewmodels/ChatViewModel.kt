@@ -1357,6 +1357,7 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
+                messageSelection.retainOnly(items.flatMapTo(HashSet()) { it.messageIds() })
             }
             .launchIn(viewModelScope)
     }
