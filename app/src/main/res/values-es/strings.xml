@@ -132,6 +132,7 @@
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
     <string name="nc_call_button_content_description_pip">Abrir el modo de imagen sobre imagen, PiP</string>
+    <string name="nc_call_button_content_description_switch_camera">Cambiar de cámara</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>

@@ -151,6 +151,7 @@
     <string name="nc_call_button_content_description_hangup">Položiť</string>
     <string name="nc_call_button_content_description_microphone">Prepnúť mikrofón</string>
     <string name="nc_call_button_content_description_pip">Otvoriť režim obraz-v-obraze</string>
+    <string name="nc_call_button_content_description_switch_camera">Prepnúť kameru</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Prepnúť na vlastné video</string>
     <string name="nc_call_e2ee_not_supported">Volanie momentálne nie je podporované, pretože je na serveri zapnuté end-to-end šifrovanie</string>
     <string name="nc_call_e2ee_not_supported_title">Hovor od %s nie je dostupný</string>

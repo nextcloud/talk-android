@@ -100,6 +100,7 @@
     <string name="nc_call_button_content_description_hangup">挂断</string>
     <string name="nc_call_button_content_description_microphone">开启/关闭麦克风</string>
     <string name="nc_call_button_content_description_pip">开启画中画模式</string>
+    <string name="nc_call_button_content_description_switch_camera">切换相机</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切换到自拍画面</string>
     <string name="nc_call_incoming">来电</string>
     <string name="nc_call_name">对话名称</string>

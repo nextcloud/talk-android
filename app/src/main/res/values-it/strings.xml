@@ -131,6 +131,7 @@
     <string name="nc_call_button_content_description_hangup">Riaggancia</string>
     <string name="nc_call_button_content_description_microphone">Attiva/disattiva microfono</string>
     <string name="nc_call_button_content_description_pip">Apri la modalità picture-in-picture</string>
+    <string name="nc_call_button_content_description_switch_camera">Cambia fotocamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Passa al video personale</string>
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>

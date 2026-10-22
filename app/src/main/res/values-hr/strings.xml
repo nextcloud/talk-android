@@ -81,6 +81,7 @@
     <string name="nc_attendee_pin">Prikvači: %1$s</string>
     <string name="nc_biometric_unlock">Otključaj %1$s</string>
     <string name="nc_call_button_content_description_hangup">Poklopi</string>
+    <string name="nc_call_button_content_description_switch_camera">Promijeni kameru</string>
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
     <string name="nc_call_ongoing_notification_default_title">Poziv u tijeku</string>

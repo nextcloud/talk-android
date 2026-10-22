@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Raccrocher</string>
     <string name="nc_call_button_content_description_microphone">Activer/Désactiver le micro</string>
     <string name="nc_call_button_content_description_pip">Lancer le mode Image dans l\'Image</string>
+    <string name="nc_call_button_content_description_switch_camera">Changer de caméra</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_e2ee_not_supported">Les appels ne sont actuellement pas pris en charge, car le chiffrement de bout en bout est activé sur le serveur</string>
     <string name="nc_call_e2ee_not_supported_title">Appel indisponible depuis %s</string>

@@ -130,6 +130,7 @@
     <string name="nc_call_button_content_description_hangup">Kata simu</string>
     <string name="nc_call_button_content_description_microphone">Geuza microphone</string>
     <string name="nc_call_button_content_description_pip">Fungua picha katika modi ya picha</string>
+    <string name="nc_call_button_content_description_switch_camera">Badili kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Hamia kwenye video binafsi</string>
     <string name="nc_call_incoming">Zinazoingia</string>
     <string name="nc_call_name">Jina la mazungumzo</string>
