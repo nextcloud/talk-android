@@ -42,4 +42,11 @@ internal class ConversationMessageNotifier {
             listener.onStopTyping(userId, sessionId)
         }
     }
+
+    @Synchronized
+    fun notifySessionsLeft(sessions: List<String>) {
+        for (listener in ArrayList(conversationMessageListeners)) {
+            listener.onSessionsLeft(sessions)
+        }
+    }
 }
