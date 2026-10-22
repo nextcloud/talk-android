@@ -97,7 +97,7 @@ How to translate with transifex:
     <string name="nc_admin_only">Admin only</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
-    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Do you trust the until now unknown SSL certificate of %1$s, issued by %2$s for %3$s, valid from %4$s to %5$s? It will only be trusted for %1$s.</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
