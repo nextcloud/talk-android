@@ -36,7 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
-import com.nextcloud.talk.chat.viewmodels.isSelectableMessageId
+import com.nextcloud.talk.chat.viewmodels.isSelectableMessage
 
 internal const val TAG_MESSAGE_ROW = "chat_message_row"
 internal const val TAG_SELECTION_INDICATOR = "chat_message_selection_indicator"
@@ -55,7 +55,11 @@ internal data class MessageRowSelection(
 )
 
 internal fun ChatMessageUi.isSelectable(): Boolean =
-    content != MessageTypeContent.SystemMessage && !isDeleted && isSelectableMessageId(id)
+    isSelectableMessage(
+        isSystemMessage = content == MessageTypeContent.SystemMessage,
+        isDeleted = isDeleted,
+        messageId = id
+    )
 
 /**
  * The full-width frame of a chat row. A tap or a long press on the row outside of the bubble ends up here: the tap

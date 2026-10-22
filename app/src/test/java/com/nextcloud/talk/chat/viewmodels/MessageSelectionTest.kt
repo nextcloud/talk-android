@@ -16,6 +16,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
+private const val EXPECTED_MESSAGE_LIMIT = 100
+
 class MessageSelectionTest {
 
     private val selection = MessageSelection()
@@ -28,7 +30,7 @@ class MessageSelectionTest {
 
     @Test
     fun `toggling a message selects it and starts the selection`() {
-        selection.toggle(7)
+        selection.toggle(7, null)
 
         assertTrue(selection.isActive)
         assertEquals(setOf(7), selection.ids.value)
@@ -36,25 +38,25 @@ class MessageSelectionTest {
 
     @Test
     fun `toggling a selected message deselects it`() {
-        selection.toggle(7)
-        selection.toggle(8)
-        selection.toggle(7)
+        selection.toggle(7, null)
+        selection.toggle(8, null)
+        selection.toggle(7, null)
 
         assertEquals(setOf(8), selection.ids.value)
     }
 
     @Test
     fun `deselecting the last message ends the selection`() {
-        selection.toggle(7)
-        selection.toggle(7)
+        selection.toggle(7, null)
+        selection.toggle(7, null)
 
         assertFalse(selection.isActive)
     }
 
     @Test
     fun `back ends an active selection and is handled`() {
-        selection.toggle(7)
-        selection.toggle(8)
+        selection.toggle(7, null)
+        selection.toggle(8, null)
 
         assertTrue(selection.consumeBack())
         assertFalse(selection.isActive)
@@ -68,9 +70,9 @@ class MessageSelectionTest {
 
     @Test
     fun `ids that left the chat are dropped from the selection`() {
-        selection.toggle(-3)
-        selection.toggle(7)
-        selection.toggle(8)
+        selection.toggle(-3, null)
+        selection.toggle(7, null)
+        selection.toggle(8, null)
 
         selection.retainOnly(setOf(7, 8, 9))
         selection.retainOnly(setOf(7, 9))
@@ -80,11 +82,42 @@ class MessageSelectionTest {
 
     @Test
     fun `dropping the last selected id ends the selection`() {
-        selection.toggle(-3)
+        selection.toggle(-3, null)
 
         selection.retainOnly(setOf(7))
 
         assertFalse(selection.isActive)
+    }
+
+    @Test
+    fun `the hundredth message is selected but the next one is rejected`() {
+        repeat(EXPECTED_MESSAGE_LIMIT) { assertEquals(null, selection.toggle(it + 1, "x")) }
+
+        assertEquals(SelectionLimit.MESSAGE_COUNT, selection.toggle(101, "x"))
+        assertEquals(100, selection.ids.value.size)
+    }
+
+    @Test
+    fun `exactly 32000 forwarded characters fit but one more does not`() {
+        assertEquals(null, selection.toggle(1, "x".repeat(31_999)))
+        assertEquals(null, selection.toggle(2, "x"))
+
+        assertEquals(SelectionLimit.TEXT_LENGTH, selection.toggle(3, "x"))
+        assertEquals(setOf(1, 2), selection.ids.value)
+    }
+
+    @Test
+    fun `deselecting after either limit succeeds and frees capacity`() {
+        repeat(EXPECTED_MESSAGE_LIMIT) { selection.toggle(it + 1, "x") }
+        assertEquals(SelectionLimit.MESSAGE_COUNT, selection.toggle(101, "x"))
+        assertEquals(null, selection.toggle(1, null))
+        assertEquals(null, selection.toggle(101, "x"))
+
+        selection.clear()
+        selection.toggle(1, "x".repeat(32_000))
+        assertEquals(SelectionLimit.TEXT_LENGTH, selection.toggle(2, "x"))
+        assertEquals(null, selection.toggle(1, null))
+        assertEquals(null, selection.toggle(2, "x"))
     }
 
     @Test

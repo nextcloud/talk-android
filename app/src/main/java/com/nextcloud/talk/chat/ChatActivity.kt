@@ -122,6 +122,8 @@ import com.nextcloud.talk.chat.ui.buildMessageActionsState
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.chat.viewmodels.ForwardOutcome
+import com.nextcloud.talk.chat.viewmodels.SelectionLimit
+import com.nextcloud.talk.chat.viewmodels.forwardedTextOrNull
 import com.nextcloud.talk.chat.viewmodels.loadSelected
 import com.nextcloud.talk.chat.viewmodels.planForward
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
@@ -954,7 +956,7 @@ class ChatActivity :
                             onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
                             messageCallbacks = ChatMessageCallbacks(
                                 onLongClick = { openMessageActionsDialog(it) },
-                                onSelectionToggle = { chatViewModel.messageSelection.toggle(it) },
+                                onSelectionToggle = { toggleMessageSelection(it) },
                                 onSwipeReply = { handleSwipeToReply(it) },
                                 onFileClick = { downloadAndOpenFile(it, openWhenDownloadState, downloadingFileState) },
                                 onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
@@ -1047,6 +1049,7 @@ class ChatActivity :
                             },
                             onReplyPrivately = { replyPrivately(msg) },
                             onOpenThread = { msg.threadId?.let { openThread(it) } },
+                            onSelect = { toggleMessageSelection(msg.jsonMessageId, msg) },
                             onForward = { forwardMessage(msg) },
                             onEdit = { messageInputViewModel.edit(msg) },
                             onCopy = { copyMessage(msg) },
@@ -3540,6 +3543,38 @@ class ChatActivity :
             ids,
             onFailure = { id, e -> Log.w(TAG, "selected message $id could not be loaded", e) }
         ) { chatViewModel.getMessageById(it.toLong()).first() }.sortedBy { it.jsonMessageId }
+
+    private fun toggleMessageSelection(messageId: Int, message: ChatMessage? = null) {
+        val selection = chatViewModel.messageSelection
+        if (messageId in selection.ids.value) {
+            selection.toggle(messageId, null)
+            return
+        }
+        if (message != null) {
+            addMessageToSelection(message)
+            return
+        }
+        lifecycleScope.launch {
+            val loaded = loadSelected(
+                listOf(messageId),
+                onFailure = { id, e -> Log.w(TAG, "selected message $id could not be loaded", e) }
+            ) { chatViewModel.getMessageById(it.toLong()).first() }.firstOrNull() ?: return@launch
+            addMessageToSelection(loaded)
+        }
+    }
+
+    private fun addMessageToSelection(message: ChatMessage) {
+        val text = forwardedTextOrNull(
+            message,
+            actionsStateFor(message, true).showForward
+        )
+        val notice = when (chatViewModel.messageSelection.toggle(message.jsonMessageId, text)) {
+            SelectionLimit.MESSAGE_COUNT -> R.string.nc_chat_selection_message_limit
+            SelectionLimit.TEXT_LENGTH -> R.string.nc_chat_selection_text_limit
+            null -> return
+        }
+        Toast.makeText(this, notice, Toast.LENGTH_LONG).show()
+    }
 
     private fun forwardSelectedMessages() {
         lifecycleScope.launch {
