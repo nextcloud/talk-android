@@ -18,6 +18,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
@@ -79,6 +80,10 @@ class MainActivity :
 
         super.onCreate(savedInstanceState)
 
+        if (finishWithoutRouting()) {
+            return
+        }
+
         if (BuildConfig.DEBUG) {
             Toast.makeText(this, "Build flavor: " + BuildConfig.FLAVOR, Toast.LENGTH_LONG).show()
         }
@@ -92,7 +97,7 @@ class MainActivity :
 
         setSupportActionBar(binding.toolbar)
 
-        handleIntent(intent)
+        handleIntent(IntentCompat.getParcelableExtra(intent, KEY_ROUTED_INTENT, Intent::class.java) ?: intent)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -100,6 +105,39 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
         disposables.dispose()
+    }
+
+    /**
+     * Finishes this activity and returns true if the intent is not routed here, see [MainActivityLaunch.Decision].
+     */
+    private fun finishWithoutRouting(): Boolean {
+        val decision = MainActivityLaunch.decide(
+            action = intent.action,
+            categories = intent.categories,
+            flags = intent.flags,
+            isTaskRoot = isTaskRoot,
+            isStartedByOtherApp = referrer?.host.let { it != null && it != packageName }
+        )
+        when (decision) {
+            MainActivityLaunch.Decision.ROUTE -> return false
+            MainActivityLaunch.Decision.SHOW_EXISTING_TASK -> finish()
+            MainActivityLaunch.Decision.MOVE_TO_OWN_TASK -> {
+                startActivity(Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                finish()
+            }
+            MainActivityLaunch.Decision.REPLACE_TASK_ROOT -> {
+                // a task keeps the intent it was created with, so the launcher intent needs a new task
+                startActivity(
+                    Intent(this, MainActivity::class.java)
+                        .setAction(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+                        .putExtra(KEY_ROUTED_INTENT, intent)
+                )
+                finishAndRemoveTask()
+            }
+        }
+        return true
     }
 
     private fun launchServerSelection() {
@@ -416,5 +454,8 @@ class MainActivity :
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+
+        // The intent to route instead of the launcher intent that replaced it as task root
+        private const val KEY_ROUTED_INTENT = "KEY_ROUTED_INTENT"
     }
 }
