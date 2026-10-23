@@ -160,6 +160,7 @@
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_channel">Canal</string>
+    <string name="nc_classified_conversation">Conversación confidencial</string>
     <string name="nc_clear_edit_button">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>

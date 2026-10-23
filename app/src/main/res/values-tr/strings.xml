@@ -165,6 +165,8 @@
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
+    <string name="nc_call_self_video_enlarge">Görüntümü büyüt</string>
+    <string name="nc_call_self_video_shrink">Görüntümü küçült</string>
     <string name="nc_call_state_in_call">Aramada %1$s kişi var</string>
     <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
     <string name="nc_call_state_with_video">%1$s kişi görüntü ile</string>
