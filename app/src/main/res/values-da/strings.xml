@@ -95,9 +95,9 @@
     <string name="load_more_results">Indlæs flere resultater</string>
     <string name="local_time">Lokal tid: %1$s</string>
     <string name="location_permission_denied">Lokationstilladelse nægtet</string>
-    <string name="location_permission_denied_msg">Aktiver det venligst under app indstillingerne</string>
+    <string name="location_permission_denied_msg">Aktivér det i appindstillingerne</string>
     <string name="location_services_disabled">Lokationsservice deaktiveret</string>
-    <string name="location_services_disabled_msg">Aktiver venligst lokationsservice (GPS) for at bruge denne funktion</string>
+    <string name="location_services_disabled_msg">Aktivér lokationstjenester (GPS) for at bruge denne funktion</string>
     <string name="lock_conversation">Lås samtale</string>
     <string name="lock_symbol">Låsesymbol</string>
     <string name="lower_hand">Tag hånden ned</string>
@@ -142,7 +142,7 @@
     <string name="nc_announcement_description">Samtale, hvor administratorer kan informere en fast kreds, og som ikke kan forlades.</string>
     <string name="nc_attendee_pin">Fastgør: %1$s</string>
     <string name="nc_biometric_unlock">Lås op %1$s</string>
-    <string name="nc_bluetooth_permission_hint">For at aktivere bluetooth højtalere så giv venligst tilladelse til \"Apparater i nærheden\".</string>
+    <string name="nc_bluetooth_permission_hint">Giv tilladelsen \"Enheder i nærheden\" for at aktivere Bluetooth-højttalere.</string>
     <string name="nc_call_button_content_description_answer_video_call">Svar som videokald</string>
     <string name="nc_call_button_content_description_answer_voice_only">Svar kun som stemmekald</string>
     <string name="nc_call_button_content_description_audio_output">Skift audiooutput</string>
@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Læg på</string>
     <string name="nc_call_button_content_description_microphone">Skift mikrofon</string>
     <string name="nc_call_button_content_description_pip">Åben billede-i-billede tilstand</string>
+    <string name="nc_call_button_content_description_switch_camera">Skift kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Skift til egen video</string>
     <string name="nc_call_e2ee_not_supported">Opkald understøttes ikke i øjeblikket, fordi end-to-end-kryptering er slået til på serveren</string>
     <string name="nc_call_e2ee_not_supported_title">Opkald fra %s er ikke tilgængeligt</string>
@@ -164,6 +165,8 @@
     <string name="nc_call_raised_hand">%1$s løftede hånden</string>
     <string name="nc_call_reconnecting">Genforbinder ...</string>
     <string name="nc_call_ringing">RINGER</string>
+    <string name="nc_call_self_video_enlarge">Forstør egen video</string>
+    <string name="nc_call_self_video_shrink">Formindsk egen video</string>
     <string name="nc_call_state_in_call">%1$s i opkald</string>
     <string name="nc_call_state_with_phone">%1$s med telefon</string>
     <string name="nc_call_state_with_video">%1$s med video</string>
@@ -171,7 +174,7 @@
     <string name="nc_call_unknown">%s opkald</string>
     <string name="nc_call_video">%s videoopkald</string>
     <string name="nc_call_voice">%s stemmeopkald</string>
-    <string name="nc_camera_permission_hint">For at aktivere videokommunikation, så giv venligst tilladelse til \"Kamera\".</string>
+    <string name="nc_camera_permission_hint">Giv tilladelsen \"Kamera\" for at aktivere videokommunikation.</string>
     <string name="nc_cancel">Annuller</string>
     <string name="nc_capabilities_failed">Anskaffelse af evner fejlede, annullerer</string>
     <string name="nc_caption">Overskrift</string>
@@ -275,10 +278,10 @@
     <string name="nc_diagnosis_dialog_open_diagnosis">Åbn diagnosticeringsskærm</string>
     <string name="nc_diagnosis_dialog_open_dontkillmyapp_website">Åbn dontkillmyapp.com</string>
     <string name="nc_dialog_introduce_unifiedpush_selection">Du er ved at vælge din standardtjeneste til push</string>
-    <string name="nc_dialog_invalid_password">Ugyldigt kodeord</string>
+    <string name="nc_dialog_invalid_password">Ugyldig adgangskode</string>
     <string name="nc_dialog_maintenance_mode_description">Server er aktuelt i vedligeholdelsestilstand.</string>
     <string name="nc_dialog_outdated_client">App\'en er forældet is outdated</string>
-    <string name="nc_dialog_outdated_client_description">Denne app er for gammel og understøttes ikke længere af denne server. Opdater venligst.</string>
+    <string name="nc_dialog_outdated_client_description">Appen er for gammel og understøttes ikke længere af denne server. Opdater den.</string>
     <string name="nc_dialog_outdated_client_option_update">Opdatér</string>
     <string name="nc_dialog_reauth_or_delete">Ønsker du at genautorisere eller slette denne konto?</string>
     <string name="nc_dialog_save_to_storage_content">Hvis du gemmer dette medie i dit lager, så vil enhver anden app på dit apparat kunne tilgå det.</string>
@@ -406,7 +409,7 @@
     <string name="nc_message_sending">Sender besked</string>
     <string name="nc_message_sent">Beskeden blev sendt</string>
     <string name="nc_microphone_enabled_audio_recording">Mikrofon er aktiveret og lyden optages</string>
-    <string name="nc_microphone_permission_hint">For at aktivere kommunikation så tillad venligst \"Mikrofon\"</string>
+    <string name="nc_microphone_permission_hint">Giv tilladelsen \"Mikrofon\" for at aktivere talekommunikation.</string>
     <string name="nc_missed_call">Du missede et opkald fra %s</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_new_conversation">Ny samtale</string>
@@ -436,14 +439,14 @@
     <string name="nc_notification_channel_uploads">Uploadede filer</string>
     <string name="nc_notification_channel_uploads_description">Underret om upload fremskridt</string>
     <string name="nc_notification_permission_hint">Giv tilladelsen \"Notifikationer\", så der kan vises notifikationer om opkald, og opkald kan holdes aktive i baggrunden.</string>
-    <string name="nc_notification_settings">Meddelelsesindstillinger</string>
+    <string name="nc_notification_settings">Indstillinger for notifikationer</string>
     <string name="nc_notification_warning">Notifikationer er ikke opsat korrekt</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Notifikationstilladelse og batteriindstilling er ikke korrekt sat op til at modtage notifikationer. Hvis du har problemer med at modtage notifikationer overhovedet, så kontroller venligst om notifikationskanalerne for opkald og beskeder er aktiveret. Yderligere hjælp kan findes på DontKillMyApp.com eller på fejlsøgningslisten. Hvis dette ikke hjælper, så gå venligst til diagnosticeringsskærmen og indsend en fejlrapport.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Notifikationstilladelse og batteriindstillinger er sat korrekt op til at modtage notifikationer. Hvis du alligevel har problemer med at modtage notifikationer, så kontrollér, om notifikationskanalerne for opkald og beskeder er aktiveret. Du kan finde mere hjælp på DontKillMyApp.com eller i tjeklisten til fejlfinding. Hvis det ikke hjælper, så gå til diagnoseskærmen, og send en fejlrapport.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fejlsøgning af notifikationer</string>
     <string name="nc_notify_me_always">Giv altid besked</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
-    <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
+    <string name="nc_offline">Offline lige nu. Kontrollér din forbindelse</string>
     <string name="nc_ok">OK</string>
     <string name="nc_ongoing_meeting">Igangværende møde</string>
     <string name="nc_open_conversation">Åbn samtale</string>
@@ -459,9 +462,9 @@
     <string name="nc_password_secure">Adgangskoden er sikker</string>
     <string name="nc_permissions_ask">Angiv rettigheder</string>
     <string name="nc_permissions_denied">Nogle rettigheder blev nægtet.</string>
-    <string name="nc_permissions_rationale_dialog_title">Tillad venligst rettigheder</string>
+    <string name="nc_permissions_rationale_dialog_title">Giv tilladelser</string>
     <string name="nc_permissions_settings">Indstillinger</string>
-    <string name="nc_permissions_settings_hint">Giv venligst rettigheder under Indstillinger > Rettigheder</string>
+    <string name="nc_permissions_settings_hint">Giv tilladelser under Indstillinger > Tilladelser</string>
     <string name="nc_phone_book_integration_account_not_found">Konto blev ikke fundet</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_pip_microphone_mute">Mute mikrofon</string>
@@ -532,17 +535,17 @@
     <string name="nc_sent_an_audio_you">Du sendte en lyd.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendte et billede.</string>
     <string name="nc_sent_an_image_you">Du sendte et billede.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s sendte et opslagskort</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s sendte et Deck-kort</string>
     <string name="nc_server_connect">Test server forbindelsen</string>
-    <string name="nc_server_db_upgrade_needed">Opdater venligst din %1$s database</string>
+    <string name="nc_server_db_upgrade_needed">Opgrader din %1$s-database</string>
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
     <string name="nc_server_helper_text">Linket til dit %1$s web interface når du åbner den i browseren.</string>
     <string name="nc_server_import_account">Importér konto fra %1$s appen</string>
     <string name="nc_server_import_account_plain">Importér konto</string>
     <string name="nc_server_import_accounts">Importér konti fra %1$s appen</string>
     <string name="nc_server_import_accounts_plain">Importér konti</string>
-    <string name="nc_server_maintenance">Få venligst  %1$s ud fra vedligeholdelse </string>
-    <string name="nc_server_not_installed">Afslut venligst din %1$s installation</string>
+    <string name="nc_server_maintenance">Tag din %1$s ud af vedligeholdelsestilstand</string>
+    <string name="nc_server_not_installed">Afslut installationen af din %1$s</string>
     <string name="nc_server_testing_connection">Tester forbindelsen</string>
     <string name="nc_server_unsupported">Server har ikke understøttet Talk app installeret</string>
     <string name="nc_server_url">Serveradresse https://…</string>
@@ -555,7 +558,7 @@
     <string name="nc_settings_advanced_title">Avanceret</string>
     <string name="nc_settings_appearance">Udseende</string>
     <string name="nc_settings_call_ringtone">Opkald</string>
-    <string name="nc_settings_contact_admin_of">Kontakt venligst administratoren for</string>
+    <string name="nc_settings_contact_admin_of">Kontakt administratoren af</string>
     <string name="nc_settings_diagnosis_logs_section_title">Diagnose &amp; Logs</string>
     <string name="nc_settings_diagnosis_subtitle">Åbn diagnoseskærmen for at kontrollere indstillingerne</string>
     <string name="nc_settings_diagnosis_title">Diagnose</string>
@@ -589,7 +592,7 @@
     <string name="nc_settings_reauthorize">Genautoriser konto</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
-    <string name="nc_settings_remove_confirmation">Bekræft venligst din hensigt til at fjerne den aktuelle konto.</string>
+    <string name="nc_settings_remove_confirmation">Bekræft, at du vil fjerne den aktuelle konto.</string>
     <string name="nc_settings_screen_enable_unifiedpush_desc">Modtag push-notifikationer via en ekstern UnifiedPush-tjeneste</string>
     <string name="nc_settings_screen_enable_unifiedpush_title">Aktivér UnifiedPush</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås en understøttet biometrisk metode</string>
@@ -731,7 +734,7 @@
     <string name="recent_threads">Seneste tråde</string>
     <string name="record_active_info">Opkaldet optages</string>
     <string name="record_cancel_start">Annuller opstagelsesstart</string>
-    <string name="record_failed_info">Optagelsen fejlede. Kontakt venligst din administrator</string>
+    <string name="record_failed_info">Optagelsen mislykkedes. Kontakt din administrator.</string>
     <string name="record_start_description">Start optagelse</string>
     <string name="record_stop_confirm_message">Ønsker du virkelig at stoppe optagelsen?</string>
     <string name="record_stop_confirm_title">Stop opkaldsoptagelse</string>

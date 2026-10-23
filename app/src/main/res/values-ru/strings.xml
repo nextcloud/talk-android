@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Повесить трубку</string>
     <string name="nc_call_button_content_description_microphone">Включить/выключить микрофон</string>
     <string name="nc_call_button_content_description_pip">Открыть в режиме «картинка в картинке»</string>
+    <string name="nc_call_button_content_description_switch_camera">Переключить камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключить видео на себя</string>
     <string name="nc_call_e2ee_not_supported">Вызовы сейчас не поддерживаются: на сервере включено сквозное шифрование</string>
     <string name="nc_call_e2ee_not_supported_title">Вызов от %s недоступен</string>
@@ -164,6 +165,8 @@
     <string name="nc_call_raised_hand">%1$s поднял(а) руку</string>
     <string name="nc_call_reconnecting">Переподключение…</string>
     <string name="nc_call_ringing">Идёт вызов</string>
+    <string name="nc_call_self_video_enlarge">Увеличить своё видео</string>
+    <string name="nc_call_self_video_shrink">Уменьшить своё видео</string>
     <string name="nc_call_state_in_call">%1$s в вызове</string>
     <string name="nc_call_state_with_phone">%1$s с телефоном</string>
     <string name="nc_call_state_with_video">%1$s с видео</string>

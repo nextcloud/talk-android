@@ -130,6 +130,7 @@
     <string name="nc_call_button_content_description_hangup">Прекини везу</string>
     <string name="nc_call_button_content_description_microphone">Укљ./искљ. микрофон</string>
     <string name="nc_call_button_content_description_pip">Отвори режим слика-у-слици</string>
+    <string name="nc_call_button_content_description_switch_camera">Пребаци камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Пређи на сопствени видео</string>
     <string name="nc_call_incoming">ДОЛАЗНО</string>
     <string name="nc_call_name">Назив разговора</string>

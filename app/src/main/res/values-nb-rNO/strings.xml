@@ -112,6 +112,7 @@
     <string name="nc_call_button_content_description_hangup">Legg på</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon av/på</string>
     <string name="nc_call_button_content_description_pip">Åpne bilde-i-bilde-modus</string>
+    <string name="nc_call_button_content_description_switch_camera">Bytt kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Bytt til selvvideo</string>
     <string name="nc_call_incoming">INNKOMMENDE</string>
     <string name="nc_call_name">Samtalenavn</string>

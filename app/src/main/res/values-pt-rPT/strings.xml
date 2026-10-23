@@ -137,6 +137,7 @@
     <string name="nc_call_button_content_description_audio_output">Mudar saída de áudio</string>
     <string name="nc_call_button_content_description_hangup">Desligar</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
+    <string name="nc_call_button_content_description_switch_camera">Trocar câmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome da conversação</string>

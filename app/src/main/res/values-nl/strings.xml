@@ -131,6 +131,7 @@
     <string name="nc_call_button_content_description_hangup">Ophangen</string>
     <string name="nc_call_button_content_description_microphone">Microfoon omschakelen</string>
     <string name="nc_call_button_content_description_pip">Open beeld-in-beeld modus</string>
+    <string name="nc_call_button_content_description_switch_camera">Andere camera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Omschakelen naar zelf-video</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>

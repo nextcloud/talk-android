@@ -107,6 +107,7 @@
     <string name="nc_call_button_content_description_hangup">Eseki</string>
     <string name="nc_call_button_content_description_microphone">Aldatu mikrofonoa</string>
     <string name="nc_call_button_content_description_pip">Ireki irudiz irudi modua</string>
+    <string name="nc_call_button_content_description_switch_camera">Aldatu kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Aldatu norberaren bideora</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>

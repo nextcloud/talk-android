@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.media.AudioAttributes
@@ -58,6 +59,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
@@ -444,6 +446,7 @@ class CallActivity : CallBaseActivity() {
     private var recordingConsentGiven = false
 
     private var isFrontCamera by mutableStateOf(true)
+    private var isSelfVideoEnabled by mutableStateOf(false)
 
     @SuppressLint("ClickableViewAccessibility", "Detekt.LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1096,7 +1099,30 @@ class CallActivity : CallBaseActivity() {
         DrawableCompat.setTint(binding!!.audioOutputButton.drawable, Color.WHITE)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            hideEndCallPopupMenuOnTouchOutside(event)
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    private fun hideEndCallPopupMenuOnTouchOutside(event: MotionEvent) {
+        val endCallPopupMenu = binding?.endCallPopupMenu ?: return
+        if (endCallPopupMenu.isVisible) {
+            val location = IntArray(2)
+            endCallPopupMenu.getLocationOnScreen(location)
+            val popupMenuBounds = Rect(
+                location[0],
+                location[1],
+                location[0] + endCallPopupMenu.width,
+                location[1] + endCallPopupMenu.height
+            )
+            if (!popupMenuBounds.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                endCallPopupMenu.visibility = View.GONE
+            }
+        }
+    }
+
     private fun initViews() {
         Log.d(TAG, "initViews")
         if (!isPipModePossible) {
@@ -1108,20 +1134,6 @@ class CallActivity : CallBaseActivity() {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else {
             initSelfVideoViewForNormalMode()
-        }
-        binding!!.composeParticipantGrid.setOnTouchListener { _, me ->
-            val action = me.actionMasked
-            if (action == MotionEvent.ACTION_DOWN) {
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-            false
-        }
-        binding!!.conversationRelativeLayout.setOnTouchListener { _, me ->
-            val action = me.actionMasked
-            if (action == MotionEvent.ACTION_DOWN) {
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-            false
         }
         initPipMode()
         binding!!.composeParticipantGrid.z = 0f
@@ -1136,7 +1148,12 @@ class CallActivity : CallBaseActivity() {
                 eglBase = rootEglBase!!.eglBaseContext,
                 videoTrack = localVideoTrack,
                 isFrontCamera = isFrontCamera,
-                onSwitchCamera = { switchCamera() }
+                isVideoEnabled = isSelfVideoEnabled,
+                onSwitchCamera = if ((cameraEnumerator?.deviceNames?.size ?: 0) > 1) {
+                    { onSwitched -> switchCamera(onSwitched) }
+                } else {
+                    null
+                }
             )
         }
 
@@ -1499,15 +1516,26 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    fun switchCamera() {
+    /**
+     * Switches between the available cameras. [onSwitched] is called with whether the front camera is used when
+     * switching finished, also if it failed.
+     */
+    fun switchCamera(onSwitched: (isFrontCamera: Boolean) -> Unit = {}) {
         val cameraVideoCapturer = videoCapturer as CameraVideoCapturer?
-        cameraVideoCapturer?.switchCamera(object : CameraSwitchHandler {
+        if (cameraVideoCapturer == null) {
+            onSwitched(isFrontCamera)
+            return
+        }
+        val wasFrontCamera = isFrontCamera
+        cameraVideoCapturer.switchCamera(object : CameraSwitchHandler {
             override fun onCameraSwitchDone(currentCameraIsFront: Boolean) {
                 isFrontCamera = currentCameraIsFront
+                onSwitched(currentCameraIsFront)
             }
 
             override fun onCameraSwitchError(s: String) {
                 Log.e(TAG, "Error while switching camera: $s")
+                onSwitched(wasFrontCamera)
             }
         })
     }
@@ -1534,6 +1562,7 @@ class CallActivity : CallBaseActivity() {
                 localStream!!.videoTracks[0].setEnabled(enable)
                 localCallParticipantModel.isVideoEnabled = enable
             }
+            isSelfVideoEnabled = enable
             if (enable) {
                 binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE

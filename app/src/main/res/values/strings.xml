@@ -33,6 +33,7 @@ How to translate with transifex:
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
     <string name="nc_login_too_many_attempts">Too many failed login attempts from this network. Try again later.</string>
+    <string name="nc_account_removal_pending">The removal of this account is not finished yet. Please try again in a moment.</string>
     <string name="nc_reauthorize_different_account">You logged in with a different account. Log in with the account you want to reauthorize.</string>
     <string name="nc_common_create">Create</string>
     <string name="nc_common_unknown">Unknown</string>
@@ -57,6 +58,9 @@ How to translate with transifex:
     <string name="nc_server_helper_text">The link to your %1$s web interface when you open it in the browser.</string>
     <string name="nc_server_testing_connection">Testing connection</string>
     <string name="nc_server_unsupported">Server does not have supported Talk app installed</string>
+    <string name="nc_server_http_fallback_title">Insecure connection</string>
+    <string name="nc_server_http_fallback_message">Could not connect to the server over HTTPS. Connect over unsecured HTTP instead?</string>
+    <string name="nc_server_http_fallback_confirm">Use HTTP</string>
 
     <string name="nc_server_url">Server address https://…</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
@@ -93,7 +97,7 @@ How to translate with transifex:
     <string name="nc_admin_only">Admin only</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
-    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Do you trust the until now unknown SSL certificate of %1$s, issued by %2$s for %3$s, valid from %4$s to %5$s? It will only be trusted for %1$s.</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
@@ -427,6 +431,9 @@ How to translate with transifex:
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
+    <string name="nc_call_button_content_description_switch_camera">Switch camera</string>
+    <string name="nc_call_self_video_enlarge">Enlarge self video</string>
+    <string name="nc_call_self_video_shrink">Shrink self video</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="raise_hand">Raise hand</string>
     <string name="lower_hand">Lower hand</string>

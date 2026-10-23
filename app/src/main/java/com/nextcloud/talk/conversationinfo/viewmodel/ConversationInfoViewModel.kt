@@ -759,7 +759,12 @@ class ConversationInfoViewModel @Inject constructor(
         } else {
             ""
         }
-        _uiState.update { it.copy(lobbyTimerLabel = label) }
+        _uiState.update {
+            it.copy(
+                lobbyTimerLabel = label,
+                conversation = it.conversation?.copy(lobbyTimer = timestampSeconds)
+            )
+        }
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(user.username, user.token),

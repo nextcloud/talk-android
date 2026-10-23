@@ -32,7 +32,6 @@ val lifecycleVersion = "2.11.0"
 val maplibreComposeVersion = "0.20.0"
 val okhttpVersion = "5.5.0"
 val markwonVersion = "4.6.2"
-val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
 val roomVersion = "2.8.5"
@@ -62,8 +61,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010013
-        versionName = "25.1.0 Alpha 13"
+        versionCode = 260000001
+        versionName = "26.0.0 Alpha 01"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -291,11 +290,6 @@ dependencies {
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")
 
-    implementation("com.afollestad.material-dialogs:core:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:datetime:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogsVersion")
-
     implementation("com.google.code.gson:gson:2.14.0")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
@@ -304,7 +298,6 @@ dependencies {
     implementation("androidx.media3:media3-effect:$media3Version")
 
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.32")
 
     implementation("io.noties.markwon:core:$markwonVersion")
     implementation("io.noties.markwon:ext-strikethrough:$markwonVersion")

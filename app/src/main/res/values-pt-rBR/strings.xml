@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Desligar</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
+    <string name="nc_call_button_content_description_switch_camera">Trocar câmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
     <string name="nc_call_e2ee_not_supported_title">A chamada de %s não está disponível</string>
@@ -164,6 +165,8 @@
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>
+    <string name="nc_call_self_video_enlarge">Ampliar vídeo pessoal</string>
+    <string name="nc_call_self_video_shrink">Reduzir vídeo pessoal</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
     <string name="nc_call_state_with_phone">%1$s com telefone</string>
     <string name="nc_call_state_with_video">%1$s com vídeo</string>

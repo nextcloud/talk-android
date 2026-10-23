@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">掛斷</string>
     <string name="nc_call_button_content_description_microphone">切換麥克風</string>
     <string name="nc_call_button_content_description_pip">開啟畫中畫模式</string>
+    <string name="nc_call_button_content_description_switch_camera">切換相機</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視訊</string>
     <string name="nc_call_e2ee_not_supported">目前不支援通話功能，因為伺服器已啟用端對端加密</string>
     <string name="nc_call_e2ee_not_supported_title">無法從 %s 通話</string>

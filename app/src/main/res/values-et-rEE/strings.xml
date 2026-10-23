@@ -150,6 +150,7 @@
     <string name="nc_call_button_content_description_hangup">Lõpeta kõne</string>
     <string name="nc_call_button_content_description_microphone">Lülita mikrofon sisse/välja</string>
     <string name="nc_call_button_content_description_pip">Ava pilt-pildis vaade</string>
+    <string name="nc_call_button_content_description_switch_camera">Vaheta kaamerat</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
     <string name="nc_call_e2ee_not_supported">Kuna serveris on kasutusel läbiv krüptimine, siis helistamine pole hetkel toetatud</string>
     <string name="nc_call_e2ee_not_supported_title">Helistamine pole saadaval: %s</string>
@@ -164,6 +165,8 @@
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>
+    <string name="nc_call_self_video_enlarge">Muuda enda video suuremaks</string>
+    <string name="nc_call_self_video_shrink">Muuda enda video väiksemaks</string>
     <string name="nc_call_state_in_call">%1$s vestluses</string>
     <string name="nc_call_state_with_phone">%1$s telefoniga</string>
     <string name="nc_call_state_with_video">%1$s videoga</string>

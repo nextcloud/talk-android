@@ -130,6 +130,7 @@
     <string name="nc_call_button_content_description_hangup">Покласти слухавку</string>
     <string name="nc_call_button_content_description_microphone">Перемикач мікрофона</string>
     <string name="nc_call_button_content_description_pip">Відкрийте режим \"картинка в картинці</string>
+    <string name="nc_call_button_content_description_switch_camera">Переключити камеру.</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключіться на відео з собою</string>
     <string name="nc_call_incoming">ВХІДНИЙ</string>
     <string name="nc_call_name">Назва розмови</string>
