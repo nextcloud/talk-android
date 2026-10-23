@@ -218,10 +218,24 @@ class ConversationsListActivity : BaseActivity() {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (forwardMessage) {
-                finish()
+                cancelForwarding()
             } else {
                 finishAffinity()
             }
+        }
+    }
+
+    // The source chat finished itself when forwarding started and this list may be the one below it, so finishing
+    // here would fall back to MainActivity. Instead leave the forward mode and return to the source chat.
+    private fun cancelForwarding() {
+        val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        intent.removeExtra(KEY_FORWARD_MSG_FLAG)
+        intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+        intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        forwardMessageState.value = false
+        conversationsListViewModel.setHideRoomToken(null)
+        if (sourceRoomToken != null) {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, sourceRoomToken))
         }
     }
 
