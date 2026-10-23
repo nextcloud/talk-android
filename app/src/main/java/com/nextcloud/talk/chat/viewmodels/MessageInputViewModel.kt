@@ -341,7 +341,7 @@ class MessageInputViewModel :
     }
 
     fun startMicInput(context: Context) {
-        audioFocusRequestManager.audioFocusRequest(true) {
+        audioFocusRequestManager.audioFocusRequest(true, waitForOtherAudio = true) {
             audioRecorderManager.start(context)
         }
     }
