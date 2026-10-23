@@ -7,6 +7,8 @@
 
 package com.nextcloud.talk.conversationinfo
 
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.LISTABLE_NONE
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.SIP_DISABLED
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
@@ -47,6 +49,18 @@ data class ConversationInfoUiState(
     val showWebinarSettings: Boolean = false,
     val lobbyTimerLabel: String = "",
     val showLobbyTimer: Boolean = false,
+
+    val sipState: Int = SIP_DISABLED,
+    val showSipToggle: Boolean = false,
+    val showSipWithoutPinToggle: Boolean = false,
+    val showSipDialInInfo: Boolean = false,
+    val sipDialInInfo: String = "",
+    val attendeePin: String = "",
+
+    val listableScope: Int = LISTABLE_NONE,
+    val showListable: Boolean = false,
+    val mentionAllAllowed: Boolean = true,
+    val showMentionPermissions: Boolean = false,
 
     val guestsAllowed: Boolean = false,
     val showGuestAccess: Boolean = false,

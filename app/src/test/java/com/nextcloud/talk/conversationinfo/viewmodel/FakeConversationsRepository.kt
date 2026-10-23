@@ -95,6 +95,26 @@ class FakeConversationsRepository : ConversationsRepository {
         return GenericOverall(GenericOCS(GenericMetaDto(statusCode = readOnlyResponseStatusCode)))
     }
 
+    /** The OCS status code the listable, mention permission and SIP requests answer with. */
+    var roomSettingResponseStatusCode = HTTP_OK
+
+    /** The value each listable, mention permission and SIP request sent, keyed by the URL it went to. */
+    val roomSettingRequests = mutableListOf<Pair<String, Int>>()
+
+    override suspend fun setListableScope(user: User, url: String, scope: Int): GenericOverall = roomSetting(url, scope)
+
+    override suspend fun setMentionPermissions(user: User, url: String, mentionPermissions: Int): GenericOverall =
+        roomSetting(url, mentionPermissions)
+
+    override suspend fun setSipState(user: User, url: String, state: Int): GenericOverall = roomSetting(url, state)
+
+    override suspend fun getSipDialInInfo(user: User, url: String): String? = null
+
+    private fun roomSetting(url: String, value: Int): GenericOverall {
+        roomSettingRequests.add(url to value)
+        return GenericOverall(GenericOCS(GenericMetaDto(statusCode = roomSettingResponseStatusCode)))
+    }
+
     override suspend fun clearChatHistory(user: User, url: String): GenericOverall =
         throw UnsupportedOperationException()
 
