@@ -21,6 +21,9 @@ class VoiceMessageMediaService : MediaSessionService() {
         super.onCreate()
         val player = ExoPlayer.Builder(this).build()
         mediaSession = MediaSession.Builder(this, player).build()
+        // By default Media3 keeps the service in the foreground for 10 minutes after a pause or the end of the
+        // message, and the notification of a foreground service cannot be swiped away.
+        setForegroundServiceTimeoutMs(FOREGROUND_TIMEOUT_AFTER_PAUSE_MS)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
@@ -30,5 +33,10 @@ class VoiceMessageMediaService : MediaSessionService() {
         mediaSession?.release()
         mediaSession = null
         super.onDestroy()
+    }
+
+    companion object {
+        /** The service leaves the foreground, and its notification can be swiped away, as soon as playback stops. */
+        const val FOREGROUND_TIMEOUT_AFTER_PAUSE_MS = 0L
     }
 }
