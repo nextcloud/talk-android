@@ -237,6 +237,12 @@ object ApiUtils {
     fun getUrlForConversationReadOnly(version: Int, baseUrl: String?, token: String?): String =
         getUrlForRoom(version, baseUrl, token) + "/read-only"
 
+    fun getUrlForMentionPermissions(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/mention-permissions"
+
+    fun getUrlForRoomSip(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/webinar/sip"
+
     fun getUrlForRoomWebinaryLobby(version: Int, baseUrl: String?, token: String?): String =
         getUrlForRoom(version, baseUrl, token) + "/webinar/lobby"
 
