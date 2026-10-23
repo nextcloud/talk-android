@@ -31,6 +31,7 @@ import com.nextcloud.talk.models.json.passwordResult.PasswordResultOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.models.json.reminder.ReminderOverall
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.models.json.tags.AssignConversationTagsRequestDto
@@ -341,6 +342,28 @@ interface NcApiCoroutines {
     @FormUrlEncoded
     @PUT
     suspend fun setConversationReadOnly(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("state") state: Int
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setMentionPermissions(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("mentionPermissions") mentionPermissions: Int
+    ): GenericOverall
+
+    @GET
+    suspend fun getSignalingSettings(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): SignalingSettingsOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setSipState(
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Field("state") state: Int

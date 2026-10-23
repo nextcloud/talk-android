@@ -81,6 +81,23 @@ class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineA
         return result
     }
 
+    override suspend fun setListableScope(user: User, url: String, scope: Int): GenericOverall =
+        coroutineApi.openConversation(ApiUtils.getCredentials(user.username, user.token)!!, url, scope)
+
+    override suspend fun setMentionPermissions(user: User, url: String, mentionPermissions: Int): GenericOverall =
+        coroutineApi.setMentionPermissions(
+            ApiUtils.getCredentials(user.username, user.token)!!,
+            url,
+            mentionPermissions
+        )
+
+    override suspend fun setSipState(user: User, url: String, state: Int): GenericOverall =
+        coroutineApi.setSipState(ApiUtils.getCredentials(user.username, user.token)!!, url, state)
+
+    override suspend fun getSipDialInInfo(user: User, url: String): String? =
+        coroutineApi.getSignalingSettings(ApiUtils.getCredentials(user.username, user.token)!!, url)
+            .ocs?.settings?.sipDialinInfo
+
     override suspend fun setPassword(user: User, url: String, password: String): GenericOverall {
         val credentials = ApiUtils.getCredentials(user.username, user.token)!!
         val result = coroutineApi.setPassword(

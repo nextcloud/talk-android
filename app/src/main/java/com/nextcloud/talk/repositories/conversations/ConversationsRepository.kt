@@ -47,6 +47,14 @@ interface ConversationsRepository {
 
     suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall
 
+    suspend fun setListableScope(user: User, url: String, scope: Int): GenericOverall
+
+    suspend fun setMentionPermissions(user: User, url: String, mentionPermissions: Int): GenericOverall
+
+    suspend fun setSipState(user: User, url: String, state: Int): GenericOverall
+
+    suspend fun getSipDialInInfo(user: User, url: String): String?
+
     suspend fun clearChatHistory(user: User, url: String): GenericOverall
 
     suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequestDto): RoomOverall
