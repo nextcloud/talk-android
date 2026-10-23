@@ -15,25 +15,34 @@ import java.net.URISyntaxException
  *
  * The TLS handshake only knows the server (host and port), not the account of the request. So the certificate is
  * chosen by the server: the one of the accounts on it. Only if accounts on the same server use different certificates,
- * the default account decides, as the connection may then be reused by all of them.
+ * the active account decides, as the connection may then be reused by all of them.
  */
 object ClientCertificateSelector {
 
     /**
      * Returns the alias of the client certificate for a connection to [host] and [port], or null if no account on
-     * that server uses one. Without a [host], the certificate of [defaultUser] is used. A negative [port] is unknown,
-     * then the host alone identifies the server.
+     * that server uses one. Without a [host], the certificate of the active account is used. A negative [port] is
+     * unknown, then the host alone identifies the server.
      */
     @JvmStatic
-    fun selectAlias(host: String?, port: Int, users: List<User>, defaultUser: User?): String? {
+    fun selectAlias(host: String?, port: Int, users: List<User>): String? {
         val usersOnServer = users.filter { host != null && isOnServer(it, host, port) }
         val aliases = usersOnServer.mapNotNull { aliasOf(it) }.toSet()
         return when {
-            host == null -> aliasOf(defaultUser)
+            host == null -> aliasOf(activeUserOf(users))
             aliases.size <= 1 -> aliases.firstOrNull()
-            else -> defaultUser?.takeIf { default -> usersOnServer.any { it.id == default.id } }?.let { aliasOf(it) }
+            else -> aliasOf(activeUserOf(usersOnServer))
         }
     }
+
+    /**
+     * Returns the aliases of the client certificates of all [users].
+     */
+    @JvmStatic
+    fun aliasesOf(users: List<User>): Set<String> = users.mapNotNull { aliasOf(it) }.toSet()
+
+    // Matches UsersDao.getActiveUser(), which prefers the highest id if several users are marked as active.
+    private fun activeUserOf(users: List<User>): User? = users.filter { it.current }.maxByOrNull { it.id ?: -1L }
 
     private fun isOnServer(user: User, host: String, port: Int): Boolean {
         val uri = uriOf(user) ?: return false
