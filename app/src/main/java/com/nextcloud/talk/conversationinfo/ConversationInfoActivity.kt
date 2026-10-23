@@ -347,6 +347,9 @@ class ConversationInfoActivity : BaseActivity() {
             },
             onLobbyClick = { viewModel.toggleLobby(conversationUser, conversationToken) },
             onLobbyTimerClick = onLobbyTimerRequest,
+            onSipStateChange = { viewModel.setSipState(conversationUser, conversationToken, it) },
+            onListableScopeChange = { viewModel.setListableScope(conversationUser, conversationToken, it) },
+            onMentionPermissionsClick = { viewModel.toggleMentionPermissions(conversationUser, conversationToken) },
             onAllowGuestsClick = {
                 val state = viewModel.uiState.value
                 val allow = !state.guestsAllowed

@@ -42,6 +42,7 @@ data class CreateConversationParams(
         const val LOBBY_MODERATORS_ONLY = 1
 
         const val SIP_DISABLED = 0
+        const val SIP_ENABLED = 1
         const val SIP_WITHOUT_PIN = 2
 
         const val MENTION_PERMISSIONS_EVERYONE = 0
