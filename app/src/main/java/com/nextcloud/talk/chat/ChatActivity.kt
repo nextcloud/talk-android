@@ -88,6 +88,7 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.window.embedding.ActivityEmbeddingController
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import com.nextcloud.talk.dagger.modules.assistedViewModels
@@ -512,6 +513,8 @@ class ChatActivity :
             if (!openedViaNotification && isChatThread()) {
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
+            } else if (isEmbeddedNextToConversationList()) {
+                finish()
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
                 intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
@@ -1419,6 +1422,9 @@ class ChatActivity :
     override fun onStart() {
         super.onStart()
         active = true
+        if (!isChatThread() && isEmbeddedNextToConversationList()) {
+            embeddedChat = conversationUserId to roomToken
+        }
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(chatViewModel)
 
@@ -1463,6 +1469,9 @@ class ChatActivity :
     override fun onStop() {
         super.onStop()
         active = false
+        if (embeddedChat == (conversationUserId to roomToken)) {
+            embeddedChat = null
+        }
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
 
@@ -2214,7 +2223,8 @@ class ChatActivity :
             supportsSilentCall = capabilitiesReady &&
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL) &&
                 !isChatThread(),
-            isClassified = isClassified
+            isClassified = isClassified,
+            showNavigateUp = isChatThread() || !isEmbeddedNextToConversationList()
         )
     }
 
@@ -3002,7 +3012,9 @@ class ChatActivity :
                 leaveRoom(null)
             } else {
                 Log.d(TAG, "not leaving room (validSessionId is false)")
-                ApplicationWideCurrentRoomHolder.getInstance().clear()
+                if (!isAnotherRoomCurrent()) {
+                    ApplicationWideCurrentRoomHolder.getInstance().clear()
+                }
             }
         } else {
             Log.d(TAG, "not leaving room...")
@@ -3090,12 +3102,15 @@ class ChatActivity :
         // Send the HPB "leave room" immediately, before waiting for the backend DELETE to
         // confirm. This minimises the window in which the HPB could still consider the user
         // "in" the room and cause the server to delete a freshly-created notification.
-        if (webSocketInstance != null && currentConversation != null) {
+        val anotherRoomCurrent = isAnotherRoomCurrent()
+        if (webSocketInstance != null && currentConversation != null && !anotherRoomCurrent) {
             webSocketInstance?.joinRoomWithRoomTokenAndSession("", sessionIdAfterRoomJoined)
         }
         sessionIdAfterRoomJoined = "0"
         // the session is left now, so a chat opened before the leave is answered must not reuse it
-        ApplicationWideCurrentRoomHolder.getInstance().clear()
+        if (!anotherRoomCurrent) {
+            ApplicationWideCurrentRoomHolder.getInstance().clear()
+        }
 
         // FIXME Fix API checking with guests?
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
@@ -3111,6 +3126,15 @@ class ChatActivity :
             ),
             functionToCallAfterLeave
         )
+    }
+
+    /**
+     * True when another chat has already joined a room, e.g. when a new chat replaced this one in the split pane
+     * next to the conversation list. Leaving must then not reset the shared room and signaling state.
+     */
+    private fun isAnotherRoomCurrent(): Boolean {
+        val currentRoomToken = ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken
+        return !currentRoomToken.isNullOrEmpty() && currentRoomToken != roomToken
     }
 
     private fun setupWebsocket() {
@@ -4166,6 +4190,9 @@ class ChatActivity :
 
     private fun isChatThread(): Boolean = conversationThreadId != null && conversationThreadId!! > 0
 
+    private fun isEmbeddedNextToConversationList(): Boolean =
+        ActivityEmbeddingController.getInstance(this).isActivityEmbedded(this)
+
     fun openThread(messageId: Long) {
         val bundle = Bundle()
         bundle.putLong(KEY_THREAD_ID, messageId)
@@ -4284,6 +4311,17 @@ class ChatActivity :
                 putExtra(KEY_ROOM_TOKEN, roomToken)
                 putExtra(KEY_INTERNAL_USER_ID, userId)
             }
+
+        /** Account id and room token of the chat currently shown next to the conversation list, if any. */
+        private var embeddedChat: Pair<Long, String>? = null
+
+        /**
+         * Whether the main chat of the conversation [roomToken] of the account [userId] is already shown next to
+         * the conversation list. Opening it again would replace that chat while it still holds the room session.
+         */
+        fun isShownNextToConversationList(userId: Long, roomToken: String): Boolean =
+            embeddedChat == (userId to roomToken)
+
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 2
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 3

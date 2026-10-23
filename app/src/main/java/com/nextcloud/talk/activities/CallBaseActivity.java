@@ -17,6 +17,8 @@ import android.util.Log;
 import android.util.Rational;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import com.nextcloud.talk.BuildConfig;
@@ -48,7 +50,16 @@ public abstract class CallBaseActivity extends BaseActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         dismissKeyguard();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = getWindow().getDecorView().getWindowInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+            }
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (isPipModePossible()) {

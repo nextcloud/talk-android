@@ -1231,6 +1231,12 @@ class ConversationsListActivity : BaseActivity() {
             return
         }
 
+        val hasPayload = !textToPaste.isNullOrEmpty() || !filesToShare.isNullOrEmpty() || selectedMessageId != null
+        if (!hasPayload && ChatActivity.isShownNextToConversationList(currentUser.id!!, selectedConversation!!.token)) {
+            clearIntentAction()
+            return
+        }
+
         val bundle = Bundle()
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (!filesToShare.isNullOrEmpty()) {
