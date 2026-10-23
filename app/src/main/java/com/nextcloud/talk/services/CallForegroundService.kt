@@ -25,10 +25,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.ResultReceiver
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -70,12 +72,18 @@ class CallForegroundService : Service() {
     private var currentCredentials: String? = null
     private var currentIsOneToOne = false
     private var conversationAvatarBitmap: Bitmap? = null
+    private var isScreenSharing = false
+    private var isCallStarted = false
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand called")
+
+        handleScreenSharingAction(intent, startId)?.let { return it }
+
+        isCallStarted = true
         handler.removeCallbacksAndMessages(null)
 
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
@@ -101,6 +109,71 @@ class CallForegroundService : Service() {
         startTimeBasedNotificationUpdates()
 
         return START_STICKY
+    }
+
+    /**
+     * Returns the value to return from onStartCommand if the intent was a screen sharing action, or null otherwise.
+     *
+     * Screen sharing actions are ignored if the service was started by them rather than by an ongoing call (for
+     * example, if the call ended in the meantime), as the service must not be kept running in that case.
+     */
+    private fun handleScreenSharingAction(intent: Intent?, startId: Int): Int? {
+        val action = intent?.action
+        val resultReceiver = intent?.let {
+            IntentCompat.getParcelableExtra(it, EXTRA_RESULT_RECEIVER, ResultReceiver::class.java)
+        }
+
+        return when {
+            action != ACTION_START_SCREEN_SHARING && action != ACTION_STOP_SCREEN_SHARING -> null
+
+            !isCallStarted -> {
+                Log.w(TAG, "Ignoring screen sharing action without an ongoing call")
+                resultReceiver?.send(RESULT_SCREEN_SHARING_FAILED, null)
+                stopSelf(startId)
+                START_NOT_STICKY
+            }
+
+            else -> {
+                if (action == ACTION_START_SCREEN_SHARING) {
+                    setScreenSharing(true, resultReceiver)
+                } else if (isScreenSharing) {
+                    setScreenSharing(false, null)
+                }
+                START_STICKY
+            }
+        }
+    }
+
+    /**
+     * Updates the foreground service type to include or exclude media projection, which is required to capture the
+     * screen. The result receiver is notified once the type was updated, as only then the capture can be started.
+     */
+    @SuppressLint("ForegroundServiceType")
+    private fun setScreenSharing(enabled: Boolean, resultReceiver: ResultReceiver?) {
+        isScreenSharing = enabled
+
+        var resultCode = RESULT_SCREEN_SHARING_READY
+        try {
+            val notification = buildNotification(currentConversationName, currentCallExtras)
+            val foregroundServiceType = resolveForegroundServiceType(currentCallExtras)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                foregroundServiceType != FOREGROUND_SERVICE_TYPE_ZERO
+            ) {
+                startForeground(NOTIFICATION_ID, notification, foregroundServiceType)
+            } else {
+                startForeground(NOTIFICATION_ID, notification)
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Failed to update foreground service type for screen sharing", e)
+            isScreenSharing = false
+            resultCode = RESULT_SCREEN_SHARING_FAILED
+            // The type may not be changed while in background, but the notification must not keep stating that the
+            // screen is shared.
+            getSystemService(NotificationManager::class.java)
+                .notify(NOTIFICATION_ID, buildNotification(currentConversationName, currentCallExtras))
+        }
+
+        resultReceiver?.send(resultCode, null)
     }
 
     override fun onDestroy() {
@@ -141,8 +214,8 @@ class CallForegroundService : Service() {
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
-            .setContentText(getString(R.string.nc_call_ongoing_notification_content))
-            .setSmallIcon(R.drawable.ic_call_white_24dp)
+            .setContentText(getScreenSharingText() ?: getString(R.string.nc_call_ongoing_notification_content))
+            .setSmallIcon(getSmallIcon())
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -179,7 +252,7 @@ class CallForegroundService : Service() {
 
         return Notification.Builder(this, channelId)
             .setStyle(callStyle)
-            .setSmallIcon(R.drawable.ic_call_white_24dp)
+            .setSmallIcon(getSmallIcon())
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_CALL)
@@ -191,9 +264,30 @@ class CallForegroundService : Service() {
                     builder.setWhen(callStartTime)
                     builder.setShowWhen(true)
                 }
+                getScreenSharingText()?.let { builder.setContentText(it) }
             }
             .build()
     }
+
+    /**
+     * Returns the text shown while the screen is shared, or null to use the default text of the notification.
+     */
+    private fun getScreenSharingText(): String? =
+        if (isScreenSharing) {
+            getString(R.string.nc_call_ongoing_notification_screen_sharing)
+        } else {
+            null
+        }
+
+    /**
+     * The small icon is shown in the status bar, so it indicates when the screen is being shared.
+     */
+    private fun getSmallIcon(): Int =
+        if (isScreenSharing) {
+            R.drawable.ic_screen_share_white_24dp
+        } else {
+            R.drawable.ic_call_white_24dp
+        }
 
     /**
      * The CallStyle notification's Person icon defaults to a generic phone icon; this fetches the
@@ -316,6 +410,10 @@ class CallForegroundService : Service() {
             if (!isVoiceOnlyCall && canPublishVideo && isCameraPermissionGranted) {
                 serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
             }
+
+            if (isScreenSharing) {
+                serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+            }
         }
         return serviceType
     }
@@ -331,6 +429,12 @@ class CallForegroundService : Service() {
         private const val EXTRA_CREDENTIALS = "extra_credentials"
         private const val EXTRA_IS_ONE_TO_ONE = "extra_is_one_to_one"
         private const val CALL_DURATION_UPDATE_INTERVAL = 1000L
+        private const val ACTION_START_SCREEN_SHARING = "action_start_screen_sharing"
+        private const val ACTION_STOP_SCREEN_SHARING = "action_stop_screen_sharing"
+        private const val EXTRA_RESULT_RECEIVER = "extra_result_receiver"
+
+        const val RESULT_SCREEN_SHARING_READY = 0
+        const val RESULT_SCREEN_SHARING_FAILED = 1
 
         fun start(context: Context, conversationName: String?, callIntentExtras: Bundle?, avatarInfo: AvatarInfo) {
             val serviceIntent = Intent(context, CallForegroundService::class.java).apply {
@@ -342,6 +446,25 @@ class CallForegroundService : Service() {
                 callIntentExtras?.let { putExtra(EXTRA_CALL_INTENT_EXTRAS, Bundle(it)) }
             }
             ContextCompat.startForegroundService(context, serviceIntent)
+        }
+
+        /**
+         * Must be called after the user granted the media projection and before the screen capture is started. The
+         * result receiver is notified with [RESULT_SCREEN_SHARING_READY] or [RESULT_SCREEN_SHARING_FAILED].
+         */
+        fun startScreenSharing(context: Context, resultReceiver: ResultReceiver) {
+            val serviceIntent = Intent(context, CallForegroundService::class.java).apply {
+                action = ACTION_START_SCREEN_SHARING
+                putExtra(EXTRA_RESULT_RECEIVER, resultReceiver)
+            }
+            context.startService(serviceIntent)
+        }
+
+        fun stopScreenSharing(context: Context) {
+            val serviceIntent = Intent(context, CallForegroundService::class.java).apply {
+                action = ACTION_STOP_SCREEN_SHARING
+            }
+            context.startService(serviceIntent)
         }
 
         fun stop(context: Context) {
