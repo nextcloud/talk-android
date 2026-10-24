@@ -8,11 +8,13 @@ package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
+import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.util.Rational;
 import android.view.View;
@@ -108,7 +110,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
         super.onTopResumedActivityChanged(isTopResumedActivity);
         Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
-                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode() + screenState());
         if (isTopResumedActivity || isInPictureInPictureMode()
                 || !isPipModePossible()
                 || isChangingConfigurations()
@@ -121,10 +123,16 @@ public abstract class CallBaseActivity extends BaseActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart" + screenState());
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: isInPipMode=" + isInPipMode
-                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode() + screenState());
         // Fallback for API 26-28 where onTopResumedActivityChanged doesn't exist.
         // On API 29+, onTopResumedActivityChanged already handled this.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
@@ -139,7 +147,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing());
+        Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing() + screenState());
     }
 
     @Override
@@ -158,8 +166,29 @@ public abstract class CallBaseActivity extends BaseActivity {
         }
     }
 
+    /**
+     * A pause caused by the display going to sleep is not the user leaving the call: entering PiP there calls
+     * enableKeyguard(), PiP is refused on the lock screen and the call window ends up hidden behind it. The interactive
+     * flag is used and not the keyguard state, because the keyguard shows up some time after the display is off.
+     */
+    private boolean isInteractive() {
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        return powerManager == null || powerManager.isInteractive();
+    }
+
+    private String screenState() {
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        return " interactive=" + isInteractive()
+            + " keyguardLocked=" + (keyguardManager != null && keyguardManager.isKeyguardLocked());
+    }
+
     void enterPipMode() {
-        Log.d(TAG, "enterPipMode: isPipModePossible=" + isPipModePossible() + " isInPipMode=" + isInPipMode);
+        Log.d(TAG, "enterPipMode: isPipModePossible=" + isPipModePossible() + " isInPipMode=" + isInPipMode
+                + screenState());
+        if (!isInteractive()) {
+            Log.d(TAG, "enterPipMode skipped: the screen is off, this is not the user leaving the call");
+            return;
+        }
         enableKeyguard();
         if (isPipModePossible()) {
             Rational pipRatio = new Rational(300, 500);
