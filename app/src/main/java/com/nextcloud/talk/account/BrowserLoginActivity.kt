@@ -103,6 +103,7 @@ class BrowserLoginActivity : BaseActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.postLoginState.collect { state ->
+                    viewModel.onPostLoginShown(state)
                     when (state) {
                         BrowserLoginActivityViewModel.PostLoginViewState.None -> {}
 
