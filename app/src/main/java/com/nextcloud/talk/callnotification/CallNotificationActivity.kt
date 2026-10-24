@@ -24,6 +24,7 @@ import com.nextcloud.talk.activities.CallBaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -37,6 +38,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -52,6 +54,8 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     var cache: Cache? = null
 
+    @Inject
+    lateinit var telecomManager: TelecomManager
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
     private var displayName: String? = null
@@ -160,6 +164,9 @@ class CallNotificationActivity : CallBaseActivity() {
                 if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
                     notificationHandler.postDelayed(this, ONE_SECOND)
                 } else {
+                    if (!leavingScreen) {
+                        telecomManager.endCurrentCall(roomToken)
+                    }
                     finish()
                 }
             }
@@ -194,6 +201,10 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun hangup() {
         leavingScreen = true
+        val declineIntent = Intent(this, DeclineCallReceiver::class.java).apply {
+            putExtra(BundleKeys.KEY_NOTIFICATION_TIMESTAMP, notificationTimestamp)
+        }
+        sendBroadcast(declineIntent)
         finish()
     }
 

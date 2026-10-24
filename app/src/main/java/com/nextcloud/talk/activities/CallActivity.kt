@@ -80,6 +80,7 @@ import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
@@ -221,6 +222,9 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var permissionUtil: PlatformPermissionUtil? = null
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -1631,6 +1635,7 @@ class CallActivity : CallBaseActivity() {
             // The screen that started the call marked it as dialing, which hangup() would reset. Without resetting
             // it here, chats would keep treating the app as being in a call.
             ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
+            telecomManager.endCurrentCall(roomToken)
         }
 
         super.onDestroy()
@@ -2247,6 +2252,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
+
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2257,8 +2263,12 @@ class CallActivity : CallBaseActivity() {
         dispose(nickSendingDisposable)
         nickSendingDisposable = null
 
-        if (shutDownView) {
+        if (shutDownView || currentCallStatus == CallStatus.CALLING_TIMEOUT) {
             terminateAudioVideo()
+            if (webSocketClient != null) {
+                webSocketClient!!.sendBye()
+                webSocketClient = null
+            }
         }
 
         val peerConnectionIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
@@ -2288,6 +2298,9 @@ class CallActivity : CallBaseActivity() {
         }
 
         hangupNetworkCalls(shutDownView, endCallForAll)
+        if (shutDownView) {
+            telecomManager.endCurrentCall(roomToken)
+        }
     }
 
     private fun terminateAudioVideo() {
@@ -2327,7 +2340,9 @@ class CallActivity : CallBaseActivity() {
         }
         localAudioTrack = null
         localVideoTrack = null
-        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+        if (::conversationUser.isInitialized && conversationUser.id != null) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(conversationUser.id!!)
+        } else if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
             WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
         }
     }
@@ -2377,7 +2392,7 @@ class CallActivity : CallBaseActivity() {
             startActivity(intent)
             finish()
         } else if (shutDownView) {
-            finish()
+            finishAndRemoveTask()
         } else if (currentCallStatus === CallStatus.RECONNECTING ||
             currentCallStatus === CallStatus.PUBLISHER_FAILED
         ) {
@@ -2386,52 +2401,55 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun openConversationListInPrimaryTask() {
-        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
-        val appTasks = activityManager
-            ?.appTasks
-            ?.filter { appTask -> appTask.taskInfo?.baseActivity?.packageName == packageName }
-            .orEmpty()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+            val appTasks = activityManager
+                ?.appTasks
+                ?.filter { appTask -> appTask.taskInfo?.baseActivity?.packageName == packageName }
+                .orEmpty()
 
-        val primaryTask = appTasks.firstOrNull { appTask ->
-            val taskInfo = appTask.taskInfo
-            val baseActivityName = taskInfo?.baseActivity?.className
-            taskInfo != null &&
-                taskInfo.taskId != taskId &&
-                baseActivityName == MainActivity::class.java.name
-        } ?: appTasks.firstOrNull { appTask ->
-            val taskInfo = appTask.taskInfo
-            val baseActivityName = taskInfo?.baseActivity?.className
-            taskInfo != null &&
-                taskInfo.taskId != taskId &&
-                baseActivityName != CallActivity::class.java.name &&
-                baseActivityName != CallNotificationActivity::class.java.name
-        }
-
-        if (primaryTask != null) {
-            val intent = Intent(context, ConversationsListActivity::class.java).apply {
-                putExtra(KEY_INTERNAL_USER_ID, conversationUser.id)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val primaryTask = appTasks.firstOrNull { appTask ->
+                val taskInfo = appTask.taskInfo
+                val baseActivityName = taskInfo?.baseActivity?.className
+                taskInfo != null &&
+                    taskInfo.taskId != taskId &&
+                    baseActivityName == MainActivity::class.java.name
+            } ?: appTasks.firstOrNull { appTask ->
+                val taskInfo = appTask.taskInfo
+                val baseActivityName = taskInfo?.baseActivity?.className
+                taskInfo != null &&
+                    taskInfo.taskId != taskId &&
+                    baseActivityName != CallActivity::class.java.name &&
+                    baseActivityName != CallNotificationActivity::class.java.name
             }
-            primaryTask.startActivity(context, intent, null)
-            primaryTask.moveToFront()
-            val primaryTaskId = primaryTask.taskInfo?.taskId
-            appTasks
-                .filter { appTask ->
-                    val taskInfo = appTask.taskInfo
-                    val baseActivityName = taskInfo?.baseActivity?.className
-                    val isCallTask = baseActivityName == CallActivity::class.java.name ||
-                        baseActivityName == CallNotificationActivity::class.java.name
-                    taskInfo != null && !isCallTask && taskInfo.taskId != primaryTaskId && taskInfo.taskId != taskId
+
+            if (primaryTask != null) {
+                val intent = Intent(context, ConversationsListActivity::class.java).apply {
+                    putExtra(KEY_INTERNAL_USER_ID, conversationUser.id)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
-                .forEach { it.finishAndRemoveTask() }
-        } else {
-            val mainIntent = Intent(context, MainActivity::class.java).apply {
-                action = Intent.ACTION_MAIN
-                addCategory(Intent.CATEGORY_LAUNCHER)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                primaryTask.startActivity(context, intent, null)
+                primaryTask.moveToFront()
+                val primaryTaskId = primaryTask.taskInfo?.taskId
+                appTasks
+                    .filter { appTask ->
+                        val taskInfo = appTask.taskInfo
+                        val baseActivityName = taskInfo?.baseActivity?.className
+                        val isCallTask = baseActivityName == CallActivity::class.java.name ||
+                            baseActivityName == CallNotificationActivity::class.java.name
+                        taskInfo != null && !isCallTask && taskInfo.taskId != primaryTaskId && taskInfo.taskId != taskId
+                    }
+                    .forEach { it.finishAndRemoveTask() }
+                return
             }
-            startActivity(mainIntent)
         }
+
+        val mainIntent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        startActivity(mainIntent)
     }
 
     private fun startVideoCapture(isPortrait: Boolean) {
@@ -2976,7 +2994,31 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private fun activateTelecomCall() {
+        val disconnectHandler: () -> Unit = {
+            runOnUiThread {
+                if (!isFinishing && !isDestroyed && currentCallStatus != CallStatus.LEAVING) {
+                    hangup(shutDownView = true, endCallForAll = false)
+                }
+            }
+        }
+
+        if (!telecomManager.hasActiveCall(roomToken)) {
+            telecomManager.addOutgoingCall(
+                displayName = conversationName.takeIf {
+                    !it.isNullOrBlank()
+                } ?: getString(R.string.nc_app_product_name),
+                roomToken = roomToken ?: "",
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = disconnectHandler
+            )
+        } else {
+            telecomManager.setCallActive(roomToken, onDisconnectCall = disconnectHandler)
+        }
+    }
+
     private fun handleCallStateInConversation() {
+        activateTelecomCall()
         stopCallingSound()
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
@@ -2993,6 +3035,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
+        activateTelecomCall()
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {
