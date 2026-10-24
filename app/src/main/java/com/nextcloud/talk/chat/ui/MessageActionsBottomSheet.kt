@@ -47,7 +47,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -83,7 +82,6 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import java.util.Date
-import kotlinx.coroutines.launch
 
 private const val TAG = "MessageActionsSheet"
 private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE = 86400000L
@@ -282,6 +280,11 @@ internal fun buildMessageActionsState(
     )
 }
 
+/** Opens fully expanded: the half-height peek left the last entries (Delete) off-screen. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun rememberMessageActionsSheetState() = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
 @Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -311,14 +314,8 @@ fun MessageActionsBottomSheet(
     val context = LocalContext.current
     val recentEmojiProvider = remember(context) { ReactionRecentEmojiProvider(context) }
     var showEmojiPicker by rememberSaveable { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
-    val sheetState = rememberModalBottomSheetState()
-    val backToActions: () -> Unit = {
-        showEmojiPicker = false
-        // Return to the actions list at its normal peek height, not fully expanded.
-        scope.launch { sheetState.partialExpand() }
-    }
+    val sheetState = rememberMessageActionsSheetState()
+    val backToActions: () -> Unit = { showEmojiPicker = false }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
