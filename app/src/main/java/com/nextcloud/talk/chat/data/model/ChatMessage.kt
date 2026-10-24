@@ -91,24 +91,6 @@ data class ChatMessage(
 
     var incoming: Boolean = false,
 
-    var isDownloadingVoiceMessage: Boolean = false,
-
-    var resetVoiceMessage: Boolean = false,
-
-    var isPlayingVoiceMessage: Boolean = false,
-
-    var wasPlayedVoiceMessage: Boolean = false,
-
-    var voiceMessageDuration: Int = 0,
-
-    var voiceMessagePlayedSeconds: Int = 0,
-
-    var voiceMessageDownloadProgress: Int = 0,
-
-    var voiceMessageSeekbarProgress: Int = 0,
-
-    var voiceMessageFloatArray: FloatArray? = null,
-
     var expandableParent: Boolean = false,
 
     var isExpanded: Boolean = false,
