@@ -20,9 +20,9 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
@@ -32,7 +32,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -52,11 +51,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MainActivity :
-    BaseActivity(),
-    ActionBarProvider {
-
-    lateinit var binding: ActivityMainBinding
+class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -69,6 +64,9 @@ class MainActivity :
 
     private var contactLookupJob: Job? = null
 
+    // the splash screen stays until the intent is routed, so no empty window shows in between
+    private var isRouting = true
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
@@ -76,6 +74,8 @@ class MainActivity :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // before super.onCreate(), it switches from the launch theme to postSplashScreenTheme
+        installSplashScreen().setKeepOnScreenCondition { isRouting }
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
         super.onCreate(savedInstanceState)
@@ -84,14 +84,7 @@ class MainActivity :
             Toast.makeText(this, "Build flavor: " + BuildConfig.FLAVOR, Toast.LENGTH_LONG).show()
         }
 
-        // Set the default theme to replace the launch screen theme.
-        setTheme(R.style.AppTheme)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
-        setSupportActionBar(binding.toolbar)
 
         handleIntent(intent)
 
@@ -184,11 +177,9 @@ class MainActivity :
                 if (account != null) {
                     startConversation(contactUserId, account)
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        R.string.nc_phone_book_integration_account_not_found,
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    // a toast, as the conversation list opened by handleIntent() covers this activity
+                    Toast.makeText(context, R.string.nc_phone_book_integration_account_not_found, Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -299,7 +290,7 @@ class MainActivity :
                     ).show()
                 }
             }
-        }
+        }.invokeOnCompletion { isRouting = false }
     }
 
     /**
@@ -374,7 +365,7 @@ class MainActivity :
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }
+        }.invokeOnCompletion { isRouting = false }
 
         return true
     }
