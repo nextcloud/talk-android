@@ -95,10 +95,7 @@
     <string name="load_more_results">Načítať viac výsledkov</string>
     <string name="local_time">Miestny čas: %1$s</string>
     <string name="location_permission_denied">Prístup k polohe bol zamietnutý</string>
-    <string name="location_permission_denied_msg">Prosím, povoľte to v nastaveniach aplikácie
-</string>
     <string name="location_services_disabled">Služby lokalizácie sú vypnuté</string>
-    <string name="location_services_disabled_msg">Ak chcete používať túto funkciu, povoľte lokalizačné služby (GPS)</string>
     <string name="lock_conversation">Zamknúť konverzáciu</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Dať ruku dole</string>
@@ -117,8 +114,6 @@
     <string name="message_deleted_by_you">Správu ste odstránili</string>
     <string name="message_last_edited_by">Upravené používateľom %1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
-    <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
-    <string name="message_search_begin_typing">Začnite písať pre vyhľadanie …</string>
     <string name="message_search_hint">Hľadať …</string>
     <string name="message_search_next_result">Nasledujúci výsledok vyhľadávania</string>
     <string name="message_search_no_more_results">Ďalšie správy sa nenašli</string>
@@ -129,6 +124,7 @@
     <string name="nc_about">O aplikácii</string>
     <string name="nc_account_chooser_active_user">Aktívny používateľ</string>
     <string name="nc_account_chooser_add_account">Pridať účet</string>
+    <string name="nc_account_removal_pending">Odstránenie tohto účtu ešte nie je dokončené. Skúste to znova o chvíľu.</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
     <string name="nc_add_attachment">Pridať prílohu</string>
     <string name="nc_add_emojis">Pridať emotikony</string>
@@ -142,6 +138,10 @@
     <string name="nc_announcement">Oznámenie</string>
     <string name="nc_announcement_description">Konverzácia pre správcov na informovanie určenej skupiny, z ktorej nemožno odísť.</string>
     <string name="nc_attendee_pin">Pripnúť: %1$s</string>
+    <string name="nc_audio_player_next">Ďalej</string>
+    <string name="nc_audio_player_previous">Predchádzajúce</string>
+    <string name="nc_audio_player_repeat_off">Opakovanie vypnuté</string>
+    <string name="nc_audio_seek">Pozícia prehrávania</string>
     <string name="nc_biometric_unlock">Odomknúť %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ak chcete povoliť reproduktory bluetooth, udeľte povolenie „Zariadenia v blízkosti“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Dvihnúť ako videohovor</string>
@@ -166,6 +166,8 @@
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znovu pripájam …</string>
     <string name="nc_call_ringing">ZVONÍ</string>
+    <string name="nc_call_self_video_enlarge">Zväčšiť vlastné video</string>
+    <string name="nc_call_self_video_shrink">Zmenšiť vlastné video</string>
     <string name="nc_call_state_in_call">%1$s v rozhovore</string>
     <string name="nc_call_state_with_phone">%1$s s telefónom</string>
     <string name="nc_call_state_with_video">%1$s s videom</string>
@@ -177,7 +179,7 @@
     <string name="nc_cancel">Zrušiť</string>
     <string name="nc_capabilities_failed">Nepodarilo sa načítať funkcie, prerušujem</string>
     <string name="nc_caption">Popis</string>
-    <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, ktorý vydal %1$s pre %2$s a ktorý je platný od %3$s do %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Dôverujete doteraz neznámemu certifikátu SSL servera %1$s, ktorý vydal %2$s pre %3$s a je platný od %4$s do %5$s? Dôvera bude udelená iba pre %1$s.</string>
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
@@ -363,7 +365,6 @@
     <string name="nc_lobby_start_soon">Stretnutie sa začne čoskoro</string>
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
     <string name="nc_location_current_position_description">Vaša súčasná poloha</string>
-    <string name="nc_location_permission_required">vyžaduje sa prístup k polohe</string>
     <string name="nc_location_unknown">Neznáma poloha</string>
     <string name="nc_locked">Uzamknuté</string>
     <string name="nc_locked_tap_to_unlock">Dotknite sa pre odomknutie</string>
@@ -387,7 +388,6 @@
     <string name="nc_logs_share_diagnosis">Diagnostická správa</string>
     <string name="nc_logs_share_latest_crash">Posledný pád aplikácie</string>
     <string name="nc_logs_share_no_app_found">Nenašla sa žiadna aplikácia na odoslanie hlásenia.</string>
-    <string name="nc_logs_share_subject">Záznamy aplikácie %1$s</string>
     <string name="nc_logs_title">Záznamy</string>
     <string name="nc_logs_total_size">Celková veľkosť záznamov: %d KB</string>
     <string name="nc_manual">Nenastavené</string>
@@ -539,6 +539,9 @@
     <string name="nc_server_db_upgrade_needed">Prosím, aktualizujte svoju databázu %1$s</string>
     <string name="nc_server_failed_to_import_account">Nepodarilo sa importovať vybraný účet</string>
     <string name="nc_server_helper_text">Odkaz na vaše webové rozhranie %1$s, keď ho otvoríte v prehliadači.</string>
+    <string name="nc_server_http_fallback_confirm">Použiť HTTP</string>
+    <string name="nc_server_http_fallback_message">Nepodarilo sa pripojiť k serveru cez HTTPS. Pripojiť sa namiesto toho cez nezabezpečené HTTP?</string>
+    <string name="nc_server_http_fallback_title">Nezabezpečené pripojenie</string>
     <string name="nc_server_import_account">Importovať účet z aplikácie %1$s</string>
     <string name="nc_server_import_account_plain">Importovať účet</string>
     <string name="nc_server_import_accounts">Importovať účty z aplikácie %1$s</string>

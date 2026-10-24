@@ -92,9 +92,7 @@
     <string name="load_more_results">További találatok betöltése</string>
     <string name="local_time">Helyi idő: %1$s</string>
     <string name="location_permission_denied">Hely engedély szükséges</string>
-    <string name="location_permission_denied_msg">Engedélyezze az alkalmazásbeállításokban</string>
     <string name="location_services_disabled">Helyszolgáltatások letiltva</string>
-    <string name="location_services_disabled_msg">A funkció használatához engedélyezze a helyszolgáltatásokat (GPS)</string>
     <string name="lock_conversation">Beszélgetés zárolása</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
@@ -113,8 +111,6 @@
     <string name="message_deleted_by_you">Törölte az üzenetet</string>
     <string name="message_last_edited_by">Szerkesztette: %1$s</string>
     <string name="message_poll_tap_to_open">Koppintson a szavazás megnyitásához</string>
-    <string name="message_search_begin_empty">Nincs találat</string>
-    <string name="message_search_begin_typing">Kezdjen el gépelni a kereséshez…</string>
     <string name="message_search_hint">Keresés…</string>
     <string name="message_search_next_result">Következő találat</string>
     <string name="message_search_no_more_results">Nincs több üzenet</string>
@@ -136,6 +132,8 @@
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_announcement">Bejelentés</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
+    <string name="nc_audio_player_next">Következő</string>
+    <string name="nc_audio_player_previous">Előző</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
     <string name="nc_bluetooth_permission_hint">A bluetooth-os hangszórók engedélyezéséhez adja meg a „Közeli eszközök” engedélyt.</string>
     <string name="nc_call_button_content_description_answer_video_call">Válasz videóhívásként</string>
@@ -167,7 +165,6 @@
     <string name="nc_cancel">Mégse</string>
     <string name="nc_capabilities_failed">A lehetőségek lekérdezése sikertelen, megszakítás</string>
     <string name="nc_caption">Felirat</string>
-    <string name="nc_certificate_dialog_text">Megbízik a(z) %1$s által a(z) %2$s részére kiállított, %3$s és %4$s között érvényes, korábban ismeretlen SSL tanúsítványban?</string>
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
@@ -325,7 +322,6 @@
     <string name="nc_lobby_start_soon">Ez a találkozó hamarosan elkezdődik</string>
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
     <string name="nc_location_current_position_description">A jelenlegi helye</string>
-    <string name="nc_location_permission_required">hely engedély szükséges</string>
     <string name="nc_location_unknown">Ismeretlen pozíci</string>
     <string name="nc_locked">Zárolt</string>
     <string name="nc_locked_tap_to_unlock">Koppintson a feloldáshoz</string>

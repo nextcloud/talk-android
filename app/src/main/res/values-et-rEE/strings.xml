@@ -95,9 +95,7 @@
     <string name="load_more_results">Laadi veel tulemusi</string>
     <string name="local_time">Kohalik aeg: %1$s</string>
     <string name="location_permission_denied">Õigused asukoha tuvastamiseks on keelatud</string>
-    <string name="location_permission_denied_msg">Palun luba see rakenduse seadistustest</string>
     <string name="location_services_disabled">Asukohateenused pole sisse lülitatud</string>
-    <string name="location_services_disabled_msg">Selle funktsionaalsuse kasutamiseks palun luba asukohateenused (GPS)</string>
     <string name="lock_conversation">Lukusta vestlus</string>
     <string name="lock_symbol">Lukuikoon</string>
     <string name="lower_hand">Lase käsi alla</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Sina kustutasid sõnumi</string>
     <string name="message_last_edited_by">%1$s muutis sõnumit</string>
     <string name="message_poll_tap_to_open">Küsitluse avamiseks klõpsi</string>
-    <string name="message_search_begin_empty">Otsingul pole tulemusi</string>
-    <string name="message_search_begin_typing">Otsimiseks alusta kirjutamist…</string>
     <string name="message_search_hint">Otsi…</string>
     <string name="message_search_next_result">Järgmine otsingutulemus</string>
     <string name="message_search_no_more_results">Rohkem sõnumeid ei leidu</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">Rakenduse teave</string>
     <string name="nc_account_chooser_active_user">Aktiivne kasutaja</string>
     <string name="nc_account_chooser_add_account">Lisa kasutajakonto</string>
+    <string name="nc_account_removal_pending">Selle kasutajakonto eemaldamine pole veel lõppenud. Palun proovi hetke pärast uuesti.</string>
     <string name="nc_account_scheduled_for_deletion">Kasutajakonto kustutamine on ajastatud ja seda muuta ei saa</string>
     <string name="nc_add_attachment">Lisa manus</string>
     <string name="nc_add_emojis">Lisa emojisid</string>
@@ -141,6 +138,10 @@
     <string name="nc_announcement">Teadaanne</string>
     <string name="nc_announcement_description">Vestlus peakasutajatele konkreetse kuulajaskonna teavitamiseks, millest lahkuda ei saa.</string>
     <string name="nc_attendee_pin">PIN-kood: %1$s</string>
+    <string name="nc_audio_player_next">Järgmine</string>
+    <string name="nc_audio_player_previous">Eelmine</string>
+    <string name="nc_audio_player_repeat_off">Ära korda</string>
+    <string name="nc_audio_seek">Taasesituse järg</string>
     <string name="nc_biometric_unlock">Ava lukustus: %1$s </string>
     <string name="nc_bluetooth_permission_hint">Et saaksid pruukida Bluetoothi abil ühendatud kõlareid, palun luba rakendusel kasutada õigust „Seadmes lähikonnas“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Vasta videokõnena</string>
@@ -178,7 +179,7 @@
     <string name="nc_cancel">Loobu</string>
     <string name="nc_capabilities_failed">Ei õnnestunud laadida võimekusi, katkestan</string>
     <string name="nc_caption">Tiiter</string>
-    <string name="nc_certificate_dialog_text">Kas sa usaldad seni tundmatut SSL sertifikaati, mille on %2$s jaoks andnud välja %1$s, kehtivusega %3$s kuni %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Kas sa usaldad seni tundmatut SSL/TLS sertifikaati, mille %2$s on andnud välja %1$s/%3$s jaoks, kehtivusega %4$s kuni %5$s? Ta märgitakse usaldusväärseks vaid %1$s jaoks.</string>
     <string name="nc_certificate_dialog_title">Kontrolli seda sertifikaati</string>
     <string name="nc_certificate_error">Sinu SSL-i seadistused ei võimaldanud ühendust luua</string>
     <string name="nc_change_cert_auth">Muuda autentimise sertifikaati</string>
@@ -364,7 +365,6 @@
     <string name="nc_lobby_start_soon">Kohtumine algab õige pea</string>
     <string name="nc_lobby_waiting">Sa asud hetkel ooteruumis</string>
     <string name="nc_location_current_position_description">Sinu praegune asukoht</string>
-    <string name="nc_location_permission_required">Vajalikud on õigused asukoha tuvastamiseks</string>
     <string name="nc_location_unknown">Asukoht pole teada</string>
     <string name="nc_locked">Lukus</string>
     <string name="nc_locked_tap_to_unlock">Klõpsi lukustuse eemaldamiseks</string>
@@ -388,7 +388,6 @@
     <string name="nc_logs_share_diagnosis">Diagnostika aruanne</string>
     <string name="nc_logs_share_latest_crash">Viimane kokkujooksmine</string>
     <string name="nc_logs_share_no_app_found">Aruande saatmiseks ei leidu rakendust.</string>
-    <string name="nc_logs_share_subject">%1$s logi</string>
     <string name="nc_logs_title">Logid</string>
     <string name="nc_logs_total_size">Logimaht kokku: %d KB</string>
     <string name="nc_manual">Pole määratud</string>
@@ -540,6 +539,9 @@
     <string name="nc_server_db_upgrade_needed">Palun uuenda oma %1$si andmebaasi</string>
     <string name="nc_server_failed_to_import_account">Valitud kasutajakonto importimine ei õnnestunud</string>
     <string name="nc_server_helper_text">See on sinu %1$s kasutajaliidese veebiaadress, kui sa avad ta veebibrauseris.</string>
+    <string name="nc_server_http_fallback_confirm">Kasuta HTTP-protokolli </string>
+    <string name="nc_server_http_fallback_message">Serveriga ühendamine HTTPS-protokolli alusel ei õnnestunud. Kas kasutad selle asemel ebaturvalist HTTP-protokolli?</string>
+    <string name="nc_server_http_fallback_title">Ebaturvaline ühendus</string>
     <string name="nc_server_import_account">Impordi kasutajakonto rakendusest %1$s</string>
     <string name="nc_server_import_account_plain">Impordi kasutajakonto</string>
     <string name="nc_server_import_accounts">Impordi kasutajakontod rakendusest %1$s</string>

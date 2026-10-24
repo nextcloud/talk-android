@@ -95,9 +95,7 @@
     <string name="load_more_results">Load more results</string>
     <string name="local_time">Local time: %1$s</string>
     <string name="location_permission_denied">Location permission denied</string>
-    <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
-    <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>
-    <string name="message_search_begin_empty">No search results</string>
-    <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_hint">Search …</string>
     <string name="message_search_next_result">Next search result</string>
     <string name="message_search_no_more_results">No more messages found</string>
@@ -141,6 +137,10 @@
     <string name="nc_announcement">Announcement</string>
     <string name="nc_announcement_description">Conversation for admins to inform a fixed audience, which cannot be left.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_previous">Previous</string>
+    <string name="nc_audio_player_repeat_off">Repeat off</string>
+    <string name="nc_audio_seek">Playback position</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
@@ -176,7 +176,6 @@
     <string name="nc_cancel">Cancel</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_caption">Caption</string>
-    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
@@ -362,7 +361,6 @@
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
     <string name="nc_location_current_position_description">Your current location</string>
-    <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
@@ -385,7 +383,6 @@
     <string name="nc_logs_share_diagnosis">Diagnosis report</string>
     <string name="nc_logs_share_latest_crash">Latest crash</string>
     <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
-    <string name="nc_logs_share_subject">%1$s logs</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>
     <string name="nc_manual">Not set</string>

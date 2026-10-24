@@ -95,9 +95,7 @@
     <string name="load_more_results">Indlæs flere resultater</string>
     <string name="local_time">Lokal tid: %1$s</string>
     <string name="location_permission_denied">Lokationstilladelse nægtet</string>
-    <string name="location_permission_denied_msg">Aktivér det i appindstillingerne</string>
     <string name="location_services_disabled">Lokationsservice deaktiveret</string>
-    <string name="location_services_disabled_msg">Aktivér lokationstjenester (GPS) for at bruge denne funktion</string>
     <string name="lock_conversation">Lås samtale</string>
     <string name="lock_symbol">Låsesymbol</string>
     <string name="lower_hand">Tag hånden ned</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Besked slettet af dig</string>
     <string name="message_last_edited_by">Redigeret af %1$s</string>
     <string name="message_poll_tap_to_open">Rør for at åbne afstemning</string>
-    <string name="message_search_begin_empty">Ingen søgeresultater</string>
-    <string name="message_search_begin_typing">Start indtastning for at søge ...</string>
     <string name="message_search_hint">Søg ...</string>
     <string name="message_search_next_result">Næste søgeresultat</string>
     <string name="message_search_no_more_results">Der blev ikke fundet flere beskeder</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruger</string>
     <string name="nc_account_chooser_add_account">Tilføj konto</string>
+    <string name="nc_account_removal_pending">Fjernelsen af kontoen er ikke færdig endnu. Prøv igen om et øjeblik.</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt til sletning, og kan ikke ændres</string>
     <string name="nc_add_attachment">Tilføj vedhæftelse</string>
     <string name="nc_add_emojis">Tilføj emojis</string>
@@ -141,6 +138,10 @@
     <string name="nc_announcement">Meddelelse</string>
     <string name="nc_announcement_description">Samtale, hvor administratorer kan informere en fast kreds, og som ikke kan forlades.</string>
     <string name="nc_attendee_pin">Fastgør: %1$s</string>
+    <string name="nc_audio_player_next">Næste</string>
+    <string name="nc_audio_player_previous">Forrige</string>
+    <string name="nc_audio_player_repeat_off">Gentagelse fra</string>
+    <string name="nc_audio_seek">Afspilningsposition</string>
     <string name="nc_biometric_unlock">Lås op %1$s</string>
     <string name="nc_bluetooth_permission_hint">Giv tilladelsen \"Enheder i nærheden\" for at aktivere Bluetooth-højttalere.</string>
     <string name="nc_call_button_content_description_answer_video_call">Svar som videokald</string>
@@ -178,7 +179,7 @@
     <string name="nc_cancel">Annuller</string>
     <string name="nc_capabilities_failed">Anskaffelse af evner fejlede, annullerer</string>
     <string name="nc_caption">Overskrift</string>
-    <string name="nc_certificate_dialog_text">Stoler du på det hidtil ukendte SSL-certifikat, udstedt af %1$s for %2$s, gyldigt fra %3$s til %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Stoler du på det hidtil ukendte SSL-certifikat for %1$s, udstedt af %2$s for %3$s, gyldigt fra %4$s til %5$s? Der stoles kun på det for %1$s.</string>
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
@@ -193,7 +194,7 @@
     <string name="nc_clear_history">Slet alle beskeder</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_clear_history_warning">Ønsker du virkelig at slette alle beskeder i denne samtale?</string>
-    <string name="nc_client_cert_change">Skift kliencertifikat</string>
+    <string name="nc_client_cert_change">Skift klientcertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_close_video_playback">Luk videoafspilning</string>
     <string name="nc_common_and">og</string>
@@ -364,7 +365,6 @@
     <string name="nc_lobby_start_soon">Mødet starter snart</string>
     <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
     <string name="nc_location_current_position_description">Din aktuelle placering</string>
-    <string name="nc_location_permission_required">Placeringsrettighed krævet</string>
     <string name="nc_location_unknown">Placering ukendt</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryk for at låse op</string>
@@ -388,7 +388,6 @@
     <string name="nc_logs_share_diagnosis">Diagnoserapport</string>
     <string name="nc_logs_share_latest_crash">Seneste nedbrud</string>
     <string name="nc_logs_share_no_app_found">Der blev ikke fundet en app til at sende rapporten.</string>
-    <string name="nc_logs_share_subject">%1$s-logfiler</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Samlet logstørrelse: %d KB</string>
     <string name="nc_manual">Ikke indstillet</string>
@@ -540,6 +539,9 @@
     <string name="nc_server_db_upgrade_needed">Opgrader din %1$s-database</string>
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
     <string name="nc_server_helper_text">Linket til dit %1$s web interface når du åbner den i browseren.</string>
+    <string name="nc_server_http_fallback_confirm">Brug HTTP</string>
+    <string name="nc_server_http_fallback_message">Der kunne ikke oprettes forbindelse til serveren via HTTPS. Vil du oprette forbindelse via usikret HTTP i stedet?</string>
+    <string name="nc_server_http_fallback_title">Usikker forbindelse</string>
     <string name="nc_server_import_account">Importér konto fra %1$s appen</string>
     <string name="nc_server_import_account_plain">Importér konto</string>
     <string name="nc_server_import_accounts">Importér konti fra %1$s appen</string>

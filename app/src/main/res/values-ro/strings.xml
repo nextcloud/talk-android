@@ -95,9 +95,7 @@
     <string name="load_more_results">Încarcă mai multe rezultate</string>
     <string name="local_time">Ora locală: %1$s</string>
     <string name="location_permission_denied">Permisiunea pentru locație a fost refuzată</string>
-    <string name="location_permission_denied_msg">Activeaz-o din setările aplicației</string>
     <string name="location_services_disabled">Serviciile de localizare sunt dezactivate</string>
-    <string name="location_services_disabled_msg">Activează serviciile de localizare (GPS) pentru a folosi această funcție</string>
     <string name="lock_conversation">Blochează conversația</string>
     <string name="lock_symbol">Simbol de blocare</string>
     <string name="lower_hand">Coboară mâna</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Mesaj șters de tine</string>
     <string name="message_last_edited_by">Editat de %1$s</string>
     <string name="message_poll_tap_to_open">Atinge pentru a deschide sondajul</string>
-    <string name="message_search_begin_empty">Căutarea nu are rezultate</string>
-    <string name="message_search_begin_typing">Începe să tastezi pentru a căuta…</string>
     <string name="message_search_hint">Caută…</string>
     <string name="message_search_next_result">Rezultatul următor</string>
     <string name="message_search_no_more_results">Nu s-au mai găsit mesaje</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">Despre</string>
     <string name="nc_account_chooser_active_user">Utilizator activ</string>
     <string name="nc_account_chooser_add_account">Adaugă cont</string>
+    <string name="nc_account_removal_pending">Eliminarea acestui cont nu s-a încheiat încă. Încearcă din nou peste câteva momente.</string>
     <string name="nc_account_scheduled_for_deletion">Contul este programat pentru ștergere și nu poate fi modificat</string>
     <string name="nc_add_attachment">Adaugă un atașament</string>
     <string name="nc_add_emojis">Adaugă emoji</string>
@@ -141,6 +138,8 @@
     <string name="nc_announcement">Anunț</string>
     <string name="nc_announcement_description">Conversație prin care administratorii informează un public fix și care nu poate fi părăsită.</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
+    <string name="nc_audio_player_next">Următorul</string>
+    <string name="nc_audio_player_previous">Anterior</string>
     <string name="nc_biometric_unlock">Deblochează %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pentru a folosi difuzoare Bluetooth, acordă permisiunea „Dispozitive din apropiere”.</string>
     <string name="nc_call_button_content_description_answer_video_call">Răspunde cu video</string>
@@ -165,6 +164,8 @@
     <string name="nc_call_raised_hand">%1$s a ridicat mâna</string>
     <string name="nc_call_reconnecting">Se reconectează…</string>
     <string name="nc_call_ringing">SUNĂ</string>
+    <string name="nc_call_self_video_enlarge">Mărește propriul video</string>
+    <string name="nc_call_self_video_shrink">Micșorează propriul video</string>
     <string name="nc_call_state_in_call">%1$s în apel</string>
     <string name="nc_call_state_with_phone">%1$s prin telefon</string>
     <string name="nc_call_state_with_video">%1$s cu video</string>
@@ -176,7 +177,7 @@
     <string name="nc_cancel">Anulează</string>
     <string name="nc_capabilities_failed">Capacitățile serverului nu au putut fi preluate, se abandonează</string>
     <string name="nc_caption">Legendă</string>
-    <string name="nc_certificate_dialog_text">Ai încredere în certificatul SSL necunoscut până acum, emis de %1$s pentru %2$s, valabil de la %3$s până la %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Ai încredere în certificatul SSL necunoscut până acum al %1$s, emis de %2$s pentru %3$s, valabil de la %4$s până la %5$s? Va fi de încredere doar pentru %1$s.</string>
     <string name="nc_certificate_dialog_title">Verifică certificatul</string>
     <string name="nc_certificate_error">Configurația SSL a împiedicat conexiunea</string>
     <string name="nc_change_cert_auth">Schimbă certificatul de autentificare</string>
@@ -362,7 +363,6 @@
     <string name="nc_lobby_start_soon">Întâlnirea va începe în curând</string>
     <string name="nc_lobby_waiting">Momentan aștepți în sala de așteptare.</string>
     <string name="nc_location_current_position_description">Locația ta curentă</string>
-    <string name="nc_location_permission_required">Este necesară permisiunea pentru locație</string>
     <string name="nc_location_unknown">Poziție necunoscută</string>
     <string name="nc_locked">Blocată</string>
     <string name="nc_locked_tap_to_unlock">Atinge pentru a debloca</string>
@@ -386,7 +386,6 @@
     <string name="nc_logs_share_diagnosis">Raport de diagnosticare</string>
     <string name="nc_logs_share_latest_crash">Ultima închidere neașteptată</string>
     <string name="nc_logs_share_no_app_found">Nu s-a găsit nicio aplicație pentru trimiterea raportului.</string>
-    <string name="nc_logs_share_subject">Jurnale %1$s</string>
     <string name="nc_logs_title">Jurnale</string>
     <string name="nc_logs_total_size">Dimensiunea totală a jurnalelor: %d KB</string>
     <string name="nc_manual">Nesetat</string>
@@ -538,6 +537,9 @@
     <string name="nc_server_db_upgrade_needed">Actualizează baza de date %1$s</string>
     <string name="nc_server_failed_to_import_account">Contul selectat nu a putut fi importat</string>
     <string name="nc_server_helper_text">Linkul către interfața web %1$s, așa cum apare când o deschizi în browser.</string>
+    <string name="nc_server_http_fallback_confirm">Folosește HTTP</string>
+    <string name="nc_server_http_fallback_message">Nu s-a putut realiza conexiunea la server prin HTTPS. Te conectezi prin HTTP nesecurizat?</string>
+    <string name="nc_server_http_fallback_title">Conexiune nesecurizată</string>
     <string name="nc_server_import_account">Importă contul din aplicația %1$s</string>
     <string name="nc_server_import_account_plain">Importă contul</string>
     <string name="nc_server_import_accounts">Importă conturile din aplicația %1$s</string>
@@ -740,7 +742,7 @@
     <string name="record_stopping">Se oprește înregistrarea…</string>
     <string name="recording_consent_all">Pentru toate apelurile este necesar consimțământul pentru înregistrare</string>
     <string name="recording_consent_description">Înregistrarea poate include vocea ta, imaginea de la cameră și partajarea ecranului. Este necesar consimțământul tău înainte de a te alătura apelului. Ești de acord?</string>
-    <string name="recording_consent_for_conversation_description">Cere consimțământul pentru înregistrare înainte de alăturarea la apel în această conversație</string>
+    <string name="recording_consent_for_conversation_description">Cere consimțământul pentru înregistrare înainte de a intra în apelurile din această conversație</string>
     <string name="recording_consent_for_conversation_title">Consimțământ pentru înregistrare</string>
     <string name="recording_consent_title">Apelul ar putea fi înregistrat.</string>
     <string name="recording_settings_title">Înregistrare</string>

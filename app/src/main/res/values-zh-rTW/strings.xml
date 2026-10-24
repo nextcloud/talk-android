@@ -95,9 +95,7 @@
     <string name="load_more_results">載入更多結果</string>
     <string name="local_time">當地時間：%1$s</string>
     <string name="location_permission_denied">位置權限被拒絕</string>
-    <string name="location_permission_denied_msg">請在應用程式設定中啟用</string>
     <string name="location_services_disabled">已停用位置服務</string>
-    <string name="location_services_disabled_msg">請啟用位置服務 (GPS) 以使用此功能</string>
     <string name="lock_conversation">鎖定對話</string>
     <string name="lock_symbol">上鎖符號</string>
     <string name="lower_hand">放手</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">訊息已被您刪除</string>
     <string name="message_last_edited_by">由 %1$s 編輯</string>
     <string name="message_poll_tap_to_open">點按開啟投票</string>
-    <string name="message_search_begin_empty">無搜尋結果</string>
-    <string name="message_search_begin_typing">輸入文字以搜尋 …</string>
     <string name="message_search_hint">搜尋 …</string>
     <string name="message_search_next_result">下一個搜尋結果</string>
     <string name="message_search_no_more_results">找不到更多訊息</string>
@@ -141,6 +137,10 @@
     <string name="nc_announcement">公告</string>
     <string name="nc_announcement_description">供管理員向固定對象提供資訊的對話，無法離開。</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
+    <string name="nc_audio_player_next">下一步</string>
+    <string name="nc_audio_player_previous">上一步</string>
+    <string name="nc_audio_player_repeat_off">關閉重複</string>
+    <string name="nc_audio_seek">播放位置</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
     <string name="nc_call_button_content_description_answer_video_call">以視訊通話方式接聽</string>
@@ -176,7 +176,6 @@
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
     <string name="nc_caption">字幕</string>
-    <string name="nc_certificate_dialog_text">您是否信任 %1$s 為 %2$s 發行的，有效期從 %3$s 到 %4$s，迄今不詳的 SSL 憑證？</string>
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
@@ -362,7 +361,6 @@
     <string name="nc_lobby_start_soon">會議即將開始</string>
     <string name="nc_lobby_waiting">您目前正於大廳等候。</string>
     <string name="nc_location_current_position_description">您目前的位置</string>
-    <string name="nc_location_permission_required">需要位置權限</string>
     <string name="nc_location_unknown">位置不明</string>
     <string name="nc_locked">已鎖定</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
@@ -386,7 +384,6 @@
     <string name="nc_logs_share_diagnosis">診斷報告</string>
     <string name="nc_logs_share_latest_crash">最後當機</string>
     <string name="nc_logs_share_no_app_found">找不到可用於傳送報告的應用程式。</string>
-    <string name="nc_logs_share_subject">%1$s 紀錄</string>
     <string name="nc_logs_title">紀錄檔</string>
     <string name="nc_logs_total_size">總紀錄大小：%d KB</string>
     <string name="nc_manual">未設定</string>

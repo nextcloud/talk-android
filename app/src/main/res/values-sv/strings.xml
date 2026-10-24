@@ -95,9 +95,7 @@
     <string name="load_more_results">Visa fler resultat</string>
     <string name="local_time">Lokal tid: %1$s</string>
     <string name="location_permission_denied">Behörighet för plats nekad</string>
-    <string name="location_permission_denied_msg">Aktivera det i appens inställningar</string>
     <string name="location_services_disabled">Platstjänster inaktiverade</string>
-    <string name="location_services_disabled_msg">Aktivera platstjänster (GPS) för att använda denna funktion</string>
     <string name="lock_conversation">Lås konversation</string>
     <string name="lock_symbol">Låssymbol</string>
     <string name="lower_hand">Ta ner handen</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
     <string name="message_poll_tap_to_open">Tryck för att öppna omröstningen</string>
-    <string name="message_search_begin_empty">Inga sökresultat</string>
-    <string name="message_search_begin_typing">Börja skriva för att söka ...</string>
     <string name="message_search_hint">Sök ...</string>
     <string name="message_search_next_result">Nästa sökresultat</string>
     <string name="message_search_no_more_results">Inga fler meddelanden hittades</string>
@@ -141,6 +137,10 @@
     <string name="nc_announcement">Meddelande</string>
     <string name="nc_announcement_description">Konversation för administratörer som ska informera en fast målgrupp och som inte kan lämnas.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Nästa</string>
+    <string name="nc_audio_player_previous">Föregående</string>
+    <string name="nc_audio_player_repeat_off">Upprepning av</string>
+    <string name="nc_audio_seek">Uppspelningsposition</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Svara som videosamtal</string>
@@ -176,7 +176,6 @@
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_caption">Rubrik</string>
-    <string name="nc_certificate_dialog_text">Litar du på det hittills okända SSL-certifikatet, utfärdat av %1$s för %2$s och giltigt från %3$s till %4$s?</string>
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
@@ -362,7 +361,6 @@
     <string name="nc_lobby_start_soon">Mötet börjar snart</string>
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
     <string name="nc_location_current_position_description">Din nuvarande plats</string>
-    <string name="nc_location_permission_required">platsbehörighet krävs</string>
     <string name="nc_location_unknown">Position okänd</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryck för att låsa upp</string>
@@ -386,7 +384,6 @@
     <string name="nc_logs_share_diagnosis">Diagnosrapport</string>
     <string name="nc_logs_share_latest_crash">Senaste kraschrapporten</string>
     <string name="nc_logs_share_no_app_found">Ingen app hittades för att skicka rapporten.</string>
-    <string name="nc_logs_share_subject">%1$s loggar</string>
     <string name="nc_logs_title">Loggar</string>
     <string name="nc_logs_total_size">Total storlek: %d KB</string>
     <string name="nc_manual">Inte inställd</string>
