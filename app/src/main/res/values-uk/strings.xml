@@ -85,9 +85,7 @@
     <string name="load_more_results">Завантажити більше результатів</string>
     <string name="local_time">Місцевий час: %1$s</string>
     <string name="location_permission_denied">Відмовлено в дозволі на розміщення</string>
-    <string name="location_permission_denied_msg">Будь ласка, увімкніть її в налаштуваннях застосунку.</string>
     <string name="location_services_disabled">Служби визначення місцезнаходження відключені</string>
-    <string name="location_services_disabled_msg">Щоб скористатися цією функцією, увімкніть службу визначення місцезнаходження (GPS)</string>
     <string name="lock_conversation">Заблокувати розмову</string>
     <string name="lock_symbol">Символ блокування</string>
     <string name="lower_hand">Опустити руку</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">Ви вилучили повідомлення</string>
     <string name="message_last_edited_by">Змінено %1$s</string>
     <string name="message_poll_tap_to_open">Натисніть, щоб відкрити опитування</string>
-    <string name="message_search_begin_empty">Нічого не знайдено</string>
-    <string name="message_search_begin_typing">Що шукаємо?</string>
     <string name="message_search_hint">Пошук …</string>
     <string name="messages">Повідомлення</string>
     <string name="mute_all_notifications">Вимкнути всі сповіщення</string>
@@ -121,6 +117,8 @@
     <string name="nc_add_to_favorites">Додати зірочку</string>
     <string name="nc_all_ok_operation">ОК, все готово!</string>
     <string name="nc_attendee_pin">ПІН: %1$s</string>
+    <string name="nc_audio_player_next">Далі</string>
+    <string name="nc_audio_player_previous">Назад</string>
     <string name="nc_biometric_unlock">Розблокувати %1$s</string>
     <string name="nc_bluetooth_permission_hint">Щоб увімкнути Bluetooth-динаміки, надайте дозвіл \"Пристрої поблизу\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Відповісти як відеодзвінок</string>
@@ -151,7 +149,6 @@
     <string name="nc_cancel">Скасувати</string>
     <string name="nc_capabilities_failed">Не вдалося розпізнати можливості, скасування</string>
     <string name="nc_caption">Підпис</string>
-    <string name="nc_certificate_dialog_text">Чи довіряєте ви невідомому сертифікату, виданому %1$s для %2$s, що дійсний з %3$s до %4$s?</string>
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат автентифікації</string>
@@ -299,7 +296,6 @@
     <string name="nc_lobby_start_soon">Зустріч незабаром розпочнеться</string>
     <string name="nc_lobby_waiting">Зараз ви чекаєте у Вітальні</string>
     <string name="nc_location_current_position_description">Ваше місце розташування</string>
-    <string name="nc_location_permission_required">Обов\'язково потрібен доступ до місця розташування</string>
     <string name="nc_location_unknown">Місце розташування не визначено</string>
     <string name="nc_locked">Заблоковано</string>
     <string name="nc_locked_tap_to_unlock">Торкніться щоб розблокувати</string>

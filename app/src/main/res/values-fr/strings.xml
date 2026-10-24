@@ -95,9 +95,7 @@
     <string name="load_more_results">Charger plus de résultats</string>
     <string name="local_time">Heure locale : %1$s</string>
     <string name="location_permission_denied">Autorisation de localisation refusée</string>
-    <string name="location_permission_denied_msg">Veuillez l\'activer dans les paramètres de l\'application.</string>
     <string name="location_services_disabled">Services de localisation désactivés</string>
-    <string name="location_services_disabled_msg">Veuillez activer les services de localisation (GPS) pour utiliser cette fonctionnalité</string>
     <string name="lock_conversation">Verrouiller la conversation</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Message supprimé par vous</string>
     <string name="message_last_edited_by">Modifié par %1$s</string>
     <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
-    <string name="message_search_begin_empty">Aucun résultat de recherche</string>
-    <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
     <string name="message_search_hint">Recherche…</string>
     <string name="message_search_next_result">Résultat de recherche suivant</string>
     <string name="message_search_no_more_results">Aucun autre message trouvé</string>
@@ -141,6 +137,9 @@
     <string name="nc_announcement">Annonce</string>
     <string name="nc_announcement_description">Conversation pour les administrateurs, destinée à informer une audience fixe, qui ne peut pas être quittée.</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
+    <string name="nc_audio_player_next">Suivant</string>
+    <string name="nc_audio_player_repeat_off">Désactiver la répétition</string>
+    <string name="nc_audio_seek">Position de lecture</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
     <string name="nc_call_button_content_description_answer_video_call">Répondre par appel vidéo</string>
@@ -176,7 +175,6 @@
     <string name="nc_cancel">Annuler</string>
     <string name="nc_capabilities_failed">Échec de la récupération des capacités, abandon</string>
     <string name="nc_caption">Légende</string>
-    <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque-là inconnu, émis par %1$s pour %2$s, et et valide du %3$s au %4$s ?</string>
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
@@ -362,7 +360,6 @@
     <string name="nc_lobby_start_soon">La réunion va bientôt commencer</string>
     <string name="nc_lobby_waiting">Vous patientez actuellement dans la salle d\'attente</string>
     <string name="nc_location_current_position_description">Votre position actuelle</string>
-    <string name="nc_location_permission_required">La permission d\'accès à votre position est requise</string>
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
@@ -386,7 +383,6 @@
     <string name="nc_logs_share_diagnosis">Rapport de diagnostic</string>
     <string name="nc_logs_share_latest_crash">Dernier plantage</string>
     <string name="nc_logs_share_no_app_found">Aucune application trouvée pour envoyer le rapport.</string>
-    <string name="nc_logs_share_subject">Journaux de %1$s</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Taille totale des journaux : %d Ko</string>
     <string name="nc_manual">Non défini</string>

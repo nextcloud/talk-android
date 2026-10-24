@@ -95,9 +95,7 @@
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
     <string name="local_time">Am áitiúil: %1$s</string>
     <string name="location_permission_denied">Cead suímh diúltaithe</string>
-    <string name="location_permission_denied_msg">Cumasaigh é i socruithe an aip le do thoil</string>
     <string name="location_services_disabled">Seirbhísí suímh díchumasaithe</string>
-    <string name="location_services_disabled_msg">Cumasaigh seirbhísí suímh (GPS) le go mbeidh tú in ann an ghné seo a úsáid</string>
     <string name="lock_conversation">Cuir glas ar an gcomhrá</string>
     <string name="lock_symbol">Siombail ghlais</string>
     <string name="lower_hand">Lámh íochtair</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
-    <string name="message_search_begin_empty">Gan torthaí cuardaigh</string>
-    <string name="message_search_begin_typing">Tosaigh ag clóscríobh chun cuardach a dhéanamh…</string>
     <string name="message_search_hint">Cuardaigh…</string>
     <string name="message_search_next_result">An chéad toradh cuardaigh eile</string>
     <string name="message_search_no_more_results">Ní bhfuarthas aon teachtaireachtaí eile</string>
@@ -141,6 +137,9 @@
     <string name="nc_announcement">Fógra</string>
     <string name="nc_announcement_description">Comhrá do riarthóirí chun lucht féachana socraithe a chur ar an eolas, nach féidir a fhágáil.</string>
     <string name="nc_attendee_pin">Bioráin: %1$s</string>
+    <string name="nc_audio_player_next">Ar aghaidh</string>
+    <string name="nc_audio_player_repeat_off">Athsheinm as</string>
+    <string name="nc_audio_seek">Suíomh athsheinm</string>
     <string name="nc_biometric_unlock">Díghlasáil %1$s</string>
     <string name="nc_bluetooth_permission_hint">Chun cainteoirí Bluetooth a chumasú, deonaigh cead \"Gléasanna in aice láimhe\" le do thoil.</string>
     <string name="nc_call_button_content_description_answer_video_call">Freagair mar fhísghlao</string>
@@ -176,7 +175,6 @@
     <string name="nc_cancel">Cealaigh</string>
     <string name="nc_capabilities_failed">Theip ar na cumais a fháil, ag cur deireadh leis</string>
     <string name="nc_caption">Fotheideal</string>
-    <string name="nc_certificate_dialog_text">An bhfuil muinín agat as an teastas SSL anaithnid go dtí seo, arna eisiúint ag %1$s le haghaidh %2$s, bailí ó %3$s go %4$s?</string>
     <string name="nc_certificate_dialog_title">Seiceáil an teastas</string>
     <string name="nc_certificate_error">Chuir do shocrú SSL cosc ​​ar cheangal</string>
     <string name="nc_change_cert_auth">Athraigh teastas fíordheimhnithe</string>
@@ -362,7 +360,6 @@
     <string name="nc_lobby_start_soon">Cuirfear tús leis an gcruinniú go luath</string>
     <string name="nc_lobby_waiting">Tá tú ag fanacht sa stocaireacht faoi láthair.</string>
     <string name="nc_location_current_position_description">Do shuíomh reatha</string>
-    <string name="nc_location_permission_required">Tá cead suímh ag teastáil</string>
     <string name="nc_location_unknown">Post anaithnid</string>
     <string name="nc_locked">Faoi ghlas</string>
     <string name="nc_locked_tap_to_unlock">Tapáil chun díghlasáil</string>
@@ -386,7 +383,6 @@
     <string name="nc_logs_share_diagnosis">Tuarascáil diagnóis</string>
     <string name="nc_logs_share_latest_crash">An tuairteáil is déanaí</string>
     <string name="nc_logs_share_no_app_found">Níor aimsíodh aon aip chun an tuairisc a sheoladh.</string>
-    <string name="nc_logs_share_subject">Logaí %1$s</string>
     <string name="nc_logs_title">Logaí</string>
     <string name="nc_logs_total_size">Méid iomlán an loga: %d KB</string>
     <string name="nc_manual">Gan socraithe</string>
