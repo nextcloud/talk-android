@@ -12,6 +12,7 @@ import com.nextcloud.talk.account.data.PendingBrowserLoginStore
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -233,15 +234,70 @@ class BrowserLoginActivityViewModelTest {
     }
 
     @Test
+    fun `a confirmed login outlives the lifetime of the login flow`() {
+        var now = 1_000L
+        PendingBrowserLoginStore.clock = { now }
+        startAndLoseActivity()
+        PendingBrowserLoginStore.complete(loginResponse, confirmed)
+
+        // The screen is destroyed before it shows the result, and the app is opened again after the 20 minutes.
+        now += PendingBrowserLoginStore.LIFETIME_MILLIS
+        val newRepository = repositoryAcceptingLogin()
+        val second = BrowserLoginActivityViewModel(newRepository)
+
+        assertTrue(second.resumeWebBrowserLogin())
+        verifyBlocking(newRepository) { parseAndLogin(confirmed) }
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp, second.postLoginState.value)
+    }
+
+    @Test
+    fun `a waiting poll uses the login that a poll still in flight confirmed`() {
+        startAndLoseActivity()
+        val stillNotFound = CompletableDeferred<Unit>()
+        val newRepository = repositoryAcceptingLogin()
+        wheneverBlocking { newRepository.pollLogin(any(), any(), any()) }.doSuspendableAnswer { invocation ->
+            val keepPolling = invocation.getArgument<() -> Boolean>(2)
+            stillNotFound.await()
+            if (keepPolling()) error("The poll must stop, the login is confirmed")
+            null
+        }
+        val second = BrowserLoginActivityViewModel(newRepository)
+        second.resumeWebBrowserLogin()
+
+        // The request of the old view model returns the login now.
+        PendingBrowserLoginStore.complete(loginResponse, confirmed)
+        stillNotFound.complete(Unit)
+
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp, second.postLoginState.value)
+    }
+
+    @Test
+    fun `a screen showing its result does not end a newer login`() {
+        startAndLoseActivity()
+        wheneverBlocking { repository.pollLogin(any(), any(), any()) }.thenReturn(null)
+        viewModel.handleWebBrowserLogin()
+        val newer = LoginResponse(token = "newer", pollUrl = "https://example.com/poll2", loginUrl = URL)
+        PendingBrowserLoginStore.save(newer, BASE_URL, false, null)
+
+        viewModel.onPostLoginShown(viewModel.postLoginState.value)
+
+        assertEquals(newer, PendingBrowserLoginStore.active()?.response)
+    }
+
+    @Test
     fun `a login confirmed after cancel is not kept`() {
         startAndLoseActivity()
         wheneverBlocking { repository.pollLogin(any(), any(), any()) }.doSuspendableAnswer { invocation ->
             viewModel.cancelLogin()
             invocation.getArgument<(LoginCompletion) -> Unit>(1)(confirmed)
-            null
+            // The real poll returns the login it got, although the login was canceled meanwhile.
+            confirmed
         }
+        wheneverBlocking { repository.parseAndLogin(any()) }.thenReturn(LoginRepository.LoginResult.ExistingAccount)
         viewModel.handleWebBrowserLogin()
 
+        verifyBlocking(repository, never()) { parseAndLogin(any()) }
+        assertEquals(BrowserLoginActivityViewModel.PostLoginViewState.None, viewModel.postLoginState.value)
         assertNull(PendingBrowserLoginStore.active())
         assertFalse(BrowserLoginActivityViewModel(repositoryAcceptingLogin()).resumeWebBrowserLogin())
     }

@@ -61,6 +61,10 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     // death the view model is new, so the login is started again.
     private var isLoginStarted = false
 
+    // A login request or poll still in flight when the login is canceled must not save its response, which a later
+    // return via the launcher icon would resume, nor complete the login.
+    private var isLoginCanceled = false
+
     private fun startLoginOnce(): Boolean {
         if (isLoginStarted) return false
         isLoginStarted = true
@@ -71,6 +75,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         if (!startLoginOnce()) return
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth, accountToReauthorize)
+            if (isLoginCanceled) return@launch
             savedResponse = response
 
             if (response == null) {
@@ -109,9 +114,11 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
             viewModelScope.launch {
                 // A login confirmed for an earlier view model is not polled again: the server hands it out once.
                 val polled = PendingBrowserLoginStore.active()?.completion ?: pollConfirmedLogin(response)
+                // A login canceled while its poll was in flight is not completed.
+                if (isLoginCanceled) return@launch
                 // Only reached when the poll ended. If this view model is cleared first, the login stays pending.
                 // The confirmed login stays pending until the screen has shown the result, see onPostLoginShown.
-                if (polled == null) PendingBrowserLoginStore.clear()
+                if (polled == null) PendingBrowserLoginStore.clearIf(response)
 
                 _postLoginState.value = postLoginStateFor(polled)
             }
@@ -129,7 +136,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
     /** The login screen has shown the [state], so a result of the login is not pending anymore. */
     fun onPostLoginShown(state: PostLoginViewState) {
-        if (state != PostLoginViewState.None) PendingBrowserLoginStore.clear()
+        if (state != PostLoginViewState.None) savedResponse?.let { PendingBrowserLoginStore.clearIf(it) }
     }
 
     fun loginWithQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
@@ -166,6 +173,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         }
 
     fun cancelLogin() {
+        isLoginCanceled = true
         PendingBrowserLoginStore.clear()
         repository.cancelLoginFlow()
     }
