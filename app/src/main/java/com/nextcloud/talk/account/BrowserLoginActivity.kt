@@ -49,6 +49,8 @@ class BrowserLoginActivity : BaseActivity() {
     private var reauthorizeAccount = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            // Leaving the login screen abandons the login, it must not be resumed when the app is opened again.
+            viewModel.cancelLogin()
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
@@ -150,6 +152,9 @@ class BrowserLoginActivity : BaseActivity() {
         }
         // The account to reauthorize, so a login with another account doesn't change it.
         val accountToReauthorize = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID, 0L).takeIf { it != 0L }
+
+        // If the saved login can't be continued, it is started again below with the same extras.
+        if (extras.getBoolean(BundleKeys.KEY_RESUME_BROWSER_LOGIN, false) && viewModel.resumeWebBrowserLogin()) return
 
         if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
             val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
