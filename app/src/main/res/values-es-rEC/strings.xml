@@ -75,6 +75,7 @@
     <string name="nc_add_to_favorites">Agregar a tus favoritos</string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
     <string name="nc_attendee_pin">Fijar: %1$s</string>
+    <string name="nc_audio_player_previous">Previo</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_call_button_content_description_answer_video_call">Responder como videollamada</string>
     <string name="nc_call_button_content_description_answer_voice_only">Responder solo como llamada de voz</string>

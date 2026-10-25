@@ -77,6 +77,8 @@
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
     <string name="nc_announcement">Ανακοίνωση</string>
+    <string name="nc_audio_player_next">Επόμενο</string>
+    <string name="nc_audio_player_previous">Προηγούμενο</string>
     <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
     <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
     <string name="nc_call_button_content_description_switch_camera">Εναλλαγή κάμερας</string>

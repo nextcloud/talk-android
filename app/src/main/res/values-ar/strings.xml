@@ -107,6 +107,8 @@
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_all_ok_operation">تم!</string>
     <string name="nc_attendee_pin">الرمز: %1$s</string>
+    <string name="nc_audio_player_next">التالي</string>
+    <string name="nc_audio_player_previous">السابق</string>
     <string name="nc_biometric_unlock">فتح قفل %1$s</string>
     <string name="nc_bluetooth_permission_hint">لتمكين مكبرات صوت البلوتوث، يرجى منح إذن \"الأجهزة المجاورة\".</string>
     <string name="nc_call_button_content_description_answer_video_call">الردُّ بمكالمة مرئية</string>

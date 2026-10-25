@@ -127,6 +127,8 @@
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_announcement">Oznámení</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_previous">Předchozí</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pro použití bluetooth reproduktorů je třeba udělit oprávnění „Zařízení poblíž“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Zvednou videohovor</string>

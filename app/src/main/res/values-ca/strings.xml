@@ -110,6 +110,8 @@
     <string name="nc_add_to_favorites">Afegeix a preferits</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
     <string name="nc_attendee_pin">Ancora: %1$s</string>
+    <string name="nc_audio_player_next">Següent</string>
+    <string name="nc_audio_player_previous">Anterior</string>
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_bluetooth_permission_hint">Per a habilitar els altaveus Bluetooth, concediu el permís de \"Dispositius propers\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Respon com a trucada de vídeo</string>

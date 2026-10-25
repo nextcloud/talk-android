@@ -139,7 +139,9 @@
     <string name="nc_announcement_description">Vestlus peakasutajatele konkreetse kuulajaskonna teavitamiseks, millest lahkuda ei saa.</string>
     <string name="nc_attendee_pin">PIN-kood: %1$s</string>
     <string name="nc_audio_player_next">Järgmine</string>
+    <string name="nc_audio_player_previous">Eelmine</string>
     <string name="nc_audio_player_repeat_off">Ära korda</string>
+    <string name="nc_audio_seek">Taasesituse järg</string>
     <string name="nc_biometric_unlock">Ava lukustus: %1$s </string>
     <string name="nc_bluetooth_permission_hint">Et saaksid pruukida Bluetoothi abil ühendatud kõlareid, palun luba rakendusel kasutada õigust „Seadmes lähikonnas“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Vasta videokõnena</string>
