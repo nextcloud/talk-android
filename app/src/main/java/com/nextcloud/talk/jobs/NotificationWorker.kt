@@ -104,6 +104,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_UR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -194,7 +195,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             when (pushMessage.type) {
                 TYPE_CHAT, TYPE_ROOM, TYPE_RECORDING, TYPE_REMINDER -> handleNonCallPushMessage()
                 TYPE_REMOTE_TALK_SHARE -> handleRemoteTalkSharePushMessage()
-                TYPE_CALL -> handleCallPushMessage()
+                TYPE_CALL ->
+                    if (ApplicationWideCurrentRoomHolder.getInstance().isInCallOfRoom(pushMessage.id, user.id)) {
+                        Log.d(TAG, "Call push for the call the user is in, not ringing")
+                    } else {
+                        handleCallPushMessage()
+                    }
                 else -> Log.e(TAG, pushMessage.type + " is not handled")
             }
         } else if (isAdminTalkNotification()) {
