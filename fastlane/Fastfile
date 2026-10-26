@@ -1,22 +1,28 @@
 # SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# This is the minimum version number required.
-fastlane_version "2.58.0"
+
+## config
+# add following to your shell rc:
+# export FASTLANE_TALK_UPLOAD_STORE_FILE=""
+# export FASTLANE_TALK_UPLOAD_STORE_PASSWORD=""
+# export FASTLANE_TALK_UPLOAD_KEY_ALIAS=""
+# export FASTLANE_TALK_UPLOAD_KEY_PASSWORD=""
+# export FASTLANE_NEXTCLOUD_GITHUB_API_TOKEN=""
+
+
+
 
 skip_docs
 
-## public lanes
+APP="talk"
+REPO="nextcloud/talk-android"
 
-desc "Upload Alpha version to play store"
-lane :uploadAlphaToPlayStore do |options|
-    upload_to_play_store(
-        skip_upload_images: true,
-        skip_upload_aab: true,
-        skip_upload_changelogs: true,
-        skip_upload_metadata: true,
-        skip_upload_screenshots: true,
-        track: 'alpha',
-        apk: "/home/androiddaily/apks-talk/android-talk-" + options[:version] + ".apk",
-    )
-end
+GRADLE_SIGNING_PROPERTIES = {
+  "android.injected.signing.store.file" => ENV["FASTLANE_TALK_UPLOAD_STORE_FILE"],
+  "android.injected.signing.store.password" => ENV["FASTLANE_TALK_UPLOAD_STORE_PASSWORD"],
+  "android.injected.signing.key.alias" => ENV["FASTLANE_TALK_UPLOAD_KEY_ALIAS"],
+  "android.injected.signing.key.password" => ENV["FASTLANE_TALK_UPLOAD_KEY_PASSWORD"],
+}.freeze
+
+import("./common.Fastfile")

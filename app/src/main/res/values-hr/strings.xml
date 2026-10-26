@@ -61,8 +61,6 @@
     <string name="menu_item_sort_by_size_smallest_first">Najmanji prvi</string>
     <string name="message_deleted_by_you">Poruku ste vi izbrisali</string>
     <string name="message_last_edited_by">Uredio %1$s</string>
-    <string name="message_search_begin_empty">Nema rezultata pretraživanja</string>
-    <string name="message_search_begin_typing">Počnite unositi tekst za pretraživanje …</string>
     <string name="message_search_hint">Traži …</string>
     <string name="messages">Poruke</string>
     <string name="mute_all_notifications">Utišaj sve obavijesti</string>
@@ -79,8 +77,10 @@
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_all_ok_operation">U redu, završeno!</string>
     <string name="nc_attendee_pin">Prikvači: %1$s</string>
+    <string name="nc_audio_player_next">Dalje</string>
     <string name="nc_biometric_unlock">Otključaj %1$s</string>
     <string name="nc_call_button_content_description_hangup">Poklopi</string>
+    <string name="nc_call_button_content_description_switch_camera">Promijeni kameru</string>
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
     <string name="nc_call_ongoing_notification_default_title">Poziv u tijeku</string>
@@ -96,7 +96,6 @@
     <string name="nc_call_voice">%s glasovni poziv</string>
     <string name="nc_cancel">Odustani</string>
     <string name="nc_capabilities_failed">Neuspješno dohvaćanje mogućnosti, prekid</string>
-    <string name="nc_certificate_dialog_text">Vjerujete li dosad nepoznatoj SSL vjerodajnici koju je izdao %1$s za %2$s i koja vrijedi od %3$s do %4$s?</string>
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_error">Vezu je onemogućila vaša postavka SSL-a</string>
     <string name="nc_change_cert_auth">Promijeni vjerodajnicu za autentifikaciju</string>
@@ -215,7 +214,6 @@
     <string name="nc_lobby_start_soon">Sastanak počinje uskoro</string>
     <string name="nc_lobby_waiting">Trenutno čekate u predvorju.</string>
     <string name="nc_location_current_position_description">Vaša trenutačna lokacija</string>
-    <string name="nc_location_permission_required">potrebna je dozvola za lokaciju</string>
     <string name="nc_location_unknown">Nepoznat položaj</string>
     <string name="nc_locked">Zaključano</string>
     <string name="nc_locked_tap_to_unlock">Dodirni za otključavanje</string>

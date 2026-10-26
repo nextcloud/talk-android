@@ -66,8 +66,6 @@
     <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
     <string name="message_deleted_by_you">Sporočilo ste izbrisali</string>
     <string name="message_poll_tap_to_open">Pritisnite za prikaz ankete</string>
-    <string name="message_search_begin_empty">Ni zadetkov iskanja</string>
-    <string name="message_search_begin_typing">Vpišite niz za iskanje …</string>
     <string name="message_search_hint">Poišči …</string>
     <string name="messages">Sporočila</string>
     <string name="mute_all_notifications">Utiša vsa obvestila</string>
@@ -84,6 +82,8 @@
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
     <string name="nc_attendee_pin">Koda PIN: %1$s</string>
+    <string name="nc_audio_player_next">Naslednji</string>
+    <string name="nc_audio_player_previous">Predhodni</string>
     <string name="nc_biometric_unlock">Odkleni %1$s</string>
     <string name="nc_call_button_content_description_answer_video_call">Odgovori z video klicem</string>
     <string name="nc_call_button_content_description_answer_voice_only">Odgovori kot zvokovni klic</string>
@@ -92,6 +92,7 @@
     <string name="nc_call_button_content_description_hangup">Končaj klic</string>
     <string name="nc_call_button_content_description_microphone">Preklopi mikrofon</string>
     <string name="nc_call_button_content_description_pip">Odpri način slike v sliki</string>
+    <string name="nc_call_button_content_description_switch_camera">Preklopi kamero</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Preklopi na pogled sebe</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
@@ -110,7 +111,6 @@
     <string name="nc_call_voice">Glasovni klic %s</string>
     <string name="nc_cancel">Prekliči</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
-    <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
@@ -239,7 +239,6 @@
     <string name="nc_lobby_start_soon">Srečanje se bo kmalu začelo</string>
     <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
     <string name="nc_location_current_position_description">Vaše trenutno mesto</string>
-    <string name="nc_location_permission_required">zahtevano je dovoljenje objave trenutnega mesta</string>
     <string name="nc_location_unknown">Položaj ni znan</string>
     <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
