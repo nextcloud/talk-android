@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @Suppress("Detekt.TooManyFunctions")
@@ -191,22 +193,25 @@ class MessageInputViewModel :
             // insert-then-enqueue step for one message to finish before the next queued send is
             // even allowed to start its own DB write.
             sendMessageMutex.withLock {
-                chatRepository.addTemporaryMessage(
-                    message,
-                    displayName,
-                    replyTo,
-                    sendWithoutNotification,
-                    referenceId
-                ).collect { result ->
-                    if (result.isSuccess) {
-                        _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
-                        SendMessageWorker.enqueue(
-                            internalConversationId = "$userId@$roomToken",
-                            referenceId = referenceId,
-                            threadTitle = threadTitle
-                        )
-                    } else {
-                        _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                // A PENDING row without send work is never sent: the pair is not cancelled half way.
+                withContext(NonCancellable) {
+                    chatRepository.addTemporaryMessage(
+                        message,
+                        displayName,
+                        replyTo,
+                        sendWithoutNotification,
+                        referenceId
+                    ).collect { result ->
+                        if (result.isSuccess) {
+                            _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                            SendMessageWorker.enqueue(
+                                internalConversationId = "$userId@$roomToken",
+                                referenceId = referenceId,
+                                threadTitle = threadTitle
+                            )
+                        } else {
+                            _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                        }
                     }
                 }
             }
@@ -356,7 +361,7 @@ class MessageInputViewModel :
 
     fun pauseMediaPlayer() {
         audioFocusRequestManager.audioFocusRequest(false) {
-            mediaPlayerManager.pause(false)
+            mediaPlayerManager.pause()
             _isVoicePreviewPlaying.postValue(false)
         }
     }

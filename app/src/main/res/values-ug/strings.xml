@@ -85,9 +85,7 @@
     <string name="load_more_results">تېخىمۇ كۆپ نەتىجىلەرنى يۈكلەڭ</string>
     <string name="local_time">يەرلىك ۋاقىت:%1$s</string>
     <string name="location_permission_denied">ئورۇن رۇخسىتى رەت قىلىندى</string>
-    <string name="location_permission_denied_msg">ئۇنى ئەپ تەڭشىكىدە قوزغىتىڭ</string>
     <string name="location_services_disabled">ئورۇن مۇلازىمىتى قوزغىتىلمىغان</string>
-    <string name="location_services_disabled_msg">بۇ ئىقتىدارنى ئىشلىتىش ئۈچۈن ئورۇن بەلگىلەش (GPS) نى قوزغىتىشىڭىز كېرەك</string>
     <string name="lock_conversation">سۆھبەتنى قۇلۇپلاڭ</string>
     <string name="lock_symbol">قۇلۇپ بەلگىسى</string>
     <string name="lower_hand">تۆۋەن قول</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">سىز ئۆچۈرگەن ئۇچۇر</string>
     <string name="message_last_edited_by">%1$s تەھرىرلىگەن</string>
     <string name="message_poll_tap_to_open">بېلەت تاشلاشنى چېكىڭ</string>
-    <string name="message_search_begin_empty">ئىزدەش نەتىجىسى يوق</string>
-    <string name="message_search_begin_typing">ئىزدەشنى باشلاڭ…</string>
     <string name="message_search_hint">ئىزدەش…</string>
     <string name="messages">ئۇچۇرلار</string>
     <string name="mute_all_notifications">بارلىق ئۇقتۇرۇشلارنى ئاۋازسىز قىلىڭ</string>
@@ -121,6 +117,8 @@
     <string name="nc_add_to_favorites">ياقتۇرىدىغانلارغا قوشۇڭ</string>
     <string name="nc_all_ok_operation">ماقۇل ، ھەممىسى تامام!</string>
     <string name="nc_attendee_pin">مىخ:%1$s</string>
+    <string name="nc_audio_player_next">كېيىنكى</string>
+    <string name="nc_audio_player_previous">ئالدىنقى</string>
     <string name="nc_biometric_unlock">قۇلۇپ ئېچىش%1$s</string>
     <string name="nc_bluetooth_permission_hint">كۆك چىش ياڭراتقۇنى قوزغىتىش ئۈچۈن \ \"يېقىن ئەتراپتىكى ئۈسكۈنىلەر \" ئىجازەتنامىسىنى بېرىڭ.</string>
     <string name="nc_call_button_content_description_answer_video_call">سىنلىق تېلېفون سۈپىتىدە جاۋاب بېرىڭ</string>
@@ -130,6 +128,7 @@
     <string name="nc_call_button_content_description_hangup">ئېسىلىڭ</string>
     <string name="nc_call_button_content_description_microphone">مىكروفوننى ئالماشتۇرۇڭ</string>
     <string name="nc_call_button_content_description_pip">رەسىمدىكى ھالەتنى ئېچىڭ</string>
+    <string name="nc_call_button_content_description_switch_camera">كامېرا ئالماشتۇرۇش</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">ئۆزى سىنغا ئالماشتۇرۇڭ</string>
     <string name="nc_call_incoming">كەلگەن</string>
     <string name="nc_call_name">سۆھبەت ئىسمى</string>
@@ -151,7 +150,6 @@
     <string name="nc_cancel">بىكار قىلىش</string>
     <string name="nc_capabilities_failed">ئىقتىدارغا ئېرىشەلمىدى ، چۈشۈرۈۋېتىلدى</string>
     <string name="nc_caption">ئاستى ماۋزۇ</string>
-    <string name="nc_certificate_dialog_text">ھازىرغا قەدەر نامەلۇم SSL گۇۋاھنامىسى%2$sئۈچۈن%1$s تارقىتىلغان ،%3$sدىن%4$s غىچە بولغانلىقىغا ئىشىنەمسىز؟</string>
     <string name="nc_certificate_dialog_title">گۇۋاھنامىنى تەكشۈرۈپ بېقىڭ</string>
     <string name="nc_certificate_error">SSL تەڭشىكىڭىز ئۇلىنىشنىڭ ئالدىنى ئالدى</string>
     <string name="nc_change_cert_auth">دەلىللەش گۇۋاھنامىسىنى ئۆزگەرتىڭ</string>
@@ -300,7 +298,6 @@
     <string name="nc_lobby_start_soon">يىغىن پات يېقىندا باشلىنىدۇ</string>
     <string name="nc_lobby_waiting">سىز ھازىر كۈتۈپخانىدا ساقلاۋاتىسىز.</string>
     <string name="nc_location_current_position_description">ھازىرقى ئورنىڭىز</string>
-    <string name="nc_location_permission_required">ئورۇن رۇخسىتى تەلەپ قىلىنىدۇ</string>
     <string name="nc_location_unknown">ئورنى نامەلۇم</string>
     <string name="nc_locked">قۇلۇپلاندى</string>
     <string name="nc_locked_tap_to_unlock">قۇلۇپنى چېكىڭ</string>

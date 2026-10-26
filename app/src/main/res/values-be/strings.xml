@@ -86,9 +86,7 @@
     <string name="load_more_results">Загрузіць больш вынікаў</string>
     <string name="local_time">Мясцовы час: %1$s</string>
     <string name="location_permission_denied">Няма доступу да геалакацыі</string>
-    <string name="location_permission_denied_msg">Уключыце яго ў наладах праграмы</string>
     <string name="location_services_disabled">Службы геалакацыі адключаны</string>
-    <string name="location_services_disabled_msg">Каб карыстацца гэтай функцыяй, уключыце службы геалакацыі (GPS)</string>
     <string name="lock_conversation">Заблакіраваць размову</string>
     <string name="lock_symbol">Сімвал блакіроўкі</string>
     <string name="lower_hand">Апусціць руку</string>
@@ -106,8 +104,6 @@
     <string name="message_deleted_by_you">Вы выдалілі паведамленне</string>
     <string name="message_last_edited_by">Адрэдагавана %1$s</string>
     <string name="message_poll_tap_to_open">Націсніце, каб адкрыць апытанне</string>
-    <string name="message_search_begin_empty">Няма вынікаў пошуку</string>
-    <string name="message_search_begin_typing">Пачніце ўводзіць тэкст для пошуку …</string>
     <string name="message_search_hint">Пошук ...</string>
     <string name="message_search_next_result">Наступны вынік пошуку</string>
     <string name="message_search_no_more_results">Больш паведамленняў не знойдзена</string>
@@ -127,6 +123,7 @@
     <string name="nc_add_to_favorites">У абранае</string>
     <string name="nc_all_ok_operation">ОК, усё гатова!</string>
     <string name="nc_attendee_pin">PIN-код: %1$s</string>
+    <string name="nc_audio_player_previous">Папярэдняя</string>
     <string name="nc_biometric_unlock">Разблакіраваць %1$s</string>
     <string name="nc_bluetooth_permission_hint">Каб уключыць Bluetooth дынамікі, дайце доступ да \"Прылад паблізу\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Прыняць як відэавыклік</string>
@@ -136,6 +133,7 @@
     <string name="nc_call_button_content_description_hangup">Пакласці слухаўку</string>
     <string name="nc_call_button_content_description_microphone">Укл./выкл. мікрафон</string>
     <string name="nc_call_button_content_description_pip">Адкрыць рэжым «Picture-in-Picture»</string>
+    <string name="nc_call_button_content_description_switch_camera">Пераключыць камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Пераключыцца на відэа з сабой</string>
     <string name="nc_call_incoming">УВАХОДНЫ</string>
     <string name="nc_call_name">Назва размовы</string>
@@ -157,7 +155,6 @@
     <string name="nc_cancel">Скасаваць</string>
     <string name="nc_capabilities_failed">Не ўдалося атрымаць магчымасці, скасаванне</string>
     <string name="nc_caption">Подпіс</string>
-    <string name="nc_certificate_dialog_text">Ці давяраеце вы дагэтуль невядомаму SSL-сертыфікату, выдадзенаму %1$s для %2$s, які дзейнічае з %3$s да %4$s?</string>
     <string name="nc_certificate_dialog_title">Праверка сертыфіката</string>
     <string name="nc_certificate_error">Ваша канфігурацыя SSL перашкодзіла злучэнню</string>
     <string name="nc_change_cert_auth">Змяніць сертыфікат аўтэнтыфікацыі</string>
@@ -307,7 +304,6 @@
     <string name="nc_lobby_start_soon">Сустрэча неўзабаве пачнецца</string>
     <string name="nc_lobby_waiting">Вы зараз чакаеце ў лобі.</string>
     <string name="nc_location_current_position_description">Ваша бягучае месцазнаходжанне</string>
-    <string name="nc_location_permission_required">патрэбны доступ да геалакацыі</string>
     <string name="nc_location_unknown">Месцазнаходжанне невядома</string>
     <string name="nc_locked">Заблакіравана</string>
     <string name="nc_locked_tap_to_unlock">Націсніце, каб разблакіраваць</string>

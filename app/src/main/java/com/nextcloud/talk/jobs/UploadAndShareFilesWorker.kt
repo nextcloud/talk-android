@@ -58,7 +58,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -124,7 +123,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private fun isCancelled(): Boolean = referenceId?.let { cancelledReferenceIds.contains(it) } == true
 
     override fun doWork(): Result {
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        // Invariant: dependencies that are already set (a test worker factory) are not overwritten.
+        if (!::chatDao.isInitialized) {
+            NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        }
 
         try {
             return doUpload()
@@ -228,10 +230,18 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
+    // Result.success(), not failure(): the failure is recorded on the placeholder row, and a failed work
+    // request would cascade to every upload already queued behind it in the conversation.
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun failUpload(): Result {
-        showFailedToUploadNotification()
         updatePlaceholderStatus(SendStatus.FAILED)
-        return Result.failure()
+        try {
+            showFailedToUploadNotification()
+        } catch (e: Exception) {
+            // The failure is recorded already; an exception here must not end the work as failed.
+            Log.e(TAG, "Could not show the upload failed notification", e)
+        }
+        return Result.success()
     }
 
     /**
@@ -420,8 +430,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     private fun updatePlaceholderStatus(status: SendStatus) {
         val refId = referenceId ?: return
         val convId = internalConversationId ?: return
-        val entity = runBlocking { chatDao.getTempMessageForConversation(convId, refId, null).firstOrNull() }
-        entity?.let { chatDao.updateChatMessage(it.copy(sendStatus = status)) }
+        chatDao.updateTempMessageSendStatus(convId, refId, status)
     }
 
     override fun onStopped() {
@@ -572,9 +581,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             // fully independently) so multiple files - whether from one multi-file share or several
             // sends in a row - actually upload and share to the server in the order they were sent,
             // instead of each finishing (and so appearing in chat) whenever its own network calls
-            // happen to complete. APPEND_OR_REPLACE rather than APPEND: if the file ahead in the
-            // queue was cancelled or failed, this starts a fresh chain instead of cascading that
-            // failure onto every file queued behind it.
+            // happen to complete. APPEND_OR_REPLACE rather than APPEND: if the chain already ended in a
+            // failed or cancelled request, this starts a fresh chain. It does not protect requests that
+            // are already appended behind a request that fails later; that is why a failed upload is
+            // recorded on its row and finishes with Result.success(). Cancelling by id still cancels the
+            // requests behind it.
             WorkManager.getInstance().enqueueUniqueWork(
                 uploadQueueName(internalConversationId),
                 ExistingWorkPolicy.APPEND_OR_REPLACE,

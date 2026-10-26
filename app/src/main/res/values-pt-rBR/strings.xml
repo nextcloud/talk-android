@@ -95,9 +95,7 @@
     <string name="load_more_results">Carregar mais resultados</string>
     <string name="local_time">Horário local: %1$s</string>
     <string name="location_permission_denied">Permissão de localização negada</string>
-    <string name="location_permission_denied_msg">Por favor, ative-a nas configurações do aplicativo</string>
     <string name="location_services_disabled">Serviços de localização desativados</string>
-    <string name="location_services_disabled_msg">Ative os serviços de localização (GPS) para usar este recurso</string>
     <string name="lock_conversation">Trancar conversa</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar mão</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Mensagem excluída por você</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir enquete</string>
-    <string name="message_search_begin_empty">Nenhum resultado encontrado</string>
-    <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="message_search_next_result">Próximo resultado da pesquisa</string>
     <string name="message_search_no_more_results">Não foram encontradas mais mensagens</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo</string>
     <string name="nc_account_chooser_add_account">Adicionar conta</string>
+    <string name="nc_account_removal_pending">A remoção desta conta ainda não terminou. Por favor, tente novamente daqui a pouco.</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
     <string name="nc_add_attachment">Adicionar anexo</string>
     <string name="nc_add_emojis">Adicionar emojis</string>
@@ -141,6 +138,23 @@
     <string name="nc_announcement">Anúncio</string>
     <string name="nc_announcement_description">Conversa destinada à administração para informar um público fixo, do qual não é possível sair.</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
+    <string name="nc_audio_error_generic">Não foi possível reproduzir o áudio</string>
+    <string name="nc_audio_error_network">Não foi possível carregar o áudio. Verifique sua conexão.</string>
+    <string name="nc_audio_error_unavailable">O arquivo de áudio não está disponível</string>
+    <string name="nc_audio_error_unsupported">O formato de áudio não é compatível</string>
+    <string name="nc_audio_player_close">Encerrar reprodução</string>
+    <string name="nc_audio_player_next">Próximo</string>
+    <string name="nc_audio_player_open">Abrir player</string>
+    <string name="nc_audio_player_play_pause">Reproduzir/pausar</string>
+    <string name="nc_audio_player_previous">Anterior</string>
+    <string name="nc_audio_player_queue">Lista de reprodução</string>
+    <string name="nc_audio_player_repeat_all">Repetir tudo</string>
+    <string name="nc_audio_player_repeat_off">Repetição desativada</string>
+    <string name="nc_audio_player_repeat_one">Repetir um</string>
+    <string name="nc_audio_player_show_message">Mostrar mensagem</string>
+    <string name="nc_audio_player_shuffle">Aleatório</string>
+    <string name="nc_audio_retry">Retentar reprodução</string>
+    <string name="nc_audio_seek">Posição de reprodução</string>
     <string name="nc_biometric_unlock">Destrancar %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para ativar os alto-falantes bluetooth, conceda a permissão \"Dispositivos próximos\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Atender como chamada de vídeo</string>
@@ -150,6 +164,7 @@
     <string name="nc_call_button_content_description_hangup">Desligar</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
+    <string name="nc_call_button_content_description_switch_camera">Trocar câmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
     <string name="nc_call_e2ee_not_supported_title">A chamada de %s não está disponível</string>
@@ -164,6 +179,8 @@
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>
+    <string name="nc_call_self_video_enlarge">Ampliar vídeo pessoal</string>
+    <string name="nc_call_self_video_shrink">Reduzir vídeo pessoal</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
     <string name="nc_call_state_with_phone">%1$s com telefone</string>
     <string name="nc_call_state_with_video">%1$s com vídeo</string>
@@ -175,7 +192,7 @@
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Falhou ao buscar recursos, interrompendo</string>
     <string name="nc_caption">Legenda</string>
-    <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Você confia no certificado SSL de %1$s até agora desconhecido, emitido por %2$s para %3$s, válido de %4$s até %5$s? Ele só será considerado confiável para %1$s.</string>
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
@@ -361,10 +378,10 @@
     <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
     <string name="nc_lobby_waiting">No momento, você está esperando na sala de espera.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
-    <string name="nc_location_permission_required">permissão de localização é necessária</string>
     <string name="nc_location_unknown">Posição desconhecida</string>
     <string name="nc_locked">Trancado</string>
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
+    <string name="nc_login_too_many_attempts">Houve muitas tentativas de login malsucedidas desta rede. Tente novamente mais tarde.</string>
     <string name="nc_logs_advanced_logging">Registro avançado</string>
     <string name="nc_logs_advanced_logging_disable">Desativar o registro avançado</string>
     <string name="nc_logs_advanced_logging_enable">Ativar o registro avançado</string>
@@ -384,7 +401,6 @@
     <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
     <string name="nc_logs_share_latest_crash">Última falha</string>
     <string name="nc_logs_share_no_app_found">Não foi encontrado nenhum aplicativo para enviar o relatório.</string>
-    <string name="nc_logs_share_subject">%1$s registros</string>
     <string name="nc_logs_title">Registros</string>
     <string name="nc_logs_total_size">Tamanho total do registro: %d KB</string>
     <string name="nc_manual">Não definido</string>
@@ -397,6 +413,7 @@
     <string name="nc_message_added_to_notes">Mensagem adicionada às notas</string>
     <string name="nc_message_failed">Falha ao enviar a mensagem</string>
     <string name="nc_message_failed_to_send">Falha ao enviar mensagem:</string>
+    <string name="nc_message_not_added_to_notes">Não foi possível adicionar a mensagem às notas</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Mensagem lida</string>
     <string name="nc_message_scheduled">Mensagem agendada</string>
@@ -535,6 +552,9 @@
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
     <string name="nc_server_helper_text">O link da interface da web do seu %1$s quando você o abre no navegador.</string>
+    <string name="nc_server_http_fallback_confirm">Usar HTTP</string>
+    <string name="nc_server_http_fallback_message">Não foi possível se conectar ao servidor via HTTPS. Conectar via HTTP inseguro em vez disso?</string>
+    <string name="nc_server_http_fallback_title">Conexão insegura</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
     <string name="nc_server_import_account_plain">Importar conta</string>
     <string name="nc_server_import_accounts">Importar contas do aplicativo %1$s</string>

@@ -13,6 +13,7 @@ import android.os.PowerManager
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -59,6 +61,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 import org.mockito.kotlin.whenever
+import retrofit2.HttpException
+import retrofit2.Response
 
 /**
  * Covers [OfflineFirstConversationsRepository] at the unit level, with all collaborators mocked.
@@ -102,7 +106,9 @@ class OfflineFirstConversationsRepositoryTest {
         whenever(connectivityManager.restrictBackgroundStatus)
             .thenReturn(ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED)
 
-        whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(emptyList()))
+        // every sync reads the stored ids before its request, for whichever account it syncs
+        wheneverBlocking { dao.getConversationIdsForUser(any()) }.thenReturn(emptyList())
+        stubStoredConversations()
         whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
             .thenReturn(Maybe.empty())
         whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
@@ -195,7 +201,7 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.getRooms(user()).join()
@@ -211,13 +217,13 @@ class OfflineFirstConversationsRepositoryTest {
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
             wheneverBlocking { dao.syncConversationsForUser(any(), any(), any()) }
                 .thenThrow(IllegalStateException("database is gone"))
-            val errors = mutableListOf<Throwable>()
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
             val collector = launch(Dispatchers.Unconfined) { repository.syncErrorFlow.collect { errors += it } }
 
             repository.syncRooms(user())
 
             collector.cancel()
-            assertEquals(emptyList<Throwable>(), errors)
+            assertEquals(emptyList<OfflineConversationsRepository.SyncError>(), errors)
         }
 
     @Test
@@ -267,7 +273,7 @@ class OfflineFirstConversationsRepositoryTest {
     fun `getRooms skips deleting local conversations when the server returns an empty list`() =
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
+            stubStoredConversations(previous)
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf()))
 
             repository.getRooms(user()).join()
@@ -282,7 +288,7 @@ class OfflineFirstConversationsRepositoryTest {
         runBlocking {
             val staying = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
             val leaving = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(staying, leaving)))
+            stubStoredConversations(staying, leaving)
             val stayingRoom = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0)
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(stayingRoom)))
 
@@ -298,8 +304,7 @@ class OfflineFirstConversationsRepositoryTest {
         runBlocking {
             val staying = conversation(token = "roomA", lastActivity = 5, unreadMessages = 0)
             val leaving = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID))
-                .thenReturn(flowOf(listOf(staying.asEntity(ACCOUNT_ID), leaving.asEntity(ACCOUNT_ID))))
+            stubStoredConversations(staying.asEntity(ACCOUNT_ID), leaving.asEntity(ACCOUNT_ID))
             val deltaResponseHeld = CountDownLatch(1)
             val deltaResponse = Observable.fromCallable {
                 deltaResponseHeld.await()
@@ -361,7 +366,7 @@ class OfflineFirstConversationsRepositoryTest {
     fun `getRooms merges the server response through the conversation list updater`() =
         runBlocking {
             val previous = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(previous)))
+            stubStoredConversations(previous)
             val serverRoom = conversation(token = ROOM_TOKEN, lastActivity = 6, unreadMessages = 1)
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(serverRoom)))
 
@@ -441,8 +446,7 @@ class OfflineFirstConversationsRepositoryTest {
                 conversation(token = "unchanged", lastActivity = 10, unreadMessages = 0).asEntity(ACCOUNT_ID)
             val previousNoBlock =
                 conversation(token = "noBlockUnread", lastActivity = 10, unreadMessages = 3).asEntity(ACCOUNT_ID)
-            whenever(dao.getConversationsForUser(ACCOUNT_ID))
-                .thenReturn(flowOf(listOf(previousUnchanged, previousNoBlock)))
+            stubStoredConversations(previousUnchanged, previousNoBlock)
 
             val unchangedRoom = conversation(token = "unchanged", lastActivity = 10, unreadMessages = 0)
             val noBlockRoom = conversation(token = "noBlockUnread", lastActivity = 10, unreadMessages = 3)
@@ -587,6 +591,29 @@ class OfflineFirstConversationsRepositoryTest {
             collector.cancel()
         }
 
+    @Test
+    fun `getRooms reports rejected credentials without retrying even when conversations are cached`() =
+        runBlocking {
+            val cached = conversation(token = ROOM_TOKEN, lastActivity = 1, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(listOf(cached)))
+            val unauthorized = HttpException(Response.error<Any>(HTTP_UNAUTHORIZED, "".toResponseBody()))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(Observable.error(unauthorized))
+
+            val errors = mutableListOf<OfflineConversationsRepository.SyncError>()
+            val collector = launch(Dispatchers.IO) {
+                repository.syncErrorFlow.collect { errors.add(it) }
+            }
+            // syncErrorFlow has no replay, so the collector must already be subscribed before the error is emitted
+            delay(COLLECTOR_STARTUP_MILLIS)
+
+            repository.getRooms(user()).join()
+
+            awaitUntil { errors.isNotEmpty() }
+            assertEquals(OfflineConversationsRepository.SyncError(ACCOUNT_ID, unauthorized), errors.first())
+            verify(network, times(1)).getRooms(any(), any(), any(), anyOrNull())
+            collector.cancel()
+        }
+
     private fun stubCatchUpRoom() {
         wheneverBlocking { chatMessageSyncer.catchUpRoom(any(), any(), anyOrNull(), any()) }
             .thenReturn(ChatMessageSyncer.SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null))
@@ -600,6 +627,32 @@ class OfflineFirstConversationsRepositoryTest {
             }
             delay(POLL_INTERVAL_MILLIS)
         }
+    }
+
+    @Test
+    fun `a conversation that arrives while the request is in flight is not treated as left`() =
+        runBlocking {
+            val known = conversation(token = "known", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            val arrivedDuringRequest =
+                conversation(token = "arrived", lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            wheneverBlocking { dao.getConversationIdsForUser(ACCOUNT_ID) }.thenReturn(listOf(known.internalId))
+            whenever(dao.getConversationsForUser(ACCOUNT_ID))
+                .thenReturn(flowOf(listOf(known, arrivedDuringRequest)))
+            val stillOnServer = conversation(token = "server", lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(stillOnServer)))
+
+            repository.getRooms(user()).join()
+
+            verifyBlocking(dao) { syncConversationsForUser(eq(ACCOUNT_ID), any(), eq(listOf(known.internalId))) }
+        }
+
+    /**
+     * Stubs both reads the sync makes of the conversations table: the rows it merges against, and
+     * the ids it takes before the request to know which conversations the response can speak about.
+     */
+    private fun stubStoredConversations(vararg stored: ConversationEntity) {
+        whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flowOf(stored.toList()))
+        wheneverBlocking { dao.getConversationIdsForUser(ACCOUNT_ID) }.thenReturn(stored.map { it.internalId })
     }
 
     private fun user(withKeepNotificationsCapability: Boolean = true): User {
@@ -643,6 +696,7 @@ class OfflineFirstConversationsRepositoryTest {
         private const val POLL_INTERVAL_MILLIS = 50L
         private const val COLLECTOR_STARTUP_MILLIS = 100L
         private const val ROOM_LIST_TIMEOUT_MILLIS = 1000L
+        private const val HTTP_UNAUTHORIZED = 401
     }
 }
 

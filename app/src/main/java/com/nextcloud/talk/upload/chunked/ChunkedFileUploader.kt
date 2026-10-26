@@ -64,7 +64,16 @@ class ChunkedFileUploader(
         remoteChunkUrl = ApiUtils.getUrlForChunkedUpload(currentUser.baseUrl!!, currentUser.userId!!)
     }
 
+    /**
+     * Uploads [localFile] in chunks, skipping chunks that are already on the server, and assembles them at
+     * [targetPath].
+     *
+     * @return false if the upload was aborted or the server answered with an HTTP error
+     * @throws IOException on I/O failures (e.g. connection loss or timeout) and chunk folder creation failures,
+     * so the caller can retry; chunks already on the server are skipped as long as [localFile] is unchanged
+     */
     @Suppress("Detekt.TooGenericExceptionCaught")
+    @Throws(IOException::class)
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
             var isUploadSuccessful = true
@@ -94,6 +103,8 @@ class ChunkedFileUploader(
                 assembleChunks(uploadFolderUri, targetPath)
             }
             return isUploadSuccessful
+        } catch (e: IOException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong in ChunkedFileUploader", e)
             return false
@@ -335,13 +346,21 @@ class ChunkedFileUploader(
         }
     }
 
+    /**
+     * Called from the worker's onStopped, which WorkManager runs inside a coroutine cancellation handler:
+     * anything thrown here crashes the process, so this function must never throw.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun abortUpload(onSuccess: () -> Unit) {
         isUploadAborted = true
+        val client = okHttpClientNoRedirects
+        val folderUrl = uploadFolderUri.toHttpUrlOrNull()
+        if (client == null || folderUrl == null) {
+            Log.i(TAG, "Nothing to abort, chunk upload was not started")
+            return
+        }
         try {
-            DavResource(
-                okHttpClientNoRedirects!!,
-                uploadFolderUri.toHttpUrlOrNull()!!
-            ).delete { response: Response ->
+            DavResource(client, folderUrl).delete { response: Response ->
                 when {
                     response.isSuccessful -> onSuccess()
                     else -> isUploadAborted = false
@@ -349,7 +368,13 @@ class ChunkedFileUploader(
             }
         } catch (e: NotFoundException) {
             Log.i(TAG, "Chunk upload folder could not be found", e)
-            onSuccess()
+            try {
+                onSuccess()
+            } catch (callbackError: Exception) {
+                Log.w(TAG, "Abort callback failed", callbackError)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to remove chunk upload folder", e)
         }
     }
 

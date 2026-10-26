@@ -9,11 +9,15 @@ package com.nextcloud.talk.conversationinfo.viewmodel
 import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.generic.GenericOCS
+import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBanDto
 import com.nextcloud.talk.models.json.profile.ProfileDto
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import io.reactivex.Observable
+import kotlinx.coroutines.CompletableDeferred
+import java.io.IOException
 
 /**
  * Answers with what a test needs of [ConversationsRepository.allowGuests], and fails everything
@@ -23,6 +27,23 @@ class FakeConversationsRepository : ConversationsRepository {
 
     var failAllowGuests = false
     var lastAllowGuestsPassword: String? = null
+
+    /** How many of the next important-conversation requests fail with a connection problem. */
+    var failingImportantRequests = 0
+    var importantRequests = 0
+
+    /** The OCS status code the important-conversation requests answer with. */
+    var importantResponseStatusCode = HTTP_OK
+
+    /** When set, the next important-conversation request waits for this before it answers. */
+    var importantGate: CompletableDeferred<Unit>? = null
+
+    /** How many of the next read-only requests fail with a connection problem. */
+    var failingReadOnlyRequests = 0
+    var readOnlyRequests = 0
+
+    /** The OCS status code the read-only requests answer with. */
+    var readOnlyResponseStatusCode = HTTP_OK
 
     override suspend fun allowGuests(
         user: User,
@@ -65,8 +86,14 @@ class FakeConversationsRepository : ConversationsRepository {
 
     override suspend fun setPassword(user: User, url: String, password: String): GenericOverall = GenericOverall()
 
-    override suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall =
-        throw UnsupportedOperationException()
+    override suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall {
+        readOnlyRequests++
+        if (failingReadOnlyRequests > 0) {
+            failingReadOnlyRequests--
+            throw IOException("no connection")
+        }
+        return GenericOverall(GenericOCS(GenericMetaDto(statusCode = readOnlyResponseStatusCode)))
+    }
 
     override suspend fun clearChatHistory(user: User, url: String): GenericOverall =
         throw UnsupportedOperationException()
@@ -93,13 +120,31 @@ class FakeConversationsRepository : ConversationsRepository {
         credentials: String,
         baseUrl: String,
         roomToken: String
-    ): GenericOverall = throw UnsupportedOperationException()
+    ): GenericOverall {
+        importantRequests++
+        importantGate?.let { gate ->
+            importantGate = null
+            gate.await()
+        }
+        if (failingImportantRequests > 0) {
+            failingImportantRequests--
+            throw IOException("no connection")
+        }
+        return GenericOverall(GenericOCS(GenericMetaDto(statusCode = importantResponseStatusCode)))
+    }
 
     override suspend fun markConversationAsUnImportant(
         credentials: String,
         baseUrl: String,
         roomToken: String
-    ): GenericOverall = throw UnsupportedOperationException()
+    ): GenericOverall {
+        importantRequests++
+        if (failingImportantRequests > 0) {
+            failingImportantRequests--
+            throw IOException("no connection")
+        }
+        return GenericOverall(GenericOCS(GenericMetaDto(statusCode = importantResponseStatusCode)))
+    }
 
     override suspend fun markConversationAsRead(credentials: String, url: String, messageId: Int?): GenericOverall =
         throw UnsupportedOperationException()
@@ -112,4 +157,8 @@ class FakeConversationsRepository : ConversationsRepository {
 
     override suspend fun removeConversationFromFavorites(credentials: String, url: String): GenericOverall =
         throw UnsupportedOperationException()
+
+    private companion object {
+        const val HTTP_OK = 200
+    }
 }

@@ -18,10 +18,20 @@ internal sealed class AvatarContent {
     /**
      * [versioned] marks an immutable avatar URL: the avatarVersion parameter is the invalidation
      * token, so the image may be cached without expiry - a new version changes the URL. Only
-     * conversation avatars are versioned; a one-to-one room's avatar is the peer's user avatar,
-     * which is outside the version scheme and must revalidate via the response cache headers.
+     * conversation avatars are versioned; a one-to-one room shows the peer's user avatar, which is
+     * outside the version scheme and must revalidate via the response cache headers.
      */
-    data class Url(val url: String, val versioned: Boolean) : AvatarContent()
+    data class Url(val url: String, val versioned: Boolean) : AvatarContent() {
+        /**
+         * The key of the avatar in the disk cache, so other places can use the avatar the list loaded.
+         *
+         * The suffix only names the cache entry, the request still goes to [url]. It keeps these entries apart from
+         * avatars cached under the plain URL elsewhere, and changing it makes all avatars cached with it unused, so
+         * they are loaded again.
+         */
+        val diskCacheKey: String
+            get() = "$url#v2"
+    }
     data class Res(@param:DrawableRes val resId: Int) : AvatarContent()
     object System : AvatarContent()
     object NoteToSelf : AvatarContent()
@@ -30,15 +40,17 @@ internal sealed class AvatarContent {
 /**
  * Resolves what to show as a conversation's avatar.
  *
- * On servers with the avatar capability (Talk 17+) rooms use the conversation-avatar endpoint.
- * For everything but one-to-one rooms the URL carries the avatarVersion as invalidation token,
- * so those avatars are immutable content refreshed solely by version changes from the room list
- * sync. One-to-one rooms get the peer's user avatar from the same endpoint (which also handles
- * federation proxying), but their avatarVersion is a server-side constant that never changes
- * when the peer updates their avatar - their URL therefore stays unversioned and relies on the
- * default loader's header-driven revalidation. Servers without the capability fall back to the
- * unversioned user-avatar endpoint for one-to-one rooms and to themed default icons for group
- * and public rooms, whose endpoint does not exist there.
+ * One-to-one rooms always use the peer's user avatar: the conversation-avatar endpoint answers
+ * them with the other participant of the requesting account, so the same URL would show a
+ * different image per account on the same server. One-to-one rooms are never federated, so the
+ * peer is a local user. The user-avatar URL stays unversioned and relies on the default loader's
+ * header-driven revalidation.
+ *
+ * Other rooms use the conversation-avatar endpoint on servers with the avatar capability
+ * (Talk 17+). Its URL carries the avatarVersion as invalidation token, so those avatars are
+ * immutable content refreshed solely by version changes from the room list sync. Servers without
+ * the capability fall back to themed default icons for group and public rooms, whose endpoint
+ * does not exist there.
  */
 internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isDark: Boolean): AvatarContent {
     val hasConversationAvatars = currentUser.hasSpreedFeatureCapability(SpreedFeatures.AVATAR.value)
@@ -57,15 +69,9 @@ internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isD
         model.type == ConversationEnums.ConversationType.NOTE_TO_SELF ->
             AvatarContent.NoteToSelf
 
-        hasConversationAvatars && model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
+        model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
             AvatarContent.Url(
-                ApiUtils.getUrlForConversationAvatarWithVersion(
-                    1,
-                    currentUser.baseUrl,
-                    model.token,
-                    isDark,
-                    null
-                ),
+                ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, false, isDark),
                 versioned = false
             )
 
@@ -81,8 +87,7 @@ internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isD
                 versioned = true
             )
 
-        model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-            model.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE ->
+        model.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE ->
             AvatarContent.Url(
                 ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, false, isDark),
                 versioned = false

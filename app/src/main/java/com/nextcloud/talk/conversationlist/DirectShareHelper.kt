@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationlist
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import androidx.core.app.Person
@@ -17,14 +18,20 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.imageLoader
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.conversationlist.ui.AvatarContent
+import com.nextcloud.talk.conversationlist.ui.buildAvatarContent
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AvatarImageLoader
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 object DirectShareHelper {
 
@@ -34,34 +41,58 @@ object DirectShareHelper {
     private const val SHORTCUT_ID_MIN_PARTS = 4
     private const val AVATAR_SIZE_PX = 256
 
+    private val publishMutex = Mutex()
+
     private enum class MessageDirection { NONE, SEND, RECEIVE }
 
+    /**
+     * Publishes the most recent [conversations] as direct share shortcuts, with the avatars the conversation list
+     * shows. [context] must be the activity of the list: the application context does not follow the theme setting
+     * of the app, so it would look for the avatars of the other theme.
+     */
     suspend fun publishShareTargetShortcuts(context: Context, user: User, conversations: List<ConversationModel>) {
-        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
+        // One publication at a time, as each loads its avatars one after another, see loadListAvatarIcon. The list
+        // publishes them with every change, so another publication can start while one is still loading.
+        publishMutex.withLock { publish(context, user, conversations) }
+    }
 
-        // Preserve shortcuts not managed by DirectShareHelper (e.g. Note to Self).
-        val existingOtherShortcuts = ShortcutManagerCompat.getDynamicShortcuts(context)
-            .filter { !it.id.startsWith(SHORTCUT_ID_PREFIX) }
-        val limit = (maxShortcuts - existingOtherShortcuts.size).coerceAtLeast(0)
-
+    private suspend fun publish(context: Context, user: User, conversations: List<ConversationModel>) {
         @Suppress("MagicNumber")
         val thirtyDaysAgoSeconds = System.currentTimeMillis() / 1000 - 30 * 24 * 60 * 60
-        val afterFilter = conversations
+        val candidates = conversations
             .filter { !ConversationUtils.isNoteToSelfConversation(it) }
             .filter { it.lastActivity >= thirtyDaysAgoSeconds }
-        val candidates = afterFilter
+            .distinctBy { it.token }
             .sortedByDescending { it.lastActivity }
-            .take(limit)
+            .take(ShortcutManagerCompat.getMaxShortcutCountPerActivity(context))
 
         val credentials = ApiUtils.getCredentials(user.username, user.token)
         // Build shortcuts most-recent-first; setDynamicShortcuts uses index order (0 = most important).
+        // The avatars are loaded one after another, see loadListAvatarIcon.
         val shareShortcuts = candidates.map { conversation ->
             val displayName = conversation.displayName
-            val icon = loadAvatarIcon(context, user, conversation.token, displayName, credentials)
+            val icon = loadListAvatarIcon(context, user, conversation, credentials)
             prepShortcutBuilder(context, user, conversation.token, displayName, icon).build()
         }
 
-        ShortcutManagerCompat.setDynamicShortcuts(context, shareShortcuts + existingOtherShortcuts)
+        // Loading the avatars takes a while, and other shortcuts (e.g. Note to Self, conversation shortcuts or the
+        // ones of notifications) are pushed meanwhile. So the shortcuts to preserve and the free slots are only
+        // looked up now, right before replacing all dynamic shortcuts, which must not exceed the maximum.
+        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
+        val existingOtherShortcuts = ShortcutManagerCompat.getDynamicShortcuts(context)
+            .filter { !it.id.startsWith(SHORTCUT_ID_PREFIX) }
+            .take(maxShortcuts)
+        val limit = (maxShortcuts - existingOtherShortcuts.size).coerceAtLeast(0)
+
+        try {
+            ShortcutManagerCompat.setDynamicShortcuts(context, shareShortcuts.take(limit) + existingOtherShortcuts)
+        } catch (e: IllegalArgumentException) {
+            // Thrown if the maximum is exceeded anyway. Missing share targets must not crash the conversation list.
+            Log.w(TAG, "Failed to publish direct share shortcuts", e)
+        } catch (e: IllegalStateException) {
+            // Thrown while the user is locked
+            Log.w(TAG, "Failed to publish direct share shortcuts", e)
+        }
     }
 
     /**
@@ -76,8 +107,7 @@ object DirectShareHelper {
         displayName: String,
         isOneToOne: Boolean
     ) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val icon = loadAvatarIcon(context, user, token, displayName, credentials)
+        val icon = loadAvatarIcon(context, user, token, displayName, isOneToOne)
         val shortcut = prepShortcutBuilder(context, user, token, displayName, icon)
             .also { applyCapabilityBinding(it, MessageDirection.RECEIVE, isOneToOne) }
             .build()
@@ -95,8 +125,7 @@ object DirectShareHelper {
         displayName: String,
         isOneToOne: Boolean
     ) {
-        val credentials = ApiUtils.getCredentials(user.username, user.token)
-        val icon = loadAvatarIcon(context, user, token, displayName, credentials)
+        val icon = loadAvatarIcon(context, user, token, displayName, isOneToOne)
         val shortcut = prepShortcutBuilder(context, user, token, displayName, icon)
             .also { applyCapabilityBinding(it, MessageDirection.SEND, isOneToOne) }
             .build()
@@ -155,14 +184,59 @@ object DirectShareHelper {
 
     private fun shortcutId(user: User, token: String): String = "$SHORTCUT_ID_PREFIX${user.id}_$token"
 
+    /**
+     * The avatar of [conversation] as the conversation list shows it. It is loaded with the same URL and cache key as
+     * in the list, so the avatars the list loaded come from the cache, and the ones loaded here are cached for the
+     * list.
+     *
+     * The shortcuts are published again with every change of the conversation list, so they must load their avatars
+     * one after another: while the server rejects the credentials, every request with them counts as a failed login.
+     * After the first one got its 401, RejectedCredentialsInterceptor does not send the following ones.
+     */
+    private suspend fun loadListAvatarIcon(
+        context: Context,
+        user: User,
+        conversation: ConversationModel,
+        credentials: String?
+    ): IconCompat {
+        val isDark = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+            Configuration.UI_MODE_NIGHT_YES
+
+        return when (val avatar = buildAvatarContent(conversation, user, isDark)) {
+            is AvatarContent.Url -> {
+                val imageLoader = if (avatar.versioned) AvatarImageLoader.get(context) else context.imageLoader
+                val request = ImageRequest.Builder(context)
+                    .data(avatar.url)
+                    .diskCacheKey(avatar.diskCacheKey)
+                    .apply { credentials?.let { addHeader("Authorization", it) } }
+                    .size(AVATAR_SIZE_PX)
+                    .allowHardware(false)
+                    .transformations(CircleCropTransformation())
+                    .build()
+                val bitmap = (imageLoader.execute(request).drawable as? BitmapDrawable)?.bitmap
+                bitmap?.let { IconCompat.createWithBitmap(it) } ?: defaultIcon(context)
+            }
+
+            is AvatarContent.Res -> IconCompat.createWithResource(context, avatar.resId)
+
+            else -> defaultIcon(context)
+        }
+    }
+
+    /**
+     * The conversation-avatar endpoint answers a one-to-one room with the other participant of the
+     * requesting account, so the same URL returns a different image per account on the same server.
+     * Those avatars bypass the caches, which are keyed by URL only.
+     */
     private suspend fun loadAvatarIcon(
         context: Context,
         user: User,
         token: String,
         displayName: String,
-        credentials: String?
+        isOneToOne: Boolean
     ): IconCompat =
         try {
+            val credentials = ApiUtils.getCredentials(user.username, user.token)
             val avatarUrl = ApiUtils.getUrlForConversationAvatar(
                 version = 1,
                 baseUrl = user.baseUrl,
@@ -173,6 +247,11 @@ object DirectShareHelper {
                 .size(AVATAR_SIZE_PX)
                 .allowHardware(false)
                 .transformations(CircleCropTransformation())
+            if (isOneToOne) {
+                requestBuilder
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
+            }
             if (credentials != null) {
                 requestBuilder.addHeader("Authorization", credentials)
             }

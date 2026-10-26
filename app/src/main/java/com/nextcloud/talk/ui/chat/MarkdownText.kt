@@ -24,8 +24,6 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.Patterns
 import android.util.TypedValue
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -58,6 +56,7 @@ import com.nextcloud.talk.ui.theme.LocalViewThemeUtils
 import com.nextcloud.talk.ui.toDrawable
 import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.CharacterAvatarUtils
+import com.nextcloud.talk.utils.message.MarkdownTables
 import com.nextcloud.talk.utils.message.MessageUtils
 import io.noties.markwon.core.spans.LinkSpan
 import org.greenrobot.eventbus.EventBus
@@ -72,9 +71,6 @@ private const val CHIP_START_PADDING_DP = 2f
 private const val CHIP_END_PADDING_DP = 5f
 private const val CHIP_VERTICAL_PADDING_DP = 2f
 private const val CHIP_CORNER_RADIUS_DP = 16f
-
-// GFM table separator row: starts with | followed by optional spaces/colons and at least 3 dashes
-private val TABLE_SEPARATOR_REGEX = Regex("""^\|[ :]*-{3,}""", RegexOption.MULTILINE)
 
 val validLinkRegex = Regex(
     """(?<!\w)https?://(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?::\d{1,5})?(?:/[^\s)]*)?""",
@@ -112,7 +108,7 @@ fun MarkdownText(
     val onLongClickState = rememberUpdatedState(onMessageLongClick)
     val onClickState = rememberUpdatedState(onClick)
     val hasTable = remember(message.plainMessage) {
-        message.plainMessage.contains(TABLE_SEPARATOR_REGEX)
+        MarkdownTables.containsTable(message.plainMessage)
     }
     val accessibleText = remember(message) { resolveMarkdownSource(message) }
 
@@ -131,26 +127,11 @@ fun MarkdownText(
             AndroidView(
                 modifier = if (hasTable) Modifier.fillMaxWidth() else Modifier,
                 factory = { ctx ->
-                    val gestureDetector = GestureDetector(
+                    val longPressListener = linkTouchListener(
                         ctx,
-                        object : GestureDetector.SimpleOnGestureListener() {
-                            override fun onSingleTapUp(e: MotionEvent): Boolean {
-                                onClickState.value?.invoke()
-                                return false
-                            }
-
-                            override fun onLongPress(e: MotionEvent) {
-                                onLongClickState.value(messageId)
-                            }
-                        }
+                        onTap = { onClickState.value?.invoke() },
+                        onLongPress = { onLongClickState.value(messageId) }
                     )
-                    val longPressListener = View.OnTouchListener { view, event ->
-                        if (event.action == MotionEvent.ACTION_UP) {
-                            view.performClick()
-                        }
-                        gestureDetector.onTouchEvent(event)
-                        false
-                    }
                     LongPressTextView(ctx).apply {
                         isFocusable = false
                         isFocusableInTouchMode = false
@@ -171,7 +152,10 @@ fun MarkdownText(
                         textView.textSize * LINE_HEIGHT_MULTIPLIER / textView.paint.fontSpacing
                     )
                     val markwon = MessageUtils.buildMarkwon(context, textColorArgb)
-                    markwon.setMarkdown(textView, resolveNonMentionParams(message))
+                    markwon.setMarkdown(
+                        textView,
+                        MarkdownTables.ensureBlankLineBeforeTables(resolveNonMentionParams(message))
+                    )
                     val ssb = SpannableStringBuilder(textView.text)
                     val hasClickableChips = applyMentionChips(
                         spannable = ssb,

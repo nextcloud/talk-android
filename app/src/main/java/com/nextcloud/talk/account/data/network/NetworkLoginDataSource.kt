@@ -13,6 +13,7 @@ import com.google.gson.JsonParser
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.utils.ApiUtils
+import okhttp3.CookieJar
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -26,8 +27,21 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
+        private const val HTTP_TOO_MANY_REQUESTS = 429
     }
 
+    private val client = okHttpClient.newBuilder().cookieJar(CookieJar.NO_COOKIES).build()
+
+    /**
+     * The server refused a login because of too many failed logins from this IP, without checking the credentials.
+     */
+    class TooManyLoginAttemptsException(message: String) : IOException(message)
+
+    /**
+     * Exchanges the one-time password of [oneTimeCredentials] for an app password, or returns null if that failed.
+     *
+     * @throws TooManyLoginAttemptsException if the server refused the login, the one-time password is still unused then
+     */
     fun oneTimePasswordRequest(baseUrl: String, oneTimeCredentials: String): String? {
         val url = "$baseUrl/ocs/v2.php/core/getapppassword-onetime"
         var result: String? = null
@@ -42,6 +56,8 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             result = appPassword
         }.getOrElse { e ->
             when (e) {
+                is TooManyLoginAttemptsException -> throw e
+
                 is SSLHandshakeException,
                 is NullPointerException,
                 is IOException -> {
@@ -66,10 +82,13 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
         val newOkHttpClient = OkHttpClient()
         newOkHttpClient.newCall(request).execute().use { response ->
+            if (response.code == HTTP_TOO_MANY_REQUESTS) {
+                throw TooManyLoginAttemptsException("Too many failed logins from this IP: $response")
+            }
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
-            return response.body?.string()
+            return response.body.string()
         }
     }
 
@@ -106,11 +125,11 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .header("User-Agent", ApiUtils.loginUserAgent)
             .build()
 
-        okHttpClient.newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
             }
-            return response.body?.string()
+            return response.body.string()
         }
     }
 
@@ -135,12 +154,12 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
         var result: LoginCompletion? = null
         runCatching {
-            okHttpClient.newCall(request).execute()
+            client.newCall(request).execute()
                 .use { response ->
                     val status: Int = response.code
-                    val responseBody = response.body?.string()
+                    val responseBody = response.body.string()
 
-                    result = if (response.isSuccessful && responseBody?.isNotEmpty() == true) {
+                    result = if (response.isSuccessful && responseBody.isNotEmpty()) {
                         val jsonObject = JsonParser.parseString(responseBody).asJsonObject
                         val server: String = jsonObject.get("server").asString
                         val loginName: String = jsonObject.get("loginName").asString

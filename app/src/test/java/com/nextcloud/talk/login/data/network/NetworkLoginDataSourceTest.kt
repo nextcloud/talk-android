@@ -7,18 +7,25 @@
 
 package com.nextcloud.talk.login.data.network
 
+import android.app.Application
 import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @Suppress("ktlint:standard:max-line-length", "MaxLineLength")
+@RunWith(RobolectricTestRunner::class)
+@Config(application = Application::class, sdk = [33])
 class NetworkLoginDataSourceTest {
 
     lateinit var network: NetworkLoginDataSource
@@ -44,7 +51,7 @@ class NetworkLoginDataSourceTest {
             "login":"https:\/\/cloud.example.com\/login\/v2\/flow\/guyjGtcKPTKCi4epIRIupIexgJ8wNInMFSfHabACRPZUkmEaWZSM54bFkFuzWksbps7jmTFQjeskLpyJXyhpHlgK8sZBn9HXLXjohIx5iXgJKdOkkZTYCzUWHlsg3YFg"
         }
         """.trimIndent()
-        val mockResponse = MockResponse().setBody(validResponse)
+        val mockResponse = MockResponse(body = validResponse)
         server.enqueue(mockResponse)
 
         val loginResponse = network.anonymouslyPostLoginRequest(httpUrl.toString())
@@ -54,11 +61,12 @@ class NetworkLoginDataSourceTest {
     @Test
     fun `testing anonymouslyPostLoginRequest error path`() {
         val server = MockWebServer()
-        val invalidResponse = MockResponse()
+        val invalidResponse = MockResponse.Builder()
             .addHeader("Content-Type", "application/json; charset=utf-8")
             .addHeader("Cache-Control", "no-cache")
-            .setResponseCode(404)
-            .setBody("{}")
+            .code(404)
+            .body("{}")
+            .build()
 
         server.start()
         server.enqueue(invalidResponse)
@@ -80,7 +88,7 @@ class NetworkLoginDataSourceTest {
         }
         """.trimIndent()
 
-        val mockResponse = MockResponse().setBody(validResponse)
+        val mockResponse = MockResponse(body = validResponse)
         server.enqueue(mockResponse)
         server.start()
         val httpUrl = server.url("index.php/login/v2")
@@ -100,8 +108,9 @@ class NetworkLoginDataSourceTest {
         }
         """.trimIndent()
 
-        val validResponse = MockResponse()
-            .setBody(validBody)
+        val validResponse = MockResponse.Builder()
+            .body(validBody)
+            .build()
 
         server.enqueue(validResponse)
         server.start()
@@ -120,11 +129,12 @@ class NetworkLoginDataSourceTest {
     fun `testing performLoginFlowV2 error path`() {
         val server = MockWebServer()
 
-        val invalidResponse = MockResponse()
+        val invalidResponse = MockResponse.Builder()
             .addHeader("Content-Type", "application/json; charset=utf-8")
             .addHeader("Cache-Control", "no-cache")
-            .setResponseCode(404)
-            .setBody("{}")
+            .code(404)
+            .body("{}")
+            .build()
 
         server.enqueue(invalidResponse)
         server.start()
@@ -149,8 +159,9 @@ class NetworkLoginDataSourceTest {
         }
         """.trimIndent()
 
-        val validResponse = MockResponse()
-            .setBody(validBody)
+        val validResponse = MockResponse.Builder()
+            .body(validBody)
+            .build()
 
         server.enqueue(validResponse)
         server.start()
@@ -163,5 +174,25 @@ class NetworkLoginDataSourceTest {
 
         val loginCompletion = network.performLoginFlowV2(loginResponse)
         assertNull(loginCompletion)
+    }
+
+    @Test(expected = NetworkLoginDataSource.TooManyLoginAttemptsException::class)
+    fun `testing oneTimePasswordRequest refused because of too many failed logins`() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse(code = 429))
+        server.start()
+
+        network.oneTimePasswordRequest(server.url("").toString(), Credentials.basic("username", "oneTimePassword"))
+    }
+
+    @Test
+    fun `testing oneTimePasswordRequest error path`() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse(code = 401))
+        server.start()
+
+        val appPassword =
+            network.oneTimePasswordRequest(server.url("").toString(), Credentials.basic("username", "oneTimePassword"))
+        assertNull(appPassword)
     }
 }

@@ -23,7 +23,6 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -41,7 +40,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
-import com.nextcloud.talk.events.RemoteWipeEvent
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
@@ -324,6 +322,7 @@ open class BaseActivity : AppCompatActivity() {
     @Suppress("Detekt.NestedBlockDepth")
     private fun showCertificateDialog(
         cert: X509Certificate,
+        host: String,
         trustManager: TrustManager,
         sslErrorHandler: SslErrorHandler?
     ) {
@@ -352,7 +351,8 @@ open class BaseActivity : AppCompatActivity() {
 
             @SuppressLint("StringFormatMatches")
             val dialogText = String.format(
-                resources.getString(R.string.nc_certificate_dialog_text),
+                resources.getString(R.string.nc_certificate_dialog_text_for_host),
+                host,
                 issuedBy,
                 issuedFor,
                 validFrom,
@@ -367,7 +367,7 @@ open class BaseActivity : AppCompatActivity() {
             ).setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    trustManager.addCertInTrustStore(cert)
+                    trustManager.addCertInTrustStore(host, cert)
                     sslErrorHandler?.proceed()
                 }.setNegativeButton(R.string.nc_no) { _, _ ->
                     sslErrorHandler?.cancel()
@@ -399,15 +399,7 @@ open class BaseActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
-        showCertificateDialog(event.x509Certificate, event.trustManager, event.sslErrorHandler)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRemoteWipeEvent(event: RemoteWipeEvent) {
-        Toast.makeText(context, R.string.nc_remote_wipe_logged_out, Toast.LENGTH_LONG).show()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        showCertificateDialog(event.x509Certificate, event.host, event.trustManager, event.sslErrorHandler)
     }
 
     override fun startActivity(intent: Intent) {

@@ -72,8 +72,6 @@
     <string name="message_deleted_by_you">消息被你删除了</string>
     <string name="message_last_edited_by">由 %1$s 编辑</string>
     <string name="message_poll_tap_to_open">点击打开投票</string>
-    <string name="message_search_begin_empty">无搜索结果</string>
-    <string name="message_search_begin_typing">开始输入以搜索…</string>
     <string name="message_search_hint">搜索...</string>
     <string name="messages">消息</string>
     <string name="mute_all_notifications">静音所有通知</string>
@@ -91,6 +89,8 @@
     <string name="nc_all_ok_operation">OK，已完成！</string>
     <string name="nc_announcement">公告</string>
     <string name="nc_attendee_pin">固定：%1$s</string>
+    <string name="nc_audio_player_next">下一个</string>
+    <string name="nc_audio_player_previous">上一个</string>
     <string name="nc_biometric_unlock">解锁 %1$s</string>
     <string name="nc_bluetooth_permission_hint">使用蓝牙音箱需要“附近的设备”权限</string>
     <string name="nc_call_button_content_description_answer_video_call">以视频通话接听</string>
@@ -100,6 +100,7 @@
     <string name="nc_call_button_content_description_hangup">挂断</string>
     <string name="nc_call_button_content_description_microphone">开启/关闭麦克风</string>
     <string name="nc_call_button_content_description_pip">开启画中画模式</string>
+    <string name="nc_call_button_content_description_switch_camera">切换相机</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">切换到自拍画面</string>
     <string name="nc_call_incoming">来电</string>
     <string name="nc_call_name">对话名称</string>
@@ -119,7 +120,6 @@
     <string name="nc_camera_permission_hint">使用视频通话需要“相机”权限</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">获取容量已失败，正在中止</string>
-    <string name="nc_certificate_dialog_text">您是否信任由 %1$s 颁发给 %2$s，生效时间从 %3$s 至 %4$s的未知证书？</string>
     <string name="nc_certificate_dialog_title">检查证书</string>
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
@@ -257,7 +257,6 @@
     <string name="nc_lobby_start_soon">会议不久后将开始</string>
     <string name="nc_lobby_waiting">您当前正在休息室等待。</string>
     <string name="nc_location_current_position_description">你当前位置</string>
-    <string name="nc_location_permission_required">需要位置权限</string>
     <string name="nc_location_unknown">位置未知</string>
     <string name="nc_locked">已锁定</string>
     <string name="nc_locked_tap_to_unlock">轻按解锁</string>

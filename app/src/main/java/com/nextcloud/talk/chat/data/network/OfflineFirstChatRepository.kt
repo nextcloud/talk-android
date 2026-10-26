@@ -30,18 +30,18 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import com.nextcloud.talk.utils.revertOnCancellation
-import com.nextcloud.talk.utils.withRetry
-import kotlinx.coroutines.Dispatchers
+import com.nextcloud.talk.utils.optimisticAction
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -52,9 +52,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.math.min
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -137,6 +139,9 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _isLoadingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var newXChatLastCommonRead: Int? = null
+
+    // written on the main thread by handleOnPause/handleOnResume, read from fetch and polling coroutines
+    @Volatile
     private var itIsPaused = false
 
     lateinit var internalConversationId: String
@@ -303,18 +308,25 @@ class OfflineFirstChatRepository @Inject constructor(
             lastKnown = initialMessageId.toInt()
         )
 
-        val networkParams = Bundle()
+        var failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
 
         while (true) {
             if (!networkMonitor.isOnline.value || itIsPaused) {
+                failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
                 delay(HALF_SECOND)
             } else {
                 // sync database with server
                 // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
-                networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-
                 Log.d(TAG, "Starting online request for long polling")
-                getAndPersistMessages(networkParams)
+                val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+
+                // A failed request returns right away, e.g. with rejected credentials, which the server counts as a
+                // failed login. Without waiting, the next requests would follow at once until the server throttles.
+                failureDelayMillis = if (outcome.syncFailed) {
+                    waitAfterFailedRequest(failureDelayMillis)
+                } else {
+                    LONG_POLLING_FAILURE_INITIAL_DELAY
+                }
 
                 val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
                     internalConversationId,
@@ -332,11 +344,34 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    /**
+     * Waits [delayMillis] after a failed long polling request, and returns how long to wait if the next one fails too.
+     * Requests that failed while the device went offline should not delay the next one, so the wait ends early once
+     * it is online again.
+     */
+    private suspend fun waitAfterFailedRequest(delayMillis: Long): Long {
+        Log.d(TAG, "Long polling failed, next request in $delayMillis ms")
+        val gotOnlineAgain = withTimeoutOrNull(delayMillis) {
+            networkMonitor.isOnline.drop(1).first { isOnline -> isOnline }
+        } != null
+
+        return if (gotOnlineAgain) {
+            LONG_POLLING_FAILURE_INITIAL_DELAY
+        } else {
+            min(delayMillis * 2, LONG_POLLING_FAILURE_MAX_DELAY)
+        }
+    }
+
     suspend fun initInsuranceRequests() {
         Log.d(TAG, "---- initInsuranceRequests ------------")
 
         while (true) {
             delay(INSURANCE_REQUEST_DELAY)
+            if (itIsPaused) {
+                // ChatViewModel.onResume fetches right away when the chat comes back to the foreground
+                Log.d(TAG, "skip insurance request while paused")
+                continue
+            }
             Log.d(TAG, "execute insurance request")
 
             fetchNewMessages()
@@ -363,6 +398,10 @@ class OfflineFirstChatRepository @Inject constructor(
      * [ChatMessageSyncer.tryCloseBacklog]'s round budget and just burns requests before falling
      * back anyway.
      *
+     * Server push notifications are only cleared while the chat is on screen: when the chat is
+     * paused (background, another screen) the request carries markNotificationsAsRead=0, so the
+     * fetch does not dismiss notifications for messages the user has not seen yet.
+     *
      * @return `true` if at least one new message was received and persisted.
      */
     override suspend fun fetchNewMessages(): Boolean {
@@ -381,6 +420,7 @@ class OfflineFirstChatRepository @Inject constructor(
             fromMessageId = lastHttpSyncedMessageId,
             limit = 200,
             lastCommonRead = newXChatLastCommonRead,
+            markNotificationsAsRead = !itIsPaused,
             events = syncEvents
         )
         return outcome.persistedNewMessages
@@ -563,16 +603,6 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    // Callers must put a KEY_FIELD_MAP (see getFieldMap/syncer.buildFieldMap) into bundle before
-    // calling this.
-    private suspend fun getAndPersistMessages(bundle: Bundle): Boolean {
-        val fieldMap = requireNotNull(bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as? HashMap<String, Int>) {
-            "getAndPersistMessages requires bundle to carry KEY_FIELD_MAP"
-        }
-        val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
-        return outcome.persistedNewMessages
-    }
-
     private fun isUntranslatedSystemMessage(messagesJson: List<ChatMessageDto>): Boolean =
         syncer.isUntranslatedSystemMessage(messagesJson)
 
@@ -684,6 +714,9 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    override suspend fun failPendingMessagesWithoutSendWork(createdBefore: Long): Int =
+        chatDao.failPendingTempTextMessages(internalConversationId, createdBefore)
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun addTemporaryMessage(
         message: CharSequence,
@@ -776,7 +809,12 @@ class OfflineFirstChatRepository @Inject constructor(
                     sendStatus = SendStatus.PENDING,
                     silent = false
                 )
-                chatDao.upsertChatMessage(entity)
+                // The worker is enqueued before this runs, so a sync may already have stored the server copy.
+                // upsertChatMessagesAndDeleteTemp removed temp messages only at that time, so a placeholder
+                // stored now would stay pending next to the real message.
+                if (!chatDao.upsertTempChatMessageUnlessServerCopyExists(entity)) {
+                    Log.d(TAG, "addUploadPlaceholderMessage: skipped, server copy of $referenceId already stored")
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "addUploadPlaceholderMessage failed for referenceId=$referenceId", e)
                 emit(Result.failure(e))
@@ -786,45 +824,44 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessageByReferenceId(referenceId: String): Boolean =
         chatDao.deleteTempChatMessageIfPending(internalConversationId, referenceId) > 0
 
+    override suspend fun markUploadPlaceholderFailed(referenceId: String) {
+        val entity = chatDao.getTempMessageForConversation(internalConversationId, referenceId, null).firstOrNull()
+        if (entity?.sendStatus == SendStatus.PENDING) {
+            // called from viewModelScope: updateChatMessage is a blocking Room call
+            withContext(Dispatchers.IO) { chatDao.updateChatMessage(entity.copy(sendStatus = SendStatus.FAILED)) }
+        }
+    }
+
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
         messageId: Long,
         text: String
     ): Result<ChatOverallSingleMessage> {
-        val restore = applyLocalEdit(messageId, text)
+        val result = optimisticAction(
+            apply = { applyLocalEdit(messageId, text) },
+            isConfirmed = ::editAccepted,
+            request = { network.editChatMessage(credentials, url, text) }
+        ).onFailure { logger.e(TAG, "Failed to edit chat message $messageId", it) }
 
-        return try {
-            val response = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
-                    network.editChatMessage(credentials, url, text)
-                }
-            }
-            val statusCode = response.ocs?.meta?.statusCode
-            if (statusCode != null && statusCode != HTTP_OK) {
-                // the server refused the edit, e.g. because the message is too old
-                restore?.invoke()
-            } else {
-                persistEditedMessage(messageId, response)
-            }
-            Result.success(response)
-        } catch (e: HttpException) {
-            logger.e(TAG, "Failed to edit chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            logger.e(TAG, "Failed to edit chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        }
+        result.getOrNull()?.takeIf(::editAccepted)?.let { persistEditedMessage(messageId, it) }
+
+        return result
     }
+
+    /**
+     * A status code other than 200 means the server refused the edit, for instance because the
+     * message is too old, and the optimistic edit has to be taken back.
+     */
+    private fun editAccepted(response: ChatOverallSingleMessage): Boolean =
+        response.ocs?.meta?.statusCode.let { it == null || it == HTTP_OK }
 
     /**
      * Writes [text] into the cached message together with the edit metadata the bubble shows, and
      * returns the action that restores the previous version. The revert only applies while the message
      * still carries the local edit, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalEdit(messageId: Long, text: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalEdit(messageId: Long, text: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.message == text) return null
 
@@ -876,39 +913,28 @@ class OfflineFirstChatRepository @Inject constructor(
         url: String,
         messageId: Long,
         deletedPlaceholder: String
-    ): Result<ChatOverallSingleMessage?> {
-        val restore = applyLocalDeletion(messageId, deletedPlaceholder)
-
-        return try {
-            val response = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
+    ): Result<ChatOverallSingleMessage?> =
+        optimisticAction(
+            apply = { applyLocalDeletion(messageId, deletedPlaceholder) },
+            request = {
+                try {
                     network.deleteChatMessage(credentials, url)
+                } catch (e: HttpException) {
+                    if (e.code() != HTTP_NOT_FOUND) throw e
+                    // the server does not know the message any more, so it is gone either way and the
+                    // local deletion stands
+                    logger.w(TAG, "Message $messageId was already gone on the server when deleting it", e)
+                    null
                 }
             }
-            Result.success(response)
-        } catch (e: HttpException) {
-            if (e.code() == HTTP_NOT_FOUND) {
-                // the server does not know the message any more, so it is gone either way
-                logger.w(TAG, "Message $messageId was already gone on the server when deleting it", e)
-                Result.success(null)
-            } else {
-                logger.e(TAG, "Failed to delete chat message $messageId", e)
-                restore?.invoke()
-                Result.failure(e)
-            }
-        } catch (e: IOException) {
-            logger.e(TAG, "Failed to delete chat message $messageId", e)
-            restore?.invoke()
-            Result.failure(e)
-        }
-    }
+        ).onFailure { logger.e(TAG, "Failed to delete chat message $messageId", it) }
 
     /**
      * Renders the message as deleted in the local database and returns the action that puts it back,
      * or null when there was nothing to change. The revert only applies while the message still carries
      * the local deletion, so a server payload that arrived meanwhile stays authoritative.
      */
-    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): (suspend () -> Unit)? {
+    private suspend fun applyLocalDeletion(messageId: Long, deletedPlaceholder: String): Undo? {
         val message = chatDao.getChatMessageEntity(internalConversationId, messageId)
         if (message == null || message.messageType == MESSAGE_TYPE_DELETED) return null
 
@@ -941,12 +967,16 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean> =
         flow {
             try {
+                // Only the text is written: the row is shared with SendMessageWorker, which sets sendStatus.
+                chatDao.updateMessageText(
+                    internalConversationId,
+                    message.jsonMessageId.toLong(),
+                    editedMessageText
+                )
                 val messageToEdit = chatDao.getChatMessageForConversation(
                     internalConversationId,
                     message.jsonMessageId.toLong()
                 ).first()
-                messageToEdit.message = editedMessageText
-                chatDao.upsertChatMessage(messageToEdit)
 
                 val editedMessageModel = messageToEdit.toDomainModel()
                 _updateMessageFlow.emit(editedMessageModel)
@@ -1002,12 +1032,6 @@ class OfflineFirstChatRepository @Inject constructor(
             network.unPinMessage(credentials, url)
         }
 
-    private fun isRetryable(error: Exception): Boolean =
-        when (error) {
-            is HttpException -> error.code() == HTTP_TOO_MANY_REQUESTS || error.code() >= HTTP_INTERNAL_SERVER_ERROR
-            else -> error is IOException
-        }
-
     private suspend fun withLocalPinnedMessage(
         messageId: Long,
         pinned: Boolean,
@@ -1021,23 +1045,14 @@ class OfflineFirstChatRepository @Inject constructor(
             null
         }
 
-        return try {
-            val overall = revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) { request() }
+        return optimisticAction(apply = { restore }, request = request)
+            .onSuccess {
+                // the room refresh that follows is computed after this change reached the server, so
+                // the guard has done its job and must not outlive the request
+                conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
             }
-            // the room refresh that follows is computed after this change reached the server, so the
-            // guard has done its job and must not outlive the request
-            conversationListUpdater.clearPendingPinnedMessage(internalConversationId)
-            Result.success(overall.ocs?.data?.toDomainModel())
-        } catch (e: HttpException) {
-            Log.e(TAG, "Error while pinning or unpinning a message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while pinning or unpinning a message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        }
+            .onFailure { logger.e(TAG, "Error while pinning or unpinning a message", it) }
+            .map { it.ocs?.data?.toDomainModel() }
     }
 
     private fun isChatDataInitialized(): Boolean =
@@ -1051,23 +1066,10 @@ class OfflineFirstChatRepository @Inject constructor(
             null
         }
 
-        return try {
-            revertOnCancellation({ restore?.invoke() }) {
-                withRetry(retries = 1, initialDelayMillis = RETRY_DELAY_MS, retryOn = ::isRetryable) {
-                    network.hidePinnedMessage(credentials, url)
-                }
-            }
-            conversationListUpdater.clearPendingHiddenPinnedMessage(internalConversationId)
-            Result.success(true)
-        } catch (e: HttpException) {
-            Log.e(TAG, "Error while hiding the pinned message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while hiding the pinned message: $e")
-            restore?.invoke()
-            Result.failure(e)
-        }
+        return optimisticAction(apply = { restore }, request = { network.hidePinnedMessage(credentials, url) })
+            .onSuccess { conversationListUpdater.clearPendingHiddenPinnedMessage(internalConversationId) }
+            .onFailure { logger.e(TAG, "Error while hiding the pinned message", it) }
+            .map { true }
     }
 
     override suspend fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
@@ -1273,6 +1275,8 @@ class OfflineFirstChatRepository @Inject constructor(
     companion object {
         val TAG: String = OfflineFirstChatRepository::class.java.simpleName
         private const val HALF_SECOND = 500L
+        private const val LONG_POLLING_FAILURE_INITIAL_DELAY = 1_000L
+        private const val LONG_POLLING_FAILURE_MAX_DELAY = 60_000L
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIES = 1000L
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
@@ -1282,8 +1286,5 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
         private const val HTTP_OK = 200
         private const val HTTP_NOT_FOUND = 404
-        private const val HTTP_TOO_MANY_REQUESTS = 429
-        private const val HTTP_INTERNAL_SERVER_ERROR = 500
-        private const val RETRY_DELAY_MS = 500L
     }
 }

@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
     test:
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         services:
             server:
                 image: ${{ matrix.server == 'stable22' && 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.0:1' || 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.3:latest' }}
@@ -36,7 +36,7 @@ jobs:
 
             -   name: configure server
                 run: |
-                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
+                    sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-system-x86 --yes
                     sudo chmod 666 /dev/kvm
                     docker cp .github/workflows/configServer.sh server:/tmp/
                     docker exec server chmod +x /tmp/configServer.sh
@@ -47,17 +47,10 @@ jobs:
                     docker exec server /usr/local/bin/run.sh
 
             -   name: set up JDK 21
-                uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+                uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
                 with:
                     distribution: "temurin"
-                    java-version: 21
-
-            -   name: Enable KVM group perms
-                run: |
-                    echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                    sudo udevadm control --reload-rules
-                    sudo udevadm trigger --name-match=kvm
-
+                    java-version: 25
 
             -   name: create AVD and generate snapshot for caching
                 uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
@@ -106,7 +99,7 @@ jobs:
                     script: ./gradlew --no-daemon --stacktrace connectedGplayDebugAndroidTest
 
             -   name: Archive Espresso results
-                uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+                uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
                 if: ${{ always() }}
                 with:
                     name: Report-${{ matrix.server }}-${{ matrix.api-level }}

@@ -113,6 +113,18 @@ class BrowserLoginActivity : BaseActivity() {
                             logger.e(TAG, "Post login step failed")
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginTooManyLoginAttempts -> {
+                            logger.e(TAG, "Login refused because of too many failed logins")
+                            Snackbar.make(binding.root, R.string.nc_login_too_many_attempts, Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRemovalPending -> {
+                            logger.e(TAG, "Account removal did not finish in time")
+                            // This login can't be retried here. Back on the previous screen, it can be started again,
+                            // so the message must outlive this activity.
+                            Toast.makeText(context, R.string.nc_account_removal_pending, Toast.LENGTH_LONG).show()
+                            finish()
+                        }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
                         }
