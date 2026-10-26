@@ -95,9 +95,7 @@
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
     <string name="local_time">Am áitiúil: %1$s</string>
     <string name="location_permission_denied">Cead suímh diúltaithe</string>
-    <string name="location_permission_denied_msg">Cumasaigh é i socruithe an aip le do thoil</string>
     <string name="location_services_disabled">Seirbhísí suímh díchumasaithe</string>
-    <string name="location_services_disabled_msg">Cumasaigh seirbhísí suímh (GPS) le go mbeidh tú in ann an ghné seo a úsáid</string>
     <string name="lock_conversation">Cuir glas ar an gcomhrá</string>
     <string name="lock_symbol">Siombail ghlais</string>
     <string name="lower_hand">Lámh íochtair</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
-    <string name="message_search_begin_empty">Gan torthaí cuardaigh</string>
-    <string name="message_search_begin_typing">Tosaigh ag clóscríobh chun cuardach a dhéanamh…</string>
     <string name="message_search_hint">Cuardaigh…</string>
     <string name="message_search_next_result">An chéad toradh cuardaigh eile</string>
     <string name="message_search_no_more_results">Ní bhfuarthas aon teachtaireachtaí eile</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">Faoi</string>
     <string name="nc_account_chooser_active_user">Úsáideoir gníomhach</string>
     <string name="nc_account_chooser_add_account">Cuir cuntas leis</string>
+    <string name="nc_account_removal_pending">Níl an cuntas seo bainte go hiomlán fós. Bain triail as arís i gceann nóiméid, le do thoil.</string>
     <string name="nc_account_scheduled_for_deletion">Tá an cuntas sceidealta le scriosadh, agus ní féidir é a athrú</string>
     <string name="nc_add_attachment">Cuir ceangaltán leis</string>
     <string name="nc_add_emojis">Cuir emojis leis</string>
@@ -141,6 +138,23 @@
     <string name="nc_announcement">Fógra</string>
     <string name="nc_announcement_description">Comhrá do riarthóirí chun lucht féachana socraithe a chur ar an eolas, nach féidir a fhágáil.</string>
     <string name="nc_attendee_pin">Bioráin: %1$s</string>
+    <string name="nc_audio_error_generic">Níorbh fhéidir an fhuaim a sheinm</string>
+    <string name="nc_audio_error_network">Níorbh fhéidir an fhuaim a luchtú. Seiceáil do nasc.</string>
+    <string name="nc_audio_error_unavailable">Níl an comhad fuaime ar fáil</string>
+    <string name="nc_audio_error_unsupported">Ní thacaítear leis an bhformáid fuaime</string>
+    <string name="nc_audio_player_close">Stad an athsheinm</string>
+    <string name="nc_audio_player_next">Ar aghaidh</string>
+    <string name="nc_audio_player_open">Oscail an seinnteoir</string>
+    <string name="nc_audio_player_play_pause">Seinn/sos</string>
+    <string name="nc_audio_player_previous">Roimhe Seo</string>
+    <string name="nc_audio_player_queue">Seinnliosta</string>
+    <string name="nc_audio_player_repeat_all">Athdhéan gach rud</string>
+    <string name="nc_audio_player_repeat_off">Athsheinm as</string>
+    <string name="nc_audio_player_repeat_one">Athuair ceann amháin</string>
+    <string name="nc_audio_player_show_message">Taispeáin teachtaireacht</string>
+    <string name="nc_audio_player_shuffle">Suaitheadh</string>
+    <string name="nc_audio_retry">Atriail an athsheinm</string>
+    <string name="nc_audio_seek">Suíomh athsheinm</string>
     <string name="nc_biometric_unlock">Díghlasáil %1$s</string>
     <string name="nc_bluetooth_permission_hint">Chun cainteoirí Bluetooth a chumasú, deonaigh cead \"Gléasanna in aice láimhe\" le do thoil.</string>
     <string name="nc_call_button_content_description_answer_video_call">Freagair mar fhísghlao</string>
@@ -150,6 +164,7 @@
     <string name="nc_call_button_content_description_hangup">Croch suas</string>
     <string name="nc_call_button_content_description_microphone">Scoránaigh micreafón</string>
     <string name="nc_call_button_content_description_pip">Oscail mód pictiúr-i-pictiúr</string>
+    <string name="nc_call_button_content_description_switch_camera">Athraigh ceamara</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Athraigh go físeán féin</string>
     <string name="nc_call_e2ee_not_supported">Ní thacaítear le glaonna faoi láthair toisc go bhfuil criptiú ceann go ceann cumasaithe ar an bhfreastalaí.</string>
     <string name="nc_call_e2ee_not_supported_title">Níl glao ó %s ar fáil</string>
@@ -164,6 +179,8 @@
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
     <string name="nc_call_ringing">AG FUAIMNIÚ</string>
+    <string name="nc_call_self_video_enlarge">Méadaigh físeán díot féin</string>
+    <string name="nc_call_self_video_shrink">Físeán díot féin a laghdú</string>
     <string name="nc_call_state_in_call">%1$sar glaoch</string>
     <string name="nc_call_state_with_phone">%1$s le fón</string>
     <string name="nc_call_state_with_video">%1$s le físeán</string>
@@ -175,7 +192,7 @@
     <string name="nc_cancel">Cealaigh</string>
     <string name="nc_capabilities_failed">Theip ar na cumais a fháil, ag cur deireadh leis</string>
     <string name="nc_caption">Fotheideal</string>
-    <string name="nc_certificate_dialog_text">An bhfuil muinín agat as an teastas SSL anaithnid go dtí seo, arna eisiúint ag %1$s le haghaidh %2$s, bailí ó %3$s go %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">An bhfuil muinín agat as an deimhniú SSL do %1$s — nach raibh ar eolas go dtí seo — arna eisiúint ag %2$s do %3$s, agus atá bailí ó %4$s go %5$s? Ní bheidh muinín ann ach i gcás %1$s amháin.</string>
     <string name="nc_certificate_dialog_title">Seiceáil an teastas</string>
     <string name="nc_certificate_error">Chuir do shocrú SSL cosc ​​ar cheangal</string>
     <string name="nc_change_cert_auth">Athraigh teastas fíordheimhnithe</string>
@@ -361,10 +378,10 @@
     <string name="nc_lobby_start_soon">Cuirfear tús leis an gcruinniú go luath</string>
     <string name="nc_lobby_waiting">Tá tú ag fanacht sa stocaireacht faoi láthair.</string>
     <string name="nc_location_current_position_description">Do shuíomh reatha</string>
-    <string name="nc_location_permission_required">Tá cead suímh ag teastáil</string>
     <string name="nc_location_unknown">Post anaithnid</string>
     <string name="nc_locked">Faoi ghlas</string>
     <string name="nc_locked_tap_to_unlock">Tapáil chun díghlasáil</string>
+    <string name="nc_login_too_many_attempts">An iomarca iarrachtaí logála isteach nár éirigh leo ón líonra seo. Bain triail as arís níos déanaí.</string>
     <string name="nc_logs_advanced_logging">Logáil ardleibhéil</string>
     <string name="nc_logs_advanced_logging_disable">Díchumasaigh logáil ardleibhéil</string>
     <string name="nc_logs_advanced_logging_enable">Cumasaigh logáil ardleibhéil</string>
@@ -384,7 +401,6 @@
     <string name="nc_logs_share_diagnosis">Tuarascáil diagnóis</string>
     <string name="nc_logs_share_latest_crash">An tuairteáil is déanaí</string>
     <string name="nc_logs_share_no_app_found">Níor aimsíodh aon aip chun an tuairisc a sheoladh.</string>
-    <string name="nc_logs_share_subject">Logaí %1$s</string>
     <string name="nc_logs_title">Logaí</string>
     <string name="nc_logs_total_size">Méid iomlán an loga: %d KB</string>
     <string name="nc_manual">Gan socraithe</string>
@@ -397,6 +413,7 @@
     <string name="nc_message_added_to_notes">Teachtaireacht curtha leis na nótaí</string>
     <string name="nc_message_failed">Theip ar an teachtaireacht a sheoladh</string>
     <string name="nc_message_failed_to_send">Theip ar an teachtaireacht a sheoladh:</string>
+    <string name="nc_message_not_added_to_notes">Níorbh fhéidir an teachtaireacht a chur leis na nótaí</string>
     <string name="nc_message_quote_cancel_reply">Cealaigh freagra</string>
     <string name="nc_message_read">Léadh an teachtaireacht</string>
     <string name="nc_message_scheduled">Teachtaireacht sceidealaithe</string>
@@ -535,6 +552,9 @@
     <string name="nc_server_db_upgrade_needed">Uasghrádaigh do bhunachar sonraí %1$s le do thoil</string>
     <string name="nc_server_failed_to_import_account">Theip ar iompórtáil an chuntais roghnaithe</string>
     <string name="nc_server_helper_text">An nasc chuig do chomhéadan gréasáin %1$s nuair a osclaíonn tú é sa bhrabhsálaí.</string>
+    <string name="nc_server_http_fallback_confirm">Úsáid HTTP</string>
+    <string name="nc_server_http_fallback_message">Níorbh fhéidir ceangal leis an bhfreastalaí trí HTTPS. An mian leat ceangal trí HTTP neamhshlán ina ionad sin?</string>
+    <string name="nc_server_http_fallback_title">Nasc neamhshábháilte</string>
     <string name="nc_server_import_account">Iompórtáil cuntas ón aip %1$s</string>
     <string name="nc_server_import_account_plain">Iompórtáil cuntas</string>
     <string name="nc_server_import_accounts">Iompórtáil cuntais ón aip %1$s</string>

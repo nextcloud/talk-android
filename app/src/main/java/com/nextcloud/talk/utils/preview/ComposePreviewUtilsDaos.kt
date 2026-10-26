@@ -12,6 +12,7 @@ import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
@@ -65,6 +66,9 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         /* */
     }
 
+    override suspend fun hasServerCopyOfReferenceId(internalConversationId: String, referenceId: String): Boolean =
+        false
+
     override fun getChatMessageForConversation(
         internalConversationId: String,
         messageId: Long
@@ -91,6 +95,16 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     }
 
     override fun deleteTempChatMessageIfPending(internalConversationId: String, referenceId: String): Int = 0
+
+    override suspend fun failPendingTempTextMessages(internalConversationId: String, createdBefore: Long): Int = 0
+
+    override fun updateTempMessageSendStatus(
+        internalConversationId: String,
+        referenceId: String,
+        sendStatus: SendStatus
+    ): Int = 0
+
+    override fun updateMessageText(internalConversationId: String, messageId: Long, message: String): Int = 0
 
     override fun updateChatMessage(message: ChatMessageEntity) {
         /* */
@@ -278,6 +292,8 @@ class DummyUserDaoImpl : UsersDao {
 
 class DummyConversationDaoImpl : ConversationsDao {
     override fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>> = flowOf()
+
+    override suspend fun getConversationIdsForUser(accountId: Long): List<String> = emptyList()
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
 

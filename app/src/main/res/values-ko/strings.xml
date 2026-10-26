@@ -63,8 +63,6 @@
     <string name="menu_item_sort_by_size_smallest_first">작은 것 먼저</string>
     <string name="message_deleted_by_you">메시지를 삭제함</string>
     <string name="message_poll_tap_to_open">투표를 열기 위하여 탭하세요.</string>
-    <string name="message_search_begin_empty">결과를 찾을 수 없음</string>
-    <string name="message_search_begin_typing">...를 검색하기 위하여 입력을 시작합니다</string>
     <string name="message_search_hint">...를 검색</string>
     <string name="messages">메시지</string>
     <string name="mute_all_notifications">모든 알림을 음소거</string>
@@ -81,6 +79,8 @@
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>
     <string name="nc_attendee_pin">핀: %1$s</string>
+    <string name="nc_audio_player_next">다음</string>
+    <string name="nc_audio_player_previous">이전</string>
     <string name="nc_biometric_unlock">%1$s 잠금 해제</string>
     <string name="nc_call_button_content_description_answer_video_call">영상 통화로 응답합니다.</string>
     <string name="nc_call_button_content_description_answer_voice_only">영상 통화로만 응답합니다.</string>
@@ -88,6 +88,7 @@
     <string name="nc_call_button_content_description_camera">카메라 전환</string>
     <string name="nc_call_button_content_description_hangup">끊기</string>
     <string name="nc_call_button_content_description_microphone">마이크 전환</string>
+    <string name="nc_call_button_content_description_switch_camera">카메라 전환</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">셀프 영상으로 전환</string>
     <string name="nc_call_name">대화명</string>
     <string name="nc_call_notifications">전화 알림</string>
@@ -99,7 +100,6 @@
     <string name="nc_call_voice">%s 음성 통화</string>
     <string name="nc_cancel">취소</string>
     <string name="nc_capabilities_failed">기능을 가져올 수 없음,  중단함</string>
-    <string name="nc_certificate_dialog_text">%1$s에서 %2$s에게 발급한 %3$s부터 %4$s까지 유효한 알 수 없는 인증서를 신뢰하시겠습니까?</string>
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_error">SSL 설정에서 연결을 거부함</string>
     <string name="nc_change_cert_auth">인증서 변경</string>
@@ -221,7 +221,6 @@
     <string name="nc_lobby_start_soon">회의가 곧 시작됩니다.</string>
     <string name="nc_lobby_waiting">현재 로비에서 대기중</string>
     <string name="nc_location_current_position_description">당신의 현재 위치</string>
-    <string name="nc_location_permission_required">위치 사용 권한이 필요합니다.</string>
     <string name="nc_location_unknown">위치를 알 수 없음</string>
     <string name="nc_locked">잠긴</string>
     <string name="nc_locked_tap_to_unlock">탭하여 잠금해제</string>

@@ -14,6 +14,7 @@ import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.utils.Undo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -114,6 +115,21 @@ class ConversationListUpdater @Inject constructor(
         pendingUnreadFlags.remove(internalConversationId)
     }
 
+    /**
+     * Marking read replaces a pending mark as unread of the same conversation, whose work is cancelled
+     * and never releases its guard. Federated conversations send no [lastReadMessage] to guard.
+     */
+    fun switchToPendingMarkAsRead(internalConversationId: String, lastReadMessage: Int?) {
+        clearPendingUnread(internalConversationId)
+        lastReadMessage?.let { markPendingReadMarker(internalConversationId, it) }
+    }
+
+    /** Marking unread replaces a pending read marker of the same conversation, for the same reason. */
+    fun switchToPendingMarkAsUnread(internalConversationId: String) {
+        pendingReadMarkers.remove(internalConversationId)
+        markPendingUnread(internalConversationId)
+    }
+
     fun markPendingArchived(internalConversationId: String, archived: Boolean) {
         pendingArchivedFlags[internalConversationId] = archived
     }
@@ -144,7 +160,8 @@ class ConversationListUpdater @Inject constructor(
      * conversation list reflects it immediately — before (and independent of) the read marker
      * reaching the server. The unread count is recounted from the cached messages above the new
      * marker. The server stays the authority: the next room list sync re-asserts its state, with
-     * [pendingReadMarkers] bridging the window until the marker's delivery is confirmed.
+     * [pendingReadMarkers] bridging the window until the marker's delivery is confirmed. Like marking
+     * read from the list, it replaces a pending mark as unread.
      */
     suspend fun updateLocalReadState(target: ChatMessageSyncer.SyncTarget, lastReadMessage: Int) {
         val conversation =
@@ -154,7 +171,7 @@ class ConversationListUpdater @Inject constructor(
             messageId = lastReadMessage.toLong(),
             excludedActorId = target.user.userId!!
         )
-        pendingReadMarkers[target.internalConversationId] = lastReadMessage
+        switchToPendingMarkAsRead(target.internalConversationId, lastReadMessage)
         conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
         Log.d(TAG, "Local read state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
     }
@@ -166,7 +183,8 @@ class ConversationListUpdater @Inject constructor(
      *
      * The guard for this is [pendingUnreadFlags], not [pendingReadMarkers]: a read marker that moves
      * backwards can only be recognised as "not yet reflected by the server" through the unread count,
-     * since the server keeps reporting the higher marker until it has processed the new one.
+     * since the server keeps reporting the higher marker until it has processed the new one. A pending
+     * read marker is dropped, as it would keep the unread count from following the server.
      *
      * The unread count is derived from the cached messages, own messages included - the marker now sits
      * below them, so they are unread as well - and never falls below one, for the case where the cache
@@ -181,7 +199,7 @@ class ConversationListUpdater @Inject constructor(
         )
         val unreadMessages = maxOf(countedMessages, 1)
 
-        markPendingUnread(target.internalConversationId)
+        switchToPendingMarkAsUnread(target.internalConversationId)
         conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
         Log.d(TAG, "Local unread state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
     }
@@ -195,7 +213,7 @@ class ConversationListUpdater @Inject constructor(
         target: ChatMessageSyncer.SyncTarget,
         messageId: Long,
         pinned: Boolean
-    ): (suspend () -> Unit)? {
+    ): Undo? {
         val conversation = withContext(Dispatchers.IO) {
             conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
         } ?: return null
@@ -234,10 +252,7 @@ class ConversationListUpdater @Inject constructor(
      * instead of after the request and the room refresh that follows it. Returns the action that
      * brings it back, or null when the conversation isn't cached.
      */
-    suspend fun updateLocalHiddenPinnedMessage(
-        target: ChatMessageSyncer.SyncTarget,
-        messageId: Long
-    ): (suspend () -> Unit)? {
+    suspend fun updateLocalHiddenPinnedMessage(target: ChatMessageSyncer.SyncTarget, messageId: Long): Undo? {
         val conversation = withContext(Dispatchers.IO) {
             conversationsDao.getConversationForUser(target.accountId, target.roomToken).first()
         } ?: return null

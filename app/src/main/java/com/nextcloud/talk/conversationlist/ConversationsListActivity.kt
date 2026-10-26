@@ -32,7 +32,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.Data
@@ -52,6 +54,12 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.audio.ChatAudioKey
+import com.nextcloud.talk.chat.audio.ChatAudioPlayer
+import com.nextcloud.talk.chat.audio.ChatAudioSpeeds
+import com.nextcloud.talk.chat.audio.ChatAudioStore
+import com.nextcloud.talk.chat.audio.openMessageExtras
+import com.nextcloud.talk.chat.audio.openMessageIntent
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
@@ -78,6 +86,8 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
+import com.nextcloud.talk.ui.chat.ChatAudioPlayerHost
+import com.nextcloud.talk.ui.chat.chatAudioPlayerCallbacks
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -123,12 +133,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -163,6 +175,14 @@ class ConversationsListActivity : BaseActivity() {
     lateinit var remoteWipeHandler: RemoteWipeHandler
 
     val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser) }
+
+    @Inject
+    lateinit var chatAudioStore: ChatAudioStore
+
+    @Inject
+    lateinit var chatAudioSpeeds: ChatAudioSpeeds
+
+    private lateinit var chatAudioPlayer: ChatAudioPlayer
 
     val conversationsListViewModel: ConversationsListViewModel by assistedViewModels {
         conversationsListViewModelFactory.build(currentUser)
@@ -216,10 +236,24 @@ class ConversationsListActivity : BaseActivity() {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (forwardMessage) {
-                finish()
+                cancelForwarding()
             } else {
                 finishAffinity()
             }
+        }
+    }
+
+    // The source chat finished itself when forwarding started and this list may be the one below it, so finishing
+    // here would fall back to MainActivity. Instead leave the forward mode and return to the source chat.
+    private fun cancelForwarding() {
+        val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        intent.removeExtra(KEY_FORWARD_MSG_FLAG)
+        intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+        intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        forwardMessageState.value = false
+        conversationsListViewModel.setHideRoomToken(null)
+        if (sourceRoomToken != null) {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, sourceRoomToken))
         }
     }
 
@@ -228,6 +262,8 @@ class ConversationsListActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         currentUser = setUpBoundUserOrFinish() ?: return
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
+        chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
+        lifecycle.addObserver(chatAudioPlayer)
 
         if (!currentUser.current) {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
@@ -243,12 +279,22 @@ class ConversationsListActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+        val audioPlayerCallbacks = chatAudioPlayerCallbacks(
+            player = chatAudioPlayer,
+            speeds = chatAudioSpeeds,
+            scope = lifecycleScope,
+            onOpenMessage = { key, threadId -> openAudioMessage(key, threadId) }
+        )
         setContent {
             ConversationsListScreen(
                 viewModel = conversationsListViewModel,
                 tagsViewModel = conversationTagsViewModel,
                 state = buildScreenState(),
-                callbacks = buildScreenCallbacks()
+                callbacks = buildScreenCallbacks(),
+                audioPlayer = {
+                    val audioState by chatAudioPlayer.state.collectAsStateWithLifecycle()
+                    ChatAudioPlayerHost(state = audioState, callbacks = audioPlayerCallbacks)
+                }
             )
         }
 
@@ -696,6 +742,19 @@ class ConversationsListActivity : BaseActivity() {
         startActivity(intent)
     }
 
+    /**
+     * Opens the chat of an audio message at the message, in its thread if it has one; messages of another account
+     * switch to that account.
+     */
+    private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
+        if (key.internalUserId == currentUser?.id) {
+            val extras = key.openMessageExtras(threadId)
+            startActivity(ChatActivity.createIntent(context, key.internalUserId, key.roomToken, extras))
+        } else {
+            startActivity(key.openMessageIntent(this, threadId))
+        }
+    }
+
     fun filterConversation() {
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
     }
@@ -939,43 +998,54 @@ class ConversationsListActivity : BaseActivity() {
                 return
             }
 
-            val fileNamesWithLineBreaks = StringBuilder("\n")
-            for (file in filesToShare!!) {
-                val filename = FileUtils.getFileName(file.toUri(), context)
-                fileNamesWithLineBreaks.append(filename).append("\n")
-            }
-            val confirmationQuestion: String = if (filesToShare!!.size == 1) {
-                String.format(
-                    resources!!.getString(R.string.nc_upload_confirm_send_single),
-                    selectedConversation!!.displayName
-                )
-            } else {
-                String.format(
-                    resources!!.getString(R.string.nc_upload_confirm_send_multiple),
-                    selectedConversation!!.displayName
-                )
-            }
-            val dialogBuilder = MaterialAlertDialogBuilder(this)
-                .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
-                .setTitle(confirmationQuestion)
-                .setMessage(fileNamesWithLineBreaks.toString())
-                .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    openConversation()
+            val conversation = selectedConversation
+            val files = filesToShare ?: return
+            lifecycleScope.launch {
+                // the share intent hands over uris of other apps: querying their names is a binder call
+                val fileNamesWithLineBreaks = withContext(Dispatchers.IO) {
+                    files.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
+                        FileUtils.getFileName(it.toUri(), context)
+                    }
                 }
-                .setNegativeButton(R.string.nc_no) { _, _ ->
-                    Log.d(TAG, "sharing files aborted, going back to share-to screen")
-                }
-
-            viewThemeUtils.dialog
-                .colorMaterialAlertDialogBackground(this, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
+                // another conversation was picked while the names were read: that click shows its own dialog
+                if (selectedConversation !== conversation || filesToShare !== files) return@launch
+                showSendFilesConfirmDialog(fileNamesWithLineBreaks)
+            }
         } else {
             UploadAndShareFilesWorker.requestStoragePermission(this)
         }
+    }
+
+    private fun showSendFilesConfirmDialog(fileNamesWithLineBreaks: String) {
+        val confirmationQuestion: String = if (filesToShare!!.size == 1) {
+            String.format(
+                resources!!.getString(R.string.nc_upload_confirm_send_single),
+                selectedConversation!!.displayName
+            )
+        } else {
+            String.format(
+                resources!!.getString(R.string.nc_upload_confirm_send_multiple),
+                selectedConversation!!.displayName
+            )
+        }
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
+            .setTitle(confirmationQuestion)
+            .setMessage(fileNamesWithLineBreaks)
+            .setPositiveButton(R.string.nc_yes) { _, _ ->
+                openConversation()
+            }
+            .setNegativeButton(R.string.nc_no) { _, _ ->
+                Log.d(TAG, "sharing files aborted, going back to share-to screen")
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun clearIntentAction() {
@@ -1193,10 +1263,6 @@ class ConversationsListActivity : BaseActivity() {
 
             val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, it.token, bundle)
 
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser.capabilities?.spreedCapability)) {
-                showSnackbar(context.getString(R.string.nc_call_e2ee_not_supported))
-                return@let
-            }
             val pp = ParticipantPermissions(currentUser.capabilities?.spreedCapability, it)
             if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
                 Log.e(TAG, "Error starting call from conversations list: call is forbidden")
@@ -1328,7 +1394,7 @@ class ConversationsListActivity : BaseActivity() {
     @SuppressLint("StringFormatInvalid")
     private fun showLeaveConversationSnackbar(conversation: ConversationModel) {
         val token = conversation.token ?: return
-        conversationsListViewModel.markConversationPendingLeave(token)
+        conversationsListViewModel.markConversationPendingRemoval(token)
         lifecycleScope.launch {
             val result = snackbarHostState.showSnackbar(
                 message = String.format(resources.getString(R.string.left_conversation), conversation.displayName),
@@ -1336,7 +1402,7 @@ class ConversationsListActivity : BaseActivity() {
                 duration = SnackbarDuration.Long
             )
             when (result) {
-                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingLeave(token)
+                SnackbarResult.ActionPerformed -> conversationsListViewModel.clearConversationPendingRemoval(token)
                 SnackbarResult.Dismissed -> leaveConversation(conversation)
             }
         }
@@ -1364,11 +1430,11 @@ class ConversationsListActivity : BaseActivity() {
                             resources.getString(R.string.nc_shortcut_conversation_deleted)
                         )
                     }
-                    conversationsListViewModel.onConversationLeft(currentUser, token)
+                    conversationsListViewModel.onConversationRemoved(currentUser, token)
                 }
                 WorkInfo.State.FAILED -> {
                     logger.e(TAG, "LeaveConversationWorker failed for token $token")
-                    conversationsListViewModel.clearConversationPendingLeave(token)
+                    conversationsListViewModel.clearConversationPendingRemoval(token)
                     showSnackbar(resources.getString(R.string.nc_common_error_sorry))
                 }
                 else -> {}
@@ -1385,6 +1451,7 @@ class ConversationsListActivity : BaseActivity() {
             .setTitle(R.string.nc_delete_call)
             .setMessage(R.string.nc_delete_conversation_more)
             .setPositiveButton(R.string.nc_delete) { _, _ ->
+                conversation.token?.let { conversationsListViewModel.markConversationPendingRemoval(it) }
                 deleteConversation(conversation)
             }
             .setNegativeButton(R.string.nc_cancel) { _, _ ->
@@ -1652,33 +1719,39 @@ class ConversationsListActivity : BaseActivity() {
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
             .observeForever { workInfo: WorkInfo? ->
-                if (workInfo != null) {
-                    when (workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            currentUser.id?.let { userId ->
-                                ShortcutManagerHelper.disableConversationShortcut(
-                                    context,
-                                    conversation.token,
-                                    userId,
-                                    context.resources.getString(R.string.nc_shortcut_conversation_deleted)
-                                )
-                            }
-                            showSnackbar(
-                                String.format(
-                                    context.resources.getString(R.string.deleted_conversation),
-                                    conversation.displayName
-                                )
+                when (workInfo?.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        currentUser.id?.let { userId ->
+                            ShortcutManagerHelper.disableConversationShortcut(
+                                context,
+                                conversation.token,
+                                userId,
+                                context.resources.getString(R.string.nc_shortcut_conversation_deleted)
                             )
-                            fetchRooms(forceFullSync = true)
                         }
+                        // the worker only deletes the room on the server, so the entry has to stay
+                        // hidden until the full sync that drops it locally has landed
+                        conversation.token?.let { conversationsListViewModel.onConversationRemoved(currentUser, it) }
+                        showSnackbar(
+                            String.format(
+                                context.resources.getString(R.string.deleted_conversation),
+                                conversation.displayName
+                            )
+                        )
+                    }
 
-                        WorkInfo.State.FAILED -> {
-                            logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
-                            showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
-                        }
+                    WorkInfo.State.FAILED -> {
+                        logger.e(TAG, "DeleteConversationWorker failed for token ${conversation.token}")
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                        showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
+                    }
 
-                        else -> {
-                        }
+                    WorkInfo.State.CANCELLED -> {
+                        // nothing was deleted, so the entry must not stay hidden
+                        conversation.token?.let { conversationsListViewModel.clearConversationPendingRemoval(it) }
+                    }
+
+                    else -> {
                     }
                 }
             }

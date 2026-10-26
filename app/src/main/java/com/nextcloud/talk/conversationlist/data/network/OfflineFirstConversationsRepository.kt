@@ -26,6 +26,7 @@ import com.nextcloud.talk.extensions.isPowerSaveMode
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.withRetry
@@ -249,6 +250,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
         val accountId = user.id!!
         val includeStatus = modifiedSince == null && isUserStatusAvailable(user)
 
+        // taken before the request: a conversation that is written locally while it is in flight is
+        // not something the response can be read as having left out
+        val knownBeforeRequest = dao.getConversationIdsForUser(accountId).toSet()
+
         val roomList = withRetry(
             retries = NETWORK_FETCH_RETRIES,
             initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
@@ -284,6 +289,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 emptyList()
             } else {
                 determineLeftConversationIds(previousConversations, conversationsFromSync)
+                    .filter { it in knownBeforeRequest }
             }
         )
 
@@ -428,6 +434,11 @@ class OfflineFirstConversationsRepository @Inject constructor(
         when {
             !user.hasSpreedFeatureCapability(SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value) -> {
                 Log.d(TAG, "Server lacks ${SpreedFeatures.CHAT_KEEP_NOTIFICATIONS.value}, skipping message catch-up")
+                false
+            }
+
+            !CapabilitiesUtil.isChatPreloadAllowed(user.capabilities?.spreedCapability) -> {
+                Log.d(TAG, "Server turned off preloading, skipping message catch-up")
                 false
             }
 

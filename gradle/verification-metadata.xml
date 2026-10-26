@@ -18,7 +18,6 @@
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
          <trusted-key id="03C123038C20AAE9E286C857479D601F3A7B5C1A" group="com.github.ajalt.clikt"/>
-         <trusted-key id="03D5EBC6C81161316CF21CEE1592D9DA6586CF26" group="^com[.]afollestad($|([.].*))" regex="true"/>
          <trusted-key id="042B29E928995B9DB963C636C7CA19B7B620D787" group="com.github.stephenc.jcip" name="jcip-annotations" version="1.0-1"/>
          <trusted-key id="04543577D6A9CC626239C50C7ECBD740FF06AEB5">
             <trusting group="org.glassfish.jaxb"/>
@@ -37,15 +36,19 @@
          <trusted-key id="0D5D634755737A19ABBE2930D4DA5EAB3CD7E958" group="com.google.devtools.ksp" name="symbol-processing-api" version="1.7.0-1.0.6"/>
          <trusted-key id="0E225917414670F4442C250DFD533C07C264648F">
             <trusting group="androidx.activity"/>
+            <trusting group="androidx.annotation"/>
             <trusting group="androidx.appcompat"/>
             <trusting group="androidx.constraintlayout"/>
             <trusting group="androidx.core"/>
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
+            <trusting group="androidx.emoji2"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.media3"/>
+            <trusting group="androidx.room"/>
             <trusting group="androidx.sqlite"/>
             <trusting group="androidx.work"/>
+            <trusting group="com.google.android.datatransport"/>
             <trusting group="com.google.android.gms"/>
             <trusting group="com.google.firebase"/>
             <trusting group="^androidx[.]camera($|([.].*))" regex="true"/>
@@ -76,6 +79,7 @@
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.0"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.1"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.2"/>
+            <trusting group="androidx.fragment"/>
             <trusting group="androidx.graphics"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.media3"/>
@@ -116,6 +120,7 @@
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.2"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.2.3"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.3.0"/>
+            <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="6.4.0"/>
          </trusted-key>
          <trusted-key id="1597AB231B7ADD7E14B1D9C43F00DB67AE236E2E">
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.2"/>
@@ -123,6 +128,7 @@
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.5.2"/>
          </trusted-key>
          <trusted-key id="162D99106A441E7F4EC718AA709FFA533688A5C7" group="me.saket.bytesize"/>
+         <trusted-key id="18DF0EB86C2DB754FB4F00C3EFE7D4CEC12C4DDD" group="org.bytedeco" name="javacpp" version="1.5.14"/>
          <trusted-key id="190D5A957FF22273E601F7A7C92C5FEC70161C62" group="org.apache" name="apache" version="18"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638" group="org.checkerframework"/>
          <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
@@ -138,6 +144,7 @@
          <trusted-key id="1EB0CEA42D72C81A21C6B83F0A5DB758AC25D049">
             <trusting group="org.maplibre.gl" name="android-sdk" version="13.0.2"/>
             <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.0.2"/>
+            <trusting group="org.maplibre.gl" name="android-sdk-opengl" version="13.6.1"/>
          </trusted-key>
          <trusted-key id="20723A6399BC060154283B37CFAE163B64AC9189">
             <trusting group="org.jetbrains.androidx.lifecycle"/>
@@ -164,7 +171,10 @@
          <trusted-key id="2E3A1AFFE42B5F53AF19F780BCF4173966770193" group="org.jetbrains" name="annotations" version="13.0"/>
          <trusted-key id="2E92113263FC31C74CCBAAB20E91C2DE43B72BB1" group="org.ec4j.core"/>
          <trusted-key id="2EE890070AE9318C3AD3520CE08F28E25BD93E9F" group="com.google.testparameterinjector"/>
-         <trusted-key id="2FC53E6B1F681184F4CCD637F5C81DE10A0B8ECC" group="org.yaml" name="snakeyaml" version="2.4"/>
+         <trusted-key id="2FC53E6B1F681184F4CCD637F5C81DE10A0B8ECC">
+            <trusting group="org.yaml" name="snakeyaml" version="2.4"/>
+            <trusting group="org.yaml" name="snakeyaml" version="2.6"/>
+         </trusted-key>
          <trusted-key id="3051D45031E13516A6E8FAFF280D66A55F5316C5">
             <trusting group="org.bitbucket.b_c" name="jose4j" version="0.7.0"/>
             <trusting group="org.bitbucket.b_c" name="jose4j" version="0.9.5"/>
@@ -190,7 +200,6 @@
             <trusting group="org.osmdroid" name="osmdroid-android" version="6.1.18"/>
             <trusting group="org.osmdroid" name="osmdroid-android" version="6.1.20"/>
          </trusted-key>
-         <trusted-key id="3D9CDB50E2EAB3AA068D74A188518C11ADAEFC68" group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.28"/>
          <trusted-key id="3F05DDA9F317301E927136D417A27CE7A60FF5F0" group="io.opentelemetry"/>
          <trusted-key id="4021EEEAFF5DE8404DCD0A270AA3E5C3D232E79B" group="jakarta.inject" name="jakarta.inject-api" version="2.0.1"/>
          <trusted-key id="4161A24D2E7F660FCFDB6AAFAE094C852B4EE5DC">
@@ -200,7 +209,10 @@
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.3"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.7.4"/>
          </trusted-key>
-         <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4" group="org.jspecify" name="jspecify" version="1.0.0"/>
+         <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4">
+            <trusting group="org.jspecify" name="jspecify" version="1.0.0"/>
+            <trusting group="org.jspecify" name="jspecify" version="1.0.1"/>
+         </trusted-key>
          <trusted-key id="44FBDBBC1A00FE414F1C1873586654072EAD6677" group="org.sonatype.oss" name="oss-parent" version="9"/>
          <trusted-key id="474DA67C32063DCA7FFE9CB5760F395DC40D55A7" group="io.noties.markwon"/>
          <trusted-key id="47504B76CF89C15C0512D9AFE16AB52D79FD224F">
@@ -210,7 +222,10 @@
          </trusted-key>
          <trusted-key id="475F3B8E59E6E63AA78067482C7B12F2A511E325" group="org.slf4j"/>
          <trusted-key id="4791825BDEA86EB9286A2ACE88BB19A33A18445F" group="net.ltgt.gradle.incap" name="incap" version="0.2"/>
-         <trusted-key id="47BF592261CD1A8A69B703B4E0CB7823CFD00FBF" group="com.jakewharton.timber" name="timber" version="5.0.1"/>
+         <trusted-key id="47BF592261CD1A8A69B703B4E0CB7823CFD00FBF">
+            <trusting group="com.jakewharton.android.repackaged" name="dalvik-dx" version="9.0.0_r3"/>
+            <trusting group="com.jakewharton.timber" name="timber" version="5.0.1"/>
+         </trusted-key>
          <trusted-key id="47EB6836245D2D40E89DFB4136D4E9618F3ADAB5" group="^io[.]github($|([.].*))" regex="true"/>
          <trusted-key id="48B086A7D843CFA258E83286928FBF39003C0425">
             <trusting group="org.springframework" name="spring-framework-bom" version="5.3.31"/>
@@ -225,6 +240,7 @@
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.1"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.2"/>
             <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.6.3"/>
+            <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.7.0"/>
          </trusted-key>
          <trusted-key id="4A2E4BE286EDAE3ADB3A3C26C21CE653B639E41A" group="com.bluelinelabs"/>
          <trusted-key id="4BF79B8259007B566D2FCE82296CD27F60EED12C" group="com.google.crypto.tink" name="tink" version="1.7.0"/>
@@ -249,6 +265,7 @@
          <trusted-key id="5897253BEA3046AEEA95A067E93671C7272B7B3F" group="org.jdom" name="jdom2" version="2.0.6"/>
          <trusted-key id="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4" group="org.eclipse.jetty" name="jetty-bom" version="9.4.54.v20240208"/>
          <trusted-key id="59B06224FD8912E36603BE79FEFE78456EDDC34A" group="io.mockk"/>
+         <trusted-key id="5DD80B0DDCCBE005F0A47FD66751E1A6E2001B8D" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="5F6C2148AD4911FE308110E5F0D0AE433308B042" group="io.gitlab.arturbosch.detekt"/>
          <trusted-key id="600EA202B1EC682F4A788E5AAC7A514BC9F9BB70" group="io.opencensus" name="opencensus-api" version="0.31.0"/>
          <trusted-key id="60200AC4AE761F1614D6C46766D68DAA073BE985">
@@ -267,9 +284,11 @@
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.16.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.17.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.18.0"/>
+            <trusting group="net.zetetic" name="sqlcipher-android" version="4.19.1"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.9.0"/>
          </trusted-key>
          <trusted-key id="635EE627345F3C1DD422B2E207D3516820BCF6B1" group="com.github.ben-manes.caffeine" name="caffeine" version="2.9.3"/>
+         <trusted-key id="638DBA7FF338F537EACB7AC0AE1B9D6007DDFA7C" group="com.google.testparameterinjector"/>
          <trusted-key id="64B9B09F164AA0BF88742EB61188B69F6D6259CA" group="com.google.accompanist"/>
          <trusted-key id="666A4692CE11B7B3F4EB7B3410066A9707090CF9" group="org.javassist" name="javassist" version="3.26.0-GA"/>
          <trusted-key id="694621A7227D8D5289699830ABE9F3126BB741C1" group="^com[.]google($|([.].*))" regex="true"/>
@@ -336,6 +355,7 @@
             <trusting group="org.jetbrains.intellij.deps"/>
             <trusting group="org.jetbrains.kotlinx"/>
          </trusted-key>
+         <trusted-key id="8DF3B0AA23ED78BE5233F6C2DEA3D207428EF16D" group="com.linkedin.dexmaker"/>
          <trusted-key id="8E3A02905A1AE67E7B0F9ACD3967D4EDA591B991" group="org.jetbrains.kotlinx" name="kotlinx-html-jvm" version="0.8.1"/>
          <trusted-key id="8F9A3C6D105B9F57844A721D79E193516BE7998F">
             <trusting group="org.dom4j" name="dom4j" version="2.1.4"/>
@@ -401,12 +421,6 @@
          <trusted-key id="AFCC4C7594D09E2182C60E0F7A01B0F236E5430F" group="com.google.code.gson"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
          <trusted-key id="B087A0EB8416563AFE64CEBA4604091C01C3086A" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.4"/>
-         <trusted-key id="B17136D06153558101DB7DF723778689FBFBE047">
-            <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.29"/>
-            <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.30"/>
-            <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.31"/>
-            <trusting group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.32"/>
-         </trusted-key>
          <trusted-key id="B2F967B67DADC1F07172DBDADE453E55DC86FC9B" group="co.touchlab"/>
          <trusted-key id="B41089A2DA79B0FA5810252872385FF0AF338D52">
             <trusting group="joda-time" name="joda-time" version="2.12.6"/>
@@ -417,6 +431,7 @@
             <trusting group="joda-time" name="joda-time" version="2.14.1"/>
             <trusting group="joda-time" name="joda-time" version="2.14.2"/>
             <trusting group="joda-time" name="joda-time" version="2.14.3"/>
+            <trusting group="joda-time" name="joda-time" version="2.15.0"/>
          </trusted-key>
          <trusted-key id="B6E73D84EA4FCC47166087253FAAD2CD5ECBB314">
             <trusting group="org.apache.commons"/>
@@ -471,11 +486,17 @@
          <trusted-key id="DB0597E3144342256BC81E3EC727D053C4481CF5" group="org.tensorflow" name="tensorflow-lite-metadata"/>
          <trusted-key id="DBD5E1CF4A7FF3D8CA7459D8C020E96222A31FB3" group="net.swiftzer.semver" name="semver" version="1.1.1"/>
          <trusted-key id="DBD744ACE7ADE6AA50DD591F66B50994442D2D40" group="^com[.]squareup($|([.].*))" regex="true"/>
-         <trusted-key id="DF25D3C4868FEC177182FAD64D176DC503FB4267" group="io.coil-kt"/>
+         <trusted-key id="DF25D3C4868FEC177182FAD64D176DC503FB4267">
+            <trusting group="io.coil-kt"/>
+            <trusting group="io.coil-kt.coil3"/>
+         </trusted-key>
          <trusted-key id="E376140124BED4E3C06D227581C27DE945332233" group="^com[.]google[.]auto($|([.].*))" regex="true"/>
          <trusted-key id="E3A9F95079E84CE201F7CF60BEDE11EAF1164480" group="org.hamcrest"/>
          <trusted-key id="E4AC7874F3479A0F1F8ECF9960BB45F36B649F22" group="fr.dudie" name="nominatim-api" version="3.4"/>
-         <trusted-key id="E52F07877A5805F9AF4AB0ACD46C5610D06E7001" group="com.ibm.icu" name="icu4j" version="77.1"/>
+         <trusted-key id="E52F07877A5805F9AF4AB0ACD46C5610D06E7001">
+            <trusting group="com.ibm.icu" name="icu4j" version="77.1"/>
+            <trusting group="com.ibm.icu" name="icu4j" version="78.3"/>
+         </trusted-key>
          <trusted-key id="E77417AC194160A3FABD04969A259C7EE636C5ED" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="E7DC75FC24FB3C8DFE8086AD3D5839A2262CBBFB" group="org.jetbrains.kotlinx"/>
          <trusted-key id="E82D2EAF2E83830CE1F7F6BE571A5291E827E1C7" group="net.java" name="jvnet-parent" version="3"/>
@@ -495,7 +516,10 @@
          <trusted-key id="F3184BCD55F4D016E30D4C9BF42E87F9665015C9" group="org.jsoup" name="jsoup" version="1.12.2"/>
          <trusted-key id="F3BD845679DD6A30F3F50F91597852B0B140F0BC" group="com.caverock" name="androidsvg-aar" version="1.4"/>
          <trusted-key id="F3FF33E96F18AA62DD580F9651FBF517CE6D6B80" group="gradle" name="gradle"/>
-         <trusted-key id="F4DD59C90148BDC52BEB90A4530AA5F25C25011F" group="^org[.]apache($|([.].*))" regex="true"/>
+         <trusted-key id="F4DD59C90148BDC52BEB90A4530AA5F25C25011F">
+            <trusting group="commons-io" name="commons-io" version="2.22.0"/>
+            <trusting group="^org[.]apache($|([.].*))" regex="true"/>
+         </trusted-key>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A" group="org.apache" name="apache"/>
          <trusted-key id="FA7929F83AD44C4590F6CC6815C71C0A4E0B8EDD" group="net.java.dev.jna"/>
          <trusted-key id="FAABC3738B1F58DA2D776FA2EB380DC13C39F675" group="com.intellij" name="annotations" version="12.0"/>
@@ -1717,6 +1741,11 @@
             <sha256 value="271a09ce8d1cd55d259074fc73c3e4baef9d7d399ed49165b7c5e79782bbd819" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="androidx.compose" name="compose-bom" version="2026.09.00">
+         <artifact name="compose-bom-2026.09.00.pom">
+            <sha256 value="74791c31313009659bd0bf09008bd514a163aa04452dd4cb82df2fb971c757c3" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
       <component group="androidx.compose.animation" name="animation" version="1.10.0">
          <artifact name="animation-1.10.0.module">
             <sha256 value="2158c1b57ce292ac2fd0d1541ece2cd08bbfbbd80aa6417a0668076693855458" origin="Generated by Gradle"/>
@@ -1919,6 +1948,11 @@
       <component group="androidx.compose.animation" name="animation-core" version="1.11.4">
          <artifact name="animation-core-1.11.4.module">
             <sha256 value="d0567aec03a5a8fcd8e909fa84ab9727389e292e1952640186e40a5ba50780f8" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="androidx.compose.animation" name="animation-core" version="1.2.1">
+         <artifact name="animation-core-1.2.1.module">
+            <sha256 value="9083ac53ad162f4167ecfb895469943504f4cd6a624e612936a5209144c5b6bf" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="androidx.compose.animation" name="animation-core" version="1.7.7">
@@ -3417,7 +3451,7 @@
             <sha256 value="1943daa4a3412861b9a2bdc1a7c8c2ff05d9b8191c1d3e56ebb223d2eb4a8526" origin="Generated by Gradle"/>
          </artifact>
          <artifact name="ui-1.0.1.module">
-            <sha256 value="57031a6ac9b60e5b56792ebf5cde6e16812ff566ed9190cbd188b00b46c13779" origin="Generated by Gradle"/>
+            <sha256 value="57031a6ac9b60e5b56792ebf5cde6e16812ff566ed9190cbd188b00b46c13779" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="androidx.compose.ui" name="ui" version="1.10.0">
@@ -5670,6 +5704,11 @@
          </artifact>
          <artifact name="core-1.19.0.module">
             <sha256 value="54a4e456f3f7110e91a3d30196cadd98a7478691679f5d63f2c4023a48d2ec61" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="androidx.core" name="core" version="1.19.1">
+         <artifact name="core-1.19.1.aar">
+            <sha256 value="08108ea780205bd54603088a62a6dd5378f63bd25542674be24cd4cdb8191a09" origin="Generated by Gradle"/>
          </artifact>
       </component>
       <component group="androidx.core" name="core" version="1.2.0">
@@ -11353,54 +11392,6 @@
          </artifact>
          <artifact name="kermit-core-debug.aar">
             <sha256 value="070e91be156e7ff4885cf3d705ce21d41f1ccf10bd70fbf7a0816ee7016c480f" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad" name="date-picker" version="0.6.1">
-         <artifact name="date-picker-0.6.1.aar">
-            <sha256 value="6d0bfc99a6bd5199e9e7e72bf39a4eacd1bb22c6677d2d247d06627d6d1c8607" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="date-picker-0.6.1.pom">
-            <sha256 value="b030fc08d9e7abbb4d113cf37ff5ea65c5c8ad1854e4470ca44fc6fe0ddfb540" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad" name="viewpagerdots" version="1.0.0">
-         <artifact name="viewpagerdots-1.0.0.aar">
-            <sha256 value="01bd4398e6a45097583112f766b188a25bbe47867c5901b2af47c2c3cfec336e" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="viewpagerdots-1.0.0.pom">
-            <sha256 value="66379aee395419a8d245c5bef73972a141caacc1343f977371cb5b2775ba9b19" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad.material-dialogs" name="bottomsheets" version="3.3.0">
-         <artifact name="bottomsheets-3.3.0.aar">
-            <sha256 value="d67de399f8f769c36df9d9f6a77c991fe3ad372d9e84e3bd3cfba8cdc0be5fe3" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="bottomsheets-3.3.0.pom">
-            <sha256 value="3c54b09e63893dfb8a55869fc5a45190013f1b9f3de305b182e058334cf3e5c2" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad.material-dialogs" name="core" version="3.3.0">
-         <artifact name="core-3.3.0.aar">
-            <sha256 value="cb19554a5c368b3003989ba0b58bb37c39726be13fcf43becb2a84931fb5a961" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="core-3.3.0.pom">
-            <sha256 value="a1602970b22f36abe9674053ffbe704b1a5f3386b8895f8e7589adfd733e015c" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad.material-dialogs" name="datetime" version="3.3.0">
-         <artifact name="datetime-3.3.0.aar">
-            <sha256 value="97cb1e94c7cb88482a4619d5c3091f4ea943301c0b93399b44e42ca54cceb687" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="datetime-3.3.0.pom">
-            <sha256 value="e6ef322ce99bc7a4cb07febfcfbb034abba406c693f079fe736ef79c15d6f879" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="com.afollestad.material-dialogs" name="lifecycle" version="3.3.0">
-         <artifact name="lifecycle-3.3.0.aar">
-            <sha256 value="fd62c192b161e4e71f59b6ea74cf5ef0220c14ddd4ffc8ee76bb4f16e18f8b24" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="lifecycle-3.3.0.pom">
-            <sha256 value="d63dd2cf9d2a551231e141c14ad84c120495fbf5cd9a4eacc6d50d82ff9b2ad7" origin="Generated by Gradle"/>
          </artifact>
       </component>
       <component group="com.almworks.sqlite4java" name="sqlite4java" version="1.0.392">
@@ -19832,6 +19823,14 @@
             <sha256 value="70693e430f2a7e166690af2eeabf5c94109e68818cc66d453b1a43ee60978ea0" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
+      <component group="com.github.nextcloud-deps" name="android-talk-webrtc" version="155.8059.1">
+         <artifact name="android-talk-webrtc-155.8059.1.aar">
+            <sha256 value="ff28144cfd1aed0444d73e2d5f0e0b7b0bea23f6cb5dbc56b75681a5107f5dd0" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="android-talk-webrtc-155.8059.1.pom">
+            <sha256 value="adae8c0b116349acfc6d35ec91df0276cbf3d3fc91576f026851cb5899f60ba4" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="com.github.nextcloud-deps" name="qrcodescanner" version="0.1.2.4">
          <artifact name="qrcodescanner-0.1.2.4.aar">
             <sha256 value="b286128792cc04f59b0defa2c937c86d9e2fc824a8011b9af9eea7fd0ea84303" origin="Generated by Gradle" reason="Artifact is not signed"/>
@@ -19902,6 +19901,14 @@
          </artifact>
          <artifact name="hwsecurity-ui-4.4.0.module">
             <sha256 value="c956fb320fd2b3a0ac4654805add11003fd9ced5a6ea3bd25f5964c94c96d653" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="com.github.nextcloud-releases" name="talk-clients-vodozemac" version="0.0.2">
+         <artifact name="talk-clients-vodozemac-0.0.2.aar">
+            <sha256 value="ff1f2beda1e47bc27b5179b4420e941300d9146617c1b9770ab5a5567e588a43" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="talk-clients-vodozemac-0.0.2.pom">
+            <sha256 value="ee301ed1ec45b6371c86e0563c3a3ee034ca471128ff6c1db44de099e9a3318a" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="com.github.nextcloud.android-common" name="core" version="0.18.0">
@@ -20054,6 +20061,14 @@
          </artifact>
          <artifact name="core-0.33.2.module">
             <sha256 value="0594d08b18e53b71fe24db7ee1c235300655bd65f3ff2d231057c7a66437e65b" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="com.github.nextcloud.android-common" name="core" version="0.34.0">
+         <artifact name="core-0.34.0.aar">
+            <sha256 value="25965a3ed90d8cd353d1669428b3a77296e8a76688730e66bdf39543823dbb9f" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="core-0.34.0.module">
+            <sha256 value="2370d56cf5e37eed2f6e99ab08fd587789e6e6a6b37a3e532995b75f5af5ac7e" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="com.github.nextcloud.android-common" name="material-color-utilities" version="0.18.0">
@@ -20212,6 +20227,14 @@
             <sha256 value="fafef39e6e5739a69be335324cc7edf8f55ea806351df60b8b6a9d8bf3803cdb" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
+      <component group="com.github.nextcloud.android-common" name="material-color-utilities" version="0.34.0">
+         <artifact name="material-color-utilities-0.34.0.jar">
+            <sha256 value="61568a8c8f0466aea4fec621653ca8d2c08c9c687ffd6e364f909a2d19185992" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="material-color-utilities-0.34.0.module">
+            <sha256 value="b5033fff12118798f6832b30399e8c871be91428066bc9ca87894164c6176961" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="com.github.nextcloud.android-common" name="ui" version="0.18.0">
          <artifact name="ui-0.18.0.aar">
             <sha256 value="7d900a930d7ad1f7de91177b8b661abef13deef032493cee99fe9842f85bcf16" origin="Generated by Gradle" reason="Artifact is not signed"/>
@@ -20362,6 +20385,14 @@
          </artifact>
          <artifact name="ui-0.33.2.module">
             <sha256 value="c0496be3c91f153960d98ae88a06cbf9c9fe15da640806f2e5a45b29c1153fdf" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="com.github.nextcloud.android-common" name="ui" version="0.34.0">
+         <artifact name="ui-0.34.0.aar">
+            <sha256 value="19bf6c0ff923a6706cd50c8d54fe8ea7968ff2a8bfe6a23edde50e1b8b3b7465" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="ui-0.34.0.module">
+            <sha256 value="2def8209d0634a0934f2c754d164dfe5fb4f9db3ec6638e7291ba022236faa79" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="com.github.spotbugs" name="spotbugs" version="4.10.3">
@@ -22689,6 +22720,11 @@
             <sha256 value="58a3357303069a21930e7b9fe9b864de8bfb8bd4607433dbe48263459620cffc" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="com.google.guava" name="guava" version="33.6.0-jre">
+         <artifact name="guava-33.6.0-android.jar">
+            <sha256 value="9532ca9ba8aceb4cd2067171f981c799988b7f5844e3e274811a3bb757034bc4" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="com.google.guava" name="guava-parent" version="26.0-android">
          <artifact name="guava-parent-26.0-android.pom">
             <sha256 value="f8698ab46ca996ce889c1afc8ca4f25eb8ac6b034dc898d4583742360016cc04" origin="Generated by Gradle"/>
@@ -22870,6 +22906,11 @@
             <sha256 value="08eec56bd1611b40c471f4b6146d0a67bc154b35b55e0014e872a0d2b74373d5" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="com.google.protobuf" name="protobuf-bom" version="4.36.2">
+         <artifact name="protobuf-bom-4.36.2.pom">
+            <sha256 value="d6592abaa335e02502854e23f5425a6af4abfaa580ad44dd63d2a07f6a396645" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
       <component group="com.google.protobuf" name="protobuf-java" version="3.19.3">
          <artifact name="protobuf-java-3.19.3.pom">
             <sha256 value="68f3a9cc44963e31083993c10a49ebeb1652d7ef63cf516fcaafcc32595f3a8e" origin="Generated by Gradle"/>
@@ -23027,6 +23068,11 @@
       <component group="com.google.protobuf" name="protobuf-parent" version="4.35.1">
          <artifact name="protobuf-parent-4.35.1.pom">
             <sha256 value="bbbd819c1306e227b766f4f0231f6d5d918673154e7d6ceed06bbbaca415c15b" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="com.google.protobuf" name="protobuf-parent" version="4.36.2">
+         <artifact name="protobuf-parent-4.36.2.pom">
+            <sha256 value="aca76fe571fc9045367d14e45a6fad85e2a6b8f1f5b411d2a386df089e2111b2" origin="Generated by Gradle"/>
          </artifact>
       </component>
       <component group="com.google.testing.platform" name="android-device-provider-local" version="0.0.8-alpha08">
@@ -23311,6 +23357,22 @@
          </artifact>
          <artifact name="timber-5.0.1.module">
             <sha256 value="6125c15bfd7a3585bf70f44b7176995f19764647dd86fb3c3631e66d2196ef0b" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.linkedin.dexmaker" name="dexmaker" version="2.28.6">
+         <artifact name="dexmaker-2.28.6.jar">
+            <sha256 value="fdb1d3632c66694ed4cd3445cd86da70286f93b55d613e30361abec6d23404ac" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="dexmaker-2.28.6.module">
+            <sha256 value="ab57600b8a453d5f91cb603075b7870ace6d050e3a2b58cdd63462c4987f5e35" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.linkedin.dexmaker" name="dexmaker-mockito-inline" version="2.28.6">
+         <artifact name="dexmaker-mockito-inline-2.28.6.aar">
+            <sha256 value="ff0c8c914510dce091238448236ad44e4dae803ab7c4da9a520df4bee3cce429" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="dexmaker-mockito-inline-2.28.6.module">
+            <sha256 value="65c0c6ac199230dfcba0dd59b1953cb93c47fa21fdb754c89acd83a910efc0c4" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.10">
@@ -23786,12 +23848,36 @@
             <sha256 value="2e2148cd213b4f8f54d66d0548a228057e1f7b67332e0f979b1a1ce36b2276a7" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="com.squareup.okhttp3" name="logging-interceptor" version="5.5.0">
+         <artifact name="logging-interceptor-5.5.0.jar">
+            <sha256 value="ef9c93cea95f764a44c140a9f252ecf4f45358ec929f31c911d94f209ac54fab" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="logging-interceptor-5.5.0.module">
+            <sha256 value="57adfb1f1ce7c0c2d5e82bac9d197df15c1ea3b87835b92b89e4d0776b6b799f" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="com.squareup.okhttp3" name="mockwebserver" version="4.12.0">
          <artifact name="mockwebserver-4.12.0.jar">
             <sha256 value="6784673687f4ac8f21679b9d4bc7cdb46e1a1ce1be9d3133b36bede59a741561" origin="Generated by Gradle"/>
          </artifact>
          <artifact name="mockwebserver-4.12.0.module">
             <sha256 value="93e4696552118b6425462aed936edfd320c9fcedef0a82d5741c0a7d53c0cf74" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="mockwebserver" version="5.5.0">
+         <artifact name="mockwebserver-5.5.0.jar">
+            <sha256 value="64bcf0a79c42213bb3380939727d3cd6028ba3dbfcb9df14019650107e60a87f" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="mockwebserver-5.5.0.module">
+            <sha256 value="f96d2886c123bb0e5da5215e696343b383b938006dec326ac0434965c9eb0b10" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="mockwebserver3" version="5.5.0">
+         <artifact name="mockwebserver3-5.5.0.jar">
+            <sha256 value="f8c1dccd0a63067fe56f66ed357b244a04866cac508b898a4c899326cf0d46c2" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="mockwebserver3-5.5.0.module">
+            <sha256 value="052eaf8753e63b2ed9070ece9a6bfe2aa47a12d3b8ee981eb5cf7d1a0de9635c" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="com.squareup.okhttp3" name="okhttp" version="4.12.0">
@@ -23802,12 +23888,62 @@
             <sha256 value="607e220ff8215b929d829bbf54f332894f1459b4d795979aeafcbcc1cea54cf3" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="com.squareup.okhttp3" name="okhttp" version="5.5.0">
+         <artifact name="okhttp-5.5.0.module">
+            <sha256 value="1d667d70d7c4994927afd46d840e31e4a454935fa58f0c3429a26b425dc0abe0" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="okhttp-android" version="5.5.0">
+         <artifact name="okhttp-android-5.5.0.module">
+            <sha256 value="a2589cd0455bd01f34ecc1635d198689ccbdd00adbe028ffd34624df7cfe618e" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okhttp.aar">
+            <sha256 value="6c7fd12f092e64ca2eae0b8a8023900c0d7ffec57888cf8abc8085c6f42e1dcc" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="okhttp-bom" version="5.5.0">
+         <artifact name="okhttp-bom-5.5.0.module">
+            <sha256 value="302e71dcf9230bd347a0d8ebcaff4d869c69b023a46bd6adf9774a6706668202" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okhttp-bom-5.5.0.pom">
+            <sha256 value="f80588e52a2f780da6082b0518a30dbfb756f2992258c9cba77bc51612e98505" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="okhttp-java-net-cookiejar" version="5.5.0">
+         <artifact name="okhttp-java-net-cookiejar-5.5.0.jar">
+            <sha256 value="8bb27492e8ec3a1d16a918f492db8f35c8e2836f9668bc3a83cd95a2a53a93bb" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okhttp-java-net-cookiejar-5.5.0.module">
+            <sha256 value="4743c6a7748f5dbd9b7d9b91865c217a3f0aec65666bbba0ee9789e533604a41" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="okhttp-tls" version="5.5.0">
+         <artifact name="okhttp-tls-5.5.0.jar">
+            <sha256 value="4dac809a02d4436b3b63183ba315c7bef2f4d5b0997b709c1385df9b66d09a29" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okhttp-tls-5.5.0.module">
+            <sha256 value="244df31a9b1fa4d51ff6292f05dbcf9993a57eda76c683a190fcf7b9da6247a7" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="com.squareup.okhttp3" name="okhttp-urlconnection" version="4.12.0">
          <artifact name="okhttp-urlconnection-4.12.0.jar">
             <sha256 value="74c0e3f8c3df0b1d32ab9d839448c914586d3e8479611e4386fecfa6b3f0a26b" origin="Generated by Gradle"/>
          </artifact>
          <artifact name="okhttp-urlconnection-4.12.0.module">
             <sha256 value="a901efac8b81a6f9fe6c970708e353bd4bd1da03b929dfac01a7617b2d4fea31" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okhttp3" name="okhttp-urlconnection" version="5.5.0">
+         <artifact name="okhttp-urlconnection-5.5.0.jar">
+            <sha256 value="bff181a2eeb836048702d4acb8331b3b9a8fc18e83ef7b20afd2c07d837b3423" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okhttp-urlconnection-5.5.0.module">
+            <sha256 value="0839a625de89f36c9259bf485ee4fa32786ea25f2d11121a67aa9ee203947147" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okio" name="okio" version="3.18.1">
+         <artifact name="okio-3.18.1.module">
+            <sha256 value="1616f212eabcb6c1c2d04ff5c80d9132c0e5f4e408c659d5ee47aef28ebc5d10" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="com.squareup.okio" name="okio" version="3.6.0">
@@ -23829,6 +23965,14 @@
          </artifact>
          <artifact name="okio-metadata-3.9.1.jar">
             <sha256 value="99c8ebbc4995f29dd58b05d75583fcc8b957db21eeeb8c5d89733f0d34955897" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="com.squareup.okio" name="okio-jvm" version="3.18.1">
+         <artifact name="okio-jvm-3.18.1.jar">
+            <sha256 value="b97b640557a650d15411f2be29aef558c4e422a83653cb18ba494311dbed18be" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="okio-jvm-3.18.1.module">
+            <sha256 value="3581865143cbe7556e1975be4c823834a7b775534de856d0b355c77af946027b" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="com.squareup.okio" name="okio-jvm" version="3.6.0">
@@ -26456,6 +26600,14 @@
       <component group="org.bouncycastle" name="bcutil-jdk18on" version="1.80.2">
          <artifact name="bcutil-jdk18on-1.80.2.pom">
             <sha256 value="2688be1af499d525096114cc2f51c7a7a4ca23c3d27317b71e18c1c96bec03d1" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="org.bytedeco" name="javacpp" version="1.5.14">
+         <artifact name="javacpp-1.5.14.jar">
+            <sha256 value="cb95a82ce1c337690436017eb8886597de71c1463dc16a3570f6a96b7c98a82b" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="javacpp-1.5.14.pom">
+            <sha256 value="a5e3a97e0ceace7bc7b8d3537d355d4fc309c639ee1d3f02976531e934271b12" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.ccil.cowan.tagsoup" name="tagsoup" version="1.2.1">
@@ -29187,6 +29339,16 @@
             <sha256 value="733fccda03ae34773e7b5c85d0e278c897df283370059cb39825f7c0381e49b6" origin="Generated by Gradle"/>
          </artifact>
       </component>
+      <component group="org.jetbrains.kotlin" name="kotlin-gradle-plugins-bom" version="2.4.20">
+         <artifact name="kotlin-gradle-plugins-bom-2.4.20.pom">
+            <sha256 value="70b071dc4074995076c97c749792ebcff69f10e636d1e2f2c68de0de023e0239" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="org.jetbrains.kotlin" name="kotlin-gradle-plugins-bom" version="2.4.21">
+         <artifact name="kotlin-gradle-plugins-bom-2.4.21.pom">
+            <sha256 value="624c0c869b3fcf1665afec9c5c51a807be0a8c983931ebb188548ddcdb055780" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
       <component group="org.jetbrains.kotlin" name="kotlin-klib-abi-reader" version="2.3.0">
          <artifact name="kotlin-klib-abi-reader-2.3.0.jar">
             <sha256 value="41e31422eb5eb224b9a475fe80eb8d06eb21ad34fb7d0a408d2c972a7abb8cbb" origin="Generated by Gradle"/>
@@ -31188,6 +31350,16 @@
       <component group="org.jetbrains.kotlin.plugin.compose" name="org.jetbrains.kotlin.plugin.compose.gradle.plugin" version="2.4.10">
          <artifact name="org.jetbrains.kotlin.plugin.compose.gradle.plugin-2.4.10.pom">
             <sha256 value="0c101ab316081659050fe9c0144b1b4bf725ebf9aa9943113bc221e923473d04" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="org.jetbrains.kotlin.plugin.compose" name="org.jetbrains.kotlin.plugin.compose.gradle.plugin" version="2.4.20">
+         <artifact name="org.jetbrains.kotlin.plugin.compose.gradle.plugin-2.4.20.pom">
+            <sha256 value="ad4bc062bf802e7b570ecf30467bb70a480d779502cf6be0700204c7c89e9d97" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="org.jetbrains.kotlin.plugin.compose" name="org.jetbrains.kotlin.plugin.compose.gradle.plugin" version="2.4.21">
+         <artifact name="org.jetbrains.kotlin.plugin.compose.gradle.plugin-2.4.21.pom">
+            <sha256 value="2fbd59de548dddb09828ed39521bde9ef3c1c05368d70c4be22f335c7c2b6825" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="org.jetbrains.kotlinx" name="atomicfu" version="0.17.0">
@@ -33960,38 +34132,6 @@
          </artifact>
          <artifact name="snakeyaml-2.4.pom">
             <sha256 value="e154a3231cd6cde68aabf274fd18964d49a9c1a5f5e9ed3bf471e9ae7bdf08e6" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.29">
-         <artifact name="android-gif-drawable-1.2.29.aar">
-            <sha256 value="611e2699782ee0d56168b6546962f75a54bdff03136d9db94019a65c0924eddd" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
-         </artifact>
-         <artifact name="android-gif-drawable-1.2.29.module">
-            <sha256 value="525eb44b891d2977f7e536484d658d837d555e95ff6515ad118749534f915a06" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
-         </artifact>
-      </component>
-      <component group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.30">
-         <artifact name="android-gif-drawable-1.2.30.aar">
-            <sha256 value="01abc20e976992eb18490e7884a80f48548583a22a9a8f97ec25a60913b17740" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="android-gif-drawable-1.2.30.module">
-            <sha256 value="c3aa27753f013b76922569e554d4c1f2927bb8484121abff861dd2cea7c9c893" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.31">
-         <artifact name="android-gif-drawable-1.2.31.aar">
-            <sha256 value="01abc20e976992eb18490e7884a80f48548583a22a9a8f97ec25a60913b17740" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="android-gif-drawable-1.2.31.module">
-            <sha256 value="9080415ed02012187b240ad4cb1e4bc8c3dfc7e56dc4c1326d4752e593d82f23" origin="Generated by Gradle"/>
-         </artifact>
-      </component>
-      <component group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.32">
-         <artifact name="android-gif-drawable-1.2.32.aar">
-            <sha256 value="369f7bed0e364ed2cc1bf6be8e2000c15b1e7a4fd2344a2812e8afbd47602dd6" origin="Generated by Gradle"/>
-         </artifact>
-         <artifact name="android-gif-drawable-1.2.32.module">
-            <sha256 value="7c5ae78d2ee681483867cdda8a2938817cc0934545f03bf8c4b4620751602339" origin="Generated by Gradle"/>
          </artifact>
       </component>
       <component group="xerces" name="xercesImpl" version="2.12.0">

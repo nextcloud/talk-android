@@ -7,11 +7,14 @@
  */
 package com.nextcloud.talk.chat.viewmodels
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -24,7 +27,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
-import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
@@ -46,6 +48,7 @@ import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import androidx.lifecycle.asFlow
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.logger.Logger
@@ -60,7 +63,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
 import com.nextcloud.talk.models.json.reminder.ReminderDto
 import com.nextcloud.talk.models.json.threads.ThreadInfoDto
@@ -69,7 +71,6 @@ import com.nextcloud.talk.models.json.userAbsence.UserAbsenceDataDto
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
-import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -82,6 +83,7 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.isTransientFailure
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -98,6 +100,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -298,6 +301,9 @@ class ChatViewModel @AssistedInject constructor(
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
+    // Epoch seconds like ChatMessageEntity.timestamp; see failOrphanedPendingMessages.
+    private val createdAtSeconds = System.currentTimeMillis() / MILLIS_PER_SECOND
+
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
@@ -363,7 +369,6 @@ class ChatViewModel @AssistedInject constructor(
     private var showUnreadMessagesMarker: Boolean = true
     private var isLoadMoreInProgress = false
 
-    private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -468,7 +473,6 @@ class ChatViewModel @AssistedInject constructor(
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
-        mediaPlayerManager.handleOnResume()
         if (isReturningFromBackground) {
             viewModelScope.launch {
                 chatRepository.fetchNewMessages()
@@ -479,13 +483,14 @@ class ChatViewModel @AssistedInject constructor(
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         currentLifeCycleFlag = LifeCycleFlag.PAUSED
+        roomJoinClaimed = false
+        joinRoomJob?.cancel()
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         searchRequestJob?.cancel()
         messageSearchHelper?.cancelSearch()
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
-        mediaPlayerManager.handleOnPause()
 
         saveMessageDraft()
     }
@@ -493,9 +498,11 @@ class ChatViewModel @AssistedInject constructor(
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
-        mediaRecorderManager.handleOnStop()
+        // a rotation stops the activity but not the recording: the new activity goes on with it
+        if ((owner as? Activity)?.isChangingConfigurations != true) {
+            mediaRecorderManager.handleOnStop()
+        }
         chatRepository.handleOnStop()
-        mediaPlayerManager.handleOnStop()
     }
 
     fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
@@ -506,15 +513,6 @@ class ChatViewModel @AssistedInject constructor(
 
     fun setUnreadMessagesMarker(shouldShow: Boolean) {
         showUnreadMessagesMarker = shouldShow
-    }
-
-    val mediaPlayerSeekbarObserver: Flow<ChatMessage>
-        get() = mediaPlayerManager.mediaPlayerSeekBarPositionMsg
-
-    val currentlyPlayedMessageId: Flow<Int?> = mediaPlayerManager.currentCycledMessage.map { it?.jsonMessageId }
-
-    fun setPlayBack(speed: PlaybackSpeed) {
-        mediaPlayerManager.setPlayBackSpeed(speed)
     }
 
     private val _recordTouchObserver: MutableLiveData<Float> = MutableLiveData()
@@ -540,10 +538,6 @@ class ChatViewModel @AssistedInject constructor(
     private val _unbindRoomResult = MutableLiveData<UnbindRoomUiState>(UnbindRoomUiState.None)
     val unbindRoomResult: LiveData<UnbindRoomUiState>
         get() = _unbindRoomResult
-
-    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
-    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
-        get() = _voiceMessagePlaybackSpeedPreferences
 
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
@@ -655,6 +649,10 @@ class ChatViewModel @AssistedInject constructor(
 
     private val _reactionFailures = MutableSharedFlow<ReactionOperation>(extraBufferCapacity = 1)
     val reactionFailures: SharedFlow<ReactionOperation> = _reactionFailures
+
+    /** A reminder or a share to notes that the server refused, for the chat to report. */
+    private val _actionFailures = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+    val actionFailures: SharedFlow<Int> = _actionFailures
 
     private val reactionLocks = mutableMapOf<Int, Mutex>()
 
@@ -800,6 +798,11 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     private var lastReadMessage: Int = 0
 
+    private var roomJoinClaimed = false
+    private var isInitialLoadDelivered = false
+    private var leaveRoomJob: Job? = null
+    private var joinRoomJob: Job? = null
+
     // ------------------------------
     // Initialization
     // ------------------------------
@@ -808,7 +811,6 @@ class ChatViewModel @AssistedInject constructor(
         observeLobbyState()
         observeLobbyPolling()
         observeMessages()
-        observeMediaPlayerProgressForCompose()
         observePinnedMessage()
         observeRoomRefresh()
         observeIncomingMessages()
@@ -1056,96 +1058,6 @@ class ChatViewModel @AssistedInject constructor(
 
     private fun resetUnreadMarkerCache() {
         firstUnreadMessageId = null
-    }
-
-    private fun observeMediaPlayerProgressForCompose() {
-        mediaPlayerSeekbarObserver
-            .onEach { message ->
-                syncVoiceMessageUiState(message)
-            }
-            .launchIn(viewModelScope)
-    }
-
-    fun pauseVoiceMessageUiState(messageId: Int) {
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
-                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
-                    if (voiceContent != null) {
-                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(isPlaying = false)))
-                    } else {
-                        item
-                    }
-                } else {
-                    item
-                }
-            }
-            current.copy(items = updatedItems)
-        }
-    }
-
-    fun setVoiceMessageSpeed(messageId: Int, speed: PlaybackSpeed) {
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
-                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
-                    if (voiceContent != null) {
-                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(playbackSpeed = speed)))
-                    } else {
-                        item
-                    }
-                } else {
-                    item
-                }
-            }
-            current.copy(items = updatedItems)
-        }
-    }
-
-    var currentVoiceMessage: ChatMessage? = null
-
-    // Only updates how the message is shown. The message to play is selected by the tap on it, not by any update:
-    // a finished download or waveform of another message must not take over the progress of the one playing.
-    fun syncVoiceMessageUiState(message: ChatMessage) {
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
-                    when (val content = item.uiMessage.content) {
-                        is MessageTypeContent.Voice -> {
-                            val updatedVoiceContent = content.copy(
-                                actorId = message.actorId,
-                                isPlaying = message.isPlayingVoiceMessage,
-                                wasPlayed = message.wasPlayedVoiceMessage,
-                                isDownloading = message.isDownloadingVoiceMessage,
-                                durationSeconds = message.voiceMessageDuration,
-                                playedSeconds = message.voiceMessagePlayedSeconds,
-                                seekbarProgress = message.voiceMessageSeekbarProgress,
-                                waveform = message.voiceMessageFloatArray?.toList() ?: content.waveform
-                                // playbackSpeed is preserved from existing content
-                            )
-                            item.copy(uiMessage = item.uiMessage.copy(content = updatedVoiceContent))
-                        }
-
-                        is MessageTypeContent.AudioFile -> {
-                            val updatedAudioFileContent = content.copy(
-                                isPlaying = message.isPlayingVoiceMessage,
-                                isDownloading = message.isDownloadingVoiceMessage,
-                                durationSeconds = message.voiceMessageDuration,
-                                playedSeconds = message.voiceMessagePlayedSeconds,
-                                seekbarProgress = message.voiceMessageSeekbarProgress
-                            )
-                            item.copy(uiMessage = item.uiMessage.copy(content = updatedAudioFileContent))
-                        }
-
-                        else -> item
-                    }
-                } else {
-                    item
-                }
-            }
-
-            current.copy(items = updatedItems)
-        }
     }
 
     // ------------------------------
@@ -1806,7 +1718,8 @@ class ChatViewModel @AssistedInject constructor(
                 spreedCapability,
                 conversationModel
             )
-            if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+            if (isInitialLoadPending()) {
+                isInitialLoadDelivered = true
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     spreedCapability,
                     conversationModel
@@ -1829,7 +1742,8 @@ class ChatViewModel @AssistedInject constructor(
                             spreedCapabilities,
                             conversationModel
                         )
-                        if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                        if (isInitialLoadPending()) {
+                            isInitialLoadDelivered = true
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
                                 conversationModel
@@ -1852,27 +1766,47 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A failed first load of the capabilities is retried by the next refresh of the conversation, which then is the
+     * initial load. A failed refresh after the initial load is not.
+     */
+    private fun isInitialLoadPending(): Boolean = !isInitialLoadDelivered
+
+    /**
+     * Joins after a leave that is still running, so the server never handles the leave after the join. The wait is
+     * cancelled when the screen is paused.
+     */
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatNetworkDataSource.joinRoom(user, token, roomPassword)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.retry(JOIN_ROOM_RETRY_COUNT)
-            ?.subscribe(JoinRoomObserver())
+        joinRoomJob?.cancel()
+        joinRoomJob = viewModelScope.launch {
+            leaveRoomJob?.join()
+            chatNetworkDataSource.joinRoom(user, token, roomPassword)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.retry(JOIN_ROOM_RETRY_COUNT)
+                ?.subscribe(JoinRoomObserver())
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(SetReminderObserver())
+        requestWithFeedback("set the reminder", R.string.nc_common_error_sorry) {
+            chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+        }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetReminderObserver())
+        viewModelScope.launch {
+            _getReminderExistState.value = try {
+                GetReminderExistState(chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.d(TAG, "Error when getting reminder", e)
+                GetReminderStartState
+            }
+        }
     }
 
     fun overrideReminderState() {
@@ -1880,30 +1814,14 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    _getReminderExistState.value = GetReminderStartState
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error when deleting reminder", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        requestWithFeedback("delete the reminder", R.string.nc_common_error_sorry) {
+            chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
+            _getReminderExistState.value = GetReminderStartState
+        }
     }
 
     fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
-        appScope.launch {
+        leaveRoomJob = appScope.launch {
             try {
                 val result = chatNetworkDataSource.leaveRoom(credentials, url)
                 if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
@@ -1913,7 +1831,6 @@ class ChatViewModel @AssistedInject constructor(
                 }
                 withContext(Dispatchers.Main) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState
-                    _getCapabilitiesViewState.value = GetCapabilitiesStartState
                     functionToCallAfterLeave?.invoke()
                 }
             } catch (e: Exception) {
@@ -1987,7 +1904,32 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A PENDING text message is only sent by SendMessageWorker. Without send work left for the
+     * conversation it would show the clock forever, so it is marked FAILED and the user can resend or
+     * delete it. Only messages created before this view model are considered: loadInitialMessages
+     * runs on every activity creation (e.g. rotation), and a message sent just now may not have its
+     * work written to WorkManager yet.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun failOrphanedPendingMessages() {
+        try {
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            if (!SendMessageWorker.hasActiveSend(WorkManager.getInstance(), internalConversationId)) {
+                val failed = chatRepository.failPendingMessagesWithoutSendWork(createdAtSeconds)
+                if (failed > 0) {
+                    Log.w(TAG, "Marked $failed pending message(s) without send work as failed")
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not check for pending messages without send work", e)
+        }
+    }
+
     suspend fun loadInitialMessages(withCredentials: String, withUrl: String) {
+        failOrphanedPendingMessages()
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
@@ -2157,26 +2099,9 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onNext(genericOverall: ChatOverallSingleMessage) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error when sharing to notes $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        shareToNotes("share the message to notes", credentials, url) { referenceId ->
+            chatNetworkDataSource.shareToNotes(credentials, url, message, displayName, referenceId)
+        }
     }
 
     suspend fun checkForNoteToSelf(credentials: String, baseUrl: String): ConversationModel? =
@@ -2198,27 +2123,111 @@ class ChatViewModel @AssistedInject constructor(
             null
         }
 
-    fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
-        chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
+    fun shareLocationToNotes(
+        credentials: String,
+        url: String,
+        chatUrl: String,
+        objectType: String,
+        objectId: String,
+        metadata: String
+    ) {
+        shareToNotes("share the location to notes", credentials, chatUrl) { referenceId ->
+            chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata, referenceId)
+        }
+    }
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    // unused atm
-                }
+    /**
+     * Shares to the note to self and, when the share failed for a transient reason, asks the note to
+     * self whether the message arrived anyway before sending it a second time. The server stores the
+     * reference id of a message without ever looking at it again, so it deduplicates nothing: a blind
+     * second attempt after a timeout the server did accept posts the note twice.
+     */
+    private fun shareToNotes(
+        description: String,
+        credentials: String,
+        lookupUrl: String,
+        share: suspend (String) -> Unit
+    ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error when sharing location to notes $e")
-                }
+        viewModelScope.launch {
+            val failure = attemptShare(share, referenceId) ?: return@launch
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+            if (!isTransientFailure(failure)) {
+                reportShareFailure(description, failure)
+                return@launch
+            }
+
+            when (alreadyShared(credentials, lookupUrl, referenceId)) {
+                true -> Unit
+                false -> attemptShare(share, referenceId)?.let { reportShareFailure(description, it) }
+                null -> reportShareFailure(description, failure)
+            }
+        }
+    }
+
+    /** Runs the share once and reports what went wrong, or null when it worked. */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun attemptShare(share: suspend (String) -> Unit, referenceId: String): Exception? =
+        try {
+            share(referenceId)
+            null
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            e
+        }
+
+    /**
+     * Whether the note to self already holds the message of this share, or null when the lookup could
+     * not be answered. An unanswered lookup is not retried, because posting a second copy is worse than
+     * not retrying, but it is reported rather than passed off as a message that arrived.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private suspend fun alreadyShared(credentials: String, lookupUrl: String, referenceId: String): Boolean? =
+        try {
+            val fieldMap = hashMapOf(
+                "lookIntoFuture" to 0,
+                "includeLastKnown" to 1,
+                "setReadMarker" to 0,
+                "markNotificationsAsRead" to 0,
+                "timeout" to 0,
+                "limit" to SHARE_LOOKUP_LIMIT
+            )
+            val recent = chatNetworkDataSource.pullChatMessages(credentials, lookupUrl, fieldMap)
+            holdsShare(recent.body()?.ocs?.data, referenceId)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            logger.w(TAG, "Could not check whether the share arrived, so it is not sent again", e)
+            null
+        }
+
+    private suspend fun reportShareFailure(description: String, throwable: Throwable) {
+        logger.e(TAG, "Failed to $description", throwable)
+        _actionFailures.emit(R.string.nc_message_not_added_to_notes)
+    }
+
+    /**
+     * Runs an action whose only visible outcome is whether it worked. The reminder dialog is already
+     * dismissed and the chat has already said the message was sent by the time the answer arrives, so
+     * a failure that is not reported here is never reported at all.
+     *
+     * Deliberately without a retry: sharing to notes posts a message with a reference id generated per
+     * call, so a second attempt after a timeout the server did accept would post it twice.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun requestWithFeedback(description: String, @StringRes failureMessage: Int, request: suspend () -> Unit) {
+        viewModelScope.launch {
+            try {
+                request()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.e(TAG, "Failed to $description", e)
+                _actionFailures.emit(failureMessage)
+            }
+        }
     }
 
     fun deleteReaction(roomToken: String, chatMessage: ChatMessage, emoji: String) {
@@ -2374,9 +2383,42 @@ class ChatViewModel @AssistedInject constructor(
         try {
             require(fileUri.isNotEmpty())
 
+            val internalConversationId = "${currentUser.id}@$chatRoomToken"
+            val enqueueUpload = {
+                UploadAndShareFilesWorker.upload(
+                    userId = currentUser.id!!,
+                    fileUri = fileUri,
+                    roomToken = room,
+                    conversationName = displayName,
+                    metaData = metaData,
+                    referenceId = referenceId,
+                    internalConversationId = internalConversationId,
+                    compressImages = compressImages,
+                    allowUpdate = allowUpdate
+                )
+            }
+
+            // enqueued right here, in the order of the calls: the queue of a conversation is chained, and the
+            // slow lookup of the file info below must neither reorder the files nor die with the view model
+            val workerId = enqueueUpload()
             if (!isVoiceMessage) {
-                val (fileName, mimeType, fileSize) = resolveFileInfo(fileUri)
+                uploadReferenceToWorkId[referenceId] = workerId
+                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
+
                 viewModelScope.launch {
+                    // getType/query are blocking binder calls into the provider's process (e.g. Nextcloud Files)
+                    val (fileName, mimeType, fileSize) = withContext(Dispatchers.IO) {
+                        try {
+                            resolveFileInfo(fileUri)
+                        } catch (e: IllegalArgumentException) {
+                            // unknown or revoked uri: the worker reports the failed upload, the placeholder stays
+                            Log.w(TAG, "Could not resolve file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        } catch (e: SecurityException) {
+                            Log.w(TAG, "No access to the file info of the file to send", e)
+                            Triple(fileUri.toUri().lastPathSegment.orEmpty(), null, 0L)
+                        }
+                    }
                     chatRepository.addUploadPlaceholderMessage(
                         localFileUri = fileUri,
                         fileName = fileName,
@@ -2385,26 +2427,11 @@ class ChatViewModel @AssistedInject constructor(
                         fileSize = fileSize,
                         referenceId = referenceId
                     ).collect {}
+
+                    // observed only now: a failure the worker reported before the placeholder existed is
+                    // delivered with the current state and marks the placeholder that was just added
+                    observeUploadProgress(workerId, referenceId)
                 }
-            }
-
-            val internalConversationId = "${currentUser.id}@$chatRoomToken"
-            val workerId = UploadAndShareFilesWorker.upload(
-                userId = currentUser.id!!,
-                fileUri = fileUri,
-                roomToken = room,
-                conversationName = displayName,
-                metaData = metaData,
-                referenceId = referenceId,
-                internalConversationId = internalConversationId,
-                compressImages = compressImages,
-                allowUpdate = allowUpdate
-            )
-
-            if (!isVoiceMessage) {
-                uploadReferenceToWorkId[referenceId] = workerId
-                _uploadedLocalPreviewMap.update { it + (referenceId to fileUri) }
-                observeUploadProgress(workerId, referenceId)
             }
         } catch (e: IllegalArgumentException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -2437,6 +2464,9 @@ class ChatViewModel @AssistedInject constructor(
                 if (progress >= 0) {
                     _uploadProgressMap.update { it + (referenceId to progress) }
                 }
+                if (workInfo.state == WorkInfo.State.FAILED) {
+                    viewModelScope.launch { chatRepository.markUploadPlaceholderFailed(referenceId) }
+                }
                 if (workInfo.state.isFinished) {
                     _uploadProgressMap.update { it - referenceId }
                     uploadReferenceToWorkId.remove(referenceId)
@@ -2457,7 +2487,20 @@ class ChatViewModel @AssistedInject constructor(
         _getVoiceRecordingLocked.postValue(boolean)
     }
 
+    /**
+     * Allows one join of the room per resume of the chat screen. The claim is released when the screen is paused,
+     * where the chat leaves the room.
+     */
+    fun claimRoomJoin(): Boolean {
+        if (roomJoinClaimed) {
+            return false
+        }
+        roomJoinClaimed = true
+        return true
+    }
+
     fun handleOrientationChange() {
+        isInitialLoadDelivered = false
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
@@ -2500,43 +2543,6 @@ class ChatViewModel @AssistedInject constructor(
         override fun onError(e: Throwable) {
             Log.e(TAG, "Error when joining room")
             _joinRoomViewState.value = JoinRoomErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class SetReminderObserver : Observer<ReminderDto> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(reminder: ReminderDto) {
-            Log.d(TAG, "reminder set successfully")
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when sending reminder, $e")
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class GetReminderObserver : Observer<ReminderDto> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(reminder: ReminderDto) {
-            _getReminderExistState.value = GetReminderExistState(reminder)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "Error when getting reminder $e")
-            _getReminderExistState.value = GetReminderStartState
         }
 
         override fun onComplete() {
@@ -2598,16 +2604,19 @@ class ChatViewModel @AssistedInject constructor(
     fun resendMessage(message: ChatMessage) {
         val referenceId = message.referenceId.orEmpty()
         viewModelScope.launch {
-            chatRepository.markMessageForResend(referenceId).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "message marked pending for resend")
-                    SendMessageWorker.enqueue(
-                        internalConversationId = "${currentUser.id}@$chatRoomToken",
-                        referenceId = referenceId,
-                        threadTitle = null
-                    )
-                } else {
-                    Log.e(TAG, "resend failed")
+            // PENDING without send work is never sent: both steps run even if this scope is cancelled.
+            withContext(NonCancellable) {
+                chatRepository.markMessageForResend(referenceId).collect { result ->
+                    if (result.isSuccess) {
+                        Log.d(TAG, "message marked pending for resend")
+                        SendMessageWorker.enqueue(
+                            internalConversationId = "${currentUser.id}@$chatRoomToken",
+                            referenceId = referenceId,
+                            threadTitle = null
+                        )
+                    } else {
+                        Log.e(TAG, "resend failed")
+                    }
                 }
             }
         }
@@ -2708,6 +2717,18 @@ class ChatViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = ChatViewModel::class.java.simpleName
+        private const val MILLIS_PER_SECOND = 1000L
+
+        /** Enough of the note to self to cover what a share of ours could have landed behind. */
+        private const val SHARE_LOOKUP_LIMIT = 20
+
+        /**
+         * Whether [messages] already hold the share that was sent with [referenceId], or null when the
+         * server returned no messages to judge by, because the lookup failed or answered "not modified".
+         */
+        @VisibleForTesting
+        fun holdsShare(messages: List<ChatMessageDto>?, referenceId: String): Boolean? =
+            messages?.any { it.referenceId == referenceId }
 
         /**
          * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the

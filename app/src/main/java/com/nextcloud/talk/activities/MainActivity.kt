@@ -18,6 +18,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
@@ -43,7 +44,10 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import javax.inject.Inject
 
@@ -62,6 +66,8 @@ class MainActivity :
     override val skipLockCheckOnResume: Boolean = true
 
     private val disposables = CompositeDisposable()
+
+    private var contactLookupJob: Job? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -144,34 +150,45 @@ class MainActivity :
 
     private fun handleActionFromContact(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null && isTrustedContactsUri(intent.data!!)) {
-            val cursor = contentResolver.query(intent.data!!, null, null, null, null)
-
-            var userId = ""
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    // userId @ server
-                    userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
+            val contactUri = intent.data!!
+            contactLookupJob = lifecycleScope.launch {
+                val (cloudId, account) = withContext(Dispatchers.IO) {
+                    val cloudId = readUserIdOfContact(contactUri)
+                    val account = accountForContactServer(
+                        cloudId.substringAfterLast("@"),
+                        userManager.getUsersNotScheduledForDeletion(),
+                        defaultAccountProvider.getDefaultUserBlocking()
+                    )
+                    cloudId to account
                 }
-
-                cursor.close()
+                openChatOfContact(cloudId.substringBeforeLast("@"), account, intent.type)
             }
+        }
+    }
 
-            when (intent.type) {
-                "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
-                    val user = userId.substringBeforeLast("@")
-                    val baseUrl = userId.substringAfterLast("@")
-                    val isValidBaseUrl = baseUrl.isNotBlank() && "https://$baseUrl".toHttpUrlOrNull() != null
+    // the contacts provider lives in another process: a binder call, not for the main thread
+    private fun readUserIdOfContact(contactUri: Uri): String {
+        var userId = ""
+        contentResolver.query(contactUri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                // userId @ server
+                userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
+            }
+        }
+        return userId
+    }
 
-                    val currentUser = defaultAccountProvider.getDefaultUserBlocking()
-                    if (isValidBaseUrl && currentUser?.baseUrl?.endsWith(baseUrl) == true) {
-                        startConversation(user)
-                    } else {
-                        Snackbar.make(
-                            binding.root,
-                            R.string.nc_phone_book_integration_account_not_found,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
+    private fun openChatOfContact(contactUserId: String, account: User?, intentType: String?) {
+        when (intentType) {
+            "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
+                if (account != null) {
+                    startConversation(contactUserId, account)
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.nc_phone_book_integration_account_not_found,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -180,10 +197,8 @@ class MainActivity :
     private fun isTrustedContactsUri(uri: Uri): Boolean =
         uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority == ContactsContract.AUTHORITY
 
-    private fun startConversation(userId: String) {
+    private fun startConversation(userId: String, currentUser: User) {
         val roomType = "1"
-
-        val currentUser = defaultAccountProvider.getDefaultUserBlocking() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
@@ -221,6 +236,10 @@ class MainActivity :
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
+        // the contact lookup is asynchronous: keep the new intent for a recreation before it finishes
+        setIntent(intent)
+        // a slower lookup of an older intent must not open its chat after this newer intent
+        contactLookupJob?.cancel()
         handleIntent(intent)
     }
 
@@ -400,5 +419,22 @@ class MainActivity :
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+
+        /**
+         * The account to chat with a phone book contact whose cloud ID is on [server] (host[:port][/path], without
+         * scheme). The phone book integration syncs for the account that is the default at the time, so its entries
+         * can belong to another account than the current default one: prefer the default account if it is on that
+         * server, otherwise take another account on it. Null if no account is on that server.
+         */
+        @VisibleForTesting
+        internal fun accountForContactServer(server: String, users: List<User>, defaultUser: User?): User? {
+            if (server.isBlank() || "https://$server".toHttpUrlOrNull() == null) {
+                return null
+            }
+            val isOnServer = { user: User? ->
+                user?.baseUrl?.substringAfter("://")?.trimEnd('/').equals(server.trimEnd('/'), ignoreCase = true)
+            }
+            return defaultUser?.takeIf(isOnServer) ?: users.firstOrNull(isOnServer)
+        }
     }
 }

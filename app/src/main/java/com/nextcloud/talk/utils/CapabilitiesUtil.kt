@@ -72,7 +72,8 @@ enum class SpreedFeatures(val value: String) {
     ANNOUNCEMENT_PRESET("announcement-preset"),
     CONVERSATION_TAGS("conversation-tags"),
     PROMOTE_DEMOTE_OWNER("promote-demote-owner"),
-    NOTE_TO_SELF("note-to-self")
+    NOTE_TO_SELF("note-to-self"),
+    CALL_END_TO_END_ENCRYPTION("call-end-to-end-encryption")
 }
 
 @Suppress("TooManyFunctions")
@@ -301,6 +302,17 @@ object CapabilitiesUtil {
         return false
     }
 
+    /**
+     * Whether the server lets mobile clients preload chat messages before the user opens a
+     * conversation.
+     *
+     * True unless the server says `mobile-preload-chat` is false, so a server that does not know
+     * the setting, does not report it, or has not been asked for its capabilities yet, allows
+     * preloading.
+     */
+    fun isChatPreloadAllowed(spreedCapabilities: SpreedCapabilityDto?): Boolean =
+        spreedCapabilities?.config?.get("chat")?.get(MOBILE_PRELOAD_CHAT)?.toString()?.lowercase() != "false"
+
     fun isTranslationsSupported(spreedCapabilities: SpreedCapabilityDto): Boolean =
         spreedCapabilities.config?.containsKey("chat") == true &&
             spreedCapabilities.config!!["chat"] != null &&
@@ -328,8 +340,12 @@ object CapabilitiesUtil {
     fun isBanningAvailable(spreedCapabilities: SpreedCapabilityDto): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
+    /**
+     * Whether calls have to be end-to-end encrypted: the signaling setup supports it and the admin turned it on.
+     */
     fun isCallEndToEndEncryptionEnabled(spreedCapabilities: SpreedCapabilityDto?): Boolean {
         if (
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CALL_END_TO_END_ENCRYPTION) &&
             spreedCapabilities?.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&
             spreedCapabilities.config!!["call"]!!.containsKey("end-to-end-encryption")
@@ -418,4 +434,5 @@ object CapabilitiesUtil {
     private const val SERVER_VERSION_MIN_SUPPORTED = 17
     private const val SERVER_VERSION_SUPPORT_WARNING = 26
     private const val CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER = 500
+    private const val MOBILE_PRELOAD_CHAT = "mobile-preload-chat"
 }

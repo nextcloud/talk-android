@@ -20,13 +20,13 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.IOException
@@ -75,7 +75,6 @@ class FileUploader(
             createRequestBody(sourceFileUri)
         )
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .flatMap { response ->
                 if (response.isSuccessful) {
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
@@ -127,7 +126,7 @@ class FileUploader(
     private fun createRequestBody(sourceFileUri: Uri): RequestBody? =
         try {
             val bytes = context.contentResolver.openInputStream(sourceFileUri)!!.use { it.readBytes() }
-            RequestBody.create("application/octet-stream".toMediaTypeOrNull(), bytes)
+            bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
         } catch (e: Exception) {
             Log.e(TAG, "failed to create RequestBody for $sourceFileUri", e)
             null
