@@ -85,9 +85,7 @@
     <string name="load_more_results">Laad meer resultaten</string>
     <string name="local_time">Lokale tijd: %1$s</string>
     <string name="location_permission_denied">Lokatietoestemming geweigerd</string>
-    <string name="location_permission_denied_msg">Schakel dit alstublieft in bij de app instellingen </string>
     <string name="location_services_disabled">Lokatiediensten uitgeschakeld</string>
-    <string name="location_services_disabled_msg">Schakel alstublieft lokatiediensten (GPS) in om deze optie te gebruiken</string>
     <string name="lock_conversation">Gesprek vergrendelen</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="lower_hand">Hand omlaag</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">Bericht verwijderd door jou</string>
     <string name="message_last_edited_by">Bewerkt door %1$s</string>
     <string name="message_poll_tap_to_open">Klik om de peiling te openen</string>
-    <string name="message_search_begin_empty">Geen zoekresultaten</string>
-    <string name="message_search_begin_typing">Begin met typen om te zoeken</string>
     <string name="message_search_hint">Zoeken ...</string>
     <string name="messages">Berichten</string>
     <string name="mute_all_notifications">Onderdruk alle meldingen</string>
@@ -122,6 +118,8 @@
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
     <string name="nc_announcement">Aankondiging</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Volgende</string>
+    <string name="nc_audio_player_previous">Vorige</string>
     <string name="nc_biometric_unlock">Ontgrendel %1$s</string>
     <string name="nc_bluetooth_permission_hint">Om bluetooth speakers te activeren, activeer de \"Apparaten in de buurt\" machtiging.</string>
     <string name="nc_call_button_content_description_answer_video_call">Als videogesprek opnemen</string>
@@ -131,6 +129,7 @@
     <string name="nc_call_button_content_description_hangup">Ophangen</string>
     <string name="nc_call_button_content_description_microphone">Microfoon omschakelen</string>
     <string name="nc_call_button_content_description_pip">Open beeld-in-beeld modus</string>
+    <string name="nc_call_button_content_description_switch_camera">Andere camera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Omschakelen naar zelf-video</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
@@ -152,7 +151,6 @@
     <string name="nc_cancel">Annuleren</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_caption">Bijschrift</string>
-    <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
@@ -303,7 +301,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_lobby_start_soon">De vergadering begint zo meteen</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
-    <string name="nc_location_permission_required">Locatiemachtiging is vereist</string>
     <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>

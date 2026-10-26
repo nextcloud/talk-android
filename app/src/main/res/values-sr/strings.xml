@@ -85,9 +85,7 @@
     <string name="load_more_results">Учитај још резултата</string>
     <string name="local_time">Локално време: %1$s</string>
     <string name="location_permission_denied">Одбијена је дозвола за локацију</string>
-    <string name="location_permission_denied_msg">Молимо вас да је укључите у подешавањима апликације</string>
     <string name="location_services_disabled">Искључени су сервиси локације</string>
-    <string name="location_services_disabled_msg">Да бисте користили ову функционалност, молимо вас да укључите сервисе локације (GPS)</string>
     <string name="lock_conversation">Закључај разговор</string>
     <string name="lock_symbol">Симбол катанца</string>
     <string name="lower_hand">Спуштена рука</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">Обрисали сте поруку</string>
     <string name="message_last_edited_by">Уредио је %1$s</string>
     <string name="message_poll_tap_to_open">Тапните да отворите гласање</string>
-    <string name="message_search_begin_empty">Нема резултата претраге</string>
-    <string name="message_search_begin_typing">Крените да куцате и претрага почиње ...</string>
     <string name="message_search_hint">Претрага ...</string>
     <string name="messages">Поруке</string>
     <string name="mute_all_notifications">Искључи сва обавештења</string>
@@ -121,6 +117,8 @@
     <string name="nc_add_to_favorites">Додај у омиљене</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_attendee_pin">Прикачено: %1$s</string>
+    <string name="nc_audio_player_next">Следеће</string>
+    <string name="nc_audio_player_previous">Претходно</string>
     <string name="nc_biometric_unlock">Откључај %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ако желите да укључите bluetooth звучнике, молимо вас да дате дозволу „Оближњи уређаји”</string>
     <string name="nc_call_button_content_description_answer_video_call">Одговори као видео позив</string>
@@ -130,6 +128,7 @@
     <string name="nc_call_button_content_description_hangup">Прекини везу</string>
     <string name="nc_call_button_content_description_microphone">Укљ./искљ. микрофон</string>
     <string name="nc_call_button_content_description_pip">Отвори режим слика-у-слици</string>
+    <string name="nc_call_button_content_description_switch_camera">Пребаци камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Пређи на сопствени видео</string>
     <string name="nc_call_incoming">ДОЛАЗНО</string>
     <string name="nc_call_name">Назив разговора</string>
@@ -151,7 +150,6 @@
     <string name="nc_cancel">Откажи</string>
     <string name="nc_capabilities_failed">Грешка приликом дохватања могућности, прекидам</string>
     <string name="nc_caption">Наслов</string>
-    <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
@@ -301,7 +299,6 @@
     <string name="nc_lobby_start_soon">Састанак ће ускоро да почне</string>
     <string name="nc_lobby_waiting">Тренутно чекате у лобију.</string>
     <string name="nc_location_current_position_description">Ваша тренутна локација</string>
-    <string name="nc_location_permission_required">неопходна је дозвола локације</string>
     <string name="nc_location_unknown">Непозната позиција</string>
     <string name="nc_locked">Закључано</string>
     <string name="nc_locked_tap_to_unlock">Тапни за откључавање</string>

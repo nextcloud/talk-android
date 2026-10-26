@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,11 +44,6 @@ import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.datetime.datePicker
-import com.afollestad.materialdialogs.datetime.timePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -61,6 +57,7 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.conversationinfo.ui.ConversationInfoScreen
 import com.nextcloud.talk.conversationinfo.ui.ConversationInfoScreenCallbacks
+import com.nextcloud.talk.conversationinfo.ui.LobbyTimerPickerDialog
 import com.nextcloud.talk.conversationinfo.ui.ParticipantOpsAction
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
@@ -90,7 +87,6 @@ import com.nextcloud.talk.ui.dialog.DialogBanListFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
@@ -109,7 +105,6 @@ import retrofit2.HttpException
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.Calendar
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -245,13 +240,20 @@ class ConversationInfoActivity : BaseActivity() {
             }
 
             var passwordRequest by remember { mutableStateOf<PasswordRequest?>(null) }
+            var showLobbyTimerPicker by rememberSaveable { mutableStateOf(false) }
 
             MaterialTheme(colorScheme = colorScheme) {
                 ColoredStatusBar()
                 ConversationInfoScreen(
                     state = uiState,
-                    callbacks = buildCallbacks(onPasswordRequest = { passwordRequest = it })
+                    callbacks = buildCallbacks(
+                        onPasswordRequest = { passwordRequest = it },
+                        onLobbyTimerRequest = { showLobbyTimerPicker = true }
+                    )
                 )
+                if (showLobbyTimerPicker) {
+                    LobbyTimerPicker(uiState.conversation?.lobbyTimer ?: 0L) { showLobbyTimerPicker = false }
+                }
                 passwordRequest?.let { request ->
                     val validationState by viewModel.passwordValidation.state.collectAsStateWithLifecycle()
                     GuestAccessPasswordDialog(
@@ -270,6 +272,22 @@ class ConversationInfoActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    @Composable
+    private fun LobbyTimerPicker(initialEpochSeconds: Long, onClose: () -> Unit) {
+        LobbyTimerPickerDialog(
+            initialEpochSeconds = initialEpochSeconds,
+            onConfirm = { seconds ->
+                onClose()
+                viewModel.setLobbyTimerAndSubmit(conversationUser, conversationToken, seconds)
+            },
+            onClear = {
+                onClose()
+                viewModel.setLobbyTimerAndSubmit(conversationUser, conversationToken, 0L)
+            },
+            onDismiss = onClose
+        )
     }
 
     private fun onGuestPasswordSave(request: PasswordRequest, password: String, copyAfterSave: Boolean) {
@@ -308,7 +326,7 @@ class ConversationInfoActivity : BaseActivity() {
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
-    private fun buildCallbacks(onPasswordRequest: (PasswordRequest) -> Unit) =
+    private fun buildCallbacks(onPasswordRequest: (PasswordRequest) -> Unit, onLobbyTimerRequest: () -> Unit) =
         ConversationInfoScreenCallbacks(
             onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
             onEditConversation = {
@@ -328,7 +346,7 @@ class ConversationInfoActivity : BaseActivity() {
                 viewModel.toggleSensitiveConversation(credentials, conversationUser.baseUrl!!, conversationToken)
             },
             onLobbyClick = { viewModel.toggleLobby(conversationUser, conversationToken) },
-            onLobbyTimerClick = { showLobbyTimerDialog() },
+            onLobbyTimerClick = onLobbyTimerRequest,
             onAllowGuestsClick = {
                 val state = viewModel.uiState.value
                 val allow = !state.guestsAllowed
@@ -426,43 +444,6 @@ class ConversationInfoActivity : BaseActivity() {
                 putExtra(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
             }
         )
-    }
-
-    private fun showLobbyTimerDialog() {
-        val currentLobbyTimer = viewModel.uiState.value.conversation?.lobbyTimer ?: 0L
-        MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-            val cal = Calendar.getInstance()
-            if (currentLobbyTimer != 0L) cal.timeInMillis = currentLobbyTimer * DateConstants.SECOND_DIVIDER
-            datePicker { _, date ->
-                showTimePicker(date) { selectedDate ->
-                    viewModel.setLobbyTimerAndSubmit(
-                        conversationUser,
-                        conversationToken,
-                        selectedDate.timeInMillis / DateConstants.SECOND_DIVIDER
-                    )
-                }
-            }
-        }
-    }
-
-    private fun showTimePicker(selectedDate: Calendar, onTimeSelected: (Calendar) -> Unit) {
-        val currentTime = Calendar.getInstance()
-        MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-            cancelable(false)
-            timePicker(
-                currentTime = Calendar.getInstance(),
-                show24HoursView = true,
-                timeCallback = { _, time ->
-                    selectedDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY))
-                    selectedDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE))
-                    if (selectedDate.timeInMillis < currentTime.timeInMillis) {
-                        selectedDate.set(Calendar.HOUR_OF_DAY, currentTime.get(Calendar.HOUR_OF_DAY))
-                        selectedDate.set(Calendar.MINUTE, currentTime.get(Calendar.MINUTE))
-                    }
-                    onTimeSelected(selectedDate)
-                }
-            )
-        }
     }
 
     private fun showNotificationLevelDialog() {

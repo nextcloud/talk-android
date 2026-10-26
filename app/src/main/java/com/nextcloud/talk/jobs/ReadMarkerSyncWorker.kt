@@ -8,6 +8,7 @@ package com.nextcloud.talk.jobs
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -77,7 +78,9 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         }
     }
 
-    private suspend fun sendReadMarker(userId: Long, roomToken: String, lastReadMessage: Int): Result {
+    @VisibleForTesting
+    @Suppress("TooGenericExceptionCaught")
+    internal suspend fun sendReadMarker(userId: Long, roomToken: String, lastReadMessage: Int): Result {
         val user = userManager.getUserWithId(userId)
         val credentials = user?.let { ApiUtils.getCredentials(it.username, it.token) }
         if (user == null || credentials == null) {
@@ -85,19 +88,24 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
             return fail(userId, roomToken, lastReadMessage)
         }
 
-        val response = runCatching {
+        // not runCatching: it catches the CancellationException of work that marking read or unread in
+        // the list replaced, and giving up then releases the guard that replacement has just set
+        val response = try {
             val url = ApiUtils.getUrlForChatReadMarker(
                 ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1)),
                 user.baseUrl!!,
                 roomToken
             )
-            chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage).blockingSingle()
-        }.mapCatching { httpResponse ->
+            val httpResponse = chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
+                .blockingSingle()
             check(httpResponse.isSuccessful) { "HTTP ${httpResponse.code()}" }
             httpResponse
-        }.onFailure { throwable ->
-            Log.w(TAG, "Read marker $lastReadMessage for room $roomToken could not be sent: $throwable")
-        }.getOrNull()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Read marker $lastReadMessage for room $roomToken could not be sent: $e")
+            null
+        }
 
         return if (response != null) {
             Log.d(TAG, "Read marker $lastReadMessage sent for room $roomToken")
@@ -131,6 +139,12 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         }
 
     private fun fail(userId: Long, roomToken: String, lastReadMessage: Int): Result {
+        // blockingSingle() does not observe cancellation, so work that was replaced can still arrive
+        // here; the guards are the replacement's by then
+        if (isStopped) {
+            return Result.failure()
+        }
+
         val internalConversationId = "$userId@$roomToken"
         conversationListUpdater.clearPendingReadMarker(internalConversationId, lastReadMessage)
         // a marker that never reached the server must not keep a locally marked-as-unread conversation
@@ -166,10 +180,17 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
                 .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
-                "read-marker-sync-$userId@$roomToken",
+                uniqueWorkName(userId, roomToken),
                 ExistingWorkPolicy.REPLACE,
                 readMarkerWork
             )
         }
+
+        /**
+         * The one slot a room's read state goes through. [ConversationActionWorker] marks read and unread
+         * under it as well, so whichever of them the user did last replaces the others instead of racing
+         * them to the server.
+         */
+        fun uniqueWorkName(userId: Long, roomToken: String): String = "read-marker-sync-$userId@$roomToken"
     }
 }
