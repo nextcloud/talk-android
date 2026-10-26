@@ -43,6 +43,7 @@ build
 /gradle.properties
 .attach_pid*
 fastlane/Fastfile
+fastlane/ruby
 *.hprof
 captures/
 .navigation/

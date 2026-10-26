@@ -80,8 +80,6 @@
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
     <string name="message_deleted_by_you">Mezua ezabatu duzu</string>
     <string name="message_poll_tap_to_open">Sakatu galdeketa irekitzeko</string>
-    <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
-    <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
     <string name="message_search_hint">Bilatu …</string>
     <string name="messages">Mezuak</string>
     <string name="mute_all_notifications">Isilarazi jakinarazpen guztiak</string>
@@ -98,6 +96,8 @@
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Hurrengoa</string>
+    <string name="nc_audio_player_previous">Aurrekoa</string>
     <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth bozgorailuak gaitzeko, eman \"Inguruko gailuak\" baimena.</string>
     <string name="nc_call_button_content_description_answer_video_call">Erantzun bideo-dei gisa</string>
@@ -107,6 +107,7 @@
     <string name="nc_call_button_content_description_hangup">Eseki</string>
     <string name="nc_call_button_content_description_microphone">Aldatu mikrofonoa</string>
     <string name="nc_call_button_content_description_pip">Ireki irudiz irudi modua</string>
+    <string name="nc_call_button_content_description_switch_camera">Aldatu kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Aldatu norberaren bideora</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -127,7 +128,6 @@
     <string name="nc_cancel">Utzi</string>
     <string name="nc_capabilities_failed">Akatsak gaitasunak berreskuratzean. Bertan behera uzten.</string>
     <string name="nc_caption">Epigrafea</string>
-    <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
@@ -263,7 +263,6 @@
     <string name="nc_lobby_start_soon">Bilera laster hasiko da</string>
     <string name="nc_lobby_waiting">Sarreran itxaroten zabiltza momentu honetan.</string>
     <string name="nc_location_current_position_description">Zure uneko kokalekua</string>
-    <string name="nc_location_permission_required">Kokalekua atzitzeko baimena beharrezkoa da</string>
     <string name="nc_location_unknown">Kokapen ezezaguna</string>
     <string name="nc_locked">Blokeatuta</string>
     <string name="nc_locked_tap_to_unlock">Sakatu desblokeatzeko</string>
