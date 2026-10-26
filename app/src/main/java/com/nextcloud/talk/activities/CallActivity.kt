@@ -2367,6 +2367,8 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    // The leaveCall DELETE is fire-and-forget: it must outlive this Activity, so it is not disposed with it
+    @SuppressLint("CheckResult")
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
         if (!::conversationUser.isInitialized) {
