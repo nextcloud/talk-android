@@ -116,7 +116,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
-import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.models.json.signaling.SignalingDto
 import com.nextcloud.talk.models.json.signaling.SignalingOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
@@ -138,6 +137,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ReceiverFlag
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.VibrationUtils.vibrateShort
@@ -4141,7 +4141,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun addScreenSharePeerConnection(sessionId: String?) {
-        synchronized(screenShareLock) {
+        val isEncryptionFailed = synchronized(screenShareLock) {
             val stream = localScreenStream ?: return
             if (sessionId == null || screenSharePeerConnectionWrapperList.any { it.sessionId == sessionId }) {
                 return
@@ -4168,15 +4168,21 @@ class CallActivity : CallBaseActivity() {
                 )
             } catch (e: IllegalStateException) {
                 Log.e(TAG, "Not creating a screen share connection to $sessionId", e)
-                failCallEncryption(R.string.nc_call_e2ee_setup_failed)
-                return
+                null
             }
-            if (hasMCU) {
-                val observer = ScreenSharePublisherPeerConnectionObserver(peerConnectionWrapper)
-                screenSharePublisherObservers[peerConnectionWrapper] = observer
-                peerConnectionWrapper.addObserver(observer)
+            if (peerConnectionWrapper != null) {
+                if (hasMCU) {
+                    val observer = ScreenSharePublisherPeerConnectionObserver(peerConnectionWrapper)
+                    screenSharePublisherObservers[peerConnectionWrapper] = observer
+                    peerConnectionWrapper.addObserver(observer)
+                }
+                screenSharePeerConnectionWrapperList.add(peerConnectionWrapper)
             }
-            screenSharePeerConnectionWrapperList.add(peerConnectionWrapper)
+            peerConnectionWrapper == null
+        }
+        // Hanging up also stops the screen sharing, so it is not done while holding the lock.
+        if (isEncryptionFailed) {
+            failCallEncryption(R.string.nc_call_e2ee_setup_failed)
         }
     }
 
