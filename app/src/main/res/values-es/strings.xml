@@ -86,9 +86,7 @@
     <string name="load_more_results">Cargar más resultados</string>
     <string name="local_time">Hora local: %1$s</string>
     <string name="location_permission_denied">Se denegó el permiso de ubicación</string>
-    <string name="location_permission_denied_msg">Por favor, habilítelo en los ajustes de aplicación</string>
     <string name="location_services_disabled">Servicios de ubicación desactivados</string>
-    <string name="location_services_disabled_msg">Por favor, habilite los servicios de ubicación (GPS) para utilizar esta característica</string>
     <string name="lock_conversation">Bloquear conversación</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Bajar la mano</string>
@@ -104,8 +102,6 @@
     <string name="message_deleted_by_you">Has eliminado este mensaje</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Pulse para abrir la encuesta</string>
-    <string name="message_search_begin_empty">No hay resultados de búsqueda</string>
-    <string name="message_search_begin_typing">Empiece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar …</string>
     <string name="messages">Mensajes</string>
     <string name="mute_all_notifications">Silenciar todas las notificaciones</string>
@@ -123,6 +119,8 @@
     <string name="nc_all_ok_operation">OK. Todo hecho.</string>
     <string name="nc_announcement">Anuncio</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Siguiente</string>
+    <string name="nc_audio_player_previous">Anterior</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para habilitar los parlantes bluetooth, por favor, otorgue el permiso \"Dispositivos cercanos\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Contestar como videollamada</string>
@@ -132,6 +130,7 @@
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
     <string name="nc_call_button_content_description_pip">Abrir el modo de imagen sobre imagen, PiP</string>
+    <string name="nc_call_button_content_description_switch_camera">Cambiar de cámara</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
@@ -153,12 +152,12 @@
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Fallo al recuperar capacidades. Abortando.</string>
     <string name="nc_caption">Leyenda</string>
-    <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_channel">Canal</string>
+    <string name="nc_classified_conversation">Conversación confidencial</string>
     <string name="nc_clear_edit_button">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>
@@ -305,7 +304,6 @@
     <string name="nc_lobby_start_soon">La reunión empezará en breve</string>
     <string name="nc_lobby_waiting">Ahora estás esperando en la sala de espera.</string>
     <string name="nc_location_current_position_description">Su ubicación actual</string>
-    <string name="nc_location_permission_required">se requieren permisos de ubicación</string>
     <string name="nc_location_unknown">Posición desconocida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>

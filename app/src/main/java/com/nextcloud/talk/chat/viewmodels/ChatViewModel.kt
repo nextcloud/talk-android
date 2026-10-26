@@ -30,7 +30,6 @@ import com.nextcloud.talk.chat.releasesVideoAudioFocusOnClear
 import com.nextcloud.talk.chat.VideoMessageRecorder
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
-import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
@@ -75,7 +74,6 @@ import com.nextcloud.talk.models.json.userAbsence.UserAbsenceDataDto
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
-import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -374,7 +372,6 @@ class ChatViewModel @AssistedInject constructor(
     private var showUnreadMessagesMarker: Boolean = true
     private var isLoadMoreInProgress = false
 
-    private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -479,7 +476,6 @@ class ChatViewModel @AssistedInject constructor(
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
-        mediaPlayerManager.handleOnResume()
         if (isReturningFromBackground) {
             viewModelScope.launch {
                 chatRepository.fetchNewMessages()
@@ -490,13 +486,14 @@ class ChatViewModel @AssistedInject constructor(
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         currentLifeCycleFlag = LifeCycleFlag.PAUSED
+        roomJoinClaimed = false
+        joinRoomJob?.cancel()
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         searchRequestJob?.cancel()
         messageSearchHelper?.cancelSearch()
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
-        mediaPlayerManager.handleOnPause()
 
         saveMessageDraft()
     }
@@ -509,7 +506,6 @@ class ChatViewModel @AssistedInject constructor(
             mediaRecorderManager.handleOnStop()
         }
         chatRepository.handleOnStop()
-        mediaPlayerManager.handleOnStop()
     }
 
     fun onSignalingChatMessageReceived(chatMessages: List<ChatMessageDto>) {
@@ -520,15 +516,6 @@ class ChatViewModel @AssistedInject constructor(
 
     fun setUnreadMessagesMarker(shouldShow: Boolean) {
         showUnreadMessagesMarker = shouldShow
-    }
-
-    val mediaPlayerSeekbarObserver: Flow<ChatMessage>
-        get() = mediaPlayerManager.mediaPlayerSeekBarPositionMsg
-
-    val currentlyPlayedMessageId: Flow<Int?> = mediaPlayerManager.currentCycledMessage.map { it?.jsonMessageId }
-
-    fun setPlayBack(speed: PlaybackSpeed) {
-        mediaPlayerManager.setPlayBackSpeed(speed)
     }
 
     private val _recordTouchObserver: MutableLiveData<Float> = MutableLiveData()
@@ -554,10 +541,6 @@ class ChatViewModel @AssistedInject constructor(
     private val _unbindRoomResult = MutableLiveData<UnbindRoomUiState>(UnbindRoomUiState.None)
     val unbindRoomResult: LiveData<UnbindRoomUiState>
         get() = _unbindRoomResult
-
-    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
-    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
-        get() = _voiceMessagePlaybackSpeedPreferences
 
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
@@ -818,6 +801,11 @@ class ChatViewModel @AssistedInject constructor(
     // ------------------------------
     private var lastReadMessage: Int = 0
 
+    private var roomJoinClaimed = false
+    private var isInitialLoadDelivered = false
+    private var leaveRoomJob: Job? = null
+    private var joinRoomJob: Job? = null
+
     // ------------------------------
     // Initialization
     // ------------------------------
@@ -826,7 +814,6 @@ class ChatViewModel @AssistedInject constructor(
         observeLobbyState()
         observeLobbyPolling()
         observeMessages()
-        observeMediaPlayerProgressForCompose()
         observePinnedMessage()
         observeRoomRefresh()
         observeIncomingMessages()
@@ -1074,95 +1061,6 @@ class ChatViewModel @AssistedInject constructor(
 
     private fun resetUnreadMarkerCache() {
         firstUnreadMessageId = null
-    }
-
-    private fun observeMediaPlayerProgressForCompose() {
-        mediaPlayerSeekbarObserver
-            .onEach { message ->
-                syncVoiceMessageUiState(message)
-            }
-            .launchIn(viewModelScope)
-    }
-
-    fun pauseVoiceMessageUiState(messageId: Int) {
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
-                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
-                    if (voiceContent != null) {
-                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(isPlaying = false)))
-                    } else {
-                        item
-                    }
-                } else {
-                    item
-                }
-            }
-            current.copy(items = updatedItems)
-        }
-    }
-
-    fun setVoiceMessageSpeed(messageId: Int, speed: PlaybackSpeed) {
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == messageId) {
-                    val voiceContent = item.uiMessage.content as? MessageTypeContent.Voice
-                    if (voiceContent != null) {
-                        item.copy(uiMessage = item.uiMessage.copy(content = voiceContent.copy(playbackSpeed = speed)))
-                    } else {
-                        item
-                    }
-                } else {
-                    item
-                }
-            }
-            current.copy(items = updatedItems)
-        }
-    }
-
-    var currentVoiceMessage: ChatMessage? = null
-
-    fun syncVoiceMessageUiState(message: ChatMessage) {
-        currentVoiceMessage = message
-        _uiState.update { current ->
-            val updatedItems = current.items.map { item ->
-                if (item is ChatItem.MessageItem && item.uiMessage.id == message.jsonMessageId) {
-                    when (val content = item.uiMessage.content) {
-                        is MessageTypeContent.Voice -> {
-                            val updatedVoiceContent = content.copy(
-                                actorId = message.actorId,
-                                isPlaying = message.isPlayingVoiceMessage,
-                                wasPlayed = message.wasPlayedVoiceMessage,
-                                isDownloading = message.isDownloadingVoiceMessage,
-                                durationSeconds = message.voiceMessageDuration,
-                                playedSeconds = message.voiceMessagePlayedSeconds,
-                                seekbarProgress = message.voiceMessageSeekbarProgress,
-                                waveform = message.voiceMessageFloatArray?.toList() ?: content.waveform
-                                // playbackSpeed is preserved from existing content
-                            )
-                            item.copy(uiMessage = item.uiMessage.copy(content = updatedVoiceContent))
-                        }
-
-                        is MessageTypeContent.AudioFile -> {
-                            val updatedAudioFileContent = content.copy(
-                                isPlaying = message.isPlayingVoiceMessage,
-                                isDownloading = message.isDownloadingVoiceMessage,
-                                durationSeconds = message.voiceMessageDuration,
-                                playedSeconds = message.voiceMessagePlayedSeconds,
-                                seekbarProgress = message.voiceMessageSeekbarProgress
-                            )
-                            item.copy(uiMessage = item.uiMessage.copy(content = updatedAudioFileContent))
-                        }
-
-                        else -> item
-                    }
-                } else {
-                    item
-                }
-            }
-
-            current.copy(items = updatedItems)
-        }
     }
 
     // ------------------------------
@@ -1823,7 +1721,8 @@ class ChatViewModel @AssistedInject constructor(
                 spreedCapability,
                 conversationModel
             )
-            if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+            if (isInitialLoadPending()) {
+                isInitialLoadDelivered = true
                 _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                     spreedCapability,
                     conversationModel
@@ -1846,7 +1745,8 @@ class ChatViewModel @AssistedInject constructor(
                             spreedCapabilities,
                             conversationModel
                         )
-                        if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
+                        if (isInitialLoadPending()) {
+                            isInitialLoadDelivered = true
                             _getCapabilitiesViewState.value = GetCapabilitiesInitialLoadState(
                                 spreedCapabilities,
                                 conversationModel
@@ -1869,13 +1769,27 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * A failed first load of the capabilities is retried by the next refresh of the conversation, which then is the
+     * initial load. A failed refresh after the initial load is not.
+     */
+    private fun isInitialLoadPending(): Boolean = !isInitialLoadDelivered
+
+    /**
+     * Joins after a leave that is still running, so the server never handles the leave after the join. The wait is
+     * cancelled when the screen is paused.
+     */
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatNetworkDataSource.joinRoom(user, token, roomPassword)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.retry(JOIN_ROOM_RETRY_COUNT)
-            ?.subscribe(JoinRoomObserver())
+        joinRoomJob?.cancel()
+        joinRoomJob = viewModelScope.launch {
+            leaveRoomJob?.join()
+            chatNetworkDataSource.joinRoom(user, token, roomPassword)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.retry(JOIN_ROOM_RETRY_COUNT)
+                ?.subscribe(JoinRoomObserver())
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
@@ -1910,7 +1824,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun leaveRoom(credentials: String, url: String, functionToCallAfterLeave: (() -> Unit)?) {
-        appScope.launch {
+        leaveRoomJob = appScope.launch {
             try {
                 val result = chatNetworkDataSource.leaveRoom(credentials, url)
                 if (result.ocs?.meta?.statusCode == HTTP_CODE_OK) {
@@ -1920,7 +1834,6 @@ class ChatViewModel @AssistedInject constructor(
                 }
                 withContext(Dispatchers.Main) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState
-                    _getCapabilitiesViewState.value = GetCapabilitiesStartState
                     functionToCallAfterLeave?.invoke()
                 }
             } catch (e: Exception) {
@@ -2642,7 +2555,20 @@ class ChatViewModel @AssistedInject constructor(
         _getVoiceRecordingLocked.postValue(boolean)
     }
 
+    /**
+     * Allows one join of the room per resume of the chat screen. The claim is released when the screen is paused,
+     * where the chat leaves the room.
+     */
+    fun claimRoomJoin(): Boolean {
+        if (roomJoinClaimed) {
+            return false
+        }
+        roomJoinClaimed = true
+        return true
+    }
+
     fun handleOrientationChange() {
+        isInitialLoadDelivered = false
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 

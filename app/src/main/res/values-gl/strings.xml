@@ -86,9 +86,7 @@
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="local_time">Hora local: %1$s</string>
     <string name="location_permission_denied">Permiso de localización denegado</string>
-    <string name="location_permission_denied_msg">Actíveo nos axustes da aplicación</string>
     <string name="location_services_disabled">Servizos de localización desactivados</string>
-    <string name="location_services_disabled_msg">Active os servizos de localización (GPS) para usar esta función</string>
     <string name="lock_conversation">Bloquear a conversa</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
@@ -104,8 +102,6 @@
     <string name="message_deleted_by_you">Mensaxe eliminada por Vde.</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquisa</string>
-    <string name="message_search_begin_empty">Sen resultados de busca</string>
-    <string name="message_search_begin_typing">Comece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar…</string>
     <string name="messages">Mensaxes</string>
     <string name="mute_all_notifications">Silenciar todas as notificacións</string>
@@ -122,6 +118,7 @@
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_all_ok_operation">Conforme, todo feito!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Seguinte</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para activar os altofalantes Bluetooth, conceda os permiso para «Dispositivos próximos».</string>
     <string name="nc_call_button_content_description_answer_video_call">Responda como videochamada</string>
@@ -131,6 +128,7 @@
     <string name="nc_call_button_content_description_hangup">Colgar</string>
     <string name="nc_call_button_content_description_microphone">Cambiar o micrófono</string>
     <string name="nc_call_button_content_description_pip">Abrir o modo imaxe en imaxe (picture in picture)</string>
+    <string name="nc_call_button_content_description_switch_camera">Cambiar de cámara</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar ao vídeo propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nome da conversa</string>
@@ -152,7 +150,6 @@
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar as funcionalidades. Interrompendo.</string>
     <string name="nc_caption">Lenda</string>
-    <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido desde %3$s ata %4$s?</string>
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
@@ -304,7 +301,6 @@
     <string name="nc_lobby_start_soon">A xuntanza comezará en breve</string>
     <string name="nc_lobby_waiting">Agora está agardando no ástrago.</string>
     <string name="nc_location_current_position_description">A súa localización actual</string>
-    <string name="nc_location_permission_required">é necesario o permiso de localización</string>
     <string name="nc_location_unknown">Posición descoñecida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
