@@ -59,8 +59,6 @@
     <string name="menu_item_sort_by_size_smallest_first">Първо най-малкият</string>
     <string name="message_deleted_by_you">Съобщение, изтрито от вас</string>
     <string name="message_poll_tap_to_open">Докосване, за отворяне на анкета</string>
-    <string name="message_search_begin_empty">Няма резултати от търсенето</string>
-    <string name="message_search_begin_typing">Започнете да пишете, за търсене …</string>
     <string name="message_search_hint">Търсене …</string>
     <string name="messages">Съобщения</string>
     <string name="nc_Server_account_imported">Избраният профил вече е импортиран и наличен</string>
@@ -76,6 +74,8 @@
     <string name="nc_add_to_favorites">Добави към любимите</string>
     <string name="nc_all_ok_operation">Добре, всичко е готово!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Следващо</string>
+    <string name="nc_audio_player_previous">Предишно</string>
     <string name="nc_biometric_unlock">Отключване %1$s</string>
     <string name="nc_call_button_content_description_answer_video_call">Отговор с видео обаждане</string>
     <string name="nc_call_button_content_description_answer_voice_only">Отговор само с гласово повикване</string>
@@ -84,6 +84,7 @@
     <string name="nc_call_button_content_description_hangup">Затваряне</string>
     <string name="nc_call_button_content_description_microphone">Превключване на микрофона</string>
     <string name="nc_call_button_content_description_pip">Отваряне в режим картина в картината </string>
+    <string name="nc_call_button_content_description_switch_camera">Превключване на камера</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Превключване към самозснемане на видео</string>
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
@@ -101,7 +102,6 @@
     <string name="nc_call_voice">%sгласово обаждане</string>
     <string name="nc_cancel">Отказ</string>
     <string name="nc_capabilities_failed">Прекъсване, извличането на възможности не беше успешно </string>
-    <string name="nc_certificate_dialog_text">Вярвате ли на неизвестен досега SSL сертификат, издаден от %1$s за %2$s, валиден от%3$s до %4$s?</string>
     <string name="nc_certificate_dialog_title">Провери сертификата</string>
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
@@ -223,7 +223,6 @@
     <string name="nc_lobby_start_soon">Срещата ще започне скоро</string>
     <string name="nc_lobby_waiting">В момента изчаквате в лобито.</string>
     <string name="nc_location_current_position_description">Вашето текущо местоположение</string>
-    <string name="nc_location_permission_required">Нужно е право за местоположение</string>
     <string name="nc_location_unknown">Неизвестна позиция</string>
     <string name="nc_locked">Заключено</string>
     <string name="nc_locked_tap_to_unlock">Докоснете, за да отключите</string>

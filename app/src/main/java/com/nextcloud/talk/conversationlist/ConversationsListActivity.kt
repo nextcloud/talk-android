@@ -32,7 +32,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.Data
@@ -52,6 +54,12 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.audio.ChatAudioKey
+import com.nextcloud.talk.chat.audio.ChatAudioPlayer
+import com.nextcloud.talk.chat.audio.ChatAudioSpeeds
+import com.nextcloud.talk.chat.audio.ChatAudioStore
+import com.nextcloud.talk.chat.audio.openMessageExtras
+import com.nextcloud.talk.chat.audio.openMessageIntent
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
@@ -78,6 +86,8 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
+import com.nextcloud.talk.ui.chat.ChatAudioPlayerHost
+import com.nextcloud.talk.ui.chat.chatAudioPlayerCallbacks
 import com.nextcloud.talk.ui.chooseaccount.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -166,6 +176,14 @@ class ConversationsListActivity : BaseActivity() {
 
     val contactsViewModel: ContactsViewModel by assistedViewModels { contactsViewModelFactory.build(currentUser) }
 
+    @Inject
+    lateinit var chatAudioStore: ChatAudioStore
+
+    @Inject
+    lateinit var chatAudioSpeeds: ChatAudioSpeeds
+
+    private lateinit var chatAudioPlayer: ChatAudioPlayer
+
     val conversationsListViewModel: ConversationsListViewModel by assistedViewModels {
         conversationsListViewModelFactory.build(currentUser)
     }
@@ -218,10 +236,24 @@ class ConversationsListActivity : BaseActivity() {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (forwardMessage) {
-                finish()
+                cancelForwarding()
             } else {
                 finishAffinity()
             }
+        }
+    }
+
+    // The source chat finished itself when forwarding started and this list may be the one below it, so finishing
+    // here would fall back to MainActivity. Instead leave the forward mode and return to the source chat.
+    private fun cancelForwarding() {
+        val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        intent.removeExtra(KEY_FORWARD_MSG_FLAG)
+        intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+        intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        forwardMessageState.value = false
+        conversationsListViewModel.setHideRoomToken(null)
+        if (sourceRoomToken != null) {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, sourceRoomToken))
         }
     }
 
@@ -230,6 +262,8 @@ class ConversationsListActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         currentUser = setUpBoundUserOrFinish() ?: return
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
+        chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
+        lifecycle.addObserver(chatAudioPlayer)
 
         if (!currentUser.current) {
             // The shown account becomes the last used one, which the account switcher and status views rely on.
@@ -245,12 +279,22 @@ class ConversationsListActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+        val audioPlayerCallbacks = chatAudioPlayerCallbacks(
+            player = chatAudioPlayer,
+            speeds = chatAudioSpeeds,
+            scope = lifecycleScope,
+            onOpenMessage = { key, threadId -> openAudioMessage(key, threadId) }
+        )
         setContent {
             ConversationsListScreen(
                 viewModel = conversationsListViewModel,
                 tagsViewModel = conversationTagsViewModel,
                 state = buildScreenState(),
-                callbacks = buildScreenCallbacks()
+                callbacks = buildScreenCallbacks(),
+                audioPlayer = {
+                    val audioState by chatAudioPlayer.state.collectAsStateWithLifecycle()
+                    ChatAudioPlayerHost(state = audioState, callbacks = audioPlayerCallbacks)
+                }
             )
         }
 
@@ -696,6 +740,19 @@ class ConversationsListActivity : BaseActivity() {
             threadId?.let { putExtra(BundleKeys.KEY_THREAD_ID, it) }
         }
         startActivity(intent)
+    }
+
+    /**
+     * Opens the chat of an audio message at the message, in its thread if it has one; messages of another account
+     * switch to that account.
+     */
+    private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
+        if (key.internalUserId == currentUser?.id) {
+            val extras = key.openMessageExtras(threadId)
+            startActivity(ChatActivity.createIntent(context, key.internalUserId, key.roomToken, extras))
+        } else {
+            startActivity(key.openMessageIntent(this, threadId))
+        }
     }
 
     fun filterConversation() {
@@ -1206,10 +1263,6 @@ class ConversationsListActivity : BaseActivity() {
 
             val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, it.token, bundle)
 
-            if (CapabilitiesUtil.isCallEndToEndEncryptionEnabled(currentUser.capabilities?.spreedCapability)) {
-                showSnackbar(context.getString(R.string.nc_call_e2ee_not_supported))
-                return@let
-            }
             val pp = ParticipantPermissions(currentUser.capabilities?.spreedCapability, it)
             if (!pp.canStartCall() && selectedConversation?.hasCall == false) {
                 Log.e(TAG, "Error starting call from conversations list: call is forbidden")

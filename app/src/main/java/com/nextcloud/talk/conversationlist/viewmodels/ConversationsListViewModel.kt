@@ -8,6 +8,7 @@ package com.nextcloud.talk.conversationlist.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,6 +22,8 @@ import com.nextcloud.talk.conversationlist.ui.ConversationListEntry
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.jobs.ConversationActionScheduler
+import com.nextcloud.talk.jobs.ConversationActionWorker.ConversationAction
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
@@ -30,7 +33,6 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -41,9 +43,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.Undo
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.optimisticAction
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -82,8 +82,8 @@ class ConversationsListViewModel @AssistedInject constructor(
     private val invitationsRepository: InvitationsRepository,
     private val arbitraryStorageManager: ArbitraryStorageManager,
     var userManager: UserManager,
-    private val conversationsRepository: ConversationsRepository,
     private val conversationListUpdater: ConversationListUpdater,
+    private val conversationActionScheduler: ConversationActionScheduler,
     private val logger: Logger,
     @Assisted val currentUser: User
 ) : ViewModel() {
@@ -858,81 +858,6 @@ class ConversationsListViewModel @AssistedInject constructor(
         _readUnreadState.value = ConversationReadUnreadUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun markConversationAsRead(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false)
-        val messageId = if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser.capabilities?.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    messageId?.let { conversationListUpdater.markPendingReadMarker(conversation.internalId, it) }
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        messageId?.let { conversationListUpdater.clearPendingReadMarker(conversation.internalId, it) }
-                    }
-                },
-                request = { conversationsRepository.markConversationAsRead(credentials, url, messageId) }
-            )
-
-            _readUnreadState.value = result.fold(
-                onSuccess = { ConversationReadUnreadUiState.Success },
-                onFailure = {
-                    logger.e(TAG, "Failed to mark conversation as read", it)
-                    ConversationReadUnreadUiState.Error
-                }
-            )
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun markConversationAsUnread(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(unreadMessages = 1)
-        val apiVersion = ApiUtils.getChatApiVersion(
-            currentUser.capabilities?.spreedCapability!!,
-            intArrayOf(ApiUtils.API_V1)
-        )
-        val url = ApiUtils.getUrlForChatReadMarker(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingUnread(conversation.internalId)
-                    applyLocally(optimistic)
-                    revertTo(original) { conversationListUpdater.clearPendingUnread(conversation.internalId) }
-                },
-                request = { conversationsRepository.markConversationAsUnread(credentials, url) }
-            )
-
-            _readUnreadState.value = result.fold(
-                onSuccess = { ConversationReadUnreadUiState.Success },
-                onFailure = {
-                    logger.e(TAG, "Failed to mark conversation as unread", it)
-                    ConversationReadUnreadUiState.Error
-                }
-            )
-        }
-    }
-
-    private suspend fun applyLocally(conversation: ConversationModel) {
-        withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
-    }
-
-    /**
-     * The action that puts [original] back and releases whatever guard the caller registered, for
-     * [optimisticAction] to run when the request finally fails or the screen is left mid-request.
-     */
-    private fun revertTo(original: ConversationModel, releaseGuard: () -> Unit): Undo =
-        {
-            releaseGuard()
-            applyLocally(original)
-        }
-
     fun resetFavoriteState() {
         _favoriteState.value = FavoriteUiState.None
     }
@@ -941,95 +866,126 @@ class ConversationsListViewModel @AssistedInject constructor(
         _archiveState.value = ArchiveUiState.None
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsRead(conversation: ConversationModel) {
+        // a federated conversation sends no message id, so the server marks it read up to its last message
+        val lastReadMessage =
+            if (conversation.remoteServer.isNullOrEmpty()) conversation.lastMessage?.id?.toInt() else null
+        applyAndSend(
+            action = ConversationAction.MarkRead(lastReadMessage),
+            original = conversation,
+            optimistic = conversation.copy(unreadMessages = 0, unreadMention = false, unreadMentionDirect = false),
+            onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
+            onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
+        )
+    }
+
+    fun markConversationAsUnread(conversation: ConversationModel) {
+        applyAndSend(
+            action = ConversationAction.MarkUnread,
+            original = conversation,
+            optimistic = conversation.copy(unreadMessages = 1),
+            onApplied = { _readUnreadState.value = ConversationReadUnreadUiState.Success },
+            onFailed = { _readUnreadState.value = ConversationReadUnreadUiState.Error }
+        )
+    }
+
     fun toggleConversationArchive(conversation: ConversationModel) {
-        val original = conversation.copy()
         val desiredArchived = !conversation.hasArchived
-        val optimistic = conversation.copy(hasArchived = desiredArchived)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForArchive(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingArchived(conversation.internalId, desiredArchived)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingArchived(conversation.internalId, desiredArchived)
-                    }
-                },
-                request = {
-                    if (desiredArchived) {
-                        conversationsRepository.archiveConversation(credentials, url)
-                    } else {
-                        conversationsRepository.unarchiveConversation(credentials, url)
-                    }
-                }
-            )
-
-            _archiveState.value = result.fold(
-                onSuccess = { ArchiveUiState.Success(desiredArchived, conversation.displayName) },
-                onFailure = {
-                    logger.e(TAG, "Failed to toggle conversation archive state", it)
-                    ArchiveUiState.Error
-                }
-            )
-        }
+        applyAndSend(
+            action = ConversationAction.Archive(desiredArchived),
+            original = conversation,
+            optimistic = conversation.copy(hasArchived = desiredArchived),
+            onApplied = { _archiveState.value = ArchiveUiState.Success(desiredArchived, conversation.displayName) },
+            onFailed = { _archiveState.value = ArchiveUiState.Error }
+        )
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     fun addConversationToFavorites(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(favorite = true)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = true)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = true)
-                    }
-                },
-                request = { conversationsRepository.addConversationToFavorites(credentials, url) }
-            )
+        setFavorite(conversation, favorite = true)
+    }
 
-            _favoriteState.value = result.fold(
-                onSuccess = { FavoriteUiState.Success },
-                onFailure = {
-                    logger.e(TAG, "Failed to add conversation to favorites", it)
-                    FavoriteUiState.Error
-                }
-            )
+    fun removeConversationFromFavorites(conversation: ConversationModel) {
+        setFavorite(conversation, favorite = false)
+    }
+
+    private fun setFavorite(conversation: ConversationModel, favorite: Boolean) {
+        applyAndSend(
+            action = ConversationAction.Favorite(favorite),
+            original = conversation,
+            optimistic = conversation.copy(favorite = favorite),
+            onApplied = { _favoriteState.value = FavoriteUiState.Success },
+            onFailed = { _favoriteState.value = FavoriteUiState.Error }
+        )
+    }
+
+    /**
+     * Sends [action] through [ConversationActionScheduler] and shows [optimistic] meanwhile.
+     *
+     * - The guard is set first, so a worker that is done at once finds it to release.
+     * - The work is enqueued outside [viewModelScope], so leaving the screen cannot keep it from being sent.
+     * - Showing the change and waiting only happen while the screen is there. If the worker gives up, [original]
+     *   is put back and [onFailed] is called; if the screen is gone by then, the next sync restores it instead.
+     */
+    private fun applyAndSend(
+        action: ConversationAction,
+        original: ConversationModel,
+        optimistic: ConversationModel,
+        onApplied: () -> Unit,
+        onFailed: () -> Unit
+    ) {
+        markPending(original.internalId, action)
+        val workId = conversationActionScheduler.enqueue(currentUser.id!!, original.token, action)
+
+        viewModelScope.launch {
+            applyLocally(optimistic)
+            onApplied()
+
+            if (conversationActionScheduler.awaitWorkerGaveUp(workId)) {
+                logger.e(TAG, "Failed to send $action for a conversation")
+                restore(original, action)
+                onFailed()
+            }
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun removeConversationFromFavorites(conversation: ConversationModel) {
-        val original = conversation.copy()
-        val optimistic = conversation.copy(favorite = false)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl, conversation.token)
-        viewModelScope.launch {
-            val result = optimisticAction(
-                apply = {
-                    conversationListUpdater.markPendingFavorite(conversation.internalId, favorite = false)
-                    applyLocally(optimistic)
-                    revertTo(original) {
-                        conversationListUpdater.clearPendingFavorite(conversation.internalId, favorite = false)
-                    }
-                },
-                request = { conversationsRepository.removeConversationFromFavorites(credentials, url) }
-            )
-
-            _favoriteState.value = result.fold(
-                onSuccess = { FavoriteUiState.Success },
-                onFailure = {
-                    logger.e(TAG, "Failed to remove conversation from favorites", it)
-                    FavoriteUiState.Error
-                }
-            )
+    /** Sets the guard for [action]; the worker releases it once the change went through or failed. */
+    private fun markPending(internalConversationId: String, action: ConversationAction) {
+        when (action) {
+            is ConversationAction.MarkRead ->
+                conversationListUpdater.switchToPendingMarkAsRead(internalConversationId, action.lastReadMessage)
+            ConversationAction.MarkUnread ->
+                conversationListUpdater.switchToPendingMarkAsUnread(internalConversationId)
+            is ConversationAction.Favorite ->
+                conversationListUpdater.markPendingFavorite(internalConversationId, action.favorite)
+            is ConversationAction.Archive ->
+                conversationListUpdater.markPendingArchived(internalConversationId, action.archived)
         }
+    }
+
+    private suspend fun applyLocally(conversation: ConversationModel) {
+        withContext(Dispatchers.IO) { repository.updateConversation(conversation) }
+    }
+
+    /**
+     * Puts back only the field [action] owns, on top of whatever the entry holds by now. Each action is
+     * carried by its own work, so writing the whole captured conversation back would undo a different
+     * action that succeeded while this one was still in flight.
+     */
+    @VisibleForTesting
+    internal suspend fun restore(original: ConversationModel, action: ConversationAction) {
+        val current = repository.getLocallyStoredConversation(currentUser, original.token) ?: original
+        applyLocally(
+            when (action) {
+                is ConversationAction.MarkRead -> current.copy(
+                    unreadMessages = original.unreadMessages,
+                    unreadMention = original.unreadMention,
+                    unreadMentionDirect = original.unreadMentionDirect
+                )
+                ConversationAction.MarkUnread -> current.copy(unreadMessages = original.unreadMessages)
+                is ConversationAction.Favorite -> current.copy(favorite = original.favorite)
+                is ConversationAction.Archive -> current.copy(hasArchived = original.hasArchived)
+            }
+        )
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {

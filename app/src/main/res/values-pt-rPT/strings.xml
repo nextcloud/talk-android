@@ -88,9 +88,7 @@
     <string name="load_more_results">Mostrar mais resultados</string>
     <string name="local_time">Horário local: %1$s</string>
     <string name="location_permission_denied">Permissão de localização negada</string>
-    <string name="location_permission_denied_msg">Por favor, ative-a nas configurações do aplicativo</string>
     <string name="location_services_disabled">Serviços de localização desativados</string>
-    <string name="location_services_disabled_msg">Ative os serviços de localização (GPS) para usar este recurso</string>
     <string name="lock_conversation">Trancar conversa</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar mão</string>
@@ -108,7 +106,6 @@
     <string name="message_deleted_by_you">Mensagem excluída por você</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir enquete</string>
-    <string name="message_search_begin_empty">Nenhum resultado de pesquisa</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="message_search_next_result">Próximo resultado da pesquisa</string>
     <string name="message_search_no_more_results">Não foram encontradas mais mensagens</string>
@@ -130,6 +127,8 @@
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
     <string name="nc_announcement">Anúncios</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
+    <string name="nc_audio_player_next">Seguinte</string>
+    <string name="nc_audio_player_previous">Anterior</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para ativar os alto-falantes bluetooth, conceda a permissão \"Dispositivos próximos\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Atender como chamada de vídeo</string>
@@ -137,6 +136,7 @@
     <string name="nc_call_button_content_description_audio_output">Mudar saída de áudio</string>
     <string name="nc_call_button_content_description_hangup">Desligar</string>
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
+    <string name="nc_call_button_content_description_switch_camera">Trocar câmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome da conversação</string>
@@ -157,7 +157,6 @@
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Não foi possível obter as capacidades, a abortar</string>
     <string name="nc_caption">Legenda</string>
-    <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">A sua configuração de SSL impediu a ligação</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
@@ -307,7 +306,6 @@
     <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
     <string name="nc_lobby_waiting">No momento, você está esperando na sala de espera.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
-    <string name="nc_location_permission_required">permissão de localização é necessária</string>
     <string name="nc_location_unknown">Posição desconhecida</string>
     <string name="nc_locked">Trancado</string>
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
@@ -325,7 +323,6 @@
     <string name="nc_logs_share">Enviar como e-mail</string>
     <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
     <string name="nc_logs_share_latest_crash">Última falha</string>
-    <string name="nc_logs_share_subject">%1$s registros</string>
     <string name="nc_logs_title">Registos de Alterações</string>
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>

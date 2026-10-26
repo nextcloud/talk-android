@@ -10,7 +10,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
     id("com.google.devtools.ksp") version "2.3.12"
@@ -32,7 +32,6 @@ val lifecycleVersion = "2.11.0"
 val maplibreComposeVersion = "0.20.0"
 val okhttpVersion = "5.5.0"
 val markwonVersion = "4.6.2"
-val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
 val roomVersion = "2.8.5"
@@ -62,8 +61,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010012
-        versionName = "25.1.0 Alpha 12"
+        versionCode = 260000002
+        versionName = "26.0.0 Alpha 02"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -290,20 +289,16 @@ dependencies {
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")
 
-    implementation("com.afollestad.material-dialogs:core:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:datetime:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogsVersion")
-
     implementation("com.google.code.gson:gson:2.14.0")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-datasource-okhttp:$media3Version")
+    implementation("androidx.media3:media3-database:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
     implementation("androidx.media3:media3-transformer:$media3Version")
     implementation("androidx.media3:media3-effect:$media3Version")
 
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.32")
 
     implementation("io.noties.markwon:core:$markwonVersion")
     implementation("io.noties.markwon:ext-strikethrough:$markwonVersion")
@@ -337,7 +332,8 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.34.0")
     implementation("com.github.nextcloud.android-common:core:0.34.0")
-    implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
+    implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.1")
+    implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
     "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")

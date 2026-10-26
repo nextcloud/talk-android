@@ -58,8 +58,6 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Suurin ensin</string>
     <string name="menu_item_sort_by_size_smallest_first">Pienin ensin</string>
-    <string name="message_search_begin_empty">Ei hakutuloksia</string>
-    <string name="message_search_begin_typing">Aloita kirjoittaminen hakeaksesi…</string>
     <string name="message_search_hint">Hae…</string>
     <string name="messages">Viestit</string>
     <string name="mute_all_notifications">Mykistä kaikki ilmoitukset</string>
@@ -76,8 +74,10 @@
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Seuraava</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
     <string name="nc_call_button_content_description_hangup">Lopeta</string>
+    <string name="nc_call_button_content_description_switch_camera">Vaihda kamera</string>
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_name">Keskustelun nimi</string>
     <string name="nc_call_notifications">Puheluilmoitukset</string>
@@ -199,7 +199,6 @@
     <string name="nc_lobby_start_soon">Kokous alkaa pian</string>
     <string name="nc_lobby_waiting">Odotat parhaillaan aulassa.</string>
     <string name="nc_location_current_position_description">Nykyinen sijaintisi</string>
-    <string name="nc_location_permission_required">sijainnin käyttöoikeus vaaditaan</string>
     <string name="nc_location_unknown">Tuntematon sijainti</string>
     <string name="nc_locked">Lukittu</string>
     <string name="nc_locked_tap_to_unlock">Napauta avataksesi lukituksen</string>

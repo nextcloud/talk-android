@@ -89,9 +89,7 @@
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="local_time">Místní čas: %1$s</string>
     <string name="location_permission_denied">Oprávnění k přístupu k poloze odepřeno</string>
-    <string name="location_permission_denied_msg">Povolte to v nastavení aplikace</string>
     <string name="location_services_disabled">Služby určování polohy vypnuty</string>
-    <string name="location_services_disabled_msg">Abyste mohli používat tuto funkci zapněte polohové služby (GPS)</string>
     <string name="lock_conversation">Uzamknout konverzaci</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
@@ -110,8 +108,6 @@
     <string name="message_deleted_by_you">Zprávu jste smazali</string>
     <string name="message_last_edited_by">Upraveno %1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
-    <string name="message_search_begin_empty">Nic nenalezeno</string>
-    <string name="message_search_begin_typing">Hledejte psaním …</string>
     <string name="message_search_hint">Hledat …</string>
     <string name="message_search_no_more_results">Žádné další zprávy</string>
     <string name="messages">Zprávy</string>
@@ -131,6 +127,8 @@
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_announcement">Oznámení</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_previous">Předchozí</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pro použití bluetooth reproduktorů je třeba udělit oprávnění „Zařízení poblíž“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Zvednou videohovor</string>
@@ -140,6 +138,7 @@
     <string name="nc_call_button_content_description_hangup">Zavěsit</string>
     <string name="nc_call_button_content_description_microphone">Vyp/zap. mikrofon</string>
     <string name="nc_call_button_content_description_pip">Otevřít v režimu obraz-v-obraze</string>
+    <string name="nc_call_button_content_description_switch_camera">Přepnout kameru</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Přepnout na video sama sebe</string>
     <string name="nc_call_e2ee_not_supported_title">Hovor od %s není k dispozici</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
@@ -164,7 +163,6 @@
     <string name="nc_cancel">Storno</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, přerušuje se</string>
     <string name="nc_caption">Titulek</string>
-    <string name="nc_certificate_dialog_text">Věříte doposud neznámému SSL certifikátu, vydaném %1$s pro %2$s, platnému od %3$s do %4$s?</string>
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
@@ -327,7 +325,6 @@
     <string name="nc_lobby_start_soon">Schůzka brzy začne</string>
     <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
     <string name="nc_location_current_position_description">Vaše stávající umístění</string>
-    <string name="nc_location_permission_required">vyžadováno oprávnění pro přístup k údaji o poloze</string>
     <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
@@ -341,7 +338,6 @@
     <string name="nc_logs_share">Odeslat jako e-mail</string>
     <string name="nc_logs_share_diagnosis">Diagnostické hlášení</string>
     <string name="nc_logs_share_latest_crash">Nejnovější pád</string>
-    <string name="nc_logs_share_subject">%1$s záznamů událostí</string>
     <string name="nc_logs_title">Záznamy událostí</string>
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>

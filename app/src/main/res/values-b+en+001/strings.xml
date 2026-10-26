@@ -95,9 +95,7 @@
     <string name="load_more_results">Load more results</string>
     <string name="local_time">Local time: %1$s</string>
     <string name="location_permission_denied">Location permission denied</string>
-    <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
-    <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>
-    <string name="message_search_begin_empty">No search results</string>
-    <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_hint">Search …</string>
     <string name="message_search_next_result">Next search result</string>
     <string name="message_search_no_more_results">No more messages found</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">About</string>
     <string name="nc_account_chooser_active_user">Active user</string>
     <string name="nc_account_chooser_add_account">Add account</string>
+    <string name="nc_account_removal_pending">The removal of this account is not finished yet. Please try again in a moment.</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="nc_add_emojis">Add emojis</string>
@@ -141,6 +138,23 @@
     <string name="nc_announcement">Announcement</string>
     <string name="nc_announcement_description">Conversation for admins to inform a fixed audience, which cannot be left.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_error_generic">Could not play the audio</string>
+    <string name="nc_audio_error_network">Could not load the audio. Check your connection.</string>
+    <string name="nc_audio_error_unavailable">The audio file is not available</string>
+    <string name="nc_audio_error_unsupported">The audio format is not supported</string>
+    <string name="nc_audio_player_close">Stop playback</string>
+    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_open">Open player</string>
+    <string name="nc_audio_player_play_pause">Play/pause</string>
+    <string name="nc_audio_player_previous">Previous</string>
+    <string name="nc_audio_player_queue">Playlist</string>
+    <string name="nc_audio_player_repeat_all">Repeat all</string>
+    <string name="nc_audio_player_repeat_off">Repeat off</string>
+    <string name="nc_audio_player_repeat_one">Repeat one</string>
+    <string name="nc_audio_player_show_message">Show message</string>
+    <string name="nc_audio_player_shuffle">Shuffle</string>
+    <string name="nc_audio_retry">Retry playback</string>
+    <string name="nc_audio_seek">Playback position</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
@@ -150,6 +164,7 @@
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
+    <string name="nc_call_button_content_description_switch_camera">Switch camera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_e2ee_not_supported">Calling is currently not supported because end-to-end encryption is enabled on the server</string>
     <string name="nc_call_e2ee_not_supported_title">Call from %s unavailable</string>
@@ -164,6 +179,8 @@
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
+    <string name="nc_call_self_video_enlarge">Enlarge self video</string>
+    <string name="nc_call_self_video_shrink">Shrink self video</string>
     <string name="nc_call_state_in_call">%1$s in call</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
@@ -175,7 +192,7 @@
     <string name="nc_cancel">Cancel</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_caption">Caption</string>
-    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Do you trust the until now unknown SSL certificate of %1$s, issued by %2$s for %3$s, valid from %4$s to %5$s? It will only be trusted for %1$s.</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
@@ -361,10 +378,10 @@
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
     <string name="nc_location_current_position_description">Your current location</string>
-    <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
+    <string name="nc_login_too_many_attempts">Too many failed login attempts from this network. Try again later.</string>
     <string name="nc_logs_advanced_logging">Advanced logging</string>
     <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>
     <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
@@ -384,7 +401,6 @@
     <string name="nc_logs_share_diagnosis">Diagnosis report</string>
     <string name="nc_logs_share_latest_crash">Latest crash</string>
     <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
-    <string name="nc_logs_share_subject">%1$s logs</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>
     <string name="nc_manual">Not set</string>
@@ -397,6 +413,7 @@
     <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
+    <string name="nc_message_not_added_to_notes">Could not add the message to notes</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_scheduled">Message scheduled</string>
@@ -535,6 +552,9 @@
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
     <string name="nc_server_helper_text">The link to your %1$s web interface when you open it in the browser.</string>
+    <string name="nc_server_http_fallback_confirm">Use HTTP</string>
+    <string name="nc_server_http_fallback_message">Could not connect to the server over HTTPS. Connect over unsecured HTTP instead?</string>
+    <string name="nc_server_http_fallback_title">Insecure connection</string>
     <string name="nc_server_import_account">Import account from the %1$s app</string>
     <string name="nc_server_import_account_plain">Import account</string>
     <string name="nc_server_import_accounts">Import accounts from the %1$s app</string>

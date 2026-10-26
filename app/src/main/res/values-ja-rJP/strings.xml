@@ -78,8 +78,6 @@
     <string name="message_deleted_by_you">あなたが削除したメッセージ</string>
     <string name="message_last_edited_by">%1$sに編集されました</string>
     <string name="message_poll_tap_to_open">タップして投票を開く</string>
-    <string name="message_search_begin_empty">検索結果なし</string>
-    <string name="message_search_begin_typing">入力して検索を開始 …</string>
     <string name="message_search_hint">検索…</string>
     <string name="messages">メッセージ</string>
     <string name="mute_all_notifications">全ての通知をミュートします</string>
@@ -96,6 +94,8 @@
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_attendee_pin">ピン: %1$s</string>
+    <string name="nc_audio_player_next">次へ</string>
+    <string name="nc_audio_player_previous">前へ</string>
     <string name="nc_biometric_unlock">%1$sを解除</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth スピーカーを有効にするには、「近くのデバイス」の権限を付与してください。</string>
     <string name="nc_call_button_content_description_answer_video_call">ビデオ通話で対応する</string>
@@ -105,6 +105,7 @@
     <string name="nc_call_button_content_description_hangup">通話終了</string>
     <string name="nc_call_button_content_description_microphone">マイクロフォンを切り替える</string>
     <string name="nc_call_button_content_description_pip">ピクチャーインピクチャーモードを開く</string>
+    <string name="nc_call_button_content_description_switch_camera">カメラ切替</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">セルフビデオに切り替える</string>
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
@@ -125,7 +126,6 @@
     <string name="nc_cancel">キャンセル</string>
     <string name="nc_capabilities_failed">機能を取得できませんでした。</string>
     <string name="nc_caption">カプション</string>
-    <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
@@ -269,7 +269,6 @@
     <string name="nc_lobby_start_soon">会議はまもなく始まります</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
     <string name="nc_location_current_position_description">あなたの現在地</string>
-    <string name="nc_location_permission_required">位置情報の許可が必要です</string>
     <string name="nc_location_unknown">位置が不明</string>
     <string name="nc_locked">ロック</string>
     <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
