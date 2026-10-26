@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationinfo.viewmodel
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
@@ -367,6 +368,59 @@ class ConversationInfoViewModelTest {
             dispatcher.scheduler.advanceUntilIdle()
 
             assertFalse(model.uiState.value.isConversationLocked)
+        }
+
+    // Listable scope, mention permissions and SIP dial-in are sent as the integer the server expects
+
+    @Test
+    fun `opening the conversation to registered users sends the listable scope`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository()
+            val model = viewModel(repository)
+
+            model.setListableScope(user, "token", CreateConversationParams.LISTABLE_USERS)
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(CreateConversationParams.LISTABLE_USERS, model.uiState.value.listableScope)
+            assertEquals(
+                listOf("https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/token/listable" to 1),
+                repository.roomSettingRequests
+            )
+        }
+
+    @Test
+    fun `allowing dial-in without a PIN sends SIP state 2`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository()
+            val model = viewModel(repository)
+
+            model.setSipState(user, "token", CreateConversationParams.SIP_WITHOUT_PIN)
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(CreateConversationParams.SIP_WITHOUT_PIN, model.uiState.value.sipState)
+            assertEquals(
+                "https://cloud.example.com/ocs/v2.php/apps/spreed/api/v4/room/token/webinar/sip" to 2,
+                repository.roomSettingRequests.single()
+            )
+        }
+
+    @Test
+    fun `a refused mention permission change goes back and says so`() =
+        runTest(dispatcher) {
+            val repository = FakeConversationsRepository().apply { roomSettingResponseStatusCode = HTTP_FORBIDDEN }
+            val model = viewModel(repository)
+            val seen = mutableListOf<ConversationInfoUiEvent>()
+            val collector = launch { model.uiEvent.collect { seen.add(it) } }
+            dispatcher.scheduler.runCurrent()
+
+            model.toggleMentionPermissions(user, "token")
+            dispatcher.scheduler.advanceUntilIdle()
+
+            val sent = repository.roomSettingRequests.single().second
+            assertEquals(CreateConversationParams.MENTION_PERMISSIONS_MODERATORS, sent)
+            assertTrue(model.uiState.value.mentionAllAllowed)
+            assertTrue(seen.contains(ConversationInfoUiEvent.ShowSnackbar(R.string.nc_mention_permissions_failed)))
+            collector.cancel()
         }
 
     private companion object {

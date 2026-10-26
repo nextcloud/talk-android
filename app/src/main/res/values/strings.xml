@@ -1089,6 +1089,14 @@ How to translate with transifex:
     <string name="nc_chat_no_messages">No messages yet. Be the first to say hello!</string>
     <string name="previously_set">Previously set</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
+    <string name="nc_sip_dial_in">SIP dial-in</string>
+    <string name="nc_sip_dial_in_without_pin">Allow dial-in without a PIN</string>
+    <string name="nc_sip_meeting_id">Meeting ID</string>
+    <string name="nc_sip_your_pin">Your PIN</string>
+    <string name="nc_sip_state_failed">Could not change SIP dial-in</string>
+    <string name="nc_listable_scope_failed">Could not change who can find the conversation</string>
+    <string name="nc_mention_all_allowed">Allow participants to mention @all</string>
+    <string name="nc_mention_permissions_failed">Could not change who can mention @all</string>
     <string name="status_reverted">Status Reverted</string>
     <string name="automatic_status_set">Your status was set automatically</string>
 
