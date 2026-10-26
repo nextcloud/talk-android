@@ -3495,22 +3495,27 @@ class CallActivity : CallBaseActivity() {
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
-                // The event may have been queued before the connection was closed, even if sharing started again.
-                val isCurrentConnection = synchronized(screenShareLock) {
-                    screenSharePeerConnectionWrapperList.contains(peerConnectionWrapper)
-                }
-                if (!isCurrentConnection) {
-                    return@runOnUiThread
-                }
                 if (iceConnectionState == IceConnectionState.CONNECTED) {
-                    synchronized(screenShareLock) {
+                    // The check and the update are done together, as the screen sharing may be stopped from the
+                    // signaling thread in between.
+                    val isFirstPublisherConnection = synchronized(screenShareLock) {
+                        // The event may have been queued before the connection was closed, even if sharing started
+                        // again.
+                        if (!screenSharePeerConnectionWrapperList.contains(peerConnectionWrapper)) {
+                            return@runOnUiThread
+                        }
                         screenShareRetryCounts.remove(peerConnectionWrapper.sessionId)
+                        (hasMCU && !isScreenSharePublisherConnected).also {
+                            if (it) {
+                                isScreenSharePublisherConnected = true
+                            }
+                        }
                     }
-                    if (hasMCU && !isScreenSharePublisherConnected) {
-                        isScreenSharePublisherConnected = true
+                    if (isFirstPublisherConnection) {
                         getParticipantSessionKeys().forEach { requestScreenShareOffer(it) }
                     }
                 } else if (iceConnectionState == IceConnectionState.FAILED) {
+                    // Closed connections are ignored there.
                     retryScreenSharePeerConnection(peerConnectionWrapper)
                 }
             }
@@ -3992,6 +3997,7 @@ class CallActivity : CallBaseActivity() {
             if (isScreenSharingPending) {
                 localScreenStream = stream
                 isScreenSharingPending = false
+                isScreenSharePublisherConnected = false
             }
             localScreenStream !== stream
         }
