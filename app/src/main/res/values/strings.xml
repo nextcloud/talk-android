@@ -1027,7 +1027,6 @@ How to translate with transifex:
     <string name="call_in_progress">A call is in progress</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
     <string name="nc_caption">Caption</string>
-    <string name="nc_compress_images">Compress images and videos</string>
     <string name="nc_remove_file">Remove file</string>
     <string name="nc_add_more_files">Add more files</string>
     <string name="languages_error_title">Retrieval failed</string>
