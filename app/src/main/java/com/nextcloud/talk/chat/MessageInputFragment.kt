@@ -41,6 +41,7 @@ import android.widget.SeekBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -918,9 +919,7 @@ class MessageInputFragment : Fragment() {
 
         override fun recordSelection(emoji: String) {
             val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-            prefs.edit()
-                .putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(","))
-                .apply()
+            prefs.edit { putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(",")) }
         }
 
         override suspend fun getRecentEmojiList(): List<String> = getStoredList()
