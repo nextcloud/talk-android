@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.io
 import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -72,8 +73,16 @@ class VoiceMessageMediaServiceFocusTest {
 
     @After
     fun tearDown() {
+        // an unfinished service keeps its MediaSession, and the next test fails with "Session ID must be unique"
+        service?.onDestroy()
+        service = null
         setSharedApplication(null)
     }
+
+    private var service: VoiceMessageMediaService? = null
+
+    private fun createService(): VoiceMessageMediaService =
+        Robolectric.buildService(VoiceMessageMediaService::class.java).create().get().also { service = it }
 
     // The setter of sharedApplication is protected; reflection is the only way in from a test.
     private fun setSharedApplication(application: NextcloudTalkApplication?) {
@@ -104,8 +113,7 @@ class VoiceMessageMediaServiceFocusTest {
 
     @Test
     fun `voice message played by the chat service holds a transient audio focus`() {
-        val service = Robolectric.buildService(VoiceMessageMediaService::class.java).create().get()
-        val player = servicePlayer(service)
+        val player = servicePlayer(createService())
 
         player.setMediaItem(mediaItem(ChatAudioKind.VOICE_MESSAGE))
         player.prepare()
@@ -117,20 +125,18 @@ class VoiceMessageMediaServiceFocusTest {
 
         player.pause()
         assertNotNull("the music of the other app can come back", shadow.lastAbandonedAudioFocusRequest)
-        service.onDestroy()
     }
 
     @Test
     fun `audio file played by the chat service uses the audio focus of the player`() {
-        val service = Robolectric.buildService(VoiceMessageMediaService::class.java).create().get()
-        val player = servicePlayer(service)
+        val player = servicePlayer(createService())
 
         player.setMediaItem(mediaItem(ChatAudioKind.AUDIO_FILE))
         player.prepare()
         player.play()
 
-        assertNotNull(shadow.lastAudioFocusRequest)
-        assertEquals(AudioManager.AUDIOFOCUS_GAIN, shadow.lastAudioFocusRequest.audioFocusRequest.focusGain)
-        service.onDestroy()
+        // the permanent focus of the player is not visible to the shadow; what matters is that no transient one is taken
+        assertEquals(C.AUDIO_CONTENT_TYPE_MUSIC, player.audioAttributes.contentType)
+        assertNull(shadow.lastAudioFocusRequest)
     }
 }

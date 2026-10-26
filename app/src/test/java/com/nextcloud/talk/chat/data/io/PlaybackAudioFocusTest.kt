@@ -13,6 +13,7 @@ import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -85,5 +86,25 @@ class PlaybackAudioFocusTest {
             .onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
 
         verify(player).pause()
+    }
+
+    @Test
+    fun `holder that does not apply leaves the focus to the player and gives back a taken one`() {
+        val player = mock<Player>()
+        val listener = argumentCaptor<Player.Listener>()
+        val focus = PlaybackAudioFocus(context, player)
+        verify(player).addListener(listener.capture())
+        focus.applies = false
+        whenever(player.playWhenReady).thenReturn(true)
+        whenever(player.playbackState).thenReturn(Player.STATE_READY)
+
+        listener.firstValue.onPlayWhenReadyChanged(true, Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
+        assertNull(shadow.lastAudioFocusRequest)
+
+        focus.applies = true
+        assertEquals(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT, shadow.lastAudioFocusRequest.audioFocusRequest.focusGain)
+        focus.applies = false
+        assertNotNull("a focus taken before is given back", shadow.lastAbandonedAudioFocusRequest)
+        focus.release()
     }
 }
