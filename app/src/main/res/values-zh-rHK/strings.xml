@@ -124,6 +124,7 @@
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍用戶</string>
     <string name="nc_account_chooser_add_account">新增帳戶</string>
+    <string name="nc_account_removal_pending">尚未完成移除此帳戶。請稍後再試。</string>
     <string name="nc_account_scheduled_for_deletion">此賬號已經被排定要刪除，也不能被修改。</string>
     <string name="nc_add_attachment">添加附件</string>
     <string name="nc_add_emojis">添加 emoji</string>
@@ -137,9 +138,22 @@
     <string name="nc_announcement">公告</string>
     <string name="nc_announcement_description">供管理員向固定對象發佈資訊的對話，無法退出。</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
+    <string name="nc_audio_error_generic">無法播放音訊</string>
+    <string name="nc_audio_error_network">無法載入音訊。請檢查你的連線。</string>
+    <string name="nc_audio_error_unavailable">音訊檔案無法使用</string>
+    <string name="nc_audio_error_unsupported">不支援此音訊格式</string>
+    <string name="nc_audio_player_close">停止播放</string>
     <string name="nc_audio_player_next">下一步</string>
+    <string name="nc_audio_player_open">開啟播放器</string>
+    <string name="nc_audio_player_play_pause">播放／暫停</string>
     <string name="nc_audio_player_previous">上一</string>
+    <string name="nc_audio_player_queue">播放清單</string>
+    <string name="nc_audio_player_repeat_all">全部重複播放</string>
     <string name="nc_audio_player_repeat_off">關閉重複播放</string>
+    <string name="nc_audio_player_repeat_one">單項重複播放</string>
+    <string name="nc_audio_player_show_message">顯示訊息</string>
+    <string name="nc_audio_player_shuffle">隨機播放</string>
+    <string name="nc_audio_retry">重試播放</string>
     <string name="nc_audio_seek">播放位置</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
@@ -165,6 +179,8 @@
     <string name="nc_call_raised_hand">%1$s 舉手</string>
     <string name="nc_call_reconnecting">正在重新連線 …</string>
     <string name="nc_call_ringing">鈴聲響</string>
+    <string name="nc_call_self_video_enlarge">放大自己的視訊畫面</string>
+    <string name="nc_call_self_video_shrink">縮小自己的視訊畫面</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
     <string name="nc_call_state_with_phone">%1$s 電話對話中</string>
     <string name="nc_call_state_with_video">%1$s 視像對話中</string>
@@ -176,6 +192,7 @@
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
     <string name="nc_caption">說明</string>
+    <string name="nc_certificate_dialog_text_for_host">你是否信任 %1$s 此前未知的 SSL 憑證？此憑證由 %2$s 簽發予 %3$s，有效期由 %4$s 至 %5$s。此憑證只會在用於 %1$s 時受信任。</string>
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
@@ -364,6 +381,7 @@
     <string name="nc_location_unknown">位置不詳</string>
     <string name="nc_locked">上鎖</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
+    <string name="nc_login_too_many_attempts">來自此網絡的登入失敗次數過多。請稍後再試。</string>
     <string name="nc_logs_advanced_logging">進階記錄</string>
     <string name="nc_logs_advanced_logging_disable">停用進階記錄</string>
     <string name="nc_logs_advanced_logging_enable">啟用進階記錄</string>
@@ -395,6 +413,7 @@
     <string name="nc_message_added_to_notes">訊息已新增至筆記</string>
     <string name="nc_message_failed">傳送訊息失敗</string>
     <string name="nc_message_failed_to_send">傳送訊息失敗︰</string>
+    <string name="nc_message_not_added_to_notes">無法將訊息新增至筆記</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_scheduled">訊息已安排好傳送時間</string>
@@ -533,6 +552,9 @@
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s數據庫</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的帳戶</string>
     <string name="nc_server_helper_text">在瀏覽器中打開 %1$s 網絡界面的連結。</string>
+    <string name="nc_server_http_fallback_confirm">使用 HTTP</string>
+    <string name="nc_server_http_fallback_message">無法透過 HTTPS 連接至伺服器。要改用不安全的 HTTP 連線嗎？</string>
+    <string name="nc_server_http_fallback_title">不安全的連線</string>
     <string name="nc_server_import_account">從%1$s應用程式匯入帳戶</string>
     <string name="nc_server_import_account_plain">匯入帳戶</string>
     <string name="nc_server_import_accounts">從%1$s應用程式匯入帳戶</string>
