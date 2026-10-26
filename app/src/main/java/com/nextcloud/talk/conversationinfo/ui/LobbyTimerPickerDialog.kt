@@ -37,8 +37,8 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
@@ -145,9 +145,9 @@ private fun LobbyTimePicker(initialTime: LocalTime, onTimeSelected: (LocalTime) 
         initialMinute = initialTime.minute,
         is24Hour = DateFormat.is24HourFormat(LocalContext.current)
     )
-    // The clock dial does not fit on short screens, e.g. phones in landscape
+    // The clock dial does not fit in short windows, e.g. phones in landscape or split screen
     val fitsClockDial =
-        LocalConfiguration.current.screenHeightDp >= TimePickerDialogDefaults.MinHeightForTimePicker.value
+        LocalWindowInfo.current.containerDpSize.height >= TimePickerDialogDefaults.MinHeightForTimePicker
     var displayMode by rememberSaveable(stateSaver = TimePickerDisplayModeSaver) {
         mutableStateOf(if (fitsClockDial) TimePickerDisplayMode.Picker else TimePickerDisplayMode.Input)
     }

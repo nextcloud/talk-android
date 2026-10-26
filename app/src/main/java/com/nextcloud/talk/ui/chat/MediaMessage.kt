@@ -48,7 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -128,7 +128,7 @@ private fun mediaWidthFraction(aspectRatio: Float?): Float =
 private const val MAX_HEIGHT_FRACTION = 0.4f
 
 @Composable
-private fun screenMediaMaxHeight(): Dp = LocalConfiguration.current.screenHeightDp.dp * MAX_HEIGHT_FRACTION
+private fun screenMediaMaxHeight(): Dp = LocalWindowInfo.current.containerDpSize.height * MAX_HEIGHT_FRACTION
 
 private val minMediaPreviewHeight = 48.dp
 private val minMediaPreviewWidth = 88.dp
