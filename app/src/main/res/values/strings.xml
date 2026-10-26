@@ -253,8 +253,6 @@ How to translate with transifex:
     <string name="nc_logs_disable_keep">Keep logs</string>
     <string name="nc_logs_disable_delete">Delete logs</string>
     <string name="nc_logs_advanced_logging">Advanced logging</string>
-    <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
-    <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>
 
     <!-- Diagnosis -->
     <string name="nc_diagnosis_dialog_open_checklist">Open troubleshooting checklist</string>
@@ -270,7 +268,6 @@ How to translate with transifex:
     <string name="nc_notification_warning">Notifications are not set up correctly</string>
     <string name="nc_not_now">Not now</string>
 
-    <string name="send_email">Send email</string>
     <string name="create_issue">Create issue</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
