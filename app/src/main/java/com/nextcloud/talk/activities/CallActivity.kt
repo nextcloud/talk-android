@@ -326,7 +326,10 @@ class CallActivity : CallBaseActivity() {
 
     @Volatile
     private var isScreenSharePublisherConnected = false
-    private val screenSharePublisherObservers: MutableMap<PeerConnectionWrapper, PeerConnectionObserver> = HashMap()
+    private val screenShareObservers: MutableMap<PeerConnectionWrapper, PeerConnectionObserver> = HashMap()
+
+    // Failed connections are created again a few times per remote session before giving up.
+    private val screenShareRetryCounts: MutableMap<String, Int> = HashMap()
 
     // Screen sharing needs the foreground service, which is not started without microphone and notification permission.
     @Volatile
@@ -2371,7 +2374,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
-        stopScreenSharing()
+        stopOrSuspendScreenSharing(shutDownView)
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2664,7 +2667,7 @@ class CallActivity : CallBaseActivity() {
 
         if (!isSelfInCall) {
             Log.d(TAG, "Self not in call, disconnecting from all other sessions")
-            stopScreenSharing()
+            stopOrSuspendScreenSharing(shutDownView = false)
             removeSessions(participantsInCall)
             return
         }
@@ -2672,12 +2675,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
         if (hasMCU) {
-            // Ensure that own publishing peer is set up.
-            getOrCreatePeerConnectionWrapperForSessionIdAndType(
-                webSocketClient!!.sessionId,
-                VIDEO_STREAM_TYPE_VIDEO,
-                true
-            )
+            setUpOwnPublishers()
         }
         handleJoinedCallParticipantsChanged(selfParticipant, joined, currentSessionId)
 
@@ -2685,6 +2683,15 @@ class CallActivity : CallBaseActivity() {
             setCallState(CallStatus.IN_CONVERSATION)
         }
         removeSessions(left)
+    }
+
+    /**
+     * Ensures that the own publishing peers are set up. The screen share publisher is closed while reconnecting, so it
+     * is set up again once back in the call.
+     */
+    private fun setUpOwnPublishers() {
+        getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient!!.sessionId, VIDEO_STREAM_TYPE_VIDEO, true)
+        addScreenSharePeerConnection(webSocketClient!!.sessionId)
     }
 
     private fun removeSessions(sessions: Collection<ParticipantDto>) {
@@ -3476,9 +3483,8 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private inner class ScreenSharePublisherPeerConnectionObserver(
-        private val peerConnectionWrapper: PeerConnectionWrapper
-    ) : PeerConnectionObserver {
+    private inner class ScreenSharePeerConnectionObserver(private val peerConnectionWrapper: PeerConnectionWrapper) :
+        PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream) {
             // unused atm
         }
@@ -3489,20 +3495,23 @@ class CallActivity : CallBaseActivity() {
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
-                // The event may have been queued before the publisher was closed, even if sharing started again.
-                val isCurrentPublisher = synchronized(screenShareLock) {
+                // The event may have been queued before the connection was closed, even if sharing started again.
+                val isCurrentConnection = synchronized(screenShareLock) {
                     screenSharePeerConnectionWrapperList.contains(peerConnectionWrapper)
                 }
-                if (!isCurrentPublisher) {
+                if (!isCurrentConnection) {
                     return@runOnUiThread
                 }
-                if (iceConnectionState == IceConnectionState.CONNECTED && !isScreenSharePublisherConnected) {
-                    isScreenSharePublisherConnected = true
-                    getParticipantSessionKeys().forEach { requestScreenShareOffer(it) }
+                if (iceConnectionState == IceConnectionState.CONNECTED) {
+                    synchronized(screenShareLock) {
+                        screenShareRetryCounts.remove(peerConnectionWrapper.sessionId)
+                    }
+                    if (hasMCU && !isScreenSharePublisherConnected) {
+                        isScreenSharePublisherConnected = true
+                        getParticipantSessionKeys().forEach { requestScreenShareOffer(it) }
+                    }
                 } else if (iceConnectionState == IceConnectionState.FAILED) {
-                    Log.e(TAG, "Screen share publisher connection failed")
-                    stopScreenSharing()
-                    showScreenSharingError()
+                    retryScreenSharePeerConnection(peerConnectionWrapper)
                 }
             }
         }
@@ -3523,7 +3532,9 @@ class CallActivity : CallBaseActivity() {
                     // Don't hang up if the activity is just backgrounded (e.g., task switching).
                     // The ICE failure is likely transient due to the activity being stopped.
                     // The connection will recover when the activity resumes.
-                    if (!active && currentCallStatus === CallStatus.IN_CONVERSATION) {
+                    // While sharing the screen the call is expected to be in background and may not be resumed for
+                    // a long time, so it reconnects instead.
+                    if (!active && localScreenStream == null && currentCallStatus === CallStatus.IN_CONVERSATION) {
                         Log.d(TAG, "ICE FAILED while backgrounded, skipping hangup (will recover on resume)")
                         return@runOnUiThread
                     }
@@ -4018,6 +4029,7 @@ class CallActivity : CallBaseActivity() {
             } else {
                 localScreenStream = null
                 isScreenSharePublisherConnected = false
+                screenShareRetryCounts.clear()
                 peerConnectionWrappers = screenSharePeerConnectionWrapperList.toList()
                 screenSharePeerConnectionWrapperList.clear()
             }
@@ -4029,12 +4041,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
 
-        getParticipantSessionKeys().forEach { sessionId ->
-            messageSender?.send(
-                NCSignalingMessageDto(type = "unshareScreen", roomType = VIDEO_STREAM_TYPE_SCREEN),
-                sessionId
-            )
-        }
+        sendUnshareScreen(getParticipantSessionKeys())
 
         peerConnectionWrappers.forEach { closeScreenSharePeerConnection(it) }
 
@@ -4044,6 +4051,72 @@ class CallActivity : CallBaseActivity() {
         CallForegroundService.stopScreenSharing(applicationContext)
         callViewModel.setLocalScreenSharing(false)
         runOnUiThread { updatePipAutoEnter() }
+    }
+
+    /**
+     * While reconnecting only the connections are closed, so the screen keeps being captured and is shared again
+     * once back in the call, without asking the user for the permission again.
+     */
+    private fun stopOrSuspendScreenSharing(shutDownView: Boolean) {
+        val isReconnecting = currentCallStatus === CallStatus.RECONNECTING ||
+            currentCallStatus === CallStatus.PUBLISHER_FAILED
+        if (shutDownView || !isReconnecting) {
+            stopScreenSharing()
+            return
+        }
+
+        val peerConnectionWrappers = synchronized(screenShareLock) {
+            isScreenSharePublisherConnected = false
+            screenShareRetryCounts.clear()
+            screenSharePeerConnectionWrapperList.toList().also { screenSharePeerConnectionWrapperList.clear() }
+        }
+        peerConnectionWrappers.forEach { closeScreenSharePeerConnection(it) }
+    }
+
+    /**
+     * Must be called on the main thread.
+     */
+    private fun retryScreenSharePeerConnection(peerConnectionWrapper: PeerConnectionWrapper) {
+        val sessionId = peerConnectionWrapper.sessionId
+        val shouldRetry = synchronized(screenShareLock) {
+            if (!screenSharePeerConnectionWrapperList.remove(peerConnectionWrapper)) {
+                return
+            }
+            if (hasMCU) {
+                isScreenSharePublisherConnected = false
+            }
+            val retryCount = screenShareRetryCounts[sessionId] ?: 0
+            screenShareRetryCounts[sessionId] = retryCount + 1
+            retryCount < SCREEN_SHARE_MAX_RETRIES
+        }
+        closeScreenSharePeerConnection(peerConnectionWrapper)
+
+        if (!isCallActiveForScreenSharing()) {
+            // The connections are set up again once reconnected.
+            return
+        }
+        if (shouldRetry) {
+            Log.w(TAG, "Screen share connection to $sessionId failed, creating it again")
+            // The remote participants close the connection receiving the screen, so the new offer is not handled by
+            // the failed connection.
+            sendUnshareScreen(if (hasMCU) getParticipantSessionKeys() else listOf(sessionId))
+            addScreenSharePeerConnection(sessionId)
+        } else if (hasMCU) {
+            Log.e(TAG, "Screen share publisher connection failed")
+            stopScreenSharing()
+            showScreenSharingError()
+        } else {
+            Log.e(TAG, "Screen share connection to $sessionId failed, not sharing the screen with it anymore")
+        }
+    }
+
+    private fun sendUnshareScreen(sessionIds: Collection<String>) {
+        sessionIds.forEach { sessionId ->
+            messageSender?.send(
+                NCSignalingMessageDto(type = "unshareScreen", roomType = VIDEO_STREAM_TYPE_SCREEN),
+                sessionId
+            )
+        }
     }
 
     /**
@@ -4171,11 +4244,9 @@ class CallActivity : CallBaseActivity() {
                 null
             }
             if (peerConnectionWrapper != null) {
-                if (hasMCU) {
-                    val observer = ScreenSharePublisherPeerConnectionObserver(peerConnectionWrapper)
-                    screenSharePublisherObservers[peerConnectionWrapper] = observer
-                    peerConnectionWrapper.addObserver(observer)
-                }
+                val observer = ScreenSharePeerConnectionObserver(peerConnectionWrapper)
+                screenShareObservers[peerConnectionWrapper] = observer
+                peerConnectionWrapper.addObserver(observer)
                 screenSharePeerConnectionWrapperList.add(peerConnectionWrapper)
             }
             peerConnectionWrapper == null
@@ -4196,7 +4267,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun closeScreenSharePeerConnection(peerConnectionWrapper: PeerConnectionWrapper) {
         synchronized(screenShareLock) {
-            screenSharePublisherObservers.remove(peerConnectionWrapper)
+            screenShareObservers.remove(peerConnectionWrapper)
         }?.let { peerConnectionWrapper.removeObserver(it) }
         peerConnectionWrapper.removePeerConnection()
     }
@@ -4262,6 +4333,7 @@ class CallActivity : CallBaseActivity() {
         private const val FRAME_RATE: Int = 30
         private const val SCREEN_SHARE_FRAME_RATE: Int = 15
         private const val SCREEN_SHARE_MAX_DIMENSION: Int = 1920
+        private const val SCREEN_SHARE_MAX_RETRIES: Int = 3
         private const val WIDTH_16_TO_9_RATIO: Int = 1280
         private const val HEIGHT_16_TO_9_RATIO: Int = 720
         private const val WIDTH_4_TO_3_RATIO: Int = 640
