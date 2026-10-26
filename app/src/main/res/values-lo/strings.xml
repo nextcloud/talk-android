@@ -85,9 +85,7 @@
     <string name="load_more_results">ຜົນLoad ເພີ່ມເຕີມ</string>
     <string name="local_time">Local time: %1$s</string>
     <string name="location_permission_denied">Location permission denied</string>
-    <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
-    <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>
-    <string name="message_search_begin_empty">No search results</string>
-    <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_hint">Search …</string>
     <string name="messages">Messages</string>
     <string name="mute_all_notifications">Mute all notifications</string>
@@ -121,6 +117,8 @@
     <string name="nc_add_to_favorites">ເພີ່ມລາຍການທີ່ມັກ</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">ຕໍ່ໄປ</string>
+    <string name="nc_audio_player_previous">ກ່ອນໜ້າ</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable bluetooth speakers please grant \"Nearby devices\" permission.</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
@@ -130,6 +128,7 @@
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
+    <string name="nc_call_button_content_description_switch_camera">ສະຫຼັບກ້ອງ</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
@@ -151,7 +150,6 @@
     <string name="nc_cancel">ຍົກເລີກ</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_caption">Caption</string>
-    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
@@ -300,7 +298,6 @@
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
     <string name="nc_location_current_position_description">Your current location</string>
-    <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>

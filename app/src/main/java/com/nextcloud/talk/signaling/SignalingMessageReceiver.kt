@@ -8,6 +8,7 @@ package com.nextcloud.talk.signaling
 
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.call.e2ee.EncryptionMessage
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
@@ -58,6 +59,8 @@ abstract class SignalingMessageReceiver {
     private val offerMessageNotifier = OfferMessageNotifier()
 
     private val webRtcMessageNotifier = WebRtcMessageNotifier()
+
+    private val encryptionMessageNotifier = EncryptionMessageNotifier()
 
     /**
      * Listener for participant list messages.
@@ -202,6 +205,15 @@ abstract class SignalingMessageReceiver {
     }
 
     /**
+     * Listener for the key exchange messages of end-to-end encrypted calls.
+     *
+     * These messages are not passed to any other listener.
+     */
+    fun interface EncryptionMessageListener {
+        fun onEncryptionMessage(sessionId: String, message: EncryptionMessage)
+    }
+
+    /**
      * Adds a listener for participant list messages.
      *
      *
@@ -292,6 +304,14 @@ abstract class SignalingMessageReceiver {
 
     fun removeListener(listener: WebRtcMessageListener?) {
         webRtcMessageNotifier.removeListener(listener)
+    }
+
+    fun addListener(listener: EncryptionMessageListener?) {
+        encryptionMessageNotifier.addListener(listener)
+    }
+
+    fun removeListener(listener: EncryptionMessageListener?) {
+        encryptionMessageNotifier.removeListener(listener)
     }
 
     fun processEvent(eventMap: Map<String, Any>?) {
@@ -652,6 +672,41 @@ abstract class SignalingMessageReceiver {
 
         val sessionId = signalingMessage.from
         val roomType = signalingMessage.roomType
+
+        if ("message" == type) {
+            // Message schema (external signaling server only, the key exchange needs the MCU):
+            // {
+            //     "type": "message",
+            //     "message": {
+            //         "sender": {
+            //             ...
+            //         },
+            //         "data": {
+            //             "to": #STRING#,
+            //             "type": "message",
+            //             "payload": {
+            //                 "type": "encryption.start" | "encryption.finish" | "encryption.setkey" |
+            //                         "encryption.gotkey" | "encryption.error",
+            //                 "id": #STRING#,
+            //                 "identity": #STRING#,
+            //                 "key": #STRING# | { "type": #INTEGER#, "body": #STRING# },
+            //                 "error": #STRING#,
+            //             },
+            //             "from": #STRING#,
+            //         },
+            //     },
+            // }
+
+            val payload = signalingMessage.payload ?: return
+            val message = EncryptionMessage.fromPayload(payload) ?: return
+            if (sessionId == null) {
+                return
+            }
+
+            encryptionMessageNotifier.notifyEncryptionMessage(sessionId, message)
+
+            return
+        }
 
         if ("raiseHand" == type) {
             // Message schema (external signaling server):

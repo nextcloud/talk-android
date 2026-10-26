@@ -95,9 +95,7 @@
     <string name="load_more_results">Įkelti daugiau rezultatų</string>
     <string name="local_time">Vietinis laikas: %1$s</string>
     <string name="location_permission_denied">Leidimas naudoti vietovės duomenis atmestas</string>
-    <string name="location_permission_denied_msg">Įjunkite tai programėlės nustatymuose</string>
     <string name="location_services_disabled">Vietos nustatymo paslaugos išjungtos</string>
-    <string name="location_services_disabled_msg">Norėdami naudoti šią funkciją, įjunkite vietos nustatymo paslaugas (GPS)</string>
     <string name="lock_conversation">Užrakinti pokalbį</string>
     <string name="lock_symbol">Užrakto simbolis</string>
     <string name="lower_hand">Nuleisti ranką</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Jūs ištrynėte žinutę</string>
     <string name="message_last_edited_by">Redagavo %1$s</string>
     <string name="message_poll_tap_to_open">Palieskite, kad atidarytumėte apklausą</string>
-    <string name="message_search_begin_empty">Nėra paieškos rezultatų</string>
-    <string name="message_search_begin_typing">Rašykite norėdami atlikti paiešką…</string>
     <string name="message_search_hint">Ieškoti…</string>
     <string name="message_search_next_result">Kitas paieškos rezultatas</string>
     <string name="message_search_no_more_results">Daugiau pranešimų nerasta</string>
@@ -141,6 +137,8 @@
     <string name="nc_announcement">Skelbimas</string>
     <string name="nc_announcement_description">Pokalbis, skirtas administratoriams informuoti konkrečią auditoriją; iš šio pokalbio negalima pasitraukti.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Kitas</string>
+    <string name="nc_audio_player_previous">Ankstesnis</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_bluetooth_permission_hint">Norėdami įjungti „Bluetooth“ garsiakalbius, suteikite leidimą „Artimi įrenginiai“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Atsakyti vaizdo skambučiu</string>
@@ -150,6 +148,7 @@
     <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
     <string name="nc_call_button_content_description_microphone">Perjungti mikrofoną</string>
     <string name="nc_call_button_content_description_pip">Įjungti „vaizdas vaizde“ režimą</string>
+    <string name="nc_call_button_content_description_switch_camera">Perjungti kamerą</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Rodyti savo vaizdą</string>
     <string name="nc_call_incoming">ĮEINANTIS</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
@@ -171,7 +170,6 @@
     <string name="nc_cancel">Atsisakyti</string>
     <string name="nc_capabilities_failed">Klaida nustatant funkcijas, veiksmas atšauktas</string>
     <string name="nc_caption">Antraštė</string>
-    <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL sertifikatu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_certificate_dialog_title">Peržiūrėkite sertifikatą</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
     <string name="nc_change_cert_auth">Keisti tapatybės nustatymo sertifikatą</string>
@@ -342,7 +340,6 @@
     <string name="nc_lobby_start_soon">Susitikimas netrukus prasidės</string>
     <string name="nc_lobby_waiting">Šiuo metu laukiate laukimo salėje.</string>
     <string name="nc_location_current_position_description">Jūsų dabartinė vieta</string>
-    <string name="nc_location_permission_required">reikia vietos nustatymo leidimo</string>
     <string name="nc_location_unknown">Vieta nežinoma</string>
     <string name="nc_locked">Užrakinta</string>
     <string name="nc_locked_tap_to_unlock">Bakstelėkite, norėdami atrakinti</string>
@@ -364,7 +361,6 @@
     <string name="nc_logs_share">Siųsti kaip laišką</string>
     <string name="nc_logs_share_diagnosis">Diagnozės ataskaita</string>
     <string name="nc_logs_share_latest_crash">Paskutinis lūžis</string>
-    <string name="nc_logs_share_subject">%1$s įrašai</string>
     <string name="nc_logs_title">Žurnalai</string>
     <string name="nc_logs_total_size">Bendras žurnalo dydis: %d KB</string>
     <string name="nc_manual">Nenustatyta</string>
