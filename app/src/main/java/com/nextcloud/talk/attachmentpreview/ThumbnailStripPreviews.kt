@@ -42,16 +42,16 @@ private fun previewDescription(
 
 private fun previewDescriptions() =
     listOf(
-        previewDescription("file:///sdcard/DCIM/photo.jpg", "photo.jpg", "image/jpeg", "2048×1152, 210 kB"),
+        previewDescription("file:///preview/DCIM/photo.jpg", "photo.jpg", "image/jpeg", "2048×1152, 210 kB"),
         previewDescription(
-            uri = "file:///sdcard/DCIM/clip.mp4",
+            uri = "file:///preview/DCIM/clip.mp4",
             name = "clip.mp4",
             mimeType = "video/mp4",
             detail = "0:42, 8 MB",
             videoThumbnail = previewVideoThumbnail()
         ),
-        previewDescription("file:///sdcard/Download/archive.zip", "archive.zip", "application/zip", "4 MB"),
-        previewDescription("file:///sdcard/Documents/report.pdf", "report.pdf", "application/pdf", "820 kB")
+        previewDescription("file:///preview/Download/archive.zip", "archive.zip", "application/zip", "4 MB"),
+        previewDescription("file:///preview/Documents/report.pdf", "report.pdf", "application/pdf", "820 kB")
     )
 
 @Composable
@@ -95,10 +95,10 @@ private fun ThumbnailStripPreview() {
 private fun ThumbnailStripDocumentsPreview() {
     ThumbnailStripPreviewContainer(
         descriptions = listOf(
-            previewDescription("file:///sdcard/Download/archive.zip", "archive.zip", "application/zip", "4 MB"),
-            previewDescription("file:///sdcard/Documents/report.pdf", "report.pdf", "application/pdf", "820 kB"),
-            previewDescription("file:///sdcard/Documents/notes.txt", "notes.txt", "text/plain", "2 kB"),
-            previewDescription("file:///sdcard/Documents/letter.doc", "letter.doc", "application/msword", "34 kB")
+            previewDescription("file:///preview/Download/archive.zip", "archive.zip", "application/zip", "4 MB"),
+            previewDescription("file:///preview/Documents/report.pdf", "report.pdf", "application/pdf", "820 kB"),
+            previewDescription("file:///preview/Documents/notes.txt", "notes.txt", "text/plain", "2 kB"),
+            previewDescription("file:///preview/Documents/letter.doc", "letter.doc", "application/msword", "34 kB")
         ),
         selectedIndex = 1
     )
