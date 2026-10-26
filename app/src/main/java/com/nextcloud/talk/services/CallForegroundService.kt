@@ -183,7 +183,7 @@ class CallForegroundService : Service() {
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_CALL)
-            .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+            .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
             .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .also { builder ->
