@@ -315,6 +315,8 @@ fun MessageActionsBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        // While the sheet animates, its drag gesture claims every touch down, so a tap on an action is lost.
+        sheetGesturesEnabled = !sheetState.isAnimationRunning,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         if (showEmojiPicker) {

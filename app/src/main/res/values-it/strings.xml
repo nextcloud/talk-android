@@ -86,9 +86,7 @@
     <string name="load_more_results">Mostra altri risultati</string>
     <string name="local_time">Ora locale: %1$s</string>
     <string name="location_permission_denied">Autorizzazione alla localizzazione negata</string>
-    <string name="location_permission_denied_msg">Abilitala nelle impostazioni dell\'app.</string>
     <string name="location_services_disabled">Servizi di localizzazione disattivati</string>
-    <string name="location_services_disabled_msg">Abilita i servizi di localizzazione (GPS) per utilizzare questa funzione.</string>
     <string name="lock_conversation">Blocca conversazione</string>
     <string name="lock_symbol">Simbolo lucchetto</string>
     <string name="lower_hand">Abbassa la mano</string>
@@ -104,8 +102,6 @@
     <string name="message_deleted_by_you">Messaggio eliminato da te</string>
     <string name="message_last_edited_by">Modificato da %1$s</string>
     <string name="message_poll_tap_to_open">Premi per aprire il sondaggio</string>
-    <string name="message_search_begin_empty">Nessun risultato di ricerca</string>
-    <string name="message_search_begin_typing">Inizia a digitare per cercare …</string>
     <string name="message_search_hint">Cerca …</string>
     <string name="messages">Messaggi</string>
     <string name="mute_all_notifications">Muta tutte le notifiche</string>
@@ -122,6 +118,8 @@
     <string name="nc_add_to_favorites">Aggiungi ai preferiti</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
     <string name="nc_attendee_pin">Appunta: %1$s</string>
+    <string name="nc_audio_player_next">Successivo</string>
+    <string name="nc_audio_player_previous">Precedente</string>
     <string name="nc_biometric_unlock">Sblocca %1$s</string>
     <string name="nc_bluetooth_permission_hint">Per abilitare gli altoparlanti Bluetooth, concedi l\'autorizzazione “Dispositivi vicini”.</string>
     <string name="nc_call_button_content_description_answer_video_call">Rispondi come videochiamata</string>
@@ -131,6 +129,7 @@
     <string name="nc_call_button_content_description_hangup">Riaggancia</string>
     <string name="nc_call_button_content_description_microphone">Attiva/disattiva microfono</string>
     <string name="nc_call_button_content_description_pip">Apri la modalità picture-in-picture</string>
+    <string name="nc_call_button_content_description_switch_camera">Cambia fotocamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Passa al video personale</string>
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>
@@ -152,7 +151,6 @@
     <string name="nc_cancel">Annulla</string>
     <string name="nc_capabilities_failed">Recupero delle capacità non riuscito, interruzione in corso</string>
     <string name="nc_caption">Sottotitolo</string>
-    <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
@@ -300,7 +298,6 @@
     <string name="nc_lobby_start_soon">La riunione inizierà presto</string>
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
     <string name="nc_location_current_position_description">La tua posizione attuale</string>
-    <string name="nc_location_permission_required">Autorizzazione di geolocalizzazione richiesta</string>
     <string name="nc_location_unknown">Posizione sconosciuta</string>
     <string name="nc_locked">Bloccato</string>
     <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>

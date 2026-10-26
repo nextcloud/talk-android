@@ -32,6 +32,13 @@ class PlaybackAudioFocus(context: Context, private val player: Player) : Player.
     private val focusLostObserver = Observer<AudioFocusRequestManager.ManagerState> { player.pause() }
     private var held = false
 
+    /** Whether this holder takes the focus at all; the player holds its own focus when it is false. */
+    var applies = true
+        set(value) {
+            field = value
+            update()
+        }
+
     init {
         focusManager.getManagerState.observeForever(focusLostObserver)
         player.addListener(this)
@@ -42,7 +49,7 @@ class PlaybackAudioFocus(context: Context, private val player: Player) : Player.
     override fun onPlaybackStateChanged(playbackState: Int) = update()
 
     private fun update() {
-        val needed = playerNeedsAudioFocus(player.playWhenReady, player.playbackState)
+        val needed = applies && playerNeedsAudioFocus(player.playWhenReady, player.playbackState)
         if (needed != held) {
             held = needed
             focusManager.audioFocusRequest(needed) {}
