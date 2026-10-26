@@ -85,8 +85,6 @@
     <string name="message_deleted_by_you">Melding slettet av deg</string>
     <string name="message_last_edited_by">Redigert av %1$s</string>
     <string name="message_poll_tap_to_open">Trykk for å åpne avstemningen</string>
-    <string name="message_search_begin_empty">Ingen søkeresultater</string>
-    <string name="message_search_begin_typing">Begynn å skrive for å søke...</string>
     <string name="message_search_hint">Søk...</string>
     <string name="messages">Meldinger</string>
     <string name="mute_all_notifications">Demp alle varslinger</string>
@@ -103,6 +101,8 @@
     <string name="nc_add_to_favorites">Legg til favoritter</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
+    <string name="nc_audio_player_next">Neste</string>
+    <string name="nc_audio_player_previous">Forrige</string>
     <string name="nc_biometric_unlock">Lås opp %1$s</string>
     <string name="nc_bluetooth_permission_hint">For å aktivere Bluetooth-høyttalere, vennligst gi \"Enheter i nærheten\" tillatelse.</string>
     <string name="nc_call_button_content_description_answer_video_call">Svar som videosamtale</string>
@@ -112,6 +112,7 @@
     <string name="nc_call_button_content_description_hangup">Legg på</string>
     <string name="nc_call_button_content_description_microphone">Mikrofon av/på</string>
     <string name="nc_call_button_content_description_pip">Åpne bilde-i-bilde-modus</string>
+    <string name="nc_call_button_content_description_switch_camera">Bytt kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Bytt til selvvideo</string>
     <string name="nc_call_incoming">INNKOMMENDE</string>
     <string name="nc_call_name">Samtalenavn</string>
@@ -132,7 +133,6 @@
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Kunne ikke hente evner, avbryter</string>
     <string name="nc_caption">Bildetekst</string>
-    <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
@@ -275,7 +275,6 @@
     <string name="nc_lobby_start_soon">Møtet starter snart</string>
     <string name="nc_lobby_waiting">Du venter for øyeblikket i lobbyen.</string>
     <string name="nc_location_current_position_description">Dine nåværende posisjon</string>
-    <string name="nc_location_permission_required">Plasseringstillatelse kreves</string>
     <string name="nc_location_unknown">Posisjon ukjent</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>

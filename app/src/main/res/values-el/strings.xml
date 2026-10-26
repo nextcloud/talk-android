@@ -61,7 +61,6 @@
     <string name="menu_item_sort_by_size_smallest_first">Μικρότερο πρώτα</string>
     <string name="message_deleted_by_you">Το μήνυμα διαγράφηκε από εσάς</string>
     <string name="message_last_edited_by">Επεξεργάστηκε από %1$s</string>
-    <string name="message_search_begin_empty">Κανένα αποτέλεσμα</string>
     <string name="message_search_hint">Αναζήτηση …</string>
     <string name="messages">Μηνύματα</string>
     <string name="mute_all_notifications">Σίγαση όλων των ειδοποιήσεων</string>
@@ -78,8 +77,11 @@
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
     <string name="nc_announcement">Ανακοίνωση</string>
+    <string name="nc_audio_player_next">Επόμενο</string>
+    <string name="nc_audio_player_previous">Προηγούμενο</string>
     <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
     <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
+    <string name="nc_call_button_content_description_switch_camera">Εναλλαγή κάμερας</string>
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_ongoing_notification_default_title">Κλήση σε εξέλιξη</string>
@@ -96,7 +98,6 @@
     <string name="nc_cancel">Ακύρωση</string>
     <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
     <string name="nc_caption">Λεζάντα</string>
-    <string name="nc_certificate_dialog_text">Eμπιστεύεσαι το άγνωστο έως τώρα πιστοποιητικό SSL που εκδόθηκε %1$s για %2$s, έγκυρο από %3$s σε%4$s;</string>
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
@@ -220,7 +221,6 @@
     <string name="nc_lobby_start_soon">Η συνάντηση θα ξεκινήσει σύντομα</string>
     <string name="nc_lobby_waiting">Αυτή τη στιγμή είστε σε αναμονή</string>
     <string name="nc_location_current_position_description">Η τρέχουσα τοποθεσία σας</string>
-    <string name="nc_location_permission_required">απαιτείται δικαιώματα τοποθεσίας</string>
     <string name="nc_location_unknown">Άγνωστη θέση</string>
     <string name="nc_locked">Κλειδώθηκε</string>
     <string name="nc_locked_tap_to_unlock">Αγγίξτε για ξεκλείδωμα</string>

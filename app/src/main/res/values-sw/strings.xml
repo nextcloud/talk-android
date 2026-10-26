@@ -85,9 +85,7 @@
     <string name="load_more_results">Pakia matokeo zaidi</string>
     <string name="local_time">Muda wa kawaida: %1$s</string>
     <string name="location_permission_denied">Ruhusa ya eneo imekataliwa</string>
-    <string name="location_permission_denied_msg">Tafadhali iwashe katika mipangilio ya programu</string>
     <string name="location_services_disabled">Huduma za eneo zimezimwa</string>
-    <string name="location_services_disabled_msg">Tafadhali wezesha huduma za eneo (GPS) ili kutumia kipengele hiki</string>
     <string name="lock_conversation">Funga mazungumzo</string>
     <string name="lock_symbol">Funga ishara</string>
     <string name="lower_hand">Mkono wa chini</string>
@@ -103,8 +101,6 @@
     <string name="message_deleted_by_you">Ujumbe umefutwa na wewe</string>
     <string name="message_last_edited_by">Imehaririwa na %1$s</string>
     <string name="message_poll_tap_to_open">Bonyeza kufungua poll</string>
-    <string name="message_search_begin_empty">Hakuna matokeo ya utafutaji</string>
-    <string name="message_search_begin_typing">Anza kuchapa ili kutafuta </string>
     <string name="message_search_hint">Tafuta...</string>
     <string name="messages">Jumbe</string>
     <string name="mute_all_notifications">Zima arifu zote</string>
@@ -121,6 +117,8 @@
     <string name="nc_add_to_favorites">Ongeza kwenye pendwa</string>
     <string name="nc_all_ok_operation">Sawa, zote zimefanyika!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_player_next">Ijayo</string>
+    <string name="nc_audio_player_previous">Iliyopita</string>
     <string name="nc_biometric_unlock">Fungua %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ili kuwezesha spika za bluetooth tafadhali toa ruhusa ya \"Vifaa vya Karibu\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Jibu kama simu ya video</string>
@@ -130,6 +128,7 @@
     <string name="nc_call_button_content_description_hangup">Kata simu</string>
     <string name="nc_call_button_content_description_microphone">Geuza microphone</string>
     <string name="nc_call_button_content_description_pip">Fungua picha katika modi ya picha</string>
+    <string name="nc_call_button_content_description_switch_camera">Badili kamera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Hamia kwenye video binafsi</string>
     <string name="nc_call_incoming">Zinazoingia</string>
     <string name="nc_call_name">Jina la mazungumzo</string>
@@ -151,7 +150,6 @@
     <string name="nc_cancel">Ghairi</string>
     <string name="nc_capabilities_failed">Imeshindwa kuleta uwezo, kukatisha</string>
     <string name="nc_caption">Manukuu</string>
-    <string name="nc_certificate_dialog_text">Je, unaamini cheti cha SSL kisichojulikana hadi sasa, kilichotolewa na %1$s kwa %2$s, halali kutoka %3$s hadi %4$s?</string>
     <string name="nc_certificate_dialog_title">Angalia cheti</string>
     <string name="nc_certificate_error">Usanidi wako wa SSL umezuia muunganisho</string>
     <string name="nc_change_cert_auth">Badilisha cheti cha uthibitishaji</string>
@@ -300,7 +298,6 @@
     <string name="nc_lobby_start_soon">Mkutano utaanza hivi karibuni</string>
     <string name="nc_lobby_waiting">Sasa unasubiria katika lobi</string>
     <string name="nc_location_current_position_description">Eneo lako la sasa</string>
-    <string name="nc_location_permission_required">Ruhusa ya eneo inahitajika</string>
     <string name="nc_location_unknown">Nafasi haijulikani</string>
     <string name="nc_locked">Imefungwa</string>
     <string name="nc_locked_tap_to_unlock">Bonyeza kufungua</string>
