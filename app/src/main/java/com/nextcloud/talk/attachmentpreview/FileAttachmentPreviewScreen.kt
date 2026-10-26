@@ -363,7 +363,7 @@ private fun FilePermissionOptionButton(allowUpdate: Boolean, onAllowUpdateChange
 
 @Composable
 private fun rememberPreviewViewModel(files: List<String>): FileAttachmentPreviewViewModel {
-    val context = LocalContext.current
+    val context = LocalContext.current.applicationContext
     return remember { FileAttachmentPreviewViewModel(context).apply { setInitialFiles(files) } }
 }
 

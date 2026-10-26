@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.logger.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.logger.Level
@@ -18,8 +19,11 @@ import javax.inject.Inject
 import androidx.core.content.edit
 import com.nextcloud.talk.logger.Logger
 
-class LogsViewModel @Inject constructor(private val logsRepository: LogsRepository, private val context: Context) :
-    ViewModel() {
+class LogsViewModel @Inject constructor(
+    private val logsRepository: LogsRepository,
+    // Dagger provides the application context, which cannot leak an Activity
+    @field:SuppressLint("StaticFieldLeak") private val context: Context
+) : ViewModel() {
 
     @Inject
     lateinit var logger: Logger
