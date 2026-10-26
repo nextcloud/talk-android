@@ -135,7 +135,7 @@ class VoiceMessageMediaServiceFocusTest {
         player.prepare()
         player.play()
 
-        // the permanent focus of the player is not visible to the shadow; what matters is that no transient one is taken
+        // the permanent focus of the player is not visible to the shadow; no transient one may be taken
         assertEquals(C.AUDIO_CONTENT_TYPE_MUSIC, player.audioAttributes.contentType)
         assertNull(shadow.lastAudioFocusRequest)
     }
