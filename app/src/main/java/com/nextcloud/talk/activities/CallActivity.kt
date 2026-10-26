@@ -2431,13 +2431,13 @@ class CallActivity : CallBaseActivity() {
             val taskInfo = appTask.taskInfo
             val baseActivityName = taskInfo?.baseActivity?.className
             taskInfo != null &&
-                taskInfo.taskId != taskId &&
+                taskInfo.taskIdCompat != taskId &&
                 baseActivityName == MainActivity::class.java.name
         } ?: appTasks.firstOrNull { appTask ->
             val taskInfo = appTask.taskInfo
             val baseActivityName = taskInfo?.baseActivity?.className
             taskInfo != null &&
-                taskInfo.taskId != taskId &&
+                taskInfo.taskIdCompat != taskId &&
                 baseActivityName != CallActivity::class.java.name &&
                 baseActivityName != CallNotificationActivity::class.java.name
         }
@@ -2449,14 +2449,17 @@ class CallActivity : CallBaseActivity() {
             }
             primaryTask.startActivity(context, intent, null)
             primaryTask.moveToFront()
-            val primaryTaskId = primaryTask.taskInfo?.taskId
+            val primaryTaskId = primaryTask.taskInfo?.taskIdCompat
             appTasks
                 .filter { appTask ->
                     val taskInfo = appTask.taskInfo
                     val baseActivityName = taskInfo?.baseActivity?.className
                     val isCallTask = baseActivityName == CallActivity::class.java.name ||
                         baseActivityName == CallNotificationActivity::class.java.name
-                    taskInfo != null && !isCallTask && taskInfo.taskId != primaryTaskId && taskInfo.taskId != taskId
+                    taskInfo != null &&
+                        !isCallTask &&
+                        taskInfo.taskIdCompat != primaryTaskId &&
+                        taskInfo.taskIdCompat != taskId
                 }
                 .forEach { it.finishAndRemoveTask() }
         } else {
@@ -2468,6 +2471,11 @@ class CallActivity : CallBaseActivity() {
             startActivity(mainIntent)
         }
     }
+
+    // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
+    @Suppress("DEPRECATION")
+    private val ActivityManager.RecentTaskInfo.taskIdCompat: Int
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskId else persistentId
 
     private fun startVideoCapture(isPortrait: Boolean) {
         val (width, height) = if (isPortrait) {
