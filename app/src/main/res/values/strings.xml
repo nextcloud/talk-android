@@ -35,7 +35,6 @@ How to translate with transifex:
     <string name="nc_login_too_many_attempts">Too many failed login attempts from this network. Try again later.</string>
     <string name="nc_account_removal_pending">The removal of this account is not finished yet. Please try again in a moment.</string>
     <string name="nc_reauthorize_different_account">You logged in with a different account. Log in with the account you want to reauthorize.</string>
-    <string name="nc_common_create">Create</string>
     <string name="nc_common_unknown">Unknown</string>
     <string name="nc_common_disabled">Disabled</string>
     <string name="nc_common_copy">Copy</string>
