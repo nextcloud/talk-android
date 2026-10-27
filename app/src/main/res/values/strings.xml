@@ -721,7 +721,6 @@ How to translate with transifex:
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
 
     <!-- share to screen -->
-    <string name="nc_share_to_choose_account">Choose account</string>
 
     <!-- voice messages -->
     <string name="nc_voice_message">Voice message</string>
