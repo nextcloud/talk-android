@@ -943,6 +943,7 @@ class CallActivity : CallBaseActivity() {
     override fun onStart() {
         super.onStart()
         active = true
+        updateExcludeFromRecents(true)
         initFeaturesVisibility()
         try {
             cache!!.evictAll()
@@ -950,6 +951,33 @@ class CallActivity : CallBaseActivity() {
             Log.e(TAG, "Failed to evict cache")
         }
     }
+
+    /**
+     * The call task is excluded from recents, so it is not shown there next to the conversations while the call is on
+     * screen or in picture in picture. Once in background, for example, when sharing the screen or when picture in
+     * picture is not possible or was closed, the system removes background tasks excluded from recents as soon as
+     * another task is used, which destroys the activity and ends the call. Therefore the call is shown in recents while
+     * in background, so it keeps running until it is ended or removed from recents.
+     */
+    private fun updateExcludeFromRecents(isExcluded: Boolean) {
+        if (isFinishing || isDestroyed) {
+            return
+        }
+        try {
+            getSystemService(ActivityManager::class.java).appTasks
+                .firstOrNull { it.taskInfo?.let { taskInfo -> taskIdOf(taskInfo) } == taskId }
+                ?.setExcludeFromRecents(isExcluded)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Failed to update whether the call is excluded from recents", e)
+        }
+    }
+
+    /**
+     * TaskInfo.taskId is only available since API 29, before that the task ID is provided as persistentId.
+     */
+    @Suppress("DEPRECATION")
+    private fun taskIdOf(taskInfo: ActivityManager.RecentTaskInfo): Int =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskInfo.taskId else taskInfo.persistentId
 
     override fun onStop() {
         super.onStop()
@@ -959,6 +987,7 @@ class CallActivity : CallBaseActivity() {
                 " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations"
         )
         active = false
+        updateExcludeFromRecents(false)
 
         if (isMicInputAudioThreadRunning) {
             stopMicInputDetection()
