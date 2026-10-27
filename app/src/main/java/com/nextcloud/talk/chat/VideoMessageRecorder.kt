@@ -275,8 +275,6 @@ class VideoMessageRecorder(context: Context) {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    @androidx.annotation.OptIn(ExperimentalPersistentRecording::class)
     private fun onCameraProviderReady(provider: ProcessCameraProvider) {
         if (state != State.STARTING) {
             return
@@ -291,8 +289,7 @@ class VideoMessageRecorder(context: Context) {
             )
             .setTargetVideoEncodingBitRate(TARGET_VIDEO_BIT_RATE)
             .build()
-        val videoUseCase = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
-        videoCapture = videoUseCase
+        videoCapture = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
         preview = Preview.Builder()
             .setTargetRotation(previewView?.let { displayRotation(it, videoRotation) } ?: videoRotation)
             .build()
