@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<!-- Referenced by name in android.resource:// URIs only -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/librem_by_feandesign_call,@raw/librem_by_feandesign_message,@raw/tr110_1_kap8_3_freiton1" />
