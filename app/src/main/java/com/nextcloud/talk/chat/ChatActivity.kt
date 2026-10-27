@@ -1401,6 +1401,8 @@ class ChatActivity :
         super.onStop()
         active = false
         orientationTracker.disable()
+        // reopened on the next start, so that the live camera preview follows the call state of that moment
+        attachmentSheetModel = null
         if (!changingConfigurations) {
             // the user leaves the chat: a video recording must not go on with camera and microphone
             chatViewModel.activeVideoMessageRecorder?.cancel()
@@ -1544,11 +1546,16 @@ class ChatActivity :
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     _participantPermissionsFlow.value =
                         ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    // a locked recording keeps its panel: the observer of the lock does not run again
+                    val recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        replace(
+                            R.id.fragment_container_activity_chat,
+                            if (recordingLocked) MessageInputVoiceRecordingFragment() else messageInputFragment
+                        )
                         runOnCommit {
-                            if (focusInput) {
+                            if (focusInput && !recordingLocked) {
                                 messageInputFragment.binding.fragmentMessageInputView.requestFocus()
                             }
                         }
@@ -2469,7 +2476,22 @@ class ChatActivity :
 
     fun stopAndSendRecording() {
         if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
-            chatViewModel.activeVideoMessageRecorder?.stopAndSend()
+            // captured by value: it outlives this activity when the chat is left before the file is finalized
+            val viewModel = chatViewModel
+            val room = roomToken
+            val replyTo = getReplyToMessageId()
+            val displayName = currentConversation!!.displayName
+            val appContext = context.applicationContext
+            viewModel.activeVideoMessageRecorder?.stopAndSend { file ->
+                viewModel.uploadFile(
+                    fileUri = FileProvider.getUriForFile(appContext, appContext.packageName, file).toString(),
+                    isVoiceMessage = false,
+                    roomToken = room,
+                    replyToMessageId = replyTo,
+                    displayName = displayName,
+                    uploadId = UUID.randomUUID().toString()
+                )
+            }
         } else {
             chatViewModel.stopAndSendAudioRecording(
                 roomToken = roomToken,
@@ -2487,6 +2509,9 @@ class ChatActivity :
         }
     }
 
+    // the result of a recording is uploaded or previewed with the conversation and the capabilities
+    private fun isChatReady(): Boolean = currentConversation != null && ::spreedCapabilities.isInitialized
+
     private fun onVideoRecordingFinished(outcome: VideoMessageRecorder.Outcome, file: File?) {
         showVideoRecordingPreview(false)
         if (chatViewModel.getVoiceRecordingInProgress.value == true) {
@@ -2494,6 +2519,10 @@ class ChatActivity :
         }
         if (chatViewModel.getVoiceRecordingLocked.value == true) {
             chatViewModel.setVoiceRecordingLocked(false)
+        }
+        if (!isChatReady()) {
+            chatViewModel.activeVideoMessageRecorder?.holdResult(outcome, file)
+            return
         }
         when (outcome) {
             VideoMessageRecorder.Outcome.SEND -> file?.let {
@@ -2913,11 +2942,9 @@ class ChatActivity :
                 error("Failed to get data from intent and uri")
             }
 
-            if (permissionUtil.isFilesPermissionGranted()) {
-                showFileAttachmentPreview(filesToUpload)
-            } else {
-                UploadAndShareFilesWorker.requestStoragePermission(this)
-            }
+            // The photo lives in the app cache and is handed over through the own file provider,
+            // so it needs no access to the media.
+            showFileAttachmentPreview(filesToUpload)
         } catch (e: IllegalStateException) {
             Snackbar.make(
                 binding.root,
@@ -2967,7 +2994,7 @@ class ChatActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isShareFileRequestGranted(grantResults, permissionUtil.isFilesPermissionGranted())) {
                 Log.d(TAG, "showing upload preview after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     showFileAttachmentPreview(filesToUpload)
