@@ -284,6 +284,8 @@ class LocalScreenShareController(private val host: Host, private val runOnMainTh
 
     fun onParticipantLeft(sessionId: String?) {
         val connection = synchronized(lock) {
+            // The connection is created again from scratch if the participant joins again.
+            retryCounts.remove(sessionId)
             connections.firstOrNull { it.sessionId == sessionId }?.also { connections.remove(it) }
         } ?: return
         closeConnection(connection)

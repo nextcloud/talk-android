@@ -303,6 +303,24 @@ class CallActivity : CallBaseActivity() {
     // The permission from signaling is more recent than the one from the conversation, so it takes precedence.
     private var signalingScreenSharePermission: Boolean? = null
 
+    @Volatile
+    var isAllowedToShareScreen = false
+        private set
+
+    private val screenSharePermissionListener = object : SignalingMessageReceiver.ParticipantListMessageListener {
+        override fun onUsersInRoom(participants: MutableList<ParticipantDto?>) {
+            updateScreenSharePermission(participants)
+        }
+
+        override fun onParticipantsUpdate(participants: MutableList<ParticipantDto?>) {
+            updateScreenSharePermission(participants)
+        }
+
+        override fun onAllParticipantsUpdate(inCall: Long) {
+            // unused atm
+        }
+    }
+
     // Screen sharing needs the foreground service, which is not started without microphone and notification permission.
     @Volatile
     private var isCallForegroundServiceStarted = false
@@ -3718,26 +3736,8 @@ class CallActivity : CallBaseActivity() {
         eventBus.post(ConfigurationChangeEvent())
     }
 
-    @Volatile
-    var isAllowedToShareScreen = false
-        private set
-
-    private val screenSharePermissionListener = object : SignalingMessageReceiver.ParticipantListMessageListener {
-        override fun onUsersInRoom(participants: MutableList<ParticipantDto?>) {
-            updateScreenSharePermission(participants)
-        }
-
-        override fun onParticipantsUpdate(participants: MutableList<ParticipantDto?>) {
-            updateScreenSharePermission(participants)
-        }
-
-        override fun onAllParticipantsUpdate(inCall: Long) {
-            // unused atm
-        }
-    }
-
     private fun updateScreenSharePermission(participants: List<ParticipantDto?>) {
-        val ownSessionId = if (webSocketClient != null) webSocketClient!!.sessionId else callSession
+        val ownSessionId = getOwnSessionId()
         val permissions = participants.firstOrNull { it?.sessionId == ownSessionId }?.participantPermissions ?: return
         val isAllowed = ParticipantPermissions.canPublishScreen(
             conversationUser.capabilities?.spreedCapability,
@@ -3814,6 +3814,11 @@ class CallActivity : CallBaseActivity() {
         localScreenShareController.onPermissionGranted(permissionResultData)
     }
 
+    /**
+     * The own signaling session, which differs from the call session with external signaling.
+     */
+    private fun getOwnSessionId(): String? = if (webSocketClient != null) webSocketClient!!.sessionId else callSession
+
     private fun isCallActiveForScreenSharing(): Boolean =
         isConnectionEstablished && currentCallStatus !== CallStatus.LEAVING
 
@@ -3846,7 +3851,7 @@ class CallActivity : CallBaseActivity() {
             get() = this@CallActivity.hasMCU
 
         override val ownSessionId: String?
-            get() = if (webSocketClient != null) webSocketClient!!.sessionId else callSession
+            get() = getOwnSessionId()
 
         override val participantSessionIds: Collection<String>
             get() = getParticipantSessionKeys()

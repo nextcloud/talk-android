@@ -317,6 +317,20 @@ class LocalScreenShareControllerTest {
     }
 
     @Test
+    fun testRejoiningParticipantResetsRetries() {
+        startSharing()
+        repeat(MAX_RETRIES + 1) {
+            setIceConnectionState(host.connectionTo(SESSION_ID_1), IceConnectionState.FAILED)
+        }
+
+        controller.onParticipantLeft(SESSION_ID_1)
+        controller.onParticipantJoined(SESSION_ID_1)
+        setIceConnectionState(host.connectionTo(SESSION_ID_1), IceConnectionState.FAILED)
+
+        assertEquals(2 + MAX_RETRIES + 2, host.connections.size)
+    }
+
+    @Test
     fun testSuccessfulConnectionResetsRetries() {
         startSharing()
 
