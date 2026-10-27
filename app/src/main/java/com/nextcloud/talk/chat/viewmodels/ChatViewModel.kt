@@ -26,6 +26,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.RecordInputMode
+import com.nextcloud.talk.chat.releasesVideoAudioFocusOnClear
 import com.nextcloud.talk.chat.VideoMessageRecorder
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
@@ -2376,7 +2377,13 @@ class ChatViewModel @AssistedInject constructor(
         get() = videoRecorder
 
     override fun onCleared() {
-        videoRecorder?.release()
+        videoRecorder?.let {
+            // the released recorder reports nothing, so nobody else gives the audio focus back
+            if (releasesVideoAudioFocusOnClear(activeRecordingMode, _getVoiceRecordingInProgress.value == true)) {
+                onVideoRecordingEnded()
+            }
+            it.release()
+        }
         videoRecorder = null
     }
 

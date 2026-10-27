@@ -611,8 +611,8 @@ class MessageInputFragment : Fragment() {
 
         var prevDx = 0f
         val gesture = RecordButtonGesture(VOICE_RECORD_CANCEL_SLIDER_X.toFloat())
+        binding.fragmentMessageInputView.recordAudioButton.setOnClickListener { toggleRecordInputMode() }
         binding.fragmentMessageInputView.recordAudioButton.setOnTouchListener { v, event ->
-            v?.performClick()
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     // A tap only switches the mode, the recording starts only after the hold threshold.
@@ -701,7 +701,7 @@ class MessageInputFragment : Fragment() {
                     }
                 }
             }
-            v?.onTouchEvent(event) != false
+            v != null && event != null && forwardRecordButtonTouch(v, event)
         }
     }
 
@@ -734,14 +734,21 @@ class MessageInputFragment : Fragment() {
             pendingRecordStart = null
             if (!gesture.holdElapsed()) return@Runnable
             val isVideo = chatActivity.chatViewModel.recordInputMode == RecordInputMode.VIDEO
-            if (isVideo && !chatActivity.isVideoRecordPermissionGranted()) {
-                chatActivity.requestVideoRecordPermissions()
-            } else if (!isVideo && !chatActivity.isRecordAudioPermissionGranted()) {
-                chatActivity.requestRecordAudioPermissions()
-            } else if (!chatActivity.permissionUtil.isFilesPermissionGranted()) {
-                UploadAndShareFilesWorker.requestStoragePermission(chatActivity)
-            } else {
-                beginRecording(isVideo)
+            when (
+                resolveRecordStart(
+                    isVideo = isVideo,
+                    videoRecorderActive = chatActivity.chatViewModel.activeVideoMessageRecorder?.isActive == true,
+                    videoPermissionGranted = chatActivity.isVideoRecordPermissionGranted(),
+                    audioPermissionGranted = chatActivity.isRecordAudioPermissionGranted(),
+                    filesPermissionGranted = chatActivity.permissionUtil.isFilesPermissionGranted()
+                )
+            ) {
+                RecordStartStep.BUSY -> Unit
+                RecordStartStep.REQUEST_VIDEO_PERMISSIONS -> chatActivity.requestVideoRecordPermissions()
+                RecordStartStep.REQUEST_AUDIO_PERMISSION -> chatActivity.requestRecordAudioPermissions()
+                RecordStartStep.REQUEST_FILES_PERMISSION ->
+                    UploadAndShareFilesWorker.requestStoragePermission(chatActivity)
+                RecordStartStep.START -> beginRecording(isVideo)
             }
         }
         pendingRecordStart = runnable
