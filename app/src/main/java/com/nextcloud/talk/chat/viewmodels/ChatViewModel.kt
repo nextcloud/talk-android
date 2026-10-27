@@ -2376,7 +2376,6 @@ class ChatViewModel @AssistedInject constructor(
         get() = videoRecorder
 
     override fun onCleared() {
-        super.onCleared()
         videoRecorder?.release()
         videoRecorder = null
     }
