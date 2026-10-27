@@ -459,7 +459,7 @@ private fun displayRotation(view: PreviewView, fallback: Int): Int =
  * recording starts and destroyed when it ends, which closes the camera.
  */
 internal class RecordingLifecycleOwner : LifecycleOwner {
-    private val registry = LifecycleRegistry.createUnsafe(this)
+    private val registry = LifecycleRegistry(this)
 
     override val lifecycle: Lifecycle
         get() = registry

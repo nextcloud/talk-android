@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -52,7 +53,7 @@ class RecordHintPopup(private val anchor: View) {
 
     private fun present(@StringRes messageRes: Int) {
         val context = anchor.context
-        val content = LayoutInflater.from(context).inflate(R.layout.view_record_hint, null)
+        val content = LayoutInflater.from(context).inflate(R.layout.view_record_hint, FrameLayout(context), false)
         val bubbleColor = MaterialColors.getColor(anchor, com.google.android.material.R.attr.colorSurfaceInverse)
         val textColor = MaterialColors.getColor(anchor, com.google.android.material.R.attr.colorOnSurfaceInverse)
         val text = content.findViewById<TextView>(R.id.recordHintText)
@@ -89,6 +90,10 @@ class RecordHintPopup(private val anchor: View) {
             )
         }
 
+        // the gravity is START, so the offset counts from the right edge of a right-to-left window
+        fun startOffset(x: Int): Int =
+            if (anchor.layoutDirection == View.LAYOUT_DIRECTION_RTL) anchor.rootView.width - x - hintWidth else x
+
         fun applyArrow(placement: Placement) {
             val arrowParams = arrow.layoutParams as LinearLayout.LayoutParams
             arrowParams.leftMargin = placement.arrowLeftMargin
@@ -104,14 +109,14 @@ class RecordHintPopup(private val anchor: View) {
                 isFocusable = false
                 isOutsideTouchable = false
                 // anchored by its bottom edge, so that the hint grows upwards, away from the button
-                showAtLocation(anchor, Gravity.BOTTOM or Gravity.LEFT, first.x, first.bottomOffset)
+                showAtLocation(anchor, Gravity.BOTTOM or Gravity.START, startOffset(first.x), first.bottomOffset)
             }
         popup = window
 
         val listener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             val moved = placement()
             applyArrow(moved)
-            window.update(moved.x, moved.bottomOffset, -1, -1)
+            window.update(startOffset(moved.x), moved.bottomOffset, -1, -1)
         }
         layoutListener = listener
         anchor.addOnLayoutChangeListener(listener)

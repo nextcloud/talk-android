@@ -6,10 +6,17 @@
  */
 package com.nextcloud.talk.chat
 
+import android.app.Application
 import androidx.lifecycle.Lifecycle
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+// a lifecycle registry insists on the main thread, which Robolectric gives the test
+@RunWith(RobolectricTestRunner::class)
+@Config(application = Application::class, sdk = [33])
 class VideoRecorderLifecycleTest {
 
     @Test
