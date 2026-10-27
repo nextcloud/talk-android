@@ -65,6 +65,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -447,10 +448,11 @@ private fun PreviewPlaceholder(item: MediaViewerItem, onToggleControls: () -> Un
 @Composable
 private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     var drawable by remember(localPath) { mutableStateOf<Drawable?>(null) }
 
     LaunchedEffect(localPath) {
-        val displayMetrics = context.resources.displayMetrics
+        val displayMetrics = resources.displayMetrics
         val request = ImageRequest.Builder(context)
             .data(File(localPath))
             .size(displayMetrics.widthPixels * 2, displayMetrics.heightPixels * 2)
