@@ -254,9 +254,11 @@ class VideoMessageRecorder(context: Context) {
         val previousLens = lensFacing
         lensFacing = newLens
         provider.unbind(preview, videoCapture)
-        if (!bindUseCases(provider)) {
+        lensFacing = resolveLens(provider, lensFacing)
+        if (!bindCameraUseCases(provider, cameraOwner, lensFacing, preview, videoCapture)) {
             lensFacing = previousLens
-            bindUseCases(provider)
+            lensFacing = resolveLens(provider, lensFacing)
+            bindCameraUseCases(provider, cameraOwner, lensFacing, preview, videoCapture)
         }
         // the new camera may deliver another resolution
         onFrameAspectChanged?.invoke()
@@ -296,20 +298,12 @@ class VideoMessageRecorder(context: Context) {
             .also { it.surfaceProvider = previewView?.surfaceProvider }
 
         val file = outputFile
-        if (file == null || !bindUseCases(provider)) {
+        lensFacing = resolveLens(provider, lensFacing)
+        if (file == null || !bindCameraUseCases(provider, cameraOwner, lensFacing, preview, videoCapture)) {
             finish(Outcome.FAILED, null)
             return
         }
         startRecording()
-    }
-
-    private fun bindUseCases(provider: ProcessCameraProvider): Boolean {
-        lensFacing = resolveLens(provider, lensFacing)
-        val owner = cameraOwner
-        val previewUseCase = preview
-        val videoUseCase = videoCapture
-        if (owner == null || previewUseCase == null || videoUseCase == null) return false
-        return provider.bindSafely(owner, lensFacing, previewUseCase, videoUseCase) != null
     }
 
     @SuppressLint("MissingPermission")
@@ -450,6 +444,17 @@ class VideoMessageRecorder(context: Context) {
         fun videoTargetRotation(sensorDegrees: Int, displayRotation: Int): Int =
             rotationForDeviceOrientation(sensorDegrees) ?: displayRotation
     }
+}
+
+private fun bindCameraUseCases(
+    provider: ProcessCameraProvider,
+    owner: LifecycleOwner?,
+    lensFacing: Int,
+    previewUseCase: Preview?,
+    videoUseCase: VideoCapture<Recorder>?
+): Boolean {
+    if (owner == null || previewUseCase == null || videoUseCase == null) return false
+    return provider.bindSafely(owner, lensFacing, previewUseCase, videoUseCase) != null
 }
 
 /**
