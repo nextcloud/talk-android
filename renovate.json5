@@ -29,7 +29,7 @@
       "minimumReleaseAge": "0 days"
     },
     {
-      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion", "com.fasterxml.jackson.core:jackson-core"],
+      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion"],
       "automerge": false,
 	  "enabled": false
     }
