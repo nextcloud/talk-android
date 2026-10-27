@@ -25,7 +25,7 @@ class ChatAudioKeyTest {
         assertNull(ChatAudioKey.fromMediaId(null))
         assertNull(ChatAudioKey.fromMediaId(""))
         assertNull(ChatAudioKey.fromMediaId("4711"))
-        assertNull(ChatAudioKey.fromMediaId("file:///sdcard/voice.mp3"))
+        assertNull(ChatAudioKey.fromMediaId("file:///music/voice.mp3"))
     }
 
     @Test
