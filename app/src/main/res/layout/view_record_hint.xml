@@ -5,15 +5,15 @@
   ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/recordHintText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/bg_record_hint"
         android:maxWidth="280dp"
         android:paddingHorizontal="16dp"
@@ -24,6 +24,7 @@
         android:id="@+id/recordHintArrow"
         android:layout_width="16dp"
         android:layout_height="8dp"
+        android:layout_gravity="bottom|start"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_record_hint_arrow" />
-</LinearLayout>
+</FrameLayout>
