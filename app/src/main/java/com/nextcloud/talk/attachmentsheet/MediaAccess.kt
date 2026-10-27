@@ -24,8 +24,8 @@ fun resolveMediaAccess(sdkInt: Int, granted: Set<String>): MediaAccess =
     when {
         sdkInt >= Build.VERSION_CODES.TIRAMISU ->
             when {
-                Manifest.permission.READ_MEDIA_IMAGES in granted ||
-                    Manifest.permission.READ_MEDIA_VIDEO in granted -> MediaAccess.FULL
+                READ_MEDIA_IMAGES in granted ||
+                    READ_MEDIA_VIDEO in granted -> MediaAccess.FULL
 
                 sdkInt >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
                     READ_MEDIA_VISUAL_USER_SELECTED in granted -> MediaAccess.PARTIAL
@@ -48,7 +48,7 @@ fun canSelectMoreMedia(sdkInt: Int, granted: Set<String>): Boolean =
         (
             sdkInt >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
                 READ_MEDIA_VISUAL_USER_SELECTED in granted &&
-                !(Manifest.permission.READ_MEDIA_IMAGES in granted && Manifest.permission.READ_MEDIA_VIDEO in granted)
+                !(READ_MEDIA_IMAGES in granted && READ_MEDIA_VIDEO in granted)
             )
 
 /**
@@ -57,7 +57,7 @@ fun canSelectMoreMedia(sdkInt: Int, granted: Set<String>): Boolean =
  */
 fun hasMediaFilesAccess(sdkInt: Int, granted: Set<String>): Boolean =
     sdkInt >= Build.VERSION_CODES.TIRAMISU &&
-        (resolveMediaAccess(sdkInt, granted) != MediaAccess.NONE || Manifest.permission.READ_MEDIA_AUDIO in granted)
+        (resolveMediaAccess(sdkInt, granted) != MediaAccess.NONE || READ_MEDIA_AUDIO in granted)
 
 /**
  * Permissions to request in one dialog so that Android 14 offers the "select photos" choice next to "allow all".
@@ -66,13 +66,13 @@ fun mediaPermissionsToRequest(sdkInt: Int): Array<String> =
     when {
         sdkInt >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
             arrayOf(
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
+                READ_MEDIA_IMAGES,
+                READ_MEDIA_VIDEO,
                 READ_MEDIA_VISUAL_USER_SELECTED
             )
 
         sdkInt >= Build.VERSION_CODES.TIRAMISU ->
-            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
 
         else -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
@@ -83,7 +83,7 @@ fun mediaPermissionsToRequest(sdkInt: Int): Array<String> =
  */
 fun shareFilePermissionsToRequest(sdkInt: Int): Array<String> =
     if (sdkInt >= Build.VERSION_CODES.TIRAMISU) {
-        mediaPermissionsToRequest(sdkInt) + Manifest.permission.READ_MEDIA_AUDIO
+        mediaPermissionsToRequest(sdkInt) + READ_MEDIA_AUDIO
     } else {
         mediaPermissionsToRequest(sdkInt)
     }
@@ -96,5 +96,9 @@ fun shareFilePermissionsToRequest(sdkInt: Int): Array<String> =
 fun isShareFileRequestGranted(grantResults: IntArray, effectivelyGranted: Boolean): Boolean =
     grantResults.any { it == PackageManager.PERMISSION_GRANTED } || effectivelyGranted
 
-// Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED exists only from API 34; the string is stable.
+// The media permissions exist only from API 33 (the user-selected one from API 34), so their stable strings stand
+// here instead of the Manifest.permission fields, which lint reports as used below the minimum SDK.
+internal const val READ_MEDIA_IMAGES = "android.permission.READ_MEDIA_IMAGES"
+internal const val READ_MEDIA_VIDEO = "android.permission.READ_MEDIA_VIDEO"
+internal const val READ_MEDIA_AUDIO = "android.permission.READ_MEDIA_AUDIO"
 internal const val READ_MEDIA_VISUAL_USER_SELECTED = "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
