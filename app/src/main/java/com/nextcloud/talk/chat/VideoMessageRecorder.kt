@@ -275,8 +275,6 @@ class VideoMessageRecorder(context: Context) {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    @androidx.annotation.OptIn(ExperimentalPersistentRecording::class)
     private fun onCameraProviderReady(provider: ProcessCameraProvider) {
         if (state != State.STARTING) {
             return
@@ -291,8 +289,7 @@ class VideoMessageRecorder(context: Context) {
             )
             .setTargetVideoEncodingBitRate(TARGET_VIDEO_BIT_RATE)
             .build()
-        val videoUseCase = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
-        videoCapture = videoUseCase
+        videoCapture = VideoCapture.Builder(recorder).setTargetRotation(videoRotation).build()
         preview = Preview.Builder()
             .setTargetRotation(previewView?.let { displayRotation(it, videoRotation) } ?: videoRotation)
             .build()
@@ -303,22 +300,7 @@ class VideoMessageRecorder(context: Context) {
             finish(Outcome.FAILED, null)
             return
         }
-        val options = FileOutputOptions.Builder(file)
-            .setDurationLimitMillis(MAX_DURATION_MS)
-            .build()
-        // The microphone is opened when the music of another app is silent, which has lost the audio focus a moment
-        // ago. Stopping meanwhile ends the start: it takes the session away, see stop().
-        val startedSession = session
-        musicSilenceGate.whenSilent {
-            if (startedSession != session || state != State.STARTING) return@whenSilent
-            recording = videoUseCase.output
-                .prepareRecording(context, options)
-                .withAudioEnabled()
-                .asPersistentRecording()
-                .start(ContextCompat.getMainExecutor(context), ::onRecordEvent)
-            state = State.RECORDING
-            onFrameAspectChanged?.invoke()
-        }
+        startRecording()
     }
 
     private fun bindUseCases(provider: ProcessCameraProvider): Boolean {
