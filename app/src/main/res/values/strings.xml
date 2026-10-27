@@ -77,7 +77,6 @@ How to translate with transifex:
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Push notifications disabled</string>
-    <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_external_server_failed">Failed to fetch signaling settings</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
@@ -94,7 +93,6 @@ How to translate with transifex:
     <string name="nc_channel_description">Only moderators can post, everybody else can only react</string>
     <string name="nc_announcement">Announcement</string>
     <string name="nc_announcement_description">Conversation for admins to inform a fixed audience, which cannot be left.</string>
-    <string name="nc_admin_only">Admin only</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_dialog_text_for_host">Do you trust the until now unknown SSL certificate of %1$s, issued by %2$s for %3$s, valid from %4$s to %5$s? It will only be trusted for %1$s.</string>
@@ -244,8 +242,6 @@ How to translate with transifex:
     <string name="nc_logs_mail_subject" translatable="false">%1$s logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>
     <string name="nc_logs_overflow_warning">Warning: some log entries were lost due to queue overflow.</string>
-    <string name="nc_logs_share_latest_crash">Latest crash</string>
-    <string name="nc_logs_share_diagnosis">Diagnosis report</string>
     <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
     <string name="nc_logs_download_zip">Download as ZIP</string>
     <string name="nc_logs_logging_enabled">Logging enabled</string>
@@ -255,8 +251,6 @@ How to translate with transifex:
     <string name="nc_logs_disable_keep">Keep logs</string>
     <string name="nc_logs_disable_delete">Delete logs</string>
     <string name="nc_logs_advanced_logging">Advanced logging</string>
-    <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
-    <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>
 
     <!-- Diagnosis -->
     <string name="nc_diagnosis_dialog_open_checklist">Open troubleshooting checklist</string>
@@ -272,7 +266,6 @@ How to translate with transifex:
     <string name="nc_notification_warning">Notifications are not set up correctly</string>
     <string name="nc_not_now">Not now</string>
 
-    <string name="send_email">Send email</string>
     <string name="create_issue">Create issue</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
@@ -714,13 +707,9 @@ How to translate with transifex:
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
-    <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_upload_from_device">Upload from device</string>
     <string name="nc_gallery">Gallery</string>
 
-    <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
-    <string name="nc_compress_in_progress">Compressing</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_upload_failed_notification_title">Failure</string>
     <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
@@ -1045,7 +1034,6 @@ How to translate with transifex:
     <string name="join_call">Join call</string>
     <string name="video_call">Video call</string>
     <string name="audio_call">Audio call</string>
-    <string name="started_a_call">started a call</string>
     <string name="call_in_progress">A call is in progress</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
     <string name="nc_caption">Caption</string>

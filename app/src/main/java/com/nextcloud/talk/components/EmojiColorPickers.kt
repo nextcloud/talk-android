@@ -49,6 +49,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -99,9 +101,9 @@ fun EmojiAvatarPickerBottomSheet(
         android.graphics.Color.colorToHSV(initialColor ?: paletteColors.first(), hsv)
         hsv
     }
-    var hue by rememberSaveable { mutableStateOf(initialHsv[0]) }
-    var saturation by rememberSaveable { mutableStateOf(initialHsv[1]) }
-    var value by rememberSaveable { mutableStateOf(initialHsv[2].coerceAtLeast(MIN_VALUE)) }
+    var hue by rememberSaveable { mutableFloatStateOf(initialHsv[0]) }
+    var saturation by rememberSaveable { mutableFloatStateOf(initialHsv[1]) }
+    var value by rememberSaveable { mutableFloatStateOf(initialHsv[2].coerceAtLeast(MIN_VALUE)) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -461,7 +463,7 @@ private fun HueSlider(hue: Float, onHueChange: (Float) -> Unit, modifier: Modifi
     val hueColors = remember { hueGradientColors() }
     val density = LocalDensity.current
     val thumbRadiusPx = with(density) { (thumbSize / 2).toPx() }
-    var sliderWidth by remember { mutableStateOf(0) }
+    var sliderWidth by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = modifier
