@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 private val previewImage = FileDescription(
-    uri = "file:///sdcard/DCIM/photo.jpg",
+    uri = "file:///preview/DCIM/photo.jpg",
     name = "photo.jpg",
     kind = MediaKind.IMAGE,
     mimeType = "image/jpeg",

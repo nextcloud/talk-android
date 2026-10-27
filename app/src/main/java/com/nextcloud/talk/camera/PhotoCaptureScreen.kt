@@ -249,10 +249,10 @@ private fun CaptureControls(
 }
 
 /**
- * Beside the shutter along the edge, and centered on it across the edge. [shutterModifier] places the shutter.
+ * Beside the shutter along the edge, and centered on it across the edge. [modifier] places the shutter.
  */
 @Composable
-private fun LensSwitchButton(camera: PhotoCamera, displayRotation: Int, iconAngle: Float, shutterModifier: Modifier) {
+private fun LensSwitchButton(camera: PhotoCamera, displayRotation: Int, iconAngle: Float, modifier: Modifier) {
     val beside = BodyPoint(1, 0).inWindow(displayRotation)
     val inward = BodyPoint(0, -1).inWindow(displayRotation)
     val centering = (ShutterSize - ControlSize) / 2
@@ -260,7 +260,7 @@ private fun LensSwitchButton(camera: PhotoCamera, displayRotation: Int, iconAngl
         icon = R.drawable.ic_baseline_flip_camera_android_24,
         description = stringResource(R.string.nc_video_recording_switch_camera),
         angle = iconAngle,
-        modifier = shutterModifier.offset(
+        modifier = modifier.offset(
             LensSwitchGap * beside.x + centering * inward.x,
             LensSwitchGap * beside.y + centering * inward.y
         ),

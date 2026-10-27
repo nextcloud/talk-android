@@ -18,6 +18,7 @@ import android.graphics.RectF
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.FileUtils
@@ -87,7 +88,7 @@ internal fun editedFileUri(context: Context, file: File): Uri? =
  * else, e.g. the user's original photo or a camera shot.
  */
 internal fun ownEditedFile(context: Context, uriString: String): File? {
-    val uri = Uri.parse(uriString)
+    val uri = uriString.toUri()
     val name = ownEditedName(uri.authority, context.packageName, uri.pathSegments)
     return name?.let { FileUtils.resolveSharedAttachmentFile(context.cacheDir, it) }
 }
