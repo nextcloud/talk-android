@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.mediaviewer.viewmodels
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -67,8 +66,7 @@ class MediaViewerViewModel @Inject constructor(
     private val sharedItemsRepository: SharedItemsRepository,
     private val chatMessagesDao: ChatMessagesDao,
     private val conversationsRepository: OfflineConversationsRepository,
-    private val networkMonitor: NetworkMonitor,
-    private val context: Context
+    private val networkMonitor: NetworkMonitor
 ) : ViewModel() {
 
     data class PendingShift(val id: Long, val amount: Int)
@@ -168,7 +166,7 @@ class MediaViewerViewModel @Inject constructor(
                 hasReactPermission = permissions.hasReactPermission(),
                 spreedCapabilities = capabilities,
                 isOnline = networkMonitor.isOnline.value,
-                dateUtils = DateUtils(context),
+                dateUtils = DateUtils(NextcloudTalkApplication.sharedApplication!!),
                 conversationThreadId = null
             )
             _uiState.update { it.copy(actionStates = it.actionStates + (item.messageId to actions)) }
