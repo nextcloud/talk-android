@@ -14,6 +14,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.attachmentsheet.READ_MEDIA_AUDIO
+import com.nextcloud.talk.attachmentsheet.READ_MEDIA_IMAGES
+import com.nextcloud.talk.attachmentsheet.READ_MEDIA_VIDEO
 import com.nextcloud.talk.attachmentsheet.READ_MEDIA_VISUAL_USER_SELECTED
 import com.nextcloud.talk.attachmentsheet.hasMediaFilesAccess
 
@@ -97,9 +100,9 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
 
     companion object {
         private val MEDIA_PERMISSIONS = listOf(
-            Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_VIDEO,
-            Manifest.permission.READ_MEDIA_AUDIO,
+            READ_MEDIA_IMAGES,
+            READ_MEDIA_VIDEO,
+            READ_MEDIA_AUDIO,
             READ_MEDIA_VISUAL_USER_SELECTED
         )
 
