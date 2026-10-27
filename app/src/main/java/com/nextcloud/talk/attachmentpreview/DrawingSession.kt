@@ -7,6 +7,7 @@
 package com.nextcloud.talk.attachmentpreview
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
@@ -17,7 +18,7 @@ internal class DrawingSession {
     var strokes by mutableStateOf<List<DrawStroke>>(emptyList())
         private set
 
-    var brushColorArgb by mutableStateOf(DEFAULT_BRUSH_COLOR_ARGB.toInt())
+    var brushColorArgb by mutableIntStateOf(DEFAULT_BRUSH_COLOR_ARGB.toInt())
 
     fun add(stroke: DrawStroke) {
         strokes = strokes + stroke
