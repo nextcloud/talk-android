@@ -412,7 +412,6 @@ How to translate with transifex:
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_button_content_description_switch_camera">Switch camera</string>
     <string name="nc_call_self_video_enlarge">Enlarge self video</string>
     <string name="nc_call_self_video_shrink">Shrink self video</string>
