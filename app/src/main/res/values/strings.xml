@@ -1066,7 +1066,6 @@ How to translate with transifex:
     <string name="no_conversations_archived">No archived conversations</string>
     <string name="archived_conversation">Archived %1$s</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
-    <string name="conversation_archived">Conversation is archived</string>
     <string name="open_notes">Open Notes</string>
     <string name="cancel_login">Cancel Login</string>
     <string name="scan_qr_code">Scan QR Code</string>
