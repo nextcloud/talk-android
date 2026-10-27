@@ -33,14 +33,12 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.view.Gravity
 import android.view.Surface
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
@@ -2533,11 +2531,10 @@ class ChatActivity :
             )
         )
         val container = binding.videoRecordingContainer
-        val params = container.layoutParams as FrameLayout.LayoutParams
+        val params = container.layoutParams
         if (params.width != placement.width || params.height != placement.height) {
             params.width = placement.width
             params.height = placement.height
-            params.gravity = Gravity.CENTER
             container.layoutParams = params
             container.invalidateOutline()
         }
@@ -2554,7 +2551,7 @@ class ChatActivity :
             if (accessibilityBeforeVideoRecording.isNotEmpty()) return
             for (i in 0 until parent.childCount) {
                 val child = parent.getChildAt(i)
-                if (child === binding.videoRecordingScrim) continue
+                if (child === binding.videoRecordingScrim || child === binding.videoRecordingContainer) continue
                 accessibilityBeforeVideoRecording[child] = child.importantForAccessibility
                 child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
             }
@@ -2580,7 +2577,9 @@ class ChatActivity :
             }
         }
         hideChatFromAccessibility(show)
-        binding.videoRecordingScrim.visibility = if (show) View.VISIBLE else View.GONE
+        val visibility = if (show) View.VISIBLE else View.GONE
+        binding.videoRecordingScrim.visibility = visibility
+        binding.videoRecordingContainer.visibility = visibility
     }
 
     private fun createAttachmentFile(@StringRes nameRes: Int, suffix: String): File? =
