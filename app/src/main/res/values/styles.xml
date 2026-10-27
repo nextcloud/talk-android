@@ -115,11 +115,6 @@
         <item name="android:textSize">@dimen/chat_text_size</item>
     </style>
 
-    <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="appActionBarPopupMenu" parent="@style/Widget.Material3.PopupMenu.Overflow">
         <item name="android:colorPrimary">@color/fg_inverse</item>
         <item name="android:textColorSecondary">@color/fontAppbar</item>
