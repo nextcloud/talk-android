@@ -17,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.StringRes
@@ -95,7 +94,7 @@ class RecordHintPopup(private val anchor: View) {
             if (anchor.layoutDirection == View.LAYOUT_DIRECTION_RTL) anchor.rootView.width - x - hintWidth else x
 
         fun applyArrow(placement: Placement) {
-            val arrowParams = arrow.layoutParams as LinearLayout.LayoutParams
+            val arrowParams = arrow.layoutParams as FrameLayout.LayoutParams
             arrowParams.leftMargin = placement.arrowLeftMargin
             arrow.layoutParams = arrowParams
         }
