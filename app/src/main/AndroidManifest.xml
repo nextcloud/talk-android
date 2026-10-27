@@ -196,7 +196,6 @@
             android:name=".camera.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:exported="false"
-            android:screenOrientation="nosensor"
             android:theme="@style/FullScreenImageTheme" />
 
         <activity
