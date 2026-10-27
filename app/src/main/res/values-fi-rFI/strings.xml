@@ -75,6 +75,7 @@
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_audio_player_next">Seuraava</string>
+    <string name="nc_audio_player_previous">Edellinen</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
     <string name="nc_call_button_content_description_hangup">Lopeta</string>
     <string name="nc_call_button_content_description_switch_camera">Vaihda kamera</string>
@@ -106,6 +107,7 @@
     <string name="nc_common_dismiss">Hylkää</string>
     <string name="nc_common_error_sorry">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_common_more">Lisää</string>
+    <string name="nc_common_more_options">Lisää valintoja</string>
     <string name="nc_common_set">Aseta</string>
     <string name="nc_common_skip">Ohita</string>
     <string name="nc_common_unknown">Tuntematon</string>
