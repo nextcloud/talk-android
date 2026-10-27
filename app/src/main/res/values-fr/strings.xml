@@ -138,6 +138,7 @@
     <string name="nc_announcement_description">Conversation pour les administrateurs, destinée à informer une audience fixe, qui ne peut pas être quittée.</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_audio_player_next">Suivant</string>
+    <string name="nc_audio_player_previous">Précédent</string>
     <string name="nc_audio_player_repeat_off">Désactiver la répétition</string>
     <string name="nc_audio_seek">Position de lecture</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
