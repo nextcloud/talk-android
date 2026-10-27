@@ -2377,7 +2377,6 @@ class ChatViewModel @AssistedInject constructor(
         get() = videoRecorder
 
     override fun onCleared() {
-        super.onCleared()
         videoRecorder?.let {
             // the released recorder reports nothing, so nobody else gives the audio focus back
             if (releasesVideoAudioFocusOnClear(activeRecordingMode, _getVoiceRecordingInProgress.value == true)) {
