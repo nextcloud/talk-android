@@ -26,8 +26,9 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
-import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.AccountUtils.resolveFilesAccountName
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
@@ -51,8 +52,6 @@ class FullScreenTextViewerActivity : BaseActivity() {
         val isMarkdown = intent.getBooleanExtra("IS_MARKDOWN", false)
         val fileId = intent.getStringExtra("FILE_ID").orEmpty()
         val link = intent.getStringExtra("LINK")
-        val username = user.username.orEmpty()
-        val baseUrl = user.baseUrl.orEmpty()
         textFile = FileUtils.resolveSharedAttachmentFile(applicationContext.cacheDir, fileName) ?: run {
             Log.e(TAG, "Invalid text filename: $fileName")
             finish()
@@ -80,7 +79,7 @@ class FullScreenTextViewerActivity : BaseActivity() {
                         onShare = { shareFile() },
                         onSave = { showSaveDialog(fileName) },
                         onOpenInFilesApp = if (fileId.isNotEmpty()) {
-                            { openInFilesApp(link, fileId, username, baseUrl) }
+                            { openInFilesApp(link, fileId, user) }
                         } else {
                             null
                         }
@@ -90,9 +89,9 @@ class FullScreenTextViewerActivity : BaseActivity() {
         }
     }
 
-    private fun openInFilesApp(link: String?, fileId: String, username: String, baseUrl: String) {
-        val accountString = "$username@${baseUrl.replace("https://", "").replace("http://", "")}"
-        if (canWeOpenFilesApp(this, accountString)) {
+    private fun openInFilesApp(link: String?, fileId: String, user: User) {
+        val accountName = resolveFilesAccountName(this, user)
+        if (accountName != null) {
             val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
             val componentName = ComponentName(
                 getString(R.string.nc_import_accounts_from),
@@ -101,7 +100,7 @@ class FullScreenTextViewerActivity : BaseActivity() {
             filesAppIntent.component = componentName
             filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             filesAppIntent.setPackage(getString(R.string.nc_import_accounts_from))
-            filesAppIntent.putExtra(KEY_ACCOUNT, accountString)
+            filesAppIntent.putExtra(KEY_ACCOUNT, accountName)
             filesAppIntent.putExtra(KEY_FILE_ID, fileId)
             startActivity(filesAppIntent)
         } else if (!link.isNullOrEmpty()) {
