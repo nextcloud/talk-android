@@ -776,7 +776,6 @@ How to translate with transifex:
     <string name="nc_save_success">Saved successfully</string>
 
     <string name="starred">Favorite</string>
-    <string name="user_status">Status</string>
     <string name="encrypted">Encrypted</string>
 
     <string name="avatar">Avatar</string>
@@ -1075,7 +1074,6 @@ How to translate with transifex:
     <string name="archived_conversation">Archived %1$s</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="conversation_archived">Conversation is archived</string>
-    <string name="local_time">Local time: %1$s</string>
     <string name="open_notes">Open Notes</string>
     <string name="cancel_login">Cancel Login</string>
     <string name="scan_qr_code">Scan QR Code</string>
