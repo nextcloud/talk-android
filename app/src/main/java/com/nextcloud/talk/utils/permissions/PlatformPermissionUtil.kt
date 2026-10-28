@@ -15,4 +15,5 @@ interface PlatformPermissionUtil {
     fun isFilesPermissionGranted(): Boolean
     fun isPostNotificationsPermissionGranted(): Boolean
     fun isLocationPermissionGranted(): Boolean
+    fun isLocalNetworkPermissionGranted(): Boolean
 }

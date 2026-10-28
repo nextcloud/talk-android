@@ -1253,6 +1253,8 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
+        addLocalNetworkPermissionOnFirstCall(permissionsToRequest)
+
         if (permissionsToRequest.isNotEmpty()) {
             if (rationaleList.isNotEmpty()) {
                 showRationaleDialog(permissionsToRequest, rationaleList)
@@ -1261,6 +1263,17 @@ class CallActivity : CallBaseActivity() {
             }
         } else if (!isConnectionEstablished) {
             prepareCall()
+        }
+    }
+
+    // Peers on the same local network only connect directly with the local network permission. Without it the call
+    // still works through the TURN server, so ask once and not again after a denial.
+    private fun addLocalNetworkPermissionOnFirstCall(permissionsToRequest: MutableList<String>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
+            !permissionUtil!!.isLocalNetworkPermissionGranted() &&
+            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        ) {
+            permissionsToRequest.add(Manifest.permission.ACCESS_LOCAL_NETWORK)
         }
     }
 

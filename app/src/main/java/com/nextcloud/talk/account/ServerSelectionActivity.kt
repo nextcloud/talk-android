@@ -46,12 +46,14 @@ import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
+import com.nextcloud.talk.utils.permissions.LocalNetworkPermission
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
+import java.net.URLDecoder
 import java.security.cert.CertificateException
 import javax.inject.Inject
 import javax.net.ssl.SSLPeerUnverifiedException
@@ -69,6 +71,8 @@ class ServerSelectionActivity : BaseActivity() {
     lateinit var networkMonitor: NetworkMonitor
 
     private var statusQueryDisposable: Disposable? = null
+
+    private val localNetworkPermission = LocalNetworkPermission(this)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -240,10 +244,14 @@ class ServerSelectionActivity : BaseActivity() {
             url = url.substring(0, url.length - 1)
         }
 
-        if (UriUtils.hasHttpProtocolPrefixed(url)) {
-            checkServer(url, false)
-        } else {
-            checkServer("https://$url", true)
+        val hasProtocol = UriUtils.hasHttpProtocolPrefixed(url)
+        val serverUrl = if (hasProtocol) url else "https://$url"
+        localNetworkPermission.ensure(serverUrl, viewThemeUtils) { granted ->
+            if (granted) {
+                checkServer(serverUrl, !hasProtocol)
+            } else {
+                setErrorText(getString(R.string.nc_local_network_permission_denied))
+            }
         }
     }
 
@@ -492,12 +500,18 @@ class ServerSelectionActivity : BaseActivity() {
                     return@registerForActivityResult
                 }
 
-                val intent = Intent(this, BrowserLoginActivity::class.java)
-                val bundle = bundleOf().apply {
-                    putString(BundleKeys.KEY_FROM_QR, resultData)
+                localNetworkPermission.ensure(serverFromQr(resultData).orEmpty(), viewThemeUtils) { granted ->
+                    if (granted) {
+                        val intent = Intent(this, BrowserLoginActivity::class.java)
+                        val bundle = bundleOf().apply {
+                            putString(BundleKeys.KEY_FROM_QR, resultData)
+                        }
+                        intent.putExtras(bundle)
+                        startActivity(intent)
+                    } else {
+                        setErrorText(getString(R.string.nc_local_network_permission_denied))
+                    }
                 }
-                intent.putExtras(bundle)
-                startActivity(intent)
             }
         }
 
@@ -520,5 +534,14 @@ class ServerSelectionActivity : BaseActivity() {
         private val TAG = ServerSelectionActivity::class.java.simpleName
         const val MIN_SERVER_MAJOR_VERSION = 13
         private const val QR_URI = "com.blikoon.qrcodescanner.got_qr_scan_relult"
+        private const val QR_SERVER_KEY = "server:"
+
+        /**
+         * The server of a login QR code, in the format LoginRepository parses: `nc://login/` or `nc://onetime-login/`
+         * followed by `&`-separated elements, one of them the URL-encoded `server:`.
+         */
+        fun serverFromQr(qrData: String): String? =
+            qrData.substringAfter("login/").split('&').firstOrNull { it.startsWith(QR_SERVER_KEY) }
+                ?.let { URLDecoder.decode(it.removePrefix(QR_SERVER_KEY), "UTF-8") }
     }
 }
