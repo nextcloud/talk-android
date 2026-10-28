@@ -12,7 +12,7 @@ SPDX-FileCopyrightText = "2017-2024 Nextcloud GmbH and Nextcloud contributors"
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
 [[annotations]]
-path = ["app/src/**/res/mipmap-**dpi/ic_launcher.png", "app/src/**/ic_launcher-web.png"]
+path = "app/src/**/ic_launcher-web.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2017-2024 Nextcloud GmbH. All rights reserved. Trademarks apply, see https://nextcloud.com/trademarks/"
 SPDX-License-Identifier = "GPL-3.0-or-later"
