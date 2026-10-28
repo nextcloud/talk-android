@@ -3664,7 +3664,7 @@ class ChatActivity :
         forwardText(message?.message)
     }
 
-    private suspend fun loadSelectedMessages(ids: Set<Int>): List<ChatMessage> =
+    private suspend fun loadSelectedMessages(ids: Collection<Int>): List<ChatMessage> =
         loadSelected(
             ids,
             onFailure = { id, e -> Log.w(TAG, "selected message $id could not be loaded", e) }
@@ -3705,7 +3705,10 @@ class ChatActivity :
 
     private fun forwardSelectedMessages() {
         lifecycleScope.launch {
-            val plan = planForward(loadSelectedMessages(chatViewModel.messageSelection.ids.value)) {
+            val messages = loadSelectedMessages(
+                chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
+            )
+            val plan = planForward(messages) {
                 actionsStateFor(it, networkMonitor.isOnline.value).showForward
             }
             if (plan.outcome != ForwardOutcome.ALL) {

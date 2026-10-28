@@ -118,6 +118,7 @@ class ChatItemCheckedTest {
         toggle(items, selection, 2)
 
         assertEquals(setOf(3), selection.ids.value)
+        assertEquals(listOf(1, 2, 3), ChatViewModel.messageIdsToForward(items, setOf(1, 3)))
     }
 
     @Test

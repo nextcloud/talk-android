@@ -2072,6 +2072,9 @@ class ChatViewModel @AssistedInject constructor(
 
     fun messageIdsToDelete(messageId: Int): List<Int> = messageIdsToDelete(_uiState.value.items, messageId)
 
+    fun messageIdsToForward(selectedIds: Collection<Int>): List<Int> =
+        messageIdsToForward(_uiState.value.items, selectedIds)
+
     fun selectedIdOfRow(selectedIds: Set<Int>, messageId: Int): Int? =
         selectedIdOfRow(_uiState.value.items, selectedIds, messageId)
 
@@ -2822,6 +2825,13 @@ class ChatViewModel @AssistedInject constructor(
                 ?.filter { it.id == messageId || it.content !is MessageTypeContent.UploadingMedia }
                 ?.map { it.id }
                 ?: listOf(messageId)
+
+        /**
+         * Ids to forward for the selected [selectedIds]: a selected media group file stands for its whole group
+         * (same expansion as a delete), each message once, oldest first.
+         */
+        internal fun messageIdsToForward(items: List<ChatItem>, selectedIds: Collection<Int>): List<Int> =
+            selectedIds.flatMap { messageIdsToDelete(items, it) }.distinct().sorted()
 
         /**
          * The selected id of the row [messageId] is shown in, or null when the row is not selected. A media group
