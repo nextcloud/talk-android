@@ -3672,8 +3672,9 @@ class ChatActivity :
 
     private fun toggleMessageSelection(messageId: Int, message: ChatMessage? = null) {
         val selection = chatViewModel.messageSelection
-        if (messageId in selection.ids.value) {
-            selection.toggle(messageId, null)
+        val selectedId = chatViewModel.selectedIdOfRow(selection.ids.value, messageId)
+        if (selectedId != null) {
+            selection.toggle(selectedId, null)
             return
         }
         if (message != null) {
