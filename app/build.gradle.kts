@@ -386,7 +386,7 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.17")
     // conscrypt-android provides Android JNI libs only; the openjdk-uber variant bundles
     // JVM host natives so Robolectric can initialise the security provider without crashing.
-    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.7.0")
+    testImplementation("org.conscrypt:conscrypt-openjdk-uber:2.8.0")
 }
 
 tasks.register<Copy>("installGitHooks") {
