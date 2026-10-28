@@ -47,12 +47,14 @@ import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
+import com.nextcloud.talk.utils.permissions.LocalNetworkPermission
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
+import java.net.URLDecoder
 import java.security.cert.CertificateException
 import javax.inject.Inject
 import javax.net.ssl.SSLPeerUnverifiedException
@@ -71,6 +73,11 @@ class ServerSelectionActivity : BaseActivity() {
 
     private var statusQueryDisposable: Disposable? = null
 
+    // the QR code whose login waits for the local network permission, kept when the activity is recreated
+    private var pendingQrData: String? = null
+
+    private val localNetworkPermission = LocalNetworkPermission(this, { viewThemeUtils }, ::onLocalNetworkResult)
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (intent.hasExtra(ADD_ADDITIONAL_ACCOUNT) && intent.getBooleanExtra(ADD_ADDITIONAL_ACCOUNT, false)) {
@@ -85,6 +92,7 @@ class ServerSelectionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+        pendingQrData = savedInstanceState?.getString(KEY_PENDING_QR_DATA)
         binding = ActivityServerSelectionBinding.inflate(layoutInflater)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(binding.root)
@@ -92,6 +100,11 @@ class ServerSelectionActivity : BaseActivity() {
         initSystemBars()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_PENDING_QR_DATA, pendingQrData)
     }
 
     override fun onResume() {
@@ -231,20 +244,37 @@ class ServerSelectionActivity : BaseActivity() {
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkServerAndProceed() {
         dispose()
-        var url: String = binding.serverEntryTextInputEditText.text.toString().trim()
         showserverEntryProgressBar()
         if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
             binding.importOrChooseProviderText.visibility = View.INVISIBLE
             binding.certTextView.visibility = View.INVISIBLE
         }
-        if (url.endsWith("/")) {
-            url = url.substring(0, url.length - 1)
-        }
+        localNetworkPermission.ensure(listOf(enteredServer().first))
+    }
 
-        if (UriUtils.hasHttpProtocolPrefixed(url)) {
-            checkServer(url, false)
-        } else {
-            checkServer("https://$url", true)
+    // The entered server with https:// added when it has no protocol, and whether it had one
+    private fun enteredServer(): Pair<String, Boolean> {
+        val url = binding.serverEntryTextInputEditText.text.toString().trim().removeSuffix("/")
+        val hasProtocol = UriUtils.hasHttpProtocolPrefixed(url)
+        return Pair(if (hasProtocol) url else "https://$url", hasProtocol)
+    }
+
+    private fun onLocalNetworkResult(granted: Boolean) {
+        val qrData = pendingQrData
+        pendingQrData = null
+        when {
+            !granted -> setErrorText(getString(R.string.nc_local_network_permission_denied))
+            qrData != null -> {
+                val intent = Intent(this, BrowserLoginActivity::class.java)
+                intent.putExtras(bundleOf(BundleKeys.KEY_FROM_QR to qrData))
+                startActivity(intent)
+            }
+            else -> {
+                // the result can come to an activity recreated meanwhile, which doesn't show the progress yet
+                val (serverUrl, hasProtocol) = enteredServer()
+                showserverEntryProgressBar()
+                checkServer(serverUrl, !hasProtocol)
+            }
         }
     }
 
@@ -493,12 +523,8 @@ class ServerSelectionActivity : BaseActivity() {
                     return@registerForActivityResult
                 }
 
-                val intent = Intent(this, BrowserLoginActivity::class.java)
-                val bundle = bundleOf().apply {
-                    putString(BundleKeys.KEY_FROM_QR, resultData)
-                }
-                intent.putExtras(bundle)
-                startActivity(intent)
+                pendingQrData = resultData
+                localNetworkPermission.ensure(listOf(serverFromQr(resultData)))
             }
         }
 
@@ -521,6 +547,8 @@ class ServerSelectionActivity : BaseActivity() {
         private val TAG = ServerSelectionActivity::class.java.simpleName
         const val MIN_SERVER_MAJOR_VERSION = 13
         private const val QR_URI = "com.blikoon.qrcodescanner.got_qr_scan_relult"
+        private const val QR_SERVER_KEY = "server:"
+        private const val KEY_PENDING_QR_DATA = "pendingQrData"
 
         /**
          * Creates the intent that starts the login: the web login on the server of a branded client, or else the
@@ -534,5 +562,13 @@ class ServerSelectionActivity : BaseActivity() {
                 Intent(context, ServerSelectionActivity::class.java)
             }
         }
+
+        /**
+         * The server of a login QR code, in the format LoginRepository parses: `nc://login/` or `nc://onetime-login/`
+         * followed by `&`-separated elements, one of them the URL-encoded `server:`.
+         */
+        fun serverFromQr(qrData: String): String? =
+            qrData.substringAfter("login/").split('&').firstOrNull { it.startsWith(QR_SERVER_KEY) }
+                ?.let { URLDecoder.decode(it.removePrefix(QR_SERVER_KEY), "UTF-8") }
     }
 }
