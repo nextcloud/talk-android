@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
     <string name="nc_call_e2ee_not_supported">Kuna serveris on kasutusel läbiv krüptimine, siis helistamine pole hetkel toetatud</string>
     <string name="nc_call_e2ee_not_supported_title">Helistamine pole saadaval: %s</string>
+    <string name="nc_call_e2ee_requires_hpb">Läbivalt krüptitud kõned eeldavad, et kasutusel on suure jõudlusega taustateenus</string>
+    <string name="nc_call_e2ee_setup_failed">Läbivat krüptimise seadistamine selle kõne jaoks ei õnnestunud</string>
     <string name="nc_call_incoming">SAABUV</string>
     <string name="nc_call_join_failed">Kõnega liitumine ei õnnestunud. Palun proovi uuesti.</string>
     <string name="nc_call_name">Vestluse nimi</string>

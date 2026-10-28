@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_e2ee_not_supported">Calling is currently not supported because end-to-end encryption is enabled on the server</string>
     <string name="nc_call_e2ee_not_supported_title">Call from %s unavailable</string>
+    <string name="nc_call_e2ee_requires_hpb">End-to-end encrypted calls require the high performance backend (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">End-to-end encryption could not be set up for this call</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_join_failed">Could not join the call. Please try again.</string>
     <string name="nc_call_name">Conversation name</string>
