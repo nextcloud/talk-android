@@ -33,7 +33,7 @@ import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.mediaviewer.activities.MediaViewerActivity
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
-import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.AccountUtils.resolveFilesAccountName
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
 import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
@@ -237,12 +237,8 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     }
 
     fun openFileInFilesApp(link: String, keyID: String) {
-        val accountString = user.username + "@" +
-            user.baseUrl
-                ?.replace("https://", "")
-                ?.replace("http://", "")
-
-        if (canWeOpenFilesApp(context, accountString)) {
+        val accountName = resolveFilesAccountName(context, user)
+        if (accountName != null) {
             val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
             val componentName = ComponentName(
                 context.getString(R.string.nc_import_accounts_from),
@@ -251,7 +247,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             filesAppIntent.component = componentName
             filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from))
-            filesAppIntent.putExtra(KEY_ACCOUNT, accountString)
+            filesAppIntent.putExtra(KEY_ACCOUNT, accountName)
             filesAppIntent.putExtra(KEY_FILE_ID, keyID)
             context.startActivity(filesAppIntent)
         } else {
