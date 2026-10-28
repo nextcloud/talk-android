@@ -334,7 +334,7 @@ dependencies {
     implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
-    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
+    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.1")
 
     implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
