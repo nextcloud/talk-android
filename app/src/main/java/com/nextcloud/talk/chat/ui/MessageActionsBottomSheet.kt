@@ -762,7 +762,7 @@ private fun EditedInfo(editedBy: String, editedAt: String) {
     ) {
         if (editedBy.isNotEmpty()) {
             Text(
-                text = editedBy,
+                text = stringResource(R.string.message_last_edited_by, editedBy),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
