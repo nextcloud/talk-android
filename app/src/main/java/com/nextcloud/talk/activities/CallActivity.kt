@@ -965,19 +965,12 @@ class CallActivity : CallBaseActivity() {
         }
         try {
             getSystemService(ActivityManager::class.java).appTasks
-                .firstOrNull { it.taskInfo?.let { taskInfo -> taskIdOf(taskInfo) } == taskId }
+                .firstOrNull { it.taskInfo?.taskIdCompat == taskId }
                 ?.setExcludeFromRecents(isExcluded)
         } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Failed to update whether the call is excluded from recents", e)
         }
     }
-
-    /**
-     * TaskInfo.taskId is only available since API 29, before that the task ID is provided as persistentId.
-     */
-    @Suppress("DEPRECATION")
-    private fun taskIdOf(taskInfo: ActivityManager.RecentTaskInfo): Int =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskInfo.taskId else taskInfo.persistentId
 
     override fun onStop() {
         super.onStop()
