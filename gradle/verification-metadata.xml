@@ -38,6 +38,7 @@
             <trusting group="androidx.activity"/>
             <trusting group="androidx.annotation"/>
             <trusting group="androidx.appcompat"/>
+            <trusting group="androidx.collection"/>
             <trusting group="androidx.constraintlayout"/>
             <trusting group="androidx.core"/>
             <trusting group="androidx.databinding"/>
@@ -47,6 +48,7 @@
             <trusting group="androidx.media3"/>
             <trusting group="androidx.room"/>
             <trusting group="androidx.sqlite"/>
+            <trusting group="androidx.tracing"/>
             <trusting group="androidx.work"/>
             <trusting group="com.google.android.datatransport"/>
             <trusting group="com.google.android.gms"/>
