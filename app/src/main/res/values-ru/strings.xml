@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключить видео на себя</string>
     <string name="nc_call_e2ee_not_supported">Вызовы сейчас не поддерживаются: на сервере включено сквозное шифрование</string>
     <string name="nc_call_e2ee_not_supported_title">Вызов от %s недоступен</string>
+    <string name="nc_call_e2ee_requires_hpb">Для вызовов со сквозным шифрованием нужен высокопроизводительный сервер (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Не удалось настроить сквозное шифрование для этого вызова</string>
     <string name="nc_call_incoming">Входящий вызов</string>
     <string name="nc_call_join_failed">Не удалось присоединиться к вызову. Попробуйте ещё раз.</string>
     <string name="nc_call_name">Название обсуждения</string>
