@@ -172,6 +172,13 @@ abstract class SignalingMessageReceiver {
     interface ConversationMessageListener {
         fun onStartTyping(userId: String?, session: String?)
         fun onStopTyping(userId: String?, session: String?)
+
+        /**
+         * Sessions which left the room. Their typing indicator is not going to be stopped by them any more.
+         */
+        fun onSessionsLeft(sessions: List<String>) {
+            // optional
+        }
         fun onChatMessagesReceived(chatMessages: List<ChatMessageDto>)
     }
 
@@ -325,6 +332,13 @@ abstract class SignalingMessageReceiver {
             processUpdateEvent(eventMap)
 
             return
+        }
+
+        if ("room" == eventMap?.get("target") && "leave" == eventMap["type"]) {
+            val leftSessions = (eventMap["leave"] as? List<*>)?.filterIsInstance<String>()
+            if (!leftSessions.isNullOrEmpty()) {
+                conversationMessageNotifier.notifySessionsLeft(leftSessions)
+            }
         }
     }
 

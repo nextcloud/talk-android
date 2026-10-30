@@ -499,38 +499,58 @@ class ChatActivity :
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(userId: String?, session: String?) {
+            if (session == null) {
+                return
+            }
             val userIdOrGuestSession = userId ?: session
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userIdOrGuestSession) {
-                var displayName = webSocketInstance?.getDisplayNameForSession(session)
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userIdOrGuestSession &&
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
+            ) {
+                var displayName = webSocketInstance?.getDisplayNameForSession(session).orEmpty()
+                if (displayName == "") {
+                    displayName = context.resources?.getString(R.string.nc_guest)!!
+                }
 
-                if (displayName != null && !typingParticipants.contains(userIdOrGuestSession)) {
-                    if (displayName == "") {
-                        displayName = context.resources?.getString(R.string.nc_guest)!!
-                    }
-
-                    runOnUiThread {
-                        val typingParticipant = TypingParticipant(userIdOrGuestSession!!, displayName) {
-                            typingParticipants.remove(userIdOrGuestSession)
-                            updateTypingIndicator()
-                        }
-
-                        typingParticipants[userIdOrGuestSession] = typingParticipant
+                runOnUiThread {
+                    val typingParticipant = typingParticipants[userIdOrGuestSession]
+                    if (typingParticipant != null) {
+                        typingParticipant.addSession(session)
+                    } else {
+                        typingParticipants[userIdOrGuestSession] =
+                            TypingParticipant(userIdOrGuestSession, displayName, session) { participant ->
+                                typingParticipants.remove(userIdOrGuestSession, participant)
+                                updateTypingIndicator()
+                            }
                         updateTypingIndicator()
                     }
-                } else if (typingParticipants.contains(userIdOrGuestSession)) {
-                    typingParticipants[userIdOrGuestSession]?.restartTimer()
                 }
             }
         }
 
         override fun onStopTyping(userId: String?, session: String?) {
-            val userIdOrGuestSession = userId ?: session
+            if (session == null) {
+                return
+            }
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userId) {
-                typingParticipants[userIdOrGuestSession]?.cancelTimer()
-                typingParticipants.remove(userIdOrGuestSession)
-                updateTypingIndicator()
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userId &&
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
+            ) {
+                runOnUiThread {
+                    if (TypingParticipant.stopTyping(typingParticipants, userId ?: session, session)) {
+                        updateTypingIndicator()
+                    }
+                }
+            }
+        }
+
+        override fun onSessionsLeft(sessions: List<String>) {
+            runOnUiThread {
+                if (TypingParticipant.removeSessions(typingParticipants, sessions)) {
+                    updateTypingIndicator()
+                }
             }
         }
 
