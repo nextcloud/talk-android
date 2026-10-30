@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_e2ee_not_supported">Anrufe werden aktuell nicht unterstützt, da die Ende-zu-Ende-Verschlüsselung auf dem Server aktiviert ist</string>
     <string name="nc_call_e2ee_not_supported_title">Anruf von %s nicht verfügbar</string>
+    <string name="nc_call_e2ee_requires_hpb">Ende-zu Ende verschlüsselte Anrufe benötigen das Hochleistungs-Backend (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Für diesen Anruf konnte keine Ende-zu-Ende-Verschlüsselung eingerichtet werden</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_join_failed">Konnte dem Anruf nicht beitreten. Bitte erneut versuchen.</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
+    <string name="nc_participant_in_call">Im Anruf</string>
     <string name="nc_participant_type_change_failed">Typ des Teilnehmers konnte nicht geändert werden</string>
+    <string name="nc_participant_with_phone">Mit Telefon</string>
+    <string name="nc_participant_with_video">Mit Video</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>

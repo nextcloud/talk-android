@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.attachmentpreview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.getValue
@@ -34,7 +35,8 @@ import javax.inject.Inject
  * and stays in Compose's `remember`.
  */
 internal class FileAttachmentPreviewViewModel(
-    private val context: Context,
+    // Dagger provides the application context, which cannot leak an Activity
+    @field:SuppressLint("StaticFieldLeak") private val context: Context,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     private val describer: (Context, String, Boolean) -> FileDescription = ::describeFile,

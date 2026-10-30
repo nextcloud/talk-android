@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
     <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
     <string name="nc_call_e2ee_not_supported_title">A chamada de %s não está disponível</string>
+    <string name="nc_call_e2ee_requires_hpb">As chamadas com criptografia de ponta-a-ponta exigem o back-end de alto desempenho (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Não foi possível configurar a criptografia de ponta-a-ponta para esta chamada</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_join_failed">Não foi possível entrar na chamada. Por favor, tente novamente.</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
+    <string name="nc_participant_in_call">Em chamada</string>
     <string name="nc_participant_type_change_failed">Não foi possível alterar o tipo do participante</string>
+    <string name="nc_participant_with_phone">Com telefone</string>
+    <string name="nc_participant_with_video">Com vídeo</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>

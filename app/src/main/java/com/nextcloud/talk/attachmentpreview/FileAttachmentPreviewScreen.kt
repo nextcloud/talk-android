@@ -414,7 +414,7 @@ private fun SelectionMark(selected: Boolean, onClick: () -> Unit, modifier: Modi
 
 @Composable
 private fun rememberPreviewViewModel(files: List<String>): FileAttachmentPreviewViewModel {
-    val context = LocalContext.current
+    val context = LocalContext.current.applicationContext
     return remember { FileAttachmentPreviewViewModel(context).apply { setInitialFiles(files) } }
 }
 
@@ -432,10 +432,10 @@ private fun FileAttachmentPreviewContentPreview() {
         FileAttachmentPreviewContent(
             viewModel = rememberPreviewViewModel(
                 listOf(
-                    "file:///sdcard/DCIM/photo.jpg",
-                    "file:///sdcard/DCIM/video.mp4",
-                    "file:///sdcard/Documents/report.pdf",
-                    "file:///sdcard/DCIM/photo2.jpg"
+                    "file:///preview/DCIM/photo.jpg",
+                    "file:///preview/DCIM/video.mp4",
+                    "file:///preview/Documents/report.pdf",
+                    "file:///preview/DCIM/photo2.jpg"
                 )
             ),
             conversationName = "Team Chat",
@@ -451,7 +451,7 @@ private fun FileAttachmentPreviewContentPreview() {
 private fun FileAttachmentPreviewContentSingleFilePreview() {
     MaterialTheme(colorScheme = lightColorScheme()) {
         FileAttachmentPreviewContent(
-            viewModel = rememberPreviewViewModel(listOf("file:///sdcard/DCIM/photo.jpg")),
+            viewModel = rememberPreviewViewModel(listOf("file:///preview/DCIM/photo.jpg")),
             conversationName = "Team Chat",
             initialCompressImages = true,
             onDismiss = {},
