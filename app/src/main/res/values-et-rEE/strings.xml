@@ -467,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
+    <string name="nc_participant_in_call">Kõne on pooleli</string>
     <string name="nc_participant_type_change_failed">Seda rolli ei õnnestunud muuta tavakasutajaks</string>
+    <string name="nc_participant_with_phone">Telefoniga</string>
+    <string name="nc_participant_with_video">Videona</string>
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
