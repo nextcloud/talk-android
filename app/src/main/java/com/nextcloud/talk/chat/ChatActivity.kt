@@ -506,7 +506,7 @@ class ChatActivity :
 
             if (isTypingStatusEnabled() &&
                 conversationUser.userId != userIdOrGuestSession &&
-                webSocketInstance?.isSessionInCurrentRoom(session) == true
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
             ) {
                 var displayName = webSocketInstance?.getDisplayNameForSession(session).orEmpty()
                 if (displayName == "") {
@@ -536,7 +536,7 @@ class ChatActivity :
 
             if (isTypingStatusEnabled() &&
                 conversationUser.userId != userId &&
-                webSocketInstance?.isSessionInCurrentRoom(session) == true
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
             ) {
                 runOnUiThread {
                     if (TypingParticipant.stopTyping(typingParticipants, userId ?: session, session)) {
