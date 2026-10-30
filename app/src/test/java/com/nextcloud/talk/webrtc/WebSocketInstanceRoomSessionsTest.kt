@@ -72,6 +72,9 @@ class WebSocketInstanceRoomSessionsTest {
     @Volatile
     private var holdAnswerToLeave = false
 
+    @Volatile
+    private var holdAnswerToJoin = false
+
     @Before
     fun setUp() {
         previousApplication = sharedApplicationField.get(null) as NextcloudTalkApplication?
@@ -107,6 +110,25 @@ class WebSocketInstanceRoomSessionsTest {
         waitUntil("sessions of room B") { instance.isSessionInCurrentRoom(sessionOf(ROOM_B)) }
         assertFalse(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
         assertEquals(listOf(sessionOf(ROOM_B)), instance.getRoomSessionIds())
+    }
+
+    @Test
+    fun sessionOfThePreviousRoomIsNotTrustedForTheNextRoomBeforeItsJoinIsAnswered() {
+        val instance = createConnectedInstance()
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        // Switching rooms without leaving first (e.g. during a call): the sessions of room A stay until the answer.
+        holdAnswerToJoin = true
+        instance.joinRoomWithRoomTokenAndSession(ROOM_B, "room-session-b")
+        waitUntil("join received") { serverLog.contains("c1:joined-unanswered") }
+        sendBarrierJoin(instance)
+
+        assertTrue(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        assertFalse(
+            "typing message of room A is ignored by the conversation of room B",
+            instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_B)
+        )
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
     }
 
     @Test
@@ -353,6 +375,8 @@ class WebSocketInstanceRoomSessionsTest {
                             webSocket.send("{\"type\":\"room\",\"room\":{\"roomid\":\"\"}}")
                             serverLog.add("$name:left")
                         }
+
+                        holdAnswerToJoin -> serverLog.add("$name:joined-unanswered")
 
                         room == joinedRoom -> {
                             webSocket.send(errorFrame("already_joined"))

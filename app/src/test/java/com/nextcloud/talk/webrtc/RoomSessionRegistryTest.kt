@@ -62,6 +62,18 @@ class RoomSessionRegistryTest {
     }
 
     @Test
+    fun sessionIsOnlyInTheRoomTheConnectionIsIn() {
+        val registry = RoomSessionRegistry()
+        registry.enterRoom("roomA", user("s-alice-a", "alice", "Alice"))
+
+        assertTrue(registry.contains("s-alice-a", "roomA"))
+        assertFalse(
+            "typing message of room A is ignored by the conversation of room B before room B is answered",
+            registry.contains("s-alice-a", "roomB")
+        )
+    }
+
+    @Test
     fun resetDropsAllSessions() {
         val registry = RoomSessionRegistry()
         registry.enterRoom("roomA", user("s-alice", "alice", "Alice"))

@@ -296,6 +296,12 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     fun isSessionInCurrentRoom(session: String?): Boolean = roomSessions.contains(session)
 
+    /**
+     * Whether [session] is in the room [roomToken] and the connection is in that room as well. A typing message is
+     * only trusted for the conversation of the room the session was seen in.
+     */
+    fun isSessionInRoom(session: String?, roomToken: String): Boolean = roomSessions.contains(session, roomToken)
+
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
