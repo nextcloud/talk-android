@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Näita oma videovaadet</string>
     <string name="nc_call_e2ee_not_supported">Kuna serveris on kasutusel läbiv krüptimine, siis helistamine pole hetkel toetatud</string>
     <string name="nc_call_e2ee_not_supported_title">Helistamine pole saadaval: %s</string>
+    <string name="nc_call_e2ee_requires_hpb">Läbivalt krüptitud kõned eeldavad, et kasutusel on suure jõudlusega taustateenus</string>
+    <string name="nc_call_e2ee_setup_failed">Läbivat krüptimise seadistamine selle kõne jaoks ei õnnestunud</string>
     <string name="nc_call_incoming">SAABUV</string>
     <string name="nc_call_join_failed">Kõnega liitumine ei õnnestunud. Palun proovi uuesti.</string>
     <string name="nc_call_name">Vestluse nimi</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka rakenduse külaliskasutajatele</string>
     <string name="nc_owner">Omanik</string>
+    <string name="nc_participant_in_call">Kõne on pooleli</string>
     <string name="nc_participant_type_change_failed">Seda rolli ei õnnestunud muuta tavakasutajaks</string>
+    <string name="nc_participant_with_phone">Telefoniga</string>
+    <string name="nc_participant_with_video">Videona</string>
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
