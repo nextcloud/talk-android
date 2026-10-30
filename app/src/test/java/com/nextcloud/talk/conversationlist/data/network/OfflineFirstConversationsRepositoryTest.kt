@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
@@ -111,7 +112,8 @@ class OfflineFirstConversationsRepositoryTest {
         stubStoredConversations()
         whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
             .thenReturn(Maybe.empty())
-        whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
+        whenever(conversationListUpdater.syncWriteLock).thenReturn(Mutex())
+        whenever(conversationListUpdater.preservePendingLocalState(any(), any(), any()))
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
 
         repository = OfflineFirstConversationsRepository(
@@ -374,7 +376,8 @@ class OfflineFirstConversationsRepositoryTest {
 
             val previousCaptor = argumentCaptor<Map<String, ConversationEntity>>()
             val serverCaptor = argumentCaptor<List<ConversationEntity>>()
-            verify(conversationListUpdater).preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture())
+            verify(conversationListUpdater)
+                .preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture(), any())
             assertEquals(mapOf(previous.internalId to previous), previousCaptor.firstValue)
             assertEquals(6L, serverCaptor.firstValue.first().lastActivity)
         }
