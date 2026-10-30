@@ -33,6 +33,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override suspend fun getUsers(): List<User> = UserMapper.toModel(usersDao.getUsers())
 
+    override fun getUsersFlow(): Flow<List<User>> = usersDao.getUsersFlow().map { UserMapper.toModel(it) }
+
     override suspend fun getUserWithId(id: Long): User? = UserMapper.toModel(usersDao.getUserWithId(id))
 
     override fun getUserWithIdFlow(id: Long): Flow<User?> =

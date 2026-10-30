@@ -80,8 +80,7 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .header("User-Agent", ApiUtils.loginUserAgent)
             .build()
 
-        val newOkHttpClient = OkHttpClient()
-        newOkHttpClient.newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { response ->
             if (response.code == HTTP_TOO_MANY_REQUESTS) {
                 throw TooManyLoginAttemptsException("Too many failed logins from this IP: $response")
             }
