@@ -32,6 +32,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -264,6 +265,8 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // before super.onCreate(), it switches from the launch theme to postSplashScreenTheme
+        val splashScreen = installSplashScreen()
         // before BaseActivity reads the account
         removeExtrasOfApp(intent)
         super.onCreate(savedInstanceState)
@@ -324,6 +327,8 @@ class ConversationsListActivity : BaseActivity() {
         val deepLinkRoutingViewModel = ViewModelProvider(this, viewModelFactory)[DeepLinkRoutingViewModel::class.java]
         deepLinkRouting = DeepLinkRouting(this, deepLinkRoutingViewModel) { currentUser.id }
         deepLinkRouting.start(intent, savedInstanceState)
+        // a deep link that starts the app shows the launch screen until its chat covers the list or it asks first
+        splashScreen.setKeepOnScreenCondition { deepLinkRouting.keepsLaunchScreen }
     }
 
     /**
@@ -516,7 +521,7 @@ class ConversationsListActivity : BaseActivity() {
                             user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
                         }
                         if (user != null && userManager.setUserAsActive(user)) {
-                            startActivity(createAccountSwitchIntent(context, user.id!!))
+                            startActivity(createSwitchToAccountIntent(context, user.id!!))
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
                         }
@@ -562,8 +567,7 @@ class ConversationsListActivity : BaseActivity() {
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
         val isPickingConversation = forwardMessage || isShare(intent)
         if (defaultUserId != currentUser.id && !isPickingConversation) {
-            isRelaunching = true
-            startActivity(createAccountSwitchIntent(this, defaultUserId))
+            relaunchForAccount(defaultUserId)
         }
     }
 
@@ -1807,6 +1811,15 @@ class ConversationsListActivity : BaseActivity() {
                 putExtra(KEY_INTERNAL_USER_ID, userId)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
+
+        /**
+         * Creates an intent that switches the conversation list in the task, shown or below the screen that starts
+         * it, to the account [userId]: the list closes the screens above it and starts the list of that account in
+         * its place, see [relaunchForAccount]. Unlike [createAccountSwitchIntent], the list at the root of the task
+         * isn't replaced by a new one, which Android shows with the color of the splash screen.
+         */
+        fun createSwitchToAccountIntent(context: Context, userId: Long): Intent =
+            createAccountSwitchIntent(context, userId).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
         /**
          * The intents that open [screen] of the account [userId] from outside the app, e.g. from a notification, as a

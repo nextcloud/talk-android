@@ -153,6 +153,26 @@ class DeepLinkRoutingViewModelTest {
     }
 
     @Test
+    fun `the launch screen stays while a deep link is routed, but not for its question`() =
+        runTest(dispatcher) {
+            assertFalse(viewModel.keepsLaunchScreen)
+
+            viewModel.route(deepLink)
+            assertTrue(viewModel.keepsLaunchScreen)
+            advanceUntilIdle()
+
+            assertEquals(RoutingState.AskToJoin("cloud.example.com"), viewModel.state.value)
+            assertFalse(viewModel.keepsLaunchScreen)
+
+            viewModel.confirm()
+            advanceUntilIdle()
+            assertTrue(viewModel.keepsLaunchScreen)
+
+            viewModel.onOpened()
+            assertFalse(viewModel.keepsLaunchScreen)
+        }
+
+    @Test
     fun `a request is routing until what it opens was opened`() =
         runTest(dispatcher) {
             viewModel.route(deepLink)

@@ -230,9 +230,12 @@
         <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
-    <!-- Launch screen -->
-    <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/launch_screen</item>
+    <!-- Launch screen of the conversation list, the launcher activity, see androidx.core:core-splashscreen. Android
+         only shows it when the app is launched with the list, e.g. not when a notification opens a chat. -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorPrimary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.DisplayCutout</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>

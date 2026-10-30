@@ -8,6 +8,7 @@ package com.nextcloud.talk.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -43,6 +44,22 @@ class DeepLinkRouting(
     // the question the confirmation dialog asks, so a newer one replaces it
     private var shownQuestion: RoutingState.Question? = null
 
+    // from opening a screen above the list until the list is stopped below it
+    private var isOpeningScreen = false
+
+    // the launch screen is kept at most MAX_LAUNCH_SCREEN_MS from here
+    private val createdAt = SystemClock.elapsedRealtime()
+
+    /**
+     * Whether the launch screen of a deep link that starts the app is kept: while it is routed, see
+     * [DeepLinkRoutingViewModel.keepsLaunchScreen], and until the screen it opens covers the list. At most
+     * [MAX_LAUNCH_SCREEN_MS], e.g. while a slow server creates the conversation with a contact: the list shows then
+     * until the chat opens.
+     */
+    val keepsLaunchScreen: Boolean
+        get() = (viewModel.keepsLaunchScreen || isOpeningScreen) &&
+            SystemClock.elapsedRealtime() - createdAt < MAX_LAUNCH_SCREEN_MS
+
     init {
         // opened only while started, as an activity in the background can't start others
         activity.lifecycleScope.launch {
@@ -51,6 +68,10 @@ class DeepLinkRouting(
             }
         }
         activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                isOpeningScreen = false
+            }
+
             override fun onDestroy(owner: LifecycleOwner) {
                 // dismissing doesn't decline the question: it is asked again if the activity is recreated
                 confirmationDialog?.dismiss()
@@ -120,8 +141,12 @@ class DeepLinkRouting(
     private fun open(destination: Destination) {
         when (destination) {
             Destination.ConversationList -> Unit
-            Destination.Login -> activity.startActivity(ServerSelectionActivity.createLoginIntent(activity))
+            Destination.Login -> {
+                isOpeningScreen = true
+                activity.startActivity(ServerSelectionActivity.createLoginIntent(activity))
+            }
             is Destination.Chat -> {
+                isOpeningScreen = true
                 val chatIntent = ChatActivity.createIntent(activity, destination.userId, destination.roomToken)
                 if (destination.userId == currentUserId()) {
                     activity.startActivity(chatIntent)
@@ -169,6 +194,8 @@ class DeepLinkRouting(
     }
 
     companion object {
+        private const val MAX_LAUNCH_SCREEN_MS = 2000L
+
         // saved state: whether the intent was routed when the activity was stopped
         private const val KEY_ROUTING_DONE = "KEY_DEEP_LINK_ROUTING_DONE"
 

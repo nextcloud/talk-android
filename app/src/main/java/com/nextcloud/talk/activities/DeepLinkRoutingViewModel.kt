@@ -133,6 +133,13 @@ class DeepLinkRoutingViewModel @Inject constructor(
     val isRouting: Boolean
         get() = _state.value.let { it != RoutingState.Idle && it != RoutingState.Done }
 
+    /**
+     * Whether the launch screen is kept while the request is routed: until what it opens is opened, but not while a
+     * question waits for an answer.
+     */
+    val keepsLaunchScreen: Boolean
+        get() = _state.value.let { it == RoutingState.Routing || it is RoutingState.Open }
+
     /** The intent of the request that is routed, kept for a recreation of the list after process death. */
     var routedIntent: Intent? = null
 
