@@ -14,6 +14,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.PendingIntent
 import android.app.RemoteAction
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
@@ -29,11 +30,13 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.ResultReceiver
 import android.provider.Settings
 import android.text.TextUtils
 import android.text.format.DateUtils
@@ -45,6 +48,7 @@ import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -71,7 +75,9 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.call.AndroidScreenCapture
 import com.nextcloud.talk.call.CallParticipantList
+import com.nextcloud.talk.call.LocalScreenShareController
 import com.nextcloud.talk.call.LocalStateBroadcaster
 import com.nextcloud.talk.call.LocalStateBroadcasterMcu
 import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
@@ -83,6 +89,7 @@ import com.nextcloud.talk.call.e2ee.CallEncryption
 import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
+import com.nextcloud.talk.call.ScreenCapture
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
@@ -129,6 +136,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.ReceiverFlag
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.VibrationUtils.vibrateShort
@@ -288,6 +296,35 @@ class CallActivity : CallBaseActivity() {
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
 
+    private val localScreenShareController = LocalScreenShareController(ScreenShareHost()) { runOnUiThread(it) }
+
+    private var conversationScreenSharePermission = false
+
+    // The permission from signaling is more recent than the one from the conversation, so it takes precedence.
+    private var signalingScreenSharePermission: Boolean? = null
+
+    @Volatile
+    var isAllowedToShareScreen = false
+        private set
+
+    private val screenSharePermissionListener = object : SignalingMessageReceiver.ParticipantListMessageListener {
+        override fun onUsersInRoom(participants: MutableList<ParticipantDto?>) {
+            updateScreenSharePermission(participants)
+        }
+
+        override fun onParticipantsUpdate(participants: MutableList<ParticipantDto?>) {
+            updateScreenSharePermission(participants)
+        }
+
+        override fun onAllParticipantsUpdate(inCall: Long) {
+            // unused atm
+        }
+    }
+
+    // Screen sharing needs the foreground service, which is not started without microphone and notification permission.
+    @Volatile
+    private var isCallForegroundServiceStarted = false
+
     private val callParticipantListObserver: CallParticipantList.Observer = object : CallParticipantList.Observer {
         override fun onCallParticipantsChanged(
             joined: Collection<ParticipantDto>,
@@ -368,6 +405,12 @@ class CallActivity : CallBaseActivity() {
     private var moreCallActionsDialog: MoreCallActionsDialog? = null
     private var elapsedSeconds: Long = 0
 
+    private val screenSharingPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        onScreenSharingPermissionResult(result)
+    }
+
     private var requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMap: Map<String, Boolean> ->
@@ -433,6 +476,15 @@ class CallActivity : CallBaseActivity() {
     private var othersInCall = false
     private var isOneToOneConversation = false
     private var currentConversation: ConversationDto? = null
+        set(value) {
+            field = value
+            conversationScreenSharePermission = value != null &&
+                ParticipantPermissions(
+                    conversationUser.capabilities?.spreedCapability,
+                    ConversationModel.mapToConversationModel(value, conversationUser)
+                ).canPublishScreen()
+            applyScreenSharePermission()
+        }
 
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
@@ -563,6 +615,7 @@ class CallActivity : CallBaseActivity() {
 
         initRaiseHandViewModel()
         initCallRecordingViewModel(extras.getInt(KEY_RECORDING_STATE, 0))
+        initScreenSharingIndicator()
 
         initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
@@ -685,6 +738,31 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
+    }
+
+    private fun initScreenSharingIndicator() {
+        lifecycleScope.launch {
+            callViewModel.isLocalScreenSharing.collect { isSharing ->
+                binding?.callScreenSharingIndicator?.visibility = if (isSharing) View.VISIBLE else View.GONE
+            }
+        }
+        binding!!.callScreenSharingIndicator.setOnClickListener { showStopScreenSharingDialog() }
+    }
+
+    private fun showStopScreenSharingDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_stop_screen_sharing)
+            .setMessage(R.string.nc_stop_screen_sharing_confirm_message)
+            .setPositiveButton(R.string.nc_stop_screen_sharing) { _: DialogInterface?, _: Int ->
+                localScreenShareController.stop()
+            }
+            .setNegativeButton(R.string.nc_common_dismiss, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun initRaiseHandViewModel() {
@@ -865,11 +943,32 @@ class CallActivity : CallBaseActivity() {
     override fun onStart() {
         super.onStart()
         active = true
+        updateExcludeFromRecents(true)
         initFeaturesVisibility()
         try {
             cache!!.evictAll()
         } catch (e: IOException) {
             Log.e(TAG, "Failed to evict cache")
+        }
+    }
+
+    /**
+     * The call task is excluded from recents, so it is not shown there next to the conversations while the call is on
+     * screen or in picture in picture. Once in background, for example, when sharing the screen or when picture in
+     * picture is not possible or was closed, the system removes background tasks excluded from recents as soon as
+     * another task is used, which destroys the activity and ends the call. Therefore the call is shown in recents while
+     * in background, so it keeps running until it is ended or removed from recents.
+     */
+    private fun updateExcludeFromRecents(isExcluded: Boolean) {
+        if (isFinishing || isDestroyed) {
+            return
+        }
+        try {
+            getSystemService(ActivityManager::class.java).appTasks
+                .firstOrNull { it.taskInfo?.taskIdCompat == taskId }
+                ?.setExcludeFromRecents(isExcluded)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Failed to update whether the call is excluded from recents", e)
         }
     }
 
@@ -881,6 +980,7 @@ class CallActivity : CallBaseActivity() {
                 " isFinishing=$isFinishing isChangingConfigurations=$isChangingConfigurations"
         )
         active = false
+        updateExcludeFromRecents(false)
 
         if (isMicInputAudioThreadRunning) {
             stopMicInputDetection()
@@ -903,7 +1003,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initFeaturesVisibility() {
-        if (isAllowedToStartOrStopRecording || isAllowedToRaiseHand) {
+        if (isAllowedToStartOrStopRecording || isAllowedToRaiseHand || isAllowedToShareScreen) {
             binding!!.moreCallActions.visibility = View.VISIBLE
         } else {
             binding!!.moreCallActions.visibility = View.GONE
@@ -1282,6 +1382,7 @@ class CallActivity : CallBaseActivity() {
                     SEC_10
                 ).show()
             } else {
+                isCallForegroundServiceStarted = true
                 CallForegroundService.start(
                     applicationContext,
                     conversationName,
@@ -1658,6 +1759,7 @@ class CallActivity : CallBaseActivity() {
             if (currentCallStatus !== CallStatus.LEAVING) {
                 hangup(true, false)
             }
+            isCallForegroundServiceStarted = false
             CallForegroundService.stop(applicationContext)
 
             powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
@@ -1977,6 +2079,8 @@ class CallActivity : CallBaseActivity() {
         }
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
+        signalingMessageReceiver!!.removeListener(screenSharePermissionListener)
+        signalingMessageReceiver!!.addListener(screenSharePermissionListener)
 
         if (hasMCU) {
             localStateBroadcaster = LocalStateBroadcasterMcu(localCallParticipantModel, messageSender)
@@ -2282,6 +2386,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
+        stopOrSuspendScreenSharing(shutDownView)
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2319,6 +2424,7 @@ class CallActivity : CallBaseActivity() {
 
         if (shutDownView) {
             Log.d(TAG, "Stopping foreground service from hangup()")
+            isCallForegroundServiceStarted = false
             CallForegroundService.stop(applicationContext)
         }
 
@@ -2386,6 +2492,7 @@ class CallActivity : CallBaseActivity() {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
         }
+        signalingMessageReceiver?.removeListener(screenSharePermissionListener)
         val endCall: Boolean? = if (endCallForAll) true else null
 
         // Fire DELETE best-effort; do not block the UI waiting for the server response.
@@ -2572,6 +2679,7 @@ class CallActivity : CallBaseActivity() {
 
         if (!isSelfInCall) {
             Log.d(TAG, "Self not in call, disconnecting from all other sessions")
+            stopOrSuspendScreenSharing(shutDownView = false)
             removeSessions(participantsInCall)
             return
         }
@@ -2579,12 +2687,7 @@ class CallActivity : CallBaseActivity() {
             return
         }
         if (hasMCU) {
-            // Ensure that own publishing peer is set up.
-            getOrCreatePeerConnectionWrapperForSessionIdAndType(
-                webSocketClient!!.sessionId,
-                VIDEO_STREAM_TYPE_VIDEO,
-                true
-            )
+            setUpOwnPublishers()
         }
         handleJoinedCallParticipantsChanged(selfParticipant, joined, currentSessionId)
 
@@ -2594,11 +2697,21 @@ class CallActivity : CallBaseActivity() {
         removeSessions(left)
     }
 
+    /**
+     * Ensures that the own publishing peers are set up. The screen share publisher is closed while reconnecting, so it
+     * is set up again once back in the call.
+     */
+    private fun setUpOwnPublishers() {
+        getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient!!.sessionId, VIDEO_STREAM_TYPE_VIDEO, true)
+        localScreenShareController.ensurePublisher()
+    }
+
     private fun removeSessions(sessions: Collection<ParticipantDto>) {
         for ((_, _, _, _, _, _, _, _, _, _, session) in sessions) {
             Log.d(TAG, "   session that will be removed is: $session")
             endPeerConnection(session, "video")
             endPeerConnection(session, "screen")
+            localScreenShareController.onParticipantLeft(session)
             removeCallParticipant(session)
         }
     }
@@ -2891,6 +3004,8 @@ class CallActivity : CallBaseActivity() {
         // Pass the live StateFlow so LocalStateBroadcasterNoMcu can observe ICE state changes
         // and send the local state exactly when the data channel becomes ready.
         localStateBroadcaster!!.handleCallParticipantAdded(callViewModel.getParticipant(sessionId)!!.uiState)
+
+        localScreenShareController.onParticipantJoined(sessionId)
 
         initPipMode()
     }
@@ -3379,7 +3494,12 @@ class CallActivity : CallBaseActivity() {
                     // Don't hang up if the activity is just backgrounded (e.g., task switching).
                     // The ICE failure is likely transient due to the activity being stopped.
                     // The connection will recover when the activity resumes.
-                    if (!active && currentCallStatus === CallStatus.IN_CONVERSATION) {
+                    // While sharing the screen the call is expected to be in background and may not be resumed for
+                    // a long time, so it reconnects instead.
+                    if (!active &&
+                        !localScreenShareController.isSharing &&
+                        currentCallStatus === CallStatus.IN_CONVERSATION
+                    ) {
                         Log.d(TAG, "ICE FAILED while backgrounded, skipping hangup (will recover on resume)")
                         return@runOnUiThread
                     }
@@ -3638,6 +3758,191 @@ class CallActivity : CallBaseActivity() {
         eventBus.post(ConfigurationChangeEvent())
     }
 
+    private fun updateScreenSharePermission(participants: List<ParticipantDto?>) {
+        val ownSessionId = getOwnSessionId()
+        val permissions = participants.firstOrNull { it?.sessionId == ownSessionId }?.participantPermissions ?: return
+        val isAllowed = ParticipantPermissions.canPublishScreen(
+            conversationUser.capabilities?.spreedCapability,
+            permissions
+        )
+
+        runOnUiThread {
+            signalingScreenSharePermission = isAllowed
+            applyScreenSharePermission()
+        }
+    }
+
+    /**
+     * Must be called on the main thread.
+     */
+    private fun applyScreenSharePermission() {
+        val isAllowed = signalingScreenSharePermission ?: conversationScreenSharePermission
+        if (isAllowed == isAllowedToShareScreen) {
+            return
+        }
+        isAllowedToShareScreen = isAllowed
+        callViewModel.setScreenSharingAllowed(isAllowed)
+        if (binding == null) {
+            return
+        }
+        initFeaturesVisibility()
+        if (!isAllowed && localScreenShareController.isSharing) {
+            localScreenShareController.stop()
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_allowed, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    fun toggleScreenSharing() {
+        if (localScreenShareController.isSharing) {
+            localScreenShareController.stop()
+            return
+        }
+        if (localScreenShareController.isPending) {
+            return
+        }
+        if (!isAllowedToShareScreen) {
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_allowed, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (!isConnectionEstablished) {
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_not_connected, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (!isCallForegroundServiceStarted) {
+            Snackbar.make(binding!!.root, R.string.nc_screen_sharing_permissions_missing, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        // The permission dialog moves the call to the background, which must not enter picture in picture.
+        if (!localScreenShareController.requestStart()) {
+            return
+        }
+        val mediaProjectionManager = getSystemService(MediaProjectionManager::class.java)
+        try {
+            screenSharingPermissionLauncher.launch(mediaProjectionManager.createScreenCaptureIntent())
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, "Screen capture is not supported on this device", e)
+            localScreenShareController.cancelPending()
+            showScreenSharingError()
+        }
+    }
+
+    private fun onScreenSharingPermissionResult(result: ActivityResult) {
+        val permissionResultData = result.data
+        if (result.resultCode != RESULT_OK || permissionResultData == null) {
+            Log.d(TAG, "Screen sharing permission was not granted")
+            localScreenShareController.cancelPending()
+            return
+        }
+        localScreenShareController.onPermissionGranted(permissionResultData)
+    }
+
+    /**
+     * The own signaling session, which differs from the call session with external signaling.
+     */
+    private fun getOwnSessionId(): String? = if (webSocketClient != null) webSocketClient!!.sessionId else callSession
+
+    private fun isCallActiveForScreenSharing(): Boolean =
+        isConnectionEstablished && currentCallStatus !== CallStatus.LEAVING
+
+    /**
+     * While reconnecting the screen keeps being captured, so it is shared again once back in the call.
+     */
+    private fun stopOrSuspendScreenSharing(shutDownView: Boolean) {
+        val isReconnecting = currentCallStatus === CallStatus.RECONNECTING ||
+            currentCallStatus === CallStatus.PUBLISHER_FAILED
+        if (shutDownView || !isReconnecting) {
+            localScreenShareController.stop()
+        } else {
+            localScreenShareController.suspend()
+        }
+    }
+
+    /**
+     * Picture in picture would be shown on top of the shared screen, so the call is just moved to the background
+     * while sharing; the call notification shows that the screen is being shared.
+     */
+    override fun isAutomaticPipModeSuppressed(): Boolean =
+        localScreenShareController.isSharing || localScreenShareController.isPending
+
+    private fun showScreenSharingError() {
+        Snackbar.make(binding!!.root, R.string.nc_screen_sharing_failed, Snackbar.LENGTH_LONG).show()
+    }
+
+    private inner class ScreenShareHost : LocalScreenShareController.Host {
+        override val hasMCU: Boolean
+            get() = this@CallActivity.hasMCU
+
+        override val ownSessionId: String?
+            get() = getOwnSessionId()
+
+        override val participantSessionIds: Collection<String>
+            get() = getParticipantSessionKeys()
+
+        override val isCallActive: Boolean
+            get() = isCallActiveForScreenSharing()
+
+        override val isScreenSharingAllowed: Boolean
+            get() = isAllowedToShareScreen
+
+        override fun startForegroundServiceScreenSharing(onResult: (isReady: Boolean) -> Unit) {
+            val resultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
+                override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                    onResult(resultCode == CallForegroundService.RESULT_SCREEN_SHARING_READY)
+                }
+            }
+            CallForegroundService.startScreenSharing(applicationContext, resultReceiver)
+        }
+
+        override fun stopForegroundServiceScreenSharing() {
+            CallForegroundService.stopScreenSharing(applicationContext)
+        }
+
+        override fun createScreenCapture(permissionResultData: Intent, onStop: () -> Unit): ScreenCapture? {
+            // Both are released when hanging up, which may happen in parallel from the signaling thread.
+            val eglBase = rootEglBase ?: return null
+            val factory = peerConnectionFactory ?: return null
+            return AndroidScreenCapture(applicationContext, eglBase, factory, permissionResultData, onStop)
+        }
+
+        override fun createPeerConnection(sessionId: String, stream: MediaStream): PeerConnectionWrapper {
+            val (senderKeyRing, receiverKeyRing) = keyRingsFor(hasMCU, hasMCU, sessionId)
+            return PeerConnectionWrapper(
+                peerConnectionFactory,
+                iceServers,
+                sdpConstraintsForMCUPublisher,
+                sessionId,
+                ownSessionId,
+                stream,
+                hasMCU,
+                hasMCU,
+                VIDEO_STREAM_TYPE_SCREEN,
+                signalingMessageReceiver,
+                signalingMessageSender,
+                isCallEndToEndEncryptionEnabled,
+                senderKeyRing,
+                receiverKeyRing,
+                true
+            )
+        }
+
+        override fun send(message: NCSignalingMessageDto, sessionId: String) {
+            messageSender?.send(message, sessionId)
+        }
+
+        override fun onStateChanged() {
+            callViewModel.setLocalScreenSharing(localScreenShareController.isSharing)
+            updatePipAutoEnter()
+        }
+
+        override fun onScreenSharingFailed() {
+            showScreenSharingError()
+        }
+
+        override fun onEncryptionFailed() {
+            failCallEncryption(R.string.nc_call_e2ee_setup_failed)
+        }
+    }
+
     val isAllowedToStartOrStopRecording: Boolean
         get() {
             val spreedCap = conversationUser.capabilities?.spreedCapability
@@ -3669,6 +3974,7 @@ class CallActivity : CallBaseActivity() {
         var active = false
 
         const val VIDEO_STREAM_TYPE_VIDEO = "video"
+        const val VIDEO_STREAM_TYPE_SCREEN = "screen"
         private val TAG = CallActivity::class.java.simpleName
         private val PERMISSIONS_CAMERA = arrayOf(
             Manifest.permission.CAMERA

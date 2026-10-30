@@ -19,6 +19,33 @@ import org.junit.Test
 class ParticipantPermissionsTest : TestCase() {
 
     @Test
+    fun test_canPublishScreenWithConversationPermissionsCapability() {
+        val spreedCapability = SpreedCapabilityDto()
+        spreedCapability.features = listOf("conversation-permissions")
+
+        assertTrue(
+            ParticipantPermissions.canPublishScreen(
+                spreedCapability,
+                ParticipantPermissions.CUSTOM or ParticipantPermissions.PUBLISH_SCREEN
+            )
+        )
+        assertFalse(
+            ParticipantPermissions.canPublishScreen(
+                spreedCapability,
+                ParticipantPermissions.CUSTOM or ParticipantPermissions.PUBLISH_VIDEO
+            )
+        )
+    }
+
+    @Test
+    fun test_canPublishScreenWithoutConversationPermissionsCapability() {
+        val spreedCapability = SpreedCapabilityDto()
+        spreedCapability.features = emptyList()
+
+        assertTrue(ParticipantPermissions.canPublishScreen(spreedCapability, ParticipantPermissions.CUSTOM))
+    }
+
+    @Test
     fun test_areFlagsSet() {
         val spreedCapability = SpreedCapabilityDto()
         val conversation = createConversation()
