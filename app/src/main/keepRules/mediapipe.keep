@@ -1,0 +1,11 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# The MediaPipe native library resolves Java classes and methods by name through JNI
+-keep class com.google.mediapipe.** { *; }
+
+# Profiler and graph template protos are not part of the tasks-vision artifact
+-dontwarn com.google.mediapipe.proto.CalculatorProfileProto$CalculatorProfile
+-dontwarn com.google.mediapipe.proto.GraphTemplateProto$CalculatorGraphTemplate

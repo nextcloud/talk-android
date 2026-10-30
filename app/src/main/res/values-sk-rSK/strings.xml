@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Prepnúť na vlastné video</string>
     <string name="nc_call_e2ee_not_supported">Volanie momentálne nie je podporované, pretože je na serveri zapnuté end-to-end šifrovanie</string>
     <string name="nc_call_e2ee_not_supported_title">Hovor od %s nie je dostupný</string>
+    <string name="nc_call_e2ee_requires_hpb">Hovory so šifrovaním medzi koncovými bodmi vyžadujú vysokovýkonný backend (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Šifrovanie medzi koncovými bodmi sa pre tento hovor nepodarilo nastaviť</string>
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_join_failed">Nepodarilo sa pripojiť k hovoru. Skúste to znova.</string>
     <string name="nc_call_name">Názov konverzácie</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Otvoriť konverzáciu pre registrovaných používateľov</string>
     <string name="nc_open_to_guest_app_users">Povoliť i pre používateľov aplikácií pre hostí</string>
     <string name="nc_owner">Vlastník</string>
+    <string name="nc_participant_in_call">V hovore</string>
     <string name="nc_participant_type_change_failed">Typ účastníka sa nepodarilo zmeniť</string>
+    <string name="nc_participant_with_phone">S telefónom</string>
+    <string name="nc_participant_with_video">S videom</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Pridať účastníkov</string>
     <string name="nc_password">Heslo</string>
