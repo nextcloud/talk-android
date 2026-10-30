@@ -207,7 +207,7 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime:1.12.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.datastore:datastore-core:1.2.1")
+    implementation("androidx.datastore:datastore-core:1.3.0")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("androidx.test.ext:junit-ktx:1.3.0")
 
