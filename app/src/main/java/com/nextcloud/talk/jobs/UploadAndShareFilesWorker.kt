@@ -49,6 +49,7 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.VideoCompressor
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -576,6 +577,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     WorkRequest.MIN_BACKOFF_MILLIS,
                     TimeUnit.MILLISECONDS
                 )
+                // keeps a copy of a shared file until its upload is done
+                .apply { SharedFileCopies.uploadTagOf(fileUri)?.let { addTag(it) } }
                 .build()
             // Chained per conversation (not enqueueUniqueWork(fileUri, ...), which ran every upload
             // fully independently) so multiple files - whether from one multi-file share or several

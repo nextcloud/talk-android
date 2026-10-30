@@ -10,7 +10,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,6 +23,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -80,7 +80,6 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.RemoteWipeSuccessWorker
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -94,6 +93,7 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -102,7 +102,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.RemoteWipeHandler
@@ -133,14 +133,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -219,7 +217,6 @@ class ConversationsListActivity : BaseActivity() {
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
-    private var isDirectShareTarget = false
     private var unauthorizedDialog: AlertDialog? = null
     private var unauthorizedHandling: Job? = null
 
@@ -259,6 +256,11 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (isShareOfOtherApp(intent)) {
+            startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
+            finish()
+            return
+        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         currentUser = setUpBoundUserOrFinish() ?: return
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
@@ -316,6 +318,10 @@ class ConversationsListActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (isRelaunching) return
+        if (isShareOfOtherApp(intent)) {
+            startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
+            return
+        }
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         if (newUserId != 0L && newUserId != currentUser.id) {
             relaunchForAccount(newUserId, intent)
@@ -490,7 +496,7 @@ class ConversationsListActivity : BaseActivity() {
         // would lose the pending message.
         if (isRelaunching) return
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
-        val isPickingConversation = forwardMessage || hasActivityActionSendIntent()
+        val isPickingConversation = forwardMessage || isShare(intent)
         if (defaultUserId != currentUser.id && !isPickingConversation) {
             isRelaunching = true
             startActivity(createAccountSwitchIntent(this, defaultUserId))
@@ -501,7 +507,7 @@ class ConversationsListActivity : BaseActivity() {
         super.onResume()
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
-        showShareToScreenState.value = hasActivityActionSendIntent()
+        showShareToScreenState.value = isShare(intent)
 
         // Home screen shortcut tap: shortcut uses ACTION_VIEW with KEY_ROOM_TOKEN to open the
         // conversation directly without showing the share picker.
@@ -511,7 +517,7 @@ class ConversationsListActivity : BaseActivity() {
 
         // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
         // Extract the room token from the shortcut ID so we can pre-select the conversation.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasActivityActionSendIntent()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isShare(intent)) {
             val shortcutId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
             if (shortcutId != null) {
                 pendingDirectShareToken = DirectShareHelper.extractTokenFromShortcutId(shortcutId)
@@ -594,7 +600,6 @@ class ConversationsListActivity : BaseActivity() {
                         pendingDirectShareToken = null
                         val conversation = list.firstOrNull { it.token == token }
                         if (conversation != null) {
-                            isDirectShareTarget = true
                             handleConversation(conversation)
                         }
                     }
@@ -775,20 +780,19 @@ class ConversationsListActivity : BaseActivity() {
     fun relaunchForAccount(userId: Long, source: Intent = intent) {
         if (isRelaunching) return
         isRelaunching = true
-        val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
+        val accountIntent = createIntent(this).apply {
             action = source.action
             setDataAndType(source.data, source.type)
             source.extras?.let { putExtras(it) }
             clipData = source.clipData
             putExtra(KEY_INTERNAL_USER_ID, userId)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // a share stays out of the recents, see ShareActivity
+            addFlags(source.flags and Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
         }
         startActivity(accountIntent)
         finish()
     }
-
-    private fun hasActivityActionSendIntent(): Boolean =
-        Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     fun showSnackbar(text: String) {
         lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
@@ -980,72 +984,13 @@ class ConversationsListActivity : BaseActivity() {
         if (textToPaste!!.isNotEmpty()) {
             openConversation(textToPaste)
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
-            showSendFilesConfirmDialog()
+            // the attachment preview of the chat shows the files and asks before uploading them; they are copies in
+            // the cache of the app (see ShareActivity), so reading them needs no permission
+            openConversation()
         } else {
             logger.e(TAG, "no text or files to share")
             showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
         }
-    }
-
-    private fun showSendFilesConfirmDialog() {
-        if (platformPermissionUtil.isFilesPermissionGranted()) {
-            if (isDirectShareTarget) {
-                // Skip the "Send this file to X?" confirmation: the user already picked this exact
-                // conversation directly from Android's share sheet, so re-confirming the target here
-                // would just be a redundant extra tap. Go straight to the upload preview screen.
-                isDirectShareTarget = false
-                openConversation()
-                return
-            }
-
-            val conversation = selectedConversation
-            val files = filesToShare ?: return
-            lifecycleScope.launch {
-                // the share intent hands over uris of other apps: querying their names is a binder call
-                val fileNamesWithLineBreaks = withContext(Dispatchers.IO) {
-                    files.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
-                        FileUtils.getFileName(it.toUri(), context)
-                    }
-                }
-                // another conversation was picked while the names were read: that click shows its own dialog
-                if (selectedConversation !== conversation || filesToShare !== files) return@launch
-                showSendFilesConfirmDialog(fileNamesWithLineBreaks)
-            }
-        } else {
-            UploadAndShareFilesWorker.requestStoragePermission(this)
-        }
-    }
-
-    private fun showSendFilesConfirmDialog(fileNamesWithLineBreaks: String) {
-        val confirmationQuestion: String = if (filesToShare!!.size == 1) {
-            String.format(
-                resources!!.getString(R.string.nc_upload_confirm_send_single),
-                selectedConversation!!.displayName
-            )
-        } else {
-            String.format(
-                resources!!.getString(R.string.nc_upload_confirm_send_multiple),
-                selectedConversation!!.displayName
-            )
-        }
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
-            .setTitle(confirmationQuestion)
-            .setMessage(fileNamesWithLineBreaks)
-            .setPositiveButton(R.string.nc_yes) { _, _ ->
-                openConversation()
-            }
-            .setNegativeButton(R.string.nc_no) { _, _ ->
-                Log.d(TAG, "sharing files aborted, going back to share-to screen")
-            }
-
-        viewThemeUtils.dialog
-            .colorMaterialAlertDialogBackground(this, dialogBuilder)
-        val dialog = dialogBuilder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
     }
 
     private fun clearIntentAction() {
@@ -1055,16 +1000,12 @@ class ConversationsListActivity : BaseActivity() {
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
-        val intentAction = intent?.action ?: return
-        if (intentAction != Intent.ACTION_SEND && intentAction != Intent.ACTION_SEND_MULTIPLE) return
+        if (!isShare(intent)) return
         try {
-            val mimeType = intent.type
-            if (Mimetype.TEXT_PLAIN == mimeType && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
-                // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
-                // with a *screenshot* of the current page in getClipData().
-                // Here we assume that when sharing a web page the user would prefer to send the URL
-                // of the current page rather than a screenshot.
-                textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT)
+            // ShareActivity only passes the text of a shared text on, without its files, see ShareListIntentFactory
+            val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (sharedText != null) {
+                textToPaste = sharedText
             } else {
                 extractFilesFromClipData()
             }
@@ -1099,10 +1040,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun addFileToShareIfTrusted(uri: Uri?) {
-        val isTrusted = uri != null &&
-            ContentResolver.SCHEME_CONTENT == uri.scheme &&
-            (uri.authority != packageName || FileUtils.isSharedAttachmentProviderPath(cacheDir, uri.pathSegments))
-        if (isTrusted) {
+        if (FileUtils.isTrustedShareUri(uri, packageName, cacheDir)) {
             filesToShare!!.add(uri.toString())
         } else {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
@@ -1113,15 +1051,6 @@ class ConversationsListActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            UploadAndShareFilesWorker.REQUEST_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "upload starting after permissions were granted")
-                    showSendFilesConfirmDialog()
-                } else {
-                    showSnackbar(context.getString(R.string.read_storage_no_permission))
-                }
-            }
-
             REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "Notification permission was granted")
@@ -1294,10 +1223,26 @@ class ConversationsListActivity : BaseActivity() {
             selectedMessageId = null
         }
 
-        val intent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, bundle)
-        startActivity(intent)
+        if (isShare(intent)) {
+            openSharedConversationInAppTask(bundle)
+        } else {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, bundle))
+        }
 
         clearIntentAction()
+    }
+
+    /**
+     * Opens the chat with the content shared by another app, given in [extras], in the task of the app, and closes
+     * this list. Back from the chat opens the list of its account, see ChatActivity.
+     *
+     * The share sheet starts a share in a task of its own (see [ShareActivity]), which is removed then.
+     */
+    private fun openSharedConversationInAppTask(extras: Bundle) {
+        val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, extras)
+        // in the task of the app: a plain start could land in the task of this share instead
+        AppTasks.openChatInAppTask(this, chatIntent)
+        if (isTaskRoot) finishAndRemoveTask() else finish()
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
@@ -1776,6 +1721,13 @@ class ConversationsListActivity : BaseActivity() {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
         /**
+         * Creates an intent for this activity through its non-exported alias, so that it takes the account
+         * [BundleKeys.KEY_INTERNAL_USER_ID] and the conversation [BundleKeys.KEY_ROOM_TOKEN] from it.
+         */
+        fun createIntent(context: Context): Intent =
+            InternalEntryPoint.createIntent(context, ConversationsListActivity::class.java)
+
+        /**
          * Creates an intent that shows the conversation list of the account with the internal id [userId].
          * A conversation list already in the task is recreated for that account and all screens above it are
          * closed, so no screen of a previously shown account stays in the back stack.
@@ -1784,10 +1736,18 @@ class ConversationsListActivity : BaseActivity() {
          * a second task instead of reusing the current one.
          */
         fun createAccountSwitchIntent(context: Context, userId: Long): Intent =
-            Intent(context, ConversationsListActivity::class.java).apply {
+            createIntent(context).apply {
                 putExtra(KEY_INTERNAL_USER_ID, userId)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
+
+        /** Whether [intent] shares content of another app, which is taken through [ShareActivity]. */
+        @VisibleForTesting
+        internal fun isShareOfOtherApp(intent: Intent): Boolean =
+            !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) && isShare(intent)
+
+        private fun isShare(intent: Intent): Boolean =
+            Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
         private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 30_000L
         const val BOTTOM_SHEET_DELAY: Long = 2500

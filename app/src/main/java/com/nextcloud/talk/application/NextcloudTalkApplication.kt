@@ -197,7 +197,8 @@ class NextcloudTalkApplication :
             val activities = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES).activities
             activities?.forEach { activityInfo ->
                 try {
-                    val activityClass = Class.forName(activityInfo.name)
+                    // an activity-alias is listed by its own name, which is not a class
+                    val activityClass = Class.forName(activityInfo.targetActivity ?: activityInfo.name)
                     if (activityClass != AccountVerificationActivity::class.java &&
                         activityClass != BrowserLoginActivity::class.java
                     ) {

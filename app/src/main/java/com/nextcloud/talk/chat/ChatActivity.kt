@@ -1293,7 +1293,11 @@ class ChatActivity :
         openedViaNotification = extras?.getBoolean(KEY_OPENED_VIA_NOTIFICATION) ?: false
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
-        sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS) ?: emptyList()
+        // Checked by the conversation list, the only screen that shares files to the chat, and again here, so a screen
+        // that passes on shared files without that check can't make the attachment preview upload another file.
+        sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS)
+            ?.filter { FileUtils.isTrustedShareUri(it.toUri(), packageName, cacheDir) }
+            ?: emptyList()
         intent.removeExtra(BundleKeys.KEY_SHARED_FILE_PATHS)
 
         Log.d(TAG, "   roomToken = $roomToken")

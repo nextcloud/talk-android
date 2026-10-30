@@ -182,6 +182,17 @@ object DirectShareHelper {
         }
     }
 
+    /**
+     * Whether [shortcutId] is a direct share shortcut the app published, so one the share sheet can show: still
+     * dynamic, or cached by the system after a later publication replaced it. A binder call.
+     */
+    fun isPublishedShareTarget(context: Context, shortcutId: String): Boolean =
+        shortcutId.startsWith(SHORTCUT_ID_PREFIX) &&
+            ShortcutManagerCompat.getShortcuts(
+                context,
+                ShortcutManagerCompat.FLAG_MATCH_DYNAMIC or ShortcutManagerCompat.FLAG_MATCH_CACHED
+            ).any { it.id == shortcutId }
+
     private fun shortcutId(user: User, token: String): String = "$SHORTCUT_ID_PREFIX${user.id}_$token"
 
     /**
@@ -283,7 +294,7 @@ object DirectShareHelper {
         // ACTION_VIEW is used so that tapping this shortcut on the home screen opens the
         // conversation directly. When used from the share sheet, Android delivers ACTION_SEND
         // with the shared content and EXTRA_SHORTCUT_ID, not this intent.
-        val intent = Intent(Intent.ACTION_VIEW, null, context, ConversationsListActivity::class.java).apply {
+        val intent = ConversationsListActivity.createIntent(context).setAction(Intent.ACTION_VIEW).apply {
             putExtra(BundleKeys.KEY_ROOM_TOKEN, token)
             putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         }

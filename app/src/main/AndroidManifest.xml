@@ -169,14 +169,24 @@
             android:exported="true"
             android:theme="@style/AppTheme.DisplayCutout">
 
-            <meta-data
-                android:name="android.service.chooser.chooser_target_service"
-                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
-
             <intent-filter>
                 <action android:name="com.nextcloud.intent.OPEN_ECOSYSTEM_APP" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+
+        <!-- Entry point for the content other apps share. It copies the shared files and opens the conversation list
+             to pick the conversation, in a task that is kept out of the recents. -->
+        <activity
+            android:name=".conversationlist.ShareActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/AppTheme.Translucent">
+
+            <meta-data
+                android:name="android.service.chooser.chooser_target_service"
+                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -190,6 +200,13 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
+
+        <!-- Entry point for in-app intents of the conversation list. Not exported, so it can trust the account and
+             conversation of intents started through it. -->
+        <activity-alias
+            android:name=".conversationlist.InternalConversationsListActivity"
+            android:exported="false"
+            android:targetActivity=".conversationlist.ConversationsListActivity" />
 
         <activity
             android:name=".chat.ChatActivity"

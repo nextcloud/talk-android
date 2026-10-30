@@ -27,7 +27,12 @@ object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
-    private const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+    internal const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+
+    // the copies of the files other apps share, see SharedFileCopies; kept apart from the shared attachments, which are
+    // named by their senders, so an attachment can't take the place of the copies
+    internal const val SHARED_FILE_COPIES_DIRECTORY = "shared_file_copies"
+    private val SHARED_PROVIDER_DIRECTORIES = setOf(SHARED_ATTACHMENTS_DIRECTORY, SHARED_FILE_COPIES_DIRECTORY)
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -65,16 +70,27 @@ object FileUtils {
 
     /**
      * Checks whether the [pathSegments] of an own FileProvider uri point to a file inside the
-     * dedicated shared attachments cache directory.
+     * dedicated shared attachments cache directory or the one of the copies of shared files.
      */
     fun isSharedAttachmentProviderPath(cacheDir: File, pathSegments: List<String>): Boolean {
-        if (pathSegments.size < 2 || pathSegments.first() != SHARED_ATTACHMENTS_DIRECTORY) return false
-        var resolvedFile: File? = File(cacheDir, SHARED_ATTACHMENTS_DIRECTORY)
+        val directory = pathSegments.firstOrNull()?.takeIf { it in SHARED_PROVIDER_DIRECTORIES }
+        if (pathSegments.size < 2 || directory == null) return false
+        var resolvedFile: File? = File(cacheDir, directory)
         for (segment in pathSegments.drop(1)) {
             resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
         }
         return resolvedFile != null
     }
+
+    /**
+     * Checks whether an externally provided [uri] may be uploaded: only content uris are accepted,
+     * and uris of the own app ([packageName]) only when they point into the shared attachments cache
+     * or the copies of shared files.
+     */
+    fun isTrustedShareUri(uri: Uri?, packageName: String, cacheDir: File): Boolean =
+        uri != null &&
+            ContentResolver.SCHEME_CONTENT == uri.scheme &&
+            (uri.authority != packageName || isSharedAttachmentProviderPath(cacheDir, uri.pathSegments))
 
     /**
      * Resolves an untrusted file name inside [baseDirectory] and rejects traversal attempts.
