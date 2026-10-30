@@ -8,24 +8,31 @@ package com.nextcloud.talk.attachmentpreview
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.core.net.toUri
 import com.nextcloud.talk.utils.FileUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 /**
- * Holds the file list being reviewed for upload and each file's (IO-derived) [FileDescription],
- * so both survive configuration changes (e.g. screen rotation) instead of resetting back to the
- * dialog's original arguments. Everything else on the screen — caption text, drag/scroll
- * position, HQ toggle animation state — is ephemeral UI state and stays in Compose's `remember`.
+ * Holds the file list being reviewed for upload, which of them are excluded from sending, and
+ * each file's (IO-derived) [FileDescription], so all survive configuration changes (e.g. screen
+ * rotation) instead of resetting back to the dialog's original arguments. Everything else on the
+ * screen — caption text, drag/scroll position, HQ toggle animation state — is ephemeral UI state
+ * and stays in Compose's `remember`.
  */
 internal class FileAttachmentPreviewViewModel(
     // Dagger provides the application context, which cannot leak an Activity
@@ -66,8 +73,92 @@ internal class FileAttachmentPreviewViewModel(
         files.addAll(newFiles.filterNot { it in files })
     }
 
-    fun removeFile(uri: String) {
-        files.remove(uri)
+    /** Files the user un-ticked; they stay in the list (and can be re-ticked) but are not sent. */
+    val unselected = mutableStateListOf<String>()
+
+    /** True while an edit (e.g. a drawing) is being written, so sending can't race it with the old file. */
+    var isEditing by mutableStateOf(false)
+        private set
+
+    /** Set when an edit could not be saved; the screen reports it once and calls [editFailureShown]. */
+    var editFailed by mutableStateOf(false)
+        private set
+
+    /** The drawing in progress; here (not in `remember`) so it survives rotation. */
+    val drawing = DrawingSession()
+
+    fun editFailureShown() {
+        editFailed = false
+    }
+
+    fun toggleSelected(uri: String) {
+        val updated = toggleSelection(files, unselected.toSet(), uri)
+        unselected.clear()
+        unselected.addAll(updated)
+    }
+
+    fun selectedFiles(): List<String> = selectedFiles(files, unselected.toSet())
+
+    /**
+     * Swaps an edited file in at the position of the original. The old description is carried over
+     * right away (re-pointed at [newUri]) so the pager doesn't drop the page while the fresh
+     * description is computed; [describeFiles] then refreshes size/resolution.
+     */
+    fun replaceFile(oldUri: String, newUri: String) {
+        val updated = replaceUri(files, oldUri, newUri)
+        if (updated === files) return
+        files.clear()
+        files.addAll(updated)
+        if (unselected.remove(oldUri)) {
+            unselected.add(newUri)
+        }
+        _descriptionsByUri[oldUri]?.let { _descriptionsByUri[newUri] = it.copy(uri = newUri) }
+        _descriptionsByUri.remove(oldUri)
+    }
+
+    /** Burns the current [drawing] strokes into a copy of [description]'s image; keeps the original on failure. */
+    fun saveDrawing(description: FileDescription) {
+        val drawn = drawing.strokes
+        drawing.clear()
+        if (drawn.isEmpty()) return
+        isEditing = true
+        viewModelScope.launch {
+            val output = withContext(Dispatchers.IO) {
+                createEditOutputFile(context, description.name, description.mimeType)?.let { file ->
+                    val saved = renderDrawing(
+                        context,
+                        description.uri.toUri(),
+                        drawn,
+                        file,
+                        editOutputIsPng(description.mimeType)
+                    )
+                    (if (saved) editedFileUri(context, file) else null).also { if (it == null) file.delete() }
+                }
+            }
+            finishEdit(description.uri, output)
+        }
+    }
+
+    /** Swaps in the file uCrop wrote to [croppedFile]; reports a failure if it can't be shared. */
+    fun applyCrop(sourceUri: String, croppedFile: File) {
+        val uri = editedFileUri(context, croppedFile)
+        if (uri == null) croppedFile.delete()
+        finishEdit(sourceUri, uri)
+    }
+
+    private fun finishEdit(oldUri: String, newUri: Uri?) {
+        if (newUri == null) {
+            editFailed = true
+        } else {
+            replaceFile(oldUri, newUri.toString())
+            discardIfOwnEdit(oldUri)
+        }
+        isEditing = false
+    }
+
+    /** An intermediate of an earlier edit is of no use once superseded; originals are never touched. */
+    private fun discardIfOwnEdit(uri: String) {
+        viewModelScope.launch(Dispatchers.IO) { ownEditedFile(context, uri)?.delete() }
     }
 
     fun reorder(from: Int, to: Int) {
@@ -86,13 +177,13 @@ internal class FileAttachmentPreviewViewModel(
         // a stale job finishing last would retainAll away the description of a file added since
         describeJob?.cancel()
         describeJob = viewModelScope.launch(ioDispatcher) {
-            val described = snapshot.associateWith { describer(context, it, compress) }
-            // the blocking copy above cannot be interrupted, so a cancelled job reaches this point too;
-            // withContext checks for cancellation and runs on main, where cancel() is also called
-            withContext(mainDispatcher) {
-                _descriptionsByUri.putAll(described)
-                _descriptionsByUri.keys.retainAll(described.keys)
+            val described = snapshot.associateWith {
+                ensureActive()
+                describer(context, it, compress)
             }
+            ensureActive()
+            // files is mutated on the main thread, so publish there
+            withContext(mainDispatcher) { publishDescriptions(described) }
         }
     }
 
@@ -110,5 +201,16 @@ internal class FileAttachmentPreviewViewModel(
                 _mimeTypesByUri.keys.retainAll(resolved.keys)
             }
         }
+    }
+
+    /**
+     * Stores [described], keeping only files that are still in the list. A result computed before
+     * [replaceFile] therefore can't wipe out the replacement's carried-over description (which would
+     * drop the edited page from the pager) nor leave entries for files that are gone.
+     */
+    fun publishDescriptions(described: Map<String, FileDescription>) {
+        val current = files.toSet()
+        described.filterKeys { it in current }.forEach { (uri, description) -> _descriptionsByUri[uri] = description }
+        _descriptionsByUri.keys.retainAll(current)
     }
 }
