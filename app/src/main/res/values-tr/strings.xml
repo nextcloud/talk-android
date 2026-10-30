@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
     <string name="nc_call_e2ee_not_supported">Sunucuda uçtan uca şifreleme açık olduğundan arama şu anda desteklenmiyor</string>
     <string name="nc_call_e2ee_not_supported_title">%s araması kullanılamıyor</string>
+    <string name="nc_call_e2ee_requires_hpb">Uçtan uca şifrelenmiş aramalar için yüksek başarımlı arka uç (HPB) gereklidir</string>
+    <string name="nc_call_e2ee_setup_failed">Bu arama için uçtan uca şifreleme ayarlanamadı</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_join_failed">Aramaya katılınamadı. Lütfen yeniden deneyin.</string>
     <string name="nc_call_name">Görüşme adı</string>

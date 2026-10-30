@@ -345,10 +345,13 @@
                 android:resource="@xml/contacts" />
         </service>
 
+        <!-- Media3 needs the session service exported without a permission so that system UI,
+             Bluetooth and Android Auto media controllers can bind to it -->
         <service
             android:name=".chat.data.io.VoiceMessageMediaService"
             android:foregroundServiceType="mediaPlayback"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>

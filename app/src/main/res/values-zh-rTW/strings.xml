@@ -124,6 +124,7 @@
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍使用者</string>
     <string name="nc_account_chooser_add_account">新增帳號</string>
+    <string name="nc_account_removal_pending">尚未完成移除此帳號。請稍後再試。</string>
     <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
     <string name="nc_add_attachment">加入附件</string>
     <string name="nc_add_emojis">加入 emoji</string>
@@ -137,9 +138,22 @@
     <string name="nc_announcement">公告</string>
     <string name="nc_announcement_description">供管理員向固定對象提供資訊的對話，無法離開。</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
+    <string name="nc_audio_error_generic">無法播放音訊</string>
+    <string name="nc_audio_error_network">無法載入音訊。請檢查您的連線。</string>
+    <string name="nc_audio_error_unavailable">音訊檔案無法使用</string>
+    <string name="nc_audio_error_unsupported">不支援此音訊格式</string>
+    <string name="nc_audio_player_close">停止播放</string>
     <string name="nc_audio_player_next">下一步</string>
+    <string name="nc_audio_player_open">開啟播放器</string>
+    <string name="nc_audio_player_play_pause">播放/暫停</string>
     <string name="nc_audio_player_previous">上一步</string>
+    <string name="nc_audio_player_queue">播放清單</string>
+    <string name="nc_audio_player_repeat_all">全部重複播放</string>
     <string name="nc_audio_player_repeat_off">關閉重複</string>
+    <string name="nc_audio_player_repeat_one">單項重複播放</string>
+    <string name="nc_audio_player_show_message">顯示訊息</string>
+    <string name="nc_audio_player_shuffle">隨機播放</string>
+    <string name="nc_audio_retry">重試播放</string>
     <string name="nc_audio_seek">播放位置</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
@@ -154,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視訊</string>
     <string name="nc_call_e2ee_not_supported">目前不支援通話功能，因為伺服器已啟用端對端加密</string>
     <string name="nc_call_e2ee_not_supported_title">無法從 %s 通話</string>
+    <string name="nc_call_e2ee_requires_hpb">端到端加密通話需要高效能後端 (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">無法為此通話設定端到端加密</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_join_failed">無法加入通話。請重試。</string>
     <string name="nc_call_name">對話名稱</string>
@@ -165,6 +181,8 @@
     <string name="nc_call_raised_hand">%1$s 舉手</string>
     <string name="nc_call_reconnecting">正在重新連線 …</string>
     <string name="nc_call_ringing">鈴響聲</string>
+    <string name="nc_call_self_video_enlarge">放大自己的視訊畫面</string>
+    <string name="nc_call_self_video_shrink">縮小自己的視訊畫面</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
     <string name="nc_call_state_with_phone">%1$s 通過手機</string>
     <string name="nc_call_state_with_video">%1$s 視訊對話中</string>
@@ -176,6 +194,7 @@
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
     <string name="nc_caption">字幕</string>
+    <string name="nc_certificate_dialog_text_for_host">您是否信任 %1$s 此前未知的 SSL 憑證？此憑證由 %2$s 核發給 %3$s，有效期從 %4$s 至 %5$s。此憑證僅當用於 %1$s 才受信任。</string>
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
@@ -535,6 +554,9 @@
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s資料庫</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的帳戶</string>
     <string name="nc_server_helper_text">在瀏覽器中開啟您 %1$s 網頁介面的連結。</string>
+    <string name="nc_server_http_fallback_confirm">使用 HTTP</string>
+    <string name="nc_server_http_fallback_message">無法透過 HTTPS 連線至伺服器。要改用不安全的 HTTP 嗎？</string>
+    <string name="nc_server_http_fallback_title">不安全的連線</string>
     <string name="nc_server_import_account">從%1$s應用程式匯入帳戶</string>
     <string name="nc_server_import_account_plain">匯入帳戶</string>
     <string name="nc_server_import_accounts">從%1$s應用程式匯入帳戶</string>

@@ -1020,20 +1020,21 @@ private fun ParticipantItemRow(
                 contentAlpha = contentAlpha
             )
         }
-        val inCallIconRes = when {
+        val inCallState = when {
             participant.inCall and ParticipantDto.InCallFlags.WITH_PHONE.toLong() > 0L ->
-                R.drawable.ic_call_grey_600_24dp
+                R.drawable.ic_call_grey_600_24dp to R.string.nc_participant_with_phone
             participant.inCall and ParticipantDto.InCallFlags.WITH_VIDEO.toLong() > 0L ->
-                R.drawable.ic_videocam_grey_600_24dp
+                R.drawable.ic_videocam_grey_600_24dp to R.string.nc_participant_with_video
             participant.inCall > ParticipantDto.InCallFlags.DISCONNECTED.toLong() ->
-                R.drawable.ic_mic_grey_600_24dp
+                R.drawable.ic_mic_grey_600_24dp to R.string.nc_participant_in_call
             else -> null
         }
-        if (inCallIconRes != null) {
+        if (inCallState != null) {
+            val (inCallIconRes, inCallDescriptionRes) = inCallState
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painter = painterResource(inCallIconRes),
-                contentDescription = displayName,
+                contentDescription = stringResource(inCallDescriptionRes),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp)
             )
