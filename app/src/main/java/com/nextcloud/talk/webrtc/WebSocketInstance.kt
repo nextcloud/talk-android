@@ -17,8 +17,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
-import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.models.json.signaling.settings.FederationSettingsDto
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessageDto
@@ -77,7 +75,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private var currentNormalBackendSession: String? = null
     private var currentFederation: FederationSettingsDto? = null
     private var reconnecting = false
-    private val usersHashMap: HashMap<String?, ParticipantDto>
+    private val roomSessions = RoomSessionRegistry()
     private var messagesQueue: MutableList<String> = ArrayList()
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
@@ -89,7 +87,6 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         this.conversationUser = conversationUser
         this.webSocketTicket = webSocketTicket
         webSocketConnectionHelper = WebSocketConnectionHelper()
-        usersHashMap = HashMap()
         isConnected = false
         eventBus!!.register(this)
         restartWebSocket()
@@ -292,13 +289,23 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    fun getUserMap(): HashMap<String?, ParticipantDto> = usersHashMap
+    /**
+     * Snapshot of the signaling sessions of the current room, without the own session.
+     */
+    fun getRoomSessionIds(): List<String> = roomSessions.sessionIdsExcept(sessionId)
+
+    /**
+     * Whether [session] is in the room [roomToken] and the connection is in that room as well. A typing message is
+     * only trusted for the conversation of the room the session was seen in.
+     */
+    fun isSessionInRoom(session: String?, roomToken: String): Boolean = roomSessions.contains(session, roomToken)
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             val alreadyInRoom = roomWebSocketMessage.roomId == currentRoomToken
+            roomSessions.onRoomResponse(roomWebSocketMessage.roomId)
             currentRoomToken = roomWebSocketMessage.roomId
             if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
                 if (alreadyInRoom) {
@@ -329,6 +336,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "Joining the room was rejected, the room session needs to be refreshed")
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
+                roomSessions.reset()
                 eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", HashMap()))
             }
         }
@@ -367,6 +375,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         } else {
             currentRoomToken = ""
             currentNormalBackendSession = ""
+            roomSessions.reset()
         }
         if (!TextUtils.isEmpty(currentRoomToken)) {
             helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
@@ -484,15 +493,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    fun getDisplayNameForSession(session: String?): String? {
-        val participant = usersHashMap[session]
-        if (participant != null) {
-            if (participant.displayName != null) {
-                return participant.displayName
-            }
-        }
-        return ""
-    }
+    fun getDisplayNameForSession(session: String?): String = roomSessions.displayNameFor(session)
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(networkEvent: NetworkEvent) {
