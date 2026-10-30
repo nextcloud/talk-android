@@ -294,8 +294,6 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
      */
     fun getRoomSessionIds(): List<String> = roomSessions.sessionIdsExcept(sessionId)
 
-    fun isSessionInCurrentRoom(session: String?): Boolean = roomSessions.contains(session)
-
     /**
      * Whether [session] is in the room [roomToken] and the connection is in that room as well. A typing message is
      * only trusted for the conversation of the room the session was seen in.

@@ -47,6 +47,9 @@ class RoomSessionRegistry {
     /**
      * The connection leaves the room, got a new signaling session (hello without resume) or lost it
      * (no_such_session, no_such_room). Nothing is known about the room any more.
+     *
+     * A resumed session keeps the registry: the server stores the messages of a disconnected session, including
+     * the join and leave events, and sends them on resume.
      */
     @Synchronized
     fun reset() {
