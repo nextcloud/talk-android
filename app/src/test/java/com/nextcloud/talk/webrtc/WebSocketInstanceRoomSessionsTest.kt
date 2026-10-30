@@ -103,12 +103,12 @@ class WebSocketInstanceRoomSessionsTest {
     fun switchingToAnotherRoomDropsSessionsOfThePreviousRoom() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         instance.joinRoomWithRoomTokenAndSession(ROOM_B, "room-session-b")
 
-        waitUntil("sessions of room B") { instance.isSessionInCurrentRoom(sessionOf(ROOM_B)) }
-        assertFalse(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        waitUntil("sessions of room B") { instance.isSessionInRoom(sessionOf(ROOM_B), ROOM_B) }
+        assertFalse(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_B))
         assertEquals(listOf(sessionOf(ROOM_B)), instance.getRoomSessionIds())
     }
 
@@ -116,14 +116,13 @@ class WebSocketInstanceRoomSessionsTest {
     fun sessionOfThePreviousRoomIsNotTrustedForTheNextRoomBeforeItsJoinIsAnswered() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
         // Switching rooms without leaving first (e.g. during a call): the sessions of room A stay until the answer.
         holdAnswerToJoin = true
         instance.joinRoomWithRoomTokenAndSession(ROOM_B, "room-session-b")
         waitUntil("join received") { serverLog.contains("c1:joined-unanswered") }
         sendBarrierJoin(instance)
 
-        assertTrue(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
         assertFalse(
             "typing message of room A is ignored by the conversation of room B",
             instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_B)
@@ -135,7 +134,7 @@ class WebSocketInstanceRoomSessionsTest {
     fun lateJoinOfTheLeftRoomIsNeitherTrustedNorAddressedWhenTheNextRoomIsEntered() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
         // The server answers the leave only after it sent a join event of the room which is being left.
         holdAnswerToLeave = true
         instance.joinRoomWithRoomTokenAndSession("", "room-session-a")
@@ -143,15 +142,15 @@ class WebSocketInstanceRoomSessionsTest {
         serverSockets.first().push(joinFrame(LATE_SESSION, "user-late"))
         awaitFramesHandled(instance)
 
-        assertFalse("typing message of the late session is ignored", instance.isSessionInCurrentRoom(LATE_SESSION))
+        assertFalse("typing message of the late session is ignored", instance.isSessionInRoom(LATE_SESSION, ROOM_A))
         assertTrue("no typing message to the late session", instance.getRoomSessionIds().isEmpty())
 
         serverSockets.first().push("{\"type\":\"room\",\"room\":{\"roomid\":\"\"}}")
         instance.joinRoomWithRoomTokenAndSession(ROOM_B, "room-session-b")
-        waitUntil("sessions of room B") { instance.isSessionInCurrentRoom(sessionOf(ROOM_B)) }
+        waitUntil("sessions of room B") { instance.isSessionInRoom(sessionOf(ROOM_B), ROOM_B) }
 
-        assertFalse(instance.isSessionInCurrentRoom(LATE_SESSION))
-        assertFalse(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        assertFalse(instance.isSessionInRoom(LATE_SESSION, ROOM_B))
+        assertFalse(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_B))
         assertEquals(listOf(sessionOf(ROOM_B)), instance.getRoomSessionIds())
     }
 
@@ -159,7 +158,7 @@ class WebSocketInstanceRoomSessionsTest {
     fun leavingTheRoomDropsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         instance.joinRoomWithRoomTokenAndSession("", "room-session-a")
 
@@ -172,21 +171,21 @@ class WebSocketInstanceRoomSessionsTest {
     fun resumedSessionKeepsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         instance.restartWebSocket()
         waitUntil("resumed hello answered") { serverLog.contains("c2:hello-answered") }
         waitUntil("connected again") { instance.isConnected }
         sendBarrierJoin(instance)
 
-        assertTrue(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
     }
 
     @Test
     fun newSessionWithoutResumeStartsWithoutSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         instance.clearResumeId()
         instance.restartWebSocket()
@@ -202,20 +201,20 @@ class WebSocketInstanceRoomSessionsTest {
     fun alreadyJoinedAnswerKeepsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-call")
         waitUntil("second join answered") { serverLog.count { it == "c1:already_joined" } == 1 }
         sendBarrierJoin(instance)
 
-        assertTrue(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
     }
 
     @Test
     fun expiredSessionDropsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         serverSockets.first().push(errorFrame("no_such_session"))
         waitUntil("new session said hello") { serverLog.contains("c2:hello-answered") }
@@ -229,7 +228,7 @@ class WebSocketInstanceRoomSessionsTest {
     fun rejectedRoomSessionDropsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         serverSockets.first().push(errorFrame("no_such_room"))
         awaitFramesHandled(instance)
@@ -243,7 +242,7 @@ class WebSocketInstanceRoomSessionsTest {
         val listener = mock<SignalingMessageReceiver.ConversationMessageListener>()
         instance.getSignalingMessageReceiver().addListener(listener)
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
-        waitUntil("sessions of room A") { instance.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
 
         serverSockets.first().push(
             "{\"type\":\"event\",\"event\":{\"target\":\"room\",\"type\":\"leave\",\"leave\":" +
@@ -251,7 +250,7 @@ class WebSocketInstanceRoomSessionsTest {
         )
         sendBarrierJoin(instance)
 
-        assertFalse(instance.isSessionInCurrentRoom(sessionOf(ROOM_A)))
+        assertFalse(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
         verify(listener).onSessionsLeft(listOf(sessionOf(ROOM_A)))
     }
 
@@ -261,8 +260,8 @@ class WebSocketInstanceRoomSessionsTest {
         val second = createConnectedInstance()
         first.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
         second.joinRoomWithRoomTokenAndSession(ROOM_B, "room-session-b")
-        waitUntil("sessions of room A") { first.isSessionInCurrentRoom(sessionOf(ROOM_A)) }
-        waitUntil("sessions of room B") { second.isSessionInCurrentRoom(sessionOf(ROOM_B)) }
+        waitUntil("sessions of room A") { first.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
+        waitUntil("sessions of room B") { second.isSessionInRoom(sessionOf(ROOM_B), ROOM_B) }
 
         assertEquals(listOf(sessionOf(ROOM_A)), first.getRoomSessionIds())
         assertEquals(listOf(sessionOf(ROOM_B)), second.getRoomSessionIds())
@@ -283,7 +282,7 @@ class WebSocketInstanceRoomSessionsTest {
 
     private fun sendBarrierJoin(instance: WebSocketInstance) {
         serverSockets.last().push(joinFrame(BARRIER, "barrier-user"))
-        waitUntil("barrier handled") { instance.isSessionInCurrentRoom(BARRIER) }
+        waitUntil("barrier handled") { instance.getRoomSessionIds().contains(BARRIER) }
     }
 
     private fun createConnectedInstance(): WebSocketInstance {

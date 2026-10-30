@@ -71,11 +71,16 @@ class TypingParticipant(
          * left (a user may type with several sessions). Returns whether any participant was removed.
          */
         fun removeSessions(participants: MutableMap<String, TypingParticipant>, sessions: Collection<String>): Boolean {
-            val left = participants.filterValues { participant ->
-                participant.forgetSessions(sessions) && participant.timers.isEmpty()
+            var removed = false
+            val iterator = participants.values.iterator()
+            while (iterator.hasNext()) {
+                val participant = iterator.next()
+                if (participant.forgetSessions(sessions) && participant.timers.isEmpty()) {
+                    iterator.remove()
+                    removed = true
+                }
             }
-            left.keys.forEach { participants.remove(it) }
-            return left.isNotEmpty()
+            return removed
         }
 
         private const val TYPING_DURATION_TO_HIDE_TYPING_MESSAGE = 15000L
