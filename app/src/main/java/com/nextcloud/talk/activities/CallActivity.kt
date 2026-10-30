@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.media.AudioAttributes
@@ -46,6 +47,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +60,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
@@ -76,6 +79,8 @@ import com.nextcloud.talk.call.MediaConstraintsHelper
 import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
+import com.nextcloud.talk.call.e2ee.CallEncryption
+import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
@@ -322,6 +327,7 @@ class CallActivity : CallBaseActivity() {
     private var roomJoinRefreshes = 0
     private var hasMCU = false
     private var hasExternalSignalingServer = false
+    private var isCallEndToEndEncryptionEnabled = false
     private var conversationPassword: String? = null
     private var powerManagerUtils: PowerManagerUtils? = null
 
@@ -440,6 +446,7 @@ class CallActivity : CallBaseActivity() {
     private var recordingConsentGiven = false
 
     private var isFrontCamera by mutableStateOf(true)
+    private var isSelfVideoEnabled by mutableStateOf(false)
 
     @SuppressLint("ClickableViewAccessibility", "Detekt.LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -524,10 +531,8 @@ class CallActivity : CallBaseActivity() {
             return
         }
         processExtras(intent.extras!!)
-
-        if (warnAndFinishIfCallEndToEndEncryptionUnsupported()) {
-            return
-        }
+        isCallEndToEndEncryptionEnabled =
+            CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser.capabilities?.spreedCapability)
 
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         if (TextUtils.isEmpty(baseUrl)) {
@@ -570,14 +575,57 @@ class CallActivity : CallBaseActivity() {
         checkInitialDevicePermissions()
     }
 
-    private fun warnAndFinishIfCallEndToEndEncryptionUnsupported(): Boolean {
-        if (!CapabilitiesUtil.isCallEndToEndEncryptionEnabled(conversationUser?.capabilities?.spreedCapability)) {
+    /**
+     * Ends the call when it has to be end-to-end encrypted but can not be; media is never sent unencrypted instead.
+     */
+    private fun failCallEncryption(@StringRes reason: Int) {
+        if (currentCallStatus === CallStatus.LEAVING) {
+            return
+        }
+        Log.e(TAG, "Ending call: ${context.getString(reason)}")
+        runOnUiThread { Toast.makeText(context, reason, Toast.LENGTH_LONG).show() }
+        hangup(shutDownView = true, endCallForAll = false)
+    }
+
+    /**
+     * The key exchange of the call, null when calls are not end-to-end encrypted or it is not set up yet.
+     */
+    private fun callEncryption(): CallEncryption? =
+        if (isCallEndToEndEncryptionEnabled) webSocketClient?.callEncryption else null
+
+    // Encrypted calls only work through the MCU, which is the only place with a key exchange
+    private fun ensureMcuForCallEncryption(): Boolean {
+        if (isCallEndToEndEncryptionEnabled && !hasMCU) {
+            failCallEncryption(R.string.nc_call_e2ee_requires_hpb)
             return false
         }
-        Toast.makeText(context, R.string.nc_call_e2ee_not_supported, Toast.LENGTH_LONG).show()
-        finish()
         return true
     }
+
+    // The key exchange is created when the room is joined, so it has to exist before publishing
+    private fun ensureCallEncryption(): Boolean {
+        if (isCallEndToEndEncryptionEnabled && callEncryption() == null) {
+            failCallEncryption(R.string.nc_call_e2ee_setup_failed)
+            return false
+        }
+        return true
+    }
+
+    private fun createMessageSender(): MessageSender =
+        if (hasMCU) {
+            MessageSenderMcu(
+                signalingMessageSender,
+                getParticipantSessionKeys(),
+                peerConnectionWrapperList,
+                webSocketClient!!.sessionId
+            )
+        } else {
+            MessageSenderNoMcu(
+                signalingMessageSender,
+                getParticipantSessionKeys(),
+                peerConnectionWrapperList
+            )
+        }
 
     private fun initCallRecordingViewModel(recordingState: Int) {
         callRecordingViewModel = ViewModelProvider(this, viewModelFactory).get(
@@ -1092,7 +1140,30 @@ class CallActivity : CallBaseActivity() {
         DrawableCompat.setTint(binding!!.audioOutputButton.drawable, Color.WHITE)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            hideEndCallPopupMenuOnTouchOutside(event)
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    private fun hideEndCallPopupMenuOnTouchOutside(event: MotionEvent) {
+        val endCallPopupMenu = binding?.endCallPopupMenu ?: return
+        if (endCallPopupMenu.isVisible) {
+            val location = IntArray(2)
+            endCallPopupMenu.getLocationOnScreen(location)
+            val popupMenuBounds = Rect(
+                location[0],
+                location[1],
+                location[0] + endCallPopupMenu.width,
+                location[1] + endCallPopupMenu.height
+            )
+            if (!popupMenuBounds.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                endCallPopupMenu.visibility = View.GONE
+            }
+        }
+    }
+
     private fun initViews() {
         Log.d(TAG, "initViews")
         if (!isPipModePossible) {
@@ -1104,20 +1175,6 @@ class CallActivity : CallBaseActivity() {
             binding!!.selfVideoViewWrapper.visibility = View.GONE
         } else {
             initSelfVideoViewForNormalMode()
-        }
-        binding!!.composeParticipantGrid.setOnTouchListener { _, me ->
-            val action = me.actionMasked
-            if (action == MotionEvent.ACTION_DOWN) {
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-            false
-        }
-        binding!!.conversationRelativeLayout.setOnTouchListener { _, me ->
-            val action = me.actionMasked
-            if (action == MotionEvent.ACTION_DOWN) {
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-            false
         }
         initPipMode()
         binding!!.composeParticipantGrid.z = 0f
@@ -1132,7 +1189,12 @@ class CallActivity : CallBaseActivity() {
                 eglBase = rootEglBase!!.eglBaseContext,
                 videoTrack = localVideoTrack,
                 isFrontCamera = isFrontCamera,
-                onSwitchCamera = { switchCamera() }
+                isVideoEnabled = isSelfVideoEnabled,
+                onSwitchCamera = if ((cameraEnumerator?.deviceNames?.size ?: 0) > 1) {
+                    { onSwitched -> switchCamera(onSwitched) }
+                } else {
+                    null
+                }
             )
         }
 
@@ -1495,15 +1557,26 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    fun switchCamera() {
+    /**
+     * Switches between the available cameras. [onSwitched] is called with whether the front camera is used when
+     * switching finished, also if it failed.
+     */
+    fun switchCamera(onSwitched: (isFrontCamera: Boolean) -> Unit = {}) {
         val cameraVideoCapturer = videoCapturer as CameraVideoCapturer?
-        cameraVideoCapturer?.switchCamera(object : CameraSwitchHandler {
+        if (cameraVideoCapturer == null) {
+            onSwitched(isFrontCamera)
+            return
+        }
+        val wasFrontCamera = isFrontCamera
+        cameraVideoCapturer.switchCamera(object : CameraSwitchHandler {
             override fun onCameraSwitchDone(currentCameraIsFront: Boolean) {
                 isFrontCamera = currentCameraIsFront
+                onSwitched(currentCameraIsFront)
             }
 
             override fun onCameraSwitchError(s: String) {
                 Log.e(TAG, "Error while switching camera: $s")
+                onSwitched(wasFrontCamera)
             }
         })
     }
@@ -1530,6 +1603,7 @@ class CallActivity : CallBaseActivity() {
                 localStream!!.videoTracks[0].setEnabled(enable)
                 localCallParticipantModel.isVideoEnabled = enable
             }
+            isSelfVideoEnabled = enable
             if (enable) {
                 binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
@@ -1717,8 +1791,16 @@ class CallActivity : CallBaseActivity() {
 
                 override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
                     // FIXME check for compatible Call API version
+                    // The policy comes from these fresh capabilities, not from the cached ones of the user
+                    capabilitiesOverall.ocs?.data?.capabilities?.let {
+                        conversationUser.capabilities = it
+                        isCallEndToEndEncryptionEnabled =
+                            CapabilitiesUtil.isCallEndToEndEncryptionEnabled(it.spreedCapability)
+                    }
                     if (hasExternalSignalingServer) {
                         setupAndInitiateWebSocketsConnection()
+                    } else if (isCallEndToEndEncryptionEnabled) {
+                        failCallEncryption(R.string.nc_call_e2ee_requires_hpb)
                     } else {
                         signalingMessageReceiver = internalSignalingMessageReceiver
                         signalingMessageReceiver!!.addListener(localParticipantMessageListener)
@@ -2060,24 +2142,15 @@ class CallActivity : CallBaseActivity() {
             hasMCU = webSocketClient!!.hasMCU()
             Log.d(TAG, "hasMCU is $hasMCU")
 
-            if (hasMCU) {
-                messageSender = MessageSenderMcu(
-                    signalingMessageSender,
-                    getParticipantSessionKeys(),
-                    peerConnectionWrapperList,
-                    webSocketClient!!.sessionId
-                )
-            } else {
-                messageSender = MessageSenderNoMcu(
-                    signalingMessageSender,
-                    getParticipantSessionKeys(),
-                    peerConnectionWrapperList
-                )
-            }
+            messageSender = createMessageSender()
         } else {
             if (webSocketClient!!.isConnected && currentCallStatus === CallStatus.PUBLISHER_FAILED) {
                 webSocketClient!!.restartWebSocket()
             }
+        }
+        // An already connected signaling server sends no new "hello", so the MCU requirement is checked here
+        if (webSocketClient!!.isConnected && !ensureMcuForCallEncryption()) {
+            return
         }
         joinRoomAndCall()
     }
@@ -2104,20 +2177,11 @@ class CallActivity : CallBaseActivity() {
                     hasMCU = webSocketClient!!.hasMCU()
                     Log.d(TAG, "hasMCU is $hasMCU")
 
-                    if (hasMCU) {
-                        messageSender = MessageSenderMcu(
-                            signalingMessageSender,
-                            getParticipantSessionKeys(),
-                            peerConnectionWrapperList,
-                            webSocketClient!!.sessionId
-                        )
-                    } else {
-                        messageSender = MessageSenderNoMcu(
-                            signalingMessageSender,
-                            getParticipantSessionKeys(),
-                            peerConnectionWrapperList
-                        )
+                    if (!ensureMcuForCallEncryption()) {
+                        return
                     }
+
+                    messageSender = createMessageSender()
 
                     if (!webSocketCommunicationEvent.getHashMap()!!.containsKey("oldResumeId")) {
                         if (currentCallStatus === CallStatus.RECONNECTING) {
@@ -2303,6 +2367,8 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    // The leaveCall DELETE is fire-and-forget: it must outlive this Activity, so it is not disposed with it
+    @SuppressLint("CheckResult")
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
         if (!::conversationUser.isInitialized) {
@@ -2367,13 +2433,13 @@ class CallActivity : CallBaseActivity() {
             val taskInfo = appTask.taskInfo
             val baseActivityName = taskInfo?.baseActivity?.className
             taskInfo != null &&
-                taskInfo.taskId != taskId &&
+                taskInfo.taskIdCompat != taskId &&
                 baseActivityName == MainActivity::class.java.name
         } ?: appTasks.firstOrNull { appTask ->
             val taskInfo = appTask.taskInfo
             val baseActivityName = taskInfo?.baseActivity?.className
             taskInfo != null &&
-                taskInfo.taskId != taskId &&
+                taskInfo.taskIdCompat != taskId &&
                 baseActivityName != CallActivity::class.java.name &&
                 baseActivityName != CallNotificationActivity::class.java.name
         }
@@ -2385,14 +2451,17 @@ class CallActivity : CallBaseActivity() {
             }
             primaryTask.startActivity(context, intent, null)
             primaryTask.moveToFront()
-            val primaryTaskId = primaryTask.taskInfo?.taskId
+            val primaryTaskId = primaryTask.taskInfo?.taskIdCompat
             appTasks
                 .filter { appTask ->
                     val taskInfo = appTask.taskInfo
                     val baseActivityName = taskInfo?.baseActivity?.className
                     val isCallTask = baseActivityName == CallActivity::class.java.name ||
                         baseActivityName == CallNotificationActivity::class.java.name
-                    taskInfo != null && !isCallTask && taskInfo.taskId != primaryTaskId && taskInfo.taskId != taskId
+                    taskInfo != null &&
+                        !isCallTask &&
+                        taskInfo.taskIdCompat != primaryTaskId &&
+                        taskInfo.taskIdCompat != taskId
                 }
                 .forEach { it.finishAndRemoveTask() }
         } else {
@@ -2404,6 +2473,11 @@ class CallActivity : CallBaseActivity() {
             startActivity(mainIntent)
         }
     }
+
+    // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
+    @Suppress("DEPRECATION")
+    private val ActivityManager.RecentTaskInfo.taskIdCompat: Int
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskId else persistentId
 
     private fun startVideoCapture(isPortrait: Boolean) {
         val (width, height) = if (isPortrait) {
@@ -2501,7 +2575,7 @@ class CallActivity : CallBaseActivity() {
             removeSessions(participantsInCall)
             return
         }
-        if (currentCallStatus === CallStatus.LEAVING) {
+        if (currentCallStatus === CallStatus.LEAVING || (hasMCU && !ensureCallEncryption())) {
             return
         }
         if (hasMCU) {
@@ -2537,6 +2611,9 @@ class CallActivity : CallBaseActivity() {
         var selfJoined = false
         val selfParticipantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(selfParticipant)
         for (participant in joined) {
+            if (currentCallStatus === CallStatus.LEAVING) {
+                return
+            }
             val sessionId = participant.sessionId
             if (sessionId == null) {
                 Log.w(TAG, "Null sessionId for call participant, this should not happen: $participant")
@@ -2653,6 +2730,7 @@ class CallActivity : CallBaseActivity() {
                 return null
             }
             peerConnectionWrapper = createPeerConnectionWrapperForSessionIdAndType(publisher, sessionId, type)
+                ?: return null
             synchronized(remoteAudioPlayoutLock) {
                 peerConnectionWrapperList.add(peerConnectionWrapper)
                 peerConnectionWrapper.setRemoteAudioPlayoutEnabled(remoteAudioPlayoutEnabled)
@@ -2680,7 +2758,7 @@ class CallActivity : CallBaseActivity() {
         publisher: Boolean,
         sessionId: String?,
         type: String
-    ): PeerConnectionWrapper {
+    ): PeerConnectionWrapper? {
         fun getPeerConnectionFactory(type: String): PeerConnectionFactory? {
             fun initScreenSharePeerConnectionFactory(): PeerConnectionFactory? {
                 val options = PeerConnectionFactory.Options()
@@ -2739,23 +2817,48 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        return PeerConnectionWrapper(
-            tempPeerConnectionFactory,
-            iceServers,
-            tempSdpConstraints,
-            sessionId,
-            // #6169: the remote sessionId is a signaling-layer session ID when external signaling
-            // is used, so the offerer election must compare same-namespace IDs. Pass the local
-            // signaling session (matching the currentSessionId resolution used elsewhere); with
-            // internal signaling webSocketClient == null, so callSession is used as before.
-            if (webSocketClient != null) webSocketClient!!.sessionId else callSession,
-            tempLocalStream,
-            tempIsMCUPublisher,
-            tempHasMCU,
-            type,
-            signalingMessageReceiver,
-            signalingMessageSender
-        )
+        val (senderKeyRing, receiverKeyRing) = keyRingsFor(tempIsMCUPublisher, tempHasMCU, sessionId)
+
+        return try {
+            PeerConnectionWrapper(
+                tempPeerConnectionFactory,
+                iceServers,
+                tempSdpConstraints,
+                sessionId,
+                // #6169: the remote sessionId is a signaling-layer session ID when external signaling
+                // is used, so the offerer election must compare same-namespace IDs. Pass the local
+                // signaling session (matching the currentSessionId resolution used elsewhere); with
+                // internal signaling webSocketClient == null, so callSession is used as before.
+                if (webSocketClient != null) webSocketClient!!.sessionId else callSession,
+                tempLocalStream,
+                tempIsMCUPublisher,
+                tempHasMCU,
+                type,
+                signalingMessageReceiver,
+                signalingMessageSender,
+                isCallEndToEndEncryptionEnabled,
+                senderKeyRing,
+                receiverKeyRing
+            )
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Not creating a connection to $sessionId", e)
+            failCallEncryption(R.string.nc_call_e2ee_setup_failed)
+            null
+        }
+    }
+
+    // The key exchange only exists with the MCU: own keys go to the publisher, the remote keys to each subscriber.
+    private fun keyRingsFor(
+        isMCUPublisher: Boolean,
+        hasMCU: Boolean,
+        sessionId: String?
+    ): Pair<FrameKeyRing?, FrameKeyRing?> {
+        val callEncryption = callEncryption() ?: return null to null
+        return when {
+            isMCUPublisher -> callEncryption.ownKeyRing to null
+            hasMCU && sessionId != null -> null to callEncryption.keyRing(sessionId)
+            else -> null to null
+        }
     }
 
     private fun addCallParticipant(sessionId: String?) {

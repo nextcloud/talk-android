@@ -95,9 +95,7 @@
     <string name="load_more_results">Показать больше результатов</string>
     <string name="local_time">Местное время: %1$s</string>
     <string name="location_permission_denied">Нет разрешения на доступ к геолокации</string>
-    <string name="location_permission_denied_msg">Включите в настройках приложения</string>
     <string name="location_services_disabled">Службы геолокации отключены</string>
-    <string name="location_services_disabled_msg">Включите службы геолокации (GPS), чтобы использовать эту функцию</string>
     <string name="lock_conversation">Заблокировать обсуждение</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="lower_hand">Опустить руку</string>
@@ -116,8 +114,6 @@
     <string name="message_deleted_by_you">Сообщение удалено вами</string>
     <string name="message_last_edited_by">Изменено: %1$s</string>
     <string name="message_poll_tap_to_open">Нажмите, чтобы открыть опрос</string>
-    <string name="message_search_begin_empty">Ничего не найдено</string>
-    <string name="message_search_begin_typing">Начните вводить текст для поиска…</string>
     <string name="message_search_hint">Поиск…</string>
     <string name="message_search_next_result">Следующий результат поиска</string>
     <string name="message_search_no_more_results">Больше сообщений не найдено</string>
@@ -128,6 +124,7 @@
     <string name="nc_about">О программе</string>
     <string name="nc_account_chooser_active_user">Активный пользователь</string>
     <string name="nc_account_chooser_add_account">Добавить учётную запись</string>
+    <string name="nc_account_removal_pending">Удаление этой учётной записи ещё не завершено. Повторите попытку через некоторое время.</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть изменена</string>
     <string name="nc_add_attachment">Добавить вложение</string>
     <string name="nc_add_emojis">Добавить эмодзи</string>
@@ -141,6 +138,23 @@
     <string name="nc_announcement">Оповещение</string>
     <string name="nc_announcement_description">Обсуждение, в котором администраторы оповещают постоянную аудиторию; покинуть его нельзя.</string>
     <string name="nc_attendee_pin">Пин: %1$s</string>
+    <string name="nc_audio_error_generic">Не удалось воспроизвести аудиозапись</string>
+    <string name="nc_audio_error_network">Не удалось загрузить аудиозапись. Проверьте соединение.</string>
+    <string name="nc_audio_error_unavailable">Аудиофайл недоступен</string>
+    <string name="nc_audio_error_unsupported">Формат аудиозаписи не поддерживается</string>
+    <string name="nc_audio_player_close">Остановить воспроизведение</string>
+    <string name="nc_audio_player_next">Следующая запись</string>
+    <string name="nc_audio_player_open">Открыть проигрыватель</string>
+    <string name="nc_audio_player_play_pause">Воспроизведение/пауза</string>
+    <string name="nc_audio_player_previous">Предыдущая запись</string>
+    <string name="nc_audio_player_queue">Очередь воспроизведения</string>
+    <string name="nc_audio_player_repeat_all">Повторять все</string>
+    <string name="nc_audio_player_repeat_off">Повтор выключен</string>
+    <string name="nc_audio_player_repeat_one">Повторять текущую</string>
+    <string name="nc_audio_player_show_message">Показать сообщение</string>
+    <string name="nc_audio_player_shuffle">Случайный порядок</string>
+    <string name="nc_audio_retry">Попробовать воспроизвести снова</string>
+    <string name="nc_audio_seek">Позиция воспроизведения</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
     <string name="nc_bluetooth_permission_hint">Чтобы включить динамики Bluetooth, предоставьте разрешение «Устройства поблизости».</string>
     <string name="nc_call_button_content_description_answer_video_call">Ответить с видео</string>
@@ -150,9 +164,12 @@
     <string name="nc_call_button_content_description_hangup">Повесить трубку</string>
     <string name="nc_call_button_content_description_microphone">Включить/выключить микрофон</string>
     <string name="nc_call_button_content_description_pip">Открыть в режиме «картинка в картинке»</string>
+    <string name="nc_call_button_content_description_switch_camera">Переключить камеру</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключить видео на себя</string>
     <string name="nc_call_e2ee_not_supported">Вызовы сейчас не поддерживаются: на сервере включено сквозное шифрование</string>
     <string name="nc_call_e2ee_not_supported_title">Вызов от %s недоступен</string>
+    <string name="nc_call_e2ee_requires_hpb">Для вызовов со сквозным шифрованием нужен высокопроизводительный сервер (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Не удалось настроить сквозное шифрование для этого вызова</string>
     <string name="nc_call_incoming">Входящий вызов</string>
     <string name="nc_call_join_failed">Не удалось присоединиться к вызову. Попробуйте ещё раз.</string>
     <string name="nc_call_name">Название обсуждения</string>
@@ -164,6 +181,8 @@
     <string name="nc_call_raised_hand">%1$s поднял(а) руку</string>
     <string name="nc_call_reconnecting">Переподключение…</string>
     <string name="nc_call_ringing">Идёт вызов</string>
+    <string name="nc_call_self_video_enlarge">Увеличить своё видео</string>
+    <string name="nc_call_self_video_shrink">Уменьшить своё видео</string>
     <string name="nc_call_state_in_call">%1$s в вызове</string>
     <string name="nc_call_state_with_phone">%1$s с телефоном</string>
     <string name="nc_call_state_with_video">%1$s с видео</string>
@@ -175,7 +194,7 @@
     <string name="nc_cancel">Отмена</string>
     <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых возможностей</string>
     <string name="nc_caption">Подпись</string>
-    <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
+    <string name="nc_certificate_dialog_text_for_host">Доверять ранее неизвестному сертификату SSL сервера %1$s, выпущенному %2$s для %3$s, действительному с %4$s по %5$s? Он будет считаться доверенным только для %1$s.</string>
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_error">Настройки SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для аутентификации</string>
@@ -361,7 +380,6 @@
     <string name="nc_lobby_start_soon">Встреча скоро начнётся</string>
     <string name="nc_lobby_waiting">Вы сейчас ждёте в лобби.</string>
     <string name="nc_location_current_position_description">Ваше текущее местоположение</string>
-    <string name="nc_location_permission_required">требуется разрешение на доступ к местоположению</string>
     <string name="nc_location_unknown">Местоположение неизвестно</string>
     <string name="nc_locked">Заблокировано</string>
     <string name="nc_locked_tap_to_unlock">Коснитесь для разблокирования</string>
@@ -385,7 +403,6 @@
     <string name="nc_logs_share_diagnosis">Отчёт о диагностике</string>
     <string name="nc_logs_share_latest_crash">Последний сбой</string>
     <string name="nc_logs_share_no_app_found">Не найдено приложение для отправки отчёта.</string>
-    <string name="nc_logs_share_subject">Журналы %1$s</string>
     <string name="nc_logs_title">Журнал</string>
     <string name="nc_logs_total_size">Общий размер журналов: %d КБ</string>
     <string name="nc_manual">Не задано</string>
@@ -398,6 +415,7 @@
     <string name="nc_message_added_to_notes">Сообщение добавлено в заметки</string>
     <string name="nc_message_failed">Не удалось отправить сообщение</string>
     <string name="nc_message_failed_to_send">Не удалось отправить сообщение:</string>
+    <string name="nc_message_not_added_to_notes">Не удалось добавить сообщение в заметки</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
     <string name="nc_message_scheduled">Сообщение запланировано</string>
@@ -449,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть также для гостей</string>
     <string name="nc_owner">Владелец</string>
+    <string name="nc_participant_in_call">В вызове</string>
     <string name="nc_participant_type_change_failed">Не удалось изменить роль для участника</string>
+    <string name="nc_participant_with_phone">По телефону</string>
+    <string name="nc_participant_with_video">С видео</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
     <string name="nc_password">Пароль</string>
@@ -536,6 +557,9 @@
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
     <string name="nc_server_helper_text">Ссылка на веб-интерфейс %1$s, которую вы видите при открытии в браузере.</string>
+    <string name="nc_server_http_fallback_confirm">Использовать HTTP</string>
+    <string name="nc_server_http_fallback_message">Не удалось подключиться к серверу по HTTPS. Подключиться по незащищённому HTTP?</string>
+    <string name="nc_server_http_fallback_title">Небезопасное соединение</string>
     <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s</string>
     <string name="nc_server_import_account_plain">Импортировать учётную запись</string>
     <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s</string>

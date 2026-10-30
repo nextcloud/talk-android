@@ -93,9 +93,7 @@
     <string name="load_more_results">بار کردن نتایج بیشتر</string>
     <string name="local_time">زمان محلی: %1$s</string>
     <string name="location_permission_denied">دسترسی به موقعیت مکانی رد شد</string>
-    <string name="location_permission_denied_msg">لطفاً آن را در تنظیمات برنامه فعال کنید</string>
     <string name="location_services_disabled">خدمات موقعیت مکانی غیرفعال است</string>
-    <string name="location_services_disabled_msg">لطفاً برای استفاده از این ویژگی، خدمات موقعیت مکانی (GPS) را فعال کنید</string>
     <string name="lock_conversation">قفل مکالمه</string>
     <string name="lock_symbol">نماد قفل</string>
     <string name="lower_hand">پایین آوردن دست</string>
@@ -114,8 +112,6 @@
     <string name="message_deleted_by_you">پیام توسط شما حذف شد</string>
     <string name="message_last_edited_by">ویرایش شده توسط %1$s</string>
     <string name="message_poll_tap_to_open">برای باز کردن نظرسنجی ضربه بزنید</string>
-    <string name="message_search_begin_empty">جستجو نتیجه‌ای نداشت</string>
-    <string name="message_search_begin_typing">برای جستجو تایپ کنید...</string>
     <string name="message_search_hint">جستجو...</string>
     <string name="message_search_next_result">نتیجه جستجوی بعدی</string>
     <string name="message_search_no_more_results">پیام دیگری یافت نشد</string>
@@ -136,6 +132,8 @@
     <string name="nc_add_to_home_screen">افزودن به صفحه اصلی</string>
     <string name="nc_all_ok_operation">خوب، همه انجام شد!</string>
     <string name="nc_attendee_pin">سنجاق: %1$s</string>
+    <string name="nc_audio_player_next">بعدی</string>
+    <string name="nc_audio_player_previous">قبلی</string>
     <string name="nc_biometric_unlock">باز کردن %1$s</string>
     <string name="nc_bluetooth_permission_hint">برای فعال‌سازی بلندگوهای بلوتوث، لطفاً مجوز «دستگاه‌های مجاور» را اعطا کنید.</string>
     <string name="nc_call_button_content_description_answer_video_call">پاسخ با تماس تصویری</string>
@@ -145,6 +143,7 @@
     <string name="nc_call_button_content_description_hangup">قطع تماس</string>
     <string name="nc_call_button_content_description_microphone">تغییر وضعیت میکروفون</string>
     <string name="nc_call_button_content_description_pip">حالت تصویر در تصویر</string>
+    <string name="nc_call_button_content_description_switch_camera">دوربین را عوض کنید</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">تغییر به ویدئوی خود</string>
     <string name="nc_call_incoming">تماس ورودی</string>
     <string name="nc_call_name">نام مکالمه</string>
@@ -166,7 +165,6 @@
     <string name="nc_cancel">لغو</string>
     <string name="nc_capabilities_failed">دریافت قابلیت‌ها موفقیت‌آمیز نبود، درحال لغو</string>
     <string name="nc_caption">زیرنویس</string>
-    <string name="nc_certificate_dialog_text">آیا به گواهی SSL ناشناخته، صادر شده توسط، اعتماد دارید %1$s برای %2$s، معتبر از %3$s به %4$s؟</string>
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
@@ -321,7 +319,6 @@
     <string name="nc_lobby_start_soon">جلسه به زودی شروع می‌شود</string>
     <string name="nc_lobby_waiting">شما در حال حاضر در لابی منتظر هستید.</string>
     <string name="nc_location_current_position_description">مکان فعلی شما</string>
-    <string name="nc_location_permission_required">دسترسی مکان مورد نیاز است</string>
     <string name="nc_location_unknown">موقعیت ناشناخته</string>
     <string name="nc_locked">قفل‌شده</string>
     <string name="nc_locked_tap_to_unlock">برای باز کردن قفل ضربه بزنید</string>

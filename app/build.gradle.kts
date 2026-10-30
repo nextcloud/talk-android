@@ -10,7 +10,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
     id("com.google.devtools.ksp") version "2.3.12"
@@ -29,10 +29,9 @@ val daggerVersion = "2.60.1"
 val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
-val maplibreComposeVersion = "0.19.0"
-val okhttpVersion = "4.12.0"
+val maplibreComposeVersion = "0.20.0"
+val okhttpVersion = "5.5.1"
 val markwonVersion = "4.6.2"
-val materialDialogsVersion = "3.3.0"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
 val roomVersion = "2.8.5"
@@ -62,8 +61,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010012
-        versionName = "25.1.0 Alpha 12"
+        versionCode = 260000002
+        versionName = "26.0.0 Alpha 02"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -115,11 +114,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            optimization {
+                enable = true
+            }
         }
     }
 
@@ -197,6 +194,9 @@ configurations.configureEach {
 }
 
 dependencies {
+    constraints {
+        implementation("com.google.guava:guava:33.7.2-android")
+    }
     implementation("androidx.media3:media3-session:1.11.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
@@ -254,7 +254,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
 
     implementation("com.bluelinelabs:logansquare:1.3.7")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.20.1")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.22.4")
     kapt("com.bluelinelabs:logansquare-compiler:1.3.7")
 
     implementation("com.squareup.retrofit2:retrofit:$retrofit2Version")
@@ -290,20 +290,16 @@ dependencies {
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")
 
-    implementation("com.afollestad.material-dialogs:core:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:datetime:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogsVersion")
-    implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogsVersion")
-
     implementation("com.google.code.gson:gson:2.14.0")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-datasource-okhttp:$media3Version")
+    implementation("androidx.media3:media3-database:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
     implementation("androidx.media3:media3-transformer:$media3Version")
     implementation("androidx.media3:media3-effect:$media3Version")
 
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.32")
 
     implementation("io.noties.markwon:core:$markwonVersion")
     implementation("io.noties.markwon:ext-strikethrough:$markwonVersion")
@@ -337,7 +333,8 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.34.0")
     implementation("com.github.nextcloud.android-common:core:0.34.0")
-    implementation("com.github.nextcloud-deps:android-talk-webrtc:132.6834.0")
+    implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.1")
+    implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
     "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
@@ -361,14 +358,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.22.0")
+    testImplementation("org.mockito:mockito-core:5.24.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     androidTestImplementation("androidx.test:core:1.7.0")
 
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
-    androidTestImplementation("org.mockito:mockito-android:5.22.0")
+    androidTestImplementation("org.mockito:mockito-android:5.24.0")
     testImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion") {
@@ -384,9 +381,10 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     testImplementation("org.junit.vintage:junit-vintage-engine:6.1.3") // DO NOT REMOVE
-    testImplementation("com.google.crypto.tink:tink:1.23.0")
+    // no version: consistent resolution aligns it with the tink that org.unifiedpush.android:connector ships
+    testImplementation("com.google.crypto.tink:tink")
     testImplementation("androidx.room:room-testing:$roomVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:$okhttpVersion")
     testImplementation("com.squareup.okhttp3:okhttp-tls:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.60.1")
     testImplementation("org.robolectric:robolectric:4.17")

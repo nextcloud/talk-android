@@ -63,6 +63,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.edit
 import androidx.core.util.Consumer
 import androidx.emoji2.emojipicker.EmojiPickerView
 import androidx.emoji2.emojipicker.RecentEmojiProvider
@@ -100,9 +101,7 @@ private class ReactionRecentEmojiProvider(context: Context) : RecentEmojiProvide
 
     override fun recordSelection(emoji: String) {
         val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-        prefs.edit()
-            .putString(RECENT_REACTIONS_KEY, updated.take(MAX_STORED_RECENT_REACTIONS).joinToString(","))
-            .apply()
+        prefs.edit { putString(RECENT_REACTIONS_KEY, updated.take(MAX_STORED_RECENT_REACTIONS).joinToString(",")) }
     }
 
     override suspend fun getRecentEmojiList(): List<String> = getStoredList()
@@ -320,6 +319,8 @@ fun MessageActionsBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        // While the sheet animates, its drag gesture claims every touch down, so a tap on an action is lost.
+        sheetGesturesEnabled = !sheetState.isAnimationRunning,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         if (showEmojiPicker) {
@@ -778,7 +779,7 @@ private fun EditedInfo(editedBy: String, editedAt: String) {
     ) {
         if (editedBy.isNotEmpty()) {
             Text(
-                text = editedBy,
+                text = stringResource(R.string.message_last_edited_by, editedBy),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -49,8 +49,6 @@
     <!-- Web draws every client-side avatar on the background-darker colour in dark mode -->
     <color name="character_avatar_background_guest">#3B3B3B</color>
     <color name="character_avatar_background_bot">#3B3B3B</color>
-    
-    <color name="bg_message_own_reaction">#29ffffff</color>
 
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>

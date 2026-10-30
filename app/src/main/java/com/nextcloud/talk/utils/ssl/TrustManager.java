@@ -21,19 +21,38 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.net.Socket;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509ExtendedTrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import okio.ByteString;
 
-public class TrustManager implements X509TrustManager {
+/**
+ * Trusts certificates trusted by the system, plus certificates the user accepted for a specific host.
+ * <p>
+ * User-accepted certificates are stored under the alias {@code <host>|<sha256 of the certificate>}, so each one is
+ * only trusted for the host it was accepted for. Entries stored under any other alias are not honoured.
+ */
+public class TrustManager extends X509ExtendedTrustManager {
     private static final String TAG = "TrustManager";
+    private static final String ALIAS_SEPARATOR = "|";
+
+    @VisibleForTesting
+    long userDecisionTimeoutMillis = 15000;
 
     private final File keystoreFile;
     private X509TrustManager systemTrustManager = null;
@@ -87,22 +106,48 @@ public class TrustManager implements X509TrustManager {
         return new HostnameVerifier(defaultHostNameVerifier);
     }
 
-    private boolean isCertInTrustStore(X509Certificate[] x509Certificates, String s) {
+    private static String aliasFor(String host, X509Certificate x509Certificate)
+        throws CertificateEncodingException {
+        String fingerprint = ByteString.of(x509Certificate.getEncoded()).sha256().hex();
+        return host.toLowerCase(Locale.ROOT) + ALIAS_SEPARATOR + fingerprint;
+    }
+
+    @Nullable
+    private static String peerHost(Socket socket) {
+        if (socket instanceof SSLSocket) {
+            SSLSession handshakeSession = ((SSLSocket) socket).getHandshakeSession();
+            if (handshakeSession != null) {
+                return handshakeSession.getPeerHost();
+            }
+        }
+        return null;
+    }
+
+    private boolean isServerTrusted(X509Certificate[] x509Certificates, String s, @Nullable String host) {
         if (systemTrustManager != null) {
             X509Certificate x509Certificate = x509Certificates[0];
             try {
                 systemTrustManager.checkServerTrusted(x509Certificates, s);
                 return true;
             } catch (CertificateException e) {
-                if (!isCertInTrustStore(x509Certificate)) {
-                    EventBus.getDefault().post(new CertificateEvent(x509Certificate, this,
-                                                                    null));
+                if (host == null) {
+                    Log.w(TAG, "Peer host unknown, only accepting certificates trusted by the system");
+                    return false;
+                }
+                String alias;
+                try {
+                    alias = aliasFor(host, x509Certificate);
+                } catch (CertificateEncodingException encodingException) {
+                    return false;
+                }
+                if (!isCertStoredUnder(alias, x509Certificate)) {
+                    EventBus.getDefault().post(new CertificateEvent(x509Certificate, host, this, null));
                     long startTime = System.currentTimeMillis();
-                    while (!isCertInTrustStore(x509Certificate) && System.currentTimeMillis() <=
-                        startTime + 15000) {
+                    while (!isCertStoredUnder(alias, x509Certificate) && System.currentTimeMillis() <=
+                        startTime + userDecisionTimeoutMillis) {
                         //do nothing
                     }
-                    return isCertInTrustStore(x509Certificate);
+                    return isCertStoredUnder(alias, x509Certificate);
                 } else {
                     return true;
                 }
@@ -112,12 +157,18 @@ public class TrustManager implements X509TrustManager {
         return false;
     }
 
-    private boolean isCertInTrustStore(X509Certificate x509Certificate) {
+    private boolean isCertInTrustStore(String host, X509Certificate x509Certificate) {
+        try {
+            return isCertStoredUnder(aliasFor(host, x509Certificate), x509Certificate);
+        } catch (CertificateEncodingException exception) {
+            return false;
+        }
+    }
+
+    private boolean isCertStoredUnder(String alias, X509Certificate x509Certificate) {
         if (trustedKeyStore != null) {
             try {
-                if (trustedKeyStore.getCertificateAlias(x509Certificate) != null) {
-                    return true;
-                }
+                return x509Certificate.equals(trustedKeyStore.getCertificate(alias));
             } catch (KeyStoreException exception) {
                 return false;
             }
@@ -126,10 +177,10 @@ public class TrustManager implements X509TrustManager {
         return false;
     }
 
-    public void addCertInTrustStore(X509Certificate x509Certificate) {
+    public void addCertInTrustStore(String host, X509Certificate x509Certificate) {
         if (trustedKeyStore != null) {
             try (FileOutputStream fileOutputStream = new FileOutputStream(keystoreFile)) {
-                trustedKeyStore.setCertificateEntry(x509Certificate.getSubjectDN().getName(), x509Certificate);
+                trustedKeyStore.setCertificateEntry(aliasFor(host, x509Certificate), x509Certificate);
                 trustedKeyStore.store(fileOutputStream, null);
             } catch (Exception exception) {
                 Log.d(TAG, "Failed to set certificate entry " + exception.getLocalizedMessage());
@@ -143,8 +194,39 @@ public class TrustManager implements X509TrustManager {
     }
 
     @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
+        throws CertificateException {
+        checkClientTrusted(x509Certificates, s);
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine)
+        throws CertificateException {
+        checkClientTrusted(x509Certificates, s);
+    }
+
+    /**
+     * Without a host, only certificates trusted by the system are accepted.
+     */
+    @Override
     public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        if (!isCertInTrustStore(x509Certificates, s)) {
+        if (!isServerTrusted(x509Certificates, s, null)) {
+            throw new CertificateException();
+        }
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
+        throws CertificateException {
+        if (!isServerTrusted(x509Certificates, s, peerHost(socket))) {
+            throw new CertificateException();
+        }
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine)
+        throws CertificateException {
+        if (!isServerTrusted(x509Certificates, s, sslEngine.getPeerHost())) {
             throw new CertificateException();
         }
     }
@@ -176,8 +258,8 @@ public class TrustManager implements X509TrustManager {
 
                 // Certificate has no (matching) Subject Alternative Name, e.g. legacy self-signed
                 // certificates that only set the Common Name. Accept it anyway if the user already
-                // explicitly trusted this exact certificate via the certificate dialog.
-                return isCertInTrustStore(certificates[0]);
+                // explicitly trusted this exact certificate for this host via the certificate dialog.
+                return isCertInTrustStore(s, certificates[0]);
             } catch (SSLPeerUnverifiedException e) {
                 Log.d(TAG, "Couldn't get certificate for host name verification");
                 return false;

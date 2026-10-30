@@ -63,6 +63,11 @@
             android:orientation="vertical">
 
             <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/audioPlayerBarComposeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/upcomingEventComposeView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

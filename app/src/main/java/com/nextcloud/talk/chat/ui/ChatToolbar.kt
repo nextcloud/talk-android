@@ -168,7 +168,16 @@ private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallba
                 }
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.notifications_default)) },
+                        text = {
+                            Column {
+                                Text(stringResource(R.string.notifications_default))
+                                Text(
+                                    stringResource(R.string.notifications_default_description),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        },
                         onClick = {
                             callbacks.onThreadNotificationLevelChange(0)
                             expanded = false

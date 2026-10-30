@@ -19,6 +19,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
@@ -27,7 +28,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
@@ -271,8 +271,7 @@ open class BaseActivity : AppCompatActivity() {
         decorView.setOnApplyWindowInsetsListener { view, insets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 val systemBars = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or
-                        WindowInsetsCompat.Type.displayCutout()
+                    WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
                 )
                 val color = ResourcesCompat.getColor(resources, R.color.bg_default, context.theme)
                 view.setBackgroundColor(color)
@@ -322,6 +321,7 @@ open class BaseActivity : AppCompatActivity() {
     @Suppress("Detekt.NestedBlockDepth")
     private fun showCertificateDialog(
         cert: X509Certificate,
+        host: String,
         trustManager: TrustManager,
         sslErrorHandler: SslErrorHandler?
     ) {
@@ -350,7 +350,8 @@ open class BaseActivity : AppCompatActivity() {
 
             @SuppressLint("StringFormatMatches")
             val dialogText = String.format(
-                resources.getString(R.string.nc_certificate_dialog_text),
+                resources.getString(R.string.nc_certificate_dialog_text_for_host),
+                host,
                 issuedBy,
                 issuedFor,
                 validFrom,
@@ -365,7 +366,7 @@ open class BaseActivity : AppCompatActivity() {
             ).setTitle(R.string.nc_certificate_dialog_title)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.nc_yes) { _, _ ->
-                    trustManager.addCertInTrustStore(cert)
+                    trustManager.addCertInTrustStore(host, cert)
                     sslErrorHandler?.proceed()
                 }.setNegativeButton(R.string.nc_no) { _, _ ->
                     sslErrorHandler?.cancel()
@@ -397,7 +398,7 @@ open class BaseActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
-        showCertificateDialog(event.x509Certificate, event.trustManager, event.sslErrorHandler)
+        showCertificateDialog(event.x509Certificate, event.host, event.trustManager, event.sslErrorHandler)
     }
 
     override fun startActivity(intent: Intent) {

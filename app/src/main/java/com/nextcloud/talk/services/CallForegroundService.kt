@@ -26,6 +26,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.content.ContextCompat
@@ -157,7 +158,7 @@ class CallForegroundService : Service() {
             .build()
     }
 
-    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun buildCallStyleNotification(contentTitle: String, pendingIntent: PendingIntent): Notification {
         val callerIcon = conversationAvatarBitmap?.let { Icon.createWithBitmap(it) }
             ?: Icon.createWithResource(this, R.drawable.ic_call_white_24dp)
@@ -183,7 +184,7 @@ class CallForegroundService : Service() {
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_CALL)
-            .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+            .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
             .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .also { builder ->
@@ -227,7 +228,7 @@ class CallForegroundService : Service() {
         }
     }
 
-    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun refreshCallStyleNotification() {
         val contentTitle = currentConversationName?.takeIf { it.isNotBlank() }
             ?: getString(R.string.nc_call_ongoing_notification_default_title)
@@ -236,7 +237,6 @@ class CallForegroundService : Service() {
         getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
-    @SuppressLint("NewApi")
     private fun startTimeBasedNotificationUpdates() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
 

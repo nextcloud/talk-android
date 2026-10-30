@@ -314,6 +314,7 @@ public class WebRtcBluetoothManager {
         reassertModernBluetoothAudioAfterFocusGain();
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private void reassertModernBluetoothAudioAfterFocusGain() {
         cancelTimer();
         cancelBluetoothRouteRetry();
@@ -373,7 +374,7 @@ public class WebRtcBluetoothManager {
 
     void onNonBluetoothCommunicationDeviceSelected() {
         ThreadUtils.checkIsOnMainThread();
-        if (!started || modernBluetoothRoute == null) {
+        if (!started || Build.VERSION.SDK_INT < Build.VERSION_CODES.S || modernBluetoothRoute == null) {
             return;
         }
         cancelTimer();
