@@ -30,7 +30,7 @@ val emojiVersion = "1.7.0"
 val fidoVersion = "4.1.0-patch2"
 val lifecycleVersion = "2.11.0"
 val maplibreComposeVersion = "0.20.0"
-val okhttpVersion = "5.5.0"
+val okhttpVersion = "5.5.1"
 val markwonVersion = "4.6.2"
 val parcelerVersion = "1.1.13"
 val retrofit2Version = "3.0.0"
@@ -115,11 +115,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            optimization {
+                enable = true
+            }
         }
     }
 
@@ -197,6 +195,9 @@ configurations.configureEach {
 }
 
 dependencies {
+    constraints {
+        implementation("com.google.guava:guava:33.7.2-android")
+    }
     implementation("androidx.media3:media3-session:1.11.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")
@@ -260,7 +261,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
 
     implementation("com.bluelinelabs:logansquare:1.3.7")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.20.1")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.22.4")
     kapt("com.bluelinelabs:logansquare-compiler:1.3.7")
 
     implementation("com.squareup.retrofit2:retrofit:$retrofit2Version")

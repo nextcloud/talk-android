@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Skift til egen video</string>
     <string name="nc_call_e2ee_not_supported">Opkald understøttes ikke i øjeblikket, fordi end-to-end-kryptering er slået til på serveren</string>
     <string name="nc_call_e2ee_not_supported_title">Opkald fra %s er ikke tilgængeligt</string>
+    <string name="nc_call_e2ee_requires_hpb">End-to-end-krypterede opkald kræver den højtydende backend (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">End-to-end-kryptering kunne ikke konfigureres for dette opkald</string>
     <string name="nc_call_incoming">INDGÅENDE</string>
     <string name="nc_call_join_failed">Kunne ikke deltage i opkaldet. Prøv igen.</string>
     <string name="nc_call_name">Samtalenavn</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Åbn samtalen for registrerede brugere</string>
     <string name="nc_open_to_guest_app_users">Også åben for brugere af appen Gæster</string>
     <string name="nc_owner">Ejer</string>
+    <string name="nc_participant_in_call">I opkald</string>
     <string name="nc_participant_type_change_failed">Deltagerens type kunne ikke ændres</string>
+    <string name="nc_participant_with_phone">Med telefon</string>
+    <string name="nc_participant_with_video">Med video</string>
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
     <string name="nc_password">Adgangskode</string>

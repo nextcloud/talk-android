@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Переключить видео на себя</string>
     <string name="nc_call_e2ee_not_supported">Вызовы сейчас не поддерживаются: на сервере включено сквозное шифрование</string>
     <string name="nc_call_e2ee_not_supported_title">Вызов от %s недоступен</string>
+    <string name="nc_call_e2ee_requires_hpb">Для вызовов со сквозным шифрованием нужен высокопроизводительный сервер (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Не удалось настроить сквозное шифрование для этого вызова</string>
     <string name="nc_call_incoming">Входящий вызов</string>
     <string name="nc_call_join_failed">Не удалось присоединиться к вызову. Попробуйте ещё раз.</string>
     <string name="nc_call_name">Название обсуждения</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть также для гостей</string>
     <string name="nc_owner">Владелец</string>
+    <string name="nc_participant_in_call">В вызове</string>
     <string name="nc_participant_type_change_failed">Не удалось изменить роль для участника</string>
+    <string name="nc_participant_with_phone">По телефону</string>
+    <string name="nc_participant_with_video">С видео</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
     <string name="nc_password">Пароль</string>

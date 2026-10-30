@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">切換到自己的視頻</string>
     <string name="nc_call_e2ee_not_supported">由於伺服器上啟用了端對端加密，目前不支援呼叫。</string>
     <string name="nc_call_e2ee_not_supported_title">無法從 %s 通話</string>
+    <string name="nc_call_e2ee_requires_hpb">端對端加密通話需要使用高效能後端 (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">無法為此通話設定端對端加密。</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_join_failed">無法加入通話。請重試。</string>
     <string name="nc_call_name">對話名稱</string>

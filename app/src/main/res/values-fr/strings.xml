@@ -124,6 +124,7 @@
     <string name="nc_about">À propos</string>
     <string name="nc_account_chooser_active_user">Utilisateur actif</string>
     <string name="nc_account_chooser_add_account">Ajouter un compte</string>
+    <string name="nc_account_removal_pending">La suppression de ce compte n\'est pas encore terminée. Veuillez réessayer dans un moment.</string>
     <string name="nc_account_scheduled_for_deletion">La suppression du compte est planifiée, il ne peut donc pas être modifié</string>
     <string name="nc_add_attachment">Ajouter une pièce jointe</string>
     <string name="nc_add_emojis">Ajouter des emojis</string>
@@ -137,8 +138,12 @@
     <string name="nc_announcement">Annonce</string>
     <string name="nc_announcement_description">Conversation pour les administrateurs, destinée à informer une audience fixe, qui ne peut pas être quittée.</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
+    <string name="nc_audio_error_unavailable">Le fichier audio n\'est pas disponible</string>
+    <string name="nc_audio_error_unsupported">Le format audio n\'est pas pris en charge</string>
+    <string name="nc_audio_player_close">Arrêter la lecture</string>
     <string name="nc_audio_player_next">Suivant</string>
     <string name="nc_audio_player_previous">Précédent</string>
+    <string name="nc_audio_player_queue">Liste de lecture</string>
     <string name="nc_audio_player_repeat_off">Désactiver la répétition</string>
     <string name="nc_audio_seek">Position de lecture</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
@@ -154,6 +159,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_e2ee_not_supported">Les appels ne sont actuellement pas pris en charge, car le chiffrement de bout en bout est activé sur le serveur</string>
     <string name="nc_call_e2ee_not_supported_title">Appel indisponible depuis %s</string>
+    <string name="nc_call_e2ee_setup_failed">Le chiffrement de bout en bout n\'a pas pu être configuré pour cet appel</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_join_failed">Impossible de rejoindre l\'appel. Veuillez réessayer.</string>
     <string name="nc_call_name">Nom de la conversation</string>
