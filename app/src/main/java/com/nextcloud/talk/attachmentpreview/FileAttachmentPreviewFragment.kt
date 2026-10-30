@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
@@ -34,9 +33,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     private lateinit var filesList: ArrayList<String>
     private var conversationName: String = ""
     private var showFilePermissionsOption: Boolean = false
-    private var uploadFiles:
-        (files: MutableList<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit =
-        { _, _, _, _ -> }
+    private var startDrawing: Boolean = false
     private var composeView: ComposeView? = null
 
     @Inject
@@ -52,22 +49,12 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         ViewModelProvider(this, viewModelFactory)[FileAttachmentPreviewViewModel::class.java]
     }
 
-    fun setListener(
-        uploadFiles: (
-            files: MutableList<String>,
-            caption: String,
-            compressImages: Boolean,
-            allowUpdate: Boolean
-        ) -> Unit
-    ) {
-        this.uploadFiles = uploadFiles
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.let {
             filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
             conversationName = it.getString(CONVERSATION_NAME_ARG, "")
             showFilePermissionsOption = it.getBoolean(FILE_PERMISSIONS_OPTION_ARG, false)
+            startDrawing = it.getBoolean(START_DRAWING_ARG, false)
         }
 
         composeView = ComposeView(requireContext())
@@ -90,11 +77,10 @@ class FileAttachmentPreviewFragment : DialogFragment() {
             statusBarColor = Color.TRANSPARENT
             navigationBarColor = Color.TRANSPARENT
 
-            val surfaceColor = viewThemeUtils.getColorScheme(requireActivity()).surface
-            val isLightSurface = surfaceColor.luminance() > LIGHT_LUMINANCE_THRESHOLD
+            // The screen is always dark (photo on black), so system bar icons are always light.
             WindowInsetsControllerCompat(this, decorView).apply {
-                isAppearanceLightStatusBars = isLightSurface
-                isAppearanceLightNavigationBars = isLightSurface
+                isAppearanceLightStatusBars = false
+                isAppearanceLightNavigationBars = false
             }
         }
     }
@@ -104,7 +90,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
 
-        viewModel.setInitialFiles(filesList)
+        viewModel.setInitialFiles(filesList, startDrawing)
 
         composeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -117,7 +103,10 @@ class FileAttachmentPreviewFragment : DialogFragment() {
                         showFilePermissionsOption = showFilePermissionsOption,
                         onDismiss = { dismiss() },
                         onSend = { files, caption, compressImages, allowUpdate ->
-                            uploadFiles(files.toMutableList(), caption, compressImages, allowUpdate)
+                            parentFragmentManager.setFragmentResult(
+                                RESULT_KEY,
+                                packResult(files, caption, compressImages, allowUpdate)
+                            )
                             dismiss()
                         }
                     )
@@ -133,22 +122,41 @@ class FileAttachmentPreviewFragment : DialogFragment() {
 
     companion object {
 
-        private const val LIGHT_LUMINANCE_THRESHOLD = 0.5f
         private const val FILES_TO_UPLOAD_ARG = "FILES_TO_UPLOAD_ARG"
         private const val CONVERSATION_NAME_ARG = "CONVERSATION_NAME_ARG"
         private const val FILE_PERMISSIONS_OPTION_ARG = "FILE_PERMISSIONS_OPTION_ARG"
+        private const val START_DRAWING_ARG = "START_DRAWING_ARG"
+
+        const val RESULT_KEY = "FILE_ATTACHMENT_PREVIEW_RESULT"
+        const val RESULT_FILES = "RESULT_FILES"
+        const val RESULT_CAPTION = "RESULT_CAPTION"
+        const val RESULT_COMPRESS_IMAGES = "RESULT_COMPRESS_IMAGES"
+        const val RESULT_ALLOW_UPDATE = "RESULT_ALLOW_UPDATE"
+
+        /**
+         * The result goes through the fragment manager, so it still arrives after the activity was recreated.
+         */
+        fun packResult(files: List<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean): Bundle =
+            Bundle().apply {
+                putStringArrayList(RESULT_FILES, ArrayList(files))
+                putString(RESULT_CAPTION, caption)
+                putBoolean(RESULT_COMPRESS_IMAGES, compressImages)
+                putBoolean(RESULT_ALLOW_UPDATE, allowUpdate)
+            }
 
         @JvmStatic
         fun newInstance(
             filesToUpload: MutableList<String>,
             conversationName: String,
-            showFilePermissionsOption: Boolean = false
+            showFilePermissionsOption: Boolean = false,
+            startDrawing: Boolean = false
         ): FileAttachmentPreviewFragment {
             val fileAttachmentFragment = FileAttachmentPreviewFragment()
             val args = Bundle()
             args.putStringArrayList(FILES_TO_UPLOAD_ARG, ArrayList(filesToUpload))
             args.putString(CONVERSATION_NAME_ARG, conversationName)
             args.putBoolean(FILE_PERMISSIONS_OPTION_ARG, showFilePermissionsOption)
+            args.putBoolean(START_DRAWING_ARG, startDrawing)
             fileAttachmentFragment.arguments = args
             return fileAttachmentFragment
         }
