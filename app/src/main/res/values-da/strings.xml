@@ -467,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Åbn samtalen for registrerede brugere</string>
     <string name="nc_open_to_guest_app_users">Også åben for brugere af appen Gæster</string>
     <string name="nc_owner">Ejer</string>
+    <string name="nc_participant_in_call">I opkald</string>
     <string name="nc_participant_type_change_failed">Deltagerens type kunne ikke ændres</string>
+    <string name="nc_participant_with_phone">Med telefon</string>
+    <string name="nc_participant_with_video">Med video</string>
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
     <string name="nc_password">Adgangskode</string>

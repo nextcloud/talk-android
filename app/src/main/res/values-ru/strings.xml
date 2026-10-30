@@ -467,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть также для гостей</string>
     <string name="nc_owner">Владелец</string>
+    <string name="nc_participant_in_call">В вызове</string>
     <string name="nc_participant_type_change_failed">Не удалось изменить роль для участника</string>
+    <string name="nc_participant_with_phone">По телефону</string>
+    <string name="nc_participant_with_video">С видео</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
     <string name="nc_password">Пароль</string>
