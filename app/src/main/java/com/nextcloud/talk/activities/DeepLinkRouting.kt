@@ -61,10 +61,11 @@ class DeepLinkRouting(
             SystemClock.elapsedRealtime() - createdAt < MAX_LAUNCH_SCREEN_MS
 
     init {
-        // opened only while started, as an activity in the background can't start others
+        // shown only while resumed and not covered by the lock screen this activity started: the chat or question
+        // follows after unlocking, when the list is resumed again
         activity.lifecycleScope.launch {
-            activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect(::render)
+            activity.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.state.collect { if (!activity.isCoveredByLockScreen) render(it) }
             }
         }
         activity.lifecycle.addObserver(object : DefaultLifecycleObserver {

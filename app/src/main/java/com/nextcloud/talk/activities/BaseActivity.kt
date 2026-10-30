@@ -182,6 +182,13 @@ open class BaseActivity : AppCompatActivity() {
     open val view: View?
         get() = null
 
+    /**
+     * Whether this activity started the lock screen, which covers it until it is resumed again after unlocking. A
+     * screen it would open meanwhile, e.g. the chat of a deep link, would show above the lock screen.
+     */
+    var isCoveredByLockScreen = false
+        private set
+
     fun lockScreenIfConditionsApply() {
         val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         val isKeyguardSecure = keyguardManager.isKeyguardSecure
@@ -200,6 +207,7 @@ open class BaseActivity : AppCompatActivity() {
                     "elapsedSeconds=$elapsedSeconds"
             )
             if (timeoutSeconds == 0 || elapsedSeconds >= timeoutSeconds) {
+                isCoveredByLockScreen = true
                 startActivity(Intent(this, LockedActivity::class.java))
             }
         } catch (e: Exception) {
@@ -241,6 +249,7 @@ open class BaseActivity : AppCompatActivity() {
                 "pendingLockCheck=${NextcloudTalkApplication.pendingLockCheck} " +
                 "activity=${this.javaClass.simpleName}"
         )
+        isCoveredByLockScreen = false
         if (!skipLockCheckOnResume && NextcloudTalkApplication.pendingLockCheck) {
             NextcloudTalkApplication.pendingLockCheck = false
             lockScreenIfConditionsApply()
