@@ -270,7 +270,7 @@ dependencies {
     kapt("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("net.zetetic:sqlcipher-android:4.19.1")
+    implementation("net.zetetic:sqlcipher-android:4.20.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-rxjava2:$roomVersion")
