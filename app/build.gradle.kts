@@ -209,12 +209,12 @@ dependencies {
     implementation("androidx.compose.runtime:runtime:1.12.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.datastore:datastore-core:1.2.1")
-    implementation("androidx.datastore:datastore-preferences:1.2.1")
+    implementation("androidx.datastore:datastore-preferences:1.3.0")
     implementation("androidx.test.ext:junit-ktx:1.3.0")
 
     implementation(fileTree(mapOf("include" to listOf("*"), "dir" to "libs")))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
@@ -277,7 +277,7 @@ dependencies {
     kapt("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("net.zetetic:sqlcipher-android:4.19.1")
+    implementation("net.zetetic:sqlcipher-android:4.20.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-rxjava2:$roomVersion")
@@ -297,7 +297,7 @@ dependencies {
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:$fidoVersion")
     implementation("com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:$fidoVersion")
 
-    implementation("com.google.code.gson:gson:2.14.0")
+    implementation("com.google.code.gson:gson:2.15.0")
 
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-datasource-okhttp:$media3Version")
@@ -344,7 +344,7 @@ dependencies {
     implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
     "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
-    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
+    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.1")
 
     implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
