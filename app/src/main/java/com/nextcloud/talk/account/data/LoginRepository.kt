@@ -63,15 +63,27 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     private var accountToReauthorize: Long? = null
     private var shouldLoop = true
 
-    suspend fun pollLogin(response: LoginResponse): LoginCompletion? =
+    /**
+     * Polls until the login is confirmed, the login is canceled, or [keepPolling] is false (checked after every pause).
+     *
+     * The server hands out the login data only once, and the blocking request is not interrupted when the caller is
+     * canceled. [onConfirmed] is therefore called with the data as soon as it arrived, before the cancellation of
+     * the caller can discard it.
+     */
+    suspend fun pollLogin(
+        response: LoginResponse,
+        onConfirmed: (LoginCompletion) -> Unit = {},
+        keepPolling: () -> Boolean = { true }
+    ): LoginCompletion? =
         withContext(Dispatchers.IO) {
-            while (shouldLoop) {
+            while (shouldLoop && keepPolling()) {
                 val loginData = network.performLoginFlowV2(response)
                 if (loginData == null) {
                     break
                 }
 
                 if (loginData.status == HTTP_OK) {
+                    onConfirmed(loginData)
                     return@withContext loginData
                 }
 
@@ -205,6 +217,14 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
             val response = network.anonymouslyPostLoginRequest(baseUrl)
             return@withContext response
         }
+
+    /**
+     * Continues a login that was already started, the next step is [pollLogin] with its response.
+     */
+    fun resumeLoginFlow(reAuth: Boolean, accountToReauthorize: Long?) {
+        shouldReauthorizeUser = reAuth
+        this.accountToReauthorize = accountToReauthorize
+    }
 
     /**
      * Ends normal login process by canceling the polling
