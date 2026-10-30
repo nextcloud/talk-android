@@ -467,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
+    <string name="nc_participant_in_call">Em chamada</string>
     <string name="nc_participant_type_change_failed">Não foi possível alterar o tipo do participante</string>
+    <string name="nc_participant_with_phone">Com telefone</string>
+    <string name="nc_participant_with_video">Com vídeo</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
