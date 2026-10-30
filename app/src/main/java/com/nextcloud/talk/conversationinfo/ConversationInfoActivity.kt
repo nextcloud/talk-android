@@ -40,6 +40,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -47,7 +48,6 @@ import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -606,11 +606,7 @@ class ConversationInfoActivity : BaseActivity() {
                                     )
                                 }
 
-                                startActivity(
-                                    Intent(context, MainActivity::class.java).apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                    }
-                                )
+                                startActivity(AppTasks.createRestartIntent(context))
                             }
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
@@ -676,9 +672,7 @@ class ConversationInfoActivity : BaseActivity() {
                 )
             }
 
-            startActivity(
-                Intent(context, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
-            )
+            startActivity(AppTasks.createRestartIntent(context))
         }
     }
 

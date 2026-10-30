@@ -34,6 +34,7 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -50,7 +51,9 @@ import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.activities.DeepLinkActivity
+import com.nextcloud.talk.activities.DeepLinkRouting
+import com.nextcloud.talk.activities.DeepLinkRoutingViewModel
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -58,7 +61,6 @@ import com.nextcloud.talk.chat.audio.ChatAudioKey
 import com.nextcloud.talk.chat.audio.ChatAudioPlayer
 import com.nextcloud.talk.chat.audio.ChatAudioSpeeds
 import com.nextcloud.talk.chat.audio.ChatAudioStore
-import com.nextcloud.talk.chat.audio.openMessageExtras
 import com.nextcloud.talk.chat.audio.openMessageIntent
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -101,11 +103,13 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.RemoteWipeHandler
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -132,6 +136,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -139,6 +144,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
@@ -150,6 +156,9 @@ class ConversationsListActivity : BaseActivity() {
 
     // Started without an account on app start, when sharing from other apps and after login.
     override val allowsDefaultAccount = true
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
@@ -241,7 +250,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     // The source chat finished itself when forwarding started and this list may be the one below it, so finishing
-    // here would fall back to MainActivity. Instead leave the forward mode and return to the source chat.
+    // here would leave the app. Instead leave the forward mode and return to the source chat.
     private fun cancelForwarding() {
         val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
         intent.removeExtra(KEY_FORWARD_MSG_FLAG)
@@ -255,14 +264,21 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // before BaseActivity reads the account
+        removeExtrasOfApp(intent)
         super.onCreate(savedInstanceState)
-        if (isShareOfOtherApp(intent)) {
-            startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
-            finish()
-            return
-        }
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        if (finishIfNotShown()) return
         currentUser = setUpBoundUserOrFinish() ?: return
+        if (savedInstanceState == null) {
+            AppTasks.removeTasksLeftInRecents(this)
+            setUpPushRegistration()
+            // once per start of the app: a key that became invalid, e.g. after the lock screen of the device was
+            // reset, is created anew when it is checked
+            if (appPreferences.isScreenLocked) {
+                SecurityUtils.createKey(appPreferences.screenLockTimeout)
+            }
+        }
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -304,12 +320,56 @@ class ConversationsListActivity : BaseActivity() {
             handleEcoSystemIntent(it)
         }
         initObservers()
+
+        val deepLinkRoutingViewModel = ViewModelProvider(this, viewModelFactory)[DeepLinkRoutingViewModel::class.java]
+        deepLinkRouting = DeepLinkRouting(this, deepLinkRoutingViewModel) { currentUser.id }
+        deepLinkRouting.start(intent, savedInstanceState)
     }
+
+    /**
+     * Passes the intent of another app on, or opens the login without an account, finishes this list and returns true
+     * if it is not shown for its intent.
+     */
+    private fun finishIfNotShown(): Boolean {
+        val isViewOfOtherApp = isViewOfOtherApp(intent)
+        val otherIntent = when {
+            isShareOfOtherApp(intent) -> InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java)
+            isViewOfOtherApp -> createDeepLinkForwardIntent(intent)
+            runBlocking { userManager.getUsersNotScheduledForDeletion() }.isEmpty() ->
+                ServerSelectionActivity.createLoginIntent(this)
+            else -> null
+        } ?: return false
+        startActivity(otherIntent)
+        // a task of its own is removed before DeepLinkActivity passes the intent on, so it doesn't end up there
+        if (isViewOfOtherApp && isTaskRoot) finishAndRemoveTask() else finish()
+        return true
+    }
+
+    /** Registers for push messages, as the app was started. */
+    private fun setUpPushRegistration() {
+        if (appPreferences.useUnifiedPush) {
+            UnifiedPushUtils.setPeriodicPushRegistrationWorker(context)
+        } else {
+            ClosedInterfaceImpl().setUpPushTokenRegistration()
+        }
+    }
+
+    private fun createDeepLinkForwardIntent(intent: Intent): Intent =
+        InternalEntryPoint.createForwardIntent(
+            this,
+            intent,
+            DeepLinkActivity::class.java,
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
+        if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
+
+    // the routing of the deep links and contact chats DeepLinkActivity passes on to this list
+    private lateinit var deepLinkRouting: DeepLinkRouting
 
     // Set once this list is replaced by one for another account. onRestart and onNewIntent can both trigger that when
     // the list is brought back with an intent for another account, which must only relaunch it once.
@@ -317,18 +377,22 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (isRelaunching) return
-        if (isShareOfOtherApp(intent)) {
-            startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
-            return
-        }
+        removeExtrasOfApp(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
-        if (newUserId != 0L && newUserId != currentUser.id) {
-            relaunchForAccount(newUserId, intent)
-            return
+        when {
+            isShareOfOtherApp(intent) ->
+                startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
+            isViewOfOtherApp(intent) -> startActivity(createDeepLinkForwardIntent(intent))
+            // the list stays for its account and only routes the deep link
+            deepLinkRouting.onNewIntent(intent) -> Unit
+            // while relaunching, relaunchForAccount ignores the intent
+            isRelaunching || newUserId != 0L && newUserId != currentUser.id -> relaunchForAccount(newUserId, intent)
+            else -> showNewIntent(intent)
         }
-        currentUser.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
-        setIntent(intent)
+    }
+
+    private fun showNewIntent(intent: Intent) {
+        setIntent(intentOfAccount(this, intent, currentUser.id))
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
         handleEcoSystemIntent(intent)
@@ -511,8 +575,10 @@ class ConversationsListActivity : BaseActivity() {
 
         // Home screen shortcut tap: shortcut uses ACTION_VIEW with KEY_ROOM_TOKEN to open the
         // conversation directly without showing the share picker.
-        if (Intent.ACTION_VIEW == intent.action && intent.hasExtra(KEY_ROOM_TOKEN)) {
-            pendingDirectShareToken = intent.getStringExtra(KEY_ROOM_TOKEN)
+        if (Intent.ACTION_VIEW == intent.action) {
+            intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
+                pendingDirectShareToken = it
+            }
         }
 
         // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
@@ -539,7 +605,12 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         lifecycleScope.launch {
-            hasMultipleAccountsState.value = userManager.getUsers().size > 1
+            val users = userManager.getUsers()
+            hasMultipleAccountsState.value = users.size > 1
+            if (!areShortcutsWithoutDeepLinkUpdated) {
+                areShortcutsWithoutDeepLinkUpdated = true
+                withContext(Dispatchers.IO) { ShortcutManagerHelper.updateShortcutsWithoutDeepLink(context, users) }
+            }
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
         fetchRooms()
@@ -748,16 +819,11 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     /**
-     * Opens the chat of an audio message at the message, in its thread if it has one; messages of another account
-     * switch to that account.
+     * Opens the chat of an audio message at the message, in its thread if it has one, also of another account: its
+     * conversation list follows on back.
      */
     private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
-        if (key.internalUserId == currentUser?.id) {
-            val extras = key.openMessageExtras(threadId)
-            startActivity(ChatActivity.createIntent(context, key.internalUserId, key.roomToken, extras))
-        } else {
-            startActivity(key.openMessageIntent(this, threadId))
-        }
+        startActivity(key.openMessageIntent(this, threadId))
     }
 
     fun filterConversation() {
@@ -1554,9 +1620,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun restartApp() {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        startActivity(AppTasks.createRestartIntent(context))
     }
 
     private fun showOutdatedClientDialog() {
@@ -1720,6 +1784,9 @@ class ConversationsListActivity : BaseActivity() {
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
+        // once per process: the shortcuts without a deep link don't change while the app runs
+        private var areShortcutsWithoutDeepLinkUpdated = false
+
         /**
          * Creates an intent for this activity through its non-exported alias, so that it takes the account
          * [BundleKeys.KEY_INTERNAL_USER_ID] and the conversation [BundleKeys.KEY_ROOM_TOKEN] from it.
@@ -1740,6 +1807,65 @@ class ConversationsListActivity : BaseActivity() {
                 putExtra(KEY_INTERNAL_USER_ID, userId)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
+
+        /**
+         * The intents that open [screen] of the account [userId] from outside the app, e.g. from a notification, as a
+         * new back stack in the task of the app, with the conversation list of the account below [screen]. Only
+         * [screen] is created, and the list when going back, so [screen] removes the tasks of the app that are only
+         * left in the recents, see [BundleKeys.KEY_TOP_OF_NEW_BACK_STACK].
+         */
+        fun createBackStack(context: Context, userId: Long, screen: Intent): Array<Intent> =
+            arrayOf(
+                createAccountSwitchIntent(context, userId),
+                screen.putExtra(BundleKeys.KEY_TOP_OF_NEW_BACK_STACK, true)
+            )
+
+        /** Like [createBackStack], for the chat [roomToken] of [userId] with [extras]. */
+        fun createChatBackStack(
+            context: Context,
+            userId: Long,
+            roomToken: String,
+            extras: Bundle? = null
+        ): Array<Intent> {
+            val chatIntent = ChatActivity.createIntent(context, userId, roomToken, extras)
+            return createBackStack(context, userId, chatIntent)
+        }
+
+        /**
+         * Removes the extras that only the app itself may set, the account, the conversation to open and a message to
+         * forward with the conversation it came from, from an intent that was not started through its
+         * [InternalEntryPoint]. The activity is exported, so it could come from any app.
+         */
+        @VisibleForTesting
+        internal fun removeExtrasOfApp(intent: Intent) {
+            if (!InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)) {
+                intent.removeExtra(KEY_INTERNAL_USER_ID)
+                intent.removeExtra(KEY_ROOM_TOKEN)
+                intent.removeExtra(KEY_FORWARD_MSG_FLAG)
+                intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+                intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+            }
+        }
+
+        /**
+         * The new [intent], whose extras of the app were removed, as the app itself started it for the account
+         * [userId]: kept for a recreation of the activity, which would otherwise remove the account again.
+         */
+        @VisibleForTesting
+        internal fun intentOfAccount(context: Context, intent: Intent, userId: Long?): Intent =
+            Intent(intent)
+                .setClassName(context, InternalEntryPoint.nameOf(ConversationsListActivity::class.java))
+                .apply { userId?.let { putExtra(KEY_INTERNAL_USER_ID, it) } }
+
+        /**
+         * Whether [intent] is a VIEW intent of another app with a uri, e.g. of a pinned shortcut that targets the
+         * launcher activity, which is taken through [DeepLinkActivity].
+         */
+        @VisibleForTesting
+        internal fun isViewOfOtherApp(intent: Intent): Boolean =
+            !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) &&
+                intent.action == Intent.ACTION_VIEW &&
+                intent.data != null
 
         /** Whether [intent] shares content of another app, which is taken through [ShareActivity]. */
         @VisibleForTesting

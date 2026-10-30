@@ -76,6 +76,28 @@ class AppTasksTest {
         assertSame(other, AppTasks.findRunningAppTask(context, listOf(own, other)) { it.taskId != 1 })
     }
 
+    private val listRoot = ConversationsListActivity::class.java.name
+
+    @Test
+    fun `a task rooted at the conversation list that is only left in the recents is removed`() {
+        val leftInRecents = task(listRoot, numActivities = 0, taskId = 1)
+        val running = task(listRoot, taskId = 2)
+        val runningApp = task(launcherRoot, taskId = 3)
+        val tasks = listOf(leftInRecents, running, runningApp)
+
+        assertEquals(listOf(leftInRecents), AppTasks.findTasksLeftInRecents(context, tasks))
+    }
+
+    @Test
+    fun `the tasks of the app that are only left in the recents are removed, but not those of a share`() {
+        val app = task(launcherRoot, numActivities = 0, taskId = 1)
+        val fromNotification = task(internalRoot, numActivities = 0, taskId = 2)
+        val share = task(ShareActivity::class.java.name, numActivities = 0, taskId = 3)
+        val tasks = listOf(app, fromNotification, share)
+
+        assertEquals(listOf(app, fromNotification), AppTasks.findTasksLeftInRecents(context, tasks))
+    }
+
     private val chatIntent = Intent().setClassName(context, ChatActivity::class.java.name)
 
     // the activity that opens the chat, e.g. the one a notification starts

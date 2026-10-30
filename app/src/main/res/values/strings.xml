@@ -47,6 +47,12 @@ How to translate with transifex:
     <string name="nc_shortcut_created">Shortcut created</string>
     <string name="nc_shortcut_conversation_deleted">This conversation no longer exists</string>
     <string name="nc_no_account_for_server">No account found for this server</string>
+    <string name="nc_deep_link_join_title">Join conversation?</string>
+    <string name="nc_deep_link_join_message">This conversation on %1$s is not in your conversation list. Opening it can add you as a participant.</string>
+    <string name="nc_deep_link_join">Join</string>
+    <string name="nc_contact_chat_start_title">Start conversation?</string>
+    <string name="nc_contact_chat_start_message">You have no conversation with %1$s yet. Starting one adds it to the conversation list of both of you.</string>
+    <string name="nc_contact_chat_start">Start</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>

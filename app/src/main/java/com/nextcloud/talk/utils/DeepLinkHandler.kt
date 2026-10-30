@@ -99,7 +99,7 @@ object DeepLinkHandler {
      * Validates that a token matches the expected format.
      * Tokens should be alphanumeric and between 4-32 characters.
      */
-    private fun isValidToken(token: String): Boolean = TOKEN_PATTERN.matches(token)
+    fun isValidToken(token: String): Boolean = TOKEN_PATTERN.matches(token)
 
     /**
      * Creates a custom scheme URI for a conversation.

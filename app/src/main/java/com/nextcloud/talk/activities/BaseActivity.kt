@@ -43,6 +43,7 @@ import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.lock.LockedActivity
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
@@ -142,13 +143,14 @@ open class BaseActivity : AppCompatActivity() {
     private val boundUser: User? by boundUserLazy
 
     /**
-     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
+     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist. Without an account
+     * at all, an activity with [allowsDefaultAccount] opens the login.
      */
     private fun requireBoundUserOrFinish(): User? =
         boundUser ?: run {
             Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
             if (allowsDefaultAccount) {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(ServerSelectionActivity.createLoginIntent(this))
             }
             finish()
             null
@@ -217,6 +219,10 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
+        // e.g. a notification creates only its screen, not the conversation list below it, which would remove them
+        if (savedInstanceState == null && intent.getBooleanExtra(BundleKeys.KEY_TOP_OF_NEW_BACK_STACK, false)) {
+            AppTasks.removeTasksLeftInRecents(this)
+        }
     }
 
     public override fun onStart() {

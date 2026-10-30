@@ -403,7 +403,6 @@ class ChatActivity :
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
     var voiceOnly: Boolean = true
@@ -456,7 +455,7 @@ class ChatActivity :
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             } else {
-                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                val intent = ConversationsListActivity.createIntent(this@ChatActivity)
                 intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
@@ -1313,7 +1312,6 @@ class ChatActivity :
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         }
 
-        startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
         startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
 
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
@@ -1569,11 +1567,6 @@ class ChatActivity :
 
                     if (currentConversation.checkIfVoiceRoom()) {
                         startACall(false, true)
-                    }
-
-                    if (startCallFromNotification) {
-                        startCallFromNotification = false
-                        startACall(voiceOnly, false)
                     }
 
                     if (startCallFromRoomSwitch) {
@@ -3502,7 +3495,7 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.message)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomToken)
 
-        val intent = Intent(this, ConversationsListActivity::class.java)
+        val intent = ConversationsListActivity.createIntent(this)
         intent.putExtras(bundle)
         intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)

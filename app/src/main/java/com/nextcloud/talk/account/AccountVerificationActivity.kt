@@ -437,7 +437,7 @@ class AccountVerificationActivity : BaseActivity() {
                 ApplicationWideMessageHolder.getInstance().messageType =
                     ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
             }
-            val intent = Intent(context, ConversationsListActivity::class.java)
+            val intent = ConversationsListActivity.createIntent(context)
             intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userToSetAsActive.id)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
