@@ -7,6 +7,7 @@
 package com.nextcloud.talk.chat.ui
 
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.viewmodels.MessageSelection
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.utils.DateUtils
@@ -58,5 +59,57 @@ class MessageActionsStateTest {
             systemMessageType = ChatMessage.SystemMessageType.CONVERSATION_CREATED
         )
         Assert.assertFalse(buildStateFor(msg).showCopyMessageLink)
+    }
+
+    @Test
+    fun showSelect_trueForRegularMessage() {
+        val msg = ChatMessage().apply {
+            jsonMessageId = 4
+            message = "Hello world"
+        }
+        Assert.assertTrue(buildStateFor(msg).showSelect)
+    }
+
+    @Test
+    fun showSelect_falseForDeletedMessage() {
+        val msg = ChatMessage().apply {
+            jsonMessageId = 4
+            message = "Hello world"
+            isDeleted = true
+        }
+        Assert.assertFalse(buildStateFor(msg).showSelect)
+    }
+
+    @Test
+    fun showSelect_falseForSystemMessage() {
+        val msg = ChatMessage(
+            jsonMessageId = 4,
+            systemMessageType = ChatMessage.SystemMessageType.CONVERSATION_CREATED
+        )
+        Assert.assertFalse(buildStateFor(msg).showSelect)
+    }
+
+    @Test
+    fun showSelect_falseForPendingMessage() {
+        val msg = ChatMessage().apply {
+            jsonMessageId = -1
+            message = "Hello world"
+        }
+        Assert.assertFalse(buildStateFor(msg).showSelect)
+    }
+
+    @Test
+    fun selectEntry_toggleStartsSelectionOfThatMessage() {
+        val msg = ChatMessage().apply {
+            jsonMessageId = 7
+            message = "Hello world"
+        }
+        val selection = MessageSelection()
+        // the menu entry calls this toggle with the id of its message (ChatActivity: onSelect)
+        if (buildStateFor(msg).showSelect) {
+            selection.toggle(msg.jsonMessageId, msg.message)
+        }
+        Assert.assertEquals(setOf(7), selection.ids.value)
+        Assert.assertTrue(selection.isActive)
     }
 }

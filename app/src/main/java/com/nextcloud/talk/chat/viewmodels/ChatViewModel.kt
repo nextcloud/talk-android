@@ -575,6 +575,8 @@ class ChatViewModel @AssistedInject constructor(
         _messageActionsMessageId.value = null
     }
 
+    val messageSelection = MessageSelection()
+
     val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
 
     val isLoadingFlow = chatRepository.isLoadingFlow
@@ -1281,6 +1283,7 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
+                messageSelection.retainOnly(items.flatMapTo(HashSet()) { it.messageIds() })
             }
             .launchIn(viewModelScope)
     }
@@ -1981,6 +1984,12 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun messageIdsToDelete(messageId: Int): List<Int> = messageIdsToDelete(_uiState.value.items, messageId)
+
+    fun messageIdsToForward(selectedIds: Collection<Int>): List<Int> =
+        messageIdsToForward(_uiState.value.items, selectedIds)
+
+    fun selectedIdOfRow(selectedIds: Set<Int>, messageId: Int): Int? =
+        selectedIdOfRow(_uiState.value.items, selectedIds, messageId)
 
     fun deleteChatMessages(credentials: String, urlsByMessageId: Map<Int, String>) {
         val deletedPlaceholder = NextcloudTalkApplication.sharedApplication!!
@@ -2744,6 +2753,26 @@ class ChatViewModel @AssistedInject constructor(
                 ?: listOf(messageId)
 
         /**
+         * Ids to forward for the selected [selectedIds]: a selected media group file stands for its whole group
+         * (same expansion as a delete), each message once, oldest first.
+         */
+        internal fun messageIdsToForward(items: List<ChatItem>, selectedIds: Collection<Int>): List<Int> =
+            selectedIds.flatMap { messageIdsToDelete(items, it) }.distinct().sorted()
+
+        /**
+         * The selected id of the row [messageId] is shown in, or null when the row is not selected. A media group
+         * row is selected by any one of its files, so a toggle of another file of it must not select it twice.
+         */
+        internal fun selectedIdOfRow(items: List<ChatItem>, selectedIds: Set<Int>, messageId: Int): Int? =
+            items
+                .filterIsInstance<ChatItem.MediaGroupItem>()
+                .firstOrNull { group -> group.messages.any { it.id == messageId } }
+                ?.messages
+                ?.firstOrNull { it.id in selectedIds }
+                ?.id
+                ?: messageId.takeIf { it in selectedIds }
+
+        /**
          * Returns the read marker that makes [messageId] the first unread message: the id of the
          * message right before it, or 0 when it is the oldest message there is, which marks the whole
          * conversation as unread. Returns null when the message is not part of [items] at all.
@@ -2853,6 +2882,14 @@ class ChatViewModel @AssistedInject constructor(
             }
 
         fun containsMessage(messageId: Int): Boolean = messageId in messageIds()
+
+        /** Whether the row shows the checkmark of a selection. A media group shows it for any selected file of it. */
+        fun isChecked(selectedMessageIds: Set<Int>): Boolean =
+            when (this) {
+                is MessageItem -> uiMessage.id in selectedMessageIds
+                is MediaGroupItem -> messages.any { it.id in selectedMessageIds }
+                else -> false
+            }
 
         fun dateOrNull(): LocalDate? =
             when (this) {

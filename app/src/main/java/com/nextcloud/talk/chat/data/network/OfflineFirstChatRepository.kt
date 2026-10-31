@@ -792,7 +792,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     // "{file}" is the sentinel the server (and rest of this app) uses for "no caption"
                     message = caption.ifEmpty { "{file}" },
                     deleted = false,
-                    token = conversationModel.token,
+                    token = roomToken,
                     actorId = currentUser.userId!!,
                     actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
                     accountId = currentUser.id!!,
@@ -1246,13 +1246,13 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         val entity = ChatMessageEntity(
-            internalId = "$internalConversationId@_temp_$currentTimeMillis",
+            internalId = "$internalConversationId@_temp_$referenceId",
             internalConversationId = internalConversationId,
             id = negativeTimeOfDayMillis,
             threadId = threadId,
             message = message,
             deleted = false,
-            token = conversationModel.token,
+            token = roomToken,
             actorId = currentUser.userId!!,
             actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
             accountId = currentUser.id!!,

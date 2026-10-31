@@ -364,6 +364,36 @@ class ChatViewModelTest {
         assertEquals(listOf(5), ChatViewModel.messageIdsToDelete(items, messageId = 5))
     }
 
+    @Test
+    fun `forwarding selected media group expands every file once in message order`() {
+        val group = ChatViewModel.ChatItem.MediaGroupItem(listOf(uiMessage(10), uiMessage(11), uiMessage(12)))
+        val items = listOf(group, messageItem(13))
+
+        val pair = listOf(ChatViewModel.ChatItem.MediaGroupItem(listOf(uiMessage(10), uiMessage(11))))
+        assertEquals(listOf(10, 11), ChatViewModel.messageIdsToForward(pair, setOf(11)))
+        assertEquals(listOf(10, 11, 12), ChatViewModel.messageIdsToForward(items, setOf(10)))
+        assertEquals(listOf(10, 11, 12), ChatViewModel.messageIdsToForward(items, setOf(11)))
+        assertEquals(listOf(10, 11, 12), ChatViewModel.messageIdsToForward(items, setOf(12)))
+        assertEquals(listOf(10, 11, 12), ChatViewModel.messageIdsToForward(items, setOf(10, 12)))
+        assertEquals(listOf(10, 11, 12, 13), ChatViewModel.messageIdsToForward(items, setOf(12, 13)))
+        assertEquals(listOf(13), ChatViewModel.messageIdsToForward(items, setOf(13)))
+    }
+
+    @Test
+    fun `forwarding a mixed media group keeps every sent file and skips files still uploading`() {
+        val uploadId = "batch-16"
+        val group = ChatViewModel.ChatItem.MediaGroupItem(
+            listOf(
+                mediaMessage(1, refUtils.generateGroupedReferenceId(uploadId, 1)),
+                mediaMessage(2, refUtils.generateGroupedReferenceId(uploadId, 2)),
+                mediaMessage(-3, refUtils.generateGroupedReferenceId(uploadId, 3), isTemporary = true)
+            )
+        )
+
+        assertEquals(listOf(1, 2), ChatViewModel.messageIdsToForward(listOf(group), setOf(2)))
+        assertEquals(listOf(1, 2), ChatViewModel.messageIdsToForward(listOf(group), setOf(1, 2)))
+    }
+
     // Marking a message as unread. The chat items run newest first, the way the chat renders them
     // bottom-up, so the message that must stay read follows the selected one in that order - taking
     // the other neighbour would leave the selected message read and lose one unread message per step.
