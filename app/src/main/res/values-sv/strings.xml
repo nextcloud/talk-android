@@ -124,6 +124,7 @@
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv användare</string>
     <string name="nc_account_chooser_add_account">Lägg till konto</string>
+    <string name="nc_account_removal_pending">Borttagningen av det här kontot är ännu inte klar. Försök igen om en stund.</string>
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
     <string name="nc_add_attachment">Lägg till bilaga</string>
     <string name="nc_add_emojis">Lägg till emojier</string>
@@ -137,9 +138,22 @@
     <string name="nc_announcement">Meddelande</string>
     <string name="nc_announcement_description">Konversation för administratörer som ska informera en fast målgrupp och som inte kan lämnas.</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
+    <string name="nc_audio_error_generic">Det gick inte att spela upp ljudet</string>
+    <string name="nc_audio_error_network">Det gick inte att läsa in ljudet. Kontrollera din anslutning.</string>
+    <string name="nc_audio_error_unavailable">Ljudfilen är inte tillgänglig</string>
+    <string name="nc_audio_error_unsupported">Ljudformatet stöds inte</string>
+    <string name="nc_audio_player_close">Stoppa uppspelningen</string>
     <string name="nc_audio_player_next">Nästa</string>
+    <string name="nc_audio_player_open">Öppna spelaren</string>
+    <string name="nc_audio_player_play_pause">Spela upp/pausa</string>
     <string name="nc_audio_player_previous">Föregående</string>
+    <string name="nc_audio_player_queue">Spellista</string>
+    <string name="nc_audio_player_repeat_all">Upprepa alla</string>
     <string name="nc_audio_player_repeat_off">Upprepning av</string>
+    <string name="nc_audio_player_repeat_one">Upprepa en</string>
+    <string name="nc_audio_player_show_message">Visa meddelande</string>
+    <string name="nc_audio_player_shuffle">Blanda</string>
+    <string name="nc_audio_retry">Försök spela upp igen</string>
     <string name="nc_audio_seek">Uppspelningsposition</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
@@ -154,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Växla till egen video</string>
     <string name="nc_call_e2ee_not_supported">Samtal stöds för närvarande inte eftersom end-to-end-kryptering är aktiverad på servern.</string>
     <string name="nc_call_e2ee_not_supported_title">Samtal från %s är inte tillgängligt</string>
+    <string name="nc_call_e2ee_requires_hpb">End-to-end-krypterade samtal kräver en högpresterande backend (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Det gick inte att konfigurera end-to-end-kryptering för det här samtalet</string>
     <string name="nc_call_incoming">INKOMMANDE</string>
     <string name="nc_call_join_failed">Det gick inte att ansluta till samtalet. Försök igen.</string>
     <string name="nc_call_name">Konversationsnamn</string>
@@ -165,6 +181,8 @@
     <string name="nc_call_raised_hand">%1$s räckte upp handen</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_ringing">RINGER</string>
+    <string name="nc_call_self_video_enlarge">Förstora egen video</string>
+    <string name="nc_call_self_video_shrink">Förminska egen video</string>
     <string name="nc_call_state_in_call">%1$s i samtal</string>
     <string name="nc_call_state_with_phone">%1$s med telefon</string>
     <string name="nc_call_state_with_video">%1$s med video</string>
@@ -176,6 +194,7 @@
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_caption">Rubrik</string>
+    <string name="nc_certificate_dialog_text_for_host">Vill du lita på det hittills okända SSL-certifikatet för %1$s, utfärdat av %2$s för %3$s, som är giltigt från %4$s till %5$s? Det kommer endast att vara betrott för %1$s.</string>
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
@@ -448,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Öppna konversation för registrerade användare</string>
     <string name="nc_open_to_guest_app_users">Även öppen för gästappanvändare</string>
     <string name="nc_owner">Ägare</string>
+    <string name="nc_participant_in_call">I samtal</string>
     <string name="nc_participant_type_change_failed">Det gick inte att ändra deltagarens typ</string>
+    <string name="nc_participant_with_phone">Med telefon</string>
+    <string name="nc_participant_with_video">Med video</string>
     <string name="nc_participants">Deltagare</string>
     <string name="nc_participants_add">Lägg till deltagare</string>
     <string name="nc_password">Lösenord</string>
@@ -535,6 +557,9 @@
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
     <string name="nc_server_helper_text">Länken till din %1$s webbsida när du öppnar den i webbläsaren.</string>
+    <string name="nc_server_http_fallback_confirm">Använd HTTP</string>
+    <string name="nc_server_http_fallback_message">Det gick inte att ansluta till servern via HTTPS. Vill du ansluta via okrypterat HTTP i stället?</string>
+    <string name="nc_server_http_fallback_title">Osäker anslutning</string>
     <string name="nc_server_import_account">Importera konto från %1$s-appen</string>
     <string name="nc_server_import_account_plain">Importera konto</string>
     <string name="nc_server_import_accounts">Importera konton från %1$s-appen</string>

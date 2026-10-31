@@ -127,8 +127,11 @@
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_announcement">Oznámení</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
-    <string name="nc_audio_player_next">Next</string>
+    <string name="nc_audio_player_next">Další</string>
+    <string name="nc_audio_player_play_pause">Přehrát/pozastavit</string>
     <string name="nc_audio_player_previous">Předchozí</string>
+    <string name="nc_audio_player_queue">Seznam stop</string>
+    <string name="nc_audio_player_shuffle">Zamíchat</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pro použití bluetooth reproduktorů je třeba udělit oprávnění „Zařízení poblíž“.</string>
     <string name="nc_call_button_content_description_answer_video_call">Zvednou videohovor</string>
@@ -414,7 +417,7 @@
     <string name="nc_presentation">Prezentace</string>
     <string name="nc_profile_personal_info_title">Osobní údaje</string>
     <string name="nc_promote">Povýšit na moderátora</string>
-    <string name="nc_promote_to_owner">POvýšit na vlastníka</string>
+    <string name="nc_promote_to_owner">Povýšit na vlastníka</string>
     <string name="nc_public_call_status">Veřejná konverzace</string>
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
     <string name="nc_push_notification_fetch_error">Omlouváme se, něco se pokazilo – nebylo možné stáhnout si testovací push zprávu</string>
