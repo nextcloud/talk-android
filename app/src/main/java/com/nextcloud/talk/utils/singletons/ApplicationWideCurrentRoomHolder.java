@@ -49,6 +49,13 @@ public class ApplicationWideCurrentRoomHolder {
         return currentRoomToken.equals(roomToken) && userInRoom.getId() != null && userInRoom.getId().equals(userId);
     }
 
+    /**
+     * Whether the account with the given internal id is in a call of the room with the given token.
+     */
+    public boolean isInCallOfRoom(String roomToken, Long userId) {
+        return inCall && isCurrentRoom(roomToken, userId);
+    }
+
     public void setCurrentRoomToken(String currentRoomToken) {
         this.currentRoomToken = currentRoomToken;
     }
