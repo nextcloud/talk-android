@@ -197,6 +197,7 @@ dependencies {
     constraints {
         implementation("com.google.guava:guava:33.7.2-android")
     }
+    implementation("androidx.core:core-telecom:1.0.0")
     implementation("androidx.media3:media3-session:1.11.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
     implementation("androidx.room:room-testing-android:$roomVersion")

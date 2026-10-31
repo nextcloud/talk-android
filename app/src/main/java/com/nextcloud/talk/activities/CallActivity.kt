@@ -83,6 +83,7 @@ import com.nextcloud.talk.call.e2ee.CallEncryption
 import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
@@ -224,6 +225,9 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var permissionUtil: PlatformPermissionUtil? = null
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -2292,8 +2296,12 @@ class CallActivity : CallBaseActivity() {
         dispose(nickSendingDisposable)
         nickSendingDisposable = null
 
-        if (shutDownView) {
+        if (shutDownView || currentCallStatus == CallStatus.CALLING_TIMEOUT) {
             terminateAudioVideo()
+            if (webSocketClient != null) {
+                webSocketClient!!.sendBye()
+                webSocketClient = null
+            }
         }
 
         val peerConnectionIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
@@ -2323,6 +2331,9 @@ class CallActivity : CallBaseActivity() {
         }
 
         hangupNetworkCalls(shutDownView, endCallForAll)
+        if (shutDownView) {
+            telecomManager.endCurrentCall(roomToken)
+        }
     }
 
     private fun terminateAudioVideo() {
@@ -2362,7 +2373,9 @@ class CallActivity : CallBaseActivity() {
         }
         localAudioTrack = null
         localVideoTrack = null
-        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+        if (::conversationUser.isInitialized && conversationUser.id != null) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(conversationUser.id!!)
+        } else if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
             WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
         }
     }
@@ -2414,7 +2427,7 @@ class CallActivity : CallBaseActivity() {
             startActivity(intent)
             finish()
         } else if (shutDownView) {
-            finish()
+            finishAndRemoveTask()
         } else if (currentCallStatus === CallStatus.RECONNECTING ||
             currentCallStatus === CallStatus.PUBLISHER_FAILED
         ) {
@@ -3050,7 +3063,31 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private fun activateTelecomCall() {
+        val disconnectHandler: () -> Unit = {
+            runOnUiThread {
+                if (!isFinishing && !isDestroyed && currentCallStatus != CallStatus.LEAVING) {
+                    hangup(shutDownView = true, endCallForAll = false)
+                }
+            }
+        }
+
+        if (!telecomManager.hasActiveCall(roomToken)) {
+            telecomManager.addOutgoingCall(
+                displayName = conversationName.takeIf {
+                    !it.isNullOrBlank()
+                } ?: getString(R.string.nc_app_product_name),
+                roomToken = roomToken ?: "",
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = disconnectHandler
+            )
+        } else {
+            telecomManager.setCallActive(roomToken, onDisconnectCall = disconnectHandler)
+        }
+    }
+
     private fun handleCallStateInConversation() {
+        activateTelecomCall()
         stopCallingSound()
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
@@ -3067,6 +3104,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
+        activateTelecomCall()
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {

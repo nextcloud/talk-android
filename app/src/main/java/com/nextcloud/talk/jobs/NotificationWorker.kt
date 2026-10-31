@@ -55,6 +55,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.DirectShareHelper
@@ -126,10 +127,14 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
-    @Inject lateinit var logger: Logger
+    @Inject
+    lateinit var logger: Logger
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @JvmField
     @Inject
@@ -182,12 +187,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (pushMessage.delete) {
             cancelNotification(context, user, pushMessage.notificationId)
+            telecomManager.endCurrentCall(pushMessage.id)
         } else if (pushMessage.deleteAll) {
             cancelAllNotificationsForAccount(context, user)
+            telecomManager.endCurrentCall()
         } else if (pushMessage.deleteMultiple) {
             for (notificationId in pushMessage.notificationIds!!) {
                 cancelNotification(context, user, notificationId)
             }
+            telecomManager.endCurrentCall(pushMessage.id)
         } else if (isTalkNotification()) {
             logger.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
@@ -257,6 +265,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
             bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
             bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, user.baseUrl)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
             val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -334,6 +343,28 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
                 },
                 pendingIntentFlags
+            )
+
+            telecomManager.addIncomingCall(
+                displayName = conversation.displayName.ifEmpty {
+                    applicationContext.getString(R.string.nc_app_product_name)
+                },
+                roomToken = pushMessage.id ?: "",
+                isVideo = isVideoCall,
+                onAnswerCall = {
+                    try {
+                        primaryAnswerIntent.send()
+                    } catch (e: PendingIntent.CanceledException) {
+                        Log.e(TAG, "Answer pending intent canceled", e)
+                    }
+                },
+                onRejectCall = {
+                    try {
+                        declinePendingIntent.send()
+                    } catch (e: PendingIntent.CanceledException) {
+                        Log.e(TAG, "Decline pending intent canceled", e)
+                    }
+                }
             )
 
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
