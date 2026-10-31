@@ -326,6 +326,9 @@ class CallActivity : CallBaseActivity() {
     private var joinRoomInitiated = false
     private var roomJoinRefreshes = 0
     private var hasMCU = false
+
+    // Whether somebody else was in the call since this screen joined it. Never reset by a rejoin.
+    private var otherParticipantWasInCall = false
     private var hasExternalSignalingServer = false
     private var isCallEndToEndEncryptionEnabled = false
     private var conversationPassword: String? = null
@@ -1992,7 +1995,7 @@ class CallActivity : CallBaseActivity() {
             credentials,
             ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!),
             inCallFlag,
-            isCallWithoutNotification,
+            isJoinSilent(isCallWithoutNotification, otherParticipantWasInCall),
             recordingConsentGiven
         )
             .subscribeOn(Schedulers.io())
@@ -2390,12 +2393,16 @@ class CallActivity : CallBaseActivity() {
 
         // Fire DELETE best-effort; do not block the UI waiting for the server response.
         // The subscription runs entirely on the IO thread — no observeOn(mainThread) needed.
-        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCall)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { /* successfully left call */ },
-                { e -> Log.w(TAG, "Something went wrong when leaving the call", e) }
-            )
+        if (shouldLeaveCallOnHangup(shutDownView, endCallForAll, currentCallStatus, otherParticipantWasInCall)) {
+            ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCall)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { /* successfully left call */ },
+                    { e -> Log.w(TAG, "Something went wrong when leaving the call", e) }
+                )
+        } else {
+            Log.d(TAG, "Rejoining alone in the call: not leaving it, the server would end the call")
+        }
 
         val conversationModel = currentConversation?.let {
             ConversationModel.mapToConversationModel(it, conversationUser)
@@ -2554,6 +2561,7 @@ class CallActivity : CallBaseActivity() {
                         " : " +
                         inCallFlag
                 )
+                otherParticipantWasInCall = otherParticipantWasInCall || inCallFlag != 0L
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: $inCallFlag")
                 isSelfInCall = inCallFlag != 0L
@@ -3727,6 +3735,26 @@ class CallActivity : CallBaseActivity() {
 
         internal fun shouldRefreshRoomSession(callStatus: CallStatus?, refreshesDone: Int): Boolean =
             callStatus !== CallStatus.IN_CONVERSATION && refreshesDone < MAX_ROOM_JOIN_REFRESHES
+
+        /**
+         * A rejoin (failed publisher, new signaling session) must not leave the call while nobody else was in it:
+         * the server ends a call without active sessions, so the callee's ringing stops and the next join starts a
+         * new call with a new notification.
+         */
+        internal fun shouldLeaveCallOnHangup(
+            shutDownView: Boolean,
+            endCallForAll: Boolean,
+            callStatus: CallStatus?,
+            otherParticipantWasInCall: Boolean
+        ): Boolean {
+            val isRejoin = !shutDownView &&
+                (callStatus === CallStatus.RECONNECTING || callStatus === CallStatus.PUBLISHER_FAILED)
+            return endCallForAll || !isRejoin || otherParticipantWasInCall
+        }
+
+        /** Joining after somebody else was in the call must not ring again if the server starts a new call. */
+        internal fun isJoinSilent(initiallySilent: Boolean, otherParticipantWasInCall: Boolean): Boolean =
+            initiallySilent || otherParticipantWasInCall
 
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
 
