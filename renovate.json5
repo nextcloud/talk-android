@@ -21,9 +21,10 @@
       "allowedVersions": "!/^5[.]23[.]0$/"
     },
     {
-      // Locked to 0.10.26, see https://github.com/nextcloud/talk-android/pull/6475#issuecomment-5566850040
-      "matchPackageNames": ["com.google.mediapipe:tasks-vision"],
-      "enabled": false
+      // LiteRT 2.x depends on Play Asset Delivery (com.google.android.play:ai-delivery),
+      // which F-Droid's scanner flags as non-free
+      "matchPackageNames": ["com.google.ai.edge.litert:**"],
+      "allowedVersions": "<2"
     },
     {
       "matchManagers": ["github-actions"],

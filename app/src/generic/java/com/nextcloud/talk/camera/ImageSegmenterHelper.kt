@@ -10,9 +10,8 @@ package com.nextcloud.talk.camera
 import android.content.Context
 
 /**
- * Stub for the generic (F-Droid) flavor. MediaPipe is not available in this build because it
- * transitively pulls in com.google.firebase:firebase-encoders* via datatransport, which F-Droid
- * rejects. Background blur is disabled for this flavor via BuildConfig.BACKGROUND_BLUR_ENABLED.
+ * Stub for the generic (F-Droid) flavor. Background blur is not offered in this build yet,
+ * isAvailable() returns false.
  */
 class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
 

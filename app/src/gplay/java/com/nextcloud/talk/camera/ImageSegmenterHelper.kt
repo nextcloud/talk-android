@@ -9,120 +9,125 @@ package com.nextcloud.talk.camera
 
 import android.content.Context
 import android.util.Log
-import com.google.mediapipe.framework.image.ByteBufferExtractor
-import com.google.mediapipe.framework.image.ByteBufferImageBuilder
-import com.google.mediapipe.framework.image.MPImage
-import com.google.mediapipe.tasks.core.BaseOptions
-import com.google.mediapipe.tasks.core.Delegate
-import com.google.mediapipe.tasks.vision.core.RunningMode
-import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
-import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.Interpreter
+import java.io.FileInputStream
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.channels.FileChannel
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
 
-    private var imageSegmenter: ImageSegmenter? = null
+    @Volatile
+    private var interpreter: Interpreter? = null
+    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
+    private val busy = AtomicBoolean(false)
+
+    private val inputBuffer = ByteBuffer.allocateDirect(MODEL_SIZE * MODEL_SIZE * RGB_CHANNELS * Float.SIZE_BYTES)
+        .order(ByteOrder.nativeOrder())
+    private val outputBuffer = ByteBuffer.allocateDirect(MODEL_SIZE * MODEL_SIZE * Float.SIZE_BYTES)
+        .order(ByteOrder.nativeOrder())
+    private val confidence = FloatArray(MODEL_SIZE * MODEL_SIZE)
 
     init {
         setupImageSegmenter()
     }
 
-    // Segmenter must be closed when creating a new one to avoid returning results to a non-existent object
+    // Closed on the worker thread, so a running inference finishes first
     fun destroyImageSegmenter() {
-        imageSegmenter?.close()
-        imageSegmenter = null
+        if (executor.isShutdown) return
+        executor.execute {
+            interpreter?.close()
+            interpreter = null
+        }
+        executor.shutdown()
     }
 
     /**
-     * Initialize the image segmenter using current settings on the
-     * thread that is using it. CPU can be used with detectors
-     * that are created on the main thread and used on a background thread, but
-     * the GPU delegate needs to be used on the thread that initialized the
-     * segmenter
+     * Loads the selfie segmentation model and creates a CPU interpreter for it.
      *
      * @throws IllegalStateException
      */
     fun setupImageSegmenter() {
-        val baseOptionsBuilder = BaseOptions.builder().apply {
-            setDelegate(Delegate.CPU)
-            setModelAssetPath(MODEL_SELFIE_SEGMENTER_PATH)
-        }
-
         if (imageSegmenterListener == null) {
             throw IllegalStateException("ImageSegmenterListener must be set.")
         }
 
         runCatching {
-            val baseOptions = baseOptionsBuilder.build()
-            val optionsBuilder = ImageSegmenter.ImageSegmenterOptions.builder()
-                .setRunningMode(RunningMode.LIVE_STREAM)
-                .setBaseOptions(baseOptions)
-                .setOutputCategoryMask(true)
-                .setOutputConfidenceMasks(false)
-                .setResultListener(this::returnSegmentationResult)
-                .setErrorListener(this::returnSegmentationHelperError)
-
-            imageSegmenter = ImageSegmenter.createFromOptions(context, optionsBuilder.build())
-        }.getOrElse { e ->
-            when (e) {
-                is IllegalStateException -> {
-                    imageSegmenterListener?.onError(
-                        "Image segmenter failed to initialize. See error logs for details"
-                    )
-                    Log.e(TAG, "Image segmenter failed to load model with error: ${e.message}")
-                }
-
-                is RuntimeException -> {
-                    // This occurs if the model being used does not support GPU
-                    imageSegmenterListener?.onError(
-                        "Image segmenter failed to initialize. See error logs for details",
-                        GPU_ERROR
-                    )
-                    Log.e(TAG, "Image segmenter failed to load model with error: ${e.message}")
+            val model = context.assets.openFd(MODEL_SELFIE_SEGMENTER_PATH).use { fd ->
+                FileInputStream(fd.fileDescriptor).channel.use {
+                    it.map(FileChannel.MapMode.READ_ONLY, fd.startOffset, fd.declaredLength)
                 }
             }
+            val newInterpreter = Interpreter(model, Interpreter.Options().setNumThreads(NUM_THREADS))
+            val input = newInterpreter.getInputTensor(0)
+            val output = newInterpreter.getOutputTensor(0)
+            val supported = input.dataType() == DataType.FLOAT32 &&
+                input.shape().contentEquals(intArrayOf(1, MODEL_SIZE, MODEL_SIZE, RGB_CHANNELS)) &&
+                output.dataType() == DataType.FLOAT32 &&
+                output.shape().contentEquals(intArrayOf(1, MODEL_SIZE, MODEL_SIZE, 1))
+            if (!supported) {
+                newInterpreter.close()
+                error(
+                    "Unexpected model tensors: input ${input.shape().contentToString()}, " +
+                        "output ${output.shape().contentToString()}"
+                )
+            }
+            interpreter = newInterpreter
+        }.onFailure { e ->
+            imageSegmenterListener?.onError("Image segmenter failed to initialize. See error logs for details")
+            Log.e(TAG, "Image segmenter failed to load model with error: ${e.message}")
         }
     }
 
     /**
-     * Runs image segmentation on live streaming cameras frame-by-frame and
-     * returns the results asynchronously to the given `imageSegmenterListener`
-     *
-     * @throws IllegalArgumentException
+     * Runs image segmentation on an RGBA camera frame and returns the result asynchronously to the given
+     * `imageSegmenterListener`. Frames arriving while the previous one is still processed are dropped.
      */
     fun segmentFrame(byteBuffer: ByteBuffer, width: Int, height: Int, videoFrameTimeStamp: Long) {
-        val mpImage = ByteBufferImageBuilder(byteBuffer, width, height, MPImage.IMAGE_FORMAT_RGBA).build()
+        if (interpreter == null || !busy.compareAndSet(false, true)) {
+            return
+        }
 
-        imageSegmenter?.segmentAsync(mpImage, videoFrameTimeStamp)
+        try {
+            executor.execute {
+                try {
+                    runSegmentation(byteBuffer, width, height, videoFrameTimeStamp)
+                } finally {
+                    busy.set(false)
+                }
+            }
+        } catch (e: RejectedExecutionException) {
+            busy.set(false)
+            Log.d(TAG, "Frame dropped, segmenter is shut down: ${e.message}")
+        }
     }
 
-    // MPImage isn't necessary, but the listener requires it
-    private fun returnSegmentationResult(result: ImageSegmenterResult, image: MPImage) {
-        // We only need the first mask for this sample because we are using
-        // the OutputType CATEGORY_MASK, which only provides a single mask.
-        val mpImage = result.categoryMask().get()
+    @Suppress("TooGenericExceptionCaught")
+    private fun runSegmentation(byteBuffer: ByteBuffer, width: Int, height: Int, videoFrameTimeStamp: Long) {
+        val interpreter = interpreter ?: return
+        try {
+            writeModelInput(byteBuffer, width, height, inputBuffer)
+            outputBuffer.rewind()
+            interpreter.run(inputBuffer, outputBuffer)
+            outputBuffer.rewind()
+            outputBuffer.asFloatBuffer().get(confidence)
 
-        val mask = ByteBufferExtractor.extract(mpImage)
-
-        val data = ByteArray(mask.capacity())
-
-        (mask.duplicate().rewind() as ByteBuffer).get(data)
-
-        imageSegmenterListener?.onResults(
-            ResultBundle(
-                data,
-                result.timestampMs(), // videoFrameTimeStamp
-                mpImage.width,
-                mpImage.height
+            imageSegmenterListener?.onResults(
+                ResultBundle(
+                    confidenceToMask(confidence, width, height),
+                    videoFrameTimeStamp,
+                    width,
+                    height
+                )
             )
-        )
-    }
-
-    // Return errors thrown during segmentation to this ImageSegmenterHelper's caller
-    private fun returnSegmentationHelperError(error: RuntimeException) {
-        imageSegmenterListener?.onError(
-            error.message ?: "An unknown error has occurred"
-        )
+        } catch (e: RuntimeException) {
+            imageSegmenterListener?.onError(e.message ?: "An unknown error has occurred")
+        }
     }
 
     // Wraps results from inference, the time it takes for inference to be performed.
@@ -149,10 +154,50 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
     companion object {
         fun isAvailable() = true
         const val OTHER_ERROR = 0
-        const val GPU_ERROR = 1
         const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
-        const val RGB_MAX = 255.0
+        const val RGB_MAX = 255.0f
+        const val MODEL_SIZE = 256
+        const val RGB_CHANNELS = 3
+        const val RGBA_CHANNELS = 4
+        const val PERSON_THRESHOLD = 0.5f
+        const val MASK_BACKGROUND: Byte = 1
+        const val MASK_PERSON: Byte = 0
+        private const val NUM_THREADS = 2
         private const val TAG = "ImageSegmenterHelper"
+
+        /**
+         * Scales an RGBA frame (nearest neighbour) to the model input size and writes it as RGB floats in [0, 1].
+         * Uses absolute reads, so the frame buffer's position is left untouched for the GPU thread.
+         */
+        internal fun writeModelInput(frame: ByteBuffer, width: Int, height: Int, out: ByteBuffer) {
+            out.rewind()
+            for (y in 0 until MODEL_SIZE) {
+                val rowOffset = (y * height / MODEL_SIZE) * width
+                for (x in 0 until MODEL_SIZE) {
+                    val index = (rowOffset + x * width / MODEL_SIZE) * RGBA_CHANNELS
+                    for (channel in 0 until RGB_CHANNELS) {
+                        out.putFloat(frame.get(index + channel).toUByte().toFloat() / RGB_MAX)
+                    }
+                }
+            }
+            out.rewind()
+        }
+
+        /**
+         * Turns the model's person confidence into a frame sized mask in the format
+         * BackgroundBlurGPUProcessor expects: [MASK_BACKGROUND] (blurred) or [MASK_PERSON] (kept sharp).
+         */
+        internal fun confidenceToMask(confidence: FloatArray, width: Int, height: Int): ByteArray {
+            val mask = ByteArray(width * height)
+            for (y in 0 until height) {
+                val rowOffset = (y * MODEL_SIZE / height) * MODEL_SIZE
+                for (x in 0 until width) {
+                    val isPerson = confidence[rowOffset + x * MODEL_SIZE / width] > PERSON_THRESHOLD
+                    mask[y * width + x] = if (isPerson) MASK_PERSON else MASK_BACKGROUND
+                }
+            }
+            return mask
+        }
     }
 
     interface SegmenterListener {
