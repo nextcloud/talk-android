@@ -56,7 +56,7 @@ android {
             providers.gradleProperty("NC_TEST_SERVER_PASSWORD").getOrElse("")
 
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
