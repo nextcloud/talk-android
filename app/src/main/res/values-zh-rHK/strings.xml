@@ -467,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
+    <string name="nc_participant_in_call">通話中</string>
     <string name="nc_participant_type_change_failed">無法更改參與者類型</string>
+    <string name="nc_participant_with_phone">透過電話</string>
+    <string name="nc_participant_with_video">透過視訊</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
     <string name="nc_password">密碼</string>

@@ -685,7 +685,7 @@
     <string name="nc_user">Bruger</string>
     <string name="nc_voice_message">Talebesked</string>
     <string name="nc_voice_message_hold_to_record_info">Hold for at optage, slip for at sende.</string>
-    <string name="nc_voice_message_missing_audio_permission">Tilladelse til lydoptagelse er påkrævet</string>
+    <string name="nc_voice_message_missing_audio_permission">Tilladelse til lydoptagelse kræves</string>
     <string name="nc_voice_message_slide_to_cancel">« Stryg for at annullere</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_webinar_description">Begrænset samtale med lobby slået til, ideel til offentlige webinarer</string>
@@ -760,7 +760,7 @@
     <string name="record_stop_confirm_title">Stop optagelse af opkald</string>
     <string name="record_stop_description">Stop optagelse</string>
     <string name="record_stopping">Stopper optagelse …</string>
-    <string name="recording_consent_all">Samtykke til optagelse er påkrævet for alle opkald</string>
+    <string name="recording_consent_all">Samtykke til optagelse er obligatorisk for alle opkald</string>
     <string name="recording_consent_description">Optagelsen kan omfatte din stemme, video fra dit kamera og skærmdeling. Du skal give samtykke, før du deltager i opkaldet. Giver du samtykke?</string>
     <string name="recording_consent_for_conversation_description">Kræv samtykke til optagelse, før der deltages i opkald i denne samtale</string>
     <string name="recording_consent_for_conversation_title">Samtykke til optagelse</string>
