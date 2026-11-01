@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Athraigh go físeán féin</string>
     <string name="nc_call_e2ee_not_supported">Ní thacaítear le glaonna faoi láthair toisc go bhfuil criptiú ceann go ceann cumasaithe ar an bhfreastalaí.</string>
     <string name="nc_call_e2ee_not_supported_title">Níl glao ó %s ar fáil</string>
+    <string name="nc_call_e2ee_requires_hpb">Teastaíonn an cúlchóras ardfheidhmíochta (HPB) le haghaidh glaonna atá criptithe ó cheann go ceann.</string>
+    <string name="nc_call_e2ee_setup_failed">Níorbh fhéidir criptiú ceann go ceann a shocrú don ghlao seo</string>
     <string name="nc_call_incoming">ISTEACH</string>
     <string name="nc_call_join_failed">Níorbh fhéidir páirt a ghlacadh sa ghlao. Déan iarracht arís.</string>
     <string name="nc_call_name">Ainm an chomhrá</string>
@@ -465,7 +467,10 @@
     <string name="nc_open_conversation_to_registered_users">Oscail an comhrá d\'úsáideoirí cláraithe</string>
     <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>
+    <string name="nc_participant_in_call">I nglao</string>
     <string name="nc_participant_type_change_failed">Níorbh fhéidir cineál an rannpháirtí a athrú</string>
+    <string name="nc_participant_with_phone">Le fón</string>
+    <string name="nc_participant_with_video">Le físeán</string>
     <string name="nc_participants">Rannpháirtithe</string>
     <string name="nc_participants_add">Cuir rannpháirtithe leis</string>
     <string name="nc_password">Pasfhocal</string>
