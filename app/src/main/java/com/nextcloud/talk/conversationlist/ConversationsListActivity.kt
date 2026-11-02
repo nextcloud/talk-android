@@ -1059,14 +1059,7 @@ class ConversationsListActivity : BaseActivity() {
         // a share left in the list removes its copies, unless they were passed on to the chat or the list of another
         // account, see SharedFileCopies
         if (isFinishing && isShare(intent) && !isSharePassedOn && !isRelaunching) {
-            val clip = intent.clipData
-            val sharedUris = clip?.let { (0 until it.itemCount).mapNotNull { index -> it.getItemAt(index).uri } }
-            if (!sharedUris.isNullOrEmpty()) {
-                val application = NextcloudTalkApplication.sharedApplication!!
-                application.appScope.launch {
-                    SharedFileCopies.removeSharesOf(application, sharedUris.map { it.toString() })
-                }
-            }
+            SharedFileCopies.removeSharesLater(ShareListIntentFactory.sharedUrisOf(intent))
         }
     }
 

@@ -29,7 +29,6 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.hostViewThemeUtils
 import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -143,9 +142,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         // Files shared by another app that are left here, unsent, remove their copies, see SharedFileCopies. Not when
         // the dialog is only shown again after a configuration change.
         if (!isSent && activity?.isChangingConfigurations != true) {
-            val application = NextcloudTalkApplication.sharedApplication!!
-            val files = filesList.toList()
-            application.appScope.launch { SharedFileCopies.removeSharesOf(application, files) }
+            SharedFileCopies.removeSharesLater(filesList.toList())
         }
     }
 

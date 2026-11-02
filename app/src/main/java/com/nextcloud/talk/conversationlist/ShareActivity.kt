@@ -15,11 +15,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.nextcloud.talk.R
+import com.nextcloud.talk.utils.SharedFileCopies
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
  * Exported entry point for the content other apps share to Talk, from the share sheet or one of its direct share
- * targets. It copies the shared files into the cache of the app, so the chat and the upload don't depend on the read
+ * targets. It copies the shared files into the app (see [SharedFileCopies]), so the chat and the upload don't depend on the read
  * access of the other app, and opens the conversation list to pick the conversation with only that content, see
  * [ShareListIntentFactory].
  *
@@ -45,15 +47,28 @@ class ShareActivity : AppCompatActivity() {
         )
         lifecycleScope.launch {
             val shareListIntent = ShareListIntentFactory(this@ShareActivity).create(intent)
-            // left while the files were copied: the list opens when the share is shown again
-            lifecycle.withStarted {
-                if (shareListIntent != null) {
-                    startActivity(shareListIntent)
-                } else {
-                    Toast.makeText(this@ShareActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            try {
+                // e.g. the screen was turned off while the files were copied: the list opens when it is shown again
+                lifecycle.withStarted {
+                    if (shareListIntent != null) {
+                        startActivity(shareListIntent)
+                    } else {
+                        Toast.makeText(this@ShareActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    }
+                    finish()
                 }
-                finish()
+            } catch (e: CancellationException) {
+                // closed before it opened the list, which otherwise removes the copies of a share that is left there
+                shareListIntent?.let { SharedFileCopies.removeSharesLater(ShareListIntentFactory.sharedUrisOf(it)) }
+                throw e
             }
         }
+    }
+
+    // Left with Home or the recents while the files are copied: its task is kept out of the recents, so the share
+    // couldn't be continued and is left.
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        finish()
     }
 }

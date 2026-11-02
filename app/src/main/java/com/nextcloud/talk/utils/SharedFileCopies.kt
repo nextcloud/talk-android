@@ -12,6 +12,8 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.work.WorkManager
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ExecutionException
@@ -73,6 +75,13 @@ object SharedFileCopies {
             .filterNot { hasUnfinishedUpload(context, it) }
             .mapNotNull { FileUtils.resolveFileInDirectory(sharesDirectory, it) }
             .forEach { it.deleteRecursively() }
+    }
+
+    /** [removeSharesOf] in the scope of the app, so also after the screen that left the share is gone. */
+    fun removeSharesLater(fileUris: Collection<String>) {
+        if (fileUris.isEmpty()) return
+        val application = NextcloudTalkApplication.sharedApplication!!
+        application.appScope.launch { removeSharesOf(application, fileUris) }
     }
 
     /** The tag for the upload of [fileUri] if it is a copy of a share: it keeps the copy until the upload is done. */

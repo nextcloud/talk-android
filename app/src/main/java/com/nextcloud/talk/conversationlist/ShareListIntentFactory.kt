@@ -71,8 +71,17 @@ internal class ShareListIntentFactory(
         if (sharedIntent.type == Mimetype.TEXT_PLAIN && text != null) {
             return listIntent.putExtra(Intent.EXTRA_TEXT, text)
         }
+        // created with the first file that is copied: a share without one leaves no directory behind, and doesn't wait
+        // for WorkManager to tell which copies of older shares can be removed
+        val directoryLazy = lazy { SharedFileCopies.createDirectory(context) }
+        val items = try {
+            withContext(Dispatchers.IO) { copySharedItems(sharedIntent, directoryLazy) }
+        } catch (e: CancellationException) {
+            // also when it is cancelled right after the last file was copied
+            if (directoryLazy.isInitialized()) directoryLazy.value?.deleteRecursively()
+            throw e
+        }
         // none without items, as the list could only show an error when a conversation is picked
-        val items = withContext(Dispatchers.IO) { copySharedItems(sharedIntent) }
         return if (items.isEmpty()) null else listIntent.apply { clipData = clipDataOf(sharedIntent.type, items) }
     }
 
@@ -80,33 +89,25 @@ internal class ShareListIntentFactory(
         ClipData(null, arrayOf(type ?: "*/*"), items.first()).apply { items.drop(1).forEach { addItem(it) } }
 
     /**
-     * The shared texts, and copies of the shared files that may be uploaded, see [FileUtils.isTrustedShareUri]. Stops
-     * copying when it is cancelled, e.g. when the share is left, and then removes the copies.
+     * The shared texts, and copies of the shared files in the directory of [directoryLazy] that may be uploaded, see
+     * [FileUtils.isTrustedShareUri]. Stops copying when it is cancelled, e.g. when the share is left.
      */
-    private suspend fun copySharedItems(sharedIntent: Intent): List<ClipData.Item> {
-        // created with the first file that is copied: a share without one leaves no directory behind, and doesn't wait
-        // for WorkManager to tell which copies of older shares can be removed
-        val directoryLazy = lazy { SharedFileCopies.createDirectory(context) }
+    private suspend fun copySharedItems(sharedIntent: Intent, directoryLazy: Lazy<File?>): List<ClipData.Item> {
         val clipData = sharedIntent.clipData
         val sharedItems = if (clipData != null) {
             (0 until clipData.itemCount).map { clipData.getItemAt(it) }
         } else {
             sharedStreams(sharedIntent).map { ClipData.Item(it) }
         }
-        return try {
-            sharedItems.mapIndexedNotNull { index, item ->
-                currentCoroutineContext().ensureActive()
-                when {
-                    item.uri != null ->
-                        copyToShareDirectory(item.uri) { directoryLazy.value?.let { File(it, index.toString()) } }
-                            ?.let { ClipData.Item(it) }
-                    item.text != null -> ClipData.Item(item.text)
-                    else -> null
-                }
+        return sharedItems.mapIndexedNotNull { index, item ->
+            currentCoroutineContext().ensureActive()
+            when {
+                item.uri != null ->
+                    copyToShareDirectory(item.uri) { directoryLazy.value?.let { File(it, index.toString()) } }
+                        ?.let { ClipData.Item(it) }
+                item.text != null -> ClipData.Item(item.text)
+                else -> null
             }
-        } catch (e: CancellationException) {
-            if (directoryLazy.isInitialized()) directoryLazy.value?.deleteRecursively()
-            throw e
         }
     }
 
@@ -158,6 +159,12 @@ internal class ShareListIntentFactory(
 
     companion object {
         private val TAG = ShareListIntentFactory::class.java.simpleName
+
+        /** The uris of the shared files the list intent of a share passes on, the copies of [SharedFileCopies]. */
+        fun sharedUrisOf(listIntent: Intent): List<String> {
+            val clip = listIntent.clipData ?: return emptyList()
+            return (0 until clip.itemCount).mapNotNull { clip.getItemAt(it).uri?.toString() }
+        }
         private const val FILE_NAME = "file"
     }
 }
