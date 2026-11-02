@@ -360,16 +360,14 @@ class ConversationsListActivity : BaseActivity() {
             AppTasks.isRunningAppTask(this, taskId)
 
     /**
-     * Passes the intent of another app on, or opens the login without an account, finishes this list and returns true
-     * if it is not shown for its intent.
+     * Passes the intent of another app on, finishes this list and returns true if it is not shown for its intent.
+     * Without an account, setUpBoundUserOrFinish opens the login.
      */
     private fun finishIfNotShown(): Boolean {
         val isViewOfOtherApp = isViewOfOtherApp(intent)
         val otherIntent = when {
             isShareOfOtherApp(intent) -> InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java)
             isViewOfOtherApp -> createDeepLinkForwardIntent(intent)
-            runBlocking { userManager.getUsersNotScheduledForDeletion() }.isEmpty() ->
-                ServerSelectionActivity.createLoginIntent(this)
             else -> null
         } ?: return false
         startActivity(otherIntent)
