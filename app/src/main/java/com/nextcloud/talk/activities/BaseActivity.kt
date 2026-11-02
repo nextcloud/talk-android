@@ -247,8 +247,6 @@ open class BaseActivity : AppCompatActivity() {
         eventBus.register(this)
     }
 
-    protected open val skipLockCheckOnResume: Boolean = false
-
     public override fun onResume() {
         logger.d(this::class.java.simpleName, "onResume")
         super.onResume()
@@ -259,20 +257,18 @@ open class BaseActivity : AppCompatActivity() {
                 "activity=${this.javaClass.simpleName}"
         )
         isCoveredByLockScreen = false
-        if (!skipLockCheckOnResume) {
-            // e.g. the app lock was turned off with the screen lock of the device
-            if (NextcloudTalkApplication.isLocked && !isAppLockEnabled()) {
-                NextcloudTalkApplication.isLocked = false
-            }
-            if (NextcloudTalkApplication.isLocked) {
-                // Still locked, e.g. as the lock screen was closed by a screen opened from outside the app (a deep
-                // link, a shortcut or a notification) or by Back. It is unlocked only by authenticating.
-                NextcloudTalkApplication.pendingLockCheck = false
-                showLockScreen()
-            } else if (NextcloudTalkApplication.pendingLockCheck) {
-                NextcloudTalkApplication.pendingLockCheck = false
-                lockScreenIfConditionsApply()
-            }
+        // e.g. the app lock was turned off with the screen lock of the device
+        if (NextcloudTalkApplication.isLocked && !isAppLockEnabled()) {
+            NextcloudTalkApplication.isLocked = false
+        }
+        if (NextcloudTalkApplication.isLocked) {
+            // Still locked, e.g. as the lock screen was closed by a screen opened from outside the app (a deep link, a
+            // shortcut or a notification). It is unlocked only by authenticating.
+            NextcloudTalkApplication.pendingLockCheck = false
+            showLockScreen()
+        } else if (NextcloudTalkApplication.pendingLockCheck) {
+            NextcloudTalkApplication.pendingLockCheck = false
+            lockScreenIfConditionsApply()
         }
 
         if (appPreferences.isKeyboardIncognito) {
