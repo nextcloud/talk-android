@@ -62,7 +62,7 @@ class FileUtilsShareUriTest {
 
     @Test
     fun `rejects uris of other providers of the own app`() {
-        assertFalse(isTrusted("content://$IMAGE_PICKER_AUTHORITY/root/data/data/$PACKAGE/files/settings.preferences_pb"))
+        assertFalse(isTrusted("content://$IMAGE_PICKER_AUTHORITY/root/data/data/$PACKAGE/files/settings.pb"))
         assertFalse(isTrusted("content://$IMAGE_PICKER_AUTHORITY/shared_attachments/image.jpg"))
     }
 

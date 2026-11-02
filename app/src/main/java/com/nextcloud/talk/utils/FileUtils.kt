@@ -107,8 +107,9 @@ object FileUtils {
         if (uri == null || ContentResolver.SCHEME_CONTENT != uri.scheme) return false
         val authority = uri.authority?.substringAfterLast('@') ?: return false
         val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
-        return !isOwnProvider ||
+        val isSharedFileOfFileProvider =
             authority == packageName && isSharedAttachmentProviderPath(cacheDir, uri.pathSegments)
+        return !isOwnProvider || isSharedFileOfFileProvider
     }
 
     /**
