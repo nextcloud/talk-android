@@ -1105,7 +1105,9 @@ class ConversationsListActivity : BaseActivity() {
         super.onDestroy()
         // a share left in the list removes its copies, unless they were passed on to the chat or the list of another
         // account, see SharedFileCopies
-        if (isFinishing && isShare(intent) && !isSharePassedOn && !isRelaunching) {
+        // only a share of ShareActivity, not one of another app that the list only passed on to it
+        val isShareOfApp = isShare(intent) && !isShareOfOtherApp(intent)
+        if (isFinishing && isShareOfApp && !isSharePassedOn && !isRelaunching) {
             SharedFileCopies.removeSharesLater(ShareListIntentFactory.sharedUrisOf(intent))
         }
     }
