@@ -2439,11 +2439,7 @@ class CallActivity : CallBaseActivity() {
         val primaryTask = AppTasks.findRunningAppTask(this, appTasks) { it.taskIdCompat != taskId }
             ?: appTasks.firstOrNull { appTask ->
                 val taskInfo = appTask.taskInfoOrNull()
-                val baseActivityName = taskInfo?.baseActivity?.className
-                taskInfo != null &&
-                    taskInfo.taskIdCompat != taskId &&
-                    baseActivityName != CallActivity::class.java.name &&
-                    baseActivityName != CallNotificationActivity::class.java.name
+                taskInfo != null && taskInfo.taskIdCompat != taskId && !isCallOrShareTask(taskInfo)
             }
 
         val listIntent = ConversationsListActivity.createInPlaceAccountSwitchIntent(context, conversationUser.id!!)
@@ -2457,20 +2453,29 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    /** Removes the [appTasks] other than the one of [primaryTaskId], this one and those of calls. */
+    /** Removes the [appTasks] other than the one of [primaryTaskId], this one and those of calls and shares. */
     private fun removeOtherTasks(appTasks: List<ActivityManager.AppTask>, primaryTaskId: Int?) {
         appTasks
             .filter { appTask ->
                 val taskInfo = appTask.taskInfoOrNull()
-                val baseActivityName = taskInfo?.baseActivity?.className
-                val isCallTask = baseActivityName == CallActivity::class.java.name ||
-                    baseActivityName == CallNotificationActivity::class.java.name
                 taskInfo != null &&
-                    !isCallTask &&
+                    !isCallOrShareTask(taskInfo) &&
                     taskInfo.taskIdCompat != primaryTaskId &&
                     taskInfo.taskIdCompat != taskId
             }
             .forEach { it.finishAndRemoveTaskIfPresent() }
+    }
+
+    /**
+     * Whether [taskInfo] is the task of a call, or of a share (see ShareActivity), whose list would lose the shared
+     * content if the conversation list of the call was opened in it, or the task was removed.
+     */
+    private fun isCallOrShareTask(taskInfo: ActivityManager.RecentTaskInfo): Boolean {
+        val baseActivityName = taskInfo.baseActivity?.className
+        return baseActivityName == CallActivity::class.java.name ||
+            baseActivityName == CallNotificationActivity::class.java.name ||
+            taskInfo.baseIntent.action == Intent.ACTION_SEND ||
+            taskInfo.baseIntent.action == Intent.ACTION_SEND_MULTIPLE
     }
 
     private fun startVideoCapture(isPortrait: Boolean) {
