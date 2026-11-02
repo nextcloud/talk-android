@@ -18,6 +18,7 @@ import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -117,6 +118,18 @@ class ConversationsListEntryPointTest {
             .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
 
         assertFalse(isViewOfOtherApp(relaunched))
+    }
+
+    @Test
+    fun `the deep link of another app isn't kept as one of the app when the list shows its intent`() {
+        val deepLink = Uri.parse("nextcloudtalk://alice@cloud.example.com/call/abcd1234")
+        val relaunched = Intent(Intent.ACTION_VIEW, deepLink)
+            .setClassName(context, AppTasks.LAUNCHER_ACTIVITY)
+            .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+        val passedOn = ConversationsListActivity.createIntent(context).setAction(Intent.ACTION_VIEW).setData(deepLink)
+
+        assertNull(intentOfAccount(context, relaunched, userId = 2L).data)
+        assertEquals(deepLink, intentOfAccount(context, passedOn, userId = 2L).data)
     }
 
     @Test

@@ -1947,13 +1947,20 @@ class ConversationsListActivity : BaseActivity() {
 
         /**
          * The new [intent], whose extras of the app were removed, as the app itself started it for the account
-         * [userId]: kept for a recreation of the activity, which would otherwise remove the account again.
+         * [userId]: kept for a recreation of the activity, which would otherwise remove the account again. The uri of
+         * a VIEW intent of another app is removed, as the list would take it as a deep link of the app: one that is
+         * shown is a task relaunched from the recents, whose link was taken already, see [isViewOfOtherApp].
          */
         @VisibleForTesting
-        internal fun intentOfAccount(context: Context, intent: Intent, userId: Long?): Intent =
-            Intent(intent)
+        internal fun intentOfAccount(context: Context, intent: Intent, userId: Long?): Intent {
+            val isOfOtherApp = !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)
+            return Intent(intent)
                 .setClassName(context, InternalEntryPoint.nameOf(ConversationsListActivity::class.java))
-                .apply { userId?.let { putExtra(KEY_INTERNAL_USER_ID, it) } }
+                .apply {
+                    if (isOfOtherApp && action == Intent.ACTION_VIEW) setDataAndType(null, type)
+                    userId?.let { putExtra(KEY_INTERNAL_USER_ID, it) }
+                }
+        }
 
         /**
          * Whether [intent] is a VIEW intent of another app with a uri, e.g. of a pinned shortcut that targets the
