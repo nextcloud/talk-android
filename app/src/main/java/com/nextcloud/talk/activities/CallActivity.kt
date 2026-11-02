@@ -154,6 +154,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.finishAndRemoveTaskIfPresent
+import com.nextcloud.talk.utils.isShareTask
 import com.nextcloud.talk.utils.moveToFrontIfPresent
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -2474,8 +2475,7 @@ class CallActivity : CallBaseActivity() {
         val baseActivityName = taskInfo.baseActivity?.className
         return baseActivityName == CallActivity::class.java.name ||
             baseActivityName == CallNotificationActivity::class.java.name ||
-            taskInfo.baseIntent.action == Intent.ACTION_SEND ||
-            taskInfo.baseIntent.action == Intent.ACTION_SEND_MULTIPLE
+            taskInfo.isShareTask
     }
 
     private fun startVideoCapture(isPortrait: Boolean) {
