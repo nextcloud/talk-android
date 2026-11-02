@@ -419,6 +419,12 @@ open class BaseActivity : AppCompatActivity() {
     override fun startActivity(intent: Intent) {
         // Links to the own server are opened for the account of this screen. Screens without an account (boundUser
         // never loaded) use the default account, without resolving one from their intent.
+        // Only implicit intents (opened links) are rewritten: an explicit intent, like the forward of another app's
+        // link to DeepLinkActivity, starts the screen it names, so it can't open a chat without asking first.
+        if (intent.component != null) {
+            super.startActivity(intent)
+            return
+        }
         val user = (if (boundUserLazy.isInitialized()) boundUser else null)
             ?: defaultAccountProvider.getDefaultUserBlocking()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
