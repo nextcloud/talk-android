@@ -296,6 +296,22 @@ class DeepLinkRoutingViewModelTest {
             isLongMessage = true
         )
 
+    // a data row of the contact chat of Talk, as ContactAddressBookWorker adds it
+    private fun talkContactRow(cloudId: String?, mimeType: String = TALK_CONTACT_CHAT_MIME_TYPE) =
+        MatrixCursor(arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)).apply {
+            addRow(arrayOf(mimeType, cloudId))
+        }
+
+    @Test
+    fun `another data row of a contact with a user id at a server opens the start screen`() {
+        val email = talkContactRow(
+            "carol@cloud.example.com",
+            mimeType = ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE
+        )
+
+        assertEquals(noAccountForContact, routeContactChatWith(cursor = email))
+    }
+
     @Test
     fun `a contact uri the provider rejects opens the start screen`() {
         assertEquals(noAccountForContact, routeContactChatWith(error = IllegalArgumentException("Unknown URI")))
@@ -310,7 +326,7 @@ class DeepLinkRoutingViewModelTest {
 
     @Test
     fun `a contact without a user id opens the start screen`() {
-        val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply { addRow(arrayOf(null)) }
+        val contactData = talkContactRow(cloudId = null)
 
         assertEquals(noAccountForContact, routeContactChatWith(cursor = contactData))
     }
@@ -344,9 +360,7 @@ class DeepLinkRoutingViewModelTest {
                 on { syncRooms(any(), any(), anyOrNull()) } doReturn emptyList()
             }
             viewModel = createViewModel(repository, failingUserManager)
-            val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply {
-                addRow(arrayOf("carol@cloud.example.com"))
-            }
+            val contactData = talkContactRow("carol@cloud.example.com")
             val question = routeContactChatWith(contactData)
             assertEquals(RoutingState.AskToStartContactChat("carol@cloud.example.com"), question)
 
@@ -374,9 +388,7 @@ class DeepLinkRoutingViewModelTest {
             on { syncRooms(any(), any(), anyOrNull()) } doReturn emptyList()
         }
         viewModel = createViewModel(repository, userManager, api)
-        val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply {
-            addRow(arrayOf("carol@cloud.example.com"))
-        }
+        val contactData = talkContactRow("carol@cloud.example.com")
         assertEquals(RoutingState.AskToStartContactChat("carol@cloud.example.com"), routeContactChatWith(contactData))
 
         viewModel.confirm()
@@ -453,15 +465,14 @@ class DeepLinkRoutingViewModelTest {
     @Test
     fun `a contact chat doesn't open with an account scheduled for deletion`() {
         viewModel = createViewModel(conversationsRepository, userManagerWithAliceDeleted)
-        val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply {
-            addRow(arrayOf("carol@cloud.example.com"))
-        }
+        val contactData = talkContactRow("carol@cloud.example.com")
 
         assertEquals(noAccountForContact, routeContactChatWith(cursor = contactData))
     }
 
     companion object {
         private const val TOKEN = "abcd1234"
+        private const val TALK_CONTACT_CHAT_MIME_TYPE = "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat"
         private const val SLOW_SYNC_MS = 1000L
     }
 }

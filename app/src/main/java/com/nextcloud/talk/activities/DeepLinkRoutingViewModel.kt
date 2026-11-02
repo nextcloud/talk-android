@@ -273,12 +273,16 @@ class DeepLinkRoutingViewModel @Inject constructor(
 
     // the contacts provider lives in another process: a binder call, not for the main thread
     // empty without the contacts permission, which any app can make it need by sending such an intent, and for a uri
-    // of another app that is no contact data row of Talk, e.g. of a contact or an unknown path
+    // of another app that is no contact data row of Talk, e.g. of a contact, an unknown path or a data row of another
+    // type, such as the email address of a contact, which has the form of a user id at a server as well
     private fun readUserIdOfContact(contactUri: Uri): String {
         var userId = ""
         try {
             context.contentResolver.query(contactUri, null, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
+                if (cursor.moveToFirst() &&
+                    cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE)) ==
+                    CONTACT_CHAT_MIME_TYPE
+                ) {
                     // userId @ server
                     userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1)).orEmpty()
                 }
