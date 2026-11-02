@@ -230,6 +230,9 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
 
+    // set when the list is shown again, see switchToDefaultAccountIfChanged
+    private var isDefaultAccountCheckDue = false
+
     // whether the chat of the pending shortcut opens with the focus in the message input, as the one of note to self
     private var isPendingConversationInputFocused = false
     private var unauthorizedDialog: AlertDialog? = null
@@ -422,6 +425,7 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        isDefaultAccountCheckDue = false
         removeExtrasOfApp(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
         when {
@@ -601,12 +605,13 @@ class ConversationsListActivity : BaseActivity() {
         return usesPush
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        // The list shows the default account. If another account became the default while the list was in the
-        // background (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which
-        // would lose the pending message. The new list gets a plain intent: the list's own one may hold a deep link
-        // it already routed, which would be routed again, or a contact uri it may not grant.
+    /**
+     * The list shows the default account. If another account became the default while the list was in the background
+     * (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which would lose the
+     * pending message. The new list gets a plain intent: the list's own one may hold a deep link it already routed,
+     * which would be routed again, or a contact uri it may not grant.
+     */
+    private fun switchToDefaultAccountIfChanged() {
         if (isRelaunching) return
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
         val isPickingConversation = forwardMessage || isShare(intent)
@@ -617,6 +622,14 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Not while the lock screen covers the list: the list of the default account would start above it and open
+        // a lock screen of its own. The check stays due for the resume after unlocking.
+        if (isDefaultAccountCheckDue && !isCoveredByLockScreen) {
+            isDefaultAccountCheckDue = false
+            switchToDefaultAccountIfChanged()
+            // the list of the default account loads its own data
+            if (isRelaunching) return
+        }
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = isShare(intent)
@@ -701,6 +714,8 @@ class ConversationsListActivity : BaseActivity() {
 
     override fun onStop() {
         super.onStop()
+        // checked when the list is shown again, unless onNewIntent() gets an intent, which chooses its account itself
+        isDefaultAccountCheckDue = true
         // The conversation of a shortcut that isn't in the list yet isn't opened anymore once the list is left. Not
         // when it is only paused, e.g. below the request for the notification permission.
         if (!isCoveredByLockScreen && !isChangingConfigurations) {
