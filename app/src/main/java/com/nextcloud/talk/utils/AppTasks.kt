@@ -12,9 +12,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.ShareActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.launch
 
 // A task listed by ActivityManager.getAppTasks can be removed before it is used, e.g. when it is swiped from the
 // recents or finished by an activity of another task, and the calls on it throw an IllegalArgumentException then.
@@ -152,10 +154,13 @@ object AppTasks {
      * that can start a task of the app is created: the conversation list, or the top of a new back stack, see
      * [ConversationsListActivity.createBackStack]. Without a task affinity, the recents only replace a task by one
      * with the same root intent, so e.g. a task a deep link started would stay there next to the one a notification
-     * starts.
+     * starts. In the scope of the app, as it asks ActivityManager for every task while the screen is created.
      */
     fun removeTasksLeftInRecents(context: Context) {
-        findTasksLeftInRecents(context).forEach { it.finishAndRemoveTaskIfPresent() }
+        val applicationContext = context.applicationContext
+        NextcloudTalkApplication.sharedApplication!!.appScope.launch {
+            findTasksLeftInRecents(applicationContext).forEach { it.finishAndRemoveTaskIfPresent() }
+        }
     }
 
     private fun appTaskRoots(): Set<String> =
