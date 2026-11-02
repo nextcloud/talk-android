@@ -282,10 +282,7 @@ class ConversationsListActivity : BaseActivity() {
             return
         }
         currentUser = setUpBoundUserOrFinish() ?: return
-        // A recreation after a configuration change reuses this intent. Through the launcher alias,
-        // removeExtrasOfApp would remove the account written into it again, and the list would switch to the default
-        // account of that time while its view models stay on this one. The intents of other apps that the list
-        // doesn't show were passed on above, and their extras of the app removed.
+        // kept for a recreation, which would otherwise remove the account from the intent again
         intent = intentOfAccount(this, intent, currentUser.id)
         if (savedInstanceState == null) {
             AppTasks.removeTasksLeftInRecents(this)
@@ -644,8 +641,7 @@ class ConversationsListActivity : BaseActivity() {
             val users = userManager.getUsers()
             hasMultipleAccountsState.value = users.size > 1
             if (!areShortcutsOfEarlierVersionsUpdated) {
-                // set before, so another list doesn't update them at the same time, and again after, so a list
-                // tries again when they couldn't be updated, e.g. while the user was locked, or this list was closed
+                // reset if they couldn't be updated, so a later list tries again
                 areShortcutsOfEarlierVersionsUpdated = true
                 var isUpdated = false
                 try {
