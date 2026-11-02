@@ -271,6 +271,10 @@ class ConversationsListActivity : BaseActivity() {
         removeExtrasOfApp(intent)
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        if (isLauncherTapOnAppTask()) {
+            finish()
+            return
+        }
         if (finishIfNotShown()) return
         currentUser = setUpBoundUserOrFinish() ?: return
         // A recreation after a configuration change reuses this intent. Through the launcher alias,
@@ -335,6 +339,17 @@ class ConversationsListActivity : BaseActivity() {
         // a deep link that starts the app shows the launch screen until its chat covers the list or it asks first
         splashScreen.setKeepOnScreenCondition { deepLinkRouting.keepsLaunchScreen }
     }
+
+    /**
+     * Whether the launcher started this list on top of a task of the app it isn't the root of, e.g. one a notification
+     * or a deep link started: the launcher only brings a task to the front whose root has its intent, so it adds a list
+     * to any other one, while finishing this list just shows that task.
+     */
+    private fun isLauncherTapOnAppTask(): Boolean =
+        !isTaskRoot &&
+            intent.action == Intent.ACTION_MAIN &&
+            intent.hasCategory(Intent.CATEGORY_LAUNCHER) &&
+            AppTasks.isRunningAppTask(this, taskId)
 
     /**
      * Passes the intent of another app on, or opens the login without an account, finishes this list and returns true

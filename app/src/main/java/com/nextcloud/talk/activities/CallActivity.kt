@@ -125,6 +125,7 @@ import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AppTasks
+import com.nextcloud.talk.utils.taskIdCompat
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
@@ -2474,11 +2475,6 @@ class CallActivity : CallBaseActivity() {
             }
             .forEach { it.finishAndRemoveTaskIfPresent() }
     }
-
-    // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
-    @Suppress("DEPRECATION")
-    private val ActivityManager.RecentTaskInfo.taskIdCompat: Int
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskId else persistentId
 
     private fun startVideoCapture(isPortrait: Boolean) {
         val (width, height) = if (isPortrait) {

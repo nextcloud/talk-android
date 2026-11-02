@@ -9,6 +9,7 @@ package com.nextcloud.talk.utils
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -120,6 +121,13 @@ object AppTasks {
         findAppTasks(context, appTasks) { it.numActivities > 0 && predicate(it) }.firstOrNull()
 
     /**
+     * Whether the task [taskId] is one of [findRunningAppTask], e.g. not a task of another app that started the
+     * conversation list in it.
+     */
+    fun isRunningAppTask(context: Context, taskId: Int): Boolean =
+        findRunningAppTask(context) { it.taskIdCompat == taskId } != null
+
+    /**
      * The tasks among [appTasks] that are only left in the recents, without activities: those of [findAppTasks],
      * and those another app started the conversation list in.
      */
@@ -159,3 +167,8 @@ object AppTasks {
             info != null && info.baseIntent.component?.className in roots && predicate(info)
         }
 }
+
+// TaskInfo.taskId only exists since API 29; before that persistentId is the task id
+@Suppress("DEPRECATION")
+val ActivityManager.RecentTaskInfo.taskIdCompat: Int
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskId else persistentId
