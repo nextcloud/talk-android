@@ -402,6 +402,7 @@ class ConversationsListActivity : BaseActivity() {
         isPendingConversationInputFocused = savedInstanceState.getBoolean(BundleKeys.KEY_FOCUS_INPUT)
         intent.removeExtra(KEY_ROOM_TOKEN)
         intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
+        intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -635,13 +636,24 @@ class ConversationsListActivity : BaseActivity() {
             intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
         }
 
-        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
-        // Extract the room token from the shortcut ID so we can pre-select the conversation.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isShare(intent)) {
-            val shortcutId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
-            if (shortcutId != null) {
-                pendingDirectShareToken = DirectShareHelper.extractTokenFromShortcutId(shortcutId)
+        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID, before Android 10 through
+        // ChooserTargetServiceCompat. Extract the room token from the shortcut ID so we can pre-select the conversation.
+        if (isShare(intent)) {
+            val target = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+                ?.let(ShortcutManagerHelper::conversationOfShortcutId)
+            if (target != null && target.first != currentUser.id) {
+                // a target of an account shown before, which the system keeps cached: shared with that account
+                val share = Intent(intent)
+                lifecycleScope.launch {
+                    if (userManager.getUserWithInternalId(target.first) != null) {
+                        relaunchForAccount(target.first, share)
+                    }
+                }
+            } else if (target != null) {
+                pendingDirectShareToken = target.second
             }
+            // preselected once, like the conversation of a shortcut above
+            intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
         }
 
         if (!eventBus.isRegistered(this)) {

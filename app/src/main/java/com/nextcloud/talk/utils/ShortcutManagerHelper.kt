@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -164,8 +163,7 @@ object ShortcutManagerHelper {
      * The user id and room token of the conversation shortcut [shortcutId] of [getShortcutId], or of a direct share
      * shortcut of [DirectShareHelper], else null.
      */
-    @VisibleForTesting
-    internal fun conversationOfShortcutId(shortcutId: String): Pair<Long, String>? {
+    fun conversationOfShortcutId(shortcutId: String): Pair<Long, String>? {
         val prefix = listOf(CONVERSATION_SHORTCUT_PREFIX, DirectShareHelper.SHORTCUT_ID_PREFIX)
             .firstOrNull { shortcutId.startsWith(it) }
         val userIdAndToken = prefix?.let { shortcutId.removePrefix(it) }

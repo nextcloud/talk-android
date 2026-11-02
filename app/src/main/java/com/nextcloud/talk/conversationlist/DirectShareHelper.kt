@@ -37,7 +37,6 @@ object DirectShareHelper {
     private val TAG = DirectShareHelper::class.java.simpleName
     private const val SHARE_TARGET_CATEGORY = "com.nextcloud.talk.sharing.SHARE_TARGET_CATEGORY"
     const val SHORTCUT_ID_PREFIX = "direct_share_"
-    private const val SHORTCUT_ID_MIN_PARTS = 4
     private const val AVATAR_SIZE_PX = 256
 
     private val publishMutex = Mutex()
@@ -164,20 +163,6 @@ object DirectShareHelper {
             .filter { it.startsWith(SHORTCUT_ID_PREFIX) }
         if (ids.isNotEmpty()) {
             ShortcutManagerCompat.removeLongLivedShortcuts(context, ids)
-        }
-    }
-
-    /**
-     * Parses the room token from a shortcut ID of the form "direct_share_{userId}_{token}".
-     * Returns null if the ID does not belong to this app's direct share shortcuts.
-     */
-    fun extractTokenFromShortcutId(shortcutId: String): String? {
-        if (!shortcutId.startsWith(SHORTCUT_ID_PREFIX)) return null
-        val parts = shortcutId.split("_")
-        return if (parts.size < SHORTCUT_ID_MIN_PARTS) {
-            null
-        } else {
-            parts.drop(SHORTCUT_ID_MIN_PARTS - 1).joinToString("_")
         }
     }
 
