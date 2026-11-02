@@ -169,6 +169,8 @@ class LockedActivity : AppCompatActivity() {
     private fun unlock() {
         appPreferences.setLockTimestamp(System.currentTimeMillis())
         NextcloudTalkApplication.isLocked = false
+        // e.g. set while the screen lock of the device was asked for, which would lock again with no timeout
+        NextcloudTalkApplication.pendingLockCheck = false
         finish()
     }
 
