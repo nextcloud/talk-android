@@ -669,16 +669,6 @@ class ConversationsListActivity : BaseActivity() {
                         DirectShareHelper.publishShareTargetShortcuts(this@ConversationsListActivity, currentUser, list)
                     }
 
-                    // check for Direct Share
-                    val token = pendingDirectShareToken
-                    if (token != null) {
-                        pendingDirectShareToken = null
-                        val conversation = list.firstOrNull { it.token == token }
-                        if (conversation != null) {
-                            handleConversation(conversation)
-                        }
-                    }
-
                     // Update dynamic shortcuts for frequent/favorite conversations
                     ShortcutManagerHelper.updateDynamicShortcuts(context, list, currentUser)
 
@@ -690,6 +680,21 @@ class ConversationsListActivity : BaseActivity() {
                         }
                     }
                 }.collect()
+        }
+
+        // Direct Share: the conversation of a share sheet or home screen shortcut opens only while the list is resumed
+        // and not covered by the lock screen it started, as the chat would otherwise show above the lock screen. After
+        // unlocking, the list is resumed again and the room list emitted anew, so the conversation opens then.
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                conversationsListViewModel.getRoomsFlow.collect { list ->
+                    val token = pendingDirectShareToken
+                    if (token != null && !isCoveredByLockScreen) {
+                        pendingDirectShareToken = null
+                        list.firstOrNull { it.token == token }?.let { handleConversation(it) }
+                    }
+                }
+            }
         }
 
         lifecycleScope.launch {
