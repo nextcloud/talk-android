@@ -420,6 +420,9 @@ class ConversationsListActivity : BaseActivity() {
             isShareOfOtherApp(intent) ->
                 startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
             isViewOfOtherApp(intent) -> startActivity(createDeepLinkForwardIntent(intent))
+            // a list that finished in onCreate has no account or routing; the system doesn't pass intents to a
+            // finishing activity, so this only guards against reading them uninitialized
+            !::deepLinkRouting.isInitialized -> Unit
             // the list stays for its account and only routes the deep link
             deepLinkRouting.onNewIntent(intent) -> Unit
             // while relaunching, relaunchForAccount ignores the intent
