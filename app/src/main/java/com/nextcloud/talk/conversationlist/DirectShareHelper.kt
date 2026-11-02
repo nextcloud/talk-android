@@ -9,6 +9,7 @@
 package com.nextcloud.talk.conversationlist
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
@@ -277,8 +278,9 @@ object DirectShareHelper {
     ): ShortcutInfoCompat.Builder {
         // Tapping this shortcut, e.g. on the home screen, opens the conversation directly. When used from the share
         // sheet, Android delivers ACTION_SEND with the shared content and EXTRA_SHORTCUT_ID, not this intent.
+        // without an account id only the list, with an action, which a shortcut needs
         val intent = ShortcutManagerHelper.createConversationIntent(context, token, user)
-            ?: ConversationsListActivity.createIntent(context)
+            ?: ConversationsListActivity.createIntent(context).setAction(Intent.ACTION_VIEW)
 
         val person = Person.Builder()
             .setName(displayName)
