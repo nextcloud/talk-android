@@ -259,34 +259,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     private fun processRoomJoinMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
-        val joinEventList = eventOverallWebSocketMessage.eventMap?.get("join") as List<HashMap<String, Any>>?
-        var internalHashMap: HashMap<String, Any>
-        var participant: ParticipantDto
-        for (i in joinEventList!!.indices) {
-            internalHashMap = joinEventList[i]
-            val userMap = internalHashMap["user"] as HashMap<String, Any>?
-            participant = ParticipantDto()
-            val userId = internalHashMap["userid"] as String?
-            if (userId != null) {
-                participant.actorType = ActorType.USERS
-                participant.actorId = userId
-            } else {
-                participant.actorType = ActorType.GUESTS
-                // FIXME seems to be not given by the HPB: participant.setActorId();
-            }
-            if (userMap != null) {
-                // There is no "user" attribute for guest participants.
-                participant.displayName = userMap["displayname"] as String?
-            }
-            usersHashMap[internalHashMap["sessionid"] as String?] = participant
-        }
+        val joinEventList = eventOverallWebSocketMessage.eventMap?.get("join") as List<Map<String, Any>>?
+        roomSessions.onJoin(joinEventList)
     }
 
     private fun processRoomLeaveMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
         val leaveEventList = eventOverallWebSocketMessage.eventMap?.get("leave") as List<String>?
-        for (i in leaveEventList!!.indices) {
-            usersHashMap.remove(leaveEventList[i])
-        }
+        roomSessions.onLeave(leaveEventList)
     }
 
     /**
@@ -327,6 +306,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 resumeId = ""
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
+                roomSessions.reset()
                 restartWebSocket()
             } else if ("hello_expected" == message.code) {
                 restartWebSocket()
@@ -434,6 +414,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
                 currentFederation = null
+                roomSessions.reset()
                 sendMessage(message)
             } else if (
                 roomToken == currentRoomToken &&
