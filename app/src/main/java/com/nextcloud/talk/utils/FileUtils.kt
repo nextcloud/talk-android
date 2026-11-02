@@ -84,13 +84,32 @@ object FileUtils {
 
     /**
      * Checks whether an externally provided [uri] may be uploaded: only content uris are accepted,
-     * and uris of the own app ([packageName]) only when they point into the shared attachments cache
-     * or the copies of shared files.
+     * and uris of the own app only when they point into the shared attachments cache or the copies
+     * of shared files of its FileProvider.
      */
-    fun isTrustedShareUri(uri: Uri?, packageName: String, cacheDir: File): Boolean =
-        uri != null &&
-            ContentResolver.SCHEME_CONTENT == uri.scheme &&
-            (uri.authority != packageName || isSharedAttachmentProviderPath(cacheDir, uri.pathSegments))
+    fun isTrustedShareUri(uri: Uri?, context: Context): Boolean =
+        isTrustedShareUri(uri, context.packageName, context.cacheDir) { authority ->
+            context.packageManager.resolveContentProvider(authority, 0)?.packageName
+        }
+
+    /**
+     * See [isTrustedShareUri]. Every provider of the own app ([packageName]) is rejected, as e.g. the one of the
+     * ImagePicker library serves all its files, except the paths of its FileProvider (authority [packageName]) that
+     * [isSharedAttachmentProviderPath] allows. A user id prefix ("0@authority") is ignored, as the content resolver
+     * resolves it to the own user. [packageOfAuthority] gives the package of the provider of an authority.
+     */
+    fun isTrustedShareUri(
+        uri: Uri?,
+        packageName: String,
+        cacheDir: File,
+        packageOfAuthority: (String) -> String?
+    ): Boolean {
+        if (uri == null || ContentResolver.SCHEME_CONTENT != uri.scheme) return false
+        val authority = uri.authority?.substringAfterLast('@') ?: return false
+        val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
+        return !isOwnProvider ||
+            authority == packageName && isSharedAttachmentProviderPath(cacheDir, uri.pathSegments)
+    }
 
     /**
      * Resolves an untrusted file name inside [baseDirectory] and rejects traversal attempts.

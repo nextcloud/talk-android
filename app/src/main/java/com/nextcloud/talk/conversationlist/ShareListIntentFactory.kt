@@ -110,7 +110,7 @@ internal class ShareListIntentFactory(
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun copyToCache(uri: Uri, directoryOf: () -> File?): Uri? {
-        if (!FileUtils.isTrustedShareUri(uri, context.packageName, context.cacheDir)) {
+        if (!FileUtils.isTrustedShareUri(uri, context)) {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
             return null
         }

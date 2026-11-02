@@ -1295,7 +1295,7 @@ class ChatActivity :
         // Checked by the conversation list, the only screen that shares files to the chat, and again here, so a screen
         // that passes on shared files without that check can't make the attachment preview upload another file.
         sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS)
-            ?.filter { FileUtils.isTrustedShareUri(it.toUri(), packageName, cacheDir) }
+            ?.filter { FileUtils.isTrustedShareUri(it.toUri(), this) }
             ?: emptyList()
         intent.removeExtra(BundleKeys.KEY_SHARED_FILE_PATHS)
 

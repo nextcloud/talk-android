@@ -35,7 +35,8 @@ class FileUtilsShareUriTest {
         cacheDir.deleteRecursively()
     }
 
-    private fun isTrusted(uri: String?) = FileUtils.isTrustedShareUri(uri?.let { Uri.parse(it) }, PACKAGE, cacheDir)
+    private fun isTrusted(uri: String?) =
+        FileUtils.isTrustedShareUri(uri?.let { Uri.parse(it) }, PACKAGE, cacheDir) { PROVIDER_PACKAGES[it] }
 
     @Test
     fun `accepts content uris of other apps`() {
@@ -60,6 +61,20 @@ class FileUtilsShareUriTest {
     }
 
     @Test
+    fun `rejects uris of other providers of the own app`() {
+        assertFalse(isTrusted("content://$IMAGE_PICKER_AUTHORITY/root/data/data/$PACKAGE/files/settings.preferences_pb"))
+        assertFalse(isTrusted("content://$IMAGE_PICKER_AUTHORITY/shared_attachments/image.jpg"))
+    }
+
+    @Test
+    fun `ignores a user id prefix of the authority`() {
+        assertFalse(isTrusted("content://0@$PACKAGE/logs/log.txt"))
+        assertFalse(isTrusted("content://10@$IMAGE_PICKER_AUTHORITY/cache/image.jpg"))
+        assertTrue(isTrusted("content://0@$PACKAGE/shared_attachments/image.jpg"))
+        assertTrue(isTrusted("content://10@media/external/images/media/1"))
+    }
+
+    @Test
     fun `rejects non content uris`() {
         assertFalse(isTrusted("file:///data/data/$PACKAGE/databases/talk.db"))
         assertFalse(isTrusted("https://example.com/file.txt"))
@@ -68,5 +83,11 @@ class FileUtilsShareUriTest {
 
     companion object {
         private const val PACKAGE = "com.nextcloud.talk2"
+        private const val IMAGE_PICKER_AUTHORITY = "$PACKAGE.imagepicker.provider"
+        private val PROVIDER_PACKAGES = mapOf(
+            PACKAGE to PACKAGE,
+            IMAGE_PICKER_AUTHORITY to PACKAGE,
+            "media" to "com.android.providers.media.module"
+        )
     }
 }
