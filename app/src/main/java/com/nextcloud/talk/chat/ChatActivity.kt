@@ -565,12 +565,13 @@ class ChatActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
-        initialUser = setUpBoundUserOrFinish() ?: return
+        // before initialUser is set, as onDestroy() then cleans up the chat of that room token
         if (intent.getStringExtra(KEY_ROOM_TOKEN)?.let(DeepLinkHandler::isValidToken) != true) {
             Log.e(TAG, "Started without a valid room token")
             finish()
             return
         }
+        initialUser = setUpBoundUserOrFinish() ?: return
 
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -2897,9 +2898,9 @@ class ChatActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        logConversationInfos("onDestroy")
 
         if (::initialUser.isInitialized) {
+            logConversationInfos("onDestroy")
             chatViewModel.leaveRoomViewState.removeObserver(leaveRoomObserver)
         }
 
