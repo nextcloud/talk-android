@@ -76,6 +76,11 @@ class LockedActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // unlocked meanwhile on the lock screen of another task, e.g. of a share
+        if (!NextcloudTalkApplication.isLocked) {
+            finish()
+            return
+        }
         hideLogoForBrandedClients()
 
         binding.unlockContainer.setOnClickListener {
@@ -97,6 +102,10 @@ class LockedActivity : AppCompatActivity() {
             // this activity is only shown when the inactivity timeout has already elapsed.
             SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)
             showBiometricDialog()
+        } else {
+            // e.g. the screen lock of the device was removed while the lock screen was shown, which then couldn't
+            // be left
+            unlock()
         }
     }
 
