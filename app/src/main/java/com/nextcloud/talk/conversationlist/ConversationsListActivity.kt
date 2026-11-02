@@ -286,15 +286,7 @@ class ConversationsListActivity : BaseActivity() {
         if (savedInstanceState == null) {
             AppTasks.removeTasksLeftInRecents(this)
         }
-        if (!isAppStartSetUpDone) {
-            isAppStartSetUpDone = true
-            setUpPushRegistration()
-            // a key that became invalid, e.g. after the lock screen of the device was reset, is created anew when it
-            // is checked
-            if (appPreferences.isScreenLocked) {
-                SecurityUtils.createKey(appPreferences.screenLockTimeout)
-            }
-        }
+        setUpOncePerProcess()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -374,6 +366,17 @@ class ConversationsListActivity : BaseActivity() {
         // a task of its own is removed before DeepLinkActivity passes the intent on, so it doesn't end up there
         if (isViewOfOtherApp && isTaskRoot) finishAndRemoveTask() else finish()
         return true
+    }
+
+    private fun setUpOncePerProcess() {
+        if (isAppStartSetUpDone) return
+        isAppStartSetUpDone = true
+        setUpPushRegistration()
+        // a key that became invalid, e.g. after the lock screen of the device was reset, is created anew when it is
+        // checked
+        if (appPreferences.isScreenLocked) {
+            SecurityUtils.createKey(appPreferences.screenLockTimeout)
+        }
     }
 
     /** Registers for push messages, as the app was started. */
