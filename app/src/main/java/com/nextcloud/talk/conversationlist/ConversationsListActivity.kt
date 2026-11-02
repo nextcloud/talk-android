@@ -566,7 +566,7 @@ class ConversationsListActivity : BaseActivity() {
                             user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
                         }
                         if (user != null && userManager.setUserAsActive(user)) {
-                            startActivity(createSwitchToAccountIntent(context, user.id!!))
+                            startActivity(createInPlaceAccountSwitchIntent(context, user.id!!))
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
                         }
@@ -1903,7 +1903,7 @@ class ConversationsListActivity : BaseActivity() {
          * its place, see [relaunchForAccount]. Unlike [createAccountSwitchIntent], the list at the root of the task
          * isn't replaced by a new one, which Android shows with the color of the splash screen.
          */
-        fun createSwitchToAccountIntent(context: Context, userId: Long): Intent =
+        fun createInPlaceAccountSwitchIntent(context: Context, userId: Long): Intent =
             createAccountSwitchIntent(context, userId).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
         /**

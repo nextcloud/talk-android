@@ -2446,10 +2446,7 @@ class CallActivity : CallBaseActivity() {
                     baseActivityName != CallNotificationActivity::class.java.name
             }
 
-        val listIntent = ConversationsListActivity.createIntent(context).apply {
-            putExtra(KEY_INTERNAL_USER_ID, conversationUser.id)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        }
+        val listIntent = ConversationsListActivity.createInPlaceAccountSwitchIntent(context, conversationUser.id!!)
         val isShownInPrimaryTask = primaryTask != null &&
             primaryTask.startActivityIfPresent(context, listIntent) &&
             primaryTask.moveToFrontIfPresent()

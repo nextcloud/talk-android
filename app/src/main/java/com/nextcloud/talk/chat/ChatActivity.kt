@@ -456,10 +456,9 @@ class ChatActivity :
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             } else {
-                val intent = ConversationsListActivity.createIntent(this@ChatActivity)
-                intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                startActivity(intent)
+                startActivity(
+                    ConversationsListActivity.createInPlaceAccountSwitchIntent(this@ChatActivity, conversationUserId)
+                )
                 finish()
             }
         }
@@ -3502,11 +3501,8 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.message)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomToken)
 
-        val intent = ConversationsListActivity.createIntent(this)
-        intent.putExtras(bundle)
-        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        startActivity(intent)
+        val intent = ConversationsListActivity.createInPlaceAccountSwitchIntent(this, conversationUserId)
+        startActivity(intent.putExtras(bundle))
         finish()
     }
 
