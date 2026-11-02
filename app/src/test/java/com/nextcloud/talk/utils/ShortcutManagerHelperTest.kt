@@ -11,9 +11,11 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import com.nextcloud.talk.activities.DeepLinkActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -21,8 +23,8 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 /**
- * The launcher activity takes no extras from outside the app, so the conversation shortcuts that notifications
- * published with only extras are given the deep link of their conversation.
+ * The conversation shortcuts open the conversation of exactly their account through the internal entry point of the
+ * conversation list, and those of earlier versions are given that intent.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -30,20 +32,34 @@ class ShortcutManagerHelperTest {
 
     private val context = RuntimeEnvironment.getApplication()
 
-    private val alice = User(id = 1L, username = "alice", baseUrl = "https://cloud.example.com")
+    // two accounts with the same user name on the same host, which a deep link can't tell apart
+    private val alice = User(id = 1L, username = "alice", baseUrl = "https://example.com/nc1")
+    private val aliceOnOtherPort = User(id = 2L, username = "alice", baseUrl = "https://example.com:8443")
 
+    private val internalEntryPoint = InternalEntryPoint.nameOf(ConversationsListActivity::class.java)
+
+    private fun pushShortcut(id: String, intent: Intent) {
+        ShortcutManagerCompat.pushDynamicShortcut(
+            context,
+            ShortcutInfoCompat.Builder(context, id).setShortLabel("Chat").setIntent(intent).build()
+        )
+    }
+
+    // the notification shortcuts of earlier versions
     private fun pushShortcutWithExtras(userId: Long, roomToken: String) {
         val intent = Intent().setClassName(context, AppTasks.LAUNCHER_ACTIVITY)
             .setAction(Intent.ACTION_VIEW)
             .putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             .putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
-        ShortcutManagerCompat.pushDynamicShortcut(
-            context,
-            ShortcutInfoCompat.Builder(context, "conversation_${userId}_$roomToken")
-                .setShortLabel("Chat")
-                .setIntent(intent)
-                .build()
-        )
+        pushShortcut("conversation_${userId}_$roomToken", intent)
+    }
+
+    // the conversation shortcuts of earlier versions
+    private fun pushShortcutWithDeepLink(user: User, roomToken: String) {
+        val intent = Intent(context, DeepLinkActivity::class.java)
+            .setAction(Intent.ACTION_VIEW)
+            .setData(DeepLinkHandler.createConversationUri(roomToken, user.baseUrl!!, user.username))
+        pushShortcut("conversation_${user.id}_$roomToken", intent)
     }
 
     private fun intentOf(shortcutId: String): Intent =
@@ -51,25 +67,63 @@ class ShortcutManagerHelperTest {
             .single { it.id == shortcutId }
             .intent
 
+    private fun assertOpensConversation(intent: Intent, userId: Long, roomToken: String) {
+        assertEquals(internalEntryPoint, intent.component?.className)
+        assertEquals(Intent.ACTION_VIEW, intent.action)
+        assertEquals(userId, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L))
+        assertEquals(roomToken, intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN))
+    }
+
     @Test
-    fun `a conversation shortcut with only extras is given the deep link of its conversation`() {
+    fun `a conversation intent names exactly its account`() {
+        val intent = ShortcutManagerHelper.createConversationIntent(context, "abcd1234", aliceOnOtherPort)!!
+
+        assertOpensConversation(intent, userId = 2L, roomToken = "abcd1234")
+    }
+
+    @Test
+    fun `a conversation shortcut with only extras is given the intent of its conversation`() {
         pushShortcutWithExtras(userId = 1L, roomToken = "abcd1234")
 
-        ShortcutManagerHelper.updateShortcutsWithoutDeepLink(context, listOf(alice))
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice, aliceOnOtherPort))
 
-        val intent = intentOf("conversation_1_abcd1234")
-        assertEquals(DeepLinkActivity::class.java.name, intent.component?.className)
-        assertEquals(Intent.ACTION_VIEW, intent.action)
-        val deepLink = DeepLinkHandler.createConversationUri("abcd1234", alice.baseUrl!!, alice.username)
-        assertEquals(deepLink, intent.data)
+        assertOpensConversation(intentOf("conversation_1_abcd1234"), userId = 1L, roomToken = "abcd1234")
+    }
+
+    @Test
+    fun `a conversation shortcut with a deep link is given the intent of exactly its account`() {
+        pushShortcutWithDeepLink(aliceOnOtherPort, roomToken = "abcd1234")
+
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice, aliceOnOtherPort))
+
+        assertOpensConversation(intentOf("conversation_2_abcd1234"), userId = 2L, roomToken = "abcd1234")
     }
 
     @Test
     fun `a conversation shortcut of an account that is gone is kept as it is`() {
-        pushShortcutWithExtras(userId = 2L, roomToken = "abcd1234")
+        pushShortcutWithExtras(userId = 3L, roomToken = "abcd1234")
 
-        ShortcutManagerHelper.updateShortcutsWithoutDeepLink(context, listOf(alice))
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice, aliceOnOtherPort))
 
-        assertEquals(AppTasks.LAUNCHER_ACTIVITY, intentOf("conversation_2_abcd1234").component?.className)
+        assertEquals(AppTasks.LAUNCHER_ACTIVITY, intentOf("conversation_3_abcd1234").component?.className)
+    }
+
+    @Test
+    fun `other shortcuts are kept as they are`() {
+        val other = Intent().setClassName(context, AppTasks.LAUNCHER_ACTIVITY).setAction(Intent.ACTION_VIEW)
+        pushShortcut("note_to_self", other)
+
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice))
+
+        assertEquals(AppTasks.LAUNCHER_ACTIVITY, intentOf("note_to_self").component?.className)
+    }
+
+    @Test
+    fun `the account and conversation are read from the id of a conversation shortcut`() {
+        assertEquals(2L to "abcd1234", ShortcutManagerHelper.conversationOfShortcutId("conversation_2_abcd1234"))
+        assertNull(ShortcutManagerHelper.conversationOfShortcutId("direct_share_2_abcd1234"))
+        assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_x_abcd1234"))
+        assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_2"))
+        assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_2_../abcd"))
     }
 }

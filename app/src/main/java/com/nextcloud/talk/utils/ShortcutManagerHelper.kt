@@ -10,11 +10,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.DeepLinkActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -32,8 +34,8 @@ object ShortcutManagerHelper {
     private const val CONVERSATION_SHORTCUT_PREFIX = "conversation_"
 
     /**
-     * Creates a shortcut for a conversation using a nextcloudtalk:// deep link URI.
-     * This ensures proper multi-account user resolution when the shortcut is opened.
+     * Creates a shortcut for a conversation with the intent of [createConversationIntent], which opens it for exactly
+     * its account.
      *
      * @param context Application context
      * @param conversation The conversation to create a shortcut for
@@ -95,41 +97,43 @@ object ShortcutManagerHelper {
     }
 
     /**
-     * Gives the conversation shortcuts that target the launcher activity with only the room token and user id as
-     * extras the deep link of their conversation, like [createConversationShortcut]: the launcher activity takes no
-     * extras from intents of outside the app, so such a shortcut opens only the conversation list. Pinned ones, e.g.
-     * on the home screen or in a conversation widget, and cached ones keep their intent until their conversation has a
-     * notification or is among the dynamic shortcuts.
+     * Gives the conversation shortcuts of earlier versions the intent of [createConversationIntent], which opens the
+     * conversation of exactly their account: those that target the launcher activity, with the room token and user id
+     * as extras, which it takes from no intent of outside the app, so they open only the conversation list, and those
+     * with a nextcloudtalk:// deep link, which names only the host and user name of the account. The account and
+     * conversation are taken from the id of the shortcut. Pinned ones, e.g. on the home screen or in a conversation
+     * widget, and cached ones keep their intent until their conversation has a notification or is among the dynamic
+     * shortcuts.
      *
      * @param context Application context
      * @param users The accounts whose shortcuts can be updated
      */
-    fun updateShortcutsWithoutDeepLink(context: Context, users: List<User>) {
+    fun updateShortcutsOfEarlierVersions(context: Context, users: List<User>) {
         try {
-            val updated = shortcutsWithDeepLinkFor(context, users)
+            val updated = shortcutsOfEarlierVersionsUpdated(context, users)
             if (updated.isNotEmpty()) {
                 ShortcutManagerCompat.updateShortcuts(context, updated)
             }
         } catch (e: IllegalArgumentException) {
             // e.g. for a shortcut that can't be updated. Old shortcuts must not crash the conversation list.
-            Log.w(TAG, "Failed to update the shortcuts without a deep link", e)
+            Log.w(TAG, "Failed to update the shortcuts of earlier versions", e)
         } catch (e: IllegalStateException) {
             // Thrown while the user is locked
-            Log.w(TAG, "Failed to update the shortcuts without a deep link", e)
+            Log.w(TAG, "Failed to update the shortcuts of earlier versions", e)
         }
     }
 
-    /** The shortcuts of [updateShortcutsWithoutDeepLink] with the deep link of their conversation. */
-    private fun shortcutsWithDeepLinkFor(context: Context, users: List<User>): List<ShortcutInfoCompat> {
+    /** The shortcuts of [updateShortcutsOfEarlierVersions] with the intent of their conversation. */
+    private fun shortcutsOfEarlierVersionsUpdated(context: Context, users: List<User>): List<ShortcutInfoCompat> {
         val usersById = users.associateBy { it.id }
         val matchFlags = ShortcutManagerCompat.FLAG_MATCH_DYNAMIC or ShortcutManagerCompat.FLAG_MATCH_PINNED or
             ShortcutManagerCompat.FLAG_MATCH_CACHED
+        val internalEntryPoint = InternalEntryPoint.nameOf(ConversationsListActivity::class.java)
         return ShortcutManagerCompat.getShortcuts(context, matchFlags)
-            .filter { it.id.startsWith(CONVERSATION_SHORTCUT_PREFIX) && isWithoutDeepLink(it.intent) }
+            .filter { it.intent.component?.className != internalEntryPoint }
             .mapNotNull { shortcut ->
-                val user = usersById[shortcut.intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L)]
-                val roomToken = shortcut.intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)
-                val intent = roomToken?.let { token -> user?.let { createConversationIntent(context, token, it) } }
+                val (userId, roomToken) = conversationOfShortcutId(shortcut.id) ?: return@mapNotNull null
+                val intent = usersById[userId]?.let { createConversationIntent(context, roomToken, it) }
                 // the system keeps the other fields of a shortcut that is updated, e.g. its icon and person
                 intent?.let {
                     ShortcutInfoCompat.Builder(context, shortcut.id)
@@ -140,8 +144,16 @@ object ShortcutManagerHelper {
             }
     }
 
-    private fun isWithoutDeepLink(intent: Intent): Boolean =
-        intent.component?.className == AppTasks.LAUNCHER_ACTIVITY && intent.data == null
+    /** The user id and room token of the conversation shortcut [shortcutId] of [getShortcutId], else null. */
+    @VisibleForTesting
+    internal fun conversationOfShortcutId(shortcutId: String): Pair<Long, String>? {
+        val userIdAndToken = shortcutId.takeIf { it.startsWith(CONVERSATION_SHORTCUT_PREFIX) }
+            ?.removePrefix(CONVERSATION_SHORTCUT_PREFIX)
+        val userId = userIdAndToken?.substringBefore('_')?.toLongOrNull()
+        val roomToken = userIdAndToken?.substringAfter('_', missingDelimiterValue = "")
+            ?.takeIf(DeepLinkHandler::isValidToken)
+        return if (userId != null && roomToken != null) userId to roomToken else null
+    }
 
     /**
      * Requests to pin a shortcut to the home screen.
@@ -170,9 +182,9 @@ object ShortcutManagerHelper {
      */
     @Suppress("DEPRECATION")
     private fun createLegacyShortcut(context: Context, conversation: ConversationModel, user: User): Boolean {
-        val launchIntent = createConversationIntent(context, conversation.token, user)
+        val launchIntent = createConversationDeepLinkIntent(context, conversation.token, user)
         if (launchIntent == null) {
-            Log.w(TAG, "Cannot create legacy shortcut: user ID or base URL is missing")
+            Log.w(TAG, "Cannot create legacy shortcut: base URL is missing")
             return false
         }
 
@@ -227,13 +239,28 @@ object ShortcutManagerHelper {
     }
 
     /**
-     * Creates the intent that opens the conversation [roomToken] of [user] through its nextcloudtalk:// deep link, or
-     * null if [user] has no id or no deep link can be built from its server url. The intent of all conversation
-     * shortcuts, also of those that notifications publish.
+     * Creates the intent that opens the conversation [roomToken] of exactly the account [user], or null if [user] has
+     * no id. The intent of all conversation shortcuts, also of those that notifications publish and of the direct
+     * share targets: the system starts a shortcut as the app that published it, so it can target the internal entry
+     * point of the conversation list, which takes the account and conversation from its extras.
      */
     fun createConversationIntent(context: Context, roomToken: String, user: User): Intent? {
+        val userId = user.id ?: return null
+        return ConversationsListActivity.createIntent(context).apply {
+            action = Intent.ACTION_VIEW
+            putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+            putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
+        }
+    }
+
+    /**
+     * Creates the intent that opens the conversation [roomToken] of [user] through its nextcloudtalk:// deep link, or
+     * null if no deep link can be built from its server url. Only for legacy home screen shortcuts, which the
+     * launcher starts as itself, so they can't target the internal entry point. The deep link names only the host and
+     * user name of the account.
+     */
+    private fun createConversationDeepLinkIntent(context: Context, roomToken: String, user: User): Intent? {
         val uri = user.baseUrl
-            ?.takeIf { user.id != null }
             ?.let { DeepLinkHandler.createConversationUri(roomToken, it, user.username) }
             ?.takeIf { it != Uri.EMPTY }
             ?: return null

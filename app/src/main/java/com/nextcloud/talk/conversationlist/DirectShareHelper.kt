@@ -9,7 +9,6 @@
 package com.nextcloud.talk.conversationlist
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
@@ -29,7 +28,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AvatarImageLoader
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -291,13 +290,10 @@ object DirectShareHelper {
         displayName: String,
         icon: IconCompat
     ): ShortcutInfoCompat.Builder {
-        // ACTION_VIEW is used so that tapping this shortcut on the home screen opens the
-        // conversation directly. When used from the share sheet, Android delivers ACTION_SEND
-        // with the shared content and EXTRA_SHORTCUT_ID, not this intent.
-        val intent = ConversationsListActivity.createIntent(context).setAction(Intent.ACTION_VIEW).apply {
-            putExtra(BundleKeys.KEY_ROOM_TOKEN, token)
-            putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
-        }
+        // Tapping this shortcut, e.g. on the home screen, opens the conversation directly. When used from the share
+        // sheet, Android delivers ACTION_SEND with the shared content and EXTRA_SHORTCUT_ID, not this intent.
+        val intent = ShortcutManagerHelper.createConversationIntent(context, token, user)
+            ?: ConversationsListActivity.createIntent(context)
 
         val person = Person.Builder()
             .setName(displayName)

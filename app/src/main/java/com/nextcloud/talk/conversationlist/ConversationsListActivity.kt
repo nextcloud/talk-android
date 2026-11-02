@@ -306,6 +306,10 @@ class ConversationsListActivity : BaseActivity() {
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         if (savedInstanceState != null) {
             showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
+            // the conversation of a shortcut that wasn't opened yet; the one of the intent was taken already, which
+            // the intent restored after the process was killed has again
+            pendingDirectShareToken = savedInstanceState.getString(KEY_PENDING_DIRECT_SHARE_TOKEN)
+            intent.removeExtra(KEY_ROOM_TOKEN)
         }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -390,6 +394,7 @@ class ConversationsListActivity : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
+        outState.putString(KEY_PENDING_DIRECT_SHARE_TOKEN, pendingDirectShareToken)
         if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
 
@@ -598,12 +603,14 @@ class ConversationsListActivity : BaseActivity() {
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = isShare(intent)
 
-        // Home screen shortcut tap: shortcut uses ACTION_VIEW with KEY_ROOM_TOKEN to open the
-        // conversation directly without showing the share picker.
+        // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
+        // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
+        // again when the list is shown again, e.g. by going back from the conversation.
         if (Intent.ACTION_VIEW == intent.action) {
             intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
                 pendingDirectShareToken = it
             }
+            intent.removeExtra(KEY_ROOM_TOKEN)
         }
 
         // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
@@ -632,9 +639,9 @@ class ConversationsListActivity : BaseActivity() {
         lifecycleScope.launch {
             val users = userManager.getUsers()
             hasMultipleAccountsState.value = users.size > 1
-            if (!areShortcutsWithoutDeepLinkUpdated) {
-                areShortcutsWithoutDeepLinkUpdated = true
-                withContext(Dispatchers.IO) { ShortcutManagerHelper.updateShortcutsWithoutDeepLink(context, users) }
+            if (!areShortcutsOfEarlierVersionsUpdated) {
+                areShortcutsOfEarlierVersionsUpdated = true
+                withContext(Dispatchers.IO) { ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, users) }
             }
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
@@ -1815,7 +1822,7 @@ class ConversationsListActivity : BaseActivity() {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
         // once per process: the shortcuts without a deep link don't change while the app runs
-        private var areShortcutsWithoutDeepLinkUpdated = false
+        private var areShortcutsOfEarlierVersionsUpdated = false
 
         /**
          * Creates an intent for this activity through its non-exported alias, so that it takes the account
@@ -1933,5 +1940,6 @@ class ConversationsListActivity : BaseActivity() {
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
         private const val KEY_ACCOUNT_DIALOG_VISIBLE = "account_dialog_visible"
+        private const val KEY_PENDING_DIRECT_SHARE_TOKEN = "pending_direct_share_token"
     }
 }
