@@ -27,29 +27,36 @@ class FileUtilsGetFileFromUriTest {
 
     private val context = RuntimeEnvironment.getApplication()
     private val cacheDir: File = context.cacheDir
+    private val sharesDirectory = File(context.filesDir, "shared_file_copies")
 
     @Before
     fun setUp() {
         cacheDir.deleteRecursively()
         cacheDir.mkdirs()
+        sharesDirectory.deleteRecursively()
     }
 
     @After
     fun tearDown() {
         cacheDir.deleteRecursively()
+        sharesDirectory.deleteRecursively()
     }
 
-    private fun fileInCache(path: String) =
-        File(cacheDir, path).apply {
+    private fun fileIn(directory: File, path: String) =
+        File(directory, path).apply {
             parentFile!!.mkdirs()
             writeText("content")
         }
+
+    private fun fileInCache(path: String) = fileIn(cacheDir, path)
+
+    private fun copyOfShare(path: String) = fileIn(sharesDirectory, path)
 
     private fun ownUri(path: String) = Uri.parse("content://${context.packageName}/$path")
 
     @Test
     fun `a copy of a shared file is used without copying it again`() {
-        val copy = fileInCache("shared_file_copies/share1/0/video.mp4")
+        val copy = copyOfShare("share1/0/video.mp4")
 
         val file = FileUtils.getFileFromUri(context, ownUri("shared_file_copies/share1/0/video.mp4"))
 
@@ -66,6 +73,13 @@ class FileUtilsGetFileFromUriTest {
         assertEquals(attachment.canonicalFile, file?.canonicalFile)
     }
 
+    @Test
+    fun `a file in the cache named like a copy of a shared file is copied`() {
+        fileInCache("shared_file_copies/share1/0/image.jpg")
+
+        assertEquals(PROVIDED, copyOf(ownUri("shared_file_copies/share1/0/image.jpg"))?.readText())
+    }
+
     // read through the content resolver, as from another provider, with other content than the file in the cache
     private fun copyOf(uri: Uri): File? {
         shadowOf(context.contentResolver).registerInputStream(uri, ByteArrayInputStream(PROVIDED.toByteArray()))
@@ -75,7 +89,7 @@ class FileUtilsGetFileFromUriTest {
     @Test
     fun `other files of the own provider are copied`() {
         fileInCache("logs/log.txt")
-        fileInCache("shared_file_copies/share1/0/image.jpg")
+        copyOfShare("share1/0/image.jpg")
 
         assertEquals(PROVIDED, copyOf(ownUri("logs/log.txt"))?.readText())
         assertEquals(PROVIDED, copyOf(ownUri("shared_file_copies/../logs/log.txt"))?.readText())
@@ -83,7 +97,7 @@ class FileUtilsGetFileFromUriTest {
 
     @Test
     fun `the same path of another provider is copied`() {
-        fileInCache("shared_file_copies/share1/0/image.jpg")
+        copyOfShare("share1/0/image.jpg")
 
         val uri = Uri.parse("content://other.app/shared_file_copies/share1/0/image.jpg")
 

@@ -18,13 +18,15 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 /**
- * The copies that ShareActivity makes of the files other apps share, one directory per share inside a cache directory
- * of their own, which [FileUtils.isTrustedShareUri] trusts like the shared attachments directory. That one isn't used,
+ * The copies that ShareActivity makes of the files other apps share, one directory per share inside a directory of
+ * their own, which [FileUtils.isTrustedShareUri] trusts like the shared attachments directory. That one isn't used,
  * as the attachments in it are named by their senders, and an attachment named like the directory of the copies would
  * take its place.
  *
  * An upload of a copy can wait for the network for days, so it is tagged with the directory of its share (see
- * [uploadTagOf]), and the directory is only removed once no upload with that tag is unfinished.
+ * [uploadTagOf]), and the directory is only removed once no upload with that tag is unfinished. So the copies are in
+ * the files directory, which the system, unlike the cache, doesn't clear when the storage runs low, and they are
+ * removed by the app: when their share is left, and once they are done (see [removeDoneShares]).
  */
 object SharedFileCopies {
 
@@ -87,7 +89,7 @@ object SharedFileCopies {
         return if (isCopy) segments[SHARE_DIRECTORY_SEGMENT] else null
     }
 
-    private fun sharesDirectory(context: Context) = File(context.cacheDir, FileUtils.SHARED_FILE_COPIES_DIRECTORY)
+    private fun sharesDirectory(context: Context) = File(context.filesDir, FileUtils.SHARED_FILE_COPIES_DIRECTORY)
 
     private fun hasUnfinishedUpload(context: Context, directoryName: String): Boolean =
         try {

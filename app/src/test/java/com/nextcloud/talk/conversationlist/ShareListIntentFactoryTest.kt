@@ -55,7 +55,7 @@ class ShareListIntentFactoryTest {
 
     private val photoOfOtherApp = Uri.parse("content://com.example.gallery/photos/photo.jpg")
 
-    private val shareDirectories = File(context.cacheDir, "shared_file_copies")
+    private val shareDirectories = File(context.filesDir, "shared_file_copies")
 
     @Before
     fun setUp() {
@@ -88,7 +88,7 @@ class ShareListIntentFactoryTest {
         }
 
     @Test
-    fun `a shared file is passed on as a copy in the cache of the app`() =
+    fun `a shared file is passed on as a copy in the share directory of the app`() =
         runBlocking {
             shadowOf(context.contentResolver).registerInputStream(photoOfOtherApp, ByteArrayInputStream(PHOTO))
             val intent = shareOfOtherApp("image/jpeg").putExtra(Intent.EXTRA_STREAM, photoOfOtherApp)
@@ -98,7 +98,7 @@ class ShareListIntentFactoryTest {
             assertNull(listIntent.extras)
             val copy = File(checkNotNull(listIntent.clipData).getItemAt(0).uri.path!!)
             assertEquals("photo.jpg", copy.name)
-            assertEquals(true, copy.canonicalPath.startsWith(context.cacheDir.canonicalPath + File.separator))
+            assertEquals(true, copy.canonicalPath.startsWith(shareDirectories.canonicalPath + File.separator))
             assertEquals(PHOTO.toList(), copy.readBytes().toList())
         }
 

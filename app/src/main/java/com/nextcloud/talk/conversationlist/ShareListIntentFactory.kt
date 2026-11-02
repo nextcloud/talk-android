@@ -98,7 +98,7 @@ internal class ShareListIntentFactory(
                 currentCoroutineContext().ensureActive()
                 when {
                     item.uri != null ->
-                        copyToCache(item.uri) { directoryLazy.value?.let { File(it, index.toString()) } }
+                        copyToShareDirectory(item.uri) { directoryLazy.value?.let { File(it, index.toString()) } }
                             ?.let { ClipData.Item(it) }
                     item.text != null -> ClipData.Item(item.text)
                     else -> null
@@ -123,7 +123,7 @@ internal class ShareListIntentFactory(
      * it can't be used.
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private suspend fun copyToCache(uri: Uri, directoryOf: () -> File?): Uri? {
+    private suspend fun copyToShareDirectory(uri: Uri, directoryOf: () -> File?): Uri? {
         if (!FileUtils.isTrustedShareUri(uri, context)) {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
             return null

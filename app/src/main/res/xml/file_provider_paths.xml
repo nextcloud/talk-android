@@ -8,7 +8,7 @@
     <cache-path
         name="shared_attachments"
         path="shared_attachments/" />
-    <cache-path
+    <files-path
         name="shared_file_copies"
         path="shared_file_copies/" />
     <cache-path

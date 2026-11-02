@@ -24,19 +24,22 @@ import java.nio.file.Files
 class FileUtilsShareUriTest {
 
     private lateinit var cacheDir: File
+    private lateinit var filesDir: File
 
     @Before
     fun setUp() {
         cacheDir = Files.createTempDirectory("cache").toFile()
+        filesDir = Files.createTempDirectory("files").toFile()
     }
 
     @After
     fun tearDown() {
         cacheDir.deleteRecursively()
+        filesDir.deleteRecursively()
     }
 
     private fun isTrusted(uri: String?) =
-        FileUtils.isTrustedShareUri(uri?.let { Uri.parse(it) }, PACKAGE, cacheDir) { PROVIDER_PACKAGES[it] }
+        FileUtils.isTrustedShareUri(uri?.let { Uri.parse(it) }, PACKAGE, cacheDir, filesDir) { PROVIDER_PACKAGES[it] }
 
     @Test
     fun `accepts content uris of other apps`() {

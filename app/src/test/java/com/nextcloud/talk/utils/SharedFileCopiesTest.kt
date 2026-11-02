@@ -37,7 +37,7 @@ class SharedFileCopiesTest {
 
     private val context = RuntimeEnvironment.getApplication()
     private val provider = "content://${BuildConfig.APPLICATION_ID}"
-    private val sharesDirectory = File(context.cacheDir, "shared_file_copies")
+    private val sharesDirectory = File(context.filesDir, "shared_file_copies")
 
     @Before
     fun setUp() {
@@ -114,7 +114,7 @@ class SharedFileCopiesTest {
         SharedFileCopies.removeSharesOf(context, listOf("$provider/shared_file_copies/../0/photo.jpg"))
 
         assertTrue(other.exists())
-        assertTrue(context.cacheDir.exists())
+        assertTrue(context.filesDir.exists())
     }
 
     @Test

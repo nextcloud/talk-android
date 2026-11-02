@@ -30,9 +30,9 @@ object FileUtils {
     internal const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
 
     // the copies of the files other apps share, see SharedFileCopies; kept apart from the shared attachments, which are
-    // named by their senders, so an attachment can't take the place of the copies
+    // named by their senders, so an attachment can't take the place of the copies. In the files directory, not in the
+    // cache, which the system clears when the storage runs low, also while their uploads still wait for the network.
     internal const val SHARED_FILE_COPIES_DIRECTORY = "shared_file_copies"
-    private val SHARED_PROVIDER_DIRECTORIES = setOf(SHARED_ATTACHMENTS_DIRECTORY, SHARED_FILE_COPIES_DIRECTORY)
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -69,13 +69,17 @@ object FileUtils {
     }
 
     /**
-     * The file in [cacheDir] that the [pathSegments] of an own FileProvider uri point to, if it is inside the
-     * dedicated shared attachments cache directory or the one of the copies of shared files, else null.
+     * The file that the [pathSegments] of an own FileProvider uri point to, if it is inside the dedicated shared
+     * attachments directory in [cacheDir] or the one of the copies of shared files in [filesDir], else null.
      */
-    fun sharedAttachmentProviderFile(cacheDir: File, pathSegments: List<String>): File? {
-        val directory = pathSegments.firstOrNull()?.takeIf { it in SHARED_PROVIDER_DIRECTORIES }
-        if (pathSegments.size < 2 || directory == null) return null
-        var resolvedFile: File? = File(cacheDir, directory)
+    fun sharedAttachmentProviderFile(cacheDir: File, filesDir: File, pathSegments: List<String>): File? {
+        val root = when (pathSegments.firstOrNull()) {
+            SHARED_ATTACHMENTS_DIRECTORY -> cacheDir
+            SHARED_FILE_COPIES_DIRECTORY -> filesDir
+            else -> null
+        }
+        if (pathSegments.size < 2 || root == null) return null
+        var resolvedFile: File? = File(root, pathSegments.first())
         for (segment in pathSegments.drop(1)) {
             resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
         }
@@ -88,7 +92,7 @@ object FileUtils {
      * of shared files of its FileProvider.
      */
     fun isTrustedShareUri(uri: Uri?, context: Context): Boolean =
-        isTrustedShareUri(uri, context.packageName, context.cacheDir) { authority ->
+        isTrustedShareUri(uri, context.packageName, context.cacheDir, context.filesDir) { authority ->
             context.packageManager.resolveContentProvider(authority, 0)?.packageName
         }
 
@@ -102,13 +106,15 @@ object FileUtils {
         uri: Uri?,
         packageName: String,
         cacheDir: File,
+        filesDir: File,
         packageOfAuthority: (String) -> String?
     ): Boolean {
         val contentUri = uri?.takeIf { ContentResolver.SCHEME_CONTENT == it.scheme }
         val authority = contentUri?.authority?.substringAfterLast('@') ?: return false
         val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
         val isSharedFileOfFileProvider =
-            authority == packageName && sharedAttachmentProviderFile(cacheDir, contentUri.pathSegments) != null
+            authority == packageName &&
+                sharedAttachmentProviderFile(cacheDir, filesDir, contentUri.pathSegments) != null
         return !isOwnProvider || isSharedFileOfFileProvider
     }
 
@@ -199,9 +205,9 @@ object FileUtils {
             Log.d(TAG, "relative uri: " + sourceFileUri.path)
             throw IllegalArgumentException("relative paths are not supported")
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
-            // a shared file the app already copied into its cache is used as it is, instead of copying it again
+            // a shared file the app already copied is used as it is, instead of copying it again
             val ownSharedFile = sourceFileUri.takeIf { it.authority == context.packageName }
-                ?.let { sharedAttachmentProviderFile(context.cacheDir, it.pathSegments) }
+                ?.let { sharedAttachmentProviderFile(context.cacheDir, context.filesDir, it.pathSegments) }
                 ?.takeIf { it.isFile }
             ownSharedFile ?: copyFileToCache(context, sourceFileUri, fileName)
         } else if (ContentResolver.SCHEME_FILE == scheme) {
