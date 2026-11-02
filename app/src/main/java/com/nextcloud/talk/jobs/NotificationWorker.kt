@@ -1286,8 +1286,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // See https://github.com/nextcloud/talk-android/issues/2111
         val requestCode = System.currentTimeMillis().toInt()
         val intentFlag = pendingIntentFlags()
-        val isConversationList =
-            intent.component?.className == InternalEntryPoint.nameOf(ConversationsListActivity::class.java)
+        val isConversationList = InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)
         return if (!isConversationList) {
             // a new back stack in the task of the app, with the conversation list of its account below the screen,
             // which back leads to
