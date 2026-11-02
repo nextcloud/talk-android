@@ -7,6 +7,7 @@
 package com.nextcloud.talk.utils
 
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -148,8 +149,9 @@ object AppTasks {
     /**
      * Removes the tasks of the app that are only left in the recents, see [findTasksLeftInRecents], when a screen
      * that can start a task of the app is created: the conversation list, or the top of a new back stack, see
-     * [ConversationsListActivity.createBackStack]. Without a task affinity, the recents only replace a task by one with the same root intent, so e.g. a task a deep link
-     * started would stay there next to the one a notification starts.
+     * [ConversationsListActivity.createBackStack]. Without a task affinity, the recents only replace a task by one
+     * with the same root intent, so e.g. a task a deep link started would stay there next to the one a notification
+     * starts.
      */
     fun removeTasksLeftInRecents(context: Context) {
         findTasksLeftInRecents(context).forEach { it.finishAndRemoveTaskIfPresent() }
@@ -172,8 +174,16 @@ object AppTasks {
     ): List<ActivityManager.AppTask> =
         appTasks.filter { task ->
             val info = task.taskInfoOrNull()
-            info != null && info.baseIntent.component?.className in roots && predicate(info)
+            info != null && rootOf(info)?.className in roots && predicate(info)
         }
+
+    /**
+     * The activity that the root of the task of [info] was started as. Before Android 10, the base intent of a task
+     * that an alias started names the target of the alias instead, while origActivity names the alias on every
+     * version.
+     */
+    private fun rootOf(info: ActivityManager.RecentTaskInfo): ComponentName? =
+        info.origActivity ?: info.baseIntent.component
 }
 
 // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
