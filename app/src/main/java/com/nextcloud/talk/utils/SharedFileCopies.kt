@@ -10,7 +10,9 @@ import android.content.ContentResolver
 import android.content.Context
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.WorkQuery
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import kotlinx.coroutines.launch
@@ -58,9 +60,9 @@ object SharedFileCopies {
      */
     fun removeDoneShares(context: Context) {
         val expiry = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(KEPT_DAYS)
-        sharesDirectory(context).listFiles()
-            ?.filter { it.lastModified() < expiry && !hasUnfinishedUpload(context, it.name) }
-            ?.forEach { it.deleteRecursively() }
+        val expired = sharesDirectory(context).listFiles()?.filter { it.lastModified() < expiry }.orEmpty()
+        val uploading = sharesWithUnfinishedUpload(context, expired.map { it.name })
+        expired.filterNot { it.name in uploading }.forEach { it.deleteRecursively() }
     }
 
     /**
@@ -70,9 +72,9 @@ object SharedFileCopies {
      */
     fun removeSharesOf(context: Context, fileUris: Collection<String>) {
         val sharesDirectory = sharesDirectory(context)
-        fileUris.mapNotNull(::shareDirectoryNameOf)
-            .distinct()
-            .filterNot { hasUnfinishedUpload(context, it) }
+        val names = fileUris.mapNotNull(::shareDirectoryNameOf).distinct()
+        val uploading = sharesWithUnfinishedUpload(context, names)
+        names.filterNot { it in uploading }
             .mapNotNull { FileUtils.resolveFileInDirectory(sharesDirectory, it) }
             .forEach { it.deleteRecursively() }
     }
@@ -100,16 +102,27 @@ object SharedFileCopies {
 
     private fun sharesDirectory(context: Context) = File(context.filesDir, FileUtils.SHARED_FILE_COPIES_DIRECTORY)
 
-    private fun hasUnfinishedUpload(context: Context, directoryName: String): Boolean =
-        try {
-            WorkManager.getInstance(context).getWorkInfosByTag(UPLOAD_TAG_PREFIX + directoryName).get()
-                .any { !it.state.isFinished }
+    /**
+     * The ones of the share directories [directoryNames] with an unfinished upload, all of them when WorkManager
+     * can't tell, so the copies are kept when in doubt. One query for all of them.
+     */
+    private fun sharesWithUnfinishedUpload(context: Context, directoryNames: Collection<String>): Set<String> {
+        if (directoryNames.isEmpty()) return emptySet()
+        val query = WorkQuery.Builder.fromTags(directoryNames.map { UPLOAD_TAG_PREFIX + it })
+            .addStates(listOf(WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING, WorkInfo.State.BLOCKED))
+            .build()
+        return try {
+            WorkManager.getInstance(context).getWorkInfos(query).get()
+                .flatMap { it.tags }
+                .filter { it.startsWith(UPLOAD_TAG_PREFIX) }
+                .map { it.removePrefix(UPLOAD_TAG_PREFIX) }
+                .toSet()
         } catch (e: ExecutionException) {
-            // keep the copies when in doubt
             Log.w(TAG, "Failed to get the uploads of shared files", e)
-            true
+            directoryNames.toSet()
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            true
+            directoryNames.toSet()
         }
+    }
 }
