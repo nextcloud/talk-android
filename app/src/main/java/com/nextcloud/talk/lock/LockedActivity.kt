@@ -9,11 +9,13 @@
 package com.nextcloud.talk.lock
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.KeyguardManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +26,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityLockedBinding
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.SecurityUtils
+import com.nextcloud.talk.utils.isShareTask
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.taskIdCompat
+import com.nextcloud.talk.utils.taskInfoOrNull
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -53,6 +58,20 @@ class LockedActivity : AppCompatActivity() {
 
         binding = ActivityLockedBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Back leaves the app instead of closing the lock screen, which the still locked screen below would show
+        // again right away. In the task of a share, also one of another app, only the screens of this app are left,
+        // which leaves the share. In the task of another app, finishAffinity() would also finish the screens of that
+        // app below with the same, empty task affinity.
+        onBackPressedDispatcher.addCallback(this) {
+            val task = getSystemService(ActivityManager::class.java).appTasks
+                .firstNotNullOfOrNull { it.taskInfoOrNull()?.takeIf { info -> info.taskIdCompat == taskId } }
+            when {
+                task == null -> NextcloudTalkApplication.sharedApplication!!.liveActivities.finishInTask(taskId)
+                task.isShareTask -> finishAffinity()
+                else -> moveTaskToBack(true)
+            }
+        }
     }
 
     override fun onResume() {

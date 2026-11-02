@@ -13,6 +13,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.conversationlist.ShareActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 // A task listed by ActivityManager.getAppTasks can be removed before it is used, e.g. when it is swiped from the
@@ -174,17 +175,20 @@ object AppTasks {
     ): List<ActivityManager.AppTask> =
         appTasks.filter { task ->
             val info = task.taskInfoOrNull()
-            info != null && rootOf(info)?.className in roots && predicate(info)
+            info != null && info.rootActivity?.className in roots && predicate(info)
         }
-
-    /**
-     * The activity that the root of the task of [info] was started as. Before Android 10, the base intent of a task
-     * that an alias started names the target of the alias instead, while origActivity names the alias on every
-     * version.
-     */
-    private fun rootOf(info: ActivityManager.RecentTaskInfo): ComponentName? =
-        info.origActivity ?: info.baseIntent.component
 }
+
+/**
+ * The activity that the root of this task was started as. Before Android 10, the base intent of a task that an alias
+ * started names the target of the alias instead, while origActivity names the alias on every version.
+ */
+private val ActivityManager.RecentTaskInfo.rootActivity: ComponentName?
+    get() = origActivity ?: baseIntent.component
+
+/** Whether this is the task of a share, which ShareActivity started in a task of its own. */
+val ActivityManager.RecentTaskInfo.isShareTask: Boolean
+    get() = rootActivity?.className == ShareActivity::class.java.name
 
 // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
 @Suppress("DEPRECATION")

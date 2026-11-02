@@ -59,6 +59,7 @@ import com.nextcloud.talk.ui.theme.ThemeModule
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
+import com.nextcloud.talk.utils.LiveActivities
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
@@ -120,6 +121,9 @@ class NextcloudTalkApplication :
     @Inject
     @field:ApplicationScope
     lateinit var appScope: CoroutineScope
+
+    // the activities of the app, e.g. to finish only those in a task of another app, see LockedActivity
+    val liveActivities = LiveActivities().also { registerActivityLifecycleCallbacks(it) }
 
     @Inject
     lateinit var logger: LoggerImpl
