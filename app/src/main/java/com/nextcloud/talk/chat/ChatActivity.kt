@@ -1107,14 +1107,16 @@ class ChatActivity :
     }
 
     private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
-        val isThisView = key.roomToken == roomToken &&
-            threadId == openThreadId() &&
+        val isThisRoom = key.roomToken == roomToken &&
             ::initialUser.isInitialized &&
             key.internalUserId == conversationUser.id
-        if (isThisView) {
+        if (isThisRoom && threadId == openThreadId()) {
             chatViewModel.jumpToQuotedMessage(key.messageId.toLong())
         } else {
             startActivity(key.openMessageIntent(this, threadId))
+            // The chat of another room replaces this one, so chats don't pile up. A thread and the chat of its room
+            // stay, as Back leads from one to the other.
+            if (!isThisRoom) finish()
         }
     }
 

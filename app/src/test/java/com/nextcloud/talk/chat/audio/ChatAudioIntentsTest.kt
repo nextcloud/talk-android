@@ -45,7 +45,7 @@ class ChatAudioIntentsTest {
 
     @Test
     fun `the media notification opens the chat of the message above the conversation list of its account`() {
-        val (list, chat) = key.openMessageFromOutsideIntents(context, threadId = 7L)
+        val (list, chat) = key.openMessageBackStack(context, threadId = 7L)
 
         assertEquals(InternalEntryPoint.nameOf(ConversationsListActivity::class.java), list.component?.className)
         assertEquals(2L, list.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L))

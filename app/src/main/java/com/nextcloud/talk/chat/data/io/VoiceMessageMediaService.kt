@@ -41,7 +41,7 @@ import com.nextcloud.talk.chat.audio.VoiceMessageWaveformLoader
 import com.nextcloud.talk.chat.audio.chatAudioKind
 import com.nextcloud.talk.chat.audio.chatAudioRepeatModeOf
 import com.nextcloud.talk.chat.audio.chatAudioThreadId
-import com.nextcloud.talk.chat.audio.openMessageFromOutsideIntents
+import com.nextcloud.talk.chat.audio.openMessageBackStack
 import com.nextcloud.talk.chat.audio.toChatAudioError
 import com.nextcloud.talk.chat.audio.toPlayerRepeatMode
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -194,7 +194,7 @@ class VoiceMessageMediaService : MediaSessionService() {
 
     private fun sessionActivityFor(key: ChatAudioKey, threadId: Long?): PendingIntent {
         val backStack = TaskStackBuilder.create(this)
-        key.openMessageFromOutsideIntents(this, threadId).forEach { backStack.addNextIntent(it) }
+        key.openMessageBackStack(this, threadId).forEach { backStack.addNextIntent(it) }
         return checkNotNull(
             backStack.getPendingIntent(
                 SESSION_ACTIVITY_REQUEST_CODE,

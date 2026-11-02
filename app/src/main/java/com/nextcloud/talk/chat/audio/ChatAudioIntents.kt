@@ -22,7 +22,7 @@ fun ChatAudioKey.openMessageIntent(context: Context, threadId: Long?): Intent =
  * Like [openMessageIntent], but from outside the screens of the app, e.g. the media notification: as a new back stack
  * in the task of the app, see [ConversationsListActivity.createChatBackStack].
  */
-fun ChatAudioKey.openMessageFromOutsideIntents(context: Context, threadId: Long?): Array<Intent> =
+fun ChatAudioKey.openMessageBackStack(context: Context, threadId: Long?): Array<Intent> =
     ConversationsListActivity.createChatBackStack(context, internalUserId, roomToken, openMessageExtras(threadId))
 
 private fun ChatAudioKey.openMessageExtras(threadId: Long?): Bundle =
