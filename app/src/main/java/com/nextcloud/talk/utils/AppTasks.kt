@@ -163,6 +163,10 @@ object AppTasks {
         }
     }
 
+    /** Whether [intent] relaunches a task from the recents: the intent it was started with, taken already. */
+    fun isRelaunchedFromRecents(intent: Intent): Boolean =
+        intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0
+
     private fun appTaskRoots(): Set<String> =
         setOf(LAUNCHER_ACTIVITY, InternalEntryPoint.nameOf(ConversationsListActivity::class.java))
 

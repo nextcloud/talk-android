@@ -680,8 +680,7 @@ class ConversationsListActivity : BaseActivity() {
         // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
         // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
         // again when the list is shown again, e.g. by going back from the conversation or from the recents.
-        val isRelaunchedFromRecents = intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0
-        if (Intent.ACTION_VIEW == intent.action && !isRelaunchedFromRecents) {
+        if (Intent.ACTION_VIEW == intent.action && !AppTasks.isRelaunchedFromRecents(intent)) {
             intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
                 pendingDirectShareToken = it
                 isPendingConversationInputFocused = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_INPUT, false)
@@ -2006,7 +2005,7 @@ class ConversationsListActivity : BaseActivity() {
             !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) &&
                 intent.action == Intent.ACTION_VIEW &&
                 intent.data != null &&
-                intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
+                !AppTasks.isRelaunchedFromRecents(intent)
 
         /** Whether [intent] shares content of another app, which is taken through [ShareActivity]. */
         @VisibleForTesting

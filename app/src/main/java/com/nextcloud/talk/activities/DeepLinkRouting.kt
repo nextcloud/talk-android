@@ -23,6 +23,7 @@ import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Request
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.RoutingState
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.utils.AppTasks
 
 /**
  * Shows the routing of the deep links and contact chats that [DeepLinkActivity] passes on to the conversation list
@@ -80,9 +81,8 @@ class DeepLinkRouting(
         val routedIntent = savedInstanceState?.let {
             BundleCompat.getParcelable(it, KEY_ROUTED_INTENT, Intent::class.java)
         }
-        // a task relaunched from recents gets the intent it was started with again, which was routed already
-        val isLaunchedFromHistory = intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0
-        val routed = routedIntent ?: intent.takeUnless { isLaunchedFromHistory } ?: return
+        // the intent of a task relaunched from the recents was routed already
+        val routed = routedIntent ?: intent.takeUnless(AppTasks::isRelaunchedFromRecents) ?: return
         route(routed)
     }
 
