@@ -349,8 +349,8 @@ class DeepLinkRoutingViewModel @Inject constructor(
          *
          * Priority:
          * 1. User matching both username and server URL
-         * 2. User matching the server URL only
-         * 3. Current active user as fallback (if server matches)
+         * 2. Current active user, if it is on the server
+         * 3. Another user on the server
          */
         @VisibleForTesting
         internal fun resolveTargetUser(
@@ -369,7 +369,7 @@ class DeepLinkRoutingViewModel @Inject constructor(
             }
             val serverMatch = users.find { user -> hostOf(user) == deepLinkHost }
             val currentUserMatch = defaultUser?.takeIf { hostOf(it) == deepLinkHost }
-            return exactMatch ?: serverMatch ?: currentUserMatch
+            return exactMatch ?: currentUserMatch ?: serverMatch
         }
 
         /**
