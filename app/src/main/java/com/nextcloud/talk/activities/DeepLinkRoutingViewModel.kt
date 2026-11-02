@@ -309,14 +309,21 @@ class DeepLinkRoutingViewModel @Inject constructor(
             conversationsRepository.syncRooms(user, roomListTimeoutMillis = ROOM_SYNC_TIMEOUT_MS) != null &&
             isStored()
 
-    /** Opens the one-to-one chat of [account] with the contact [contactUserId], or else stays in the list. */
+    /**
+     * Opens the one-to-one chat of [account] with the contact [contactUserId]. A conversation that can't be created,
+     * e.g. offline or rejected by the server, stays in the list with an error, like any failed step.
+     */
     private suspend fun openChatWithContact(contactUserId: String, account: User) {
         val roomToken = createRoomWithContact(contactUserId, account)
-        openOrLogin(roomToken?.let { Destination.Chat(account.id!!, it) } ?: Destination.ConversationList)
+        if (roomToken == null) {
+            logger.e(TAG, "The server returned no conversation with the contact")
+            open(Destination.ConversationList, R.string.nc_common_error_sorry)
+            return
+        }
+        openOrLogin(Destination.Chat(account.id!!, roomToken))
     }
 
-    /** Creates or gets the one-to-one conversation of [account] with [userId], null on failure. */
-    @Suppress("TooGenericExceptionCaught")
+    /** Creates or gets the one-to-one conversation of [account] with [userId], null without one in the response. */
     private suspend fun createRoomWithContact(userId: String, account: User): String? {
         val apiVersion = ApiUtils.getConversationApiVersion(account, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
@@ -325,18 +332,11 @@ class DeepLinkRoutingViewModel @Inject constructor(
             roomType = "1",
             invite = userId
         )
-        return try {
-            ncApiCoroutines.createRoom(
-                ApiUtils.getCredentials(account.username, account.token),
-                retrofitBucket.url,
-                retrofitBucket.queryMap
-            ).ocs?.data?.token
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            logger.e(TAG, "Error creating room", e)
-            null
-        }
+        return ncApiCoroutines.createRoom(
+            ApiUtils.getCredentials(account.username, account.token),
+            retrofitBucket.url,
+            retrofitBucket.queryMap
+        ).ocs?.data?.token?.takeIf { it.isNotBlank() }
     }
 
     companion object {

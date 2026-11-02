@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.ContactsContract
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Destination
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Request
@@ -23,6 +24,11 @@ import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.RoutingState
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository.ConversationResult
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
+import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
+import com.nextcloud.talk.models.json.conversations.ConversationDto
+import com.nextcloud.talk.models.json.conversations.RoomOCS
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DeepLinkHandler
@@ -53,6 +59,7 @@ import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -99,13 +106,14 @@ class DeepLinkRoutingViewModelTest {
 
     private fun createViewModel(
         repository: OfflineConversationsRepository,
-        userManager: UserManager = this.userManager
+        userManager: UserManager = this.userManager,
+        ncApiCoroutines: NcApiCoroutines = mock()
     ) = DeepLinkRoutingViewModel(
         context = RuntimeEnvironment.getApplication(),
         userManager = userManager,
         defaultAccountProvider = defaultAccountProvider,
         conversationsRepository = repository,
-        ncApiCoroutines = mock(),
+        ncApiCoroutines = ncApiCoroutines,
         logger = mock()
     ).also { it.ioDispatcher = dispatcher }
 
@@ -347,6 +355,77 @@ class DeepLinkRoutingViewModelTest {
 
             assertEquals(routingError, viewModel.state.value)
         }
+
+    // an account whose server can create conversations, without a one-to-one conversation with carol yet
+    private val aliceWithConversations = alice.copy(
+        token = "secret",
+        capabilities = CapabilitiesDto().apply {
+            spreedCapability = SpreedCapabilityDto().apply { features = listOf("conversation-v4") }
+        }
+    )
+
+    private fun confirmContactChat(api: NcApiCoroutines): RoutingState {
+        val userManager = mock<UserManager> {
+            on { getUsersNotScheduledForDeletion() } doReturn listOf(aliceWithConversations)
+        }
+        wheneverBlocking { defaultAccountProvider.getDefaultUser() }.thenReturn(aliceWithConversations)
+        val repository = mock<OfflineConversationsRepository> {
+            on { roomListFlow(any()) } doReturn flowOf(emptyList())
+            on { syncRooms(any(), any(), anyOrNull()) } doReturn emptyList()
+        }
+        viewModel = createViewModel(repository, userManager, api)
+        val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply {
+            addRow(arrayOf("carol@cloud.example.com"))
+        }
+        assertEquals(RoutingState.AskToStartContactChat("carol@cloud.example.com"), routeContactChatWith(contactData))
+
+        viewModel.confirm()
+        dispatcher.scheduler.advanceUntilIdle()
+        return viewModel.state.value
+    }
+
+    @Test
+    fun `a confirmed contact chat opens the created conversation`() {
+        val api = mock<NcApiCoroutines> {
+            onBlocking { createRoom(any(), any(), any()) } doReturn
+                RoomOverall(RoomOCS(meta = null, data = ConversationDto(token = TOKEN)))
+        }
+
+        assertEquals(
+            RoutingState.Open(Destination.Chat(alice.id!!, TOKEN), isLongMessage = true),
+            confirmContactChat(api)
+        )
+    }
+
+    @Test
+    fun `a confirmed contact chat that can't be created shows an error`() {
+        val api = mock<NcApiCoroutines> {
+            onBlocking { createRoom(any(), any(), any()) } doSuspendableAnswer {
+                throw java.io.IOException("offline")
+            }
+        }
+
+        assertEquals(routingError, confirmContactChat(api))
+    }
+
+    @Test
+    fun `a confirmed contact chat without a conversation in the response shows an error`() {
+        val api = mock<NcApiCoroutines> {
+            onBlocking { createRoom(any(), any(), any()) } doReturn RoomOverall(RoomOCS(meta = null))
+        }
+
+        assertEquals(routingError, confirmContactChat(api))
+    }
+
+    @Test
+    fun `a confirmed contact chat with a conversation without a token shows an error`() {
+        val api = mock<NcApiCoroutines> {
+            onBlocking { createRoom(any(), any(), any()) } doReturn
+                RoomOverall(RoomOCS(meta = null, data = ConversationDto()))
+        }
+
+        assertEquals(routingError, confirmContactChat(api))
+    }
 
     // alice is still the active account, but scheduled for deletion, so only bob is left
     private val userManagerWithAliceDeleted = mock<UserManager> {
