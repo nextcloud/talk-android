@@ -273,6 +273,11 @@ class ConversationsListActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         if (finishIfNotShown()) return
         currentUser = setUpBoundUserOrFinish() ?: return
+        // A recreation after a configuration change reuses this intent. Through the launcher alias,
+        // removeExtrasOfApp would remove the account written into it again, and the list would switch to the default
+        // account of that time while its view models stay on this one. The intents of other apps that the list
+        // doesn't show were passed on above, and their extras of the app removed.
+        intent = intentOfAccount(this, intent, currentUser.id)
         if (savedInstanceState == null) {
             AppTasks.removeTasksLeftInRecents(this)
             setUpPushRegistration()
