@@ -191,6 +191,7 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -565,6 +566,11 @@ class ChatActivity :
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
         initialUser = setUpBoundUserOrFinish() ?: return
+        if (intent.getStringExtra(KEY_ROOM_TOKEN)?.let(DeepLinkHandler::isValidToken) != true) {
+            Log.e(TAG, "Started without a valid room token")
+            finish()
+            return
+        }
 
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -1278,7 +1284,7 @@ class ChatActivity :
             val startCallAfterRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
             val isVoiceOnlyCall = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
 
-            if (newRoomToken != roomToken) {
+            if (newRoomToken != roomToken && DeepLinkHandler.isValidToken(newRoomToken)) {
                 switchToRoom(newRoomToken, startCallAfterRoomSwitch, isVoiceOnlyCall)
             }
         } else {
