@@ -1133,7 +1133,7 @@ class ConversationsListActivity : BaseActivity() {
             openConversation(textToPaste)
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
             // the attachment preview of the chat shows the files and asks before uploading them; they are copies in
-            // the cache of the app (see ShareActivity), so reading them needs no permission
+            // the app (see SharedFileCopies), so reading them needs no permission
             openConversation()
         } else {
             logger.e(TAG, "no text or files to share")
@@ -1148,6 +1148,7 @@ class ConversationsListActivity : BaseActivity() {
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
+        textToPaste = ""
         if (!isShare(intent)) return
         try {
             // ShareActivity only passes the text of a shared text on, without its files, see ShareListIntentFactory
@@ -1172,13 +1173,10 @@ class ConversationsListActivity : BaseActivity() {
         if (clipData != null) {
             for (i in 0 until clipData.itemCount) {
                 val item = clipData.getItemAt(i)
+                // all files, so none of the copies ShareActivity made is left behind, and the first text
                 when {
                     item.uri != null -> addFileToShareIfTrusted(item.uri)
-                    item.text != null -> {
-                        textToPaste = item.text.toString()
-                        return
-                    }
-
+                    item.text != null -> if (textToPaste!!.isEmpty()) textToPaste = item.text.toString()
                     else -> Log.w(TAG, "datatype not yet implemented for share-to")
                 }
             }
