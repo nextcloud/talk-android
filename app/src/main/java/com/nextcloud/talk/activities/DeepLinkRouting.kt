@@ -14,10 +14,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -26,7 +23,6 @@ import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Request
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.RoutingState
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
-import kotlinx.coroutines.launch
 
 /**
  * Shows the routing of the deep links and contact chats that [DeepLinkActivity] passes on to the conversation list
@@ -61,13 +57,8 @@ class DeepLinkRouting(
             SystemClock.elapsedRealtime() - createdAt < MAX_LAUNCH_SCREEN_MS
 
     init {
-        // shown only while resumed and not covered by the lock screen this activity started: the chat or question
-        // follows after unlocking, when the list is resumed again
-        activity.lifecycleScope.launch {
-            activity.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.state.collect { if (!activity.isCoveredByLockScreen) render(it) }
-            }
-        }
+        // the chat or question of a deep link that started the app follows after unlocking
+        activity.collectWhileUnlocked(viewModel.state, ::render)
         activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
                 isOpeningScreen = false

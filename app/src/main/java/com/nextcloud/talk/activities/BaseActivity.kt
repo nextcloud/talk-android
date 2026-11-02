@@ -28,6 +28,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
@@ -41,29 +44,32 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.lock.LockedActivity
+import com.nextcloud.talk.logger.Logger
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AppTasks
-import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
-import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.security.cert.CertificateParsingException
 import java.security.cert.X509Certificate
 import java.text.DateFormat
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @AutoInjector(NextcloudTalkApplication::class)
 open class BaseActivity : AppCompatActivity() {
@@ -480,5 +486,18 @@ open class BaseActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = BaseActivity::class.java.simpleName
+    }
+}
+
+/**
+ * Collects [flow] for the screens its values open, while this activity is resumed and not covered by the lock screen it
+ * started, so they don't show above the lock screen. After unlocking, the activity is resumed again and [flow]
+ * collected anew, so e.g. a [StateFlow] gives the value that waited for it then.
+ */
+fun <T> BaseActivity.collectWhileUnlocked(flow: Flow<T>, action: suspend (T) -> Unit) {
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            flow.collect { if (!isCoveredByLockScreen) action(it) }
+        }
     }
 }

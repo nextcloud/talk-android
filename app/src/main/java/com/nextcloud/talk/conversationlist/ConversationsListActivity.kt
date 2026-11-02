@@ -55,6 +55,7 @@ import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.DeepLinkActivity
 import com.nextcloud.talk.activities.DeepLinkRouting
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel
+import com.nextcloud.talk.activities.collectWhileUnlocked
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -750,22 +751,16 @@ class ConversationsListActivity : BaseActivity() {
                 }.collect()
         }
 
-        // Direct Share: the conversation of a share sheet or home screen shortcut opens only while the list is resumed
-        // and not covered by the lock screen it started, as the chat would otherwise show above the lock screen. After
-        // unlocking, the list is resumed again and the room list emitted anew, so the conversation opens then. A
-        // conversation that isn't stored yet, e.g. a new one, opens once the sync has added it to the list.
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                // the shared room list, which isn't queried again on every resume
-                conversationsListViewModel.getRoomsStateFlow.collect { list ->
-                    val token = pendingDirectShareToken
-                    val conversation = list.firstOrNull { it.token == token }
-                    if (conversation != null && !isCoveredByLockScreen) {
-                        pendingDirectShareToken = null
-                        handleConversation(conversation, focusInput = isPendingConversationInputFocused)
-                        isPendingConversationInputFocused = false
-                    }
-                }
+        // Direct Share: the conversation of a share sheet or home screen shortcut, also after unlocking. A conversation
+        // that isn't stored yet, e.g. a new one, opens once the sync has added it to the list. The shared room list
+        // isn't queried again on every resume.
+        collectWhileUnlocked(conversationsListViewModel.getRoomsStateFlow) { list ->
+            val token = pendingDirectShareToken
+            val conversation = list.firstOrNull { it.token == token }
+            if (conversation != null) {
+                pendingDirectShareToken = null
+                handleConversation(conversation, focusInput = isPendingConversationInputFocused)
+                isPendingConversationInputFocused = false
             }
         }
 
