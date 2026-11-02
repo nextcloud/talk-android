@@ -40,7 +40,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -61,6 +60,7 @@ import com.nextcloud.talk.conversationinfo.ui.LobbyTimerPickerDialog
 import com.nextcloud.talk.conversationinfo.ui.ParticipantOpsAction
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
@@ -606,7 +606,7 @@ class ConversationInfoActivity : BaseActivity() {
                                     )
                                 }
 
-                                startActivity(AppTasks.createRestartIntent(context))
+                                showConversationList()
                             }
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
@@ -672,8 +672,17 @@ class ConversationInfoActivity : BaseActivity() {
                 )
             }
 
-            startActivity(AppTasks.createRestartIntent(context))
+            showConversationList()
         }
+    }
+
+    /**
+     * Shows the conversation list of the account of the conversation, which was left or deleted: the list in the task
+     * is recreated for it and the screens above it are closed, e.g. when the chat was opened from a notification of an
+     * account that isn't the default one.
+     */
+    private fun showConversationList() {
+        startActivity(ConversationsListActivity.createAccountSwitchIntent(context, conversationUser.id!!))
     }
 
     private fun toggleModeratorStatus(apiVersion: Int, participant: ParticipantDto) {

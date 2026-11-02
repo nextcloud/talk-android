@@ -79,6 +79,14 @@ object AppTasks {
         createLauncherIntent(context).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
     /**
+     * Starts the app anew in a fresh task with the conversation list of the account [userId], e.g. from a call whose
+     * account isn't the default one, when no task of the app is left to show it in.
+     */
+    fun createRestartIntent(context: Context, userId: Long): Intent =
+        ConversationsListActivity.createAccountSwitchIntent(context, userId)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+    /**
      * Opens [chatIntent] on top of the screens open in the running task of the app, or else in a new task with the
      * conversation list of its account below it, which the launcher and the internal entry point find again, unlike a
      * task rooted at the chat. Only the chat is created, and the list when going back.

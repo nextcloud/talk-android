@@ -2456,7 +2456,7 @@ class CallActivity : CallBaseActivity() {
         if (isShownInPrimaryTask) {
             removeOtherTasks(appTasks, primaryTask.taskInfoOrNull()?.taskIdCompat)
         } else {
-            startActivity(AppTasks.createRestartIntent(context))
+            startActivity(AppTasks.createRestartIntent(context, conversationUser.id!!))
         }
     }
 
