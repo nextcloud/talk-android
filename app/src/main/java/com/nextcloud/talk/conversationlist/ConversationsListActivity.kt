@@ -39,6 +39,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -408,8 +409,12 @@ class ConversationsListActivity : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
-        outState.putString(KEY_PENDING_DIRECT_SHARE_TOKEN, pendingDirectShareToken)
-        outState.putBoolean(BundleKeys.KEY_FOCUS_INPUT, isPendingConversationInputFocused)
+        // Only for a recreated list: the conversation of a shortcut isn't opened anymore once the list is left, and
+        // before Android 9 the state is saved before the list is stopped, which would restore the one the user left
+        if (isChangingConfigurations) {
+            outState.putString(KEY_PENDING_DIRECT_SHARE_TOKEN, pendingDirectShareToken)
+            outState.putBoolean(BundleKeys.KEY_FOCUS_INPUT, isPendingConversationInputFocused)
+        }
         if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
 
@@ -667,7 +672,7 @@ class ConversationsListActivity : BaseActivity() {
             }
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
-        fetchRooms()
+        openConversationOfShortcutAfter(fetchRooms())
         fetchPendingInvitations()
 
         conversationsListViewModel.checkIfThreadsExist()
@@ -780,9 +785,9 @@ class ConversationsListActivity : BaseActivity() {
                 }.collect()
         }
 
-        // Direct Share: the conversation of a share sheet or home screen shortcut, also after unlocking. A conversation
-        // that isn't stored yet, e.g. a new one, opens once the sync has added it to the list. The shared room list
-        // isn't queried again on every resume.
+        // Direct Share: the conversation of a share sheet or home screen shortcut, also after unlocking, as soon as the
+        // list has it. One that isn't stored yet, e.g. a new one, opens once the sync has added it, at the latest when
+        // the sync ends, see openConversationOfShortcutAfter. The shared room list isn't queried again on every resume.
         collectWhileUnlocked(conversationsListViewModel.getRoomsStateFlow) { list ->
             val token = pendingDirectShareToken
             val conversation = list.firstOrNull { it.token == token }
@@ -790,6 +795,16 @@ class ConversationsListActivity : BaseActivity() {
                 pendingDirectShareToken = null
                 handleConversation(conversation, focusInput = isPendingConversationInputFocused)
                 isPendingConversationInputFocused = false
+            }
+        }
+
+        // the conversation of a shortcut doesn't open over a search the user started meanwhile
+        lifecycleScope.launch {
+            conversationsListViewModel.isSearchActiveFlow.collect { isSearchActive ->
+                if (isSearchActive) {
+                    pendingDirectShareToken = null
+                    isPendingConversationInputFocused = false
+                }
             }
         }
 
@@ -986,8 +1001,32 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    fun fetchRooms(forceFullSync: Boolean = false) {
+    fun fetchRooms(forceFullSync: Boolean = false): Job =
         conversationsListViewModel.getRooms(currentUser, forceFullSync)
+
+    /**
+     * Opens the conversation of the pending shortcut once [sync] stored the conversations, if the list didn't show it
+     * before, or tells that it wasn't found. While the lock screen covers the list, it waits for the resume after
+     * unlocking, which waits for a sync of its own.
+     */
+    private fun openConversationOfShortcutAfter(sync: Job) {
+        val token = pendingDirectShareToken ?: return
+        lifecycleScope.launch {
+            sync.join()
+            // also one the list doesn't show yet
+            val conversation = conversationsListViewModel.storedRooms().firstOrNull { it.token == token }
+            withResumed {
+                if (pendingDirectShareToken == token && !isCoveredByLockScreen) {
+                    pendingDirectShareToken = null
+                    if (conversation != null) {
+                        handleConversation(conversation, focusInput = isPendingConversationInputFocused)
+                    } else {
+                        showSnackbar(getString(R.string.nc_shortcut_conversation_not_found))
+                    }
+                    isPendingConversationInputFocused = false
+                }
+            }
+        }
     }
 
     private fun fetchPendingInvitations() {

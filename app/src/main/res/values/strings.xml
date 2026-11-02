@@ -1103,5 +1103,6 @@ How to translate with transifex:
     <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="turn_off_background_blur">Turn off background blur</string>
     <string name="nc_no_account_found">Account not found</string>
+    <string name="nc_shortcut_conversation_not_found">The conversation of the shortcut was not found</string>
     <string name="nc_password_secure">Password is secure</string>
 </resources>
