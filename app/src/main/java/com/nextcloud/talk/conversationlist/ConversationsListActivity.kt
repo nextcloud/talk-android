@@ -112,6 +112,7 @@ import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.RemoteWipeHandler
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UnifiedPushUtils
@@ -404,6 +405,9 @@ class ConversationsListActivity : BaseActivity() {
     // Set once this list is replaced by one for another account. onRestart and onNewIntent can both trigger that when
     // the list is brought back with an intent for another account, which must only relaunch it once.
     private var isRelaunching = false
+
+    // set once the shared content was passed on to the chat that was picked for it
+    private var isSharePassedOn = false
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -1033,6 +1037,18 @@ class ConversationsListActivity : BaseActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
+        // a share left in the list removes its copies, unless they were passed on to the chat or the list of another
+        // account, see SharedFileCopies
+        if (isFinishing && isShare(intent) && !isSharePassedOn && !isRelaunching) {
+            val clip = intent.clipData
+            val sharedUris = clip?.let { (0 until it.itemCount).mapNotNull { index -> it.getItemAt(index).uri } }
+            if (!sharedUris.isNullOrEmpty()) {
+                val application = NextcloudTalkApplication.sharedApplication!!
+                application.appScope.launch {
+                    SharedFileCopies.removeSharesOf(application, sharedUris.map { it.toString() })
+                }
+            }
+        }
     }
 
     @Suppress("Detekt.ComplexMethod")
@@ -1345,6 +1361,7 @@ class ConversationsListActivity : BaseActivity() {
         val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, extras)
         // in the task of the app: a plain start could land in the task of this share instead
         AppTasks.openChatInAppTask(this, chatIntent)
+        isSharePassedOn = true
         if (isTaskRoot) finishAndRemoveTask() else finish()
     }
 

@@ -7,6 +7,7 @@
 package com.nextcloud.talk.attachmentpreview
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,7 +27,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.hostViewThemeUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -38,6 +41,9 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         (files: MutableList<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit =
         { _, _, _, _ -> }
     private var composeView: ComposeView? = null
+
+    // set when the files are sent, so their copies are kept for the upload
+    private var isSent = false
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -118,6 +124,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
                         onDismiss = { dismiss() },
                         onSend = { files, caption, compressImages, allowUpdate ->
                             uploadFiles(files.toMutableList(), caption, compressImages, allowUpdate)
+                            isSent = true
                             dismiss()
                         }
                     )
@@ -129,6 +136,17 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         composeView = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        // Files shared by another app that are left here, unsent, remove their copies, see SharedFileCopies. Not when
+        // the dialog is only shown again after a configuration change.
+        if (!isSent && activity?.isChangingConfigurations != true) {
+            val application = NextcloudTalkApplication.sharedApplication!!
+            val files = filesList.toList()
+            application.appScope.launch { SharedFileCopies.removeSharesOf(application, files) }
+        }
     }
 
     companion object {

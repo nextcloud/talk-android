@@ -60,6 +60,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.NotificationUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -243,6 +244,8 @@ class NextcloudTalkApplication :
 
     private fun initWorkers() {
         appScope.launch { userManager.repairMultipleActiveUsers() }
+        // the copies of shares that are done, also when no new share starts
+        appScope.launch { SharedFileCopies.removeDoneShares(this@NextcloudTalkApplication) }
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java).build()
