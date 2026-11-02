@@ -65,6 +65,15 @@ class FileUtilsGetFileFromUriTest {
     }
 
     @Test
+    fun `a copy of a shared file with the user in its uri is used without copying it again`() {
+        val copy = copyOfShare("share1/0/video.mp4")
+
+        val uri = Uri.parse("content://0@${context.packageName}/shared_file_copies/share1/0/video.mp4")
+
+        assertEquals(copy.canonicalFile, FileUtils.getFileFromUri(context, uri)?.canonicalFile)
+    }
+
+    @Test
     fun `a shared attachment is used without copying it again`() {
         val attachment = fileInCache("shared_attachments/image.jpg")
 
@@ -93,6 +102,15 @@ class FileUtilsGetFileFromUriTest {
 
         assertEquals(PROVIDED, copyOf(ownUri("logs/log.txt"))?.readText())
         assertEquals(PROVIDED, copyOf(ownUri("shared_file_copies/../logs/log.txt"))?.readText())
+    }
+
+    @Test
+    fun `the same path of the provider of the app of another user is copied`() {
+        copyOfShare("share1/0/image.jpg")
+
+        val uri = Uri.parse("content://10@${context.packageName}/shared_file_copies/share1/0/image.jpg")
+
+        assertEquals(PROVIDED, copyOf(uri)?.readText())
     }
 
     @Test

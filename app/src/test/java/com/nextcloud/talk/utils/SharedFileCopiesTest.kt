@@ -77,12 +77,21 @@ class SharedFileCopiesTest {
     }
 
     @Test
+    fun copyOfShareWithTheUserInItsUriIsTaggedWithItsShareDirectory() {
+        val copy = "content://0@${BuildConfig.APPLICATION_ID}/shared_file_copies/share1/0/photo.jpg"
+
+        assertEquals("shared_file_copy_share1", SharedFileCopies.uploadTagOf(copy))
+    }
+
+    @Test
     fun otherFilesAreNotTagged() {
         assertNull(SharedFileCopies.uploadTagOf("$provider/shared_attachments/photo.jpg"))
         assertNull(SharedFileCopies.uploadTagOf("$provider/shared_attachments/shares/share1/0/photo.jpg"))
         assertNull(SharedFileCopies.uploadTagOf("$provider/shared_file_copies/share1"))
         assertNull(SharedFileCopies.uploadTagOf("$provider/photos/share1/0/photo.jpg"))
         assertNull(SharedFileCopies.uploadTagOf("content://other.app/shared_file_copies/share1/0/photo.jpg"))
+        // a copy of the app of another user, e.g. in another profile
+        assertNull(SharedFileCopies.uploadTagOf("content://10@${BuildConfig.APPLICATION_ID}/shared_file_copies/s/0/a"))
         assertNull(SharedFileCopies.uploadTagOf("file:///shared_file_copies/share1/0/photo.jpg"))
     }
 

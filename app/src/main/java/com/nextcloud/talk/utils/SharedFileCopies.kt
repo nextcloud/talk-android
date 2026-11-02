@@ -92,7 +92,7 @@ object SharedFileCopies {
         val uri = fileUri.toUri()
         val segments = uri.pathSegments
         val isCopy = uri.scheme == ContentResolver.SCHEME_CONTENT &&
-            uri.authority == BuildConfig.APPLICATION_ID &&
+            uri.authorityOfOwnUser == BuildConfig.APPLICATION_ID &&
             segments.size > SHARE_DIRECTORY_SEGMENT + 1 &&
             segments[0] == FileUtils.SHARED_FILE_COPIES_DIRECTORY
         return if (isCopy) segments[SHARE_DIRECTORY_SEGMENT] else null

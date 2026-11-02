@@ -12,6 +12,7 @@ package com.nextcloud.talk.utils
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.os.Process
 import android.provider.OpenableColumns
 import android.util.Log
 import android.webkit.MimeTypeMap
@@ -99,8 +100,9 @@ object FileUtils {
     /**
      * See [isTrustedShareUri]. Every provider of the own app ([packageName]) is rejected, as e.g. the one of the
      * ImagePicker library serves all its files, except the paths of its FileProvider (authority [packageName]) that
-     * [sharedAttachmentProviderFile] allows. A user id prefix ("0@authority") is ignored, as the content resolver
-     * resolves it to the own user. [packageOfAuthority] gives the package of the provider of an authority.
+     * [sharedAttachmentProviderFile] allows. A user id prefix ("10@authority") is ignored, so the providers of the
+     * app of another user, e.g. in another profile, are rejected the same way. [packageOfAuthority] gives the package
+     * of the provider of an authority.
      */
     fun isTrustedShareUri(
         uri: Uri?,
@@ -110,7 +112,7 @@ object FileUtils {
         packageOfAuthority: (String) -> String?
     ): Boolean {
         val contentUri = uri?.takeIf { ContentResolver.SCHEME_CONTENT == it.scheme }
-        val authority = contentUri?.authority?.substringAfterLast('@') ?: return false
+        val authority = contentUri?.authorityWithoutUser ?: return false
         val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
         val isSharedFileOfFileProvider =
             authority == packageName &&
@@ -206,7 +208,7 @@ object FileUtils {
             throw IllegalArgumentException("relative paths are not supported")
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
             // a shared file the app already copied is used as it is, instead of copying it again
-            val ownSharedFile = sourceFileUri.takeIf { it.authority == context.packageName }
+            val ownSharedFile = sourceFileUri.takeIf { it.authorityOfOwnUser == context.packageName }
                 ?.let { sharedAttachmentProviderFile(context.cacheDir, context.filesDir, it.pathSegments) }
                 ?.takeIf { it.isFile }
             ownSharedFile ?: copyFileToCache(context, sourceFileUri, fileName)
@@ -329,3 +331,22 @@ object FileUtils {
         return md5String.toString()
     }
 }
+
+// the authority without a user id prefix ("10@authority"), which names the user whose provider serves the uri
+internal val Uri.authorityWithoutUser: String?
+    get() = authority?.substringAfterLast('@')
+
+/**
+ * The authority of a provider of the own user, without a prefix that names the own user ("0@authority"). Null for a
+ * provider of another user, e.g. of the app in another profile, whose files aren't the ones of the app here.
+ */
+internal val Uri.authorityOfOwnUser: String?
+    get() {
+        val authority = authority ?: return null
+        val userId = authority.substringBeforeLast('@', missingDelimiterValue = "")
+        val isOwnUser = userId.isEmpty() || userId == (Process.myUid() / PER_USER_UID_RANGE).toString()
+        return if (isOwnUser) authority.substringAfterLast('@') else null
+    }
+
+// the range of uids of each user, see android.os.UserHandle.PER_USER_RANGE
+private const val PER_USER_UID_RANGE = 100_000
