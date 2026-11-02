@@ -21,9 +21,9 @@ import kotlinx.coroutines.launch
 
 /**
  * Exported entry point for the content other apps share to Talk, from the share sheet or one of its direct share
- * targets. It copies the shared files into the app (see [SharedFileCopies]), so the chat and the upload don't depend on the read
- * access of the other app, and opens the conversation list to pick the conversation with only that content, see
- * [ShareListIntentFactory].
+ * targets. It copies the shared files into the app (see [SharedFileCopies]), so the chat and the upload don't depend
+ * on the read access of the other app, and opens the conversation list to pick the conversation with only that
+ * content, see [ShareListIntentFactory].
  *
  * The share sheet starts it in a task of its own, which is kept out of the recents, also after the list replaced it
  * there: the chat is opened in the task of the app (see ConversationsListActivity.openSharedConversationInAppTask).

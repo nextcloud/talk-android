@@ -102,9 +102,9 @@ object ShortcutManagerHelper {
      * which opens the conversation of exactly their account: those that target the launcher activity or the
      * conversation list, with the room token and user id as extras, which they take from no intent of outside the app,
      * so they open only the conversation list, and those with a nextcloudtalk:// deep link, which names only the host
-     * and user name of the account. The account and conversation are taken from the id of the shortcut. Pinned ones, e.g. on the home screen or in a conversation
-     * widget, and cached ones keep their intent until their conversation has a notification or is among the dynamic
-     * shortcuts.
+     * and user name of the account. The account and conversation are taken from the id of the shortcut. Also the
+     * pinned ones, e.g. on the home screen or in a conversation widget, and the cached ones, which would otherwise keep
+     * their intent until their conversation has a notification or is among the dynamic shortcuts.
      *
      * @param context Application context
      * @param users The accounts whose shortcuts can be updated
