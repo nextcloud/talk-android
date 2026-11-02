@@ -285,9 +285,12 @@ class ConversationsListActivity : BaseActivity() {
         intent = intentOfAccount(this, intent, currentUser.id)
         if (savedInstanceState == null) {
             AppTasks.removeTasksLeftInRecents(this)
+        }
+        if (!isAppStartSetUpDone) {
+            isAppStartSetUpDone = true
             setUpPushRegistration()
-            // once per start of the app: a key that became invalid, e.g. after the lock screen of the device was
-            // reset, is created anew when it is checked
+            // a key that became invalid, e.g. after the lock screen of the device was reset, is created anew when it
+            // is checked
             if (appPreferences.isScreenLocked) {
                 SecurityUtils.createKey(appPreferences.screenLockTimeout)
             }
@@ -1840,6 +1843,10 @@ class ConversationsListActivity : BaseActivity() {
 
         // once per process: the shortcuts without a deep link don't change while the app runs
         private var areShortcutsOfEarlierVersionsUpdated = false
+
+        // once per process, not per list: the app starts lists also in further tasks, e.g. for a notification, a
+        // share or another account
+        private var isAppStartSetUpDone = false
 
         /**
          * Creates an intent for this activity through its non-exported alias, so that it takes the account
