@@ -250,6 +250,9 @@ object ShortcutManagerHelper {
             action = Intent.ACTION_VIEW
             putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
+            // With NEW_TASK alone, a task an earlier shortcut started is only brought to the front, without this
+            // intent; the list on top of it gets it in onNewIntent instead.
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
     }
 

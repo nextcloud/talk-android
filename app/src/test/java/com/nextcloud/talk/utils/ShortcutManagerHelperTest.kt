@@ -72,6 +72,10 @@ class ShortcutManagerHelperTest {
         assertEquals(Intent.ACTION_VIEW, intent.action)
         assertEquals(userId, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, 0L))
         assertEquals(roomToken, intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN))
+        // delivered to the list of a task an earlier shortcut started, instead of only bringing that task to the front
+        val deliveredToRunningList =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        assertEquals(deliveredToRunningList, intent.flags and deliveredToRunningList)
     }
 
     @Test
