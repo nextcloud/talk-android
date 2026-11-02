@@ -69,17 +69,17 @@ object FileUtils {
     }
 
     /**
-     * Checks whether the [pathSegments] of an own FileProvider uri point to a file inside the
-     * dedicated shared attachments cache directory or the one of the copies of shared files.
+     * The file in [cacheDir] that the [pathSegments] of an own FileProvider uri point to, if it is inside the
+     * dedicated shared attachments cache directory or the one of the copies of shared files, else null.
      */
-    fun isSharedAttachmentProviderPath(cacheDir: File, pathSegments: List<String>): Boolean {
+    fun sharedAttachmentProviderFile(cacheDir: File, pathSegments: List<String>): File? {
         val directory = pathSegments.firstOrNull()?.takeIf { it in SHARED_PROVIDER_DIRECTORIES }
-        if (pathSegments.size < 2 || directory == null) return false
+        if (pathSegments.size < 2 || directory == null) return null
         var resolvedFile: File? = File(cacheDir, directory)
         for (segment in pathSegments.drop(1)) {
             resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
         }
-        return resolvedFile != null
+        return resolvedFile
     }
 
     /**
@@ -95,7 +95,7 @@ object FileUtils {
     /**
      * See [isTrustedShareUri]. Every provider of the own app ([packageName]) is rejected, as e.g. the one of the
      * ImagePicker library serves all its files, except the paths of its FileProvider (authority [packageName]) that
-     * [isSharedAttachmentProviderPath] allows. A user id prefix ("0@authority") is ignored, as the content resolver
+     * [sharedAttachmentProviderFile] allows. A user id prefix ("0@authority") is ignored, as the content resolver
      * resolves it to the own user. [packageOfAuthority] gives the package of the provider of an authority.
      */
     fun isTrustedShareUri(
@@ -104,11 +104,11 @@ object FileUtils {
         cacheDir: File,
         packageOfAuthority: (String) -> String?
     ): Boolean {
-        if (uri == null || ContentResolver.SCHEME_CONTENT != uri.scheme) return false
-        val authority = uri.authority?.substringAfterLast('@') ?: return false
+        val contentUri = uri?.takeIf { ContentResolver.SCHEME_CONTENT == it.scheme }
+        val authority = contentUri?.authority?.substringAfterLast('@') ?: return false
         val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
         val isSharedFileOfFileProvider =
-            authority == packageName && isSharedAttachmentProviderPath(cacheDir, uri.pathSegments)
+            authority == packageName && sharedAttachmentProviderFile(cacheDir, contentUri.pathSegments) != null
         return !isOwnProvider || isSharedFileOfFileProvider
     }
 
@@ -199,7 +199,11 @@ object FileUtils {
             Log.d(TAG, "relative uri: " + sourceFileUri.path)
             throw IllegalArgumentException("relative paths are not supported")
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
-            copyFileToCache(context, sourceFileUri, fileName)
+            // a shared file the app already copied into its cache is used as it is, instead of copying it again
+            val ownSharedFile = sourceFileUri.takeIf { it.authority == context.packageName }
+                ?.let { sharedAttachmentProviderFile(context.cacheDir, it.pathSegments) }
+                ?.takeIf { it.isFile }
+            ownSharedFile ?: copyFileToCache(context, sourceFileUri, fileName)
         } else if (ContentResolver.SCHEME_FILE == scheme) {
             val path = sourceFileUri.path
                 ?: throw IllegalArgumentException("uri does not contain path")
