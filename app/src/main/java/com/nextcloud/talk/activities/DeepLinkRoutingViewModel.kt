@@ -17,7 +17,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
-import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository.ConversationResult
@@ -26,7 +26,6 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.ShortcutManagerHelper
@@ -55,7 +54,7 @@ class DeepLinkRoutingViewModel @Inject constructor(
     private val userManager: UserManager,
     private val defaultAccountProvider: DefaultAccountProvider,
     private val conversationsRepository: OfflineConversationsRepository,
-    private val ncApiCoroutines: NcApiCoroutines,
+    private val contactsRepository: ContactsRepository,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -328,25 +327,20 @@ class DeepLinkRoutingViewModel @Inject constructor(
     }
 
     /** Creates or gets the one-to-one conversation of [account] with [userId], null without one in the response. */
-    private suspend fun createRoomWithContact(userId: String, account: User): String? {
-        val apiVersion = ApiUtils.getConversationApiVersion(account, intArrayOf(ApiUtils.API_V4, 1))
-        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            version = apiVersion,
-            baseUrl = account.baseUrl!!,
-            roomType = "1",
-            invite = userId
-        )
-        return ncApiCoroutines.createRoom(
-            ApiUtils.getCredentials(account.username, account.token),
-            retrofitBucket.url,
-            retrofitBucket.queryMap
+    private suspend fun createRoomWithContact(userId: String, account: User): String? =
+        contactsRepository.createRoom(
+            account,
+            roomType = ONE_TO_ONE_ROOM_TYPE,
+            sourceType = null,
+            userId = userId,
+            conversationName = null
         ).ocs?.data?.token?.takeIf { it.isNotBlank() }
-    }
 
     companion object {
         private val TAG = DeepLinkRoutingViewModel::class.java.simpleName
 
         private const val ROOM_SYNC_TIMEOUT_MS = 5000L
+        private const val ONE_TO_ONE_ROOM_TYPE = "1"
 
         private const val CONTACT_CHAT_MIME_TYPE = "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat"
 
