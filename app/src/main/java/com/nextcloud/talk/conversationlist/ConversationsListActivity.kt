@@ -664,6 +664,15 @@ class ConversationsListActivity : BaseActivity() {
         conversationTagsViewModel.loadConversationTags()
     }
 
+    override fun onStop() {
+        super.onStop()
+        // The conversation of a shortcut that isn't in the list yet isn't opened anymore once the list is left. Not
+        // when it is only paused, e.g. below the request for the notification permission.
+        if (!isCoveredByLockScreen && !isChangingConfigurations) {
+            pendingDirectShareToken = null
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         conversationListLazyListState?.let { state ->
@@ -723,14 +732,17 @@ class ConversationsListActivity : BaseActivity() {
 
         // Direct Share: the conversation of a share sheet or home screen shortcut opens only while the list is resumed
         // and not covered by the lock screen it started, as the chat would otherwise show above the lock screen. After
-        // unlocking, the list is resumed again and the room list emitted anew, so the conversation opens then.
+        // unlocking, the list is resumed again and the room list emitted anew, so the conversation opens then. A
+        // conversation that isn't stored yet, e.g. a new one, opens once the sync has added it to the list.
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                conversationsListViewModel.getRoomsFlow.collect { list ->
+                // the shared room list, which isn't queried again on every resume
+                conversationsListViewModel.getRoomsStateFlow.collect { list ->
                     val token = pendingDirectShareToken
-                    if (token != null && !isCoveredByLockScreen) {
+                    val conversation = list.firstOrNull { it.token == token }
+                    if (conversation != null && !isCoveredByLockScreen) {
                         pendingDirectShareToken = null
-                        list.firstOrNull { it.token == token }?.let { handleConversation(it) }
+                        handleConversation(conversation)
                     }
                 }
             }
