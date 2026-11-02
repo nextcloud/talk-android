@@ -434,6 +434,11 @@ class ChatActivity :
     lateinit var sharedText: String
     private var sharedFilePaths: List<String> = emptyList()
 
+    // Whether the shared text and files of the intent were taken. A chat recreated after its process was killed gets
+    // the intent it was started with again, with the shared content, as changes to the intent aren't kept.
+    private var isSharedTextTaken = false
+    private var areSharedFilesTaken = false
+
     private val _participantPermissionsFlow = MutableStateFlow<ParticipantPermissions?>(null)
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
@@ -628,10 +633,15 @@ class ChatActivity :
                 .launchIn(lifecycleScope)
         }
         handleIntent(intent)
+        isSharedTextTaken = savedInstanceState?.getBoolean(KEY_SHARED_TEXT_TAKEN) == true
+        areSharedFilesTaken = savedInstanceState?.getBoolean(KEY_SHARED_FILES_TAKEN) == true
+        if (isSharedTextTaken) sharedText = ""
+        if (areSharedFilesTaken) sharedFilePaths = emptyList()
         chatViewModel.initData()
         if (sharedText.isNotEmpty()) {
             chatViewModel.messageDraft.messageText = sharedText
             chatViewModel.saveMessageDraft()
+            isSharedTextTaken = true
         }
 
         conversationThreadId?.let {
@@ -1303,7 +1313,6 @@ class ChatActivity :
         sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS)
             ?.filter { FileUtils.isTrustedShareUri(it.toUri(), this) }
             ?: emptyList()
-        intent.removeExtra(BundleKeys.KEY_SHARED_FILE_PATHS)
 
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isEmpty()) {
@@ -1341,6 +1350,8 @@ class ChatActivity :
         if (isChangingConfigurations) {
             chatViewModel.handleOrientationChange()
         }
+        outState.putBoolean(KEY_SHARED_TEXT_TAKEN, isSharedTextTaken)
+        outState.putBoolean(KEY_SHARED_FILES_TAKEN, areSharedFilesTaken)
         super.onSaveInstanceState(outState)
     }
 
@@ -1998,6 +2009,8 @@ class ChatActivity :
         if (sharedFilePaths.isNotEmpty()) {
             onChooseFileResult(sharedFilePaths.map { it.toUri() })
             sharedFilePaths = emptyList()
+            // not before, so a chat recreated before its room was loaded still sends them
+            areSharedFilesTaken = true
         }
     }
 
@@ -4150,6 +4163,8 @@ class ChatActivity :
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
+        private const val KEY_SHARED_TEXT_TAKEN = "sharedTextTaken"
+        private const val KEY_SHARED_FILES_TAKEN = "sharedFilesTaken"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val PICTURE_SUFFIX = ".jpg"
         private const val HTTP_BAD_REQUEST = 400
