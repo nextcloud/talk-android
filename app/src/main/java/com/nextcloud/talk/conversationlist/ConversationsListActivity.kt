@@ -276,11 +276,11 @@ class ConversationsListActivity : BaseActivity() {
         removeExtrasOfApp(intent)
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        if (isLauncherTapOnAppTask()) {
-            finish()
+        if (isLauncherTapOnAppTask() || finishIfNotShown()) {
+            // finishIfNotShown() finished the list already
+            if (!isFinishing) finish()
             return
         }
-        if (finishIfNotShown()) return
         currentUser = setUpBoundUserOrFinish() ?: return
         // A recreation after a configuration change reuses this intent. Through the launcher alias,
         // removeExtrasOfApp would remove the account written into it again, and the list would switch to the default
