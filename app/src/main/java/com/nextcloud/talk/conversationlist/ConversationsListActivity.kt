@@ -1898,13 +1898,17 @@ class ConversationsListActivity : BaseActivity() {
 
         /**
          * Whether [intent] is a VIEW intent of another app with a uri, e.g. of a pinned shortcut that targets the
-         * launcher activity, which is taken through [DeepLinkActivity].
+         * launcher activity, which is taken through [DeepLinkActivity]. Not when a task is relaunched from the recents
+         * with the intent it was started with, whose link was taken already: before Android 10, that intent names the
+         * target of the alias it was started through, so a task of a deep link that DeepLinkActivity passed on would
+         * look like one of another app, and passing it on again would route its link again.
          */
         @VisibleForTesting
         internal fun isViewOfOtherApp(intent: Intent): Boolean =
             !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) &&
                 intent.action == Intent.ACTION_VIEW &&
-                intent.data != null
+                intent.data != null &&
+                intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0
 
         /** Whether [intent] shares content of another app, which is taken through [ShareActivity]. */
         @VisibleForTesting

@@ -110,6 +110,16 @@ class ConversationsListEntryPointTest {
     }
 
     @Test
+    fun `a deep link task relaunched from the recents before Android 10 isn't passed on again`() {
+        // before Android 10, the intent of the task names the target of the internal alias it was started through
+        val relaunched = Intent(Intent.ACTION_VIEW, Uri.parse("nextcloudtalk://alice@cloud.example.com/call/abcd1234"))
+            .setClassName(context, ConversationsListActivity::class.java.name)
+            .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+
+        assertFalse(isViewOfOtherApp(relaunched))
+    }
+
+    @Test
     fun `a new back stack has the list of the account below its screen, which removes the tasks left in the recents`() {
         val invitations = Intent().setClassName(context, "com.nextcloud.talk.invitation.InvitationsActivity")
 
