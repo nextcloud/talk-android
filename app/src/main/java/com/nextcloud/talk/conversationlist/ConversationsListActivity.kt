@@ -228,6 +228,9 @@ class ConversationsListActivity : BaseActivity() {
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var pendingDirectShareToken: String? = null
+
+    // whether the chat of the pending shortcut opens with the focus in the message input, as the one of note to self
+    private var isPendingConversationInputFocused = false
     private var unauthorizedDialog: AlertDialog? = null
     private var unauthorizedHandling: Job? = null
 
@@ -300,13 +303,7 @@ class ConversationsListActivity : BaseActivity() {
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
-        if (savedInstanceState != null) {
-            showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
-            // the conversation of a shortcut that wasn't opened yet; the one of the intent was taken already, which
-            // the intent restored after the process was killed has again
-            pendingDirectShareToken = savedInstanceState.getString(KEY_PENDING_DIRECT_SHARE_TOKEN)
-            intent.removeExtra(KEY_ROOM_TOKEN)
-        }
+        savedInstanceState?.let(::restoreState)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         val audioPlayerCallbacks = chatAudioPlayerCallbacks(
@@ -396,10 +393,21 @@ class ConversationsListActivity : BaseActivity() {
             Intent.FLAG_ACTIVITY_NEW_TASK
         )
 
+    private fun restoreState(savedInstanceState: Bundle) {
+        showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
+        // the conversation of a shortcut that wasn't opened yet; the one of the intent was taken already, which the
+        // intent restored after the process was killed has again
+        pendingDirectShareToken = savedInstanceState.getString(KEY_PENDING_DIRECT_SHARE_TOKEN)
+        isPendingConversationInputFocused = savedInstanceState.getBoolean(BundleKeys.KEY_FOCUS_INPUT)
+        intent.removeExtra(KEY_ROOM_TOKEN)
+        intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
         outState.putString(KEY_PENDING_DIRECT_SHARE_TOKEN, pendingDirectShareToken)
+        outState.putBoolean(BundleKeys.KEY_FOCUS_INPUT, isPendingConversationInputFocused)
         if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
 
@@ -620,8 +628,10 @@ class ConversationsListActivity : BaseActivity() {
         if (Intent.ACTION_VIEW == intent.action) {
             intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
                 pendingDirectShareToken = it
+                isPendingConversationInputFocused = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_INPUT, false)
             }
             intent.removeExtra(KEY_ROOM_TOKEN)
+            intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
         }
 
         // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
@@ -679,6 +689,7 @@ class ConversationsListActivity : BaseActivity() {
         // when it is only paused, e.g. below the request for the notification permission.
         if (!isCoveredByLockScreen && !isChangingConfigurations) {
             pendingDirectShareToken = null
+            isPendingConversationInputFocused = false
         }
     }
 
@@ -751,7 +762,8 @@ class ConversationsListActivity : BaseActivity() {
                     val conversation = list.firstOrNull { it.token == token }
                     if (conversation != null && !isCoveredByLockScreen) {
                         pendingDirectShareToken = null
-                        handleConversation(conversation)
+                        handleConversation(conversation, focusInput = isPendingConversationInputFocused)
+                        isPendingConversationInputFocused = false
                     }
                 }
             }
@@ -835,9 +847,10 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
         if (noteToSelfAvailable) {
-            val intent = ChatActivity.createIntent(context, currentUser.id!!, noteToSelfToken)
-            intent.putExtra(BundleKeys.KEY_FOCUS_INPUT, true)
-            intent.action = Intent.ACTION_VIEW
+            // through the list like the other conversation shortcuts, so the chat opens in the task of the app
+            val intent = ShortcutManagerHelper.createConversationIntent(context, noteToSelfToken, currentUser)
+                ?.putExtra(BundleKeys.KEY_FOCUS_INPUT, true)
+                ?: return
             val openNotesString = resources.getString(R.string.open_notes)
 
             val shortcut = ShortcutInfoCompat.Builder(context, NOTE_TO_SELF_SHORTCUT_ID)
@@ -1073,7 +1086,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     @Suppress("Detekt.ComplexMethod")
-    private fun handleConversation(conversation: ConversationModel?) {
+    private fun handleConversation(conversation: ConversationModel?, focusInput: Boolean = false) {
         selectedConversation = conversation
         if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(
@@ -1100,7 +1113,7 @@ class ConversationsListActivity : BaseActivity() {
             } else if (conversation.checkIfVoiceRoom()) {
                 showStartCallDialog()
             } else {
-                openConversation()
+                openConversation(focusInput = focusInput)
             }
         }
     }
@@ -1345,7 +1358,7 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun openConversation(textToPaste: String? = "") {
+    private fun openConversation(textToPaste: String? = "", focusInput: Boolean = false) {
         if (CallActivity.active &&
             !ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(selectedConversation!!.token, currentUser.id)
         ) {
@@ -1361,6 +1374,9 @@ class ConversationsListActivity : BaseActivity() {
         if (selectedMessageId != null) {
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
+        }
+        if (focusInput) {
+            bundle.putBoolean(BundleKeys.KEY_FOCUS_INPUT, true)
         }
 
         if (isShare(intent)) {
