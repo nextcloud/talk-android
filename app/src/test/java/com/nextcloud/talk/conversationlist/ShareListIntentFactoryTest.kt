@@ -14,9 +14,15 @@ import android.os.Parcelable
 import androidx.core.content.pm.ShortcutManagerCompat
 import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +32,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.InputStream
 
 /**
  * ShareActivity is exported: of the intent another app shares, the conversation list only gets the text or copies of
@@ -197,7 +204,34 @@ class ShareListIntentFactoryTest {
             assertNull(failingFactory.create(intent))
         }
 
+    @Test
+    fun `a cancelled share stops copying and leaves no copies behind`() =
+        runBlocking {
+            lateinit var share: Job
+            var reads = 0
+            // a file that never ends, e.g. a large video: the share is left while it is copied
+            val endlessFile = object : InputStream() {
+                override fun read(): Int = 0
+
+                override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+                    if (++reads == 1) share.cancel()
+                    return length
+                }
+            }
+            shadowOf(context.contentResolver).registerInputStream(photoOfOtherApp, endlessFile)
+            val intent = shareOfOtherApp("image/jpeg").putExtra(Intent.EXTRA_STREAM, photoOfOtherApp)
+
+            share = launch(Dispatchers.IO, start = CoroutineStart.LAZY) { factory.create(intent) }
+            share.start()
+            withTimeout(TIMEOUT_MS) { share.join() }
+
+            assertTrue(share.isCancelled)
+            assertEquals(1, reads)
+            assertTrue(shareDirectories.listFiles().isNullOrEmpty())
+        }
+
     companion object {
+        private const val TIMEOUT_MS = 10_000L
         private const val PUBLISHED_SHORTCUT_ID = "conversation_1_abcd1234"
         private val PHOTO = byteArrayOf(1, 2, 3, 4)
     }

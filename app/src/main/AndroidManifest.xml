@@ -170,10 +170,11 @@
         </activity>
 
         <!-- Entry point for the content other apps share. It copies the shared files and opens the conversation list
-             to pick the conversation, in a task that is kept out of the recents. -->
+             to pick the conversation, in a task that is kept out of the recents. It handles all configuration
+             changes itself: it only shows a progress indicator, and being recreated would copy the files again. -->
         <activity
             android:name=".conversationlist.ShareActivity"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|touchscreen|uiMode|locale|layoutDirection|fontScale|fontWeightAdjustment|density|colorMode|mcc|mnc"
             android:excludeFromRecents="true"
             android:exported="true"
             android:theme="@style/AppTheme.Translucent">

@@ -20,8 +20,12 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.SharedFileCopies
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * Creates the intent of the conversation list in share mode for the content another app shared to [ShareActivity],
@@ -75,24 +79,34 @@ internal class ShareListIntentFactory(
     private fun clipDataOf(type: String?, items: List<ClipData.Item>): ClipData =
         ClipData(null, arrayOf(type ?: "*/*"), items.first()).apply { items.drop(1).forEach { addItem(it) } }
 
-    /** The shared texts, and copies of the shared files that may be uploaded, see [FileUtils.isTrustedShareUri]. */
-    private fun copySharedItems(sharedIntent: Intent): List<ClipData.Item> {
+    /**
+     * The shared texts, and copies of the shared files that may be uploaded, see [FileUtils.isTrustedShareUri]. Stops
+     * copying when it is cancelled, e.g. when the share is left, and then removes the copies.
+     */
+    private suspend fun copySharedItems(sharedIntent: Intent): List<ClipData.Item> {
         // created with the first file that is copied: a share without one leaves no directory behind, and doesn't wait
         // for WorkManager to tell which copies of older shares can be removed
-        val directory by lazy { SharedFileCopies.createDirectory(context) }
+        val directoryLazy = lazy { SharedFileCopies.createDirectory(context) }
         val clipData = sharedIntent.clipData
         val sharedItems = if (clipData != null) {
             (0 until clipData.itemCount).map { clipData.getItemAt(it) }
         } else {
             sharedStreams(sharedIntent).map { ClipData.Item(it) }
         }
-        return sharedItems.mapIndexedNotNull { index, item ->
-            when {
-                item.uri != null ->
-                    copyToCache(item.uri) { directory?.let { File(it, index.toString()) } }?.let { ClipData.Item(it) }
-                item.text != null -> ClipData.Item(item.text)
-                else -> null
+        return try {
+            sharedItems.mapIndexedNotNull { index, item ->
+                currentCoroutineContext().ensureActive()
+                when {
+                    item.uri != null ->
+                        copyToCache(item.uri) { directoryLazy.value?.let { File(it, index.toString()) } }
+                            ?.let { ClipData.Item(it) }
+                    item.text != null -> ClipData.Item(item.text)
+                    else -> null
+                }
             }
+        } catch (e: CancellationException) {
+            if (directoryLazy.isInitialized()) directoryLazy.value?.deleteRecursively()
+            throw e
         }
     }
 
@@ -109,7 +123,7 @@ internal class ShareListIntentFactory(
      * it can't be used.
      */
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun copyToCache(uri: Uri, directoryOf: () -> File?): Uri? {
+    private suspend fun copyToCache(uri: Uri, directoryOf: () -> File?): Uri? {
         if (!FileUtils.isTrustedShareUri(uri, context)) {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
             return null
@@ -120,12 +134,25 @@ internal class ShareListIntentFactory(
             }
             val isCopied = file != null &&
                 context.contentResolver.openInputStream(uri)
-                    ?.use { input -> file.outputStream().use { input.copyTo(it) } } != null
+                    ?.use { input -> file.outputStream().use { input.copyToCancellable(it) } } != null
             if (isCopied) uriOfCopy(file) else null
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             // the provider of another app can throw anything
             Log.w(TAG, "Failed to copy the shared file $uri", e)
             null
+        }
+    }
+
+    /** Copies this stream to [output] like [InputStream.copyTo], but stops between two buffers when cancelled. */
+    private suspend fun InputStream.copyToCancellable(output: OutputStream) {
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        while (true) {
+            currentCoroutineContext().ensureActive()
+            val count = read(buffer)
+            if (count < 0) break
+            output.write(buffer, 0, count)
         }
     }
 
