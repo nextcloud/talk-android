@@ -99,8 +99,7 @@ class LockedActivity : AppCompatActivity() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     Log.d(TAG, "Fingerprint recognised successfully")
-                    appPreferences.setLockTimestamp(System.currentTimeMillis())
-                    finish()
+                    unlock()
                 }
 
                 override fun onAuthenticationFailed() {
@@ -133,11 +132,16 @@ class LockedActivity : AppCompatActivity() {
 
     private fun onConfirmDeviceCredentials(result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
-            appPreferences.setLockTimestamp(System.currentTimeMillis())
-            finish()
+            unlock()
         } else {
             Log.d(TAG, "Authorization failed")
         }
+    }
+
+    private fun unlock() {
+        appPreferences.setLockTimestamp(System.currentTimeMillis())
+        NextcloudTalkApplication.isLocked = false
+        finish()
     }
 
     companion object {

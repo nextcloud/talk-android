@@ -223,14 +223,7 @@ class NextcloudTalkApplication :
         componentApplication.inject(this)
         installExceptionHandler()
 
-        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) {
-                val ts = System.currentTimeMillis()
-                Log.d(TAG, "ProcessLifecycle onStop: saving lockTimestamp=$ts")
-                appPreferences.setLockTimestamp(ts)
-                pendingLockCheck = true
-            }
-        })
+        observeAppInBackground()
 
         Coil.setImageLoader(buildDefaultImageLoader())
         setAppTheme(appPreferences.theme)
@@ -319,6 +312,22 @@ class NextcloudTalkApplication :
         return imageLoaderBuilder.build()
     }
 
+    /** Checks the app lock when the app is used again after it went to the background. */
+    private fun observeAppInBackground() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                // While locked, the time of the last use stays, so the app is still locked after its process was
+                // killed, which resets isLocked.
+                if (!isLocked) {
+                    val ts = System.currentTimeMillis()
+                    Log.d(TAG, "ProcessLifecycle onStop: saving lockTimestamp=$ts")
+                    appPreferences.setLockTimestamp(ts)
+                }
+                pendingLockCheck = true
+            }
+        })
+    }
+
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
         const val FIFTY_PERCENT = 0.5
@@ -332,6 +341,15 @@ class NextcloudTalkApplication :
 
         @Volatile
         var pendingLockCheck = true
+
+        /**
+         * Whether the app lock is showing or due: set when the lock screen is started, and cleared only by
+         * authenticating in it (or when the app lock can't be used anymore). While it is set, every screen that is
+         * resumed shows the lock screen, even after the lock screen was closed without authenticating, e.g. by a
+         * deep link or a notification that clears the task.
+         */
+        @Volatile
+        var isLocked = false
         //endregion
 
         //region Setters

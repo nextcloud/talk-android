@@ -207,13 +207,22 @@ open class BaseActivity : AppCompatActivity() {
                     "elapsedSeconds=$elapsedSeconds"
             )
             if (timeoutSeconds == 0 || elapsedSeconds >= timeoutSeconds) {
-                isCoveredByLockScreen = true
-                startActivity(Intent(this, LockedActivity::class.java))
+                NextcloudTalkApplication.isLocked = true
+                showLockScreen()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error checking screen lock conditions", e)
         }
     }
+
+    private fun showLockScreen() {
+        isCoveredByLockScreen = true
+        startActivity(Intent(this, LockedActivity::class.java))
+    }
+
+    /** Whether the app lock is enabled and can be used, as the device has a secure lock screen. */
+    private fun isAppLockEnabled(): Boolean =
+        (getSystemService(KEYGUARD_SERVICE) as KeyguardManager).isKeyguardSecure && appPreferences.isScreenLocked
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -250,9 +259,20 @@ open class BaseActivity : AppCompatActivity() {
                 "activity=${this.javaClass.simpleName}"
         )
         isCoveredByLockScreen = false
-        if (!skipLockCheckOnResume && NextcloudTalkApplication.pendingLockCheck) {
-            NextcloudTalkApplication.pendingLockCheck = false
-            lockScreenIfConditionsApply()
+        if (!skipLockCheckOnResume) {
+            // e.g. the app lock was turned off with the screen lock of the device
+            if (NextcloudTalkApplication.isLocked && !isAppLockEnabled()) {
+                NextcloudTalkApplication.isLocked = false
+            }
+            if (NextcloudTalkApplication.isLocked) {
+                // Still locked, e.g. as the lock screen was closed by a screen opened from outside the app (a deep
+                // link, a shortcut or a notification) or by Back. It is unlocked only by authenticating.
+                NextcloudTalkApplication.pendingLockCheck = false
+                showLockScreen()
+            } else if (NextcloudTalkApplication.pendingLockCheck) {
+                NextcloudTalkApplication.pendingLockCheck = false
+                lockScreenIfConditionsApply()
+            }
         }
 
         if (appPreferences.isKeyboardIncognito) {
