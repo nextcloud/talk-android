@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -139,9 +140,11 @@ class FileAttachmentPreviewFragment : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        // Files shared by another app that are left here, unsent, remove their copies, see SharedFileCopies. Not when
-        // the dialog is only shown again after a configuration change.
-        if (!isSent && activity?.isChangingConfigurations != true) {
+        // Files shared by another app that are left here, unsent, remove their copies, see SharedFileCopies: when the
+        // shown dialog is closed, or the chat below it. Not when the dialog is shown again after its chat is recreated,
+        // e.g. after a configuration change or when the system destroyed the chat in the background.
+        val isClosedWhileShown = lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
+        if (!isSent && (isClosedWhileShown || activity?.isFinishing == true)) {
             SharedFileCopies.removeSharesLater(filesList.toList())
         }
     }
