@@ -51,6 +51,8 @@ import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verifyBlocking
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -71,7 +73,6 @@ class DeepLinkRoutingViewModelTest {
         on { getUsersNotScheduledForDeletion() } doReturn listOf(alice, bob)
         on { getUserWithInternalId(alice.id!!) } doReturn alice
         on { getUserWithInternalId(bob.id!!) } doReturn bob
-        on { setUserAsActive(any()) } doReturn true
     }
     private val defaultAccountProvider = mock<DefaultAccountProvider> {
         on { getDefaultUser() } doReturn alice
@@ -205,6 +206,22 @@ class DeepLinkRoutingViewModelTest {
         }
 
     @Test
+    fun `a deep link to a conversation of another account opens it without making that account active`() =
+        runTest(dispatcher) {
+            // the list of the account that the chat opens above makes it active: done here, the list of the previous
+            // account could relaunch for it before the chat was opened, e.g. after unlocking, and drop the chat
+            val repository = mock<OfflineConversationsRepository> {
+                on { observeConversation(bob.id!!, TOKEN) } doReturn flowOf(ConversationResult.Found(mock()))
+            }
+            viewModel = createViewModel(repository)
+            viewModel.route(Request.DeepLink(DeepLinkHandler.DeepLinkResult(TOKEN, "https://other.example.com", "bob")))
+            advanceUntilIdle()
+
+            assertEquals(RoutingState.Open(Destination.Chat(bob.id!!, TOKEN)), viewModel.state.value)
+            verifyBlocking(userManager, never()) { setUserAsActive(any()) }
+        }
+
+    @Test
     fun `a declined deep link opens the conversation list`() =
         runTest(dispatcher) {
             viewModel.route(deepLink)
@@ -307,13 +324,23 @@ class DeepLinkRoutingViewModelTest {
     @Test
     fun `a confirmed step that fails shows an error instead of crashing`() =
         runTest(dispatcher) {
+            // the accounts can be read for the question, but not anymore after it was confirmed
+            var readsOfAccounts = 0
             val failingUserManager = mock<UserManager> {
-                on { getUsersNotScheduledForDeletion() } doReturn listOf(alice, bob)
-                on { setUserAsActive(any()) } doSuspendableAnswer { databaseError() }
+                on { getUsersNotScheduledForDeletion() } doSuspendableAnswer {
+                    if (readsOfAccounts++ == 0) listOf(alice, bob) else databaseError()
+                }
             }
-            viewModel = createViewModel(conversationsRepository, failingUserManager)
-            viewModel.route(deepLink)
-            advanceUntilIdle()
+            val repository = mock<OfflineConversationsRepository> {
+                on { roomListFlow(any()) } doReturn flowOf(emptyList())
+                on { syncRooms(any(), any(), anyOrNull()) } doReturn emptyList()
+            }
+            viewModel = createViewModel(repository, failingUserManager)
+            val contactData = MatrixCursor(arrayOf(ContactsContract.Data.DATA1)).apply {
+                addRow(arrayOf("carol@cloud.example.com"))
+            }
+            val question = routeContactChatWith(contactData)
+            assertEquals(RoutingState.AskToStartContactChat("carol@cloud.example.com"), question)
 
             viewModel.confirm()
             advanceUntilIdle()
@@ -326,7 +353,6 @@ class DeepLinkRoutingViewModelTest {
         on { getUsersNotScheduledForDeletion() } doReturn listOf(bob)
         on { getUserWithId(alice.id!!) } doReturn alice
         on { getUserWithInternalId(bob.id!!) } doReturn bob
-        on { setUserAsActive(any()) } doReturn true
     }
 
     @Test

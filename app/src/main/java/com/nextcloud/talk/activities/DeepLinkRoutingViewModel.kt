@@ -245,12 +245,10 @@ class DeepLinkRoutingViewModel @Inject constructor(
             conversationsRepository.observeConversation(user.id!!, roomToken).first() is ConversationResult.Found
         }
 
-    private suspend fun openDeepLinkConversation(user: User, roomToken: String) {
-        if (!userManager.setUserAsActive(user)) {
-            logger.e(TAG, "Failed to set deep link target user as active")
-            open(Destination.ConversationList, R.string.nc_common_error_sorry)
-            return
-        }
+    // The account isn't made active here: while the lock screen covers the list, or while it is stopped, its
+    // onRestart would relaunch it for the new default account and drop this pending chat. The list of the account that
+    // Destination.Chat starts makes it active.
+    private fun openDeepLinkConversation(user: User, roomToken: String) {
         // Report shortcut usage for ranking
         ShortcutManagerHelper.reportShortcutUsed(context, roomToken, user.id!!)
         open(Destination.Chat(user.id!!, roomToken))
