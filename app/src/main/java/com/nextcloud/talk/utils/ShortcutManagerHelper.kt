@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.IconCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.DeepLinkActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -97,31 +98,40 @@ object ShortcutManagerHelper {
     }
 
     /**
-     * Gives the conversation shortcuts of earlier versions the intent of [createConversationIntent], which opens the
-     * conversation of exactly their account: those that target the launcher activity, with the room token and user id
-     * as extras, which it takes from no intent of outside the app, so they open only the conversation list, and those
-     * with a nextcloudtalk:// deep link, which names only the host and user name of the account. The account and
-     * conversation are taken from the id of the shortcut. Pinned ones, e.g. on the home screen or in a conversation
+     * Gives the conversation and direct share shortcuts of earlier versions the intent of [createConversationIntent],
+     * which opens the conversation of exactly their account: those that target the launcher activity or the
+     * conversation list, with the room token and user id as extras, which they take from no intent of outside the app,
+     * so they open only the conversation list, and those with a nextcloudtalk:// deep link, which names only the host
+     * and user name of the account. The account and conversation are taken from the id of the shortcut. Pinned ones, e.g. on the home screen or in a conversation
      * widget, and cached ones keep their intent until their conversation has a notification or is among the dynamic
      * shortcuts.
      *
      * @param context Application context
      * @param users The accounts whose shortcuts can be updated
+     * @return false if the shortcuts couldn't be read or updated, e.g. while the user is locked, so it is tried again
      */
-    fun updateShortcutsOfEarlierVersions(context: Context, users: List<User>) {
+    @Suppress("TooGenericExceptionCaught")
+    fun updateShortcutsOfEarlierVersions(context: Context, users: List<User>): Boolean =
         try {
-            val updated = shortcutsOfEarlierVersionsUpdated(context, users)
-            if (updated.isNotEmpty()) {
-                ShortcutManagerCompat.updateShortcuts(context, updated)
+            // one by one, so a shortcut that can't be updated doesn't keep the others from it
+            shortcutsOfEarlierVersionsUpdated(context, users).forEach { shortcut ->
+                try {
+                    ShortcutManagerCompat.updateShortcuts(context, listOf(shortcut))
+                } catch (e: IllegalArgumentException) {
+                    // Old shortcuts must not crash the conversation list.
+                    Log.w(TAG, "Failed to update the shortcut ${shortcut.id} of an earlier version", e)
+                }
             }
-        } catch (e: IllegalArgumentException) {
-            // e.g. for a shortcut that can't be updated. Old shortcuts must not crash the conversation list.
-            Log.w(TAG, "Failed to update the shortcuts of earlier versions", e)
+            true
         } catch (e: IllegalStateException) {
             // Thrown while the user is locked
             Log.w(TAG, "Failed to update the shortcuts of earlier versions", e)
+            false
+        } catch (e: RuntimeException) {
+            // e.g. an old shortcut the system can't give as it is. Not tried again, as it would fail again.
+            Log.e(TAG, "Failed to update the shortcuts of earlier versions", e)
+            true
         }
-    }
 
     /** The shortcuts of [updateShortcutsOfEarlierVersions] with the intent of their conversation. */
     private fun shortcutsOfEarlierVersionsUpdated(context: Context, users: List<User>): List<ShortcutInfoCompat> {
@@ -134,21 +144,31 @@ object ShortcutManagerHelper {
             .mapNotNull { shortcut ->
                 val (userId, roomToken) = conversationOfShortcutId(shortcut.id) ?: return@mapNotNull null
                 val intent = usersById[userId]?.let { createConversationIntent(context, roomToken, it) }
-                // the system keeps the other fields of a shortcut that is updated, e.g. its icon and person
+                // The system keeps the fields that aren't set, e.g. the icon, person and categories. Without
+                // categories, androidx.sharetarget also keeps the share target it stores for the share sheet before
+                // Android 10, with its icon, which it would replace by one without.
                 intent?.let {
                     ShortcutInfoCompat.Builder(context, shortcut.id)
                         .setShortLabel(shortcut.shortLabel)
+                        .apply {
+                            shortcut.longLabel?.let(::setLongLabel)
+                            shortcut.locusId?.let(::setLocusId)
+                        }
                         .setIntent(it)
                         .build()
                 }
             }
     }
 
-    /** The user id and room token of the conversation shortcut [shortcutId] of [getShortcutId], else null. */
+    /**
+     * The user id and room token of the conversation shortcut [shortcutId] of [getShortcutId], or of a direct share
+     * shortcut of [DirectShareHelper], else null.
+     */
     @VisibleForTesting
     internal fun conversationOfShortcutId(shortcutId: String): Pair<Long, String>? {
-        val userIdAndToken = shortcutId.takeIf { it.startsWith(CONVERSATION_SHORTCUT_PREFIX) }
-            ?.removePrefix(CONVERSATION_SHORTCUT_PREFIX)
+        val prefix = listOf(CONVERSATION_SHORTCUT_PREFIX, DirectShareHelper.SHORTCUT_ID_PREFIX)
+            .firstOrNull { shortcutId.startsWith(it) }
+        val userIdAndToken = prefix?.let { shortcutId.removePrefix(it) }
         val userId = userIdAndToken?.substringBefore('_')?.toLongOrNull()
         val roomToken = userIdAndToken?.substringAfter('_', missingDelimiterValue = "")
             ?.takeIf(DeepLinkHandler::isValidToken)

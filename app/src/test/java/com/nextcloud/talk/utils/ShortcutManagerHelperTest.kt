@@ -6,10 +6,12 @@
  */
 package com.nextcloud.talk.utils
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.sharetarget.ShortcutInfoCompatSaverImpl
 import com.nextcloud.talk.activities.DeepLinkActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
@@ -24,7 +26,7 @@ import org.robolectric.annotation.Config
 
 /**
  * The conversation shortcuts open the conversation of exactly their account through the internal entry point of the
- * conversation list, and those of earlier versions are given that intent.
+ * conversation list, and those and the direct share shortcuts of earlier versions are given that intent.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -37,6 +39,8 @@ class ShortcutManagerHelperTest {
     private val aliceOnOtherPort = User(id = 2L, username = "alice", baseUrl = "https://example.com:8443")
 
     private val internalEntryPoint = InternalEntryPoint.nameOf(ConversationsListActivity::class.java)
+
+    private val shareTargetCategory = "com.nextcloud.talk.sharing.SHARE_TARGET_CATEGORY"
 
     private fun pushShortcut(id: String, intent: Intent) {
         ShortcutManagerCompat.pushDynamicShortcut(
@@ -103,6 +107,44 @@ class ShortcutManagerHelperTest {
         assertOpensConversation(intentOf("conversation_2_abcd1234"), userId = 2L, roomToken = "abcd1234")
     }
 
+    // a direct share shortcut of an earlier version, which targets the conversation list
+    private fun directShareShortcut(): ShortcutInfoCompat {
+        val intent = Intent(Intent.ACTION_VIEW, null, context, ConversationsListActivity::class.java)
+            .putExtra(BundleKeys.KEY_ROOM_TOKEN, "abcd1234")
+            .putExtra(BundleKeys.KEY_INTERNAL_USER_ID, 2L)
+        return ShortcutInfoCompat.Builder(context, "direct_share_2_abcd1234")
+            .setShortLabel("Chat")
+            .setCategories(setOf(shareTargetCategory))
+            .setIntent(intent)
+            .build()
+    }
+
+    @Test
+    fun `a direct share shortcut that targets the conversation list is given the intent of its conversation`() {
+        ShortcutManagerCompat.pushDynamicShortcut(context, directShareShortcut())
+
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice, aliceOnOtherPort))
+
+        assertOpensConversation(intentOf("direct_share_2_abcd1234"), userId = 2L, roomToken = "abcd1234")
+    }
+
+    // the share target androidx.sharetarget stores for the share sheet before Android 10, which holds its icon
+    @SuppressLint("RestrictedApi")
+    @Test
+    fun `the share target stored for the share sheet of a direct share shortcut is kept as it is`() {
+        val shortcut = directShareShortcut()
+        ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+        val saver = ShortcutInfoCompatSaverImpl.getInstance(context)
+        // Not waited for: it is stored on disk in the files of the test that first used the saver, which is shared by
+        // the tests and ShortcutManagerCompat, while getShortcuts reads what it holds, after adding it
+        saver.addShortcuts(listOf(shortcut))
+
+        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, listOf(alice, aliceOnOtherPort))
+
+        val shareTarget = saver.getShortcuts().single { it.id == shortcut.id }
+        assertEquals(ConversationsListActivity::class.java.name, shareTarget.intent.component?.className)
+    }
+
     @Test
     fun `a conversation shortcut of an account that is gone is kept as it is`() {
         pushShortcutWithExtras(userId = 3L, roomToken = "abcd1234")
@@ -125,7 +167,8 @@ class ShortcutManagerHelperTest {
     @Test
     fun `the account and conversation are read from the id of a conversation shortcut`() {
         assertEquals(2L to "abcd1234", ShortcutManagerHelper.conversationOfShortcutId("conversation_2_abcd1234"))
-        assertNull(ShortcutManagerHelper.conversationOfShortcutId("direct_share_2_abcd1234"))
+        assertEquals(2L to "abcd1234", ShortcutManagerHelper.conversationOfShortcutId("direct_share_2_abcd1234"))
+        assertNull(ShortcutManagerHelper.conversationOfShortcutId("note_to_self_2_abcd1234"))
         assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_x_abcd1234"))
         assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_2"))
         assertNull(ShortcutManagerHelper.conversationOfShortcutId("conversation_2_../abcd"))

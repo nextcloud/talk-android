@@ -36,7 +36,7 @@ object DirectShareHelper {
 
     private val TAG = DirectShareHelper::class.java.simpleName
     private const val SHARE_TARGET_CATEGORY = "com.nextcloud.talk.sharing.SHARE_TARGET_CATEGORY"
-    private const val SHORTCUT_ID_PREFIX = "direct_share_"
+    const val SHORTCUT_ID_PREFIX = "direct_share_"
     private const val SHORTCUT_ID_MIN_PARTS = 4
     private const val AVATAR_SIZE_PX = 256
 

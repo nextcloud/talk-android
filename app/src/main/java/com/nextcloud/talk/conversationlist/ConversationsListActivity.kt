@@ -651,8 +651,17 @@ class ConversationsListActivity : BaseActivity() {
             val users = userManager.getUsers()
             hasMultipleAccountsState.value = users.size > 1
             if (!areShortcutsOfEarlierVersionsUpdated) {
+                // set before, so another list doesn't update them at the same time, and again after, so a list
+                // tries again when they couldn't be updated, e.g. while the user was locked, or this list was closed
                 areShortcutsOfEarlierVersionsUpdated = true
-                withContext(Dispatchers.IO) { ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, users) }
+                var isUpdated = false
+                try {
+                    isUpdated = withContext(Dispatchers.IO) {
+                        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, users)
+                    }
+                } finally {
+                    areShortcutsOfEarlierVersionsUpdated = isUpdated
+                }
             }
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
@@ -1850,7 +1859,8 @@ class ConversationsListActivity : BaseActivity() {
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
-        // once per process: the shortcuts without a deep link don't change while the app runs
+        // once per process, after they could be updated: the shortcuts of earlier versions don't change while the app
+        // runs
         private var areShortcutsOfEarlierVersionsUpdated = false
 
         // once per process, not per list: the app starts lists also in further tasks, e.g. for a notification, a
