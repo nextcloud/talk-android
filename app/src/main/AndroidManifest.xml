@@ -86,6 +86,7 @@
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/nc_app_name"
