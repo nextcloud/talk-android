@@ -624,37 +624,7 @@ class ConversationsListActivity : BaseActivity() {
         showNotificationWarningState.value = shouldShowNotificationWarning()
         showShareToScreenState.value = isShare(intent)
 
-        // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
-        // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
-        // again when the list is shown again, e.g. by going back from the conversation.
-        if (Intent.ACTION_VIEW == intent.action) {
-            intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
-                pendingDirectShareToken = it
-                isPendingConversationInputFocused = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_INPUT, false)
-            }
-            intent.removeExtra(KEY_ROOM_TOKEN)
-            intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
-        }
-
-        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID, before Android 10 through
-        // ChooserTargetServiceCompat. Extract the room token from the shortcut ID so we can pre-select the conversation.
-        if (isShare(intent)) {
-            val target = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
-                ?.let(ShortcutManagerHelper::conversationOfShortcutId)
-            if (target != null && target.first != currentUser.id) {
-                // a target of an account shown before, which the system keeps cached: shared with that account
-                val share = Intent(intent)
-                lifecycleScope.launch {
-                    if (userManager.getUserWithInternalId(target.first) != null) {
-                        relaunchForAccount(target.first, share)
-                    }
-                }
-            } else if (target != null) {
-                pendingDirectShareToken = target.second
-            }
-            // preselected once, like the conversation of a shortcut above
-            intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
-        }
+        takeConversationOfShortcut()
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -694,6 +664,42 @@ class ConversationsListActivity : BaseActivity() {
         conversationsListViewModel.checkIfThreadsExist()
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
         conversationTagsViewModel.loadConversationTags()
+    }
+
+    /** Takes the conversation of the shortcut that started the list from its intent, see [pendingDirectShareToken]. */
+    private fun takeConversationOfShortcut() {
+        // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
+        // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
+        // again when the list is shown again, e.g. by going back from the conversation.
+        if (Intent.ACTION_VIEW == intent.action) {
+            intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
+                pendingDirectShareToken = it
+                isPendingConversationInputFocused = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_INPUT, false)
+            }
+            intent.removeExtra(KEY_ROOM_TOKEN)
+            intent.removeExtra(BundleKeys.KEY_FOCUS_INPUT)
+        }
+
+        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID, before Android 10 through
+        // ChooserTargetServiceCompat. Extract the room token from the shortcut ID so we can pre-select the
+        // conversation.
+        if (isShare(intent)) {
+            val target = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+                ?.let(ShortcutManagerHelper::conversationOfShortcutId)
+            if (target != null && target.first != currentUser.id) {
+                // a target of an account shown before, which the system keeps cached: shared with that account
+                val share = Intent(intent)
+                lifecycleScope.launch {
+                    if (userManager.getUserWithInternalId(target.first) != null) {
+                        relaunchForAccount(target.first, share)
+                    }
+                }
+            } else if (target != null) {
+                pendingDirectShareToken = target.second
+            }
+            // preselected once, like the conversation of a shortcut above
+            intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+        }
     }
 
     override fun onStop() {
