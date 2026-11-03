@@ -134,7 +134,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             return doUpload().also { result ->
                 // not for a retry, which reads the file again
                 val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
-                if (result !is Result.Retry && sourceFile != null) UploadSourceGrants.release(context, sourceFile, id)
+                if (result != Result.retry() && sourceFile != null) UploadSourceGrants.release(context, sourceFile, id)
             }
         } finally {
             referenceId?.let { cancelledReferenceIds.remove(it) }
