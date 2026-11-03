@@ -8,10 +8,10 @@
  */
 package com.nextcloud.talk.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.conversationlist.ConversationsListActivity;
 import com.nextcloud.talk.utils.AppTasks;
 
 import org.junit.Ignore;
@@ -47,7 +47,7 @@ public class LoginIT {
     public void login() throws InterruptedException {
 
         // started like by the launcher, without an account
-        ActivityScenario<Activity> activityScenario = ActivityScenario.launch(
+        ActivityScenario<ConversationsListActivity> activityScenario = ActivityScenario.launch(
             AppTasks.INSTANCE.createLauncherIntent(ApplicationProvider.getApplicationContext()));
 
         Bundle arguments = androidx.test.platform.app.InstrumentationRegistry.getArguments();
