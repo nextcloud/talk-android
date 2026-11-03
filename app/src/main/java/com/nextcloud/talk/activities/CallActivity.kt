@@ -124,6 +124,8 @@ import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AppTasks
+import com.nextcloud.talk.utils.taskIdCompat
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
@@ -151,10 +153,15 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.finishAndRemoveTaskIfPresent
+import com.nextcloud.talk.utils.isShareTask
+import com.nextcloud.talk.utils.moveToFrontIfPresent
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
+import com.nextcloud.talk.utils.startActivityIfPresent
+import com.nextcloud.talk.utils.taskInfoOrNull
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStopState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingErrorState
@@ -2426,58 +2433,50 @@ class CallActivity : CallBaseActivity() {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
         val appTasks = activityManager
             ?.appTasks
-            ?.filter { appTask -> appTask.taskInfo?.baseActivity?.packageName == packageName }
+            ?.filter { appTask -> appTask.taskInfoOrNull()?.baseActivity?.packageName == packageName }
             .orEmpty()
 
-        val primaryTask = appTasks.firstOrNull { appTask ->
-            val taskInfo = appTask.taskInfo
-            val baseActivityName = taskInfo?.baseActivity?.className
-            taskInfo != null &&
-                taskInfo.taskIdCompat != taskId &&
-                baseActivityName == MainActivity::class.java.name
-        } ?: appTasks.firstOrNull { appTask ->
-            val taskInfo = appTask.taskInfo
-            val baseActivityName = taskInfo?.baseActivity?.className
-            taskInfo != null &&
-                taskInfo.taskIdCompat != taskId &&
-                baseActivityName != CallActivity::class.java.name &&
-                baseActivityName != CallNotificationActivity::class.java.name
-        }
+        // the task of the app, also when it was started through the internal entry point, e.g. from a notification
+        val primaryTask = AppTasks.findRunningAppTask(this, appTasks) { it.taskIdCompat != taskId }
+            ?: appTasks.firstOrNull { appTask ->
+                val taskInfo = appTask.taskInfoOrNull()
+                taskInfo != null && taskInfo.taskIdCompat != taskId && !isCallOrShareTask(taskInfo)
+            }
 
-        if (primaryTask != null) {
-            val intent = Intent(context, ConversationsListActivity::class.java).apply {
-                putExtra(KEY_INTERNAL_USER_ID, conversationUser.id)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            }
-            primaryTask.startActivity(context, intent, null)
-            primaryTask.moveToFront()
-            val primaryTaskId = primaryTask.taskInfo?.taskIdCompat
-            appTasks
-                .filter { appTask ->
-                    val taskInfo = appTask.taskInfo
-                    val baseActivityName = taskInfo?.baseActivity?.className
-                    val isCallTask = baseActivityName == CallActivity::class.java.name ||
-                        baseActivityName == CallNotificationActivity::class.java.name
-                    taskInfo != null &&
-                        !isCallTask &&
-                        taskInfo.taskIdCompat != primaryTaskId &&
-                        taskInfo.taskIdCompat != taskId
-                }
-                .forEach { it.finishAndRemoveTask() }
+        val listIntent = ConversationsListActivity.createInPlaceAccountSwitchIntent(context, conversationUser.id!!)
+        val isShownInPrimaryTask = primaryTask != null &&
+            primaryTask.startActivityIfPresent(context, listIntent) &&
+            primaryTask.moveToFrontIfPresent()
+        if (isShownInPrimaryTask) {
+            removeOtherTasks(appTasks, primaryTask.taskInfoOrNull()?.taskIdCompat)
         } else {
-            val mainIntent = Intent(context, MainActivity::class.java).apply {
-                action = Intent.ACTION_MAIN
-                addCategory(Intent.CATEGORY_LAUNCHER)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            }
-            startActivity(mainIntent)
+            startActivity(AppTasks.createRestartIntent(context, conversationUser.id!!))
         }
     }
 
-    // TaskInfo.taskId only exists since API 29; before that persistentId is the task id
-    @Suppress("DEPRECATION")
-    private val ActivityManager.RecentTaskInfo.taskIdCompat: Int
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) taskId else persistentId
+    /** Removes the [appTasks] other than the one of [primaryTaskId], this one and those of calls and shares. */
+    private fun removeOtherTasks(appTasks: List<ActivityManager.AppTask>, primaryTaskId: Int?) {
+        appTasks
+            .filter { appTask ->
+                val taskInfo = appTask.taskInfoOrNull()
+                taskInfo != null &&
+                    !isCallOrShareTask(taskInfo) &&
+                    taskInfo.taskIdCompat != primaryTaskId &&
+                    taskInfo.taskIdCompat != taskId
+            }
+            .forEach { it.finishAndRemoveTaskIfPresent() }
+    }
+
+    /**
+     * Whether [taskInfo] is the task of a call, or of a share (see ShareActivity), whose list would lose the shared
+     * content if the conversation list of the call was opened in it, or the task was removed.
+     */
+    private fun isCallOrShareTask(taskInfo: ActivityManager.RecentTaskInfo): Boolean {
+        val baseActivityName = taskInfo.baseActivity?.className
+        return baseActivityName == CallActivity::class.java.name ||
+            baseActivityName == CallNotificationActivity::class.java.name ||
+            taskInfo.isShareTask
+    }
 
     private fun startVideoCapture(isPortrait: Boolean) {
         val (width, height) = if (isPortrait) {
@@ -3545,16 +3544,12 @@ class CallActivity : CallBaseActivity() {
         if (isPipModePossible) {
             val actions = ArrayList<RemoteAction>()
             val icon = Icon.createWithResource(this, iconId)
-            val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                0
-            }
+            // immutable also before Android 12, where it was mutable by default
             val intent = PendingIntent.getBroadcast(
                 this,
                 requestCode,
                 Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                intentFlag
+                PendingIntent.FLAG_IMMUTABLE
             )
             actions.add(RemoteAction(icon, title!!, title, intent))
             mPictureInPictureParamsBuilder.setActions(actions)

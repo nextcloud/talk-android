@@ -7,4 +7,8 @@
 -->
 <full-backup-content>
     <!-- Exclude specific shared preferences that contain GCM registration Id -->
+    <!-- the copies of the files other apps shared, which are only kept until they are uploaded -->
+    <exclude
+        domain="file"
+        path="shared_file_copies/" />
 </full-backup-content>

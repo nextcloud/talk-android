@@ -63,6 +63,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -88,7 +89,12 @@ class ChatViewModelRoomJoinTest {
 
     private val conversation = MutableStateFlow<ConversationResult>(ConversationResult.Found(conversationModel(1)))
     private val owner = TestOwner()
-    private val network: ChatNetworkDataSource = mock()
+
+    // a join that never answers: unstubbed, the join after the test's last check failed on its null observable,
+    // reported by a later runTest of another test class
+    private val network: ChatNetworkDataSource = mock {
+        on { joinRoom(any(), any(), any()) } doReturn Observable.never()
+    }
     private var pendingLeave: CompletableDeferred<Unit>? = null
 
     private lateinit var viewModel: ChatViewModel

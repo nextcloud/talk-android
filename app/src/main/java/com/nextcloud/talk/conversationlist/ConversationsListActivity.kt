@@ -10,7 +10,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,6 +23,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -32,11 +32,14 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -50,7 +53,10 @@ import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.activities.DeepLinkActivity
+import com.nextcloud.talk.activities.DeepLinkRouting
+import com.nextcloud.talk.activities.DeepLinkRoutingViewModel
+import com.nextcloud.talk.activities.collectWhileUnlocked
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -58,7 +64,6 @@ import com.nextcloud.talk.chat.audio.ChatAudioKey
 import com.nextcloud.talk.chat.audio.ChatAudioPlayer
 import com.nextcloud.talk.chat.audio.ChatAudioSpeeds
 import com.nextcloud.talk.chat.audio.ChatAudioStore
-import com.nextcloud.talk.chat.audio.openMessageExtras
 import com.nextcloud.talk.chat.audio.openMessageIntent
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -80,7 +85,6 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.run
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.jobs.RemoteWipeSuccessWorker
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -94,6 +98,7 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -101,12 +106,15 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.RemoteWipeHandler
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UnifiedPushUtils
@@ -132,8 +140,8 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -152,6 +160,9 @@ class ConversationsListActivity : BaseActivity() {
 
     // Started without an account on app start, when sharing from other apps and after login.
     override val allowsDefaultAccount = true
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
@@ -218,8 +229,11 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private var pendingDirectShareToken: String? = null
-    private var isDirectShareTarget = false
+    private var pendingShortcutToken: String? = null
+
+    // set when the list is shown again, see switchToDefaultAccountIfChanged
+    private var isDefaultAccountCheckDue = false
+
     private var unauthorizedDialog: AlertDialog? = null
     private var unauthorizedHandling: Job? = null
 
@@ -244,7 +258,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     // The source chat finished itself when forwarding started and this list may be the one below it, so finishing
-    // here would fall back to MainActivity. Instead leave the forward mode and return to the source chat.
+    // here would leave the app. Instead leave the forward mode and return to the source chat.
     private fun cancelForwarding() {
         val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
         intent.removeExtra(KEY_FORWARD_MSG_FLAG)
@@ -258,9 +272,24 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // before super.onCreate(), it switches from the launch theme to postSplashScreenTheme
+        val splashScreen = installSplashScreen()
+        // before BaseActivity reads the account
+        removeExtrasOfApp(intent)
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        if (isLauncherTapOnAppTask() || finishIfNotShown()) {
+            // finishIfNotShown() finished the list already
+            if (!isFinishing) finish()
+            return
+        }
         currentUser = setUpBoundUserOrFinish() ?: return
+        // kept for a recreation, which would otherwise remove the account from the intent again
+        intent = intentOfAccount(this, intent, currentUser.id)
+        if (savedInstanceState == null) {
+            AppTasks.removeTasksLeftInRecents(this)
+        }
+        setUpOncePerProcess()
         ecosystemManager = EcosystemManager(this@ConversationsListActivity)
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -274,9 +303,7 @@ class ConversationsListActivity : BaseActivity() {
 
         setSupportActionBar(null)
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
-        if (savedInstanceState != null) {
-            showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
-        }
+        savedInstanceState?.let(::restoreState)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         val audioPlayerCallbacks = chatAudioPlayerCallbacks(
@@ -302,27 +329,120 @@ class ConversationsListActivity : BaseActivity() {
             handleEcoSystemIntent(it)
         }
         initObservers()
+
+        val deepLinkRoutingViewModel = ViewModelProvider(this, viewModelFactory)[DeepLinkRoutingViewModel::class.java]
+        deepLinkRouting = DeepLinkRouting(this, deepLinkRoutingViewModel) { currentUser.id }
+        deepLinkRouting.start(intent, savedInstanceState)
+        // a deep link that starts the app shows the launch screen until its chat covers the list or it asks first
+        splashScreen.setKeepOnScreenCondition { deepLinkRouting.keepsLaunchScreen }
+    }
+
+    /**
+     * Whether the launcher started this list on top of a task of the app it isn't the root of, e.g. one a notification
+     * or a deep link started: the launcher only brings a task to the front whose root has its intent, so it adds a list
+     * to any other one, while finishing this list just shows that task.
+     */
+    private fun isLauncherTapOnAppTask(): Boolean =
+        !isTaskRoot &&
+            intent.action == Intent.ACTION_MAIN &&
+            intent.hasCategory(Intent.CATEGORY_LAUNCHER) &&
+            AppTasks.isRunningAppTask(this, taskId)
+
+    /**
+     * Passes the intent of another app on, finishes this list and returns true if it is not shown for its intent.
+     * Without an account, setUpBoundUserOrFinish opens the login.
+     */
+    private fun finishIfNotShown(): Boolean {
+        val isViewOfOtherApp = isViewOfOtherApp(intent)
+        val otherIntent = when {
+            isShareOfOtherApp(intent) -> InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java)
+            isViewOfOtherApp -> createDeepLinkForwardIntent(intent)
+            else -> null
+        } ?: return false
+        startActivity(otherIntent)
+        // a task of its own is removed before DeepLinkActivity passes the intent on, so it doesn't end up there
+        if (isViewOfOtherApp && isTaskRoot) finishAndRemoveTask() else finish()
+        return true
+    }
+
+    private fun setUpOncePerProcess() {
+        if (isAppStartSetUpDone) return
+        isAppStartSetUpDone = true
+        setUpPushRegistration()
+        // a key that became invalid, e.g. after the lock screen of the device was reset, is created anew when it is
+        // checked
+        if (appPreferences.isScreenLocked) {
+            SecurityUtils.createKey(appPreferences.screenLockTimeout)
+        }
+    }
+
+    /** Registers for push messages, as the app was started. */
+    private fun setUpPushRegistration() {
+        if (appPreferences.useUnifiedPush) {
+            UnifiedPushUtils.setPeriodicPushRegistrationWorker(context)
+        } else {
+            ClosedInterfaceImpl().setUpPushTokenRegistration()
+        }
+    }
+
+    private fun createDeepLinkForwardIntent(intent: Intent): Intent =
+        InternalEntryPoint.createForwardIntent(
+            this,
+            intent,
+            DeepLinkActivity::class.java,
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+
+    private fun restoreState(savedInstanceState: Bundle) {
+        showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
+        // the conversation of a shortcut that wasn't opened yet; the one of the intent was taken already, which the
+        // intent restored after the process was killed has again
+        pendingShortcutToken = savedInstanceState.getString(KEY_PENDING_SHORTCUT_TOKEN)
+        intent.removeExtra(KEY_ROOM_TOKEN)
+        intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
+        // Only for a recreated list: the conversation of a shortcut isn't opened anymore once the list is left, and
+        // before Android 9 the state is saved before the list is stopped, which would restore the one the user left
+        if (isChangingConfigurations) outState.putString(KEY_PENDING_SHORTCUT_TOKEN, pendingShortcutToken)
+        if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
+
+    // the routing of the deep links and contact chats DeepLinkActivity passes on to this list
+    private lateinit var deepLinkRouting: DeepLinkRouting
 
     // Set once this list is replaced by one for another account. onRestart and onNewIntent can both trigger that when
     // the list is brought back with an intent for another account, which must only relaunch it once.
     private var isRelaunching = false
 
+    // set once the shared content was passed on to the chat that was picked for it
+    private var isSharePassedOn = false
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (isRelaunching) return
+        isDefaultAccountCheckDue = false
+        removeExtrasOfApp(intent)
         val newUserId = intent.getLongExtra(KEY_INTERNAL_USER_ID, 0L)
-        if (newUserId != 0L && newUserId != currentUser.id) {
-            relaunchForAccount(newUserId, intent)
-            return
+        when {
+            isShareOfOtherApp(intent) ->
+                startActivity(InternalEntryPoint.createForwardIntent(this, intent, ShareActivity::class.java))
+            isViewOfOtherApp(intent) -> startActivity(createDeepLinkForwardIntent(intent))
+            // a list that finished in onCreate has no account or routing; the system doesn't pass intents to a
+            // finishing activity, so this only guards against reading them uninitialized
+            !::deepLinkRouting.isInitialized -> Unit
+            // the list stays for its account and only routes the deep link
+            deepLinkRouting.onNewIntent(intent) -> Unit
+            // while relaunching, relaunchForAccount ignores the intent
+            isRelaunching || newUserId != 0L && newUserId != currentUser.id -> relaunchForAccount(newUserId, intent)
+            else -> showNewIntent(intent)
         }
-        currentUser.id?.let { intent.putExtra(KEY_INTERNAL_USER_ID, it) }
-        setIntent(intent)
+    }
+
+    private fun showNewIntent(intent: Intent) {
+        setIntent(intentOfAccount(this, intent, currentUser.id))
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
         handleEcoSystemIntent(intent)
@@ -446,7 +566,7 @@ class ConversationsListActivity : BaseActivity() {
                             user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
                         }
                         if (user != null && userManager.setUserAsActive(user)) {
-                            startActivity(createAccountSwitchIntent(context, user.id!!))
+                            startActivity(createInPlaceAccountSwitchIntent(context, user.id!!))
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
                         }
@@ -483,40 +603,36 @@ class ConversationsListActivity : BaseActivity() {
         return usesPush
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        // The list shows the default account. If another account became the default while the list was in the
-        // background (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which
-        // would lose the pending message.
+    /**
+     * The list shows the default account. If another account became the default while the list was in the background
+     * (e.g. by joining a call for it), switch to that account. Not while forwarding or sharing, which would lose the
+     * pending message. The new list gets a plain intent: the list's own one may hold a deep link it already routed,
+     * which would be routed again, or a contact uri it may not grant.
+     */
+    private fun switchToDefaultAccountIfChanged() {
         if (isRelaunching) return
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
-        val isPickingConversation = forwardMessage || hasActivityActionSendIntent()
+        val isPickingConversation = forwardMessage || isShare(intent)
         if (defaultUserId != currentUser.id && !isPickingConversation) {
-            isRelaunching = true
-            startActivity(createAccountSwitchIntent(this, defaultUserId))
+            relaunchForAccount(defaultUserId, createIntent(this))
         }
     }
 
     override fun onResume() {
         super.onResume()
+        // Not while the lock screen covers the list: the list of the default account would start above it and open
+        // a lock screen of its own. The check stays due for the resume after unlocking.
+        if (isDefaultAccountCheckDue && !isCoveredByLockScreen) {
+            isDefaultAccountCheckDue = false
+            switchToDefaultAccountIfChanged()
+            // the list of the default account loads its own data
+            if (isRelaunching) return
+        }
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
-        showShareToScreenState.value = hasActivityActionSendIntent()
+        showShareToScreenState.value = isShare(intent)
 
-        // Home screen shortcut tap: shortcut uses ACTION_VIEW with KEY_ROOM_TOKEN to open the
-        // conversation directly without showing the share picker.
-        if (Intent.ACTION_VIEW == intent.action && intent.hasExtra(KEY_ROOM_TOKEN)) {
-            pendingDirectShareToken = intent.getStringExtra(KEY_ROOM_TOKEN)
-        }
-
-        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID.
-        // Extract the room token from the shortcut ID so we can pre-select the conversation.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasActivityActionSendIntent()) {
-            val shortcutId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_ID)
-            if (shortcutId != null) {
-                pendingDirectShareToken = DirectShareHelper.extractTokenFromShortcutId(shortcutId)
-            }
-        }
+        takeConversationOfShortcut()
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -533,15 +649,71 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         lifecycleScope.launch {
-            hasMultipleAccountsState.value = userManager.getUsers().size > 1
+            val users = userManager.getUsers()
+            hasMultipleAccountsState.value = users.size > 1
+            if (!areShortcutsOfEarlierVersionsUpdated) {
+                // reset if they couldn't be updated, so a later list tries again
+                areShortcutsOfEarlierVersionsUpdated = true
+                var isUpdated = false
+                try {
+                    isUpdated = withContext(Dispatchers.IO) {
+                        ShortcutManagerHelper.updateShortcutsOfEarlierVersions(context, users)
+                    }
+                } finally {
+                    areShortcutsOfEarlierVersionsUpdated = isUpdated
+                }
+            }
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
-        fetchRooms()
+        openConversationOfShortcutAfter(fetchRooms())
         fetchPendingInvitations()
 
         conversationsListViewModel.checkIfThreadsExist()
         conversationsListViewModel.reloadFilterFromStorage(UserIdUtils.getIdForUser(currentUser))
         conversationTagsViewModel.loadConversationTags()
+    }
+
+    /** Takes the conversation of the shortcut that started the list from its intent, see [pendingShortcutToken]. */
+    private fun takeConversationOfShortcut() {
+        // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
+        // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
+        // again when the list is shown again, e.g. by going back from the conversation or from the recents.
+        if (Intent.ACTION_VIEW == intent.action && !AppTasks.isRelaunchedFromRecents(intent)) {
+            intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
+                pendingShortcutToken = it
+            }
+            intent.removeExtra(KEY_ROOM_TOKEN)
+        }
+
+        // Share sheet shortcut tap: Android delivers ACTION_SEND with EXTRA_SHORTCUT_ID, before Android 10 through
+        // ChooserTargetServiceCompat. Extract the room token from the shortcut ID so we can pre-select the
+        // conversation.
+        if (isShare(intent)) {
+            val target = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+                ?.let(ShortcutManagerHelper::conversationOfShortcutId)
+            if (target != null && target.first != currentUser.id) {
+                // a target of an account shown before, which the system keeps cached: shared with that account
+                val share = Intent(intent)
+                lifecycleScope.launch {
+                    if (userManager.getUserWithInternalId(target.first) != null) {
+                        relaunchForAccount(target.first, share)
+                    }
+                }
+            } else if (target != null) {
+                pendingShortcutToken = target.second
+            }
+            // preselected once, like the conversation of a shortcut above
+            intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // checked when the list is shown again, unless onNewIntent() gets an intent, which chooses its account itself
+        isDefaultAccountCheckDue = true
+        // The conversation of a shortcut that isn't in the list yet isn't opened anymore once the list is left. Not
+        // when it is only paused, e.g. below the request for the notification permission.
+        if (!isCoveredByLockScreen && !isChangingConfigurations) pendingShortcutToken = null
     }
 
     override fun onPause() {
@@ -588,17 +760,6 @@ class ConversationsListActivity : BaseActivity() {
                         DirectShareHelper.publishShareTargetShortcuts(this@ConversationsListActivity, currentUser, list)
                     }
 
-                    // check for Direct Share
-                    val token = pendingDirectShareToken
-                    if (token != null) {
-                        pendingDirectShareToken = null
-                        val conversation = list.firstOrNull { it.token == token }
-                        if (conversation != null) {
-                            isDirectShareTarget = true
-                            handleConversation(conversation)
-                        }
-                    }
-
                     // Update dynamic shortcuts for frequent/favorite conversations
                     ShortcutManagerHelper.updateDynamicShortcuts(context, list, currentUser)
 
@@ -610,6 +771,25 @@ class ConversationsListActivity : BaseActivity() {
                         }
                     }
                 }.collect()
+        }
+
+        // Direct Share: the conversation of a share sheet or home screen shortcut, also after unlocking, as soon as the
+        // list has it. One that isn't stored yet, e.g. a new one, opens once the sync has added it, at the latest when
+        // the sync ends, see openConversationOfShortcutAfter. The shared room list isn't queried again on every resume.
+        collectWhileUnlocked(conversationsListViewModel.getRoomsStateFlow) { list ->
+            val token = pendingShortcutToken
+            val conversation = list.firstOrNull { it.token == token }
+            if (conversation != null) {
+                pendingShortcutToken = null
+                handleConversation(conversation)
+            }
+        }
+
+        // the conversation of a shortcut doesn't open over a search the user started meanwhile
+        lifecycleScope.launch {
+            conversationsListViewModel.isSearchActiveFlow.collect { isSearchActive ->
+                if (isSearchActive) pendingShortcutToken = null
+            }
         }
 
         lifecycleScope.launch {
@@ -690,9 +870,8 @@ class ConversationsListActivity : BaseActivity() {
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
         if (noteToSelfAvailable) {
-            val intent = ChatActivity.createIntent(context, currentUser.id!!, noteToSelfToken)
-            intent.putExtra(BundleKeys.KEY_FOCUS_INPUT, true)
-            intent.action = Intent.ACTION_VIEW
+            // through the list like the other conversation shortcuts, so the chat opens in the task of the app
+            val intent = ShortcutManagerHelper.createConversationIntent(context, noteToSelfToken, currentUser) ?: return
             val openNotesString = resources.getString(R.string.open_notes)
 
             val shortcut = ShortcutInfoCompat.Builder(context, NOTE_TO_SELF_SHORTCUT_ID)
@@ -743,16 +922,11 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     /**
-     * Opens the chat of an audio message at the message, in its thread if it has one; messages of another account
-     * switch to that account.
+     * Opens the chat of an audio message at the message, in its thread if it has one, also of another account: its
+     * conversation list follows on back.
      */
     private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
-        if (key.internalUserId == currentUser?.id) {
-            val extras = key.openMessageExtras(threadId)
-            startActivity(ChatActivity.createIntent(context, key.internalUserId, key.roomToken, extras))
-        } else {
-            startActivity(key.openMessageIntent(this, threadId))
-        }
+        startActivity(key.openMessageIntent(this, threadId))
     }
 
     fun filterConversation() {
@@ -775,20 +949,19 @@ class ConversationsListActivity : BaseActivity() {
     fun relaunchForAccount(userId: Long, source: Intent = intent) {
         if (isRelaunching) return
         isRelaunching = true
-        val accountIntent = Intent(this, ConversationsListActivity::class.java).apply {
+        val accountIntent = createIntent(this).apply {
             action = source.action
             setDataAndType(source.data, source.type)
             source.extras?.let { putExtras(it) }
             clipData = source.clipData
             putExtra(KEY_INTERNAL_USER_ID, userId)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // a share stays out of the recents, see ShareActivity
+            addFlags(source.flags and Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
         }
         startActivity(accountIntent)
         finish()
     }
-
-    private fun hasActivityActionSendIntent(): Boolean =
-        Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     fun showSnackbar(text: String) {
         lifecycleScope.launch { snackbarHostState.showSnackbar(text) }
@@ -810,8 +983,31 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    fun fetchRooms(forceFullSync: Boolean = false) {
+    fun fetchRooms(forceFullSync: Boolean = false): Job =
         conversationsListViewModel.getRooms(currentUser, forceFullSync)
+
+    /**
+     * Opens the conversation of the pending shortcut once [sync] stored the conversations, if the list didn't show it
+     * before, or tells that it wasn't found. While the lock screen covers the list, it waits for the resume after
+     * unlocking, which waits for a sync of its own.
+     */
+    private fun openConversationOfShortcutAfter(sync: Job) {
+        val token = pendingShortcutToken ?: return
+        lifecycleScope.launch {
+            sync.join()
+            // also one the list doesn't show yet
+            val conversation = conversationsListViewModel.storedRooms().firstOrNull { it.token == token }
+            withResumed {
+                if (pendingShortcutToken == token && !isCoveredByLockScreen) {
+                    pendingShortcutToken = null
+                    if (conversation != null) {
+                        handleConversation(conversation)
+                    } else {
+                        showSnackbar(getString(R.string.nc_shortcut_conversation_not_found))
+                    }
+                }
+            }
+        }
     }
 
     private fun fetchPendingInvitations() {
@@ -926,6 +1122,13 @@ class ConversationsListActivity : BaseActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
+        // a share left in the list removes its copies, unless they were passed on to the chat or the list of another
+        // account, see SharedFileCopies
+        // only a share of ShareActivity, not one of another app that the list only passed on to it
+        val isShareOfApp = isShare(intent) && !isShareOfOtherApp(intent)
+        if (isFinishing && isShareOfApp && !isSharePassedOn && !isRelaunching) {
+            SharedFileCopies.removeSharesLater(ShareListIntentFactory.sharedUrisOf(intent))
+        }
     }
 
     @Suppress("Detekt.ComplexMethod")
@@ -980,72 +1183,13 @@ class ConversationsListActivity : BaseActivity() {
         if (textToPaste!!.isNotEmpty()) {
             openConversation(textToPaste)
         } else if (filesToShare != null && filesToShare!!.isNotEmpty()) {
-            showSendFilesConfirmDialog()
+            // the attachment preview of the chat shows the files and asks before uploading them; they are copies in
+            // the app (see SharedFileCopies), so reading them needs no permission
+            openConversation()
         } else {
             logger.e(TAG, "no text or files to share")
             showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
         }
-    }
-
-    private fun showSendFilesConfirmDialog() {
-        if (platformPermissionUtil.isFilesPermissionGranted()) {
-            if (isDirectShareTarget) {
-                // Skip the "Send this file to X?" confirmation: the user already picked this exact
-                // conversation directly from Android's share sheet, so re-confirming the target here
-                // would just be a redundant extra tap. Go straight to the upload preview screen.
-                isDirectShareTarget = false
-                openConversation()
-                return
-            }
-
-            val conversation = selectedConversation
-            val files = filesToShare ?: return
-            lifecycleScope.launch {
-                // the share intent hands over uris of other apps: querying their names is a binder call
-                val fileNamesWithLineBreaks = withContext(Dispatchers.IO) {
-                    files.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
-                        FileUtils.getFileName(it.toUri(), context)
-                    }
-                }
-                // another conversation was picked while the names were read: that click shows its own dialog
-                if (selectedConversation !== conversation || filesToShare !== files) return@launch
-                showSendFilesConfirmDialog(fileNamesWithLineBreaks)
-            }
-        } else {
-            UploadAndShareFilesWorker.requestStoragePermission(this)
-        }
-    }
-
-    private fun showSendFilesConfirmDialog(fileNamesWithLineBreaks: String) {
-        val confirmationQuestion: String = if (filesToShare!!.size == 1) {
-            String.format(
-                resources!!.getString(R.string.nc_upload_confirm_send_single),
-                selectedConversation!!.displayName
-            )
-        } else {
-            String.format(
-                resources!!.getString(R.string.nc_upload_confirm_send_multiple),
-                selectedConversation!!.displayName
-            )
-        }
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setIcon(viewThemeUtils.dialog.colorMaterialAlertDialogIcon(context, R.drawable.upload))
-            .setTitle(confirmationQuestion)
-            .setMessage(fileNamesWithLineBreaks)
-            .setPositiveButton(R.string.nc_yes) { _, _ ->
-                openConversation()
-            }
-            .setNegativeButton(R.string.nc_no) { _, _ ->
-                Log.d(TAG, "sharing files aborted, going back to share-to screen")
-            }
-
-        viewThemeUtils.dialog
-            .colorMaterialAlertDialogBackground(this, dialogBuilder)
-        val dialog = dialogBuilder.show()
-        viewThemeUtils.platform.colorTextButtons(
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-        )
     }
 
     private fun clearIntentAction() {
@@ -1055,16 +1199,13 @@ class ConversationsListActivity : BaseActivity() {
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun collectDataFromIntent() {
         filesToShare = ArrayList()
-        val intentAction = intent?.action ?: return
-        if (intentAction != Intent.ACTION_SEND && intentAction != Intent.ACTION_SEND_MULTIPLE) return
+        textToPaste = ""
+        if (!isShare(intent)) return
         try {
-            val mimeType = intent.type
-            if (Mimetype.TEXT_PLAIN == mimeType && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
-                // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
-                // with a *screenshot* of the current page in getClipData().
-                // Here we assume that when sharing a web page the user would prefer to send the URL
-                // of the current page rather than a screenshot.
-                textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT)
+            // ShareActivity only passes the text of a shared text on, without its files, see ShareListIntentFactory
+            val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (sharedText != null) {
+                textToPaste = sharedText
             } else {
                 extractFilesFromClipData()
             }
@@ -1083,13 +1224,10 @@ class ConversationsListActivity : BaseActivity() {
         if (clipData != null) {
             for (i in 0 until clipData.itemCount) {
                 val item = clipData.getItemAt(i)
+                // all files, so none of the copies ShareActivity made is left behind, and the first text
                 when {
                     item.uri != null -> addFileToShareIfTrusted(item.uri)
-                    item.text != null -> {
-                        textToPaste = item.text.toString()
-                        return
-                    }
-
+                    item.text != null -> if (textToPaste!!.isEmpty()) textToPaste = item.text.toString()
                     else -> Log.w(TAG, "datatype not yet implemented for share-to")
                 }
             }
@@ -1099,10 +1237,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun addFileToShareIfTrusted(uri: Uri?) {
-        val isTrusted = uri != null &&
-            ContentResolver.SCHEME_CONTENT == uri.scheme &&
-            (uri.authority != packageName || FileUtils.isSharedAttachmentProviderPath(cacheDir, uri.pathSegments))
-        if (isTrusted) {
+        if (FileUtils.isTrustedShareUri(uri, this)) {
             filesToShare!!.add(uri.toString())
         } else {
             Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
@@ -1113,15 +1248,6 @@ class ConversationsListActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            UploadAndShareFilesWorker.REQUEST_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "upload starting after permissions were granted")
-                    showSendFilesConfirmDialog()
-                } else {
-                    showSnackbar(context.getString(R.string.read_storage_no_permission))
-                }
-            }
-
             REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "Notification permission was granted")
@@ -1294,10 +1420,27 @@ class ConversationsListActivity : BaseActivity() {
             selectedMessageId = null
         }
 
-        val intent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, bundle)
-        startActivity(intent)
+        if (isShare(intent)) {
+            openSharedConversationInAppTask(bundle)
+        } else {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, bundle))
+        }
 
         clearIntentAction()
+    }
+
+    /**
+     * Opens the chat with the content shared by another app, given in [extras], in the task of the app, and closes
+     * this list. Back from the chat opens the list of its account, see ChatActivity.
+     *
+     * The share sheet starts a share in a task of its own (see [ShareActivity]), which is removed then.
+     */
+    private fun openSharedConversationInAppTask(extras: Bundle) {
+        val chatIntent = ChatActivity.createIntent(context, currentUser.id!!, selectedConversation!!.token, extras)
+        // in the task of the app: a plain start could land in the task of this share instead
+        AppTasks.openChatInAppTask(this, chatIntent)
+        isSharePassedOn = true
+        if (isTaskRoot) finishAndRemoveTask() else finish()
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
@@ -1609,9 +1752,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun restartApp() {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        startActivity(AppTasks.createRestartIntent(context))
     }
 
     private fun showOutdatedClientDialog() {
@@ -1775,6 +1916,21 @@ class ConversationsListActivity : BaseActivity() {
     companion object {
         private val TAG = ConversationsListActivity::class.java.simpleName
 
+        // once per process, after they could be updated: the shortcuts of earlier versions don't change while the app
+        // runs
+        private var areShortcutsOfEarlierVersionsUpdated = false
+
+        // once per process, not per list: the app starts lists also in further tasks, e.g. for a notification, a
+        // share or another account
+        private var isAppStartSetUpDone = false
+
+        /**
+         * Creates an intent for this activity through its non-exported alias, so that it takes the account
+         * [BundleKeys.KEY_INTERNAL_USER_ID] and the conversation [BundleKeys.KEY_ROOM_TOKEN] from it.
+         */
+        fun createIntent(context: Context): Intent =
+            InternalEntryPoint.createIntent(context, ConversationsListActivity::class.java)
+
         /**
          * Creates an intent that shows the conversation list of the account with the internal id [userId].
          * A conversation list already in the task is recreated for that account and all screens above it are
@@ -1784,10 +1940,97 @@ class ConversationsListActivity : BaseActivity() {
          * a second task instead of reusing the current one.
          */
         fun createAccountSwitchIntent(context: Context, userId: Long): Intent =
-            Intent(context, ConversationsListActivity::class.java).apply {
+            createIntent(context).apply {
                 putExtra(KEY_INTERNAL_USER_ID, userId)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
+
+        /**
+         * Creates an intent that switches the conversation list in the task, shown or below the screen that starts
+         * it, to the account [userId]: the list closes the screens above it and starts the list of that account in
+         * its place, see [relaunchForAccount]. Unlike [createAccountSwitchIntent], the list at the root of the task
+         * isn't replaced by a new one, which Android shows with the color of the splash screen.
+         */
+        fun createInPlaceAccountSwitchIntent(context: Context, userId: Long): Intent =
+            createAccountSwitchIntent(context, userId).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+        /**
+         * The intents that open [screen] of the account [userId] from outside the app, e.g. from a notification, as a
+         * new back stack in the task of the app, with the conversation list of the account below [screen]. Only
+         * [screen] is created, and the list when going back, so [screen] removes the tasks of the app that are only
+         * left in the recents, see [BundleKeys.KEY_TOP_OF_NEW_BACK_STACK].
+         */
+        fun createBackStack(context: Context, userId: Long, screen: Intent): Array<Intent> =
+            arrayOf(
+                createAccountSwitchIntent(context, userId),
+                screen.putExtra(BundleKeys.KEY_TOP_OF_NEW_BACK_STACK, true)
+            )
+
+        /** Like [createBackStack], for the chat [roomToken] of [userId] with [extras]. */
+        fun createChatBackStack(
+            context: Context,
+            userId: Long,
+            roomToken: String,
+            extras: Bundle? = null
+        ): Array<Intent> {
+            val chatIntent = ChatActivity.createIntent(context, userId, roomToken, extras)
+            return createBackStack(context, userId, chatIntent)
+        }
+
+        /**
+         * Removes the extras that only the app itself may set, the account, the conversation to open and a message to
+         * forward with the conversation it came from, from an intent that was not started through its
+         * [InternalEntryPoint]. The activity is exported, so it could come from any app.
+         */
+        @VisibleForTesting
+        internal fun removeExtrasOfApp(intent: Intent) {
+            if (!InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)) {
+                intent.removeExtra(KEY_INTERNAL_USER_ID)
+                intent.removeExtra(KEY_ROOM_TOKEN)
+                intent.removeExtra(KEY_FORWARD_MSG_FLAG)
+                intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+                intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+            }
+        }
+
+        /**
+         * The new [intent], whose extras of the app were removed, as the app itself started it for the account
+         * [userId]: kept for a recreation of the activity, which would otherwise remove the account again. The uri of
+         * a VIEW intent of another app is removed, as the list would take it as a deep link of the app: one that is
+         * shown is a task relaunched from the recents, whose link was taken already, see [isViewOfOtherApp].
+         */
+        @VisibleForTesting
+        internal fun intentOfAccount(context: Context, intent: Intent, userId: Long?): Intent {
+            val isOfOtherApp = !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)
+            return Intent(intent)
+                .setClassName(context, InternalEntryPoint.nameOf(ConversationsListActivity::class.java))
+                .apply {
+                    if (isOfOtherApp && action == Intent.ACTION_VIEW) setDataAndType(null, type)
+                    userId?.let { putExtra(KEY_INTERNAL_USER_ID, it) }
+                }
+        }
+
+        /**
+         * Whether [intent] is a VIEW intent of another app with a uri, e.g. of a pinned shortcut that targets the
+         * launcher activity, which is taken through [DeepLinkActivity]. Not when a task is relaunched from the recents
+         * with the intent it was started with, whose link was taken already: before Android 10, that intent names the
+         * target of the alias it was started through, so a task of a deep link that DeepLinkActivity passed on would
+         * look like one of another app, and passing it on again would route its link again.
+         */
+        @VisibleForTesting
+        internal fun isViewOfOtherApp(intent: Intent): Boolean =
+            !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) &&
+                intent.action == Intent.ACTION_VIEW &&
+                intent.data != null &&
+                !AppTasks.isRelaunchedFromRecents(intent)
+
+        /** Whether [intent] shares content of another app, which is taken through [ShareActivity]. */
+        @VisibleForTesting
+        internal fun isShareOfOtherApp(intent: Intent): Boolean =
+            !InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java) && isShare(intent)
+
+        private fun isShare(intent: Intent): Boolean =
+            Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
         private const val FOREGROUND_REFRESH_INTERVAL_MILLIS = 30_000L
         const val BOTTOM_SHEET_DELAY: Long = 2500
@@ -1804,5 +2047,6 @@ class ConversationsListActivity : BaseActivity() {
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
         private const val KEY_ACCOUNT_DIALOG_VISIBLE = "account_dialog_visible"
+        private const val KEY_PENDING_SHORTCUT_TOKEN = "pending_shortcut_token"
     }
 }

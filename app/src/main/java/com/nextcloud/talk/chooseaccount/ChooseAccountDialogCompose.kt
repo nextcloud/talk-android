@@ -320,7 +320,7 @@ class ChooseAccountDialogCompose {
                         if (userManager.setUserAsActive(userItem.user)) {
                             cookieManager.cookieStore.removeAll()
                             activity.startActivity(
-                                ConversationsListActivity.createAccountSwitchIntent(activity, userItem.user.id!!)
+                                ConversationsListActivity.createInPlaceAccountSwitchIntent(activity, userItem.user.id!!)
                             )
                             onSelected()
                         }

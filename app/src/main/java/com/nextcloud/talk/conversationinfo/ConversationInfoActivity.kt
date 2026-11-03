@@ -47,7 +47,6 @@ import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -61,6 +60,7 @@ import com.nextcloud.talk.conversationinfo.ui.LobbyTimerPickerDialog
 import com.nextcloud.talk.conversationinfo.ui.ParticipantOpsAction
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
@@ -606,11 +606,7 @@ class ConversationInfoActivity : BaseActivity() {
                                     )
                                 }
 
-                                startActivity(
-                                    Intent(context, MainActivity::class.java).apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                    }
-                                )
+                                showConversationList()
                             }
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
@@ -676,10 +672,17 @@ class ConversationInfoActivity : BaseActivity() {
                 )
             }
 
-            startActivity(
-                Intent(context, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }
-            )
+            showConversationList()
         }
+    }
+
+    /**
+     * Shows the conversation list of the account of the conversation, which was left or deleted: the list in the task
+     * is recreated for it and the screens above it are closed, e.g. when the chat was opened from a notification of an
+     * account that isn't the default one.
+     */
+    private fun showConversationList() {
+        startActivity(ConversationsListActivity.createAccountSwitchIntent(context, conversationUser.id!!))
     }
 
     private fun toggleModeratorStatus(apiVersion: Int, participant: ParticipantDto) {

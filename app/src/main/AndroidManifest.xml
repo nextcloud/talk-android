@@ -86,6 +86,7 @@
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/nc_app_name"
@@ -93,7 +94,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.Launcher"
+        android:theme="@style/AppTheme"
         android:taskAffinity=""
         tools:ignore="UnusedAttribute"
         tools:replace="label, icon, theme, name, allowBackup">
@@ -106,16 +107,14 @@
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>
 
+        <!-- Entry point for the intents of other apps that open a conversation. It shows nothing and passes them on to
+             the conversation list in the app's task, so it is kept out of the recents. -->
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.DeepLinkActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -124,10 +123,6 @@
                 <data android:scheme="content" />
                 <data android:scheme="file" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
 
             <!-- Custom URI scheme for opening conversations from external apps/launchers -->
             <intent-filter>
@@ -167,16 +162,27 @@
         <activity
             android:name=".conversationlist.ConversationsListActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.DisplayCutout">
-
-            <meta-data
-                android:name="android.service.chooser.chooser_target_service"
-                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
+            android:theme="@style/Theme.App.Starting">
 
             <intent-filter>
                 <action android:name="com.nextcloud.intent.OPEN_ECOSYSTEM_APP" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+
+        <!-- Entry point for the content other apps share. It copies the shared files and opens the conversation list
+             to pick the conversation, in a task that is kept out of the recents. It handles all configuration
+             changes itself: it only shows a progress indicator, and being recreated would copy the files again. -->
+        <activity
+            android:name=".conversationlist.ShareActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|touchscreen|uiMode|locale|layoutDirection|fontScale|fontWeightAdjustment|density|colorMode|mcc|mnc"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/AppTheme.Translucent">
+
+            <meta-data
+                android:name="android.service.chooser.chooser_target_service"
+                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -190,6 +196,29 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
+
+        <!-- Entry point for in-app intents of the conversation list. Not exported, so it can trust the account and
+             conversation of intents started through it. -->
+        <activity-alias
+            android:name=".conversationlist.InternalConversationsListActivity"
+            android:exported="false"
+            android:targetActivity=".conversationlist.ConversationsListActivity" />
+
+        <!-- The launcher activity: the conversation list, under the name home-screen icons and pinned shortcuts of
+             earlier versions refer to. -->
+        <activity-alias
+            android:name=".activities.MainActivity"
+            android:exported="true"
+            android:targetActivity=".conversationlist.ConversationsListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
 
         <activity
             android:name=".chat.ChatActivity"

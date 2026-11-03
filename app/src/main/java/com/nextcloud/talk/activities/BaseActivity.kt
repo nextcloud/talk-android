@@ -28,6 +28,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.BuildConfig
@@ -41,28 +44,32 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.lock.LockedActivity
-import com.nextcloud.talk.users.DefaultAccountProvider
-import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.SecurityUtils
+import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtilsFactory
+import com.nextcloud.talk.users.DefaultAccountProvider
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.ssl.TrustManager
-import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.security.cert.CertificateParsingException
 import java.security.cert.X509Certificate
 import java.text.DateFormat
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @AutoInjector(NextcloudTalkApplication::class)
 open class BaseActivity : AppCompatActivity() {
@@ -142,13 +149,14 @@ open class BaseActivity : AppCompatActivity() {
     private val boundUser: User? by boundUserLazy
 
     /**
-     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist.
+     * Returns [boundUser], or finishes the activity and returns null if the account doesn't exist. Without an account
+     * at all, an activity with [allowsDefaultAccount] opens the login.
      */
     private fun requireBoundUserOrFinish(): User? =
         boundUser ?: run {
             Log.e(TAG, "No user found for id ${resolveUserIdFromIntent()}")
             if (allowsDefaultAccount) {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(ServerSelectionActivity.createLoginIntent(this))
             }
             finish()
             null
@@ -180,6 +188,13 @@ open class BaseActivity : AppCompatActivity() {
     open val view: View?
         get() = null
 
+    /**
+     * Whether this activity started the lock screen, which covers it until it is resumed again after unlocking. A
+     * screen it would open meanwhile, e.g. the chat of a deep link, would show above the lock screen.
+     */
+    var isCoveredByLockScreen = false
+        private set
+
     fun lockScreenIfConditionsApply() {
         val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
         val isKeyguardSecure = keyguardManager.isKeyguardSecure
@@ -198,12 +213,22 @@ open class BaseActivity : AppCompatActivity() {
                     "elapsedSeconds=$elapsedSeconds"
             )
             if (timeoutSeconds == 0 || elapsedSeconds >= timeoutSeconds) {
-                startActivity(Intent(this, LockedActivity::class.java))
+                NextcloudTalkApplication.isLocked = true
+                showLockScreen()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error checking screen lock conditions", e)
         }
     }
+
+    private fun showLockScreen() {
+        isCoveredByLockScreen = true
+        startActivity(Intent(this, LockedActivity::class.java))
+    }
+
+    /** Whether the app lock is enabled and can be used, as the device has a secure lock screen. */
+    private fun isAppLockEnabled(): Boolean =
+        (getSystemService(KEYGUARD_SERVICE) as KeyguardManager).isKeyguardSecure && appPreferences.isScreenLocked
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -217,14 +242,16 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
+        // e.g. a notification creates only its screen, not the conversation list below it, which would remove them
+        if (savedInstanceState == null && intent.getBooleanExtra(BundleKeys.KEY_TOP_OF_NEW_BACK_STACK, false)) {
+            AppTasks.removeTasksLeftInRecents(this)
+        }
     }
 
     public override fun onStart() {
         super.onStart()
         eventBus.register(this)
     }
-
-    protected open val skipLockCheckOnResume: Boolean = false
 
     public override fun onResume() {
         logger.d(this::class.java.simpleName, "onResume")
@@ -235,7 +262,17 @@ open class BaseActivity : AppCompatActivity() {
                 "pendingLockCheck=${NextcloudTalkApplication.pendingLockCheck} " +
                 "activity=${this.javaClass.simpleName}"
         )
-        if (!skipLockCheckOnResume && NextcloudTalkApplication.pendingLockCheck) {
+        isCoveredByLockScreen = false
+        // e.g. the app lock was turned off with the screen lock of the device
+        if (NextcloudTalkApplication.isLocked && !isAppLockEnabled()) {
+            NextcloudTalkApplication.isLocked = false
+        }
+        if (NextcloudTalkApplication.isLocked) {
+            // Still locked, e.g. as the lock screen was closed by a screen opened from outside the app (a deep link, a
+            // shortcut or a notification). It is unlocked only by authenticating.
+            NextcloudTalkApplication.pendingLockCheck = false
+            showLockScreen()
+        } else if (NextcloudTalkApplication.pendingLockCheck) {
             NextcloudTalkApplication.pendingLockCheck = false
             lockScreenIfConditionsApply()
         }
@@ -404,6 +441,12 @@ open class BaseActivity : AppCompatActivity() {
     override fun startActivity(intent: Intent) {
         // Links to the own server are opened for the account of this screen. Screens without an account (boundUser
         // never loaded) use the default account, without resolving one from their intent.
+        // Only implicit intents (opened links) are rewritten: an explicit intent, like the forward of another app's
+        // link to DeepLinkActivity, starts the screen it names, so it can't open a chat without asking first.
+        if (intent.component != null) {
+            super.startActivity(intent)
+            return
+        }
         val user = (if (boundUserLazy.isInitialized()) boundUser else null)
             ?: defaultAccountProvider.getDefaultUserBlocking()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
@@ -443,5 +486,18 @@ open class BaseActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = BaseActivity::class.java.simpleName
+    }
+}
+
+/**
+ * Collects [flow] for the screens its values open, while this activity is resumed and not covered by the lock screen it
+ * started, so they don't show above the lock screen. After unlocking, the activity is resumed again and [flow]
+ * collected anew, so e.g. a [StateFlow] gives the value that waited for it then.
+ */
+fun <T> BaseActivity.collectWhileUnlocked(flow: Flow<T>, action: suspend (T) -> Unit) {
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            flow.collect { if (!isCoveredByLockScreen) action(it) }
+        }
     }
 }

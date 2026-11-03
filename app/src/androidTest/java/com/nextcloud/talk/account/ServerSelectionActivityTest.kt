@@ -6,7 +6,7 @@
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.account
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.nextcloud.talk.users.UserManager
@@ -15,10 +15,10 @@ import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 
-class MainActivityTest {
+class ServerSelectionActivityTest {
     @get:Rule
-    val activityRule: IntentsTestRule<MainActivity> = IntentsTestRule(
-        MainActivity::class.java,
+    val activityRule: IntentsTestRule<ServerSelectionActivity> = IntentsTestRule(
+        ServerSelectionActivity::class.java,
         true,
         false
     )

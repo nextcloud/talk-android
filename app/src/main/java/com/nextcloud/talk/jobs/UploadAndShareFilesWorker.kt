@@ -49,6 +49,8 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
+import com.nextcloud.talk.utils.SharedFileCopies
+import com.nextcloud.talk.utils.UploadSourceGrants
 import com.nextcloud.talk.utils.VideoCompressor
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -129,7 +131,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
 
         try {
-            return doUpload()
+            return doUpload().also { result ->
+                // not for a retry, which reads the file again
+                val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
+                if (result != Result.retry() && sourceFile != null) UploadSourceGrants.release(context, sourceFile, id)
+            }
         } finally {
             referenceId?.let { cancelledReferenceIds.remove(it) }
         }
@@ -576,6 +582,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     WorkRequest.MIN_BACKOFF_MILLIS,
                     TimeUnit.MILLISECONDS
                 )
+                // keeps a copy of a shared file until its upload is done
+                .apply { SharedFileCopies.uploadTagOf(fileUri)?.let { addTag(it) } }
+                // keeps the read access to a picked file until its upload is done
+                .apply { UploadSourceGrants.uploadTagOf(fileUri)?.let { addTag(it) } }
                 .build()
             // Chained per conversation (not enqueueUniqueWork(fileUri, ...), which ran every upload
             // fully independently) so multiple files - whether from one multi-file share or several
@@ -599,9 +609,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         // Cancellation is by the WorkRequest's own id (not enqueueUniqueWork's name) since that name
         // is now shared by every file queued in the same conversation - cancelling by name would
         // cancel the whole queue instead of just this one upload.
-        fun cancelUpload(referenceId: String, workerId: UUID) {
+        fun cancelUpload(referenceId: String, workerId: UUID, fileUri: String?) {
             cancelledReferenceIds.add(referenceId)
             WorkManager.getInstance().cancelWorkById(workerId)
+            // an upload that didn't start doesn't release the read access to its file itself
+            fileUri?.let { UploadSourceGrants.releaseLater(it, exceptWorkId = workerId) }
         }
     }
 }

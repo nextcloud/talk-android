@@ -10,22 +10,22 @@ package com.nextcloud.talk.chat.audio
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
-/**
- * Opens the conversation of the audio message at the message, switching to its account if needed. A message of
- * the thread [threadId] is opened in that thread.
- */
+/** Opens the chat of the message at the message, in its thread if it has one, from a screen of the app. */
 fun ChatAudioKey.openMessageIntent(context: Context, threadId: Long?): Intent =
-    Intent(context, MainActivity::class.java).apply {
-        putExtra(BundleKeys.KEY_INTERNAL_USER_ID, internalUserId)
-        putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-        putExtras(openMessageExtras(threadId))
-    }
+    ChatActivity.createIntent(context, internalUserId, roomToken, openMessageExtras(threadId))
 
-/** The extras that make the chat jump to the audio message, in the thread [threadId] if it belongs to one. */
-fun ChatAudioKey.openMessageExtras(threadId: Long?): Bundle =
+/**
+ * Like [openMessageIntent], but from outside the screens of the app, e.g. the media notification: as a new back stack
+ * in the task of the app, see [ConversationsListActivity.createChatBackStack].
+ */
+fun ChatAudioKey.openMessageBackStack(context: Context, threadId: Long?): Array<Intent> =
+    ConversationsListActivity.createChatBackStack(context, internalUserId, roomToken, openMessageExtras(threadId))
+
+private fun ChatAudioKey.openMessageExtras(threadId: Long?): Bundle =
     Bundle().apply {
         putString(BundleKeys.KEY_MESSAGE_ID, messageId.toString())
         threadId?.let { putLong(BundleKeys.KEY_THREAD_ID, it) }

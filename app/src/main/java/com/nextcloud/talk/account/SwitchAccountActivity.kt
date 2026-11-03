@@ -88,8 +88,8 @@ class SwitchAccountActivity : BaseActivity() {
             if (userManager.setUserAsActive(user)) {
                 DirectShareHelper.removeAllShareTargetShortcuts(this@SwitchAccountActivity)
                 cookieManager.cookieStore.removeAll()
-                val intent = ConversationsListActivity.createAccountSwitchIntent(this@SwitchAccountActivity, user.id!!)
-                startActivity(intent)
+                val context = this@SwitchAccountActivity
+                startActivity(ConversationsListActivity.createInPlaceAccountSwitchIntent(context, user.id!!))
                 finish()
             }
         }
