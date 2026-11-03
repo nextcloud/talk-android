@@ -229,7 +229,7 @@ class ConversationsListActivity : BaseActivity() {
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
-    private var pendingDirectShareToken: String? = null
+    private var pendingShortcutToken: String? = null
 
     // set when the list is shown again, see switchToDefaultAccountIfChanged
     private var isDefaultAccountCheckDue = false
@@ -397,7 +397,7 @@ class ConversationsListActivity : BaseActivity() {
         showAccountDialogState.value = savedInstanceState.getBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, false)
         // the conversation of a shortcut that wasn't opened yet; the one of the intent was taken already, which the
         // intent restored after the process was killed has again
-        pendingDirectShareToken = savedInstanceState.getString(KEY_PENDING_DIRECT_SHARE_TOKEN)
+        pendingShortcutToken = savedInstanceState.getString(KEY_PENDING_SHORTCUT_TOKEN)
         intent.removeExtra(KEY_ROOM_TOKEN)
         intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
     }
@@ -407,7 +407,7 @@ class ConversationsListActivity : BaseActivity() {
         outState.putBoolean(KEY_ACCOUNT_DIALOG_VISIBLE, showAccountDialogState.value)
         // Only for a recreated list: the conversation of a shortcut isn't opened anymore once the list is left, and
         // before Android 9 the state is saved before the list is stopped, which would restore the one the user left
-        if (isChangingConfigurations) outState.putString(KEY_PENDING_DIRECT_SHARE_TOKEN, pendingDirectShareToken)
+        if (isChangingConfigurations) outState.putString(KEY_PENDING_SHORTCUT_TOKEN, pendingShortcutToken)
         if (::deepLinkRouting.isInitialized) deepLinkRouting.onSaveInstanceState(outState)
     }
 
@@ -673,14 +673,14 @@ class ConversationsListActivity : BaseActivity() {
         conversationTagsViewModel.loadConversationTags()
     }
 
-    /** Takes the conversation of the shortcut that started the list from its intent, see [pendingDirectShareToken]. */
+    /** Takes the conversation of the shortcut that started the list from its intent, see [pendingShortcutToken]. */
     private fun takeConversationOfShortcut() {
         // Shortcut tap, e.g. on the home screen or of a notification: the shortcut uses ACTION_VIEW with
         // KEY_ROOM_TOKEN to open the conversation directly without showing the share picker. It is opened once, not
         // again when the list is shown again, e.g. by going back from the conversation or from the recents.
         if (Intent.ACTION_VIEW == intent.action && !AppTasks.isRelaunchedFromRecents(intent)) {
             intent.getStringExtra(KEY_ROOM_TOKEN)?.takeIf(DeepLinkHandler::isValidToken)?.let {
-                pendingDirectShareToken = it
+                pendingShortcutToken = it
             }
             intent.removeExtra(KEY_ROOM_TOKEN)
         }
@@ -700,7 +700,7 @@ class ConversationsListActivity : BaseActivity() {
                     }
                 }
             } else if (target != null) {
-                pendingDirectShareToken = target.second
+                pendingShortcutToken = target.second
             }
             // preselected once, like the conversation of a shortcut above
             intent.removeExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
@@ -713,7 +713,7 @@ class ConversationsListActivity : BaseActivity() {
         isDefaultAccountCheckDue = true
         // The conversation of a shortcut that isn't in the list yet isn't opened anymore once the list is left. Not
         // when it is only paused, e.g. below the request for the notification permission.
-        if (!isCoveredByLockScreen && !isChangingConfigurations) pendingDirectShareToken = null
+        if (!isCoveredByLockScreen && !isChangingConfigurations) pendingShortcutToken = null
     }
 
     override fun onPause() {
@@ -777,10 +777,10 @@ class ConversationsListActivity : BaseActivity() {
         // list has it. One that isn't stored yet, e.g. a new one, opens once the sync has added it, at the latest when
         // the sync ends, see openConversationOfShortcutAfter. The shared room list isn't queried again on every resume.
         collectWhileUnlocked(conversationsListViewModel.getRoomsStateFlow) { list ->
-            val token = pendingDirectShareToken
+            val token = pendingShortcutToken
             val conversation = list.firstOrNull { it.token == token }
             if (conversation != null) {
-                pendingDirectShareToken = null
+                pendingShortcutToken = null
                 handleConversation(conversation)
             }
         }
@@ -788,7 +788,7 @@ class ConversationsListActivity : BaseActivity() {
         // the conversation of a shortcut doesn't open over a search the user started meanwhile
         lifecycleScope.launch {
             conversationsListViewModel.isSearchActiveFlow.collect { isSearchActive ->
-                if (isSearchActive) pendingDirectShareToken = null
+                if (isSearchActive) pendingShortcutToken = null
             }
         }
 
@@ -992,14 +992,14 @@ class ConversationsListActivity : BaseActivity() {
      * unlocking, which waits for a sync of its own.
      */
     private fun openConversationOfShortcutAfter(sync: Job) {
-        val token = pendingDirectShareToken ?: return
+        val token = pendingShortcutToken ?: return
         lifecycleScope.launch {
             sync.join()
             // also one the list doesn't show yet
             val conversation = conversationsListViewModel.storedRooms().firstOrNull { it.token == token }
             withResumed {
-                if (pendingDirectShareToken == token && !isCoveredByLockScreen) {
-                    pendingDirectShareToken = null
+                if (pendingShortcutToken == token && !isCoveredByLockScreen) {
+                    pendingShortcutToken = null
                     if (conversation != null) {
                         handleConversation(conversation)
                     } else {
@@ -2047,6 +2047,6 @@ class ConversationsListActivity : BaseActivity() {
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
         private const val KEY_ACCOUNT_DIALOG_VISIBLE = "account_dialog_visible"
-        private const val KEY_PENDING_DIRECT_SHARE_TOKEN = "pending_direct_share_token"
+        private const val KEY_PENDING_SHORTCUT_TOKEN = "pending_shortcut_token"
     }
 }
