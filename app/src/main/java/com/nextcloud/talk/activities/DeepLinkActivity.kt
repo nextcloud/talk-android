@@ -7,9 +7,12 @@
 package com.nextcloud.talk.activities
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.window.SplashScreen
 import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Request
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 
@@ -26,10 +29,21 @@ class DeepLinkActivity : Activity() {
         // A link that opens no conversation does nothing: passed on, it would close the screens open in the app above
         // the conversation list. Other intents open the app.
         val isInvalidLink = intent.action == Intent.ACTION_VIEW && Request.of(viewIntent) == null
-        if (!isInvalidLink) startActivity(viewIntent)
+        if (!isInvalidLink) startActivity(viewIntent, splashScreenWithIcon())
         // the theme shows nothing, which requires to finish before onResume
         finish()
     }
+
+    /**
+     * The conversation list keeps the splash screen while it routes the link. Since Android 13, the system shows it
+     * without the icon of the app for a start that isn't one of the launcher, unless the icon is asked for.
+     */
+    private fun splashScreenWithIcon(): Bundle? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityOptions.makeBasic().setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON).toBundle()
+        } else {
+            null
+        }
 
     companion object {
         /**
