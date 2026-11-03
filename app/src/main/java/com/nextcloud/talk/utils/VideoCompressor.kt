@@ -93,18 +93,23 @@ object VideoCompressor {
     }
 
     /**
-     * Returns a downscaled, re-encoded copy of [sourceFile] in the app cache directory, or null if
+     * Returns a downscaled, re-encoded copy of [sourceFile] in [outputDir] (default: the app cache dir), or null if
      * the video was already small enough, could not be read, or transcoding failed/timed out.
      *
      * [onProgress] is invoked with a 0-100 value from a background thread while transcoding runs.
      */
     @Suppress("ReturnCount")
-    fun compress(context: Context, sourceFile: File, onProgress: (Int) -> Unit = {}): File? {
+    fun compress(
+        context: Context,
+        sourceFile: File,
+        outputDir: File = context.cacheDir,
+        onProgress: (Int) -> Unit = {}
+    ): File? {
         Log.d(TAG, "compressing ${sourceFile.name}")
         val original = readVideoInfo(sourceFile) ?: return null
         if (minOf(original.width, original.height) <= TARGET_SHORT_SIDE) return null
 
-        val outputFile = File(context.cacheDir, sourceFile.nameWithoutExtension + COMPRESSED_FILE_SUFFIX)
+        val outputFile = File(outputDir, sourceFile.nameWithoutExtension + COMPRESSED_FILE_SUFFIX)
         outputFile.delete()
 
         val success = runTransform(context, sourceFile, outputFile, original.durationMs, onProgress)
