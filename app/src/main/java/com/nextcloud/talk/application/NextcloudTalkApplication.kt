@@ -62,6 +62,7 @@ import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.LiveActivities
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.SharedFileCopies
+import com.nextcloud.talk.utils.UploadSourceGrants
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -250,6 +251,8 @@ class NextcloudTalkApplication :
         appScope.launch { userManager.repairMultipleActiveUsers() }
         // the copies of shares that are done, also when no new share starts
         appScope.launch { SharedFileCopies.removeDoneShares(this@NextcloudTalkApplication) }
+        // the read access to picked files whose uploads are done, also one that was cancelled before it started
+        appScope.launch { UploadSourceGrants.releaseUnused(this@NextcloudTalkApplication) }
 
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java).build()

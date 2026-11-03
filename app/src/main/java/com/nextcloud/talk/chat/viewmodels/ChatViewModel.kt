@@ -80,6 +80,7 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UploadSourceGrants
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.throttleLatest
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -437,7 +438,7 @@ class ChatViewModel @AssistedInject constructor(
         // also cancel. Without this, cancel silently did nothing for any such placeholder, leaving
         // the user with no way to clear a permanently stuck upload.
         uploadReferenceToWorkId.remove(referenceId)?.let { workId ->
-            UploadAndShareFilesWorker.cancelUpload(referenceId, workId)
+            UploadAndShareFilesWorker.cancelUpload(referenceId, workId, _uploadedLocalPreviewMap.value[referenceId])
         }
         viewModelScope.launch {
             chatRepository.deleteTempMessageByReferenceId(referenceId)
@@ -2400,6 +2401,8 @@ class ChatViewModel @AssistedInject constructor(
 
             // enqueued right here, in the order of the calls: the queue of a conversation is chained, and the
             // slow lookup of the file info below must neither reorder the files nor die with the view model
+            // the access the picker granted ends with the chat, while the upload can wait for the network
+            UploadSourceGrants.keep(NextcloudTalkApplication.sharedApplication!!, fileUri)
             val workerId = enqueueUpload()
             if (!isVoiceMessage) {
                 uploadReferenceToWorkId[referenceId] = workerId
