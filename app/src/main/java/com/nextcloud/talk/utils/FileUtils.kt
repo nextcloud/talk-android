@@ -28,6 +28,7 @@ object FileUtils {
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
     private const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+    private const val NONE = "none"
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -74,6 +75,18 @@ object FileUtils {
             resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
         }
         return resolvedFile != null
+    }
+
+    /**
+     * Shape of a share uri for the log: scheme, authority without a user id and whether there was one. Neither
+     * path nor query, as they hold file names.
+     */
+    fun describeShareUriForLog(uri: Uri?): String {
+        if (uri == null) return NONE
+        val authority = uri.authority
+        val host = authority?.substringAfterLast('@') ?: NONE
+        val hasUserInfo = authority?.contains('@') == true
+        return "${uri.scheme ?: NONE}://$host userInfo=$hasUserInfo"
     }
 
     /**
