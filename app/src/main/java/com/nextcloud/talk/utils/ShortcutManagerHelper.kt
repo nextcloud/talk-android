@@ -258,9 +258,12 @@ object ShortcutManagerHelper {
      * share targets: the system starts a shortcut as the app that published it, so it can target the internal entry
      * point of the conversation list, which takes the account and conversation from its extras.
      */
-    fun createConversationIntent(context: Context, roomToken: String, user: User): Intent? {
-        val userId = user.id ?: return null
-        return ConversationsListActivity.createIntent(context).apply {
+    fun createConversationIntent(context: Context, roomToken: String, user: User): Intent? =
+        user.id?.let { createConversationIntent(context, roomToken, it) }
+
+    /** Like [createConversationIntent], for the account with the internal id [userId]. */
+    fun createConversationIntent(context: Context, roomToken: String, userId: Long): Intent =
+        ConversationsListActivity.createIntent(context).apply {
             action = Intent.ACTION_VIEW
             putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
@@ -268,7 +271,6 @@ object ShortcutManagerHelper {
             // intent; the list on top of it gets it in onNewIntent instead.
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
-    }
 
     /**
      * Creates the intent that opens the conversation [roomToken] of [user] through its nextcloudtalk:// deep link, or

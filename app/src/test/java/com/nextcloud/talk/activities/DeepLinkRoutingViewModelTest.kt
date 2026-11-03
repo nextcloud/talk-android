@@ -24,9 +24,11 @@ import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.RoutingState
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository.ConversationResult
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOCS
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.DefaultAccountProvider
@@ -211,6 +213,23 @@ class DeepLinkRoutingViewModelTest {
             advanceUntilIdle()
 
             assertEquals(RoutingState.Open(Destination.Chat(alice.id!!, TOKEN)), viewModel.state.value)
+        }
+
+    @Test
+    fun `a deep link to a voice room lets the conversation list ask whether to join its call`() =
+        runTest(dispatcher) {
+            // its chat would start the call right away
+            val voiceRoom = mock<ConversationModel> {
+                on { attributes } doReturn ConversationEnums.ATTRIBUTE_IS_VOICE_ROOM
+            }
+            val repository = mock<OfflineConversationsRepository> {
+                on { observeConversation(alice.id!!, TOKEN) } doReturn flowOf(ConversationResult.Found(voiceRoom))
+            }
+            viewModel = createViewModel(repository)
+            viewModel.route(deepLink)
+            advanceUntilIdle()
+
+            assertEquals(RoutingState.Open(Destination.VoiceRoom(alice.id!!, TOKEN)), viewModel.state.value)
         }
 
     @Test

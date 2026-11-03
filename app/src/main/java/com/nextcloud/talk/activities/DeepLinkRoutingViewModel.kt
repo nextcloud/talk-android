@@ -23,9 +23,11 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository.ConversationResult
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.users.DefaultAccountProvider
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.ShortcutManagerHelper
@@ -97,6 +99,12 @@ class DeepLinkRoutingViewModel @Inject constructor(
 
         /** The chat of [roomToken], above the conversation list of the account [userId]. */
         data class Chat(val userId: Long, val roomToken: String) : Destination
+
+        /**
+         * The voice room [roomToken] of the account [userId], which its conversation list opens like a conversation
+         * shortcut: it asks whether to join the call, which opening its chat would start right away.
+         */
+        data class VoiceRoom(val userId: Long, val roomToken: String) : Destination
     }
 
     sealed interface RoutingState {
@@ -225,12 +233,18 @@ class DeepLinkRoutingViewModel @Inject constructor(
             return
         }
         val user = resolveTargetUser(users, link, defaultUserAmong(users))
+        if (user == null) {
+            open(Destination.ConversationList, R.string.nc_no_account_for_server, isLongMessage = true)
+            return
+        }
+        val conversation = knownConversation(user, link.roomToken)
         when {
-            user == null -> open(Destination.ConversationList, R.string.nc_no_account_for_server, isLongMessage = true)
-            isKnownConversation(user, link.roomToken) -> openDeepLinkConversation(user, link.roomToken)
-            else -> ask(RoutingState.AskToJoin(link.serverUrl.toUri().host ?: link.serverUrl)) {
+            conversation == null -> ask(RoutingState.AskToJoin(link.serverUrl.toUri().host ?: link.serverUrl)) {
                 openDeepLinkConversation(user, link.roomToken)
             }
+            // another app must not start a call
+            conversation.checkIfVoiceRoom() -> open(Destination.VoiceRoom(user.id!!, link.roomToken))
+            else -> openDeepLinkConversation(user, link.roomToken)
         }
     }
 
@@ -238,11 +252,16 @@ class DeepLinkRoutingViewModel @Inject constructor(
     private suspend fun defaultUserAmong(users: List<User>): User? =
         defaultAccountProvider.getDefaultUser()?.takeIf { default -> users.any { it.id == default.id } }
 
-    /** Whether [roomToken] is a conversation of [user], see [isStoredOrSynced]. */
-    private suspend fun isKnownConversation(user: User, roomToken: String): Boolean =
+    /** The conversation [roomToken] of [user], stored or after a sync like [isStoredOrSynced], else null. */
+    private suspend fun knownConversation(user: User, roomToken: String): ConversationModel? {
+        var conversation: ConversationModel? = null
         isStoredOrSynced(user) {
-            conversationsRepository.observeConversation(user.id!!, roomToken).first() is ConversationResult.Found
+            val result = conversationsRepository.observeConversation(user.id!!, roomToken).first()
+            conversation = (result as? ConversationResult.Found)?.conversation
+            conversation != null
         }
+        return conversation
+    }
 
     // The account isn't made active here: while the lock screen covers the list, or while it is stopped, its
     // onRestart would relaunch it for the new default account and drop this pending chat. The list of the account that

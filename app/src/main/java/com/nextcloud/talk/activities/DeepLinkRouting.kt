@@ -24,6 +24,7 @@ import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.RoutingState
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.utils.AppTasks
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 
 /**
  * Shows the routing of the deep links and contact chats that [DeepLinkActivity] passes on to the conversation list
@@ -148,6 +149,10 @@ class DeepLinkRouting(
                     activity.startActivities(arrayOf(listIntent, chatIntent))
                 }
             }
+            // the list of its account asks whether to join the call, see ConversationsListActivity.handleConversation
+            is Destination.VoiceRoom -> activity.startActivity(
+                ShortcutManagerHelper.createConversationIntent(activity, destination.roomToken, destination.userId)
+            )
         }
     }
 
