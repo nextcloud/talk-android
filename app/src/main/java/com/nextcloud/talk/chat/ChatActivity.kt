@@ -407,7 +407,6 @@ class ChatActivity :
     var startCallFromRoomSwitch: Boolean = false
 
     var voiceOnly: Boolean = true
-    var focusInput: Boolean = false
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -1333,8 +1332,6 @@ class ChatActivity :
 
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
 
-        focusInput = extras?.getBoolean(BundleKeys.KEY_FOCUS_INPUT) == true
-
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
         pendingTargetThreadId = extras?.getString(KEY_THREAD_ID)?.toLongOrNull()?.takeIf { it > 0L }
@@ -1502,11 +1499,6 @@ class ChatActivity :
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
                         replace(R.id.fragment_container_activity_chat, messageInputFragment)
-                        runOnCommit {
-                            if (focusInput) {
-                                messageInputFragment.binding.fragmentMessageInputView.requestFocus()
-                            }
-                        }
                     }
 
                     if (isScreenResumed) {
@@ -2000,9 +1992,6 @@ class ChatActivity :
 
     private fun returnToChat(conversation: ConversationModel) {
         sendSharedFiles()
-        if (focusInput && messageInputFragment.isAdded) {
-            messageInputFragment.binding.fragmentMessageInputView.requestFocus()
-        }
         refreshConversationExtras(conversation)
         updateRoomTimerHandler(MILLIS_250)
     }
