@@ -10,7 +10,9 @@ package com.nextcloud.talk.chat.domain
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 
 sealed class ChatPullResult {
-    data class Success(val messages: List<ChatMessageDto>, val lastCommonRead: Int?) : ChatPullResult()
+    /** [requestedAtNanos] is the [System.nanoTime] at which the request that got the response was started. */
+    data class Success(val messages: List<ChatMessageDto>, val lastCommonRead: Int?, val requestedAtNanos: Long) :
+        ChatPullResult()
 
     object NotModified : ChatPullResult()
     object PreconditionFailed : ChatPullResult()
