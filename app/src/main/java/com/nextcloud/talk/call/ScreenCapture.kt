@@ -89,6 +89,7 @@ class AndroidScreenCapture(
     // Guards the capturer, as the size is changed from the main thread while it may be released from any thread.
     private val lock = Any()
     private var captureSize: Pair<Int, Int>? = null
+    private var isCapturing = false
     private var isReleased = false
 
     override fun start(): Boolean {
@@ -111,6 +112,7 @@ class AndroidScreenCapture(
         // The media projection may fail to start, for example, if the permission expired or was revoked.
         return try {
             capturer.startCapture(size.first, size.second, FRAME_RATE)
+            isCapturing = true
             true
         } catch (e: SecurityException) {
             Log.e(TAG, "Failed to start screen capture", e)
@@ -129,7 +131,9 @@ class AndroidScreenCapture(
                 return
             }
             isReleased = true
-            if (captureSize != null) {
+            // Only stop the capturer if it was actually started; stopping a capturer that failed to start (so its
+            // media projection was never set up) would throw.
+            if (isCapturing) {
                 try {
                     capturer.stopCapture()
                 } catch (e: InterruptedException) {

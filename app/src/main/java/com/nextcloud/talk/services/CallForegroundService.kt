@@ -165,16 +165,24 @@ class CallForegroundService : Service() {
                 startForeground(NOTIFICATION_ID, notification)
             }
         } catch (e: SecurityException) {
-            Log.e(TAG, "Failed to update foreground service type for screen sharing", e)
-            isScreenSharing = false
-            resultCode = RESULT_SCREEN_SHARING_FAILED
-            // The type may not be changed while in background, but the notification must not keep stating that the
-            // screen is shared.
-            getSystemService(NotificationManager::class.java)
-                .notify(NOTIFICATION_ID, buildNotification(currentConversationName, currentCallExtras))
+            resultCode = handleScreenSharingTypeUpdateFailure(e)
+        } catch (e: IllegalStateException) {
+            // Reconfiguring the foreground service while in background may not be allowed, which throws a
+            // ForegroundServiceStartNotAllowedException (an IllegalStateException), not a SecurityException.
+            resultCode = handleScreenSharingTypeUpdateFailure(e)
         }
 
         resultReceiver?.send(resultCode, null)
+    }
+
+    private fun handleScreenSharingTypeUpdateFailure(e: Exception): Int {
+        Log.e(TAG, "Failed to update foreground service type for screen sharing", e)
+        isScreenSharing = false
+        // The type may not be changed while in background, but the notification must not keep stating that the
+        // screen is shared.
+        getSystemService(NotificationManager::class.java)
+            .notify(NOTIFICATION_ID, buildNotification(currentConversationName, currentCallExtras))
+        return RESULT_SCREEN_SHARING_FAILED
     }
 
     override fun onDestroy() {

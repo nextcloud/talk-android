@@ -123,10 +123,12 @@ class LocalScreenShareController(private val host: Host, private val runOnMainTh
     }
 
     fun cancelPending() {
-        synchronized(lock) {
-            isPendingInternal = false
+        val wasPending = synchronized(lock) {
+            isPendingInternal.also { isPendingInternal = false }
         }
-        notifyStateChanged()
+        if (wasPending) {
+            notifyStateChanged()
+        }
     }
 
     /**

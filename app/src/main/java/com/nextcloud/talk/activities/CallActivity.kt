@@ -1050,9 +1050,9 @@ class CallActivity : CallBaseActivity() {
         binding!!.callRecordingIndicator.setOnClickListener {
             if (isAllowedToStartOrStopRecording) {
                 if (callRecordingViewModel!!.viewState.value is RecordingStartingState) {
-                    if (moreCallActionsDialog == null) {
-                        moreCallActionsDialog = MoreCallActionsDialog(this)
-                    }
+                    // A fresh instance is created every time, as the dialog's lifecycle is destroyed on dismiss and
+                    // reusing the instance would leave its lifecycle-scoped observers inactive.
+                    moreCallActionsDialog = MoreCallActionsDialog(this)
                     moreCallActionsDialog!!.show()
                 } else {
                     callRecordingViewModel!!.clickRecordButton()
