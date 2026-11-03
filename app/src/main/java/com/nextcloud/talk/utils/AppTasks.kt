@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.utils
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
@@ -191,7 +192,11 @@ object AppTasks {
 /**
  * The activity that the root of this task was started as. Before Android 10, the base intent of a task that an alias
  * started names the target of the alias instead, while origActivity names the alias on every version.
+ *
+ * Lint takes origActivity for the field of TaskInfo, added in API 29. RecentTaskInfo declares it itself since API 1
+ * and only inherits it since API 29, and the bytecode reads it from RecentTaskInfo, so it exists on every version.
  */
+@get:SuppressLint("NewApi")
 private val ActivityManager.RecentTaskInfo.rootActivity: ComponentName?
     get() = origActivity ?: baseIntent.component
 
