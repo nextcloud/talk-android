@@ -28,7 +28,15 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
+import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.mediaviewer.model.MediaViewerChatAction
+import com.nextcloud.talk.mediaviewer.model.MediaViewerChatRequest
 import com.nextcloud.talk.mediaviewer.model.MediaViewerItem
+import com.nextcloud.talk.mediaviewer.model.isInsideDirectory
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.mediaviewer.viewmodels.MediaViewerViewModel
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.utils.FileUtils
@@ -53,12 +61,16 @@ class MediaViewerActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: MediaViewerViewModel
+    private lateinit var user: User
+    private lateinit var roomToken: String
+    private var openedFromSharedItems = false
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = setUpBoundUserOrFinish() ?: return
+        val boundUser = setUpBoundUserOrFinish() ?: return
+        user = boundUser
         val imageAuthHeader = ApiUtils.getCredentials(user.username, user.token)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
@@ -70,6 +82,9 @@ class MediaViewerActivity : BaseActivity() {
             finish()
             return
         }
+
+        this.roomToken = roomToken
+        openedFromSharedItems = intent.getBooleanExtra(EXTRA_FROM_SHARED_ITEMS, false)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MediaViewerViewModel::class.java]
         viewModel.initialize(user, roomToken, seedItems, startMessageId)
@@ -89,11 +104,16 @@ class MediaViewerActivity : BaseActivity() {
                     CompositionLocalProvider(LocalImageAuthHeader provides imageAuthHeader) {
                         MediaViewerScreen(
                             viewModel = viewModel,
-                            onShare = ::shareFile,
-                            onSave = ::showSaveDialog,
-                            onControlsVisibilityChanged = { visible ->
-                                if (visible) exitImmersiveMode() else enterImmersiveMode()
-                            }
+                            callbacks = MediaViewerCallbacks(
+                                onShare = ::shareFile,
+                                onSave = ::showSaveDialog,
+                                onShowAllMedia = ::showAllMedia,
+                                onShowInChat = ::showInChat,
+                                onChatAction = ::sendActionToChat,
+                                onControlsVisibilityChanged = { visible ->
+                                    if (visible) exitImmersiveMode() else enterImmersiveMode()
+                                }
+                            )
                         )
                     }
                 }
@@ -125,33 +145,88 @@ class MediaViewerActivity : BaseActivity() {
     }
 
     private fun showSaveDialog(item: MediaViewerItem, localPath: String) {
-        val safeFile = FileUtils.resolveSharedAttachmentFile(cacheDir, File(localPath).name)
-        if (safeFile == null) {
-            logger.e(TAG, "Refused to save file with unsafe name: ${File(localPath).name}")
+        val safeFile = FileUtils.resolveSharedAttachmentFile(cacheDir, item.fileId, item.fileName)
+        if (safeFile == null || !safeFile.exists()) {
+            logger.e(TAG, "Refused to save file with unsafe name or path: ${item.fileName}")
             Snackbar.make(window.decorView, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
             return
         }
-        val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(safeFile.name)
+        // The viewer caches every file in its own per-file-id folder, which the dialog has to look in.
+        val saveFragment: DialogFragment = SaveToStorageDialogFragment.newInstance(item.fileName, item.fileId)
         saveFragment.show(supportFragmentManager, SaveToStorageDialogFragment.TAG)
     }
+
+    private fun showAllMedia() {
+        if (openedFromSharedItems) {
+            // The media grid this viewer was opened from is right underneath.
+            finish()
+            return
+        }
+        val conversation = viewModel.uiState.value.conversation
+        startActivity(
+            SharedItemsActivity.createIntent(
+                context = this,
+                userId = user.id!!,
+                roomToken = roomToken,
+                conversationName = conversation?.displayName,
+                isOwnerOrModerator = conversation?.let { ConversationUtils.isParticipantOwnerOrModerator(it) } == true,
+                isOneToOne = conversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            )
+        )
+    }
+
+    /** Scrolls the chat to the message, through the chat's own "open message" extra (as the shared items do). */
+    private fun showInChat(item: MediaViewerItem) {
+        startActivity(openChat(scrollToMessage = item.messageId))
+        finish()
+    }
+
+    /** Hands reply, delete, forward and draw to the chat, which runs its own handlers for them. */
+    private fun sendActionToChat(action: MediaViewerChatAction, item: MediaViewerItem, localPath: String?) {
+        val attachmentsDirectory = FileUtils.getSharedAttachmentsDirectory(cacheDir)
+        val safeLocalPath = localPath?.takeIf {
+            attachmentsDirectory != null && isInsideDirectory(attachmentsDirectory, File(it))
+        }
+        val intent = openChat().apply {
+            putExtra(MediaViewerChatRequest.KEY_ACTION, action.name)
+            putExtra(MediaViewerChatRequest.KEY_MESSAGE_ID, item.messageId)
+            putExtra(MediaViewerChatRequest.KEY_LOCAL_PATH, safeLocalPath)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    /**
+     * Returns to this conversation's chat: the already open instance below this screen when there is one, else a
+     * new one. With [scrollToMessage] the chat scrolls to that message through [BundleKeys.KEY_MESSAGE_ID].
+     */
+    private fun openChat(scrollToMessage: Long? = null): Intent =
+        ChatActivity.createIntent(this, user.id!!, roomToken).apply {
+            scrollToMessage?.let { putExtra(BundleKeys.KEY_MESSAGE_ID, it) }
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
 
     companion object {
         private val TAG = MediaViewerActivity::class.java.simpleName
         private const val EXTRA_SEED_ITEMS = "MEDIA_VIEWER_SEED_ITEMS"
         private const val EXTRA_START_MESSAGE_ID = "MEDIA_VIEWER_START_MESSAGE_ID"
+        private const val EXTRA_FROM_SHARED_ITEMS = "MEDIA_VIEWER_FROM_SHARED_ITEMS"
 
+        @Suppress("LongParameterList")
         fun newIntent(
             context: Context,
             userId: Long,
             roomToken: String,
             seedItems: List<MediaViewerItem>,
-            startMessageId: Long
+            startMessageId: Long,
+            fromSharedItems: Boolean = false
         ): Intent =
             Intent(context, MediaViewerActivity::class.java).apply {
                 putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                 putExtra(KEY_ROOM_TOKEN, roomToken)
                 putParcelableArrayListExtra(EXTRA_SEED_ITEMS, ArrayList(seedItems))
                 putExtra(EXTRA_START_MESSAGE_ID, startMessageId)
+                putExtra(EXTRA_FROM_SHARED_ITEMS, fromSharedItems)
             }
     }
 }

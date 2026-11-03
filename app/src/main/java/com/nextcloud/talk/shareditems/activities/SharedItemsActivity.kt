@@ -9,6 +9,8 @@
  */
 package com.nextcloud.talk.shareditems.activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -32,6 +34,7 @@ import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
@@ -297,5 +300,23 @@ class SharedItemsActivity : BaseActivity() {
         const val SPAN_COUNT: Int = 4
         const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
         const val KEY_IS_ONE_2_ONE = "KEY_IS_ONE_2_ONE"
+
+        /** The media tab is the first one, so it is what such an intent shows. */
+        @Suppress("LongParameterList")
+        fun createIntent(
+            context: Context,
+            userId: Long,
+            roomToken: String,
+            conversationName: String?,
+            isOwnerOrModerator: Boolean,
+            isOneToOne: Boolean
+        ): Intent =
+            Intent(context, SharedItemsActivity::class.java).apply {
+                putExtra(KEY_INTERNAL_USER_ID, userId)
+                putExtra(KEY_CONVERSATION_NAME, conversationName)
+                putExtra(KEY_ROOM_TOKEN, roomToken)
+                putExtra(KEY_USER_IS_OWNER_OR_MODERATOR, isOwnerOrModerator)
+                putExtra(KEY_IS_ONE_2_ONE, isOneToOne)
+            }
     }
 }

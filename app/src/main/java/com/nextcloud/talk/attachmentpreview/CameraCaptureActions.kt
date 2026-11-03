@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.nextcloud.talk.camera.TakePhotoInApp
 import com.nextcloud.talk.utils.FileUtils
 import java.io.File
 import java.text.SimpleDateFormat
@@ -38,7 +39,10 @@ internal fun rememberCameraCaptureActions(currentFiles: MutableList<String>): Ca
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
     var pendingCameraPermissionType by remember { mutableStateOf<CameraCaptureType?>(null) }
 
-    val onCaptureResult: (Boolean) -> Unit = { success ->
+    val takePhoto = rememberLauncherForActivityResult(TakePhotoInApp()) { uri ->
+        uri?.let { currentFiles.add(it.toString()) }
+    }
+    val captureVideo = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success ->
         val uri = pendingCameraUri
         if (success && uri != null) {
             currentFiles.add(uri.toString())
@@ -46,15 +50,14 @@ internal fun rememberCameraCaptureActions(currentFiles: MutableList<String>): Ca
         pendingCameraUri = null
     }
 
-    val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture(), onCaptureResult)
-    val captureVideo = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo(), onCaptureResult)
-
     fun launchCameraCapture(type: CameraCaptureType) {
-        val uri = createCameraOutputUri(context, type)
-        pendingCameraUri = uri
         when (type) {
-            CameraCaptureType.PHOTO -> takePicture.launch(uri)
-            CameraCaptureType.VIDEO -> captureVideo.launch(uri)
+            CameraCaptureType.PHOTO -> takePhoto.launch(Unit)
+            CameraCaptureType.VIDEO -> {
+                val uri = createVideoOutputUri(context)
+                pendingCameraUri = uri
+                captureVideo.launch(uri)
+            }
         }
     }
 
@@ -85,10 +88,9 @@ internal fun rememberCameraCaptureActions(currentFiles: MutableList<String>): Ca
     )
 }
 
-private fun createCameraOutputUri(context: Context, type: CameraCaptureType): Uri {
+private fun createVideoOutputUri(context: Context): Uri {
     val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir) ?: context.cacheDir
     val timestamp = SimpleDateFormat(CAMERA_FILE_DATE_PATTERN, Locale.ROOT).format(Date())
-    val extension = if (type == CameraCaptureType.PHOTO) "jpg" else "mp4"
-    val file = File(outputDir, "$timestamp.$extension")
+    val file = File(outputDir, "$timestamp.mp4")
     return FileProvider.getUriForFile(context, context.packageName, file)
 }
