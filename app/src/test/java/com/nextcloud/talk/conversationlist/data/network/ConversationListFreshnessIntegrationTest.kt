@@ -16,6 +16,7 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatMessageSyncer
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -35,12 +36,15 @@ import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -210,6 +214,85 @@ class ConversationListFreshnessIntegrationTest {
 
             assertEquals("stale room refresh must not revert the read marker", 12, conversationEntity().lastReadMessage)
             assertEquals("stale room refresh must not revert the unread count", 0, conversationEntity().unreadMessages)
+        }
+    }
+
+    @Test
+    fun `a last common read arriving between the merge and the write of a room list sync is not overwritten`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val dao = DaoAnsweringBeforeTheWrite()
+        whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+            roomList(listOf(staleServerRoom(lastReadMessage = 12, unreadMessages = 0).copy(lastCommonReadMessage = 10)))
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 12, unreadMessages = 0, lastCommonRead = 10)
+
+            repository(dao).getRooms(user).join()
+            dao.answer.join()
+
+            assertEquals(20, conversationEntity().lastCommonReadMessage)
+        }
+    }
+
+    @Test
+    fun `a last common read arriving between the merge and the write of a room refresh is not overwritten`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val dao = DaoAnsweringBeforeTheWrite()
+        wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+            ConversationModel.mapToConversationModel(
+                staleServerRoom(lastReadMessage = 12, unreadMessages = 0).copy(lastCommonReadMessage = 10),
+                user
+            )
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 12, unreadMessages = 0, lastCommonRead = 10)
+
+            repository(dao).getRoom(user, ROOM_TOKEN).join()
+            dao.answer.join()
+
+            assertEquals(20, conversationEntity().lastCommonReadMessage)
+        }
+    }
+
+    @Test
+    fun `a single-room refresh requested before the read marker answer does not lower the last common read`() {
+        val user = user(withKeepNotificationsCapability = false)
+        wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenAnswer {
+            // the answer to the read marker arrives while the room request is on its way
+            runBlocking { conversationListUpdater.updateLastCommonRead(INTERNAL_CONVERSATION_ID, lastCommonRead = 20) }
+            ConversationModel.mapToConversationModel(staleServerRoom(lastReadMessage = 12, unreadMessages = 0), user)
+        }
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 12, unreadMessages = 0, lastCommonRead = 10)
+
+            repository().getRoom(user, ROOM_TOKEN).join()
+
+            assertEquals(20, conversationEntity().lastCommonReadMessage)
+        }
+    }
+
+    @Test
+    fun `a lower last common read from the read marker answer is written and a later refresh keeps it`() {
+        val user = user(withKeepNotificationsCapability = false)
+        wheneverBlocking { chatNetwork.getRoom(any(), any()) }.thenReturn(
+            ConversationModel.mapToConversationModel(
+                staleServerRoom(lastReadMessage = 12, unreadMessages = 0).copy(lastCommonReadMessage = 15),
+                user
+            )
+        )
+
+        runBlocking {
+            seedConversation(lastActivity = 12, lastReadMessage = 12, unreadMessages = 0, lastCommonRead = 20)
+
+            // the user marked the chat as unread, so the server reports less than the stored value
+            conversationListUpdater.updateLastCommonRead(INTERNAL_CONVERSATION_ID, lastCommonRead = 15)
+            assertEquals(15, conversationEntity().lastCommonReadMessage)
+
+            repository().getRoom(user, ROOM_TOKEN).join()
+            assertEquals(15, conversationEntity().lastCommonReadMessage)
         }
     }
 
@@ -413,9 +496,9 @@ class ConversationListFreshnessIntegrationTest {
         }
     }
 
-    private fun repository(): OfflineFirstConversationsRepository =
+    private fun repository(dao: ConversationsDao = db.conversationsDao()): OfflineFirstConversationsRepository =
         OfflineFirstConversationsRepository(
-            db.conversationsDao(),
+            dao,
             conversationsNetwork,
             chatNetwork,
             networkMonitor,
@@ -425,6 +508,37 @@ class ConversationListFreshnessIntegrationTest {
             ApplicationProvider.getApplicationContext(),
             mock<Logger>()
         )
+
+    /**
+     * The conversations DAO with the answer to a read marker (last common read 20) arriving right
+     * before the response of a sync or room refresh is written, that is after its merge. The answer
+     * gets a moment to complete: it does so only when nothing keeps it from writing in that window.
+     */
+    private inner class DaoAnsweringBeforeTheWrite(private val real: ConversationsDao = db.conversationsDao()) :
+        ConversationsDao by real {
+        lateinit var answer: Job
+
+        override suspend fun syncConversationsForUser(
+            accountId: Long,
+            serverItems: List<ConversationEntity>,
+            conversationIdsToDelete: List<String>
+        ) {
+            answerArrives()
+            real.syncConversationsForUser(accountId, serverItems, conversationIdsToDelete)
+        }
+
+        override suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
+            answerArrives()
+            real.upsertConversations(accountId, serverItems)
+        }
+
+        private suspend fun answerArrives() {
+            answer = CoroutineScope(Dispatchers.Default).launch {
+                conversationListUpdater.updateLastCommonRead(INTERNAL_CONVERSATION_ID, lastCommonRead = 20)
+            }
+            withTimeoutOrNull(ANSWER_WAIT_MILLIS) { answer.join() }
+        }
+    }
 
     private fun staleServerRoom(
         lastReadMessage: Int,
@@ -441,11 +555,17 @@ class ConversationListFreshnessIntegrationTest {
             hasArchived = hasArchived
         )
 
-    private suspend fun seedConversation(lastActivity: Long, lastReadMessage: Int, unreadMessages: Int) {
+    private suspend fun seedConversation(
+        lastActivity: Long,
+        lastReadMessage: Int,
+        unreadMessages: Int,
+        lastCommonRead: Int = 0
+    ) {
         val entity = ConversationDto(
             token = ROOM_TOKEN,
             lastActivity = lastActivity,
             lastReadMessage = lastReadMessage,
+            lastCommonReadMessage = lastCommonRead,
             unreadMessages = unreadMessages,
             lastMessage = message(lastReadMessage.toLong())
         ).asEntity(ACCOUNT_ID)
@@ -521,6 +641,7 @@ class ConversationListFreshnessIntegrationTest {
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"
         private const val TIMEOUT_MILLIS = 10_000L
         private const val POLL_INTERVAL_MILLIS = 50L
+        private const val ANSWER_WAIT_MILLIS = 300L
     }
 }
 

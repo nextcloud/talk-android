@@ -28,6 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
+import retrofit2.Response
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -79,13 +80,17 @@ class MarkAsReadReceiver : BroadcastReceiver() {
         ncApi.setChatReadMarker(credentials, url, messageId)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+            ?.subscribe(object : Observer<Response<GenericOverall>> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    cancelNotification(systemNotificationId!!)
+                override fun onNext(response: Response<GenericOverall>) {
+                    if (response.isSuccessful) {
+                        cancelNotification(systemNotificationId!!)
+                    } else {
+                        Log.e(TAG, "Failed to set chat read marker: HTTP ${response.code()}")
+                    }
                 }
 
                 override fun onError(e: Throwable) {

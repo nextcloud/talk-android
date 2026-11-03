@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.jobs
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.annotation.VisibleForTesting
@@ -30,6 +29,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import kotlinx.coroutines.CancellationException
+import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -60,7 +60,10 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
+        return send()
+    }
 
+    internal suspend fun send(): Result {
         val userId = inputData.getLong(KEY_INTERNAL_USER_ID, -1)
         val roomToken = inputData.getString(KEY_ROOM_TOKEN)
         val lastReadMessage = inputData.getInt(KEY_LAST_READ_MESSAGE, -1)
@@ -75,9 +78,6 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         }
     }
 
-    // the read marker response carries nothing to act on; the old runCatching passed it out of the
-    // lambda, which is the only reason it counted as used before
-    @SuppressLint("CheckResult")
     @VisibleForTesting
     @Suppress("TooGenericExceptionCaught")
     internal suspend fun sendReadMarker(userId: Long, roomToken: String, lastReadMessage: Int): Result {
@@ -90,27 +90,44 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
 
         // not runCatching: it catches the CancellationException of work that marking read or unread in
         // the list replaced, and giving up then releases the guard that replacement has just set
-        val sent = try {
+        val response = try {
             val url = ApiUtils.getUrlForChatReadMarker(
                 ApiUtils.getChatApiVersion(user.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1)),
                 user.baseUrl!!,
                 roomToken
             )
-            chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage).blockingSingle()
-            true
+            val httpResponse = chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
+                .blockingSingle()
+            check(httpResponse.isSuccessful) { "HTTP ${httpResponse.code()}" }
+            httpResponse
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "Read marker $lastReadMessage for room $roomToken could not be sent: $e")
-            false
+            null
         }
 
-        return if (sent) {
+        return if (response != null) {
             Log.d(TAG, "Read marker $lastReadMessage sent for room $roomToken")
+            storeLastCommonRead(userId, roomToken, response)
             Result.success()
         } else {
             Log.w(TAG, "Sending read marker for room $roomToken failed (attempt ${runAttemptCount + 1})")
             retryOrFail(userId, roomToken, lastReadMessage)
+        }
+    }
+
+    /**
+     * The marker has reached the server by now, so a failure here must not send it again: the value
+     * only saves a request, and the next room list sync brings it anyway.
+     */
+    private suspend fun storeLastCommonRead(userId: Long, roomToken: String, response: Response<*>) {
+        val lastCommonRead = lastCommonReadOf(response) ?: return
+        runCatching {
+            conversationListUpdater.updateLastCommonRead("$userId@$roomToken", lastCommonRead)
+        }.onFailure { throwable ->
+            if (throwable is CancellationException) throw throwable
+            Log.w(TAG, "Last common read $lastCommonRead for room $roomToken could not be stored: $throwable")
         }
     }
 
@@ -140,6 +157,14 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         private val TAG: String = ReadMarkerSyncWorker::class.java.simpleName
         private const val KEY_LAST_READ_MESSAGE = "KEY_LAST_READ_MESSAGE"
         private const val MAX_RUN_ATTEMPTS = 3
+        private const val LAST_COMMON_READ_HEADER = "X-Chat-Last-Common-Read"
+
+        /**
+         * The last message read by all participants, which the server sends along with the answer to a
+         * read marker; null when the header is missing or not a number.
+         */
+        internal fun lastCommonReadOf(response: Response<*>): Int? =
+            response.headers()[LAST_COMMON_READ_HEADER]?.toIntOrNull()
 
         fun enqueue(context: Context, userId: Long, roomToken: String, lastReadMessage: Int) {
             val data = Data.Builder()
