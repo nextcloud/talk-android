@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
+import android.graphics.Outline
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,9 +33,11 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.view.Surface
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.WindowManager
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -46,6 +49,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
@@ -66,6 +70,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -99,6 +104,15 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewFragment
+import com.nextcloud.talk.attachmentsheet.AttachmentAction
+import com.nextcloud.talk.attachmentsheet.AttachmentSheet
+import com.nextcloud.talk.attachmentsheet.AttachmentSheetCallbacks
+import com.nextcloud.talk.attachmentsheet.AttachmentSheetModel
+import com.nextcloud.talk.attachmentsheet.AttachmentVisibilityInput
+import com.nextcloud.talk.attachmentsheet.isShareFileRequestGranted
+import com.nextcloud.talk.attachmentsheet.resolveAttachmentActions
+import com.nextcloud.talk.attachmentsheet.shareFilePermissionsToRequest
+import com.nextcloud.talk.camera.TakePhotoInApp
 import com.nextcloud.talk.chat.audio.ChatAudioError
 import com.nextcloud.talk.chat.audio.ChatAudioKey
 import com.nextcloud.talk.chat.audio.ChatAudioKind
@@ -266,6 +280,8 @@ class ChatActivity :
 
     private lateinit var binding: ActivityChatBinding
 
+    private val orientationTracker by lazy { DeviceOrientationTracker(this) }
+
     @Inject
     lateinit var ncApi: NcApi
 
@@ -367,6 +383,10 @@ class ChatActivity :
         }
     }
 
+    private val takePhotoInApp = registerForActivityResult(TakePhotoInApp()) { uri ->
+        uri?.let { showCapturedFile(it) }
+    }
+
     override val view: View
         get() = binding.root
 
@@ -438,6 +458,7 @@ class ChatActivity :
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
     private var pendingCameraUri: Uri? = null
+    private var attachmentSheetModel by mutableStateOf<AttachmentSheetModel?>(null)
     private var pendingTargetMessageId: Long? = null
     private var pendingTargetThreadId: Long? = null
     private var pendingTargetSearchQuery: String? = null
@@ -566,6 +587,7 @@ class ChatActivity :
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
         initialUser = setUpBoundUserOrFinish() ?: return
+        registerAttachmentPreviewResultListener()
 
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
         lifecycle.addObserver(chatAudioPlayer)
@@ -643,6 +665,7 @@ class ChatActivity :
         messageInputViewModel.setData(chatViewModel.getChatRepository())
 
         initObservers()
+        resumeRecordingAfterRecreation()
 
         pendingTargetMessageId?.let { messageId ->
             lifecycleScope.launch {
@@ -1048,6 +1071,8 @@ class ChatActivity :
                         )
                     }
                 }
+
+                AttachmentSheetHost()
             }
         }
     }
@@ -1326,6 +1351,7 @@ class ChatActivity :
     override fun onStart() {
         super.onStart()
         active = true
+        orientationTracker.enable()
         this.lifecycle.addObserver(chatViewModel)
     }
 
@@ -1337,8 +1363,16 @@ class ChatActivity :
     }
 
     override fun onStop() {
+        val changingConfigurations = isChangingConfigurations
         super.onStop()
         active = false
+        orientationTracker.disable()
+        // reopened on the next start, so that the live camera preview follows the call state of that moment
+        attachmentSheetModel = null
+        if (!changingConfigurations) {
+            // the user leaves the chat: a video recording must not go on with camera and microphone
+            chatViewModel.activeVideoMessageRecorder?.cancel()
+        }
         this.lifecycle.removeObserver(chatViewModel)
     }
 
@@ -1478,11 +1512,16 @@ class ChatActivity :
                     chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                     _participantPermissionsFlow.value =
                         ParticipantPermissions(spreedCapabilities, state.conversationModel!!)
+                    // a locked recording keeps its panel: the observer of the lock does not run again
+                    val recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        replace(
+                            R.id.fragment_container_activity_chat,
+                            if (recordingLocked) MessageInputVoiceRecordingFragment() else messageInputFragment
+                        )
                         runOnCommit {
-                            if (focusInput) {
+                            if (focusInput && !recordingLocked) {
                                 messageInputFragment.binding.fragmentMessageInputView.requestFocus()
                             }
                         }
@@ -1490,6 +1529,11 @@ class ChatActivity :
 
                     if (isScreenResumed) {
                         ensureJoined()
+                    }
+
+                    // a video result which waited for the conversation and the capabilities of this activity
+                    chatViewModel.activeVideoMessageRecorder?.takeIf { it.hasPendingResult }?.let {
+                        attachVideoRecorder(it)
                     }
 
                     sendSharedFiles()
@@ -2351,6 +2395,256 @@ class ChatActivity :
         )
     }
 
+    fun isVideoRecordPermissionGranted(): Boolean =
+        permissionUtil.isCameraPermissionGranted() && permissionUtil.isMicrophonePermissionGranted()
+
+    fun requestVideoRecordPermissions() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
+            ),
+            REQUEST_VIDEO_RECORD_PERMISSIONS
+        )
+    }
+
+    /**
+     * Starts recording a video message with the front camera. The recording shares the in-progress and locked state
+     * of the voice recording, so the gestures of the record button work the same for both.
+     *
+     * @return true if the recording was started
+     */
+    fun startVideoRecording(): Boolean {
+        val recorder = chatViewModel.videoMessageRecorder(this)
+        val file = if (recorder.isActive) null else createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
+        if (file == null || !chatViewModel.onVideoRecordingStarted()) {
+            return false
+        }
+        showVideoRecordingPreview(true)
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
+        recorder.start(
+            file,
+            VideoMessageRecorder.videoTargetRotation(
+                orientationTracker.degrees,
+                binding.videoRecordingPreview.display?.rotation ?: Surface.ROTATION_0
+            )
+        )
+        return true
+    }
+
+    fun stopAndSendRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            // captured by value: it outlives this activity when the chat is left before the file is finalized
+            val viewModel = chatViewModel
+            val room = roomToken
+            val replyTo = getReplyToMessageId()
+            val displayName = currentConversation!!.displayName
+            val appContext = context.applicationContext
+            viewModel.activeVideoMessageRecorder?.stopAndSend { file ->
+                viewModel.uploadFile(
+                    fileUri = FileProvider.getUriForFile(appContext, appContext.packageName, file).toString(),
+                    isVoiceMessage = false,
+                    roomToken = room,
+                    replyToMessageId = replyTo,
+                    displayName = displayName,
+                    uploadId = UUID.randomUUID().toString()
+                )
+            }
+        } else {
+            chatViewModel.stopAndSendAudioRecording(
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation!!.displayName
+            )
+        }
+    }
+
+    fun stopAndDiscardRecording() {
+        if (chatViewModel.activeRecordingMode == RecordInputMode.VIDEO) {
+            chatViewModel.activeVideoMessageRecorder?.cancel()
+        } else {
+            chatViewModel.stopAndDiscardAudioRecording()
+        }
+    }
+
+    // the result of a recording is uploaded or previewed with the conversation and the capabilities
+    private fun isChatReady(): Boolean = currentConversation != null && ::spreedCapabilities.isInitialized
+
+    private fun onVideoRecordingFinished(outcome: VideoMessageRecorder.Outcome, file: File?) {
+        showVideoRecordingPreview(false)
+        if (chatViewModel.getVoiceRecordingInProgress.value == true) {
+            chatViewModel.onVideoRecordingEnded()
+        }
+        if (chatViewModel.getVoiceRecordingLocked.value == true) {
+            chatViewModel.setVoiceRecordingLocked(false)
+        }
+        if (!isChatReady()) {
+            chatViewModel.activeVideoMessageRecorder?.holdResult(outcome, file)
+            return
+        }
+        when (outcome) {
+            VideoMessageRecorder.Outcome.SEND -> file?.let {
+                uploadFiles(mutableListOf(FileProvider.getUriForFile(context, context.packageName, it).toString()))
+            }
+
+            VideoMessageRecorder.Outcome.TOO_SHORT ->
+                Snackbar.make(
+                    binding.root,
+                    R.string.nc_video_message_hold_to_record_info_switch_to_voice,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+            VideoMessageRecorder.Outcome.FAILED ->
+                Snackbar.make(binding.root, R.string.nc_video_message_recording_failed, Snackbar.LENGTH_LONG).show()
+
+            VideoMessageRecorder.Outcome.INTERRUPTED -> file?.let {
+                onChooseFileResult(listOf(FileProvider.getUriForFile(context, context.packageName, it)))
+            }
+
+            VideoMessageRecorder.Outcome.CANCELLED -> Unit
+        }
+    }
+
+    /**
+     * After a recreation of the activity: picks up the recording which went on in the view model of the chat. The
+     * finger of the record button is gone with the old activity, so a recording which was held is locked, and the
+     * locked recording UI (timer, stop, send, cancel) is shown by the observer of the locked state.
+     */
+    private fun resumeRecordingAfterRecreation() {
+        val recorder = chatViewModel.activeVideoMessageRecorder
+        val action = resolveRecordingResume(
+            recorderActive = recorder?.isActive == true,
+            hasPendingResult = recorder?.hasPendingResult == true,
+            recordingInProgress = chatViewModel.getVoiceRecordingInProgress.value == true,
+            recordingLocked = chatViewModel.getVoiceRecordingLocked.value == true,
+            // the result is uploaded or previewed with the conversation and the capabilities, which load later
+            chatReady = currentConversation != null && ::spreedCapabilities.isInitialized
+        )
+        if (recorder != null && recorder.isActive) {
+            showVideoRecordingPreview(true)
+        }
+        val attach = action == RecordingResume.ATTACH ||
+            action == RecordingResume.ATTACH_AND_LOCK ||
+            action == RecordingResume.DELIVER_RESULT
+        if (recorder != null && attach) attachVideoRecorder(recorder)
+        if (action == RecordingResume.ATTACH_AND_LOCK) {
+            chatViewModel.setVoiceRecordingLocked(true)
+        }
+    }
+
+    private fun attachVideoRecorder(recorder: VideoMessageRecorder) {
+        recorder.attach(
+            this,
+            binding.videoRecordingPreview,
+            ::onVideoRecordingFinished,
+            ::updateVideoRecordingPreviewLayout
+        )
+    }
+
+    private val accessibilityBeforeVideoRecording = HashMap<View, Int>()
+
+    // the update only touches the layout of the preview when its size changed, so it does not loop
+    private val videoScrimLayoutListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        updateVideoRecordingPreviewLayout()
+    }
+
+    /**
+     * Places the preview in the middle of the dimming layer, which covers the area of the chat above the recording
+     * panel: in the aspect of the recorded frame, fitted into the area. Called whenever the area changes its size
+     * (rotation, panels of a wide screen) and when the recorder knows the aspect of the frame.
+     */
+    private fun updateVideoRecordingPreviewLayout() {
+        val scrim = binding.videoRecordingScrim
+        if (scrim.width <= 0 || scrim.height <= 0) return
+        val resources = scrim.resources
+        val displayRotation = ContextCompat.getDisplayOrDefault(scrim.context)?.rotation ?: Surface.ROTATION_0
+        val placement = videoPreviewPlacement(
+            areaWidth = scrim.width,
+            areaHeight = scrim.height,
+            aspect = chatViewModel.activeVideoMessageRecorder
+                ?.let { screenFrameAspect(it.frameAspect, it.videoRotation, displayRotation) }
+                ?: fallbackVideoFrameAspect(displayRotation),
+            limits = VideoPreviewLimits(
+                margin = resources.getDimensionPixelSize(R.dimen.standard_margin),
+                maxWidthFraction = VIDEO_PREVIEW_MAX_WIDTH_FRACTION,
+                maxSide = resources.getDimensionPixelSize(R.dimen.video_recording_preview_max_side),
+                shortAreaHeight = resources.getDimensionPixelSize(R.dimen.video_recording_preview_short_area),
+                shortMargin = resources.getDimensionPixelSize(R.dimen.standard_half_margin)
+            )
+        )
+        val container = binding.videoRecordingContainer
+        val params = container.layoutParams
+        if (params.width != placement.width || params.height != placement.height) {
+            params.width = placement.width
+            params.height = placement.height
+            container.layoutParams = params
+            container.invalidateOutline()
+        }
+    }
+
+    /**
+     * TalkBack reaches the views under the dimming layer, which only swallows touches. While the video is recorded
+     * they are hidden from it; the values they had are put back afterwards. A new activity after a rotation starts
+     * with nothing saved and saves the defaults of its own fresh views.
+     */
+    private fun hideChatFromAccessibility(hide: Boolean) {
+        val parent = binding.videoRecordingScrim.parent as? ViewGroup ?: return
+        if (hide) {
+            if (accessibilityBeforeVideoRecording.isNotEmpty()) return
+            for (i in 0 until parent.childCount) {
+                val child = parent.getChildAt(i)
+                if (child === binding.videoRecordingScrim || child === binding.videoRecordingContainer) continue
+                accessibilityBeforeVideoRecording[child] = child.importantForAccessibility
+                child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            }
+        } else {
+            accessibilityBeforeVideoRecording.forEach { (view, value) -> view.importantForAccessibility = value }
+            accessibilityBeforeVideoRecording.clear()
+        }
+    }
+
+    private fun showVideoRecordingPreview(show: Boolean) {
+        if (show) {
+            binding.videoRecordingScrim.removeOnLayoutChangeListener(videoScrimLayoutListener)
+            binding.videoRecordingScrim.addOnLayoutChangeListener(videoScrimLayoutListener)
+            binding.videoRecordingContainer.clipToOutline = true
+            binding.videoRecordingContainer.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    val radius = view.resources.getDimension(R.dimen.standard_margin)
+                    outline.setRoundRect(0, 0, view.width, view.height, radius)
+                }
+            }
+            binding.videoRecordingSwitchCamera.setOnClickListener {
+                chatViewModel.activeVideoMessageRecorder?.switchCamera()
+            }
+        }
+        hideChatFromAccessibility(show)
+        val visibility = if (show) View.VISIBLE else View.GONE
+        binding.videoRecordingScrim.visibility = visibility
+        binding.videoRecordingContainer.visibility = visibility
+    }
+
+    private fun createAttachmentFile(@StringRes nameRes: Int, suffix: String): File? =
+        try {
+            val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
+                ?: throw IOException("Could not create shared attachments directory")
+            val date = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT).format(Date())
+            File(outputDir, "${context.resources.getString(nameRes, date)}$suffix")
+        } catch (e: IOException) {
+            logger.e(TAG, "error while creating attachment file", e)
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            null
+        }
+
+    // The photo of the in-app camera was asked for and waits for the camera permission. Kept in the activity only: if
+    // the activity is recreated while the dialog is open, the user taps the camera again.
+    private var pendingInAppPhoto = false
+
     private fun requestCameraPermissions() {
         requestPermissions(
             arrayOf(
@@ -2370,23 +2664,7 @@ class ChatActivity :
     }
 
     private fun requestReadFilesPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_AUDIO
-                ),
-                REQUEST_SHARE_FILE_PERMISSION
-            )
-        } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                REQUEST_SHARE_FILE_PERMISSION
-            )
-        }
+        requestPermissions(shareFilePermissionsToRequest(Build.VERSION.SDK_INT), REQUEST_SHARE_FILE_PERMISSION)
     }
 
     private fun checkShowCallButtons() {
@@ -2541,15 +2819,29 @@ class ChatActivity :
         }
     }
 
+    private fun registerAttachmentPreviewResultListener() {
+        supportFragmentManager.setFragmentResultListener(
+            FileAttachmentPreviewFragment.RESULT_KEY,
+            this
+        ) { _, result ->
+            val files = result.getStringArrayList(FileAttachmentPreviewFragment.RESULT_FILES)
+            if (files != null) {
+                uploadFiles(
+                    files,
+                    result.getString(FileAttachmentPreviewFragment.RESULT_CAPTION, ""),
+                    result.getBoolean(FileAttachmentPreviewFragment.RESULT_COMPRESS_IMAGES),
+                    result.getBoolean(FileAttachmentPreviewFragment.RESULT_ALLOW_UPDATE)
+                )
+            }
+        }
+    }
+
     private fun showFileAttachmentPreview(files: MutableList<String>) {
         val newFragment = FileAttachmentPreviewFragment.newInstance(
             files,
             currentConversation?.displayName ?: "",
             CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
         )
-        newFragment.setListener { selectedFiles, caption, compressImages, allowUpdate ->
-            uploadFiles(selectedFiles, caption, compressImages, allowUpdate)
-        }
         newFragment.show(supportFragmentManager, FileAttachmentPreviewFragment.TAG)
     }
 
@@ -2595,25 +2887,26 @@ class ChatActivity :
 
     @Throws(IllegalStateException::class)
     private fun onPickCameraResult(intent: Intent?) {
+        // The system camera app is only guaranteed to write to the URI passed via EXTRA_OUTPUT;
+        // whether it also populates the result intent's data is device/vendor-dependent, so the
+        // URI we supplied up front is the one source of truth here.
+        val uri = pendingCameraUri ?: intent?.data
+        pendingCameraUri = null
+        showCapturedFile(uri)
+    }
+
+    private fun showCapturedFile(uri: Uri?) {
         try {
             filesToUpload.clear()
-
-            // The system camera app is only guaranteed to write to the URI passed via EXTRA_OUTPUT;
-            // whether it also populates the result intent's data is device/vendor-dependent, so the
-            // URI we supplied up front is the one source of truth here.
-            val uri = pendingCameraUri ?: intent?.data
-            pendingCameraUri = null
             if (uri != null) {
                 filesToUpload.add(uri.toString())
             } else {
                 error("Failed to get data from intent and uri")
             }
 
-            if (permissionUtil.isFilesPermissionGranted()) {
-                showFileAttachmentPreview(filesToUpload)
-            } else {
-                UploadAndShareFilesWorker.requestStoragePermission(this)
-            }
+            // The photo lives in the app cache and is handed over through the own file provider,
+            // so it needs no access to the media.
+            showFileAttachmentPreview(filesToUpload)
         } catch (e: IllegalStateException) {
             Snackbar.make(
                 binding.root,
@@ -2663,7 +2956,7 @@ class ChatActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isShareFileRequestGranted(grantResults, permissionUtil.isFilesPermissionGranted())) {
                 Log.d(TAG, "showing upload preview after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
                     showFileAttachmentPreview(filesToUpload)
@@ -2674,7 +2967,7 @@ class ChatActivity :
                     .show()
             }
         } else if (requestCode == REQUEST_SHARE_FILE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isShareFileRequestGranted(grantResults, permissionUtil.isFilesPermissionGranted())) {
                 showLocalFilePicker()
             } else {
                 Snackbar.make(
@@ -2704,11 +2997,25 @@ class ChatActivity :
                     Snackbar.LENGTH_LONG
                 ).show()
             }
+        } else if (requestCode == REQUEST_VIDEO_RECORD_PERMISSIONS) {
+            if (grantResults.isEmpty() || grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
+                Snackbar.make(
+                    binding.root,
+                    context.getString(R.string.nc_video_message_missing_permissions),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         } else if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            val openInAppCamera = pendingInAppPhoto
+            pendingInAppPhoto = false
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Snackbar
-                    .make(binding.root, context.getString(R.string.camera_permission_granted), Snackbar.LENGTH_LONG)
-                    .show()
+                if (openInAppCamera) {
+                    takePhotoInApp.launch(Unit)
+                } else {
+                    Snackbar
+                        .make(binding.root, context.getString(R.string.camera_permission_granted), Snackbar.LENGTH_LONG)
+                        .show()
+                }
             } else {
                 Snackbar
                     .make(binding.root, context.getString(R.string.take_photo_permission), Snackbar.LENGTH_LONG)
@@ -2760,7 +3067,7 @@ class ChatActivity :
         )
     }
 
-    fun sendSelectLocalFileIntent() {
+    private fun sendSelectLocalFileIntent() {
         if (!permissionUtil.isFilesPermissionGranted()) {
             requestReadFilesPermissions()
         } else {
@@ -2768,17 +3075,17 @@ class ChatActivity :
         }
     }
 
-    fun sendChooseContactIntent() {
+    private fun sendChooseContactIntent() {
         requestReadContacts()
     }
 
-    fun showBrowserScreen() {
+    private fun showBrowserScreen() {
         val sharingFileBrowserIntent = Intent(this, RemoteFileBrowserActivity::class.java)
         sharingFileBrowserIntent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
         startRemoteFileBrowsingForResult.launch(sharingFileBrowserIntent)
     }
 
-    fun showShareLocationScreen() {
+    private fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
         // location permission and location services are optional: without them, a place can still be picked on the
@@ -3939,59 +4246,88 @@ class ChatActivity :
         }
     }
 
-    fun sendPictureFromCamIntent() {
-        if (!permissionUtil.isCameraPermissionGranted()) {
-            requestCameraPermissions()
-        } else {
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(packageManager)?.also {
-                    val photoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val photoName = String.format(
-                            context.resources.getString(R.string.nc_picture_filename),
-                            date
-                        )
-                        File(outputDir, "$photoName$PICTURE_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating photo file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+    @Composable
+    private fun AttachmentSheetHost() {
+        val model = attachmentSheetModel ?: return
+        val callbacks = remember {
+            AttachmentSheetCallbacks(
+                onAction = { runAttachmentAction(it) },
+                onTakePhoto = {
+                    attachmentSheetModel = null
+                    takePhotoWithInAppCamera()
+                },
+                onSend = {
+                    attachmentSheetModel = null
+                    onChooseFileResult(it)
+                },
+                onDismiss = { attachmentSheetModel = null }
+            )
+        }
+        AttachmentSheet(model = model, callbacks = callbacks)
+    }
 
-                    photoFile?.also {
-                        pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
-                        startPickCameraIntentForResult.launch(takePictureIntent)
-                    }
-                }
-            }
+    fun showAttachmentSheet() {
+        attachmentSheetModel = buildAttachmentSheetModel()
+    }
+
+    private fun buildAttachmentSheetModel(): AttachmentSheetModel? {
+        val conversation = currentConversation ?: return null
+        val actions = resolveAttachmentActions(
+            AttachmentVisibilityInput(
+                isRemoteConversation = !conversation.remoteServer.isNullOrEmpty(),
+                hasGeoLocationCapability = hasSpreedFeatureCapability(
+                    spreedCapabilities,
+                    SpreedFeatures.GEO_LOCATION_SHARING
+                ),
+                hasPollsCapability = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.TALK_POLLS),
+                isOneToOneConversation = isOneToOneConversation(),
+                hasThreadsCapability = hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS),
+                isInsideThread = conversationThreadId != null,
+                hasCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+            )
+        )
+        val serverName = CapabilitiesUtil.getServerName(conversationUser)
+            .takeUnless { it.isNullOrEmpty() } ?: getString(R.string.nc_server_product_name)
+        return AttachmentSheetModel(
+            actions = actions,
+            cloudLabel = getString(R.string.nc_upload_from_cloud, serverName),
+            maxSelection = MAX_AMOUNT_MEDIA_FILE_PICKER,
+            livePreviewEnabled = !(CallActivity.active || !isNotInCall())
+        )
+    }
+
+    private fun runAttachmentAction(action: AttachmentAction) {
+        attachmentSheetModel = null
+        when (action) {
+            AttachmentAction.PICTURE_FROM_CAM -> takePhotoWithInAppCamera()
+            AttachmentAction.VIDEO_FROM_CAM -> sendVideoFromCamIntent()
+            AttachmentAction.GALLERY -> showGalleryPicker()
+            AttachmentAction.FILE_FROM_LOCAL -> sendSelectLocalFileIntent()
+            AttachmentAction.FILE_FROM_CLOUD -> showBrowserScreen()
+            AttachmentAction.CREATE_THREAD -> createThread()
+            AttachmentAction.CREATE_POLL -> createPoll()
+            AttachmentAction.SHARE_LOCATION -> showShareLocationScreen()
+            AttachmentAction.SHARE_CONTACT -> sendChooseContactIntent()
         }
     }
 
-    fun sendVideoFromCamIntent() {
+    private fun takePhotoWithInAppCamera() {
         if (!permissionUtil.isCameraPermissionGranted()) {
+            pendingInAppPhoto = true
+            requestCameraPermissions()
+        } else {
+            takePhotoInApp.launch(Unit)
+        }
+    }
+
+    private fun sendVideoFromCamIntent() {
+        if (!permissionUtil.isCameraPermissionGranted()) {
+            pendingInAppPhoto = false
             requestCameraPermissions()
         } else {
             Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
                 takeVideoIntent.resolveActivity(packageManager)?.also {
-                    val videoFile: File? = try {
-                        val outputDir = FileUtils.getSharedAttachmentsDirectory(context.cacheDir)
-                            ?: throw IOException("Could not create shared attachments directory")
-                        val dateFormat = SimpleDateFormat(FILE_DATE_PATTERN, Locale.ROOT)
-                        val date = dateFormat.format(Date())
-                        val videoName = String.format(
-                            context.resources.getString(R.string.nc_video_filename),
-                            date
-                        )
-                        File(outputDir, "$videoName$VIDEO_SUFFIX")
-                    } catch (e: IOException) {
-                        logger.e(TAG, "error while creating video file", e)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                        null
-                    }
+                    val videoFile = createAttachmentFile(R.string.nc_video_filename, VIDEO_SUFFIX)
 
                     videoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
@@ -4003,12 +4339,12 @@ class ChatActivity :
         }
     }
 
-    fun createPoll() {
+    private fun createPoll() {
         val pollVoteDialog = PollCreateDialogFragment.newInstance(conversationUser, roomToken)
         pollVoteDialog.show(supportFragmentManager, TAG)
     }
 
-    fun createThread() {
+    private fun createThread() {
         messageInputViewModel.startThreadCreation()
     }
 
@@ -4121,6 +4457,7 @@ class ChatActivity :
     }
 
     companion object {
+        private const val VIDEO_PREVIEW_MAX_WIDTH_FRACTION = 0.75f
         val TAG = ChatActivity::class.java.simpleName
 
         /**
@@ -4149,9 +4486,9 @@ class ChatActivity :
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
+        private const val REQUEST_VIDEO_RECORD_PERMISSIONS = 224
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
-        private const val PICTURE_SUFFIX = ".jpg"
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_FORBIDDEN = 403
         private const val HTTP_NOT_FOUND = 404

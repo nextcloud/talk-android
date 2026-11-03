@@ -7,7 +7,6 @@
  */
 package com.nextcloud.talk.jobs
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationManager
@@ -33,6 +32,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.attachmentsheet.storagePermissionsToRequest
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
@@ -508,37 +508,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
 
         fun requestStoragePermission(activity: Activity) {
-            when {
-                Build.VERSION
-                    .SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-                    activity.requestPermissions(
-                        arrayOf(
-                            Manifest.permission.READ_MEDIA_IMAGES,
-                            Manifest.permission.READ_MEDIA_VIDEO,
-                            Manifest.permission.READ_MEDIA_AUDIO
-                        ),
-                        REQUEST_PERMISSION
-                    )
-                }
-
-                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
-                    activity.requestPermissions(
-                        arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        ),
-                        REQUEST_PERMISSION
-                    )
-                }
-
-                else -> {
-                    activity.requestPermissions(
-                        arrayOf(
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ),
-                        REQUEST_PERMISSION
-                    )
-                }
-            }
+            activity.requestPermissions(storagePermissionsToRequest(Build.VERSION.SDK_INT), REQUEST_PERMISSION)
         }
 
         @Suppress("LongParameterList")

@@ -59,16 +59,16 @@ class FileAttachmentPreviewViewModelTest {
     }
 
     @Test
-    fun `mime types of removed files are dropped`() {
+    fun `mime types of replaced files are dropped`() {
         viewModel.setInitialFiles(listOf("content://a/1.txt", "content://a/2.txt"))
         viewModel.resolveMimeTypes()
         testScope.advanceUntilIdle()
 
-        viewModel.removeFile("content://a/1.txt")
+        viewModel.replaceFile("content://a/1.txt", "content://a/3.txt")
         viewModel.resolveMimeTypes()
         testScope.advanceUntilIdle()
 
-        assertEquals(setOf("content://a/2.txt"), viewModel.mimeTypesByUri.keys)
+        assertEquals(setOf("content://a/3.txt", "content://a/2.txt"), viewModel.mimeTypesByUri.keys)
     }
 
     @Test

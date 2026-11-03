@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -41,17 +41,15 @@ internal fun FileThumbnailImage(
     modifier: Modifier = Modifier,
     iconSize: Dp = THUMBNAIL_ICON_SIZE_DP.dp,
     contentScale: ContentScale = ContentScale.Crop,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    shape: Shape = RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
 ) {
-    val shape = RoundedCornerShape(THUMBNAIL_CORNER_RADIUS_DP.dp)
-
     when (description.kind) {
         MediaKind.IMAGE ->
             AsyncImage(
                 model = description.uri,
                 contentDescription = description.name,
                 contentScale = contentScale,
-                modifier = modifier.clip(shape).background(backgroundColor)
+                modifier = modifier.clip(shape).background(MaterialTheme.colorScheme.surfaceVariant)
             )
 
         MediaKind.VIDEO ->
@@ -60,11 +58,11 @@ internal fun FileThumbnailImage(
                     bitmap = description.videoThumbnail.asImageBitmap(),
                     contentDescription = description.name,
                     contentScale = contentScale,
-                    modifier = modifier.clip(shape).background(backgroundColor)
+                    modifier = modifier.clip(shape).background(MaterialTheme.colorScheme.surfaceVariant)
                 )
             } else {
                 Box(
-                    modifier = modifier.clip(shape).background(backgroundColor),
+                    modifier = modifier.clip(shape).background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -78,7 +76,7 @@ internal fun FileThumbnailImage(
         MediaKind.OTHER -> {
             val mimetypeIcon = DrawableUtils.getDrawableResourceIdForMimeType(description.mimeType)
             Box(
-                modifier = modifier.clip(shape).background(backgroundColor),
+                modifier = modifier.clip(shape).background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
