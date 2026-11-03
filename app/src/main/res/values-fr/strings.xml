@@ -159,6 +159,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_e2ee_not_supported">Les appels ne sont actuellement pas pris en charge, car le chiffrement de bout en bout est activé sur le serveur</string>
     <string name="nc_call_e2ee_not_supported_title">Appel indisponible depuis %s</string>
+    <string name="nc_call_e2ee_requires_hpb">Les appels chiffrés de bout en bout nécessitent le serveur haute performance (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Le chiffrement de bout en bout n\'a pas pu être configuré pour cet appel</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_join_failed">Impossible de rejoindre l\'appel. Veuillez réessayer.</string>
@@ -541,6 +542,8 @@
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
     <string name="nc_server_helper_text">Adresse URL visible dans la barre d\'adresse de votre navigateur Web lorsque vous êtes connecté à %1$s.</string>
+    <string name="nc_server_http_fallback_message">Impossible de se connecter au serveur en HTTPS. Se connecter de manière non sécurisée en HTTP à la place ?</string>
+    <string name="nc_server_http_fallback_title">Connexion non sécurisée</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
     <string name="nc_server_import_account_plain">Importer le compte</string>
     <string name="nc_server_import_accounts">Importer les comptes depuis l\'application %1$s</string>
