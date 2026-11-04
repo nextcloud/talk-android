@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
+    <string name="nc_contact_chat_start">開始</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_created_invalid_participants">無法新增部份參與者</string>
     <string name="nc_conversation_created_invalid_participants_named">無法新增這些參與者：%1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">自訂顏色</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
+    <string name="nc_deep_link_join">加入</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>

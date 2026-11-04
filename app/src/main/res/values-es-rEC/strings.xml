@@ -151,6 +151,7 @@
     <string name="nc_custom_color">Color personalizado</string>
     <string name="nc_date_header_today">Hoy</string>
     <string name="nc_date_header_yesterday">Ayer</string>
+    <string name="nc_deep_link_join">Unirse</string>
     <string name="nc_delete">Borrar</string>
     <string name="nc_delete_all">Borrar todo</string>
     <string name="nc_delete_call">Borrar conversación</string>

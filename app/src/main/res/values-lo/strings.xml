@@ -176,6 +176,7 @@
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_confirm">ຢືນຢັນ</string>
     <string name="nc_connecting_call">Connecting …</string>
+    <string name="nc_contact_chat_start">ເລີ່ມ</string>
     <string name="nc_contacts_done">ສໍາເລັດ</string>
     <string name="nc_conversation_description">Conversation description</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Go to file</string>
@@ -203,6 +204,7 @@
     <string name="nc_custom_color">Custom color</string>
     <string name="nc_date_header_today">ມື້ນີ້</string>
     <string name="nc_date_header_yesterday">ມື້ວານນີ້</string>
+    <string name="nc_deep_link_join">ເຂົ້າຮ່ວມ</string>
     <string name="nc_delete">ລຶບ</string>
     <string name="nc_delete_all">Delete all</string>
     <string name="nc_delete_call">Delete conversation</string>

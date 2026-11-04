@@ -276,6 +276,7 @@
     <string name="nc_custom_color">Benutzerdefinierte Farbe</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
+    <string name="nc_deep_link_join">Beitreten</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>

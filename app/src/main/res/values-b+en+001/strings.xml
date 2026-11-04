@@ -276,6 +276,7 @@
     <string name="nc_custom_color">Custom colour</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
+    <string name="nc_deep_link_join">Join</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_all">Delete all</string>
     <string name="nc_delete_call">Delete conversation</string>

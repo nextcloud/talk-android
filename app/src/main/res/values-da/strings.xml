@@ -276,6 +276,7 @@
     <string name="nc_custom_color">Brugerdefineret farve</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
+    <string name="nc_deep_link_join">Gå med</string>
     <string name="nc_delete">Slet</string>
     <string name="nc_delete_all">Slet alt</string>
     <string name="nc_delete_call">Slet samtale</string>

@@ -218,6 +218,7 @@
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
+    <string name="nc_contact_chat_start">Début</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_created_invalid_participants">Certains participants n\'ont pas pu être ajoutés</string>
     <string name="nc_conversation_created_invalid_participants_named">Ces participants n\'ont pas pu être ajoutés : %1$s</string>
@@ -264,6 +265,7 @@
     <string name="nc_custom_color">Couleur personnalisée</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
+    <string name="nc_deep_link_join">Rejoindre</string>
     <string name="nc_delete">Supprimer</string>
     <string name="nc_delete_all">Supprimer tout</string>
     <string name="nc_delete_call">Supprimer la conversation</string>

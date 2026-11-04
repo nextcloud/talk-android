@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Выбрать сертификат для аутентификации</string>
     <string name="nc_confirm">Подтвердить</string>
     <string name="nc_connecting_call">Подключение…</string>
+    <string name="nc_contact_chat_start">Начать</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_created_invalid_participants">Не удалось добавить некоторых участников</string>
     <string name="nc_conversation_created_invalid_participants_named">Не удалось добавить этих участников: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Свой цвет</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
+    <string name="nc_deep_link_join">Войти</string>
     <string name="nc_delete">Удалить</string>
     <string name="nc_delete_all">Удалить все</string>
     <string name="nc_delete_call">Удалить обсуждение</string>

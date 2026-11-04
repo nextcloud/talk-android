@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_confirm">Onayla</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
+    <string name="nc_contact_chat_start">Başlangıç</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_created_invalid_participants">Bazı katılımcılar eklenemedi</string>
     <string name="nc_conversation_created_invalid_participants_named">Şu katılımcılar eklenemedi: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Özel renk</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
+    <string name="nc_deep_link_join">Katıl</string>
     <string name="nc_delete">Sil</string>
     <string name="nc_delete_all">Tümünü sil</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
