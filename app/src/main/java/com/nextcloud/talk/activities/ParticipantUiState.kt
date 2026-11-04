@@ -17,6 +17,7 @@ data class ParticipantUiState(
     val nick: String?,
     val isConnected: Boolean,
     val isAudioEnabled: Boolean,
+    /** Speaking state as last reported by the participant. */
     val isSpeaking: Boolean = false,
     val isStreamEnabled: Boolean,
     val mediaStream: MediaStream? = null,
@@ -26,4 +27,8 @@ data class ParticipantUiState(
     val actorType: ParticipantDto.ActorType? = null,
     val actorId: String? = null,
     val isInternal: Boolean
-)
+) {
+    /** Whether the participant is speaking and can be heard, so the speaking indicator is shown. */
+    val isActiveSpeaker: Boolean
+        get() = isSpeaking && isAudioEnabled && isConnected
+}

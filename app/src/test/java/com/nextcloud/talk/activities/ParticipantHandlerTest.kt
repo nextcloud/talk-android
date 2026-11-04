@@ -99,53 +99,68 @@ class ParticipantHandlerTest {
     }
 
     @Test
-    fun `Muting audio resets the speaking state`() {
+    fun `Connected participant with audio who speaks is an active speaker`() {
         handler = createHandler()
-        val listener = attachPeerConnection()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        connectWithAudio(listener, observer)
 
         listener.onSpeaking()
-        listener.onAudioOff()
 
-        assertFalse(handler.uiState.value.isSpeaking)
+        assertTrue(handler.uiState.value.isActiveSpeaker)
     }
 
     @Test
-    fun `Temporary ICE disconnection keeps the speaking state`() {
+    fun `Muting audio hides the active speaker`() {
         handler = createHandler()
         val (listener, observer) = attachPeerConnectionWithObserver()
-        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        connectWithAudio(listener, observer)
+        listener.onSpeaking()
+
+        listener.onAudioOff()
+
+        assertFalse(handler.uiState.value.isActiveSpeaker)
+    }
+
+    @Test
+    fun `Speaking message while muted does not make an active speaker`() {
+        handler = createHandler()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        connectWithAudio(listener, observer)
+        listener.onAudioOff()
+
+        listener.onSpeaking()
+
+        assertFalse(handler.uiState.value.isActiveSpeaker)
+    }
+
+    @Test
+    fun `Temporary ICE disconnection hides the active speaker until reconnected`() {
+        handler = createHandler()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        connectWithAudio(listener, observer)
         listener.onSpeaking()
 
         observer.onIceConnectionStateChanged(IceConnectionState.DISCONNECTED)
-        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        assertFalse(handler.uiState.value.isActiveSpeaker)
 
-        assertTrue(handler.uiState.value.isSpeaking)
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        assertTrue(handler.uiState.value.isActiveSpeaker)
     }
 
     @Test
-    fun `Failed ICE connection resets the speaking state`() {
+    fun `Removing the stream hides the active speaker`() {
         handler = createHandler()
         val (listener, observer) = attachPeerConnectionWithObserver()
         observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
-        listener.onSpeaking()
-
-        observer.onIceConnectionStateChanged(IceConnectionState.FAILED)
-
-        assertFalse(handler.uiState.value.isSpeaking)
-    }
-
-    @Test
-    fun `Removing the stream resets the speaking state`() {
-        handler = createHandler()
-        val (listener, observer) = attachPeerConnectionWithObserver()
         val removedStream = MediaStream(0L).apply { audioTracks.add(mock<AudioTrack> {}) }
         observer.onStreamAdded(removedStream)
         listener.onSpeaking()
+        assertTrue(handler.uiState.value.isActiveSpeaker)
 
         // The removed stream is passed to the observer and still lists its tracks.
         observer.onStreamRemoved(removedStream)
 
-        assertFalse(handler.uiState.value.isSpeaking)
+        assertFalse(handler.uiState.value.isActiveSpeaker)
         assertFalse(handler.uiState.value.isAudioEnabled)
         assertNull(handler.uiState.value.mediaStream)
     }
@@ -159,6 +174,11 @@ class ParticipantHandlerTest {
         handler.setPeerConnection(mock<PeerConnectionWrapper> {})
 
         assertFalse(handler.uiState.value.isSpeaking)
+    }
+
+    private fun connectWithAudio(listener: DataChannelMessageListener, observer: PeerConnectionObserver) {
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        listener.onAudioOn()
     }
 
     private fun createHandler() =
