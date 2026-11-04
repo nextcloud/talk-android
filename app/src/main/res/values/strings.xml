@@ -418,6 +418,10 @@ How to translate with transifex:
     <string name="nc_call_button_content_description_switch_camera">Switch camera</string>
     <string name="nc_call_self_video_enlarge">Enlarge self video</string>
     <string name="nc_call_self_video_shrink">Shrink self video</string>
+    <string name="nc_call_view_mode">Call view mode</string>
+    <string name="nc_call_view_mode_grid">Grid view</string>
+    <string name="nc_call_view_mode_speaker">Speaker view</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Speaker view with participant bar</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="raise_hand">Raise hand</string>
     <string name="lower_hand">Lower hand</string>

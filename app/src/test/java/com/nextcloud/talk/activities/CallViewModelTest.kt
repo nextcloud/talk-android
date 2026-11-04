@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.activities
 
+import com.nextcloud.talk.call.components.CallViewMode
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
@@ -210,6 +211,88 @@ class CallViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(emptyList<String>(), viewModel.speakers.value)
+    }
+
+    @Test
+    fun `participants that start speaking in the speaker view are promoted in the grid too`() {
+        addParticipants("a", "b", "c")
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.setViewMode(CallViewMode.SPEAKER)
+        val notPromoted = viewModel.speakerViewOrder.value.last()
+        viewModel.setVisibleSessionKeys(setOf(viewModel.speakerViewOrder.value.first()))
+
+        startSpeaking(notPromoted)
+
+        assertEquals(notPromoted, viewModel.speakerViewOrder.value.first())
+        assertEquals(listOf(notPromoted), viewModel.speakers.value)
+    }
+
+    @Test
+    fun `speech that started in the grid view is not counted as started when switching to the speaker view`() {
+        addParticipants("a", "b", "c")
+        startSpeaking("b")
+        viewModel.setViewMode(CallViewMode.SPEAKER)
+        assertEquals("b", viewModel.speakerViewOrder.value.first())
+
+        startSpeaking("c")
+        addParticipants("d")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("c", viewModel.speakerViewOrder.value.first())
+    }
+
+    @Test
+    fun `switching to the speaker view orders all participants`() {
+        addParticipants("a", "b", "c")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.setViewMode(CallViewMode.SPEAKER_WITH_PARTICIPANT_BAR)
+
+        assertEquals(setOf("a", "b", "c"), viewModel.speakerViewOrder.value.toSet())
+        assertEquals(3, viewModel.speakerViewOrder.value.size)
+    }
+
+    @Test
+    fun `switching between speaker views keeps the order`() {
+        addParticipants("a", "b", "c")
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.setViewMode(CallViewMode.SPEAKER_WITH_PARTICIPANT_BAR)
+        val order = viewModel.speakerViewOrder.value
+
+        viewModel.setViewMode(CallViewMode.SPEAKER)
+
+        assertEquals(order, viewModel.speakerViewOrder.value)
+    }
+
+    @Test
+    fun `removing the promoted participant promotes another one`() {
+        addParticipants("a", "b", "c")
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.setViewMode(CallViewMode.SPEAKER)
+        val promoted = viewModel.speakerViewOrder.value.first()
+
+        viewModel.removeParticipant(promoted)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(2, viewModel.speakerViewOrder.value.size)
+        assertFalse(promoted in viewModel.speakerViewOrder.value)
+    }
+
+    @Test
+    fun `speaker view order is not updated in the grid view`() {
+        addParticipants("a", "b")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), viewModel.speakerViewOrder.value)
+    }
+
+    @Test
+    fun `restoring the view mode does not override a view mode set before`() {
+        viewModel.setViewMode(CallViewMode.SPEAKER)
+
+        viewModel.restoreViewMode(CallViewMode.GRID)
+
+        assertEquals(CallViewMode.SPEAKER, viewModel.viewMode.value)
     }
 
     private fun startSpeaking(sessionId: String) {

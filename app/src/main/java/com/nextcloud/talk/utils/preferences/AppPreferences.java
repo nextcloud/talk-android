@@ -122,6 +122,10 @@ public interface AppPreferences {
 
     void setCallMicrophoneMuted(boolean value);
 
+    String getCallViewMode();
+
+    void setCallViewMode(String value);
+
     boolean getIsKeyboardIncognito();
 
     void setIncognitoKeyboard(boolean value);
