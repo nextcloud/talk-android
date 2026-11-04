@@ -558,12 +558,15 @@ class CallActivity : CallBaseActivity() {
             MaterialTheme {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
+                val speakers by callViewModel.speakers.collectAsState()
 
                 if (screenShareParticipantUiState == null) {
                     ParticipantGrid(
                         participantUiStates = participantUiStates,
                         eglBase = rootEglBase!!,
                         isVoiceOnlyCall = isVoiceOnlyCall,
+                        speakers = speakers,
+                        onSpeakingChanged = callViewModel::updateSpeakers,
                         onClick = {},
                         onScreenShareIconClick = {
                             callViewModel.setActiveScreenShareSession(it)
