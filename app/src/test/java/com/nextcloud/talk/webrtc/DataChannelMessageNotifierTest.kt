@@ -66,6 +66,20 @@ class DataChannelMessageNotifierTest {
     }
 
     @Test
+    fun testNotifySpeaking() {
+        notifier.addListener(listener)
+        notifier.notifySpeaking()
+        verify(listener).onSpeaking()
+    }
+
+    @Test
+    fun testNotifyStoppedSpeaking() {
+        notifier.addListener(listener)
+        notifier.notifyStoppedSpeaking()
+        verify(listener).onStoppedSpeaking()
+    }
+
+    @Test
     fun testNotifyNickChanged() {
         notifier.addListener(listener)
         val newNick = "NewNick"

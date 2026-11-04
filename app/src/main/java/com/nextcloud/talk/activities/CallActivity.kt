@@ -54,7 +54,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -559,12 +558,6 @@ class CallActivity : CallBaseActivity() {
             MaterialTheme {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
-
-                LaunchedEffect(participantUiStates) {
-                    participantUiStates.forEach {
-                        Log.d(TAG, "Participant: ${it.nick} (${it.sessionKey})")
-                    }
-                }
 
                 if (screenShareParticipantUiState == null) {
                     ParticipantGrid(

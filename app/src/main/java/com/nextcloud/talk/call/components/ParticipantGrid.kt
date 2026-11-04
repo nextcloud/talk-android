@@ -21,7 +21,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +55,33 @@ fun ParticipantGrid(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val minItemHeight = 100.dp
+
+    val gridState = rememberLazyGridState()
+    var speakers by remember { mutableStateOf(emptyList<String>()) }
+    val previousSpeakingSessionKeys = remember { mutableSetOf<String>() }
+    val speakingSessionKeys = participantUiStates.filter { it.isSpeaking }.mapNotNull { it.sessionKey }.toSet()
+
+    LaunchedEffect(speakingSessionKeys) {
+        val visibleSessionKeys = gridState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? String }.toSet()
+        val updatedSpeakers = promoteSpeakers(
+            speakers = speakers,
+            startedSpeaking = speakingSessionKeys - previousSpeakingSessionKeys,
+            visibleSessionKeys = visibleSessionKeys,
+            participantSessionKeys = participantUiStates.mapNotNull { it.sessionKey }.toSet()
+        )
+        previousSpeakingSessionKeys.clear()
+        previousSpeakingSessionKeys.addAll(speakingSessionKeys)
+
+        if (updatedSpeakers != speakers) {
+            // A lazy grid keeps its first visible item in place when items move in front of it, so the grid has to
+            // be scrolled explicitly to keep showing the top, where promoted speakers are placed.
+            val isScrolledToTop = gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0
+            speakers = updatedSpeakers
+            if (isScrolledToTop) {
+                gridState.requestScrollToItem(0)
+            }
+        }
+    }
 
     if (participantUiStates.isEmpty()) return
 
@@ -95,6 +128,7 @@ fun ParticipantGrid(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
+            state = gridState,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(gridHeight),
@@ -103,15 +137,7 @@ fun ParticipantGrid(
             contentPadding = PaddingValues(vertical = edgePadding, horizontal = edgePadding)
         ) {
             items(
-                items = participantUiStates.sortedWith(
-                    compareBy(
-                        { !it.isScreenStreamEnabled },
-                        { !it.isStreamEnabled },
-                        { !it.isAudioEnabled },
-                        { !it.raisedHand },
-                        { !it.isConnected }
-                    )
-                ),
+                items = sortParticipants(participantUiStates, speakers),
                 key = { it.sessionKey!! }
             ) { participant ->
                 ParticipantTile(

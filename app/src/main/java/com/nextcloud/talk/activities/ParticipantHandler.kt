@@ -145,7 +145,7 @@ class ParticipantHandler(
 
         override fun onAudioOff() {
             Log.d(TAG, "onAudioOff: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
-            _uiState.update { it.copy(isAudioEnabled = false) }
+            _uiState.update { it.copy(isAudioEnabled = false, isSpeaking = false) }
         }
 
         override fun onVideoOn() {
@@ -156,6 +156,14 @@ class ParticipantHandler(
         override fun onVideoOff() {
             Log.d(TAG, "onVideoOff: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
             _uiState.update { it.copy(isStreamEnabled = false) }
+        }
+
+        override fun onSpeaking() {
+            _uiState.update { it.copy(isSpeaking = true) }
+        }
+
+        override fun onStoppedSpeaking() {
+            _uiState.update { it.copy(isSpeaking = false) }
         }
 
         override fun onNickChanged(nick: String?) {
@@ -194,7 +202,7 @@ class ParticipantHandler(
             // special case when participant has no permission. -> no streams are transmitted but he must be shown as
             // connected
             _uiState.update { it.copy(mediaStream = null) }
-            _uiState.update { it.copy(isAudioEnabled = false) }
+            _uiState.update { it.copy(isAudioEnabled = false, isSpeaking = false) }
             _uiState.update { it.copy(isStreamEnabled = false) }
             _uiState.update { it.copy(isConnected = true) }
             return
