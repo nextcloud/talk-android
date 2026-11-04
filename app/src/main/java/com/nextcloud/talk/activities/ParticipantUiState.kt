@@ -17,6 +17,7 @@ data class ParticipantUiState(
     val nick: String?,
     val isConnected: Boolean,
     val isAudioEnabled: Boolean,
+    val isSpeaking: Boolean = false,
     val isStreamEnabled: Boolean,
     val mediaStream: MediaStream? = null,
     val isScreenStreamEnabled: Boolean,

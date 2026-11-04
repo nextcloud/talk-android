@@ -57,6 +57,18 @@ public class DataChannelMessageNotifier {
         }
     }
 
+    public synchronized void notifySpeaking() {
+        for (PeerConnectionWrapper.DataChannelMessageListener listener : new ArrayList<>(dataChannelMessageListeners)) {
+            listener.onSpeaking();
+        }
+    }
+
+    public synchronized void notifyStoppedSpeaking() {
+        for (PeerConnectionWrapper.DataChannelMessageListener listener : new ArrayList<>(dataChannelMessageListeners)) {
+            listener.onStoppedSpeaking();
+        }
+    }
+
     public synchronized void notifyNickChanged(String nick) {
         for (PeerConnectionWrapper.DataChannelMessageListener listener : new ArrayList<>(dataChannelMessageListeners)) {
             listener.onNickChanged(nick);
