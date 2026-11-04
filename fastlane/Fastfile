@@ -26,3 +26,11 @@ GRADLE_SIGNING_PROPERTIES = {
 }.freeze
 
 import("./common.Fastfile")
+
+desc "Run tests"
+private_lane :test do
+     gradle(task: "clean testGenericDebugUnitTest testGplayDebugUnitTest testQaDebugUnitTest")
+end
+
+private_lane :repoSpecificChecks do |options|
+end
