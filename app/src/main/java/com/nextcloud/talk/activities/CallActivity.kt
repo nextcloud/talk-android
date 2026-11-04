@@ -566,7 +566,7 @@ class CallActivity : CallBaseActivity() {
                         eglBase = rootEglBase!!,
                         isVoiceOnlyCall = isVoiceOnlyCall,
                         speakers = speakers,
-                        onSpeakingChanged = callViewModel::updateSpeakers,
+                        onVisibleSessionKeysChanged = callViewModel::setVisibleSessionKeys,
                         onClick = {},
                         onScreenShareIconClick = {
                             callViewModel.setActiveScreenShareSession(it)
