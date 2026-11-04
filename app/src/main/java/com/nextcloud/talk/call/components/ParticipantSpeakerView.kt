@@ -63,6 +63,12 @@ fun ParticipantSpeakerView(
     val isBarShown = isParticipantBarVisible && barParticipants.isNotEmpty()
     val barState = rememberLazyListState()
 
+    // The previously promoted participant is inserted at the start of the bar. As the bar keeps the position of its
+    // first visible tile, scroll back so the most recent speakers are shown
+    LaunchedEffect(barState, promotedParticipant.sessionKey) {
+        barState.scrollToItem(0)
+    }
+
     LaunchedEffect(barState, promotedParticipant.sessionKey, isBarShown) {
         snapshotFlow {
             val barSessionKeys = if (isBarShown) {

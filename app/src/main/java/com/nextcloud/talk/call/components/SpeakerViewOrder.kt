@@ -64,17 +64,14 @@ fun updateSpeakerViewOrder(
 }
 
 /**
- * Moves the participant to the front. It swaps places with the previously promoted participant, so the other
- * participants keep their position in the participant bar.
+ * Moves the participant to the front. The previously promoted participant becomes the first one in the participant
+ * bar, so the participants in the bar are ordered by how recently they were promoted.
  */
 fun promoteInSpeakerView(order: List<String>, sessionKey: String?): List<String> {
     val index = order.indexOf(sessionKey)
     if (index <= 0) return order
 
-    return order.toMutableList().apply {
-        this[index] = this[0]
-        this[0] = sessionKey!!
-    }
+    return listOf(sessionKey!!) + order.filterIndexed { i, _ -> i != index }
 }
 
 private fun fallbackPromotedSessionKey(participantSessionKeys: List<String>, speakers: List<String>): String? =

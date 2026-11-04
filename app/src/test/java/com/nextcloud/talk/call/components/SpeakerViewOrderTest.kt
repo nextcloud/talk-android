@@ -24,7 +24,7 @@ class SpeakerViewOrderTest {
             speakers = listOf("d")
         )
 
-        assertEquals(listOf("c", "b", "a", "d"), result)
+        assertEquals(listOf("c", "a", "b", "d"), result)
     }
 
     @Test
@@ -54,15 +54,24 @@ class SpeakerViewOrderTest {
             speakers = emptyList()
         )
 
-        assertEquals(listOf("d", "b", "c", "a"), withSpeaker)
+        assertEquals(listOf("d", "a", "b", "c"), withSpeaker)
         assertEquals(participants, withoutSpeaker)
     }
 
     @Test
-    fun `participant that starts speaking swaps places with the promoted participant`() {
+    fun `participant that starts speaking is promoted and the previously promoted one leads the bar`() {
         val result = update(order = participants, activeSpeakers = setOf("c"))
 
-        assertEquals(listOf("c", "b", "a", "d"), result)
+        assertEquals(listOf("c", "a", "b", "d"), result)
+    }
+
+    @Test
+    fun `participant bar is ordered by the most recent speakers`() {
+        val afterC = update(order = participants, activeSpeakers = setOf("c"))
+        val afterD = update(order = afterC, activeSpeakers = setOf("d"), previousActiveSpeakers = setOf("c"))
+        val afterB = update(order = afterD, activeSpeakers = setOf("b"), previousActiveSpeakers = setOf("d"))
+
+        assertEquals(listOf("b", "d", "c", "a"), afterB)
     }
 
     @Test
@@ -73,7 +82,7 @@ class SpeakerViewOrderTest {
             previousActiveSpeakers = setOf("a", "d")
         )
 
-        assertEquals(listOf("d", "b", "c", "a"), result)
+        assertEquals(listOf("d", "a", "b", "c"), result)
     }
 
     @Test
@@ -127,7 +136,7 @@ class SpeakerViewOrderTest {
             activeSpeakers = setOf("d", "c")
         )
 
-        assertEquals(listOf("c", "b", "a", "d"), result)
+        assertEquals(listOf("c", "a", "b", "d"), result)
     }
 
     @Test
