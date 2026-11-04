@@ -39,6 +39,9 @@ import kotlin.math.ceil
 import android.util.Log
 import com.nextcloud.talk.activities.ParticipantUiState
 
+/** Minimum height of a participant tile, also used for the tiles in the participant bar of the speaker view. */
+val PARTICIPANT_TILE_MIN_HEIGHT = 100.dp
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("LongParameterList", "LongMethod")
 @Composable
@@ -56,8 +59,6 @@ fun ParticipantGrid(
 
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
-    val minItemHeight = 100.dp
 
     val gridState = rememberLazyGridState()
 
@@ -112,9 +113,9 @@ fun ParticipantGrid(
         val itemHeight = if (hasBoundedHeight) {
             val gridAvailableHeight = maxHeight - totalVerticalSpacing - totalVerticalPadding
             val rawItemHeight = gridAvailableHeight / rows
-            maxOf(rawItemHeight, minItemHeight)
+            maxOf(rawItemHeight, PARTICIPANT_TILE_MIN_HEIGHT)
         } else {
-            minItemHeight
+            PARTICIPANT_TILE_MIN_HEIGHT
         }
 
         val gridHeight = if (hasBoundedHeight) {
