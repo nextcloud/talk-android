@@ -16,13 +16,15 @@ import androidx.annotation.Nullable;
 
 public class CertificateEvent {
     private final X509Certificate x509Certificate;
+    private final String host;
     private final TrustManager trustManager;
     @Nullable
     private final SslErrorHandler sslErrorHandler;
 
-    public CertificateEvent(X509Certificate x509Certificate, TrustManager trustManager,
+    public CertificateEvent(X509Certificate x509Certificate, String host, TrustManager trustManager,
                             @Nullable SslErrorHandler sslErrorHandler) {
         this.x509Certificate = x509Certificate;
+        this.host = host;
         this.trustManager = trustManager;
         this.sslErrorHandler = sslErrorHandler;
     }
@@ -34,6 +36,10 @@ public class CertificateEvent {
 
     public X509Certificate getX509Certificate() {
         return x509Certificate;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public TrustManager getTrustManager() {

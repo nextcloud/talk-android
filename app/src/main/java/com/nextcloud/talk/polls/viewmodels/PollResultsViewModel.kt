@@ -36,7 +36,6 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
     private var disposable: Disposable? = null
 
     override fun onCleared() {
-        super.onCleared()
         disposable?.dispose()
     }
 

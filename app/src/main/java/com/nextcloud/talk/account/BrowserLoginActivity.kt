@@ -27,10 +27,10 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ActivityWebViewLoginBinding
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import kotlinx.coroutines.launch
@@ -49,9 +49,7 @@ class BrowserLoginActivity : BaseActivity() {
     private var reauthorizeAccount = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            startActivity(AppTasks.createRestartIntent(context))
         }
     }
 
@@ -118,6 +116,13 @@ class BrowserLoginActivity : BaseActivity() {
                             Snackbar.make(binding.root, R.string.nc_login_too_many_attempts, Snackbar.LENGTH_LONG)
                                 .show()
                         }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRemovalPending -> {
+                            logger.e(TAG, "Account removal did not finish in time")
+                            // This login can't be retried here. Back on the previous screen, it can be started again,
+                            // so the message must outlive this activity.
+                            Toast.makeText(context, R.string.nc_account_removal_pending, Toast.LENGTH_LONG).show()
+                            finish()
+                        }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
                             restartApp()
                         }
@@ -180,9 +185,7 @@ class BrowserLoginActivity : BaseActivity() {
     }
 
     private fun restartApp() {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        startActivity(AppTasks.createRestartIntent(context))
     }
 
     public override fun onDestroy() {

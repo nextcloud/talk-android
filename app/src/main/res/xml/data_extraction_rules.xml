@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<!-- From Android 12 on, instead of backup_config: the copies of the files other apps shared, which are only kept until
+     they are uploaded -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude
+            domain="file"
+            path="shared_file_copies/" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude
+            domain="file"
+            path="shared_file_copies/" />
+    </device-transfer>
+</data-extraction-rules>

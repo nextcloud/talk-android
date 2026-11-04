@@ -127,7 +127,6 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     override fun onCleared() {
-        super.onCleared()
         disposable?.dispose()
     }
 

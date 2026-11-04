@@ -94,8 +94,6 @@
     <string name="message_deleted_by_you">Missatge suprimit per tu</string>
     <string name="message_last_edited_by">Editat per %1$s</string>
     <string name="message_poll_tap_to_open">Toqueu per obrir l\'enquesta</string>
-    <string name="message_search_begin_empty">No s\'han trobat resultats</string>
-    <string name="message_search_begin_typing">Comença a escriure per cercar …</string>
     <string name="message_search_hint">Cerca …</string>
     <string name="messages">Missatges</string>
     <string name="mute_all_notifications">Silencieu totes les notificacions</string>
@@ -112,6 +110,8 @@
     <string name="nc_add_to_favorites">Afegeix a preferits</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
     <string name="nc_attendee_pin">Ancora: %1$s</string>
+    <string name="nc_audio_player_next">Següent</string>
+    <string name="nc_audio_player_previous">Anterior</string>
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_bluetooth_permission_hint">Per a habilitar els altaveus Bluetooth, concediu el permís de \"Dispositius propers\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Respon com a trucada de vídeo</string>
@@ -121,6 +121,7 @@
     <string name="nc_call_button_content_description_hangup">Penja</string>
     <string name="nc_call_button_content_description_microphone">Commuta el micròfon</string>
     <string name="nc_call_button_content_description_pip">Obre la imatge en mode d\'imatge</string>
+    <string name="nc_call_button_content_description_switch_camera">Canviar la càmera</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Canviar al vídeo propi</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversa</string>
@@ -141,7 +142,6 @@
     <string name="nc_cancel">Cancel·la</string>
     <string name="nc_capabilities_failed">No s\'han pogut obtenir les funcionalitats, s\'està avortant</string>
     <string name="nc_caption">Subtítol</string>
-    <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
@@ -282,7 +282,6 @@
     <string name="nc_lobby_start_soon">La reunió començarà aviat</string>
     <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
     <string name="nc_location_current_position_description">La vostra ubicació actual</string>
-    <string name="nc_location_permission_required">es necessita permís d\'ubicació</string>
     <string name="nc_location_unknown">Posició desconeguda</string>
     <string name="nc_locked">Bloquejat</string>
     <string name="nc_locked_tap_to_unlock">Toca per desblocar</string>

@@ -26,7 +26,10 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.upload.UploadWorkspace
+import com.nextcloud.talk.utils.UploadSourceGrants
 import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -152,6 +155,17 @@ class UploadCancelCascadeTest {
 
         assertAllSucceeded(workManager, a, b, c)
         assertCancelled("ref-a", "ref-b", "ref-c")
+    }
+
+    @Test
+    fun `an upload cancelled before it started releases the read access to its file at once`() {
+        initWorkManager()
+        UploadSourceGrants.keep(context(), "content://media/ref-a")
+        val (a) = enqueue("ref-a")
+
+        UploadAndShareFilesWorker.cancelUpload("ref-a", a, "content://media/ref-a")
+
+        assertEquals(emptyList<Any>(), context().contentResolver.persistedUriPermissions)
     }
 
     @Test
@@ -321,6 +335,8 @@ class UploadCancelCascadeTest {
         setSharedApplication(
             mock {
                 on { applicationContext } doReturn context()
+                on { contentResolver } doReturn context().contentResolver
+                on { appScope } doReturn CoroutineScope(Dispatchers.Unconfined)
             }
         )
         return WorkManager.getInstance(context())

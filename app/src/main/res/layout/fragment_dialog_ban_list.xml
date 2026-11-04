@@ -35,7 +35,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/standard_margin"
             android:text="@string/bans_list"
-            android:textSize="@dimen/md_title_textsize" />
+            android:textSize="@dimen/dialog_title_text_size" />
     </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider

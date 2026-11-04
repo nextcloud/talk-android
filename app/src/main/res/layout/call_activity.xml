@@ -55,6 +55,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp">
 
@@ -76,6 +77,20 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="@null"
                         android:src="@drawable/record_stop"
+                        android:translationZ="2dp"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+                    </ImageView>
+
+                    <ImageView
+                        android:id="@+id/call_screen_sharing_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="@dimen/min_size_clickable_area"
+                        android:minHeight="@dimen/min_size_clickable_area"
+                        android:scaleType="center"
+                        android:contentDescription="@string/nc_stop_screen_sharing"
+                        android:src="@drawable/screen_share_indicator"
                         android:translationZ="2dp"
                         android:visibility="gone"
                         tools:visibility="visible">
@@ -103,6 +118,18 @@
                         android:id="@+id/composeParticipantGrid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
+                    <FrameLayout
+                        android:id="@+id/selfVideoViewWrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.compose.ui.platform.ComposeView
+                            android:id="@+id/selfVideoComposeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="visible" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -268,21 +295,6 @@
                         app:tint="@color/white" />
                 </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/selfVideoViewWrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="100dp">
-
-                <androidx.compose.ui.platform.ComposeView
-                    android:id="@+id/selfVideoComposeView"
-                    android:layout_width="80dp"
-                    android:layout_height="104dp"
-                    android:visibility="visible" />
-            </FrameLayout>
 
             <View
                 android:id="@+id/verticalCenter"

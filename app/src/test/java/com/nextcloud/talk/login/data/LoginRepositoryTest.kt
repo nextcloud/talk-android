@@ -389,7 +389,7 @@ class LoginRepositoryTest {
     // ========== parseAndLogin() Tests ==========
 
     @Test
-    fun `parseAndLogin returns null when user is scheduled for deletion`() =
+    fun `parseAndLogin sets the account up again once its pending removal finished`() =
         runTest {
             // Arrange
             val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
@@ -397,13 +397,31 @@ class LoginRepositoryTest {
                 .thenReturn(true)
             whenever(localLoginDataSource.startAccountRemovalWorker())
                 .thenReturn(liveData)
+            whenever(localLoginDataSource.awaitUserRemoval(any(), any())).thenReturn(true)
+
+            whenever(localLoginDataSource.checkIfUserExists(loginData)).thenReturn(false)
 
             // Act
             val result = repo.parseAndLogin(loginData)
 
             // Assert
-            assertEquals(LoginRepository.LoginResult.ExistingAccount, result)
+            assertTrue(result is LoginRepository.LoginResult.NewAccount)
             verify(localLoginDataSource).startAccountRemovalWorker()
+            verify(localLoginDataSource).awaitUserRemoval(any(), any())
+        }
+
+    @Test
+    fun `parseAndLogin reports a pending removal that does not finish in time`() =
+        runTest {
+            val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData)).thenReturn(true)
+            whenever(localLoginDataSource.startAccountRemovalWorker()).thenReturn(liveData)
+            whenever(localLoginDataSource.awaitUserRemoval(any(), any())).thenReturn(false)
+
+            val result = repo.parseAndLogin(loginData)
+
+            assertEquals(LoginRepository.LoginResult.RemovalPending, result)
+            verify(localLoginDataSource, never()).checkIfUserExists(any())
         }
 
     @Test
@@ -530,6 +548,8 @@ class LoginRepositoryTest {
                 .thenReturn(true)
             whenever(localLoginDataSource.startAccountRemovalWorker())
                 .thenReturn(liveData)
+            whenever(localLoginDataSource.awaitUserRemoval(any(), any())).thenReturn(true)
+            whenever(localLoginDataSource.checkIfUserExists(loginData)).thenReturn(false)
 
             // Act
             repo.parseAndLogin(loginData)

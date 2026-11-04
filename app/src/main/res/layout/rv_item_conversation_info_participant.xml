@@ -88,18 +88,4 @@
         app:layout_constraintTop_toTopOf="@+id/name_text"
         tools:text="Moderator (or userid for autocomplete mention)" />
 
-
-    <ImageView
-        android:id="@+id/videoCallIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:layout_marginEnd="@dimen/standard_half_margin"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_videocam_grey_600_24dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/secondary_text"
-        tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

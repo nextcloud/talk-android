@@ -1,0 +1,14 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# firebase-analytics is excluded on purpose
+-dontwarn com.google.firebase.analytics.connector.AnalyticsConnector
+
+# Only referenced from geogson toString()
+-dontwarn com.google.common.base.Objects$ToStringHelper
+
+# Optional annotations of joda-time
+-dontwarn org.joda.convert.FromString
+-dontwarn org.joda.convert.ToString

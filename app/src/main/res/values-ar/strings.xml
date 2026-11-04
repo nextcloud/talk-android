@@ -91,8 +91,6 @@
     <string name="message_deleted_by_you">مُسحت الرسالة بواسطتك</string>
     <string name="message_last_edited_by">تمّ التعديل من قِبَل %1$s</string>
     <string name="message_poll_tap_to_open">أنقُر لفتح الاستبيان</string>
-    <string name="message_search_begin_empty">لا توجد نتائج</string>
-    <string name="message_search_begin_typing">أكتب هنا للبحث …</string>
     <string name="message_search_hint">بحث …</string>
     <string name="messages">الرسائل</string>
     <string name="mute_all_notifications">عدم إظهار جميع التنبيهات</string>
@@ -109,6 +107,8 @@
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_all_ok_operation">تم!</string>
     <string name="nc_attendee_pin">الرمز: %1$s</string>
+    <string name="nc_audio_player_next">التالي</string>
+    <string name="nc_audio_player_previous">السابق</string>
     <string name="nc_biometric_unlock">فتح قفل %1$s</string>
     <string name="nc_bluetooth_permission_hint">لتمكين مكبرات صوت البلوتوث، يرجى منح إذن \"الأجهزة المجاورة\".</string>
     <string name="nc_call_button_content_description_answer_video_call">الردُّ بمكالمة مرئية</string>
@@ -118,6 +118,7 @@
     <string name="nc_call_button_content_description_hangup">إنهاء المكالمة</string>
     <string name="nc_call_button_content_description_microphone">تبديل لاقط الصوت</string>
     <string name="nc_call_button_content_description_pip">فتح وضعية \"صورة في صورة\" PIP</string>
+    <string name="nc_call_button_content_description_switch_camera">تبديل الكاميرا</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">تبديل إلى الفيديو الذاتي</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_name">اسم المحادثة</string>
@@ -138,7 +139,6 @@
     <string name="nc_cancel">إلغاء</string>
     <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
     <string name="nc_caption">الشرح</string>
-    <string name="nc_certificate_dialog_text">هل تثق في شهادة SSL غير المعروفة حتى الآن ، الصادرة من%1$sإلى %2$s  ، الصالحة %3$s إلى%4$s؟</string>
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
@@ -282,7 +282,6 @@
     <string name="nc_lobby_start_soon">هذا الاجتماع سيبدأ قريباً</string>
     <string name="nc_lobby_waiting">أنت حاليا في انتظار الاستقبال</string>
     <string name="nc_location_current_position_description">موقعك الحالي</string>
-    <string name="nc_location_permission_required">إذن الموقع مطلوب</string>
     <string name="nc_location_unknown">الموقع غير معلوم</string>
     <string name="nc_locked">مقفل</string>
     <string name="nc_locked_tap_to_unlock">أنقُر لفكّ القُفْل</string>

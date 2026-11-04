@@ -1,0 +1,10 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# LoganSquare looks up the generated mapper by appending $$JsonObjectMapper to the model class name
+-keepnames @com.bluelinelabs.logansquare.annotation.JsonObject class *
+-keep class **$$JsonObjectMapper {
+    <init>();
+}

@@ -11,7 +11,8 @@ package com.nextcloud.talk.ui;
 import android.os.Bundle;
 
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MainActivity;
+import com.nextcloud.talk.conversationlist.ConversationsListActivity;
+import com.nextcloud.talk.utils.AppTasks;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import java.util.Objects;
 
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.web.webdriver.DriverAtoms;
 import androidx.test.espresso.web.webdriver.Locator;
@@ -44,7 +46,9 @@ public class LoginIT {
     @Test
     public void login() throws InterruptedException {
 
-        ActivityScenario<MainActivity> activityScenario = ActivityScenario.launch(MainActivity.class);
+        // started like by the launcher, without an account
+        ActivityScenario<ConversationsListActivity> activityScenario = ActivityScenario.launch(
+            AppTasks.INSTANCE.createLauncherIntent(ApplicationProvider.getApplicationContext()));
 
         Bundle arguments = androidx.test.platform.app.InstrumentationRegistry.getArguments();
 

@@ -1,0 +1,9 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Deserialized by Gson, not every field is annotated with @SerializedName
+-keepclassmembers class fr.dudie.nominatim.model.** {
+    <fields>;
+}

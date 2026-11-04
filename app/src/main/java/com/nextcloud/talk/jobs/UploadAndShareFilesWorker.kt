@@ -26,6 +26,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.Worker
@@ -58,6 +59,8 @@ import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.ImageCompressor
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
+import com.nextcloud.talk.utils.SharedFileCopies
+import com.nextcloud.talk.utils.UploadSourceGrants
 import com.nextcloud.talk.utils.VideoCompressor
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -152,7 +155,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             return Result.retry()
         }
         try {
-            return doUpload()
+            return doUpload().also { result ->
+                // not for a retry, which reads the file again
+                val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
+                if (result != Result.retry() && sourceFile != null) UploadSourceGrants.release(context, sourceFile, id)
+            }
         } finally {
             if (!keepWorkspace) {
                 workspace.delete()
@@ -881,6 +888,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     WorkRequest.MIN_BACKOFF_MILLIS,
                     TimeUnit.MILLISECONDS
                 )
+                // keeps a copy of a shared file until its upload is done
+                .apply { SharedFileCopies.uploadTagOf(fileUri)?.let { addTag(it) } }
+                // keeps the read access to a picked file until its upload is done
+                .apply { UploadSourceGrants.uploadTagOf(fileUri)?.let { addTag(it) } }
                 .build()
             // Chained per conversation (not enqueueUniqueWork(fileUri, ...), which ran every upload
             // fully independently) so multiple files - whether from one multi-file share or several
@@ -911,9 +922,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
          * for the network or runs right now, it sees the flag and aborts (see [isCancelled]). Nothing is cancelled
          * in WorkManager. The id is only known in memory of the chat, so after a restart the work is found by its
          * reference id tag. Blocks on WorkManager: call it off the main thread.
+         *
+         * The read access to the picked file [fileUri] is released by the work itself when it ends. A work that is
+         * not running ends only when it gets its turn, maybe days later: it sees the flag before it reads the file,
+         * so its access is released at once.
          */
         @Suppress("Detekt.TooGenericExceptionCaught")
-        fun cancelUpload(referenceId: String, workId: UUID?) {
+        fun cancelUpload(referenceId: String, workId: UUID?, fileUri: String? = null) {
             // Called from the chat and from the notification right when an upload may be ending, so a failed
             // lookup or a workspace deleted meanwhile must not crash the app.
             try {
@@ -926,11 +941,16 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 } else {
                     emptyList()
                 }
-                infos.filter { !it.state.isFinished }.forEach { info ->
-                    UploadWorkspace(workspaceDir(context, info.id)).markCancelled()
-                }
+                infos.filter { !it.state.isFinished }.forEach { markCancelled(context, it, fileUri) }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to cancel upload", e)
+            }
+        }
+
+        private fun markCancelled(context: Context, info: WorkInfo, fileUri: String?) {
+            UploadWorkspace(workspaceDir(context, info.id)).markCancelled()
+            if (info.state != WorkInfo.State.RUNNING) {
+                fileUri?.let { UploadSourceGrants.releaseLater(it, exceptWorkId = info.id) }
             }
         }
     }

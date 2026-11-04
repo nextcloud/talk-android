@@ -199,6 +199,10 @@ After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new
 - **SpotBugs**: filter in `spotbugs-filter.xml`; FindSecBugs and fb-contrib active
 - **lint**: HTML report at `app/build/reports/lint/lint.html`
 
+## R8 App Optimization
+
+Release builds are optimized, shrunk and obfuscated by R8 (`optimization { enable = true }` in `app/build.gradle.kts`). Keep rules live in `app/src/main/keepRules/*.keep`, one file per library or concern. Code reached only through reflection or JNI (e.g. LoganSquare mappers, Gson models without `@SerializedName`) needs a narrow keep rule there. Use the [`r8-analyzer`](https://github.com/android/skills/tree/main/performance/r8-analyzer) skill and `./gradlew :app:analyzeGplayReleaseR8Config` to check rule impact when changing keep rules.
+
 ## Testing
 
 - **Unit tests**: `app/src/test/` — JUnit 4/5, Mockito, Robolectric, MockWebServer. Uses `useJUnitPlatform()`.

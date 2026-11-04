@@ -10,6 +10,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.text.format.Formatter
+import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -152,7 +153,7 @@ private fun downscaleIfNeeded(bitmap: Bitmap): Bitmap {
     val scale = VIDEO_FRAME_MAX_DIMENSION_PX.toFloat() / largestDimension
     val targetWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)
     val targetHeight = (bitmap.height * scale).roundToInt().coerceAtLeast(1)
-    return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
+    return bitmap.scale(targetWidth, targetHeight)
 }
 
 @Suppress("ReturnCount")

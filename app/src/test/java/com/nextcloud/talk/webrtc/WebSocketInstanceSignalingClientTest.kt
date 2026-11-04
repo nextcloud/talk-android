@@ -6,9 +6,13 @@
  */
 package com.nextcloud.talk.webrtc
 
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
+import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessageDto
+import com.nextcloud.talk.models.json.websocket.CallWebSocketMessageDto
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
@@ -32,6 +36,27 @@ class WebSocketInstanceSignalingClientTest {
             30_000,
             signalingClient.pingIntervalMillis
         )
+    }
+
+    @Test
+    fun senderIsTakenFromTheEnvelope() {
+        val message = CallWebSocketMessageDto(
+            senderWebSocketMessage = ActorWebSocketMessageDto(type = "session", sessionId = "real-sender"),
+            ncSignalingMessage = NCSignalingMessageDto(from = "claimed-sender")
+        )
+
+        WebSocketInstance.takeSenderFromEnvelope(message)
+
+        assertEquals("real-sender", message.ncSignalingMessage!!.from)
+    }
+
+    @Test
+    fun claimedSenderIsDroppedWithoutEnvelope() {
+        val message = CallWebSocketMessageDto(ncSignalingMessage = NCSignalingMessageDto(from = "claimed-sender"))
+
+        WebSocketInstance.takeSenderFromEnvelope(message)
+
+        assertNull(message.ncSignalingMessage!!.from)
     }
 
     @Test

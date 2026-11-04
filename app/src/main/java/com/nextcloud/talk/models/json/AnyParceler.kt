@@ -13,6 +13,6 @@ class AnyParceler : Parceler<Any?> {
     override fun create(parcel: Parcel): Any? = parcel.readValue(Any::class.java.getClassLoader())
 
     override fun Any?.write(parcel: Parcel, flags: Int) {
-        parcel.writeValue(parcel)
+        parcel.writeValue(this)
     }
 }

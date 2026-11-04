@@ -361,7 +361,7 @@ class MessageInputViewModel :
 
     fun pauseMediaPlayer() {
         audioFocusRequestManager.audioFocusRequest(false) {
-            mediaPlayerManager.pause(false)
+            mediaPlayerManager.pause()
             _isVoicePreviewPlaying.postValue(false)
         }
     }

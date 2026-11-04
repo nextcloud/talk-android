@@ -34,7 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -142,9 +143,9 @@ internal fun ThumbnailStrip(
  * so the drop-line can be drawn after the last thumbnail, not just before it.
  */
 private class DragReorderState {
-    val draggedIndex = mutableStateOf(-1)
-    val dragOffsetX = mutableStateOf(0f)
-    val insertionIndex = mutableStateOf(-1)
+    val draggedIndex = mutableIntStateOf(-1)
+    val dragOffsetX = mutableFloatStateOf(0f)
+    val insertionIndex = mutableIntStateOf(-1)
 }
 
 @Suppress("LongParameterList")
@@ -160,7 +161,7 @@ private fun DraggableStripItem(
     onRemove: (String) -> Unit,
     onReorder: (Int, Int) -> Unit
 ) {
-    val isDragged = index == dragState.draggedIndex.value
+    val isDragged = index == dragState.draggedIndex.intValue
     val currentIndex by rememberUpdatedState(index)
 
     Box {
@@ -170,36 +171,36 @@ private fun DraggableStripItem(
             onClick = { onSelect(index) },
             onRemove = { onRemove(description.uri) },
             modifier = Modifier
-                .graphicsLayer { translationX = if (isDragged) dragState.dragOffsetX.value else 0f }
+                .graphicsLayer { translationX = if (isDragged) dragState.dragOffsetX.floatValue else 0f }
                 .zIndex(if (isDragged) 1f else 0f)
                 .pointerInput(description.uri) {
                     detectDragGesturesAfterLongPress(
                         onDragStart = {
-                            dragState.draggedIndex.value = currentIndex
-                            dragState.insertionIndex.value = currentIndex
-                            dragState.dragOffsetX.value = 0f
+                            dragState.draggedIndex.intValue = currentIndex
+                            dragState.insertionIndex.intValue = currentIndex
+                            dragState.dragOffsetX.floatValue = 0f
                         },
                         onDragEnd = {
-                            val from = dragState.draggedIndex.value
-                            val insertion = dragState.insertionIndex.value
+                            val from = dragState.draggedIndex.intValue
+                            val insertion = dragState.insertionIndex.intValue
                             if (from >= 0 && insertion >= 0) {
                                 val to = if (insertion > from) insertion - 1 else insertion
                                 if (to != from) onReorder(from, to)
                             }
-                            dragState.draggedIndex.value = -1
-                            dragState.insertionIndex.value = -1
-                            dragState.dragOffsetX.value = 0f
+                            dragState.draggedIndex.intValue = -1
+                            dragState.insertionIndex.intValue = -1
+                            dragState.dragOffsetX.floatValue = 0f
                         },
                         onDragCancel = {
-                            dragState.draggedIndex.value = -1
-                            dragState.insertionIndex.value = -1
-                            dragState.dragOffsetX.value = 0f
+                            dragState.draggedIndex.intValue = -1
+                            dragState.insertionIndex.intValue = -1
+                            dragState.dragOffsetX.floatValue = 0f
                         },
                         onDrag = { change, dragAmount ->
                             change.consume()
-                            dragState.dragOffsetX.value += dragAmount.x
-                            val slotsMoved = (dragState.dragOffsetX.value / itemExtentPx).roundToInt()
-                            dragState.insertionIndex.value = (currentIndex + slotsMoved).coerceIn(0, itemCount)
+                            dragState.dragOffsetX.floatValue += dragAmount.x
+                            val slotsMoved = (dragState.dragOffsetX.floatValue / itemExtentPx).roundToInt()
+                            dragState.insertionIndex.intValue = (currentIndex + slotsMoved).coerceIn(0, itemCount)
                         }
                     )
                 }
@@ -211,16 +212,16 @@ private fun DraggableStripItem(
 
 @Composable
 private fun BoxScope.DropIndicators(index: Int, itemCount: Int, dragState: DragReorderState) {
-    if (dragState.draggedIndex.value < 0) return
+    if (dragState.draggedIndex.intValue < 0) return
 
-    if (dragState.insertionIndex.value == index) {
+    if (dragState.insertionIndex.intValue == index) {
         DropIndicatorLine(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .offset(x = (-INDICATOR_GAP_OFFSET_DP).dp)
         )
     }
-    if (index == itemCount - 1 && dragState.insertionIndex.value == itemCount) {
+    if (index == itemCount - 1 && dragState.insertionIndex.intValue == itemCount) {
         DropIndicatorLine(
             modifier = Modifier
                 .align(Alignment.CenterEnd)

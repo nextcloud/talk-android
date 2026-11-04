@@ -15,7 +15,7 @@ import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.graphics.toColorInt
-import com.nextcloud.talk.utils.AudioUtils
+import com.nextcloud.talk.chat.audio.Waveforms
 import kotlin.math.roundToInt
 import androidx.core.graphics.withSave
 
@@ -74,7 +74,7 @@ class WaveformSeekBar : AppCompatSeekBar {
         if (usableWidth > MINIMUM_WIDTH && rawData.isNotEmpty() && usableWidth != savedMeasure) {
             savedMeasure = usableWidth
             val numBars = if (usableWidth > VALUE_100) (usableWidth / WIDTH_DIVISOR) else usableWidth / 2f
-            waveData = AudioUtils.shrinkFloatArray(rawData, numBars.roundToInt())
+            waveData = Waveforms.reduce(rawData, numBars.roundToInt())
             invalidate()
         }
     }

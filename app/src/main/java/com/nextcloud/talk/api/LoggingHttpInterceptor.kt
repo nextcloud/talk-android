@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.api
 
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.logger.LogsRepository
@@ -20,7 +21,9 @@ class LoggingHttpInterceptor @Inject constructor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (logsRepository.minimumLevel > Level.DEBUG) {
+        // Debug builds always log HTTP traffic to logcat. The log level chosen in the app only decides
+        // what the logger writes to the log file on the device.
+        if (!BuildConfig.DEBUG && logsRepository.minimumLevel > Level.DEBUG) {
             return chain.proceed(chain.request())
         }
         // A local StringBuilder is safe here because HttpLoggingInterceptor calls

@@ -38,6 +38,13 @@
          the cutout mode itself is in values-v28 -->
     <style name="AppTheme.DisplayCutout" parent="AppTheme" />
 
+    <!-- For activities that show nothing but a progress indicator over the previous screen. -->
+    <style name="AppTheme.Translucent" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.Material3.Dark">
         <item name="android:colorBackground">@color/bg_default</item>
         <item name="colorSurface">@color/bg_default</item>
@@ -91,8 +98,6 @@
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
-    <style name="CallButtonMenu" parent="@style/ChatSendButtonMenu" />
-
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Talk.BottomSheetDialog</item>
     </style>
@@ -100,13 +105,6 @@
     <style name="Talk.BottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="backgroundTint">@color/bg_bottom_sheet</item>
         <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
-    </style>
-
-    <style name="TransparentTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/background_dark</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
@@ -119,19 +117,9 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">#de000000</item>
-        <item name="android:textSize">@dimen/chat_text_size</item>
-    </style>
-
     <style name="ChipOutgoingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/textColorOnPrimaryBackground</item>
         <item name="android:textSize">@dimen/chat_text_size</item>
-    </style>
-
-    <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="appActionBarPopupMenu" parent="@style/Widget.Material3.PopupMenu.Overflow">
@@ -177,16 +165,6 @@
     </style>
 
     <style name="Widget.AppTheme.Button.IconButton" parent="Widget.Material3.Button.TextButton">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:insetLeft">0dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetRight">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="iconGravity">textStart</item>
-        <item name="iconPadding">0dp</item>
-    </style>
-
-    <style name="Widget.AppTheme.Button.ElevatedButton" parent="Widget.Material3.Button.ElevatedButton">
         <item name="android:minWidth">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -248,17 +226,16 @@
         <item name="android:alertDialogTheme">?alertDialogTheme</item>
     </style>
 
-    <style name="TextInputLayoutTheme" parent="Theme.AppCompat">
-        <item name="colorSurface">@color/bg_default</item>
-    </style>
-
     <style name="FullScreenTextTheme" parent="AppTheme">
         <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
-    <!-- Launch screen -->
-    <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/launch_screen</item>
+    <!-- Launch screen of the conversation list, the launcher activity, see androidx.core:core-splashscreen. Android
+         only shows it when the app is launched with the list, e.g. not when a notification opens a chat. -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorPrimary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.DisplayCutout</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
@@ -312,20 +289,6 @@
     <style name="fab_3_rounded">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
-    </style>
-
-    <style name="LinkPreviewStyle">
-        <item name="cornerSizeTopRight">12dp</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-        <item name="cornerSizeTopLeft">12dp</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
-    </style>
-
-    <style name="LinkPreviewStyleLand">
-        <item name="cornerSizeTopLeft">12dp</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-        <item name="cornerSizeBottomLeft">12dp</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
     </style>
 
 </resources>

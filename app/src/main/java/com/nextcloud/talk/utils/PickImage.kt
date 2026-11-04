@@ -45,6 +45,7 @@ import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
 
+private const val TAG: String = "PickImage"
 private const val FULL_QUALITY: Int = 100
 
 /**
@@ -69,7 +70,7 @@ internal fun decodeAvatarToFile(
     val bitmap = body?.use { decode(it.byteStream()) }
     if (bitmap == null) {
         val cause = if (body == null) "request returned no body" else "could not be decoded"
-        Log.e("PickImage", "Avatar thumbnail $cause")
+        Log.e(TAG, "Avatar thumbnail $cause")
         return null
     }
     return try {
@@ -80,7 +81,7 @@ internal fun decodeAvatarToFile(
         if (!written) throw IOException("Bitmap.compress returned false")
         file
     } catch (e: IOException) {
-        Log.e("PickImage", "Error saving the avatar image", e)
+        Log.e(TAG, "Error saving the avatar image", e)
         null
     }
 }
@@ -226,7 +227,6 @@ class PickImage(private val activity: ComponentActivity, private var currentUser
     }
 
     companion object {
-        private const val TAG: String = "PickImage"
         private const val MAX_SIZE: Int = 1024
         private const val AVATAR_PATH = "photos/avatar.png"
         private const val CAMERA_CAPTURE_PATH = "photos/camera_capture.jpg"

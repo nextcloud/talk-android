@@ -110,7 +110,6 @@ class CallRecordingViewModel @Inject constructor(private val repository: CallRec
     }
 
     override fun onCleared() {
-        super.onCleared()
         disposable?.dispose()
     }
 

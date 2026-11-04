@@ -41,6 +41,7 @@ import android.widget.SeekBar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -918,9 +919,7 @@ class MessageInputFragment : Fragment() {
 
         override fun recordSelection(emoji: String) {
             val updated = listOf(emoji) + getStoredList().filterNot { it == emoji }
-            prefs.edit()
-                .putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(","))
-                .apply()
+            prefs.edit { putString("recent", updated.take(MAX_STORED_RECENT_EMOJIS).joinToString(",")) }
         }
 
         override suspend fun getRecentEmojiList(): List<String> = getStoredList()
@@ -979,14 +978,11 @@ class MessageInputFragment : Fragment() {
 
     fun updateOwnTypingStatus(typedText: CharSequence) {
         fun sendStartTypingSignalingMessage() {
-            val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
-            if (concurrentSafeHashMap != null) {
-                for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessageDto()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
-                    chatActivity.signalingMessageSender!!.send(ncSignalingMessage)
-                }
+            chatActivity.webSocketInstance?.getRoomSessionIds()?.forEach { sessionId ->
+                val ncSignalingMessage = NCSignalingMessageDto()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
+                chatActivity.signalingMessageSender!!.send(ncSignalingMessage)
             }
         }
 
@@ -1026,14 +1022,11 @@ class MessageInputFragment : Fragment() {
             typingTimer = null
             typedWhileTypingTimerIsRunning = false
 
-            val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
-            if (concurrentSafeHashMap != null) {
-                for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessageDto()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
-                    chatActivity.signalingMessageSender?.send(ncSignalingMessage)
-                }
+            chatActivity.webSocketInstance?.getRoomSessionIds()?.forEach { sessionId ->
+                val ncSignalingMessage = NCSignalingMessageDto()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
+                chatActivity.signalingMessageSender?.send(ncSignalingMessage)
             }
         }
     }

@@ -8,6 +8,7 @@ package com.nextcloud.talk.signaling
 
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.call.e2ee.EncryptionMessage
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
@@ -59,6 +60,8 @@ abstract class SignalingMessageReceiver {
 
     private val webRtcMessageNotifier = WebRtcMessageNotifier()
 
+    private val encryptionMessageNotifier = EncryptionMessageNotifier()
+
     /**
      * Listener for participant list messages.
      *
@@ -76,12 +79,12 @@ abstract class SignalingMessageReceiver {
          * Only the following participant properties are set:
          * - inCall
          * - lastPing
+         * - participantPermissions (since Talk 13)
          * - sessionId
          * - userId (if the participant is not a guest)
          *
-         * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
-         * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
-         * ignored.
+         * "publishingPermissions" was provided instead of "participantPermissions" in Talk 12, but it was not used
+         * anywhere, so it is ignored.
          *
          * @param participants all the participants (users and guests) in the room
          */
@@ -101,6 +104,7 @@ abstract class SignalingMessageReceiver {
          * Only the following participant properties are set:
          * - inCall
          * - lastPing
+         * - participantPermissions (since Talk 13)
          * - sessionId
          * - type
          * - userId (if the participant is not a guest)
@@ -108,9 +112,8 @@ abstract class SignalingMessageReceiver {
          * "nextcloudSessionId" is provided in the message (when the "inCall" property of any participant changed), but
          * not currently set in the participant.
          *
-         * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
-         * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
-         * ignored.
+         * "publishingPermissions" was provided instead of "participantPermissions" in Talk 12, but it was not used
+         * anywhere, so it is ignored.
          *
          * @param participants all the participants (users and guests) in the room
          */
@@ -169,6 +172,13 @@ abstract class SignalingMessageReceiver {
     interface ConversationMessageListener {
         fun onStartTyping(userId: String?, session: String?)
         fun onStopTyping(userId: String?, session: String?)
+
+        /**
+         * Sessions which left the room. Their typing indicator is not going to be stopped by them any more.
+         */
+        fun onSessionsLeft(sessions: List<String>) {
+            // optional
+        }
         fun onChatMessagesReceived(chatMessages: List<ChatMessageDto>)
     }
 
@@ -199,6 +209,15 @@ abstract class SignalingMessageReceiver {
         fun onAnswer(sdp: String, nick: String?)
         fun onCandidate(sdpMid: String, sdpMLineIndex: Int, sdp: String)
         fun onEndOfCandidates()
+    }
+
+    /**
+     * Listener for the key exchange messages of end-to-end encrypted calls.
+     *
+     * These messages are not passed to any other listener.
+     */
+    fun interface EncryptionMessageListener {
+        fun onEncryptionMessage(sessionId: String, message: EncryptionMessage)
     }
 
     /**
@@ -294,6 +313,14 @@ abstract class SignalingMessageReceiver {
         webRtcMessageNotifier.removeListener(listener)
     }
 
+    fun addListener(listener: EncryptionMessageListener?) {
+        encryptionMessageNotifier.addListener(listener)
+    }
+
+    fun removeListener(listener: EncryptionMessageListener?) {
+        encryptionMessageNotifier.removeListener(listener)
+    }
+
     fun processEvent(eventMap: Map<String, Any>?) {
         if ("room" == eventMap?.get("target") && "switchto" == eventMap["type"]) {
             processSwitchToEvent(eventMap)
@@ -305,6 +332,13 @@ abstract class SignalingMessageReceiver {
             processUpdateEvent(eventMap)
 
             return
+        }
+
+        if ("room" == eventMap?.get("target") && "leave" == eventMap["type"]) {
+            val leftSessions = (eventMap["leave"] as? List<*>)?.filterIsInstance<String>()
+            if (!leftSessions.isNullOrEmpty()) {
+                conversationMessageNotifier.notifySessionsLeft(leftSessions)
+            }
         }
     }
 
@@ -609,6 +643,10 @@ abstract class SignalingMessageReceiver {
             participant.actorId = participantMap["actorId"].toString()
         }
 
+        if (participantMap["participantPermissions"] is Number) {
+            participant.participantPermissions = (participantMap["participantPermissions"] as Number).toInt()
+        }
+
         // Only in external signaling messages
         if (participantMap["participantType"] != null) {
             val participantTypeInt = participantMap["participantType"].toString().toInt()
@@ -652,6 +690,41 @@ abstract class SignalingMessageReceiver {
 
         val sessionId = signalingMessage.from
         val roomType = signalingMessage.roomType
+
+        if ("message" == type) {
+            // Message schema (external signaling server only, the key exchange needs the MCU):
+            // {
+            //     "type": "message",
+            //     "message": {
+            //         "sender": {
+            //             ...
+            //         },
+            //         "data": {
+            //             "to": #STRING#,
+            //             "type": "message",
+            //             "payload": {
+            //                 "type": "encryption.start" | "encryption.finish" | "encryption.setkey" |
+            //                         "encryption.gotkey" | "encryption.error",
+            //                 "id": #STRING#,
+            //                 "identity": #STRING#,
+            //                 "key": #STRING# | { "type": #INTEGER#, "body": #STRING# },
+            //                 "error": #STRING#,
+            //             },
+            //             "from": #STRING#,
+            //         },
+            //     },
+            // }
+
+            val payload = signalingMessage.payload ?: return
+            val message = EncryptionMessage.fromPayload(payload) ?: return
+            if (sessionId == null) {
+                return
+            }
+
+            encryptionMessageNotifier.notifyEncryptionMessage(sessionId, message)
+
+            return
+        }
 
         if ("raiseHand" == type) {
             // Message schema (external signaling server):
@@ -828,6 +901,8 @@ abstract class SignalingMessageReceiver {
             // although extremely unlikely, that the WebRtcMessageListeners for the second offer are notified before the
             // WebRtcMessageListeners for the first offer. This should not be a problem, though, so for simplicity
             // the statements are not synchronized.
+            // Offers are always sent by the participant sharing its screen, so they never belong to a connection
+            // sharing the local screen.
             offerMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick)
             webRtcMessageNotifier.notifyOffer(sessionId, roomType, sdp, nick)
 
@@ -842,7 +917,7 @@ abstract class SignalingMessageReceiver {
             val sdp = payload.sdp
             val nick = payload.nick
 
-            webRtcMessageNotifier.notifyAnswer(sessionId, roomType, sdp, nick)
+            webRtcMessageNotifier.notifyAnswer(sessionId, getListenerRoomTypeForAnswer(sessionId, roomType), sdp, nick)
 
             return
         }
@@ -897,7 +972,7 @@ abstract class SignalingMessageReceiver {
 
             webRtcMessageNotifier.notifyCandidate(
                 sessionId,
-                roomType,
+                getListenerRoomType(sessionId, roomType, signalingMessage.broadcaster),
                 ncIceCandidate.sdpMid,
                 ncIceCandidate.sdpMLineIndex,
                 ncIceCandidate.candidate
@@ -907,9 +982,43 @@ abstract class SignalingMessageReceiver {
         }
 
         if ("endOfCandidates" == type) {
-            webRtcMessageNotifier.notifyEndOfCandidates(sessionId, roomType)
+            webRtcMessageNotifier.notifyEndOfCandidates(
+                sessionId,
+                getListenerRoomType(sessionId, roomType, signalingMessage.broadcaster)
+            )
 
             return
         }
+    }
+
+    /**
+     * Without MCU both the connection sharing the local screen and the connection receiving the screen of a remote
+     * participant use the "screen" room type with the same remote session. Messages for the former are delivered to
+     * listeners added with [ROOM_TYPE_SCREEN_SHARING] instead.
+     *
+     * The participant sharing a screen sets itself as the "broadcaster" of its messages, so messages from a
+     * broadcaster belong to the receiving connection. Answers are only sent to the participant sharing a screen.
+     */
+    private fun getListenerRoomType(sessionId: String?, roomType: String?, broadcaster: String?): String? {
+        if (ROOM_TYPE_SCREEN != roomType || (broadcaster != null && broadcaster == sessionId)) {
+            return roomType
+        }
+        return getListenerRoomTypeForAnswer(sessionId, roomType)
+    }
+
+    private fun getListenerRoomTypeForAnswer(sessionId: String?, roomType: String?): String? =
+        if (ROOM_TYPE_SCREEN == roomType && webRtcMessageNotifier.hasListenerFor(sessionId, ROOM_TYPE_SCREEN_SHARING)) {
+            ROOM_TYPE_SCREEN_SHARING
+        } else {
+            roomType
+        }
+
+    companion object {
+        private const val ROOM_TYPE_SCREEN = "screen"
+
+        /**
+         * Room type to add a [WebRtcMessageListener] for a connection sharing the local screen.
+         */
+        const val ROOM_TYPE_SCREEN_SHARING = "screen-sharing"
     }
 }

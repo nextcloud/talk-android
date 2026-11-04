@@ -82,6 +82,7 @@ public class SignalingMessageReceiverParticipantListTest {
         expectedParticipant1.setUserId("theUserId");
         expectedParticipant1.setActorType(ParticipantDto.ActorType.FEDERATED);
         expectedParticipant1.setActorId("theActorId");
+        expectedParticipant1.setParticipantPermissions(42);
         expectedParticipantList.add(expectedParticipant1);
 
         ParticipantDto expectedParticipant2 = new ParticipantDto();
@@ -297,6 +298,7 @@ public class SignalingMessageReceiverParticipantListTest {
         expectedParticipant1.setUserId("theUserId");
         expectedParticipant1.setActorType(ParticipantDto.ActorType.FEDERATED);
         expectedParticipant1.setActorId("theActorId");
+        expectedParticipant1.setParticipantPermissions(42);
         expectedParticipantList.add(expectedParticipant1);
 
         ParticipantDto expectedParticipant2 = new ParticipantDto();

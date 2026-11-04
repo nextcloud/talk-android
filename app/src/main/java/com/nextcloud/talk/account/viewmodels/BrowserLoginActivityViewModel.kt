@@ -41,6 +41,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         data object PostLoginTooManyLoginAttempts : PostLoginViewState()
         data class PostLoginContinue(val data: Bundle) : PostLoginViewState()
         data object PostLoginDifferentAccount : PostLoginViewState()
+        data object PostLoginRemovalPending : PostLoginViewState()
     }
 
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
@@ -121,6 +122,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
             is LoginRepository.LoginResult.NewAccount -> PostLoginViewState.PostLoginContinue(result.bundle)
             LoginRepository.LoginResult.ExistingAccount -> PostLoginViewState.PostLoginRestartApp
             LoginRepository.LoginResult.DifferentAccount -> PostLoginViewState.PostLoginDifferentAccount
+            LoginRepository.LoginResult.RemovalPending -> PostLoginViewState.PostLoginRemovalPending
         }
 
     fun cancelLogin() = repository.cancelLoginFlow()

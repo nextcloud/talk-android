@@ -161,7 +161,9 @@ fun ParticipantOperationsContent(
             .navigationBarsPadding()
     ) {
         ParticipantOpsHeader(model)
-        visibility.infoPin?.let { ParticipantOpsInfoRow(R.drawable.ic_lock_grey600_24px, it) }
+        visibility.infoPin?.let {
+            ParticipantOpsInfoRow(R.drawable.ic_lock_grey600_24px, stringResource(R.string.nc_attendee_pin, it))
+        }
         // The icon shows the rank the action leads to, not the action itself
         if (visibility.showPromoteToOwner) {
             ParticipantOpsMenuItem(R.drawable.outline_crown_24, stringResource(R.string.nc_promote_to_owner)) {

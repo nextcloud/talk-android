@@ -9,11 +9,11 @@ package com.nextcloud.talk.utils.message
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -86,7 +86,7 @@ class MessageUtils(val context: Context) {
                         builder.linkResolver { view: View?, link: String? ->
                             val url = link?.takeIf { it.isNotBlank() } ?: return@linkResolver
                             try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                                context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
                             } catch (e: ActivityNotFoundException) {
                                 Log.w(TAG, "No activity found to open markdown link: $url", e)
                             }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<!-- Looked up by name at runtime (android.resource:// URIs, Firebase's project_id), which lint and the shrinker can't see -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/librem_by_feandesign_call,@raw/librem_by_feandesign_message,@raw/tr110_1_kap8_3_freiton1,@string/project_id" />

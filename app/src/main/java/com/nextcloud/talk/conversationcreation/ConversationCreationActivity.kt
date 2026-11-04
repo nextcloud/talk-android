@@ -536,13 +536,14 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     }
 
     if (isGuestsAllowed && isPasswordSet) {
+        val appName = stringResource(R.string.nc_app_product_name)
         ConversationOption(
             icon = R.drawable.ic_content_copy,
             text = R.string.nc_copy_password,
             onClick = {
                 copyPasswordToClipboard(
                     context = context,
-                    label = context.resources.getString(R.string.nc_app_product_name),
+                    label = appName,
                     password = conversationCreationViewModel.password.value
                 )
             }

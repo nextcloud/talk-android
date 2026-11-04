@@ -1,0 +1,8 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# The WebRTC native library resolves Java classes, methods and fields by name through JNI
+-keep class org.webrtc.** { *; }
+-keep class org.jni_zero.** { *; }

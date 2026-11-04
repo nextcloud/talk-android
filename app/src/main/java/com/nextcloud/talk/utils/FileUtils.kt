@@ -12,6 +12,7 @@ package com.nextcloud.talk.utils
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.os.Process
 import android.provider.OpenableColumns
 import android.util.Log
 import android.webkit.MimeTypeMap
@@ -27,8 +28,13 @@ object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
-    private const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
     private const val PARTIAL_SUFFIX = ".part"
+    internal const val SHARED_ATTACHMENTS_DIRECTORY = "shared_attachments"
+
+    // the copies of the files other apps share, see SharedFileCopies; kept apart from the shared attachments, which are
+    // named by their senders, so an attachment can't take the place of the copies. In the files directory, not in the
+    // cache, which the system clears when the storage runs low, also while their uploads still wait for the network.
+    internal const val SHARED_FILE_COPIES_DIRECTORY = "shared_file_copies"
 
     /**
      * Returns the dedicated cache directory used for externally shared attachments.
@@ -65,16 +71,54 @@ object FileUtils {
     }
 
     /**
-     * Checks whether the [pathSegments] of an own FileProvider uri point to a file inside the
-     * dedicated shared attachments cache directory.
+     * The file that the [pathSegments] of an own FileProvider uri point to, if it is inside the dedicated shared
+     * attachments directory in [cacheDir] or the one of the copies of shared files in [filesDir], else null.
      */
-    fun isSharedAttachmentProviderPath(cacheDir: File, pathSegments: List<String>): Boolean {
-        if (pathSegments.size < 2 || pathSegments.first() != SHARED_ATTACHMENTS_DIRECTORY) return false
-        var resolvedFile: File? = File(cacheDir, SHARED_ATTACHMENTS_DIRECTORY)
+    fun sharedAttachmentProviderFile(cacheDir: File, filesDir: File, pathSegments: List<String>): File? {
+        val root = when (pathSegments.firstOrNull()) {
+            SHARED_ATTACHMENTS_DIRECTORY -> cacheDir
+            SHARED_FILE_COPIES_DIRECTORY -> filesDir
+            else -> null
+        }
+        if (pathSegments.size < 2 || root == null) return null
+        var resolvedFile: File? = File(root, pathSegments.first())
         for (segment in pathSegments.drop(1)) {
             resolvedFile = resolvedFile?.let { resolveFileInDirectory(it, segment) }
         }
-        return resolvedFile != null
+        return resolvedFile
+    }
+
+    /**
+     * Checks whether an externally provided [uri] may be uploaded: only content uris are accepted,
+     * and uris of the own app only when they point into the shared attachments cache or the copies
+     * of shared files of its FileProvider.
+     */
+    fun isTrustedShareUri(uri: Uri?, context: Context): Boolean =
+        isTrustedShareUri(uri, context.packageName, context.cacheDir, context.filesDir) { authority ->
+            context.packageManager.resolveContentProvider(authority, 0)?.packageName
+        }
+
+    /**
+     * See [isTrustedShareUri]. Every provider of the own app ([packageName]) is rejected, as e.g. the one of the
+     * ImagePicker library serves all its files, except the paths of its FileProvider (authority [packageName]) that
+     * [sharedAttachmentProviderFile] allows. A user id prefix ("10@authority") is ignored, so the providers of the
+     * app of another user, e.g. in another profile, are rejected the same way. [packageOfAuthority] gives the package
+     * of the provider of an authority.
+     */
+    fun isTrustedShareUri(
+        uri: Uri?,
+        packageName: String,
+        cacheDir: File,
+        filesDir: File,
+        packageOfAuthority: (String) -> String?
+    ): Boolean {
+        val contentUri = uri?.takeIf { ContentResolver.SCHEME_CONTENT == it.scheme }
+        val authority = contentUri?.authorityWithoutUser ?: return false
+        val isOwnProvider = authority == packageName || packageOfAuthority(authority) == packageName
+        val isSharedFileOfFileProvider =
+            authority == packageName &&
+                sharedAttachmentProviderFile(cacheDir, filesDir, contentUri.pathSegments) != null
+        return !isOwnProvider || isSharedFileOfFileProvider
     }
 
     /**
@@ -164,7 +208,11 @@ object FileUtils {
             Log.d(TAG, "relative uri: " + sourceFileUri.path)
             throw IllegalArgumentException("relative paths are not supported")
         } else if (ContentResolver.SCHEME_CONTENT == scheme) {
-            copyFileToCache(context, sourceFileUri, fileName, targetDir)
+            // a shared file the app already copied is used as it is, instead of copying it again
+            val ownSharedFile = sourceFileUri.takeIf { it.authorityOfOwnUser == context.packageName }
+                ?.let { sharedAttachmentProviderFile(context.cacheDir, context.filesDir, it.pathSegments) }
+                ?.takeIf { it.isFile }
+            ownSharedFile ?: copyFileToCache(context, sourceFileUri, fileName, targetDir)
         } else if (ContentResolver.SCHEME_FILE == scheme) {
             val path = sourceFileUri.path
                 ?: throw IllegalArgumentException("uri does not contain path")
@@ -351,3 +399,22 @@ object FileUtils {
         return md5String.toString()
     }
 }
+
+// the authority without a user id prefix ("10@authority"), which names the user whose provider serves the uri
+internal val Uri.authorityWithoutUser: String?
+    get() = authority?.substringAfterLast('@')
+
+/**
+ * The authority of a provider of the own user, without a prefix that names the own user ("0@authority"). Null for a
+ * provider of another user, e.g. of the app in another profile, whose files aren't the ones of the app here.
+ */
+internal val Uri.authorityOfOwnUser: String?
+    get() {
+        val authority = authority ?: return null
+        val userId = authority.substringBeforeLast('@', missingDelimiterValue = "")
+        val isOwnUser = userId.isEmpty() || userId == (Process.myUid() / PER_USER_UID_RANGE).toString()
+        return if (isOwnUser) authority.substringAfterLast('@') else null
+    }
+
+// the range of uids of each user, see android.os.UserHandle.PER_USER_RANGE
+private const val PER_USER_UID_RANGE = 100_000

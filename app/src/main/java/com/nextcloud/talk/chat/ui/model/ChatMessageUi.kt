@@ -14,7 +14,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DrawableUtils
@@ -103,26 +102,10 @@ sealed interface MessageTypeContent {
     data class Deck(val cardName: String, val stackName: String, val boardName: String, val cardLink: String) :
         MessageTypeContent
 
-    data class Voice(
-        val actorId: String?,
-        val isPlaying: Boolean,
-        val wasPlayed: Boolean,
-        val isDownloading: Boolean,
-        val durationSeconds: Int,
-        val playedSeconds: Int,
-        val seekbarProgress: Int,
-        val waveform: List<Float>,
-        val playbackSpeed: PlaybackSpeed = PlaybackSpeed.NORMAL
-    ) : MessageTypeContent
+    // The playback state of audio messages is not part of the message, see com.nextcloud.talk.ui.chat.ChatAudioUi
+    data object Voice : MessageTypeContent
 
-    data class AudioFile(
-        val fileName: String,
-        val isPlaying: Boolean,
-        val isDownloading: Boolean,
-        val durationSeconds: Int,
-        val playedSeconds: Int,
-        val seekbarProgress: Int
-    ) : MessageTypeContent
+    data class AudioFile(val fileName: String) : MessageTypeContent
 }
 
 enum class MessageStatusIcon {
@@ -282,7 +265,7 @@ fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolea
     if (message.isSystemMessage) {
         MessageTypeContent.SystemMessage
     } else if (message.isVoiceMessage) {
-        getVoiceContent(message)
+        MessageTypeContent.Voice
     } else if (message.hasFileAttachment && message.isTemporary) {
         getUploadingMediaContent(message)
     } else if (message.hasFileAttachment && message.fileParameters.mimetype.startsWith(Mimetype.AUDIO_PREFIX)) {
@@ -406,24 +389,5 @@ fun getDeckContent(message: ChatMessage): MessageTypeContent.Deck =
         cardLink = message.deckCardParameters.link
     )
 
-fun getVoiceContent(message: ChatMessage): MessageTypeContent.Voice =
-    MessageTypeContent.Voice(
-        actorId = message.actorId,
-        isPlaying = message.isPlayingVoiceMessage,
-        wasPlayed = message.wasPlayedVoiceMessage,
-        isDownloading = message.isDownloadingVoiceMessage,
-        durationSeconds = message.voiceMessageDuration,
-        playedSeconds = message.voiceMessagePlayedSeconds,
-        seekbarProgress = message.voiceMessageSeekbarProgress,
-        waveform = message.voiceMessageFloatArray?.toList().orEmpty()
-    )
-
 fun getAudioFileContent(message: ChatMessage): MessageTypeContent.AudioFile =
-    MessageTypeContent.AudioFile(
-        fileName = message.fileParameters.name,
-        isPlaying = message.isPlayingVoiceMessage,
-        isDownloading = message.isDownloadingVoiceMessage,
-        durationSeconds = message.voiceMessageDuration,
-        playedSeconds = message.voiceMessagePlayedSeconds,
-        seekbarProgress = message.voiceMessageSeekbarProgress
-    )
+    MessageTypeContent.AudioFile(fileName = message.fileParameters.name)

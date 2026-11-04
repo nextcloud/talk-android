@@ -68,6 +68,10 @@ class WebRtcMessageNotifier {
         }
     }
 
+    public synchronized boolean hasListenerFor(String sessionId, String roomType) {
+        return !getListenersFor(sessionId, roomType).isEmpty();
+    }
+
     private List<SignalingMessageReceiver.WebRtcMessageListener> getListenersFor(String sessionId, String roomType) {
         List<SignalingMessageReceiver.WebRtcMessageListener> webRtcMessageListeners =
             new ArrayList<>(webRtcMessageListenersFrom.size());

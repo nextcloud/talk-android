@@ -8,229 +8,134 @@ package com.nextcloud.talk.utils
 
 import android.media.AudioFormat
 import android.media.MediaCodec
-import android.media.MediaCodec.CodecException
-import android.media.MediaCodecList
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.SystemClock
 import android.util.Log
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import com.nextcloud.talk.application.NextcloudTalkApplication
+import androidx.annotation.WorkerThread
+import com.nextcloud.talk.chat.audio.WaveformLevels
 import java.io.File
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.math.abs
 
 /**
  * AudioUtils are for processing raw audio using android's low level APIs, for more information read here
  * [MediaCodec documentation](https://developer.android.com/reference/android/media/MediaCodec)
  */
-object AudioUtils : DefaultLifecycleObserver {
+object AudioUtils {
     private val TAG = AudioUtils::class.java.simpleName
-    private const val VALUE_10 = 10
-    private const val TIME_LIMIT = 3000
-    private const val DEFAULT_SIZE = 500
-    private enum class LifeCycleFlag {
-        PAUSED,
-        RESUMED
-    }
-    private lateinit var currentLifeCycleFlag: LifeCycleFlag
-
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-        currentLifeCycleFlag = LifeCycleFlag.RESUMED
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        currentLifeCycleFlag = LifeCycleFlag.PAUSED
-    }
+    private const val AUDIO_MIME_TYPE_PREFIX = "audio/"
+    private const val CODEC_TIMEOUT_US = 10_000L
+    private const val MAX_DECODING_TIME_MS = 15_000L
+    private const val PCM_16_BIT_FULL_SCALE = 32_768.0
 
     /**
-     * Suspension function, returns a FloatArray of size 500, containing the values of an audio file squeezed between
-     * [0,1)
+     * Decodes the first audio track of [file] and returns the loudness of each decoded chunk, see
+     * [WaveformLevels], or null if the file cannot be decoded completely. Decoding gives up after a few seconds,
+     * as levels of only the beginning of a very long file would not match its playback progress.
      */
-    @Throws(IOException::class)
-    suspend fun audioFileToFloatArray(file: File): FloatArray {
-        return suspendCoroutine {
-            // Used to keep track of the time it took to process the audio file
-            val startTime = SystemClock.elapsedRealtime()
+    @WorkerThread
+    fun extractWaveformLevels(file: File): FloatArray? {
+        val extractor = MediaExtractor()
+        var codec: MediaCodec? = null
+        return try {
+            extractor.setDataSource(file.path)
+            val track = findAudioTrack(extractor)
+            track?.let { (index, format) ->
+                extractor.selectTrack(index)
+                val decoder = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME).orEmpty())
+                codec = decoder
+                decoder.configure(format, null, null, 0)
+                decoder.start()
+                decode(extractor, decoder)
+            }
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to decode audio file for its waveform", e)
+            null
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "Failed to decode audio file for its waveform", e)
+            null
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Failed to decode audio file for its waveform", e)
+            null
+        } finally {
+            codec?.release()
+            extractor.release()
+        }
+    }
 
-            // Always a FloatArray of Size 500
-            var result: MutableList<Float>? = mutableListOf()
-
-            // Setting the file path to the audio file
-            val path = file.path
-            val mediaExtractor = MediaExtractor()
-            mediaExtractor.setDataSource(path)
-
-            // Basically just boilerplate to set up meta data for the audio file
-            val mediaFormat = mediaExtractor.getTrackFormat(0)
-            // Frame rate is required for encoders, optional for decoders. So we set it to null here.
-            mediaFormat.setString(MediaFormat.KEY_FRAME_RATE, null)
-            mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 0)
-
-            mediaExtractor.release()
-
-            // More Boiler plate to set up the codec
-            val mediaCodecList = MediaCodecList(MediaCodecList.ALL_CODECS)
-            val codecName = mediaCodecList.findDecoderForFormat(mediaFormat)
-            val mediaCodec = MediaCodec.createByCodecName(codecName)
-
-            /**
-             ************************************ Media Codec *******************************************
-             *                                        │
-             *                      INPUT BUFFERS     │            OUTPUT BUFFERS
-             *                                        │
-             * ┌────────────────┐             ┌───────┴────────┐              ┌─────────────────┐
-             * │                │ Empty Buffer│                │ Filled Buffer│                 │
-             * │                │    [][][]   │                │ [-][-][-]    │                 │
-             * │                │ ◄───────────┤                ├────────────► │                 │
-             * │     Client     │             │     Codec      │              │      Client     │
-             * │                │             │                │              │                 │
-             * │                ├───────────► │                │ ◄────────────┤                 │
-             * │                │ [-][-][-]   │                │   [][][]     │                 │
-             * └────────────────┘Filled Buffer└───────┬────────┘Empty Buffer  └─────────────────┘
-             *                                        │
-             *   Client provides                      │                         Client consumes
-             *   input Data                           │                         output data
-             *
-             ********************************************************************************************
-             */
-            mediaCodec.setCallback(object : MediaCodec.Callback() {
-                private var extractor: MediaExtractor? = null
-                val tempList = mutableListOf<Float>()
-                init {
-                    // Setting up the extractor to be guaranteed not null
-                    extractor = MediaExtractor()
-                    try {
-                        extractor!!.setDataSource(path)
-                        extractor!!.selectTrack(0)
-                    } catch (e: IOException) {
-                        NextcloudTalkApplication.sharedApplication?.logger?.e(
-                            TAG,
-                            "Failed to set up MediaExtractor for audio file",
-                            e
-                        )
-                    }
-                }
-
-                override fun onInputBufferAvailable(codec: MediaCodec, index: Int) {
-                    // Boiler plate, Extracts a buffer of encoded audio data to be sent to the codec for processing
-                    val byteBuffer = codec.getInputBuffer(index)
-                    if (byteBuffer != null && extractor != null) {
-                        val sampleSize = extractor!!.readSampleData(byteBuffer, 0)
-                        if (sampleSize > 0) {
-                            val isOver = !extractor!!.advance()
-                            codec.queueInputBuffer(
-                                index,
-                                0,
-                                sampleSize,
-                                extractor!!.sampleTime,
-                                if (isOver) MediaCodec.BUFFER_FLAG_END_OF_STREAM else 0
-                            )
-                        }
-                    }
-                }
-
-                override fun onOutputBufferAvailable(codec: MediaCodec, index: Int, info: MediaCodec.BufferInfo) {
-                    // Boiler plate to get the audio data in a usable form
-                    val outputBuffer = codec.getOutputBuffer(index)
-                    val bufferFormat = codec.getOutputFormat(index)
-                    val samples = outputBuffer!!.order(ByteOrder.nativeOrder()).asShortBuffer()
-                    val numChannels = bufferFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-                    if (index < 0 || index >= numChannels) {
-                        return
-                    }
-                    val sampleLength = (samples.remaining() / numChannels)
-
-                    // Squeezes the value of each sample between [0,1) using y = (x-1)/x
-                    for (i in 0 until sampleLength) {
-                        val x = abs(samples[i * numChannels + index].toInt()) / VALUE_10
-                        val y = (if (x > 0) ((x - 1) / x.toFloat()) else x.toFloat())
-                        tempList.add(y)
-                    }
-
-                    codec.releaseOutputBuffer(index, false)
-
-                    // Cancels the process if it ends, exceeds the time limit, or the activity falls out of view
-                    val currTime = SystemClock.elapsedRealtime() - startTime
-                    if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM > 0 ||
-                        currTime > TIME_LIMIT ||
-                        currentLifeCycleFlag == LifeCycleFlag.PAUSED
-                    ) {
-                        Log.d(
-                            TAG,
-                            "Processing ended with time: $currTime \n" +
-                                "Is finished: ${info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM > 0} \n" +
-                                "Lifecycle state: $currentLifeCycleFlag"
-                        )
-                        codec.stop()
-                        codec.release()
-                        extractor!!.release()
-                        extractor = null
-                        result = if (currTime < TIME_LIMIT) {
-                            tempList
-                        } else {
-                            Log.e(TAG, "Error in MediaCodec Callback:\n\tonOutputBufferAvailable: Time limit exceeded")
-                            null
-                        }
-                    }
-                }
-
-                override fun onError(codec: MediaCodec, e: CodecException) {
-                    Log.e(TAG, "Error in MediaCodec Callback: \n$e")
-                    codec.stop()
-                    codec.release()
-                    extractor!!.release()
-                    extractor = null
-                    result = null
-                }
-
-                override fun onOutputFormatChanged(codec: MediaCodec, format: MediaFormat) {
-                    // unused atm
-                }
-            })
-
-            // More Boiler plate to start the codec
-            mediaFormat.setInteger(MediaFormat.KEY_PCM_ENCODING, AudioFormat.ENCODING_PCM_16BIT)
-            mediaCodec.configure(mediaFormat, null, null, 0)
-            mediaCodec.start()
-
-            // This runs until the codec finishes, the time limit is exceeded, or an error occurs
-            // If the time limit is exceed or an error occurs, the result should be null or empty
-            var currTime = SystemClock.elapsedRealtime() - startTime
-            while (result != null &&
-                result!!.size <= 0 &&
-                currTime < TIME_LIMIT // Guarantees Execution stops after 3 seconds
-            ) {
-                currTime = SystemClock.elapsedRealtime() - startTime
-                continue
+    private fun findAudioTrack(extractor: MediaExtractor): Pair<Int, MediaFormat>? =
+        (0 until extractor.trackCount)
+            .map { index -> index to extractor.getTrackFormat(index) }
+            .firstOrNull { (_, format) ->
+                format.getString(MediaFormat.KEY_MIME)?.startsWith(AUDIO_MIME_TYPE_PREFIX) == true
             }
 
-            if (result != null && result!!.size > DEFAULT_SIZE) {
-                it.resume(shrinkFloatArray(result!!.toFloatArray(), DEFAULT_SIZE))
+    private fun decode(extractor: MediaExtractor, codec: MediaCodec): FloatArray? {
+        val levels = WaveformLevels()
+        val info = MediaCodec.BufferInfo()
+        val deadline = SystemClock.elapsedRealtime() + MAX_DECODING_TIME_MS
+        var isFloatOutput = false
+        var isInputDone = false
+        var isOutputDone = false
+        while (!isOutputDone && SystemClock.elapsedRealtime() < deadline) {
+            if (!isInputDone) {
+                isInputDone = queueInput(extractor, codec)
+            }
+            val outputIndex = codec.dequeueOutputBuffer(info, CODEC_TIMEOUT_US)
+            if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                isFloatOutput = codec.outputFormat.isFloatPcm()
+            } else if (outputIndex >= 0) {
+                codec.getOutputBuffer(outputIndex)?.let { addLevel(it, isFloatOutput, levels) }
+                codec.releaseOutputBuffer(outputIndex, false)
+                isOutputDone = info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0
+            }
+        }
+        return if (isOutputDone) levels.toArray() else null
+    }
+
+    /** Feeds the next sample to the decoder and returns true once the end of the input was queued. */
+    private fun queueInput(extractor: MediaExtractor, codec: MediaCodec): Boolean {
+        val inputIndex = codec.dequeueInputBuffer(CODEC_TIMEOUT_US)
+        val buffer = if (inputIndex >= 0) codec.getInputBuffer(inputIndex) else null
+        var isEndOfInput = false
+        if (buffer != null) {
+            val sampleSize = extractor.readSampleData(buffer, 0)
+            isEndOfInput = sampleSize < 0
+            if (isEndOfInput) {
+                codec.queueInputBuffer(inputIndex, 0, 0, 0L, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
             } else {
-                it.resume(FloatArray(DEFAULT_SIZE))
+                codec.queueInputBuffer(inputIndex, 0, sampleSize, extractor.sampleTime, 0)
+                extractor.advance()
             }
         }
+        return isEndOfInput
     }
 
-    fun shrinkFloatArray(data: FloatArray, size: Int): FloatArray {
-        val result = FloatArray(size)
-        val scale = data.size / size
-        var begin = 0
-        var end = scale
-        for (i in 0 until size) {
-            val arr = data.copyOfRange(begin, end)
-            result[i] = arr.average().toFloat()
-            begin += scale
-            end += scale
+    private fun addLevel(buffer: ByteBuffer, isFloatOutput: Boolean, levels: WaveformLevels) {
+        val pcm = buffer.order(ByteOrder.nativeOrder())
+        var sumOfSquares = 0.0
+        var sampleCount = 0
+        if (isFloatOutput) {
+            val samples = pcm.asFloatBuffer()
+            while (samples.hasRemaining()) {
+                val sample = samples.get().toDouble()
+                sumOfSquares += sample * sample
+                sampleCount++
+            }
+        } else {
+            val samples = pcm.asShortBuffer()
+            while (samples.hasRemaining()) {
+                val sample = samples.get() / PCM_16_BIT_FULL_SCALE
+                sumOfSquares += sample * sample
+                sampleCount++
+            }
         }
-
-        return result
+        levels.addChunk(sumOfSquares, sampleCount)
     }
+
+    private fun MediaFormat.isFloatPcm(): Boolean =
+        containsKey(MediaFormat.KEY_PCM_ENCODING) &&
+            getInteger(MediaFormat.KEY_PCM_ENCODING) == AudioFormat.ENCODING_PCM_FLOAT
 }
