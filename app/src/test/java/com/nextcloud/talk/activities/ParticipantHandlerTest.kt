@@ -20,11 +20,14 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
@@ -32,6 +35,7 @@ import org.webrtc.PeerConnection.IceConnectionState
 import org.webrtc.VideoTrack
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("TooManyFunctions")
 class ParticipantHandlerTest {
 
     private val testDispatcher = StandardTestDispatcher()
@@ -182,6 +186,44 @@ class ParticipantHandlerTest {
 
         assertFalse(handler.uiState.value.isScreenStreamEnabled)
         assertNull(handler.uiState.value.screenMediaStream)
+        verify(onParticipantUnshareScreen).invoke("session-123")
+    }
+
+    @Test
+    fun `Removing an old stream after a new one was added keeps the new stream`() {
+        handler = createHandler()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        val oldStream = MediaStream(0L).apply { audioTracks.add(mock<AudioTrack> {}) }
+        val newStream = MediaStream(0L).apply { audioTracks.add(mock<AudioTrack> {}) }
+        observer.onStreamAdded(oldStream)
+        observer.onStreamAdded(newStream)
+        listener.onSpeaking()
+
+        observer.onStreamRemoved(oldStream)
+
+        assertSame(newStream, handler.uiState.value.mediaStream)
+        assertTrue(handler.uiState.value.isAudioEnabled)
+        assertTrue(handler.uiState.value.isActiveSpeaker)
+    }
+
+    @Test
+    fun `Removing an old screen stream after a new one was added keeps the screen share`() {
+        handler = createHandler()
+        val screenPeerConnectionWrapper: PeerConnectionWrapper = mock {}
+        handler.setScreenPeerConnection(screenPeerConnectionWrapper)
+        val observerCaptor = argumentCaptor<PeerConnectionObserver>()
+        verify(screenPeerConnectionWrapper).addObserver(observerCaptor.capture())
+        val oldStream = MediaStream(0L).apply { videoTracks.add(mock<VideoTrack> {}) }
+        val newStream = MediaStream(0L).apply { videoTracks.add(mock<VideoTrack> {}) }
+        observerCaptor.firstValue.onStreamAdded(oldStream)
+        observerCaptor.firstValue.onStreamAdded(newStream)
+
+        observerCaptor.firstValue.onStreamRemoved(oldStream)
+
+        assertSame(newStream, handler.uiState.value.screenMediaStream)
+        assertTrue(handler.uiState.value.isScreenStreamEnabled)
+        verify(onParticipantUnshareScreen, never()).invoke(any())
     }
 
     @Test

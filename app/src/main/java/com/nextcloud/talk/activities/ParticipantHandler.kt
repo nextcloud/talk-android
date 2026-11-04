@@ -53,7 +53,11 @@ class ParticipantHandler(
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            handleStreamChange(null)
+            // A renegotiation can add the new stream before the old one is removed, so only the current stream
+            // clears the state
+            if (mediaStream === _uiState.value.mediaStream) {
+                handleStreamChange(null)
+            }
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
@@ -69,7 +73,10 @@ class ParticipantHandler(
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            handleScreenStreamChange(null)
+            if (mediaStream === _uiState.value.screenMediaStream) {
+                handleScreenStreamChange(null)
+                onParticipantUnshareScreen.invoke(_uiState.value.sessionKey)
+            }
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
