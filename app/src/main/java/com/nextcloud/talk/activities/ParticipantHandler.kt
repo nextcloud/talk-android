@@ -134,7 +134,8 @@ class ParticipantHandler(
             _uiState.update { it.copy(isStreamEnabled = hasVideoTracks) }
         }
 
-        _uiState.update { it.copy(isConnected = isConnected(iceConnectionState)) }
+        val isConnected = isConnected(iceConnectionState)
+        _uiState.update { it.copy(isConnected = isConnected, isSpeaking = it.isSpeaking && isConnected) }
     }
 
     private val dataChannelMessageListener: DataChannelMessageListener = object : DataChannelMessageListener {
@@ -214,6 +215,7 @@ class ParticipantHandler(
                 this.peerConnection?.peerConnection?.iceConnectionState()
         )
 
+        _uiState.update { it.copy(isSpeaking = false) }
         handleIceConnectionStateChange(this.peerConnection?.peerConnection?.iceConnectionState())
         handleStreamChange(this.peerConnection?.stream)
 

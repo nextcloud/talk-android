@@ -24,6 +24,7 @@ import org.junit.Test
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.webrtc.PeerConnection.IceConnectionState
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ParticipantHandlerTest {
@@ -100,6 +101,36 @@ class ParticipantHandlerTest {
 
         listener.onSpeaking()
         listener.onAudioOff()
+
+        assertFalse(handler.uiState.value.isSpeaking)
+    }
+
+    @Test
+    fun `Losing the ICE connection resets the speaking state`() {
+        handler = createHandler()
+        val peerConnectionWrapper: PeerConnectionWrapper = mock {}
+        handler.setPeerConnection(peerConnectionWrapper)
+        val listenerCaptor = argumentCaptor<DataChannelMessageListener>()
+        verify(peerConnectionWrapper).addListener(listenerCaptor.capture())
+        val observerCaptor = argumentCaptor<PeerConnectionWrapper.PeerConnectionObserver>()
+        verify(peerConnectionWrapper).addObserver(observerCaptor.capture())
+
+        observerCaptor.firstValue.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        listenerCaptor.firstValue.onSpeaking()
+        assertTrue(handler.uiState.value.isSpeaking)
+
+        observerCaptor.firstValue.onIceConnectionStateChanged(IceConnectionState.DISCONNECTED)
+
+        assertFalse(handler.uiState.value.isSpeaking)
+    }
+
+    @Test
+    fun `Replacing the peer connection resets the speaking state`() {
+        handler = createHandler()
+        val listener = attachPeerConnection()
+        listener.onSpeaking()
+
+        handler.setPeerConnection(mock<PeerConnectionWrapper> {})
 
         assertFalse(handler.uiState.value.isSpeaking)
     }
