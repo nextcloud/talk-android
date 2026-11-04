@@ -28,8 +28,10 @@ data class NCSignalingMessageDto(
     @JsonField(name = ["sid"])
     var sid: String? = null,
     @JsonField(name = ["prefix"])
-    var prefix: String? = null
+    var prefix: String? = null,
+    @JsonField(name = ["broadcaster"])
+    var broadcaster: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null)
 }
