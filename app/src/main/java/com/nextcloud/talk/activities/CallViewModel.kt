@@ -39,7 +39,9 @@ class CallViewModel @Inject constructor() : ViewModel() {
     /** Session keys of participants promoted for having spoken while not visible, most recent first. */
     val speakers: StateFlow<List<String>> = _speakers.asStateFlow()
 
-    private var previousSpeakingSessionKeys = emptySet<String>()
+    private var participantSessionKeys = emptyList<String>()
+    private var activeSpeakerSessionKeys = emptySet<String>()
+    private var visibleSessionKeys = emptySet<String>()
 
     fun getParticipant(sessionId: String?): ParticipantHandler? {
         if (sessionId == null) {
@@ -75,7 +77,7 @@ class CallViewModel @Inject constructor() : ViewModel() {
 
         viewModelScope.launch {
             participantHandler.uiState.collect {
-                _participants.value = participantHandlers.values.map { it.uiState.value }
+                updateParticipants()
             }
         }
     }
@@ -93,28 +95,35 @@ class CallViewModel @Inject constructor() : ViewModel() {
     fun removeParticipant(sessionId: String) {
         participantHandlers[sessionId]?.destroy()
         participantHandlers.remove(sessionId)
-        _participants.value = participantHandlers.values.map { it.uiState.value }
+        // Participants are removed from the signaling thread, the participant state is only updated on the main thread
+        viewModelScope.launch {
+            updateParticipants()
+        }
     }
 
-    /**
-     * Promotes the participants that started speaking since the last call and are not visible.
-     *
-     * @return true if the speaker order changed
-     */
-    fun updateSpeakers(speakingSessionKeys: Set<String>, visibleSessionKeys: Set<String>): Boolean {
-        val startedSpeaking = speakingSessionKeys - previousSpeakingSessionKeys
-        previousSpeakingSessionKeys = speakingSessionKeys
+    private fun updateParticipants() {
+        val participants = participantHandlers.values.map { it.uiState.value }
+        _participants.value = participants
 
-        val updatedSpeakers = promoteSpeakers(
+        val sessionKeys = participants.mapNotNull { it.sessionKey }
+        val activeSpeakers = participants.filter { it.isActiveSpeaker }.mapNotNull { it.sessionKey }.toSet()
+        if (sessionKeys == participantSessionKeys && activeSpeakers == activeSpeakerSessionKeys) return
+
+        val startedSpeaking = activeSpeakers - activeSpeakerSessionKeys
+        participantSessionKeys = sessionKeys
+        activeSpeakerSessionKeys = activeSpeakers
+
+        _speakers.value = promoteSpeakers(
             speakers = _speakers.value,
             startedSpeaking = startedSpeaking,
             visibleSessionKeys = visibleSessionKeys,
-            participantSessionKeys = participantHandlers.keys
+            participantSessionKeys = sessionKeys.toSet()
         )
-        if (updatedSpeakers == _speakers.value) return false
+    }
 
-        _speakers.value = updatedSpeakers
-        return true
+    /** Sets the participants currently shown, so participants that start speaking while not shown are promoted. */
+    fun setVisibleSessionKeys(sessionKeys: Set<String>) {
+        visibleSessionKeys = sessionKeys
     }
 
     fun setActiveScreenShareSession(session: String?) {

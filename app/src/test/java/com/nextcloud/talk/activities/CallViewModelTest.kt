@@ -7,6 +7,9 @@
 package com.nextcloud.talk.activities
 
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -20,9 +23,13 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.webrtc.PeerConnection.IceConnectionState
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("TooManyFunctions")
 class CallViewModelTest {
 
     private lateinit var viewModel: CallViewModel
@@ -162,31 +169,61 @@ class CallViewModelTest {
         }
 
     @Test
-    fun `updateSpeakers promotes participants that start speaking while not visible`() {
+    fun `participants that start speaking while not visible are promoted`() {
         addParticipants("a", "b", "c")
+        viewModel.setVisibleSessionKeys(setOf("a"))
 
-        assertTrue(viewModel.updateSpeakers(setOf("c"), visibleSessionKeys = setOf("a")))
-        assertTrue(viewModel.updateSpeakers(setOf("c", "b"), visibleSessionKeys = setOf("a")))
+        startSpeaking("c")
+        startSpeaking("b")
 
         assertEquals(listOf("b", "c"), viewModel.speakers.value)
     }
 
     @Test
-    fun `updateSpeakers does not promote participants that keep speaking`() {
-        addParticipants("a", "b")
-        viewModel.updateSpeakers(setOf("a"), visibleSessionKeys = emptySet())
-        viewModel.updateSpeakers(setOf("a", "b"), visibleSessionKeys = emptySet())
+    fun `participants that keep speaking are not promoted again`() {
+        addParticipants("a", "b", "c")
+        startSpeaking("a")
+        startSpeaking("b")
 
-        assertFalse(viewModel.updateSpeakers(setOf("a", "b"), visibleSessionKeys = emptySet()))
+        addParticipants("d")
+        testDispatcher.scheduler.advanceUntilIdle()
+
         assertEquals(listOf("b", "a"), viewModel.speakers.value)
     }
 
     @Test
-    fun `updateSpeakers does not promote visible participants`() {
+    fun `visible participants that start speaking are not promoted`() {
         addParticipants("a", "b")
+        viewModel.setVisibleSessionKeys(setOf("a", "b"))
 
-        assertFalse(viewModel.updateSpeakers(setOf("a"), visibleSessionKeys = setOf("a", "b")))
+        startSpeaking("a")
+
         assertEquals(emptyList<String>(), viewModel.speakers.value)
+    }
+
+    @Test
+    fun `speakers that left the call are dropped`() {
+        addParticipants("a", "b")
+        startSpeaking("b")
+
+        viewModel.removeParticipant("b")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), viewModel.speakers.value)
+    }
+
+    private fun startSpeaking(sessionId: String) {
+        val peerConnectionWrapper: PeerConnectionWrapper = mock {}
+        viewModel.getParticipant(sessionId)!!.setPeerConnection(peerConnectionWrapper)
+        val listenerCaptor = argumentCaptor<DataChannelMessageListener>()
+        verify(peerConnectionWrapper).addListener(listenerCaptor.capture())
+        val observerCaptor = argumentCaptor<PeerConnectionObserver>()
+        verify(peerConnectionWrapper).addObserver(observerCaptor.capture())
+
+        observerCaptor.firstValue.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        listenerCaptor.firstValue.onAudioOn()
+        listenerCaptor.firstValue.onSpeaking()
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     private fun addParticipants(vararg sessionIds: String) {
