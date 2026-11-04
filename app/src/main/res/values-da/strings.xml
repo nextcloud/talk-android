@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
     <string name="nc_confirm">Bekræft</string>
     <string name="nc_connecting_call">Forbinder …</string>
+    <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Færdig</string>
     <string name="nc_conversation_created_invalid_participants">Nogle deltagere kunne ikke tilføjes</string>
     <string name="nc_conversation_created_invalid_participants_named">Disse deltagere kunne ikke tilføjes: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Brugerdefineret farve</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
+    <string name="nc_deep_link_join">Gå med</string>
     <string name="nc_delete">Slet</string>
     <string name="nc_delete_all">Slet alt</string>
     <string name="nc_delete_call">Slet samtale</string>

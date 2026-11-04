@@ -165,6 +165,7 @@
     <string name="nc_configure_cert_auth">اختر شهادة المصادقة</string>
     <string name="nc_confirm">تأكيد</string>
     <string name="nc_connecting_call">الاتصال جارٍ …</string>
+    <string name="nc_contact_chat_start">ابدأ</string>
     <string name="nc_contacts_done">تم</string>
     <string name="nc_conversation_description">وصف المحادثة</string>
     <string name="nc_conversation_menu_conversation_go_to_file">الذهاب إلى ملف</string>
@@ -193,6 +194,7 @@
     <string name="nc_custom_color">لون مخصص</string>
     <string name="nc_date_header_today">اليوم</string>
     <string name="nc_date_header_yesterday">أمس</string>
+    <string name="nc_deep_link_join">إنضم</string>
     <string name="nc_delete">حذف </string>
     <string name="nc_delete_all">حذف الكل</string>
     <string name="nc_delete_call">احذف المحادثة</string>

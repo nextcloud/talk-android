@@ -123,6 +123,7 @@
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
     <string name="nc_confirm">Potvrdi</string>
     <string name="nc_connecting_call">Povezivanje…</string>
+    <string name="nc_contact_chat_start">Pokreni</string>
     <string name="nc_contacts_done">Gotovo</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Idi na datoteku</string>
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
@@ -151,6 +152,7 @@
     <string name="nc_custom_color">Prilagođena boja</string>
     <string name="nc_date_header_today">Danas</string>
     <string name="nc_date_header_yesterday">Jučer</string>
+    <string name="nc_deep_link_join">Pridruži se</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_delete_all">Izbriši sve</string>
     <string name="nc_delete_call">Izbriši razgovor</string>

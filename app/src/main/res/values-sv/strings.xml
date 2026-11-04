@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_confirm">Bekräfta</string>
     <string name="nc_connecting_call">Ansluter…</string>
+    <string name="nc_contact_chat_start">Starta</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_created_invalid_participants">Vissa deltagare kunde inte läggas till</string>
     <string name="nc_conversation_created_invalid_participants_named">Det gick inte att lägga till följande deltagare: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Anpassad färg</string>
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_date_header_yesterday">Igår</string>
+    <string name="nc_deep_link_join">Gå med</string>
     <string name="nc_delete">Ta bort</string>
     <string name="nc_delete_all">Ta bort alla</string>
     <string name="nc_delete_call">Ta bort konversation</string>

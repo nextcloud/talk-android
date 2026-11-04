@@ -177,6 +177,7 @@
     <string name="nc_configure_cert_auth">Seleccionar o certificado de autenticación</string>
     <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando…</string>
+    <string name="nc_contact_chat_start">Iniciar</string>
     <string name="nc_contacts_done">Feito</string>
     <string name="nc_conversation_description">Descrición da conversa</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Ir ao ficheiro</string>
@@ -206,6 +207,7 @@
     <string name="nc_custom_color">Cor personalizada</string>
     <string name="nc_date_header_today">Hoxe</string>
     <string name="nc_date_header_yesterday">Onte</string>
+    <string name="nc_deep_link_join">Unirse</string>
     <string name="nc_delete">Eliminar</string>
     <string name="nc_delete_all">Eliminar todo</string>
     <string name="nc_delete_call">Eliminar a conversa</string>

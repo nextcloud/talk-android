@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Vali autentimise sertifikaat</string>
     <string name="nc_confirm">Kinnita</string>
     <string name="nc_connecting_call">Ühendan…</string>
+    <string name="nc_contact_chat_start">Algus</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_created_invalid_participants">Mõnede osalejate lisamine ei õnnestunud</string>
     <string name="nc_conversation_created_invalid_participants_named">Nende osalejate lisamine ei õnnestunud: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Sinu valitud värv</string>
     <string name="nc_date_header_today">Täna</string>
     <string name="nc_date_header_yesterday">Eile</string>
+    <string name="nc_deep_link_join">Liitu</string>
     <string name="nc_delete">Kustuta</string>
     <string name="nc_delete_all">Kustuta kõik</string>
     <string name="nc_delete_call">Kustuta vestlus</string>

@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">Selectează certificatul de autentificare</string>
     <string name="nc_confirm">Confirmă</string>
     <string name="nc_connecting_call">Se conectează…</string>
+    <string name="nc_contact_chat_start">Plecare</string>
     <string name="nc_contacts_done">Gata</string>
     <string name="nc_conversation_created_invalid_participants">Unii participanți nu au putut fi adăugați</string>
     <string name="nc_conversation_created_invalid_participants_named">Acești participanți nu au putut fi adăugați: %1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">Culoare personalizată</string>
     <string name="nc_date_header_today">Azi</string>
     <string name="nc_date_header_yesterday">Ieri</string>
+    <string name="nc_deep_link_join">Alătură-te</string>
     <string name="nc_delete">Șterge</string>
     <string name="nc_delete_all">Șterge tot</string>
     <string name="nc_delete_call">Șterge conversația</string>
