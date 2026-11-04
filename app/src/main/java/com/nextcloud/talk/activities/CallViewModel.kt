@@ -9,6 +9,7 @@ package com.nextcloud.talk.activities
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.call.components.promoteSpeakers
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +33,13 @@ class CallViewModel @Inject constructor() : ViewModel() {
 
     private val _isScreenSharingAllowed = MutableStateFlow(false)
     val isScreenSharingAllowed: StateFlow<Boolean> = _isScreenSharingAllowed.asStateFlow()
+
+    private val _speakers = MutableStateFlow<List<String>>(emptyList())
+
+    /** Session keys of participants promoted for having spoken while not visible, most recent first. */
+    val speakers: StateFlow<List<String>> = _speakers.asStateFlow()
+
+    private var previousSpeakingSessionKeys = emptySet<String>()
 
     fun getParticipant(sessionId: String?): ParticipantHandler? {
         if (sessionId == null) {
@@ -86,6 +94,27 @@ class CallViewModel @Inject constructor() : ViewModel() {
         participantHandlers[sessionId]?.destroy()
         participantHandlers.remove(sessionId)
         _participants.value = participantHandlers.values.map { it.uiState.value }
+    }
+
+    /**
+     * Promotes the participants that started speaking since the last call and are not visible.
+     *
+     * @return true if the speaker order changed
+     */
+    fun updateSpeakers(speakingSessionKeys: Set<String>, visibleSessionKeys: Set<String>): Boolean {
+        val startedSpeaking = speakingSessionKeys - previousSpeakingSessionKeys
+        previousSpeakingSessionKeys = speakingSessionKeys
+
+        val updatedSpeakers = promoteSpeakers(
+            speakers = _speakers.value,
+            startedSpeaking = startedSpeaking,
+            visibleSessionKeys = visibleSessionKeys,
+            participantSessionKeys = participantHandlers.keys
+        )
+        if (updatedSpeakers == _speakers.value) return false
+
+        _speakers.value = updatedSpeakers
+        return true
     }
 
     fun setActiveScreenShareSession(session: String?) {

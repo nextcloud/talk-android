@@ -160,4 +160,39 @@ class CallViewModelTest {
 
             assertEquals(0, viewModel.participants.value.size)
         }
+
+    @Test
+    fun `updateSpeakers promotes participants that start speaking while not visible`() {
+        addParticipants("a", "b", "c")
+
+        assertTrue(viewModel.updateSpeakers(setOf("c"), visibleSessionKeys = setOf("a")))
+        assertTrue(viewModel.updateSpeakers(setOf("c", "b"), visibleSessionKeys = setOf("a")))
+
+        assertEquals(listOf("b", "c"), viewModel.speakers.value)
+    }
+
+    @Test
+    fun `updateSpeakers does not promote participants that keep speaking`() {
+        addParticipants("a", "b")
+        viewModel.updateSpeakers(setOf("a"), visibleSessionKeys = emptySet())
+        viewModel.updateSpeakers(setOf("a", "b"), visibleSessionKeys = emptySet())
+
+        assertFalse(viewModel.updateSpeakers(setOf("a", "b"), visibleSessionKeys = emptySet()))
+        assertEquals(listOf("b", "a"), viewModel.speakers.value)
+    }
+
+    @Test
+    fun `updateSpeakers does not promote visible participants`() {
+        addParticipants("a", "b")
+
+        assertFalse(viewModel.updateSpeakers(setOf("a"), visibleSessionKeys = setOf("a", "b")))
+        assertEquals(emptyList<String>(), viewModel.speakers.value)
+    }
+
+    private fun addParticipants(vararg sessionIds: String) {
+        val receiver = mock<SignalingMessageReceiver>()
+        sessionIds.forEach {
+            viewModel.addParticipant(baseUrl = "", roomToken = "", sessionId = it, signalingMessageReceiver = receiver)
+        }
+    }
 }

@@ -24,16 +24,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isFinite
 import org.webrtc.EglBase
+import kotlinx.coroutines.flow.first
 import kotlin.math.ceil
 import android.util.Log
 import com.nextcloud.talk.activities.ParticipantUiState
@@ -46,6 +44,10 @@ fun ParticipantGrid(
     eglBase: EglBase?,
     participantUiStates: List<ParticipantUiState>,
     isVoiceOnlyCall: Boolean,
+    speakers: List<String> = emptyList(),
+    onSpeakingChanged: (speakingSessionKeys: Set<String>, visibleSessionKeys: Set<String>) -> Boolean = { _, _ ->
+        false
+    },
     onClick: () -> Unit,
     onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
@@ -57,29 +59,20 @@ fun ParticipantGrid(
     val minItemHeight = 100.dp
 
     val gridState = rememberLazyGridState()
-    var speakers by remember { mutableStateOf(emptyList<String>()) }
-    val previousSpeakingSessionKeys = remember { mutableSetOf<String>() }
     val speakingSessionKeys = participantUiStates.filter { it.isSpeaking }.mapNotNull { it.sessionKey }.toSet()
 
     LaunchedEffect(speakingSessionKeys) {
-        val visibleSessionKeys = gridState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? String }.toSet()
-        val updatedSpeakers = promoteSpeakers(
-            speakers = speakers,
-            startedSpeaking = speakingSessionKeys - previousSpeakingSessionKeys,
-            visibleSessionKeys = visibleSessionKeys,
-            participantSessionKeys = participantUiStates.mapNotNull { it.sessionKey }.toSet()
-        )
-        previousSpeakingSessionKeys.clear()
-        previousSpeakingSessionKeys.addAll(speakingSessionKeys)
+        // Visible items are known only after the grid has been laid out.
+        val visibleSessionKeys = snapshotFlow { gridState.layoutInfo.visibleItemsInfo }
+            .first { it.isNotEmpty() }
+            .mapNotNull { it.key as? String }
+            .toSet()
 
-        if (updatedSpeakers != speakers) {
-            // A lazy grid keeps its first visible item in place when items move in front of it, so the grid has to
-            // be scrolled explicitly to keep showing the top, where promoted speakers are placed.
-            val isScrolledToTop = gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0
-            speakers = updatedSpeakers
-            if (isScrolledToTop) {
-                gridState.requestScrollToItem(0)
-            }
+        // A lazy grid keeps its first visible item in place when items move in front of it, so the grid has to be
+        // scrolled explicitly to keep showing the top, where promoted speakers are placed.
+        val isScrolledToTop = gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0
+        if (onSpeakingChanged(speakingSessionKeys, visibleSessionKeys) && isScrolledToTop) {
+            gridState.requestScrollToItem(0)
         }
     }
 
