@@ -61,8 +61,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010051
-        versionName = "25.1.0 RC1"
+        versionCode = 250010052
+        versionName = "25.1.0 RC2"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -92,8 +92,8 @@ android {
         create("qa") {
             applicationId = "com.nextcloud.talk2.qa"
             dimension = "default"
-            versionCode = 1
-            versionName = "1"
+            versionCode = 250010052
+            versionName = "25.1.0 RC2"
         }
     }
 
