@@ -29,6 +29,7 @@ import org.mockito.kotlin.verify
 import org.webrtc.AudioTrack
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection.IceConnectionState
+import org.webrtc.VideoTrack
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ParticipantHandlerTest {
@@ -89,7 +90,7 @@ class ParticipantHandlerTest {
     @Test
     fun `Speaking data channel messages update the speaking state`() {
         handler = createHandler()
-        val listener = attachPeerConnection()
+        val (listener, _) = attachPeerConnectionWithObserver()
 
         listener.onSpeaking()
         assertTrue(handler.uiState.value.isSpeaking)
@@ -166,9 +167,27 @@ class ParticipantHandlerTest {
     }
 
     @Test
+    fun `Removing the screen stream clears the screen share`() {
+        handler = createHandler()
+        val screenPeerConnectionWrapper: PeerConnectionWrapper = mock {}
+        handler.setScreenPeerConnection(screenPeerConnectionWrapper)
+        val observerCaptor = argumentCaptor<PeerConnectionObserver>()
+        verify(screenPeerConnectionWrapper).addObserver(observerCaptor.capture())
+        val removedStream = MediaStream(0L).apply { videoTracks.add(mock<VideoTrack> {}) }
+        observerCaptor.firstValue.onStreamAdded(removedStream)
+        assertTrue(handler.uiState.value.isScreenStreamEnabled)
+
+        // The removed stream is passed to the observer and still lists its tracks.
+        observerCaptor.firstValue.onStreamRemoved(removedStream)
+
+        assertFalse(handler.uiState.value.isScreenStreamEnabled)
+        assertNull(handler.uiState.value.screenMediaStream)
+    }
+
+    @Test
     fun `Replacing the peer connection resets the speaking state`() {
         handler = createHandler()
-        val listener = attachPeerConnection()
+        val (listener, _) = attachPeerConnectionWithObserver()
         listener.onSpeaking()
 
         handler.setPeerConnection(mock<PeerConnectionWrapper> {})
@@ -199,13 +218,5 @@ class ParticipantHandlerTest {
         val observerCaptor = argumentCaptor<PeerConnectionObserver>()
         verify(peerConnectionWrapper).addObserver(observerCaptor.capture())
         return listenerCaptor.firstValue to observerCaptor.firstValue
-    }
-
-    private fun attachPeerConnection(): DataChannelMessageListener {
-        val peerConnectionWrapper: PeerConnectionWrapper = mock {}
-        handler.setPeerConnection(peerConnectionWrapper)
-        val captor = argumentCaptor<DataChannelMessageListener>()
-        verify(peerConnectionWrapper).addListener(captor.capture())
-        return captor.firstValue
     }
 }
