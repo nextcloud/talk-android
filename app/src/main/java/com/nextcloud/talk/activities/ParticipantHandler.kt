@@ -96,6 +96,7 @@ class ParticipantHandler(
             it.copy(
                 mediaStream = mediaStream,
                 isAudioEnabled = hasAudioTracks,
+                isSpeaking = it.isSpeaking && hasAudioTracks,
                 isStreamEnabled = hasVideoTracks
             )
         }
@@ -130,12 +131,17 @@ class ParticipantHandler(
                     "hasAudioTracks=$hasAudioTracks, " +
                     "hasVideoTracks=$hasVideoTracks"
             )
-            _uiState.update { it.copy(isAudioEnabled = hasAudioTracks) }
+            _uiState.update { it.copy(isAudioEnabled = hasAudioTracks, isSpeaking = it.isSpeaking && hasAudioTracks) }
             _uiState.update { it.copy(isStreamEnabled = hasVideoTracks) }
         }
 
-        val isConnected = isConnected(iceConnectionState)
-        _uiState.update { it.copy(isConnected = isConnected, isSpeaking = it.isSpeaking && isConnected) }
+        // Data channel messages survive temporary disconnections, so the speaking state is kept unless the connection
+        // is lost for good.
+        val isConnectionLost = iceConnectionState == IceConnectionState.FAILED ||
+            iceConnectionState == IceConnectionState.CLOSED
+        _uiState.update {
+            it.copy(isConnected = isConnected(iceConnectionState), isSpeaking = it.isSpeaking && !isConnectionLost)
+        }
     }
 
     private val dataChannelMessageListener: DataChannelMessageListener = object : DataChannelMessageListener {
