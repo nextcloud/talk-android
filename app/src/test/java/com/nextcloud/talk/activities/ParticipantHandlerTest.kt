@@ -19,12 +19,15 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.webrtc.AudioTrack
+import org.webrtc.MediaStream
 import org.webrtc.PeerConnection.IceConnectionState
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -135,11 +138,16 @@ class ParticipantHandlerTest {
     fun `Removing the stream resets the speaking state`() {
         handler = createHandler()
         val (listener, observer) = attachPeerConnectionWithObserver()
+        val removedStream = MediaStream(0L).apply { audioTracks.add(mock<AudioTrack> {}) }
+        observer.onStreamAdded(removedStream)
         listener.onSpeaking()
 
-        observer.onStreamRemoved(null)
+        // The removed stream is passed to the observer and still lists its tracks.
+        observer.onStreamRemoved(removedStream)
 
         assertFalse(handler.uiState.value.isSpeaking)
+        assertFalse(handler.uiState.value.isAudioEnabled)
+        assertNull(handler.uiState.value.mediaStream)
     }
 
     @Test
