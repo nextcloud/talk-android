@@ -144,7 +144,7 @@ fun ParticipantTile(
             }
         }
 
-        if (participantUiState.isSpeaking) {
+        if (participantUiState.isActiveSpeaker) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

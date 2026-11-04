@@ -59,7 +59,7 @@ fun ParticipantGrid(
     val minItemHeight = 100.dp
 
     val gridState = rememberLazyGridState()
-    val speakingSessionKeys = participantUiStates.filter { it.isSpeaking }.mapNotNull { it.sessionKey }.toSet()
+    val speakingSessionKeys = participantUiStates.filter { it.isActiveSpeaker }.mapNotNull { it.sessionKey }.toSet()
 
     LaunchedEffect(speakingSessionKeys) {
         // Visible items are known only after the grid has been laid out.

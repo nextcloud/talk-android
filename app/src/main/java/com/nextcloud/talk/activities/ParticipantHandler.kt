@@ -96,7 +96,6 @@ class ParticipantHandler(
             it.copy(
                 mediaStream = mediaStream,
                 isAudioEnabled = hasAudioTracks,
-                isSpeaking = it.isSpeaking && hasAudioTracks,
                 isStreamEnabled = hasVideoTracks
             )
         }
@@ -131,17 +130,11 @@ class ParticipantHandler(
                     "hasAudioTracks=$hasAudioTracks, " +
                     "hasVideoTracks=$hasVideoTracks"
             )
-            _uiState.update { it.copy(isAudioEnabled = hasAudioTracks, isSpeaking = it.isSpeaking && hasAudioTracks) }
+            _uiState.update { it.copy(isAudioEnabled = hasAudioTracks) }
             _uiState.update { it.copy(isStreamEnabled = hasVideoTracks) }
         }
 
-        // Data channel messages survive temporary disconnections, so the speaking state is kept unless the connection
-        // is lost for good.
-        val isConnectionLost = iceConnectionState == IceConnectionState.FAILED ||
-            iceConnectionState == IceConnectionState.CLOSED
-        _uiState.update {
-            it.copy(isConnected = isConnected(iceConnectionState), isSpeaking = it.isSpeaking && !isConnectionLost)
-        }
+        _uiState.update { it.copy(isConnected = isConnected(iceConnectionState)) }
     }
 
     private val dataChannelMessageListener: DataChannelMessageListener = object : DataChannelMessageListener {
@@ -152,7 +145,7 @@ class ParticipantHandler(
 
         override fun onAudioOff() {
             Log.d(TAG, "onAudioOff: ${_uiState.value.nick} (sessionId=${_uiState.value.sessionKey})")
-            _uiState.update { it.copy(isAudioEnabled = false, isSpeaking = false) }
+            _uiState.update { it.copy(isAudioEnabled = false) }
         }
 
         override fun onVideoOn() {
@@ -205,11 +198,14 @@ class ParticipantHandler(
 
         this.peerConnection = peerConnection
 
+        // "stoppedSpeaking" can no longer be received from the previous peer connection.
+        _uiState.update { it.copy(isSpeaking = false) }
+
         if (this.peerConnection == null) {
             // special case when participant has no permission. -> no streams are transmitted but he must be shown as
             // connected
             _uiState.update { it.copy(mediaStream = null) }
-            _uiState.update { it.copy(isAudioEnabled = false, isSpeaking = false) }
+            _uiState.update { it.copy(isAudioEnabled = false) }
             _uiState.update { it.copy(isStreamEnabled = false) }
             _uiState.update { it.copy(isConnected = true) }
             return
@@ -221,7 +217,6 @@ class ParticipantHandler(
                 this.peerConnection?.peerConnection?.iceConnectionState()
         )
 
-        _uiState.update { it.copy(isSpeaking = false) }
         handleIceConnectionStateChange(this.peerConnection?.peerConnection?.iceConnectionState())
         handleStreamChange(this.peerConnection?.stream)
 
