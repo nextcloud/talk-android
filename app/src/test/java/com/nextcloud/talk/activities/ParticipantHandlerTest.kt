@@ -9,6 +9,7 @@ package com.nextcloud.talk.activities
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -106,20 +107,37 @@ class ParticipantHandlerTest {
     }
 
     @Test
-    fun `Losing the ICE connection resets the speaking state`() {
+    fun `Temporary ICE disconnection keeps the speaking state`() {
         handler = createHandler()
-        val peerConnectionWrapper: PeerConnectionWrapper = mock {}
-        handler.setPeerConnection(peerConnectionWrapper)
-        val listenerCaptor = argumentCaptor<DataChannelMessageListener>()
-        verify(peerConnectionWrapper).addListener(listenerCaptor.capture())
-        val observerCaptor = argumentCaptor<PeerConnectionWrapper.PeerConnectionObserver>()
-        verify(peerConnectionWrapper).addObserver(observerCaptor.capture())
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        listener.onSpeaking()
 
-        observerCaptor.firstValue.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
-        listenerCaptor.firstValue.onSpeaking()
+        observer.onIceConnectionStateChanged(IceConnectionState.DISCONNECTED)
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+
         assertTrue(handler.uiState.value.isSpeaking)
+    }
 
-        observerCaptor.firstValue.onIceConnectionStateChanged(IceConnectionState.DISCONNECTED)
+    @Test
+    fun `Failed ICE connection resets the speaking state`() {
+        handler = createHandler()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        observer.onIceConnectionStateChanged(IceConnectionState.CONNECTED)
+        listener.onSpeaking()
+
+        observer.onIceConnectionStateChanged(IceConnectionState.FAILED)
+
+        assertFalse(handler.uiState.value.isSpeaking)
+    }
+
+    @Test
+    fun `Removing the stream resets the speaking state`() {
+        handler = createHandler()
+        val (listener, observer) = attachPeerConnectionWithObserver()
+        listener.onSpeaking()
+
+        observer.onStreamRemoved(null)
 
         assertFalse(handler.uiState.value.isSpeaking)
     }
@@ -144,6 +162,16 @@ class ParticipantHandlerTest {
             onParticipantShareScreen = onParticipantShareScreen,
             onParticipantUnshareScreen = onParticipantUnshareScreen
         )
+
+    private fun attachPeerConnectionWithObserver(): Pair<DataChannelMessageListener, PeerConnectionObserver> {
+        val peerConnectionWrapper: PeerConnectionWrapper = mock {}
+        handler.setPeerConnection(peerConnectionWrapper)
+        val listenerCaptor = argumentCaptor<DataChannelMessageListener>()
+        verify(peerConnectionWrapper).addListener(listenerCaptor.capture())
+        val observerCaptor = argumentCaptor<PeerConnectionObserver>()
+        verify(peerConnectionWrapper).addObserver(observerCaptor.capture())
+        return listenerCaptor.firstValue to observerCaptor.firstValue
+    }
 
     private fun attachPeerConnection(): DataChannelMessageListener {
         val peerConnectionWrapper: PeerConnectionWrapper = mock {}
