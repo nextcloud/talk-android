@@ -53,7 +53,7 @@ class ParticipantHandler(
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            handleStreamChange(mediaStream)
+            handleStreamChange(null)
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
