@@ -110,8 +110,9 @@ class TelecomManager @Inject constructor(private val context: Context, private v
     }
 
     fun hasActiveCall(roomToken: String? = null): Boolean {
+        // the call scope only exists while a room token is registered
         if (roomToken.isNullOrBlank()) {
-            return currentRoomToken != null || currentCallControlScope != null
+            return currentRoomToken != null
         }
         return currentRoomToken == roomToken
     }
@@ -123,45 +124,10 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         onAnswerCall: () -> Unit,
         onRejectCall: () -> Unit
     ) = runOnMainThread {
-        val registrationId = prepareCallRegistration(roomToken, "Incoming") ?: return@runOnMainThread
-        currentDisconnectHandler = onRejectCall
-        isIncomingCall = true
-        isCallAnsweredOrActive = false
-        currentCallType = getCallType(isVideo)
-
-        val callAttributes = CallAttributesCompat(
-            displayName = displayName,
-            address = Uri.parse("talk:$roomToken"),
-            direction = CallAttributesCompat.DIRECTION_INCOMING,
-            callType = getCallType(isVideo),
-            callCapabilities = NO_CALL_CAPABILITIES
-        )
-
-        telecomScope.launch {
-            try {
-                registrationJob?.join()
-                callsManager.addCall(
-                    callAttributes = callAttributes,
-                    onAnswer = { _ ->
-                        isIncomingCall = false
-                        isCallAnsweredOrActive = true
-                        onAnswerCall()
-                    },
-                    onDisconnect = { _ ->
-                        val handlerToInvoke = currentDisconnectHandler
-                        handleCallDisconnected(registrationId)
-                        handlerToInvoke?.invoke()
-                    },
-                    onSetActive = { },
-                    onSetInactive = { }
-                ) {
-                    onScopeAssigned(registrationId, roomToken)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error adding incoming call to Telecom for room $roomToken", e)
-            } finally {
-                handleCallDisconnected(registrationId)
-            }
+        startCall(displayName, roomToken, isVideo, onRejectCall) {
+            isIncomingCall = false
+            isCallAnsweredOrActive = true
+            onAnswerCall()
         }
     }
 
@@ -171,17 +137,50 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         isVideo: Boolean,
         onDisconnectCall: (() -> Unit)? = null
     ) = runOnMainThread {
-        val registrationId = prepareCallRegistration(roomToken, "Outgoing") ?: return@runOnMainThread
-        currentDisconnectHandler = onDisconnectCall
-        isIncomingCall = false
-        isCallAnsweredOrActive = true
+        startCall(displayName, roomToken, isVideo, onDisconnectCall)
+    }
+
+    /**
+     * Registers a call for [roomToken] with Telecom; runs on the main thread. Only one call is tracked at a time, so
+     * the request is ignored while a call is registered. A call with [onAnswer] is incoming and rings until answered,
+     * which runs [onAnswer]; one without is outgoing and is activated as soon as Telecom added it.
+     */
+    private fun startCall(
+        displayName: String,
+        roomToken: String,
+        isVideo: Boolean,
+        onDisconnect: (() -> Unit)?,
+        onAnswer: (() -> Unit)? = null
+    ) {
+        val isIncoming = onAnswer != null
+        val direction =
+            if (isIncoming) CallAttributesCompat.DIRECTION_INCOMING else CallAttributesCompat.DIRECTION_OUTGOING
+        val label = if (isIncoming) "Incoming" else "Outgoing"
+        val ignoreReason = when {
+            !isSupported -> "Telecom is not used on this Android version"
+            roomToken.isBlank() -> "roomToken is blank"
+            currentRoomToken != null -> "a call is already registered for room $currentRoomToken"
+            else -> null
+        }
+        if (ignoreReason != null) {
+            Log.d(TAG, "$label call ignored: $ignoreReason")
+            return
+        }
+
+        val registrationId = UUID.randomUUID().toString()
+        currentRegistrationId = registrationId
+        currentRoomToken = roomToken
+        isPendingSetActive = false
+        currentDisconnectHandler = onDisconnect
+        isIncomingCall = isIncoming
+        isCallAnsweredOrActive = !isIncoming
         currentCallType = getCallType(isVideo)
 
         val callAttributes = CallAttributesCompat(
             displayName = displayName,
             address = Uri.parse("talk:$roomToken"),
-            direction = CallAttributesCompat.DIRECTION_OUTGOING,
-            callType = getCallType(isVideo),
+            direction = direction,
+            callType = currentCallType,
             callCapabilities = NO_CALL_CAPABILITIES
         )
 
@@ -190,7 +189,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
                 registrationJob?.join()
                 callsManager.addCall(
                     callAttributes = callAttributes,
-                    onAnswer = { },
+                    onAnswer = { _ -> onAnswer?.invoke() },
                     onDisconnect = { _ ->
                         val handlerToInvoke = currentDisconnectHandler
                         handleCallDisconnected(registrationId)
@@ -199,10 +198,10 @@ class TelecomManager @Inject constructor(private val context: Context, private v
                     onSetActive = { },
                     onSetInactive = { }
                 ) {
-                    onScopeAssigned(registrationId, roomToken, autoActivate = true)
+                    onScopeAssigned(registrationId, roomToken, autoActivate = !isIncoming)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error adding outgoing call to Telecom for room $roomToken", e)
+                Log.e(TAG, "Error adding ${label.lowercase()} call to Telecom for room $roomToken", e)
             } finally {
                 handleCallDisconnected(registrationId)
             }
@@ -338,29 +337,6 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             }
             onResult(result is CallControlResult.Success)
         }
-    }
-
-    private fun prepareCallRegistration(roomToken: String, callTypeLabel: String): String? {
-        if (!isSupported) {
-            return null
-        }
-        if (roomToken.isBlank()) {
-            Log.e(TAG, "Cannot add $callTypeLabel call: roomToken is blank")
-            return null
-        }
-        if (currentRoomToken == roomToken || currentCallControlScope != null) {
-            Log.d(TAG, "$callTypeLabel call ignored: registration or scope already active for room $currentRoomToken")
-            return null
-        }
-        if (currentRoomToken != null) {
-            Log.d(TAG, "$callTypeLabel call ignored: active call already exists for room $currentRoomToken")
-            return null
-        }
-        val registrationId = UUID.randomUUID().toString()
-        currentRegistrationId = registrationId
-        currentRoomToken = roomToken
-        isPendingSetActive = false
-        return registrationId
     }
 
     private fun handleCallDisconnected(registrationId: String) {
