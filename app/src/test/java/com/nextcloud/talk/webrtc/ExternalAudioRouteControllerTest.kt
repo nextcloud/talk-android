@@ -152,4 +152,40 @@ class ExternalAudioRouteControllerTest {
         assertNull(controller.onProximityChanged(proximityNear = false))
         assertNull(controller.onRouteReported(AudioDevice.EARPIECE, phoneDevices, proximityNear = false))
     }
+
+    @Test
+    fun `accepted request that lands on another device does not stay pending`() {
+        val controller = ExternalAudioRouteController()
+        controller.reset(AudioDevice.NONE)
+        val withBluetooth = phoneDevices + AudioDevice.BLUETOOTH
+        controller.onRouteReported(AudioDevice.EARPIECE, withBluetooth, proximityNear = false)
+        controller.select(AudioDevice.BLUETOOTH, proximityNear = false)
+        controller.onRequestStarted(AudioDevice.BLUETOOTH)
+
+        // Telecom accepts, but the route stays on the earpiece and nothing new is reported
+        controller.onRequestFinished(AudioDevice.BLUETOOTH, accepted = true)
+
+        assertEquals(AudioDevice.NONE, controller.pendingDevice)
+        assertTrue(controller.isRouteReady)
+        assertEquals(AudioDevice.EARPIECE, controller.deviceForUi)
+        // selecting Bluetooth again is possible
+        assertEquals(AudioDevice.BLUETOOTH, controller.select(AudioDevice.BLUETOOTH, proximityNear = false))
+    }
+
+    @Test
+    fun `route reported after an accepted request becomes the selection when it differs`() {
+        val controller = ExternalAudioRouteController()
+        controller.reset(AudioDevice.NONE)
+        val withBluetooth = phoneDevices + AudioDevice.BLUETOOTH
+        controller.onRouteReported(AudioDevice.EARPIECE, withBluetooth, proximityNear = false)
+        controller.select(AudioDevice.BLUETOOTH, proximityNear = false)
+        controller.onRequestStarted(AudioDevice.BLUETOOTH)
+        controller.onRequestFinished(AudioDevice.BLUETOOTH, accepted = true)
+
+        val request = controller.onRouteReported(AudioDevice.SPEAKER_PHONE, withBluetooth, proximityNear = false)
+
+        assertNull(request)
+        assertEquals(AudioDevice.SPEAKER_PHONE, controller.userSelectedDevice)
+        assertEquals(AudioDevice.SPEAKER_PHONE, controller.deviceForUi)
+    }
 }
