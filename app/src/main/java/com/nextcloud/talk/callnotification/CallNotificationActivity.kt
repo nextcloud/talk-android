@@ -201,6 +201,7 @@ class CallNotificationActivity : CallBaseActivity() {
         leavingScreen = true
         val declineIntent = Intent(this, DeclineCallReceiver::class.java).apply {
             putExtra(BundleKeys.KEY_NOTIFICATION_TIMESTAMP, notificationTimestamp)
+            putExtra(KEY_ROOM_TOKEN, roomToken)
         }
         sendBroadcast(declineIntent)
         finish()

@@ -329,6 +329,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 requestCode + DECLINE_CALL_REQUEST_OFFSET,
                 Intent(applicationContext, DeclineCallReceiver::class.java).apply {
                     putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+                    putExtra(KEY_ROOM_TOKEN, pushMessage.id)
                 },
                 pendingIntentFlags
             )
