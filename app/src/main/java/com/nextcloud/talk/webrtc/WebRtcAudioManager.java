@@ -734,9 +734,6 @@ public class WebRtcAudioManager {
     }
 
     /**
-     * Sets the microphone mute state.
-     */
-    /**
      * Lifts the system-wide microphone mute, which Telecom sets e.g. when the mute button of a Bluetooth headset is
      * pressed. Without this, the microphone stays silent although the call has it turned on.
      */
@@ -744,6 +741,9 @@ public class WebRtcAudioManager {
         setMicrophoneMute(false);
     }
 
+    /**
+     * Sets the microphone mute state.
+     */
     private void setMicrophoneMute(boolean on) {
         boolean wasMuted = audioManager.isMicrophoneMute();
         if (wasMuted == on) {
