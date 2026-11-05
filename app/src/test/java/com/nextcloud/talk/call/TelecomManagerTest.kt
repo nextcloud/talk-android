@@ -320,4 +320,61 @@ class TelecomManagerTest {
         telecomManager.endCurrentCall("roomA")
         assertFalse(telecomManager.hasActiveCall("roomA"))
     }
+
+    @Test
+    fun testEndRingingCallEndsUnansweredIncomingCall() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        telecomManager.endRingingCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testEndRingingCallIgnoresAnsweredIncomingCall() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+        telecomManager.setCallActive("roomA")
+
+        telecomManager.endRingingCall("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testEndRingingCallIgnoresOutgoingCall() {
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false
+        )
+
+        telecomManager.endRingingCall("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testEndRingingCallIgnoresMismatchedOrBlankRoomToken() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        telecomManager.endRingingCall("roomB")
+        telecomManager.endRingingCall(null)
+        telecomManager.endRingingCall("")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
 }
