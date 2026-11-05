@@ -226,13 +226,13 @@ class NextcloudTalkApplication :
         securityKeyManager.init(this, securityKeyConfigBuilder.build())
         initializeWebRtc()
         buildComponent()
-
-        componentApplication.inject(this)
-
-        telecomManager.registerAppWithTelecom()
         DavUtils.registerCustomFactories()
 
+        // Must run before inject(): injected singletons (e.g. OkHttpClient) create their SSLContext on construction
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
+
+        componentApplication.inject(this)
+        telecomManager.registerAppWithTelecom()
         installExceptionHandler()
 
         observeAppInBackground()
