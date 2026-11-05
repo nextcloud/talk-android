@@ -74,6 +74,9 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
             }
             put(FileColumns.DISPLAY_NAME, cacheFile.name)
             put(FileColumns.MIME_TYPE, mimeType)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(FileColumns.IS_PENDING, 1)
+            }
         }
 
         val fileUri = checkNotNull(contentResolver.insert(getUriByType(mimeType), values)) {
@@ -82,6 +85,10 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
         try {
             checkNotNull(contentResolver.openOutputStream(fileUri)) { "Failed to create output stream" }.use { output ->
                 cacheFile.inputStream().use { input -> input.copyTo(output) }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val publishedValues = ContentValues().apply { put(FileColumns.IS_PENDING, 0) }
+                contentResolver.update(fileUri, publishedValues, null, null)
             }
         } catch (e: Exception) {
             try {
