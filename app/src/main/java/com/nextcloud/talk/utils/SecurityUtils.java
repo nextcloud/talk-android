@@ -49,6 +49,12 @@ public class SecurityUtils {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
             SecretKey secretKey = (SecretKey) keyStore.getKey(CREDENTIALS_KEY, null);
+            if (secretKey == null) {
+                // not created yet, e.g. when the app is started at a chat of a notification: the next check after
+                // the user authenticated can use it
+                createKey(screenLockTimeout);
+                return false;
+            }
             Cipher cipher =
                     Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_GCM + "/" + KeyProperties.ENCRYPTION_PADDING_NONE);
 
@@ -65,10 +71,8 @@ public class SecurityUtils {
             return false;
         } catch (KeyPermanentlyInvalidatedException e) {
             // This happens if the lock screen has been disabled or reset after the key was
-            // generated.
-            // Shouldn't really happen because we regenerate the key every time an activity
-            // is created, but oh well
-            // Create key, and attempt again
+            // generated. The key is created once per start of the app, so create it anew, and
+            // attempt again
             createKey(screenLockTimeout);
             return false;
         } catch (BadPaddingException | IllegalBlockSizeException | KeyStoreException |

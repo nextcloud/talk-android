@@ -176,6 +176,7 @@
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
     <string name="nc_confirm">Потврди</string>
     <string name="nc_connecting_call">Повезивање ..</string>
+    <string name="nc_contact_chat_start">Почетак</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис разговора</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Иди на фајл</string>
@@ -204,6 +205,7 @@
     <string name="nc_custom_color">Прилагођена боја</string>
     <string name="nc_date_header_today">Данас</string>
     <string name="nc_date_header_yesterday">Јуче</string>
+    <string name="nc_deep_link_join">Придружи се</string>
     <string name="nc_delete">Обриши</string>
     <string name="nc_delete_all">Обриши све</string>
     <string name="nc_delete_call">Обриши разговор</string>
@@ -509,6 +511,7 @@
     <string name="nc_show_notification_warning_title">Прикажи уобичајено упозорење о обавештењу</string>
     <string name="nc_sort_by">Разврстај</string>
     <string name="nc_start_group_chat">Покрени групни чет</string>
+    <string name="nc_start_screen_sharing">Подели екран</string>
     <string name="nc_start_time">Време почетка</string>
     <string name="nc_switch_account">Пребаци налог</string>
     <string name="nc_team">Тим</string>

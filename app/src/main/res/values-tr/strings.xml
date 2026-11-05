@@ -230,6 +230,9 @@
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_confirm">Onayla</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
+    <string name="nc_contact_chat_start">Başlat</string>
+    <string name="nc_contact_chat_start_message">Henüz %1$s ile bir görüşmeniz yok. Bir görüşme başlatmak onu ikinizin de görüşme listesine ekler.</string>
+    <string name="nc_contact_chat_start_title">Görüşme başlatılsın mı?</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_created_invalid_participants">Bazı katılımcılar eklenemedi</string>
     <string name="nc_conversation_created_invalid_participants_named">Şu katılımcılar eklenemedi: %1$s</string>
@@ -276,6 +279,9 @@
     <string name="nc_custom_color">Özel renk</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
+    <string name="nc_deep_link_join">Katıl</string>
+    <string name="nc_deep_link_join_message">Bu %1$s üzerine görüşme, görüşme listenizde yok. Açmak sizi katılımcı olarak ekleyebilir.</string>
+    <string name="nc_deep_link_join_title">Görüşmeye katılmak istiyor musunuz?</string>
     <string name="nc_delete">Sil</string>
     <string name="nc_delete_all">Tümünü sil</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
@@ -467,7 +473,10 @@
     <string name="nc_open_conversation_to_registered_users">Görüşmeyi kayıtlı kullanıcılara aç</string>
     <string name="nc_open_to_guest_app_users">Ayrıca konuk uygulama kullanıcılarına da açılsın</string>
     <string name="nc_owner">Sahip</string>
+    <string name="nc_participant_in_call">Aramada</string>
     <string name="nc_participant_type_change_failed">Katılımcının türü değiştirilemedi</string>
+    <string name="nc_participant_with_phone">Sesli arama</string>
+    <string name="nc_participant_with_video">Görüntülü arama</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
     <string name="nc_password">Parola</string>
@@ -650,6 +659,7 @@
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_shortcut_conversation_deleted">Bu yazışma artık yok</string>
+    <string name="nc_shortcut_conversation_not_found">Kısayolun görüşmesi bulunamadı</string>
     <string name="nc_shortcut_created">Kısayol oluşturuldu</string>
     <string name="nc_show_ecosystem_description">Hesap seçme iletişim kutusunda Nextcloud uygulamaları önerileri</string>
     <string name="nc_show_ecosystem_title">Uygulama değiştiriciyi görüntüle</string>
@@ -657,6 +667,7 @@
     <string name="nc_show_notification_warning_title">Standart uyarı bildirimi görüntülensin</string>
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_group_chat">Grup sohbeti başlat</string>
+    <string name="nc_start_screen_sharing">Ekranı paylaş</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_switch_account">Hesabı değiştir</string>
     <string name="nc_take_video">Bir görüntü kaydedin</string>

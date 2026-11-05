@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -186,6 +187,9 @@ class ConversationsListViewModel @AssistedInject constructor(
             _getRoomsViewState.value = GetRoomsErrorState(throwable)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+
+    /** The conversations stored now, also those a sync stored that [getRoomsStateFlow] doesn't have yet. */
+    suspend fun storedRooms(): List<ConversationModel> = repository.roomListFlow(currentUser.id!!).first()
 
     /**
      * Drives the shimmer skeleton visibility. Visible while rooms are still being loaded for

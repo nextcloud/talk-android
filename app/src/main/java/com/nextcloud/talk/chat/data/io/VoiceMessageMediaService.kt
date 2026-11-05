@@ -8,8 +8,8 @@
 package com.nextcloud.talk.chat.data.io
 
 import android.app.PendingIntent
-import android.content.Intent
 import androidx.annotation.OptIn
+import androidx.core.app.TaskStackBuilder
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -41,7 +41,7 @@ import com.nextcloud.talk.chat.audio.VoiceMessageWaveformLoader
 import com.nextcloud.talk.chat.audio.chatAudioKind
 import com.nextcloud.talk.chat.audio.chatAudioRepeatModeOf
 import com.nextcloud.talk.chat.audio.chatAudioThreadId
-import com.nextcloud.talk.chat.audio.openMessageIntent
+import com.nextcloud.talk.chat.audio.openMessageBackStack
 import com.nextcloud.talk.chat.audio.toChatAudioError
 import com.nextcloud.talk.chat.audio.toPlayerRepeatMode
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -193,14 +193,13 @@ class VoiceMessageMediaService : MediaSessionService() {
     }
 
     private fun sessionActivityFor(key: ChatAudioKey, threadId: Long?): PendingIntent {
-        val intent = key.openMessageIntent(this, threadId).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        return PendingIntent.getActivity(
-            this,
-            SESSION_ACTIVITY_REQUEST_CODE,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val backStack = TaskStackBuilder.create(this)
+        key.openMessageBackStack(this, threadId).forEach { backStack.addNextIntent(it) }
+        return checkNotNull(
+            backStack.getPendingIntent(
+                SESSION_ACTIVITY_REQUEST_CODE,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
         )
     }
 

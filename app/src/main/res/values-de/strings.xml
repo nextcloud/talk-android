@@ -230,6 +230,8 @@
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_confirm">Bestätigen</string>
     <string name="nc_connecting_call">Verbinde …</string>
+    <string name="nc_contact_chat_start">Start</string>
+    <string name="nc_contact_chat_start_title">Unterhaltung beginnen?</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_created_invalid_participants">Einige Teilnehmer konnten nicht hinzugefügt werden</string>
     <string name="nc_conversation_created_invalid_participants_named">Diese Teilnehmer konnten nicht hinzugefügt werden: %1$s</string>
@@ -276,6 +278,8 @@
     <string name="nc_custom_color">Benutzerdefinierte Farbe</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
+    <string name="nc_deep_link_join">Beitreten</string>
+    <string name="nc_deep_link_join_title">Der Unterhaltung beitreten?</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
@@ -467,7 +471,10 @@
     <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
+    <string name="nc_participant_in_call">Im Anruf</string>
     <string name="nc_participant_type_change_failed">Typ des Teilnehmers konnte nicht geändert werden</string>
+    <string name="nc_participant_with_phone">Mit Telefon</string>
+    <string name="nc_participant_with_video">Mit Video</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
     <string name="nc_password">Passwort</string>

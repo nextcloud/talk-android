@@ -230,6 +230,9 @@
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
     <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando …</string>
+    <string name="nc_contact_chat_start">Iniciar</string>
+    <string name="nc_contact_chat_start_message">Você ainda não conversou com %1$s. Ao iniciar uma conversa, ela será adicionada à lista de conversas de ambos.</string>
+    <string name="nc_contact_chat_start_title">Iniciar conversa?</string>
     <string name="nc_contacts_done">Concluído</string>
     <string name="nc_conversation_created_invalid_participants">Não foi possível adicionar alguns participantes</string>
     <string name="nc_conversation_created_invalid_participants_named">Não foi possível adicionar estes participantes: %1$s</string>
@@ -276,6 +279,9 @@
     <string name="nc_custom_color">Cor personalizada</string>
     <string name="nc_date_header_today">Hoje</string>
     <string name="nc_date_header_yesterday">Ontem</string>
+    <string name="nc_deep_link_join">Entrar</string>
+    <string name="nc_deep_link_join_message">Essa conversa em %1$s não está na sua lista de conversas. Ao abri-la, você pode ser adicionado como participante.</string>
+    <string name="nc_deep_link_join_title">Entrar na conversa?</string>
     <string name="nc_delete">Excluir</string>
     <string name="nc_delete_all">Excluir todos</string>
     <string name="nc_delete_call">Excluir conversa</string>
@@ -467,7 +473,10 @@
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo Visitantes</string>
     <string name="nc_owner">Proprietário</string>
+    <string name="nc_participant_in_call">Em chamada</string>
     <string name="nc_participant_type_change_failed">Não foi possível alterar o tipo do participante</string>
+    <string name="nc_participant_with_phone">Com telefone</string>
+    <string name="nc_participant_with_video">Com vídeo</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
     <string name="nc_password">Senha</string>
@@ -650,6 +659,7 @@
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_shortcut_conversation_deleted">Esta conversa não existe mais</string>
+    <string name="nc_shortcut_conversation_not_found">Não foi encontrado a conversa do atalho</string>
     <string name="nc_shortcut_created">Atalho criado</string>
     <string name="nc_show_ecosystem_description">Sugestões de aplicativos Nextcloud na caixa de diálogo de seleção de conta</string>
     <string name="nc_show_ecosystem_title">Mostrar alternador de aplicativos</string>
@@ -657,6 +667,7 @@
     <string name="nc_show_notification_warning_title">Mostrar aviso de notificação regular</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_group_chat">Iniciar bate-papo em grupo</string>
+    <string name="nc_start_screen_sharing">Compartilhar tela</string>
     <string name="nc_start_time">Hora de início</string>
     <string name="nc_switch_account">Mudar de conta</string>
     <string name="nc_take_video">Gravar um vídeo</string>

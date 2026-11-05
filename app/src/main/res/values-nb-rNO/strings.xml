@@ -159,6 +159,7 @@
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
     <string name="nc_confirm">Bekreft</string>
     <string name="nc_connecting_call">Kobler til...</string>
+    <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_description">Samtalebeskrivelse</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Gå til fil</string>
@@ -186,6 +187,7 @@
     <string name="nc_custom_color">Tilpasset farge</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
+    <string name="nc_deep_link_join">Bli med</string>
     <string name="nc_delete">Slett</string>
     <string name="nc_delete_all">Slett alle</string>
     <string name="nc_delete_call">Slett samtale</string>
@@ -461,6 +463,7 @@
     <string name="nc_shared_location">Delt plassering</string>
     <string name="nc_show_ecosystem_title">Vis app-velger</string>
     <string name="nc_sort_by">Sorter etter</string>
+    <string name="nc_start_screen_sharing">Del skjerm</string>
     <string name="nc_start_time">Start tidspunkt</string>
     <string name="nc_switch_account">Bytt konto</string>
     <string name="nc_team">Lag</string>

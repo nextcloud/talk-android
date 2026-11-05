@@ -12,6 +12,8 @@ import android.content.Intent
 import android.util.Log
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.dagger.modules.UtilsModule
+import com.nextcloud.talk.utils.finishAndRemoveTaskIfPresent
+import com.nextcloud.talk.utils.taskInfoOrNull
 import java.io.File
 
 class ExceptionHandler(
@@ -77,11 +79,11 @@ class ExceptionHandler(
             val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val crashClass = ShowErrorActivity::class.java.name
             for (task in am.appTasks) {
-                val info = task.taskInfo ?: continue
+                val info = task.taskInfoOrNull() ?: continue
                 val isCrashTask = info.topActivity?.className == crashClass ||
                     info.baseActivity?.className == crashClass
                 if (!isCrashTask) {
-                    task.finishAndRemoveTask()
+                    task.finishAndRemoveTaskIfPresent()
                 }
             }
         } catch (fatal: Exception) {

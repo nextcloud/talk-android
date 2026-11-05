@@ -230,6 +230,9 @@
     <string name="nc_configure_cert_auth">Выбрать сертификат для аутентификации</string>
     <string name="nc_confirm">Подтвердить</string>
     <string name="nc_connecting_call">Подключение…</string>
+    <string name="nc_contact_chat_start">Начать</string>
+    <string name="nc_contact_chat_start_message">Вы ещё не общались с %1$s. Новое обсуждение будет добавлено в список у обоих участников.</string>
+    <string name="nc_contact_chat_start_title">Начать обсуждение?</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_created_invalid_participants">Не удалось добавить некоторых участников</string>
     <string name="nc_conversation_created_invalid_participants_named">Не удалось добавить этих участников: %1$s</string>
@@ -276,6 +279,9 @@
     <string name="nc_custom_color">Свой цвет</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
+    <string name="nc_deep_link_join">Присоединиться</string>
+    <string name="nc_deep_link_join_message">Этого обсуждения на %1$s нет в вашем списке обсуждений. Если открыть его, вы можете стать участником.</string>
+    <string name="nc_deep_link_join_title">Присоединиться к обсуждению?</string>
     <string name="nc_delete">Удалить</string>
     <string name="nc_delete_all">Удалить все</string>
     <string name="nc_delete_call">Удалить обсуждение</string>
@@ -467,7 +473,10 @@
     <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
     <string name="nc_open_to_guest_app_users">Открыть также для гостей</string>
     <string name="nc_owner">Владелец</string>
+    <string name="nc_participant_in_call">В вызове</string>
     <string name="nc_participant_type_change_failed">Не удалось изменить роль для участника</string>
+    <string name="nc_participant_with_phone">По телефону</string>
+    <string name="nc_participant_with_video">С видео</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
     <string name="nc_password">Пароль</string>
@@ -650,6 +659,7 @@
     <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Общее местоположение</string>
     <string name="nc_shortcut_conversation_deleted">Это обсуждение больше не существует</string>
+    <string name="nc_shortcut_conversation_not_found">Не найдено обсуждение, связанное с ярлыком</string>
     <string name="nc_shortcut_created">Ярлык создан</string>
     <string name="nc_show_ecosystem_description">Предложения приложений Nextcloud в диалоговом окне выбора учётной записи</string>
     <string name="nc_show_ecosystem_title">Показать переключатель приложений</string>
@@ -657,6 +667,7 @@
     <string name="nc_show_notification_warning_title">Периодически выводить предупреждение об уведомлениях</string>
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_group_chat">Начать групповое обсуждение</string>
+    <string name="nc_start_screen_sharing">Поделиться экраном</string>
     <string name="nc_start_time">Время начала</string>
     <string name="nc_switch_account">Сменить учётную запись</string>
     <string name="nc_take_video">Снять видео</string>

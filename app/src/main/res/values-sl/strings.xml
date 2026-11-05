@@ -137,6 +137,7 @@
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_confirm">Potrdi</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
+    <string name="nc_contact_chat_start">Začetek</string>
     <string name="nc_contacts_done">Začni pogovor</string>
     <string name="nc_conversation_description">Opis pogovora</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Odpri mesto datoteke</string>
@@ -165,6 +166,7 @@
     <string name="nc_custom_color">Barva po meri</string>
     <string name="nc_date_header_today">Danes</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
+    <string name="nc_deep_link_join">Pridruži se</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_delete_all">Izbriši vse</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
@@ -412,6 +414,7 @@
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_show_ecosystem_title">Pokaži preklopnika programov</string>
     <string name="nc_sort_by">Razvrsti po</string>
+    <string name="nc_start_screen_sharing">Pokaži zaslon</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_switch_account">Preklopi račun</string>
     <string name="nc_team">Skupina</string>

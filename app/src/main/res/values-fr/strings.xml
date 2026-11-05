@@ -159,6 +159,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Basculer mode selfie</string>
     <string name="nc_call_e2ee_not_supported">Les appels ne sont actuellement pas pris en charge, car le chiffrement de bout en bout est activé sur le serveur</string>
     <string name="nc_call_e2ee_not_supported_title">Appel indisponible depuis %s</string>
+    <string name="nc_call_e2ee_requires_hpb">Les appels chiffrés de bout en bout nécessitent le serveur haute performance (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Le chiffrement de bout en bout n\'a pas pu être configuré pour cet appel</string>
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_join_failed">Impossible de rejoindre l\'appel. Veuillez réessayer.</string>
@@ -217,6 +218,7 @@
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
+    <string name="nc_contact_chat_start">Début</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_created_invalid_participants">Certains participants n\'ont pas pu être ajoutés</string>
     <string name="nc_conversation_created_invalid_participants_named">Ces participants n\'ont pas pu être ajoutés : %1$s</string>
@@ -263,6 +265,7 @@
     <string name="nc_custom_color">Couleur personnalisée</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
+    <string name="nc_deep_link_join">Rejoindre</string>
     <string name="nc_delete">Supprimer</string>
     <string name="nc_delete_all">Supprimer tout</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
@@ -541,6 +544,8 @@
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
     <string name="nc_server_helper_text">Adresse URL visible dans la barre d\'adresse de votre navigateur Web lorsque vous êtes connecté à %1$s.</string>
+    <string name="nc_server_http_fallback_message">Impossible de se connecter au serveur en HTTPS. Se connecter de manière non sécurisée en HTTP à la place ?</string>
+    <string name="nc_server_http_fallback_title">Connexion non sécurisée</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
     <string name="nc_server_import_account_plain">Importer le compte</string>
     <string name="nc_server_import_accounts">Importer les comptes depuis l\'application %1$s</string>
@@ -641,6 +646,7 @@
     <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_group_chat">Démarrer une discussion de groupe</string>
+    <string name="nc_start_screen_sharing">Partager l’écran</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
     <string name="nc_take_video">Prendre une vidéo</string>

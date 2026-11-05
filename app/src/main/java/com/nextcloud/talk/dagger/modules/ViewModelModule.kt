@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
+import com.nextcloud.talk.activities.DeepLinkRoutingViewModel
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
@@ -153,6 +154,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CallViewModel::class)
     abstract fun callViewModel(viewModel: CallViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DeepLinkRoutingViewModel::class)
+    abstract fun deepLinkRoutingViewModel(viewModel: DeepLinkRoutingViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -29,7 +29,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AvatarImageLoader
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -37,8 +37,7 @@ object DirectShareHelper {
 
     private val TAG = DirectShareHelper::class.java.simpleName
     private const val SHARE_TARGET_CATEGORY = "com.nextcloud.talk.sharing.SHARE_TARGET_CATEGORY"
-    private const val SHORTCUT_ID_PREFIX = "direct_share_"
-    private const val SHORTCUT_ID_MIN_PARTS = 4
+    const val SHORTCUT_ID_PREFIX = "direct_share_"
     private const val AVATAR_SIZE_PX = 256
 
     private val publishMutex = Mutex()
@@ -169,18 +168,15 @@ object DirectShareHelper {
     }
 
     /**
-     * Parses the room token from a shortcut ID of the form "direct_share_{userId}_{token}".
-     * Returns null if the ID does not belong to this app's direct share shortcuts.
+     * Whether [shortcutId] is a direct share shortcut the app published, so one the share sheet can show: still
+     * dynamic, or cached by the system after a later publication replaced it. A binder call.
      */
-    fun extractTokenFromShortcutId(shortcutId: String): String? {
-        if (!shortcutId.startsWith(SHORTCUT_ID_PREFIX)) return null
-        val parts = shortcutId.split("_")
-        return if (parts.size < SHORTCUT_ID_MIN_PARTS) {
-            null
-        } else {
-            parts.drop(SHORTCUT_ID_MIN_PARTS - 1).joinToString("_")
-        }
-    }
+    fun isPublishedShareTarget(context: Context, shortcutId: String): Boolean =
+        shortcutId.startsWith(SHORTCUT_ID_PREFIX) &&
+            ShortcutManagerCompat.getShortcuts(
+                context,
+                ShortcutManagerCompat.FLAG_MATCH_DYNAMIC or ShortcutManagerCompat.FLAG_MATCH_CACHED
+            ).any { it.id == shortcutId }
 
     private fun shortcutId(user: User, token: String): String = "$SHORTCUT_ID_PREFIX${user.id}_$token"
 
@@ -280,13 +276,11 @@ object DirectShareHelper {
         displayName: String,
         icon: IconCompat
     ): ShortcutInfoCompat.Builder {
-        // ACTION_VIEW is used so that tapping this shortcut on the home screen opens the
-        // conversation directly. When used from the share sheet, Android delivers ACTION_SEND
-        // with the shared content and EXTRA_SHORTCUT_ID, not this intent.
-        val intent = Intent(Intent.ACTION_VIEW, null, context, ConversationsListActivity::class.java).apply {
-            putExtra(BundleKeys.KEY_ROOM_TOKEN, token)
-            putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
-        }
+        // Tapping this shortcut, e.g. on the home screen, opens the conversation directly. When used from the share
+        // sheet, Android delivers ACTION_SEND with the shared content and EXTRA_SHORTCUT_ID, not this intent.
+        // without an account id only the list, with an action, which a shortcut needs
+        val intent = ShortcutManagerHelper.createConversationIntent(context, token, user)
+            ?: ConversationsListActivity.createIntent(context).setAction(Intent.ACTION_VIEW)
 
         val person = Person.Builder()
             .setName(displayName)

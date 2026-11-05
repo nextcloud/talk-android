@@ -21,6 +21,11 @@
       "allowedVersions": "!/^5[.]23[.]0$/"
     },
     {
+      // Locked to 0.10.26, see https://github.com/nextcloud/talk-android/pull/6475#issuecomment-5566850040
+      "matchPackageNames": ["com.google.mediapipe:tasks-vision"],
+      "enabled": false
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
     },
