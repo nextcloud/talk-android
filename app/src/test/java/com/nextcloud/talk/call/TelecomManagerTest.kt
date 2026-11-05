@@ -10,6 +10,7 @@ package com.nextcloud.talk.call
 import android.app.Application
 import android.content.Context
 import androidx.core.telecom.CallAttributesCompat
+import com.nextcloud.talk.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -50,7 +51,7 @@ class TelecomManagerTest {
         `when`(context.getSystemService(android.telecom.TelecomManager::class.java)).thenReturn(platformTelecomManager)
         `when`(context.applicationContext).thenReturn(context)
 
-        telecomManager = TelecomManager(context)
+        telecomManager = TelecomManager(context, mock(Logger::class.java))
     }
 
     @After

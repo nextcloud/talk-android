@@ -18,6 +18,7 @@ import androidx.core.telecom.CallControlResult
 import androidx.core.telecom.CallControlScope
 import androidx.core.telecom.CallEndpointCompat
 import androidx.core.telecom.CallsManager
+import com.nextcloud.talk.logger.Logger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TelecomManager @Inject constructor(private val context: Context) {
+class TelecomManager @Inject constructor(private val context: Context, private val logger: Logger) {
     private val callsManager = CallsManager(context)
 
     // SupervisorJob: one failing Telecom operation must not cancel the scope for all later calls.
@@ -75,7 +76,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
 
     fun registerAppWithTelecom() {
         if (!isSupported) {
-            Log.d(TAG, "Core-Telecom is not used below Android 14, calls are handled by the app only")
+            logger.w(TAG, "Core-Telecom is not used below Android 14, calls are handled by the app only")
             return
         }
         registrationJob = telecomScope.launch(Dispatchers.IO) {
