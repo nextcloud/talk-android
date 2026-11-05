@@ -662,6 +662,7 @@
     <string name="nc_show_notification_warning_title">Afișează avertismentul periodic despre notificări</string>
     <string name="nc_sort_by">Sortare după</string>
     <string name="nc_start_group_chat">Începe un chat de grup</string>
+    <string name="nc_start_screen_sharing">Partajează ecranul</string>
     <string name="nc_start_time">Ora de început</string>
     <string name="nc_switch_account">Schimbă contul</string>
     <string name="nc_take_video">Filmează un videoclip</string>

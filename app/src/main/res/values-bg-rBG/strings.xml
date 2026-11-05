@@ -128,6 +128,7 @@
     <string name="nc_configure_cert_auth">Изберете сертификат за удостоверяване</string>
     <string name="nc_confirm">Потвърдете</string>
     <string name="nc_connecting_call">Свързване …</string>
+    <string name="nc_contact_chat_start">Начало</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Отидете до файла</string>
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
@@ -152,6 +153,7 @@
     <string name="nc_custom_color">Персонализиране на цвят</string>
     <string name="nc_date_header_today">Днес</string>
     <string name="nc_date_header_yesterday">Вчера</string>
+    <string name="nc_deep_link_join">Влез</string>
     <string name="nc_delete">Изтриване</string>
     <string name="nc_delete_all">Изтриване на всички</string>
     <string name="nc_delete_call">Изтриване на разговора</string>

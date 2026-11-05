@@ -196,6 +196,7 @@
     <string name="nc_configure_cert_auth">Vyberte certifikát pro ověřování se</string>
     <string name="nc_confirm">Potvrdit</string>
     <string name="nc_connecting_call">Připojování …</string>
+    <string name="nc_contact_chat_start">Spustit</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_created_invalid_participants_named">Nepodařilo se přidat účastníky: %1$s</string>
     <string name="nc_conversation_created_title">Konverzace byla vytvořena</string>
@@ -228,6 +229,7 @@
     <string name="nc_custom_color">Uživatelsky určená barva</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
+    <string name="nc_deep_link_join">Připojit se</string>
     <string name="nc_delete">Smazat</string>
     <string name="nc_delete_all">Smazat vše</string>
     <string name="nc_delete_call">Smazat konverzaci</string>

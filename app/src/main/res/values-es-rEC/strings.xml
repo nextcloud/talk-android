@@ -390,6 +390,7 @@
     <string name="nc_shared_items_location">Ubicación</string>
     <string name="nc_shared_location">Ubicación compartida</string>
     <string name="nc_sort_by">Ordenar por</string>
+    <string name="nc_start_screen_sharing">Compartir la pantalla</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_switch_account">Cambiar cuenta</string>
     <string name="nc_undo">Deshacer</string>

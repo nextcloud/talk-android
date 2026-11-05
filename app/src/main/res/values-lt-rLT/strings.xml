@@ -606,6 +606,7 @@
     <string name="nc_show_notification_warning_title">Rodyti įprastą įspėjimą</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_group_chat">Pradėti grupinį pokalbį</string>
+    <string name="nc_start_screen_sharing">Bendrinti ekraną</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
     <string name="nc_take_video">Nufilmuoti</string>

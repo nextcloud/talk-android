@@ -182,6 +182,7 @@
     <string name="nc_configure_cert_auth">Выберыце сертыфікат аўтэнтыфікацыі</string>
     <string name="nc_confirm">Пацвердзіць</string>
     <string name="nc_connecting_call">Злучэнне …</string>
+    <string name="nc_contact_chat_start">Запусціць</string>
     <string name="nc_contacts_done">Гатова</string>
     <string name="nc_conversation_description">Апісанне размовы</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Перайсці да файла</string>
@@ -209,6 +210,7 @@
     <string name="nc_create_poll">Стварыць апытанне</string>
     <string name="nc_date_header_today">Сёння</string>
     <string name="nc_date_header_yesterday">Учора</string>
+    <string name="nc_deep_link_join">Далучыцца</string>
     <string name="nc_delete">Выдаліць</string>
     <string name="nc_delete_all">Выдаліць усе</string>
     <string name="nc_delete_call">Выдаліць размову</string>
