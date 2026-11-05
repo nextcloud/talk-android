@@ -48,27 +48,24 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
                     put(FileColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM + "/" + appName)
                 }
                 put(FileColumns.DISPLAY_NAME, cacheFile.name)
-
-                if (mimeType != null) {
-                    put(FileColumns.MIME_TYPE, mimeType)
-                }
+                put(FileColumns.MIME_TYPE, mimeType)
             }
 
             if (!cacheFile.isFile) {
                 throw IOException("Source file to save does not exist: ${cacheFile.name}")
             }
 
-            contentResolver.insert(getUriByType(mimeType), values)?.let { fileUri ->
-                try {
-                    val outputStream: OutputStream = contentResolver.openOutputStream(fileUri)
-                        ?: throw IOException("Failed to create output stream")
-                    outputStream.use { output ->
-                        cacheFile.inputStream().use { input -> input.copyTo(output) }
-                    }
-                } catch (e: Exception) {
-                    contentResolver.delete(fileUri, null, null)
-                    throw IOException("Failed to write file to storage", e)
+            val fileUri = contentResolver.insert(getUriByType(mimeType), values)
+                ?: throw IOException("Failed to create MediaStore entry")
+            try {
+                val outputStream: OutputStream = contentResolver.openOutputStream(fileUri)
+                    ?: throw IOException("Failed to create output stream")
+                outputStream.use { output ->
+                    cacheFile.inputStream().use { input -> input.copyTo(output) }
                 }
+            } catch (e: Exception) {
+                contentResolver.delete(fileUri, null, null)
+                throw IOException("Failed to write file to storage", e)
             }
 
             // Notify the media scanner about the new file

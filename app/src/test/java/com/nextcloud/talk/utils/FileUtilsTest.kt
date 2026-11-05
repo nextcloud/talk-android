@@ -133,6 +133,19 @@ class FileUtilsTest {
     }
 
     @Test
+    fun resolveSharedAttachmentFile_withoutFileId_resolvesInsideDedicatedSubDirectory() {
+        val baseDir = createTempDir()
+        try {
+            val expected = File(baseDir, "shared_attachments/example.pdf").canonicalPath
+
+            assertEquals(expected, FileUtils.resolveSharedAttachmentFile(baseDir, null, "example.pdf")?.canonicalPath)
+            assertEquals(expected, FileUtils.resolveSharedAttachmentFile(baseDir, "", "example.pdf")?.canonicalPath)
+        } finally {
+            baseDir.deleteRecursively()
+        }
+    }
+
+    @Test
     fun resolveSharedAttachmentFile_withFileId_keepsDifferentFileIdsFromColliding() {
         val baseDir = createTempDir()
         try {
