@@ -9,6 +9,7 @@ package com.nextcloud.talk.call
 
 import android.app.Application
 import android.content.Context
+import android.os.Looper
 import androidx.core.telecom.CallAttributesCompat
 import com.nextcloud.talk.logger.Logger
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -444,5 +446,26 @@ class TelecomManagerTest {
         telecomManager.endCurrentCall(null)
         // outgoing calls count as active anyway; marking must not change that
         assertTrue(telecomManager.hasActiveCall("roomC"))
+    }
+
+    @Test
+    fun testCallsFromBackgroundThreadsAreRunOnTheMainThread() {
+        val worker = Thread {
+            telecomManager.addIncomingCall(
+                displayName = "User 1",
+                roomToken = "roomA",
+                isVideo = false,
+                onAnswerCall = {},
+                onRejectCall = {}
+            )
+        }
+        worker.start()
+        worker.join()
+
+        // posted to the main thread, not applied on the worker thread
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(telecomManager.hasActiveCall("roomA"))
     }
 }

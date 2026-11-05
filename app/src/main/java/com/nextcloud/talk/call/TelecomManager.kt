@@ -10,6 +10,8 @@ package com.nextcloud.talk.call
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.telecom.DisconnectCause
 import android.util.Log
 import androidx.annotation.VisibleForTesting
@@ -33,6 +35,14 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Registers Talk calls with Android Telecom (Core-Telecom) and keeps their state.
+ *
+ * Threading: call state is only changed on the main thread. Core-Telecom callbacks already run there (calls are
+ * added from telecomScope, which uses the main dispatcher), and the public methods that change state switch to the
+ * main thread themselves, so callers on background threads (e.g. NotificationWorker) can't interleave with the UI.
+ * When called on the main thread they run synchronously.
+ */
 @Singleton
 class TelecomManager @Inject constructor(private val context: Context, private val logger: Logger) {
     private val callsManager = CallsManager(context)
@@ -104,8 +114,8 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         isVideo: Boolean,
         onAnswerCall: () -> Unit,
         onRejectCall: () -> Unit
-    ) {
-        val registrationId = prepareCallRegistration(roomToken, "Incoming") ?: return
+    ) = runOnMainThread {
+        val registrationId = prepareCallRegistration(roomToken, "Incoming") ?: return@runOnMainThread
         currentDisconnectHandler = onRejectCall
         isIncomingCall = true
         isCallAnsweredOrActive = false
@@ -152,8 +162,8 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         roomToken: String,
         isVideo: Boolean,
         onDisconnectCall: (() -> Unit)? = null
-    ) {
-        val registrationId = prepareCallRegistration(roomToken, "Outgoing") ?: return
+    ) = runOnMainThread {
+        val registrationId = prepareCallRegistration(roomToken, "Outgoing") ?: return@runOnMainThread
         currentDisconnectHandler = onDisconnectCall
         isIncomingCall = false
         isCallAnsweredOrActive = true
@@ -191,89 +201,93 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         }
     }
 
-    fun endCurrentCall(roomToken: String? = null) {
-        val activeRoom = currentRoomToken ?: return
-        if (!roomToken.isNullOrBlank() && activeRoom != roomToken) {
-            Log.d(TAG, "endCurrentCall ignored: target room $roomToken does not match active room $activeRoom")
-            return
-        }
-        if (roomToken.isNullOrBlank() && isCallAnsweredOrActive) {
-            Log.d(TAG, "endCurrentCall ignored: blank roomToken provided for active call")
-            return
+    fun endCurrentCall(roomToken: String? = null) =
+        runOnMainThread {
+            val activeRoom = currentRoomToken ?: return@runOnMainThread
+            if (!roomToken.isNullOrBlank() && activeRoom != roomToken) {
+                Log.d(TAG, "endCurrentCall ignored: target room $roomToken does not match active room $activeRoom")
+                return@runOnMainThread
+            }
+            if (roomToken.isNullOrBlank() && isCallAnsweredOrActive) {
+                Log.d(TAG, "endCurrentCall ignored: blank roomToken provided for active call")
+                return@runOnMainThread
+            }
+
+            val scopeToDisconnect = currentCallControlScope
+            val registrationIdToClear = currentRegistrationId
+            handleCallDisconnected(registrationIdToClear ?: "")
+
+            telecomScope.launch {
+                scopeToDisconnect?.disconnect(DisconnectCause(DisconnectCause.LOCAL))
+            }
         }
 
-        val scopeToDisconnect = currentCallControlScope
-        val registrationIdToClear = currentRegistrationId
-        handleCallDisconnected(registrationIdToClear ?: "")
-
-        telecomScope.launch {
-            scopeToDisconnect?.disconnect(DisconnectCause(DisconnectCause.LOCAL))
+    /**
+     * The user answered the incoming call for [roomToken] on this device. From now on it doesn't count as ringing,
+     * so a disappearing call notification or the ring check can't end it as missed. Telecom itself is told when the
+     * call is joined, via [setCallActive].
+     */
+    fun markIncomingCallAnswered(roomToken: String?) =
+        runOnMainThread {
+            if (!roomToken.isNullOrBlank() && currentRoomToken == roomToken && isIncomingCall) {
+                isCallAnsweredOrActive = true
+            }
         }
-    }
 
     /**
      * Ends the call for [roomToken] only while it is still ringing (incoming, not yet answered or activated).
      * Safe to call from places that only know the ring has stopped (caller hung up, answered on another device,
      * ring timeout, notification gone): it never tears down a call the user has already picked up.
      */
-    /**
-     * The user answered the incoming call for [roomToken] on this device. From now on it doesn't count as ringing,
-     * so a disappearing call notification or the ring check can't end it as missed. Telecom itself is told when the
-     * call is joined, via [setCallActive].
-     */
-    fun markIncomingCallAnswered(roomToken: String?) {
-        if (!roomToken.isNullOrBlank() && currentRoomToken == roomToken && isIncomingCall) {
-            isCallAnsweredOrActive = true
-        }
-    }
+    fun endRingingCall(roomToken: String?, disconnectCause: Int = DisconnectCause.MISSED) =
+        runOnMainThread {
+            if (roomToken.isNullOrBlank() || currentRoomToken != roomToken) {
+                return@runOnMainThread
+            }
+            if (!isIncomingCall || isCallAnsweredOrActive) {
+                Log.d(TAG, "endRingingCall ignored: call for room $roomToken is not ringing anymore")
+                return@runOnMainThread
+            }
 
-    fun endRingingCall(roomToken: String?, disconnectCause: Int = DisconnectCause.MISSED) {
-        if (roomToken.isNullOrBlank() || currentRoomToken != roomToken) {
-            return
-        }
-        if (!isIncomingCall || isCallAnsweredOrActive) {
-            Log.d(TAG, "endRingingCall ignored: call for room $roomToken is not ringing anymore")
-            return
-        }
+            val scopeToDisconnect = currentCallControlScope
+            handleCallDisconnected(currentRegistrationId ?: "")
 
-        val scopeToDisconnect = currentCallControlScope
-        handleCallDisconnected(currentRegistrationId ?: "")
-
-        telecomScope.launch {
-            scopeToDisconnect?.disconnect(DisconnectCause(disconnectCause))
+            telecomScope.launch {
+                scopeToDisconnect?.disconnect(DisconnectCause(disconnectCause))
+            }
         }
-    }
 
     /**
      * @param isVideo the call type the user actually joined with (e.g. "answer voice only" on a video call);
      * null keeps the type the call was registered with.
      */
-    fun setCallActive(roomToken: String? = null, isVideo: Boolean? = null, onDisconnectCall: (() -> Unit)? = null) {
-        if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
-            Log.d(TAG, "setCallActive ignored: target room $roomToken does not match active room $currentRoomToken")
-            return
-        }
-
-        if (isVideo != null) {
-            currentCallType = getCallType(isVideo)
-        }
-
-        if (onDisconnectCall != null) {
-            currentDisconnectHandler = onDisconnectCall
-        }
-
-        isCallAnsweredOrActive = true
-
-        val scope = currentCallControlScope
-        if (scope != null) {
-            telecomScope.launch {
-                activateScope(scope)
+    fun setCallActive(roomToken: String? = null, isVideo: Boolean? = null, onDisconnectCall: (() -> Unit)? = null) =
+        runOnMainThread {
+            if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
+                Log.d(TAG, "setCallActive ignored: target room $roomToken does not match active room $currentRoomToken")
+                return@runOnMainThread
             }
-        } else if (currentRoomToken != null) {
-            isPendingSetActive = true
-            Log.d(TAG, "setCallActive queued: registration pending for room $currentRoomToken")
+
+            if (isVideo != null) {
+                currentCallType = getCallType(isVideo)
+            }
+
+            if (onDisconnectCall != null) {
+                currentDisconnectHandler = onDisconnectCall
+            }
+
+            isCallAnsweredOrActive = true
+
+            val scope = currentCallControlScope
+            if (scope != null) {
+                telecomScope.launch {
+                    activateScope(scope)
+                }
+            } else if (currentRoomToken != null) {
+                isPendingSetActive = true
+                Log.d(TAG, "setCallActive queued: registration pending for room $currentRoomToken")
+            }
         }
-    }
 
     private suspend fun activateScope(scope: CallControlScope) {
         // Exceptions propagate to telecomScope's handler (setCallActive) or addCall's catch (onScopeAssigned)
@@ -415,6 +429,17 @@ class TelecomManager @Inject constructor(private val context: Context, private v
          * Talk call instead, which ends it in the app via onDisconnect.
          */
         private const val NO_CALL_CAPABILITIES = 0
+
+        private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
+
+        /** Runs [block] right away on the main thread, otherwise posts it there. */
+        private fun runOnMainThread(block: () -> Unit) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                block()
+            } else {
+                mainHandler.post(block)
+            }
+        }
 
         @VisibleForTesting
         internal fun getCallType(isVideo: Boolean): Int =
