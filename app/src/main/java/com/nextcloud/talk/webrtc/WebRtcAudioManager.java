@@ -33,6 +33,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.nextcloud.talk.events.ProximitySensorEvent;
+import com.nextcloud.talk.events.ProximitySensorEvent.ProximitySensorEventType;
 import com.nextcloud.talk.utils.ContextExtensionsKt;
 import com.nextcloud.talk.utils.ReceiverFlag;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
@@ -139,6 +140,11 @@ public class WebRtcAudioManager {
      * NEAR".
      */
     private void onProximitySensorChangedState() {
+        boolean near = proximitySensor.sensorReportsNearState();
+        ProximitySensorEventType eventType = near ? ProximitySensorEventType.SENSOR_NEAR :
+            ProximitySensorEventType.SENSOR_FAR;
+        EventBus.getDefault().post(new ProximitySensorEvent(eventType));
+
         if (!useProximitySensor) {
             return;
         }
@@ -150,15 +156,10 @@ public class WebRtcAudioManager {
             // The route is chosen in updateAudioDeviceState() so that later route updates, e.g. the communication
             // device callback for this very switch, keep the earpiece while the phone is held to the ear.
             updateAudioDeviceState();
-            if (proximitySensor.sensorReportsNearState()) {
+            if (near) {
                 Log.d(TAG, "switched to EARPIECE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=near");
-
-                EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_NEAR));
-
             } else {
                 Log.d(TAG, "switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
-
-                EventBus.getDefault().post(new ProximitySensorEvent(ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR));
             }
         }
     }
