@@ -27,12 +27,14 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 /**
@@ -788,7 +790,11 @@ class ChatMessageSyncer @Inject constructor(
 
             return when (val result = pullMessagesFlow(target, fieldMap, canRetry).first()) {
                 is ChatPullResult.Success ->
-                    handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                    // the messages and their chat block are written in several steps, a cancellation in between
+                    // would leave persisted messages that no chat block covers
+                    withContext(NonCancellable) {
+                        handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                    }
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")

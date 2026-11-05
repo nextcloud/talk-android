@@ -471,6 +471,36 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullAndPersistMessages still writes the chat block when the caller is cancelled while persisting`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+            val persistStarted = CompletableDeferred<Unit>()
+            val finishPersist = CompletableDeferred<Unit>()
+            wheneverBlocking { chatDao.upsertChatMessagesAndDeleteTemp(any(), any()) }.doSuspendableAnswer {
+                persistStarted.complete(Unit)
+                finishPersist.await()
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = 42
+            )
+            val pull = launch { syncer.pullAndPersistMessages(target(), fieldMap) }
+            persistStarted.await()
+            pull.cancel()
+            finishPersist.complete(Unit)
+            pull.join()
+
+            // persisted messages without a chat block covering them would leave a gap in the chat
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(any()) }
+        }
+
+    @Test
     fun `pullAndPersistMessages skips the block update when nothing was persisted`() =
         runTest {
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
