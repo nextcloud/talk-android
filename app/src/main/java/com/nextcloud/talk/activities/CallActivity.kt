@@ -1261,7 +1261,8 @@ class CallActivity : CallBaseActivity() {
         // microphoneOn == muted means the microphone state differs from Telecom's
         if (canApply && microphoneOn == muted) {
             Log.d(TAG, "Applying mute state from Telecom: muted=$muted")
-            onMicrophoneClick()
+            // not saved as default for later calls: the user didn't mute in the app
+            onMicrophoneClick(saveAsDefault = false)
         }
     }
 
@@ -1669,7 +1670,8 @@ class CallActivity : CallBaseActivity() {
         return null
     }
 
-    fun onMicrophoneClick() {
+    /** @param saveAsDefault whether the new state becomes the microphone default for later calls */
+    fun onMicrophoneClick(saveAsDefault: Boolean = true) {
         if (!canPublishAudioStream) {
             microphoneOn = false
             binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
@@ -1698,7 +1700,9 @@ class CallActivity : CallBaseActivity() {
                     )
                 }
                 toggleMedia(microphoneOn, false)
-                appPreferences.callMicrophoneMuted = !microphoneOn
+                if (saveAsDefault) {
+                    appPreferences.callMicrophoneMuted = !microphoneOn
+                }
             } else {
                 binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_white_24px)
                 pulseAnimation!!.start()
