@@ -9,6 +9,7 @@ package com.nextcloud.talk.call
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.telecom.DisconnectCause
 import android.util.Log
 import androidx.annotation.VisibleForTesting
@@ -73,6 +74,10 @@ class TelecomManager @Inject constructor(private val context: Context) {
     val audioRoute: StateFlow<TelecomAudioRoute?> = _audioRoute.asStateFlow()
 
     fun registerAppWithTelecom() {
+        if (!isSupported) {
+            Log.d(TAG, "Core-Telecom is not used below Android 14, calls are handled by the app only")
+            return
+        }
         registrationJob = telecomScope.launch(Dispatchers.IO) {
             try {
                 val capabilities: @CallsManager.Companion.Capability Int =
@@ -302,6 +307,9 @@ class TelecomManager @Inject constructor(private val context: Context) {
     }
 
     private fun prepareCallRegistration(roomToken: String, callTypeLabel: String): String? {
+        if (!isSupported) {
+            return null
+        }
         if (roomToken.isBlank()) {
             Log.e(TAG, "Cannot add $callTypeLabel call: roomToken is blank")
             return null
@@ -374,6 +382,16 @@ class TelecomManager @Inject constructor(private val context: Context) {
             }
         }
     }
+
+    /**
+     * Calls are only registered with Telecom on Android 14+. Below, Core-Telecom falls back to its own
+     * ConnectionService implementation, whose behavior differs between device vendors; the app then handles calls
+     * on its own (notification, full-screen call screen, own audio routing) as it did before the Telecom
+     * integration. Everything else in this class is a no-op while no call is registered.
+     */
+    @VisibleForTesting
+    internal val isSupported: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
     @VisibleForTesting
     internal fun getCallType(isVideo: Boolean): Int =
