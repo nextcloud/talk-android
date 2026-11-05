@@ -116,7 +116,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             address = Uri.parse("talk:$roomToken"),
             direction = CallAttributesCompat.DIRECTION_INCOMING,
             callType = getCallType(isVideo),
-            callCapabilities = CallAttributesCompat.SUPPORTS_SET_INACTIVE
+            callCapabilities = NO_CALL_CAPABILITIES
         )
 
         telecomScope.launch {
@@ -164,7 +164,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             address = Uri.parse("talk:$roomToken"),
             direction = CallAttributesCompat.DIRECTION_OUTGOING,
             callType = getCallType(isVideo),
-            callCapabilities = CallAttributesCompat.SUPPORTS_SET_INACTIVE
+            callCapabilities = NO_CALL_CAPABILITIES
         )
 
         telecomScope.launch {
@@ -400,6 +400,14 @@ class TelecomManager @Inject constructor(private val context: Context, private v
 
     companion object {
         private val TAG = TelecomManager::class.java.simpleName
+
+        /**
+         * No SUPPORTS_SET_INACTIVE (the CallAttributesCompat default): the app can't hold a call (mute the
+         * microphone and pause remote audio). With the capability, Telecom would put a Talk call "on hold" when the
+         * user answers a cellular call, while the microphone keeps sending. Without it, Telecom disconnects the
+         * Talk call instead, which ends it in the app via onDisconnect.
+         */
+        private const val NO_CALL_CAPABILITIES = 0
     }
 }
 
