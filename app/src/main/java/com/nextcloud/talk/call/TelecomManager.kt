@@ -175,6 +175,28 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
+    /**
+     * Ends the call for [roomToken] only while it is still ringing (incoming, not yet answered or activated).
+     * Safe to call from places that only know the ring has stopped (caller hung up, answered on another device,
+     * ring timeout, notification gone): it never tears down a call the user has already picked up.
+     */
+    fun endRingingCall(roomToken: String?, disconnectCause: Int = DisconnectCause.MISSED) {
+        if (roomToken.isNullOrBlank() || currentRoomToken != roomToken) {
+            return
+        }
+        if (!isIncomingCall || isCallAnsweredOrActive) {
+            Log.d(TAG, "endRingingCall ignored: call for room $roomToken is not ringing anymore")
+            return
+        }
+
+        val scopeToDisconnect = currentCallControlScope
+        handleCallDisconnected(currentRegistrationId ?: "")
+
+        telecomScope.launch {
+            scopeToDisconnect?.disconnect(DisconnectCause(disconnectCause))
+        }
+    }
+
     fun setCallActive(roomToken: String? = null, onDisconnectCall: (() -> Unit)? = null) {
         if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
             Log.d(TAG, "setCallActive ignored: target room $roomToken does not match active room $currentRoomToken")

@@ -163,7 +163,7 @@ class CallNotificationActivity : CallBaseActivity() {
                     notificationHandler.postDelayed(this, ONE_SECOND)
                 } else {
                     if (!leavingScreen) {
-                        telecomManager.endCurrentCall(roomToken)
+                        telecomManager.endRingingCall(roomToken)
                     }
                     finish()
                 }
@@ -207,6 +207,8 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun proceedToCall() {
+        // onStop() cancels the notification; the canceled-routine must not read that as the ring being withdrawn
+        leavingScreen = true
         val callIntent = Intent(this, CallActivity::class.java)
         intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
