@@ -17,7 +17,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns
-import android.util.Log
 import android.widget.Toast
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -55,18 +54,20 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
                 }
             }
 
+            if (!cacheFile.isFile) {
+                throw IOException("Source file to save does not exist: ${cacheFile.name}")
+            }
+
             contentResolver.insert(getUriByType(mimeType), values)?.let { fileUri ->
                 try {
-                    val outputStream: OutputStream? = contentResolver.openOutputStream(fileUri)
+                    val outputStream: OutputStream = contentResolver.openOutputStream(fileUri)
+                        ?: throw IOException("Failed to create output stream")
                     outputStream.use { output ->
-                        val inputStream = cacheFile.inputStream()
-                        if (output != null) {
-                            inputStream.copyTo(output)
-                        }
+                        cacheFile.inputStream().use { input -> input.copyTo(output) }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Failed to create output stream")
-                    return Result.failure()
+                    contentResolver.delete(fileUri, null, null)
+                    throw IOException("Failed to write file to storage", e)
                 }
             }
 
