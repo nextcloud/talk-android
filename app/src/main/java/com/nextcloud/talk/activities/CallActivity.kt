@@ -1249,10 +1249,15 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    // A mute change from Telecom during push to talk, applied once push to talk ends
+    private var pendingTelecomMute: Boolean? = null
+
     private fun applyTelecomMute(muted: Boolean) {
-        val canApply = canPublishAudioStream &&
-            !isPushToTalkActive &&
-            permissionUtil?.isMicrophonePermissionGranted() == true
+        if (isPushToTalkActive) {
+            pendingTelecomMute = muted
+            return
+        }
+        val canApply = canPublishAudioStream && permissionUtil?.isMicrophonePermissionGranted() == true
         // microphoneOn == muted means the microphone state differs from Telecom's
         if (canApply && microphoneOn == muted) {
             Log.d(TAG, "Applying mute state from Telecom: muted=$muted")
@@ -3718,6 +3723,10 @@ class CallActivity : CallBaseActivity() {
         binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
         pulseAnimation!!.stop()
         toggleMedia(false, false)
+        pendingTelecomMute?.let {
+            pendingTelecomMute = null
+            applyTelecomMute(it)
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
