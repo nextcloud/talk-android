@@ -9,7 +9,6 @@ package com.nextcloud.talk.jobs
 
 import android.content.ContentValues
 import android.content.Context
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -38,9 +37,6 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
         try {
             val cacheFile = File(inputData.getString(KEY_SOURCE_FILE_PATH)!!)
             saveToStorage(cacheFile)
-
-            // Notify the media scanner about the new file
-            MediaScannerConnection.scanFile(context, arrayOf(cacheFile.absolutePath), null, null)
 
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, R.string.nc_save_success, Toast.LENGTH_SHORT).show()
