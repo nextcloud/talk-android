@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -376,5 +377,34 @@ class TelecomManagerTest {
         telecomManager.endRingingCall(null)
         telecomManager.endRingingCall("")
         assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    @Config(sdk = [33])
+    fun testCallsAreNotRegisteredBelowAndroid14() {
+        assertFalse(telecomManager.isSupported)
+
+        telecomManager.registerAppWithTelecom()
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+
+        telecomManager.addOutgoingCall(
+            displayName = "User 1",
+            roomToken = "roomB",
+            isVideo = false
+        )
+        assertFalse(telecomManager.hasActiveCall())
+        assertNull(telecomManager.audioRoute.value)
+    }
+
+    @Test
+    fun testCallsAreRegisteredOnAndroid14() {
+        assertTrue(telecomManager.isSupported)
     }
 }
