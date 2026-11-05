@@ -9,6 +9,7 @@
 package com.nextcloud.talk.jobs
 
 import android.Manifest
+import android.app.ActivityOptions
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -308,6 +309,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
 
             val pendingIntentFlags = pendingIntentFlags()
+            // captured for the Telecom answer callback, which runs after this worker is done
+            val callNotificationId = pushMessage.timestamp.toInt()
+            val callTitle = pushMessage.subject
 
             val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
@@ -340,13 +344,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 },
                 roomToken = pushMessage.id ?: "",
                 isVideo = isVideoCall,
-                onAnswerCall = {
-                    try {
-                        primaryAnswerIntent.send()
-                    } catch (e: PendingIntent.CanceledException) {
-                        Log.e(TAG, "Answer pending intent canceled", e)
-                    }
-                },
+                onAnswerCall = { openCallAnsweredViaTelecom(primaryAnswerIntent, callNotificationId, callTitle) },
                 onRejectCall = {
                     try {
                         declinePendingIntent.send()
@@ -1137,6 +1135,59 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun parseThreadId(objectId: String?): Long? = objectId?.split("/")?.getOrNull(2)?.toLongOrNull()
+
+    /**
+     * Telecom answered the call, e.g. from a Bluetooth headset, car or watch. The app is usually in the background
+     * then, and Android 14+ only lets it start an activity with an explicit opt-in, and only while it is allowed to
+     * at all (e.g. while the full-screen call screen is visible). As a fallback, the ringing call notification is
+     * replaced by a silent one whose full-screen intent opens the call: Android starts it directly while the device
+     * is locked, otherwise it can be tapped. CallActivity cancels that notification once it starts, and is
+     * singleTask, so being started by both paths is fine.
+     */
+    private fun openCallAnsweredViaTelecom(answerIntent: PendingIntent, notificationId: Int, title: String?) {
+        try {
+            answerIntent.send(applicationContext, 0, null, null, null, null, backgroundActivityStartOptions())
+        } catch (e: PendingIntent.CanceledException) {
+            logger.e(TAG, "Answer pending intent canceled", e)
+        }
+
+        val notification = NotificationCompat.Builder(
+            applicationContext,
+            NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        )
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setSmallIcon(R.drawable.ic_call_black_24dp)
+            .setContentTitle(title?.let { EmojiCompat.get().process(it) })
+            .setContentText(applicationContext.getString(R.string.nc_call_ongoing_notification_content))
+            .setContentIntent(answerIntent)
+            .setFullScreenIntent(answerIntent, true)
+            .setSilent(true)
+            .setOngoing(true)
+            .setAutoCancel(true)
+            .build()
+        sendNotification(notificationId, notification)
+    }
+
+    private fun backgroundActivityStartOptions(): Bundle? =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA ->
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+                    )
+                    .toBundle()
+
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+                @Suppress("DEPRECATION")
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                    .toBundle()
+
+            else -> null
+        }
 
     private fun sendNotification(notificationId: Int, notification: Notification) {
         logger.d(TAG, "show notification with id $notificationId")
