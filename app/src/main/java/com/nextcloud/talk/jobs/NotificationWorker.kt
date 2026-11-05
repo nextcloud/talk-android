@@ -193,15 +193,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (pushMessage.delete) {
             cancelNotification(context, user, pushMessage.notificationId)
-            telecomManager.endCurrentCall(pushMessage.id)
         } else if (pushMessage.deleteAll) {
             cancelAllNotificationsForAccount(context, user)
-            telecomManager.endCurrentCall()
         } else if (pushMessage.deleteMultiple) {
             for (notificationId in pushMessage.notificationIds!!) {
                 cancelNotification(context, user, notificationId)
             }
-            telecomManager.endCurrentCall(pushMessage.id)
         } else if (isTalkNotification()) {
             logger.d(TAG, "pushMessage.type: " + pushMessage.type)
             when (pushMessage.type) {
