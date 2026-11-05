@@ -250,14 +250,28 @@ class ChatMessageSyncerTest {
         }
 
     @Test
-    fun `pullMessagesFlow does not send the retry when the chat is paused during the backoff`() =
+    fun `pullMessagesFlow does not retry without backoff when retrying becomes allowed again right away`() =
         runTest {
             wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
                 .doSuspendableAnswer { throw IOException("connection reset") }
-            // allowed right after the failure, paused by the time the backoff delay has elapsed
+            // not allowed right after the failure, e.g. paused, and allowed again a moment later, e.g. resumed
+            val answers = mutableListOf(false, true)
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeAt(0) }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullMessagesFlow does not send the retry when retrying is no longer allowed after the backoff`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+            // allowed right after the failure, no longer allowed once the backoff has passed
             val answers = mutableListOf(true, false)
 
-            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeFirst() }).first()
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeAt(0) }).first()
 
             assertTrue(result is ChatPullResult.Error)
             verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }

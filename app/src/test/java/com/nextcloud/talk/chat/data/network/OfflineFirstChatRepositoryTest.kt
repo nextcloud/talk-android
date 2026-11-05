@@ -32,10 +32,12 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.conversations.ConversationDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -73,6 +75,7 @@ import org.mockito.kotlin.wheneverBlocking
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Covers the unread-boundary decisions of [OfflineFirstChatRepository.loadInitialMessages]: the
@@ -130,6 +133,26 @@ class OfflineFirstChatRepositoryTest {
             polling.cancelAndJoin()
 
             verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `long polling keeps the wait after a rejected request when the chat is paused and resumed`() =
+        runBlocking {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.error(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType())))
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            verifyBlocking(network, timeout(AWAIT_TIMEOUT_MILLIS).times(1)) { pullChatMessages(any(), any(), any()) }
+            // a pause and resume during the wait after the failed request
+            repository.handleOnPause()
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            repository.handleOnResume()
+
+            // the resume must not send the next request before the wait has passed
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+            polling.cancelAndJoin()
         }
 
     @Test
@@ -247,6 +270,176 @@ class OfflineFirstChatRepositoryTest {
             assertEquals(0, fieldMap["lookIntoFuture"])
             assertEquals(1, fieldMap["includeLastKnown"])
             assertFalse(fieldMap.containsKey("lastKnownMessageId"))
+        }
+
+    @Test
+    fun `long polling keeps the open request on pause and opens the next one only after the resume`() =
+        runBlocking {
+            val requestsStarted = Channel<Unit>(Channel.UNLIMITED)
+            val answerFirstRequest = CompletableDeferred<Unit>()
+            // set on the thread of the request, read by the test
+            val firstRequestCancelled = AtomicBoolean(false)
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                requestsStarted.trySend(Unit)
+                if (pullCount > 1) awaitCancellation()
+                try {
+                    answerFirstRequest.await()
+                } catch (e: CancellationException) {
+                    firstRequestCancelled.set(true)
+                    throw e
+                }
+                Response.success(overall())
+            }
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+
+            repository.handleOnPause()
+            // the server would keep processing a cancelled request anyway, so the open one is left running
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            assertFalse(firstRequestCancelled.get())
+
+            answerFirstRequest.complete(Unit)
+            // no new request is opened while the chat stays paused
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+
+            repository.handleOnResume()
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `long polling waits for the network when the device went offline during the pause`() =
+        runBlocking {
+            val isOnline = MutableStateFlow(true)
+            whenever(networkMonitor.isOnline).thenReturn(isOnline)
+            val requestsStarted = Channel<Unit>(Channel.UNLIMITED)
+            val answerFirstRequest = CompletableDeferred<Unit>()
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                requestsStarted.trySend(Unit)
+                if (pullCount > 1) awaitCancellation()
+                answerFirstRequest.await()
+                Response.success(overall())
+            }
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+            repository.handleOnPause()
+            answerFirstRequest.complete(Unit)
+            // the loop waits for the resume while the device is still online ...
+            delay(LONG_POLLING_OBSERVATION_MILLIS)
+            isOnline.value = false
+            repository.handleOnResume()
+
+            // ... and must not send the next request offline after the resume
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+            isOnline.value = true
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `long polling waits for the network instead of retrying a request that failed offline`() =
+        runBlocking {
+            val isOnline = MutableStateFlow(true)
+            whenever(networkMonitor.isOnline).thenReturn(isOnline)
+            val requestsStarted = Channel<Unit>(Channel.UNLIMITED)
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                requestsStarted.trySend(Unit)
+                if (pullCount > 1) awaitCancellation()
+                isOnline.value = false
+                throw IOException("network lost")
+            }
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+
+            // the syncer would send its retry after one second
+            verifyBlocking(network, after(RETRY_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+            isOnline.value = true
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestsStarted.receive() }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `long polling does not retry a request that fails while the chat is paused`() =
+        runBlocking {
+            val requestStarted = CompletableDeferred<Unit>()
+            val failRequest = CompletableDeferred<Unit>()
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                requestStarted.complete(Unit)
+                failRequest.await()
+                throw IOException("socket closed by the system")
+            }
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            withTimeout(AWAIT_TIMEOUT_MILLIS) { requestStarted.await() }
+            repository.handleOnPause()
+            failRequest.complete(Unit)
+
+            // the syncer would send its retry after one second
+            verifyBlocking(network, after(RETRY_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+            polling.cancelAndJoin()
+        }
+
+    @Test
+    fun `long polling repeats a failed first request without a timeout`() =
+        runBlocking {
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                if (pullCount > 1) awaitCancellation()
+                Response.error<ChatOverall>(HTTP_UNAUTHORIZED, "".toResponseBody("text/plain".toMediaType()))
+            }
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+            verifyBlocking(network, timeout(AWAIT_TIMEOUT_MILLIS).times(2)) { pullChatMessages(any(), any(), any()) }
+            polling.cancelAndJoin()
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            assertEquals(listOf(0, 0), fieldMapCaptor.allValues.map { it["timeout"] })
+        }
+
+    @Test
+    fun `long polling backs off and goes on after a CancellationException that no pause caused`() =
+        runBlocking {
+            var pullCount = 0
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }.doSuspendableAnswer {
+                pullCount++
+                // later long polls stay open like on a server without new messages
+                if (pullCount > 1) awaitCancellation()
+                Response.success(overall(message(1)))
+            }
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
+                .thenThrow(CancellationException("not caused by a pause"))
+                .thenReturn(flowOf(emptyList()))
+
+            val polling = launch(Dispatchers.Default) { repository.initLongPolling() }
+
+            // treated as a failed request: no immediate next request ...
+            verifyBlocking(network, after(LONG_POLLING_OBSERVATION_MILLIS).times(1)) {
+                pullChatMessages(any(), any(), any())
+            }
+            // ... but the next one follows after the backoff instead of the polling stopping
+            verifyBlocking(network, timeout(AWAIT_TIMEOUT_MILLIS).times(2)) {
+                pullChatMessages(any(), any(), any())
+            }
+            polling.cancelAndJoin()
         }
 
     @Test
@@ -912,6 +1105,7 @@ class OfflineFirstChatRepositoryTest {
         private const val HTTP_UNAUTHORIZED = 401
         private const val LONG_POLLING_OBSERVATION_MILLIS = 200L
         private const val AWAIT_TIMEOUT_MILLIS = 2000L
+        private const val RETRY_OBSERVATION_MILLIS = 1500L
         private const val CHAT_URL = "https://server.example.com/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val INSURANCE_DELAY_MS = 2 * 60 * 1000L
         private const val MESSAGE_ID = 42L
