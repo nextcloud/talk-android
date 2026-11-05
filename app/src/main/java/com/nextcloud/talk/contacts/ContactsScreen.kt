@@ -22,8 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.contacts.components.ContactsAppBar
+import com.nextcloud.talk.contacts.components.ContactsAppBarListenerInput
+import com.nextcloud.talk.contacts.components.ContactsAppBarState
 import com.nextcloud.talk.contacts.components.ContactsList
-import com.nextcloud.talk.contacts.components.ContactsSearchAppBar
 import com.nextcloud.talk.contacts.components.ConversationCreationOptions
 
 @Composable
@@ -39,10 +40,17 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsViewMo
             .statusBarsPadding()
             .displayCutoutPadding(),
         topBar = {
-            if (isSearchActive) {
-                ContactsSearchAppBar(
+            ContactsAppBar(
+                state = ContactsAppBarState(
+                    isAddParticipants = isAddParticipants,
+                    isSearchActive = isSearchActive,
                     searchQuery = searchQuery,
-                    onTextChange = {
+                    enableAddButton = enableAddButton
+                ),
+                autocompleteUsers = autocompleteUsers,
+                listenerInput = ContactsAppBarListenerInput(
+                    onStartSearch = { contactsViewModel.setSearchActive(true) },
+                    onSearchQueryChange = {
                         contactsViewModel.updateSearchQuery(it)
                         contactsViewModel.getContactsFromSearchParams()
                     },
@@ -51,17 +59,9 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsViewMo
                         contactsViewModel.setSearchActive(false)
                         contactsViewModel.getContactsFromSearchParams()
                     },
-                    enableAddButton = enableAddButton,
-                    isAddParticipants = isAddParticipants,
-                    clickAddButton = { contactsViewModel.modifyClickAddButton(true) }
+                    onAddSelected = { contactsViewModel.modifyClickAddButton(true) }
                 )
-            } else {
-                ContactsAppBar(
-                    isAddParticipants = isAddParticipants,
-                    autocompleteUsers = autocompleteUsers,
-                    onStartSearch = { contactsViewModel.setSearchActive(true) }
-                )
-            }
+            )
         },
         content = { paddingValues ->
             Column(

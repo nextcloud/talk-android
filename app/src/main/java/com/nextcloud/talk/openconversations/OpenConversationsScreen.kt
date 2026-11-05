@@ -32,17 +32,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -50,7 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,15 +52,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -83,12 +73,12 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.components.AppBarSearchField
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import kotlinx.coroutines.flow.distinctUntilChanged
 import com.nextcloud.talk.ui.withAuthHeader
 import com.nextcloud.talk.ui.LocalImageAuthHeader
 
@@ -130,12 +120,6 @@ private fun OpenConversationsScreenContent(
     listenerInput: OpenConversationsScreenListenerInput
 ) {
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(isSearchActive) {
-        if (isSearchActive) focusRequester.requestFocus()
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState, modifier = Modifier.navigationBarsPadding()) },
@@ -144,14 +128,12 @@ private fun OpenConversationsScreenContent(
             OpenConversationsTopBar(
                 isSearchActive = isSearchActive,
                 searchTerm = searchTerm,
-                focusRequester = focusRequester,
                 listenerInput = OpenConversationsTopBarListenerInput(
                     onSearchTermChange = listenerInput.onSearchTermChange,
                     onSearchActivate = { isSearchActive = true },
                     onSearchDismiss = {
                         isSearchActive = false
                         listenerInput.onSearchTermChange("")
-                        keyboardController?.hide()
                     },
                     onBackClick = listenerInput.onBackClick
                 )
@@ -175,25 +157,8 @@ private fun OpenConversationsScreenContent(
 private fun OpenConversationsTopBar(
     isSearchActive: Boolean,
     searchTerm: String,
-    focusRequester: FocusRequester,
     listenerInput: OpenConversationsTopBarListenerInput
 ) {
-    val searchBarState = rememberSearchBarState()
-    val textFieldState = rememberTextFieldState()
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    LaunchedEffect(textFieldState) {
-        snapshotFlow { textFieldState.text.toString() }
-            .distinctUntilChanged()
-            .collect { listenerInput.onSearchTermChange(it) }
-    }
-
-    LaunchedEffect(searchTerm) {
-        if (searchTerm != textFieldState.text.toString()) {
-            textFieldState.setTextAndPlaceCursorAtEnd(searchTerm)
-        }
-    }
-
     TopAppBar(
         navigationIcon = {
             if (!isSearchActive) {
@@ -207,12 +172,11 @@ private fun OpenConversationsTopBar(
         },
         title = {
             if (isSearchActive) {
-                OpenConversationsSearchBar(
-                    searchBarState = searchBarState,
-                    textFieldState = textFieldState,
-                    focusRequester = focusRequester,
+                AppBarSearchField(
+                    initialQuery = searchTerm,
+                    onQueryChange = listenerInput.onSearchTermChange,
                     onSearchDismiss = listenerInput.onSearchDismiss,
-                    onSearch = { keyboardController?.hide() }
+                    modifier = Modifier.padding(end = 16.dp)
                 )
             } else {
                 Text(text = stringResource(R.string.openConversations))
@@ -229,52 +193,6 @@ private fun OpenConversationsTopBar(
             }
         }
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun OpenConversationsSearchBar(
-    searchBarState: SearchBarState,
-    textFieldState: TextFieldState,
-    focusRequester: FocusRequester,
-    onSearchDismiss: () -> Unit,
-    onSearch: () -> Unit
-) {
-    // A Surface instead of SearchBar: the collapsed SearchBar blocks the soft keyboard, as typing is meant to happen in
-    // an expanded search bar, which this screen does not use.
-    Surface(
-        shape = SearchBarDefaults.inputFieldShape,
-        color = SearchBarDefaults.colors().containerColor,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 16.dp)
-    ) {
-        SearchBarDefaults.InputField(
-            textFieldState = textFieldState,
-            searchBarState = searchBarState,
-            onSearch = { onSearch() },
-            placeholder = { Text(stringResource(R.string.nc_search)) },
-            leadingIcon = {
-                IconButton(onClick = onSearchDismiss) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_chevron_backward_24px),
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
-            },
-            trailingIcon = {
-                if (textFieldState.text.isNotEmpty()) {
-                    IconButton(onClick = { textFieldState.setTextAndPlaceCursorAtEnd("") }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
-                            contentDescription = stringResource(R.string.nc_search_clear)
-                        )
-                    }
-                }
-            },
-            modifier = Modifier.focusRequester(focusRequester)
-        )
-    }
 }
 
 @Composable
@@ -459,7 +377,6 @@ private fun PreviewOpenConversationsTopBar() {
             OpenConversationsTopBar(
                 isSearchActive = true,
                 searchTerm = "design",
-                focusRequester = remember { FocusRequester() },
                 listenerInput = OpenConversationsTopBarListenerInput(
                     onSearchTermChange = {},
                     onSearchActivate = {},
@@ -479,7 +396,6 @@ private fun PreviewOpenConversationsTopBarRtl() {
             OpenConversationsTopBar(
                 isSearchActive = true,
                 searchTerm = "تصميم",
-                focusRequester = remember { FocusRequester() },
                 listenerInput = OpenConversationsTopBarListenerInput(
                     onSearchTermChange = {},
                     onSearchActivate = {},
