@@ -33,6 +33,10 @@ class ExternalAudioRouteController {
     var pendingDevice: AudioDevice = AudioDevice.NONE
         private set
 
+    // The last device requested from the owner, until the route changes. A switch to it is the app's own doing,
+    // also when it is reported after the request was answered or after the user changed their mind meanwhile.
+    private var lastRequestedDevice: AudioDevice = AudioDevice.NONE
+
     /** Shows the requested device right away, so the UI does not lag behind the user's choice. */
     val deviceForUi: AudioDevice
         get() = if (pendingDevice != AudioDevice.NONE) pendingDevice else currentDevice
@@ -45,6 +49,7 @@ class ExternalAudioRouteController {
         currentDevice = AudioDevice.NONE
         availableDevices = emptySet()
         pendingDevice = AudioDevice.NONE
+        lastRequestedDevice = AudioDevice.NONE
         this.userSelectedDevice = userSelectedDevice
     }
 
@@ -65,8 +70,12 @@ class ExternalAudioRouteController {
             pendingDevice == AudioDevice.NONE &&
                 previous != AudioDevice.NONE &&
                 current != previous &&
+                current != lastRequestedDevice &&
                 current != desiredDevice(proximityNear) ->
                 userSelectedDevice = current
+        }
+        if (current != previous) {
+            lastRequestedDevice = AudioDevice.NONE
         }
         return deviceToRequest(proximityNear)
     }
@@ -79,11 +88,9 @@ class ExternalAudioRouteController {
         if (device !in availableDevices) {
             AudioDevice.NONE
         } else {
+            // A switch still in flight stays pending: the owner carries it out anyway, and the route it reports
+            // then leads to requesting this selection.
             userSelectedDevice = device
-            if (desiredDevice(proximityNear) == currentDevice) {
-                // a switch still in flight to another device must not be shown or awaited anymore
-                pendingDevice = AudioDevice.NONE
-            }
             deviceToRequest(proximityNear)
         }
 
@@ -91,6 +98,7 @@ class ExternalAudioRouteController {
 
     fun onRequestStarted(device: AudioDevice) {
         pendingDevice = device
+        lastRequestedDevice = device
     }
 
     /**
