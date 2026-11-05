@@ -1260,19 +1260,18 @@ class CallActivity : CallBaseActivity() {
 
     private fun applyTelecomAudioRoute(route: TelecomAudioRoute?) {
         val activeAudioManager = audioManager ?: return
-        val currentDevice = route
-            ?.takeIf { it.roomToken == roomToken }
-            ?.currentEndpoint
-            ?.let { TelecomAudioDevices.toAudioDevice(it.type) }
+        // Only the route of this call's Telecom call counts
+        val callRoute = route?.takeIf { it.roomToken == roomToken }
+        val currentDevice = callRoute?.currentEndpoint?.let { TelecomAudioDevices.toAudioDevice(it.type) }
             ?: AudioDevice.NONE
-        if (route == null || currentDevice == AudioDevice.NONE) {
+        if (callRoute == null || currentDevice == AudioDevice.NONE) {
             activeAudioManager.setExternalAudioRoute(null, AudioDevice.NONE, emptySet())
             return
         }
         activeAudioManager.setExternalAudioRoute(
             telecomAudioRouter,
             currentDevice,
-            TelecomAudioDevices.availableDevices(route)
+            TelecomAudioDevices.availableDevices(callRoute)
         )
     }
 
