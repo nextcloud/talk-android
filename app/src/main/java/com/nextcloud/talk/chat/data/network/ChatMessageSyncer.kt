@@ -771,7 +771,7 @@ class ChatMessageSyncer @Inject constructor(
                 )
             }
 
-            emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
+            emit(ChatPullResult.Error(lastError ?: IllegalStateException("All attempts failed")))
         }.flowOn(Dispatchers.IO)
 
     /**
