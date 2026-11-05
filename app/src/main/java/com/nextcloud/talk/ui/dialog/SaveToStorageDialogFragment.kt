@@ -76,16 +76,11 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
     @SuppressLint("LongLogTag")
     private fun saveImageToStorage(fileName: String, fileId: String?) {
-        val cacheDir = requireContext().cacheDir
-        val sourceFile = if (fileId.isNullOrEmpty()) {
-            FileUtils.resolveSharedAttachmentFile(cacheDir, fileName)
-        } else {
-            FileUtils.resolveSharedAttachmentFile(cacheDir, fileId, fileName)
-        } ?: run {
+        val sourceFile = FileUtils.resolveSharedAttachmentFile(requireContext().cacheDir, fileId, fileName) ?: run {
             Log.e(TAG, "Failed to resolve shared attachment file")
             return
         }
-        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileName
+        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileId.orEmpty() + "_" + fileName
 
         val workers = WorkManager.getInstance(requireContext()).getWorkInfosByTag(workerTag)
         try {
