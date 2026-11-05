@@ -15,12 +15,17 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.telecom.CallAttributesCompat
 import androidx.core.telecom.CallControlResult
 import androidx.core.telecom.CallControlScope
+import androidx.core.telecom.CallEndpointCompat
 import androidx.core.telecom.CallsManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -57,6 +62,15 @@ class TelecomManager @Inject constructor(private val context: Context) {
     @Volatile private var isCallAnsweredOrActive: Boolean = false
 
     @Volatile private var currentCallType: Int = CallAttributesCompat.CALL_TYPE_AUDIO_CALL
+
+    private val _audioRoute = MutableStateFlow<TelecomAudioRoute?>(null)
+
+    /**
+     * Audio route of the Telecom call, or null while no call is registered. While a Telecom call exists, Telecom owns
+     * the communication route: switching the output must go through [requestAudioEndpoint], requests made directly
+     * via AudioManager are not applied.
+     */
+    val audioRoute: StateFlow<TelecomAudioRoute?> = _audioRoute.asStateFlow()
 
     fun registerAppWithTelecom() {
         registrationJob = telecomScope.launch(Dispatchers.IO) {
@@ -261,6 +275,32 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
+    /**
+     * Asks Telecom to switch the call audio to an endpoint of [endpointType] (a CallEndpointCompat.TYPE_* value).
+     * [onResult] is called on the main thread with whether Telecom accepted the request; the resulting route is
+     * reported through [audioRoute].
+     */
+    fun requestAudioEndpoint(endpointType: Int, onResult: (Boolean) -> Unit) {
+        val scope = currentCallControlScope
+        val route = _audioRoute.value
+        val endpoint = route?.availableEndpoints?.firstOrNull { it.type == endpointType }
+        if (scope == null || endpoint == null) {
+            Log.w(TAG, "requestAudioEndpoint: no Telecom call or no endpoint of type $endpointType")
+            onResult(false)
+            return
+        }
+        telecomScope.launch {
+            // runCatching so onResult is always called, also when the call session already ended
+            val result = runCatching { scope.requestEndpointChange(endpoint) }
+                .onFailure { Log.e(TAG, "requestEndpointChange failed for $endpoint", it) }
+                .getOrNull()
+            if (result is CallControlResult.Error) {
+                Log.w(TAG, "requestEndpointChange rejected for $endpoint: $result")
+            }
+            onResult(result is CallControlResult.Success)
+        }
+    }
+
     private fun prepareCallRegistration(roomToken: String, callTypeLabel: String): String? {
         if (roomToken.isBlank()) {
             Log.e(TAG, "Cannot add $callTypeLabel call: roomToken is blank")
@@ -290,6 +330,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
             isPendingSetActive = false
             isIncomingCall = false
             isCallAnsweredOrActive = false
+            _audioRoute.value = null
         }
     }
 
@@ -301,6 +342,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
         if (currentRegistrationId == registrationId) {
             currentCallControlScope = this
             Log.d(TAG, "Call registered in CallControlScope for room $roomToken (id=$registrationId)")
+            observeAudioRoute(registrationId, roomToken)
             if (autoActivate || isPendingSetActive) {
                 launch { activateScope(this@onScopeAssigned) }
                 isPendingSetActive = false
@@ -315,6 +357,24 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
+    private fun CallControlScope.observeAudioRoute(registrationId: String, roomToken: String) {
+        _audioRoute.value = TelecomAudioRoute(roomToken, null, emptyList())
+        // Updates of a call that was already replaced by a newer registration are dropped
+        val isCurrentRegistration = { currentRegistrationId == registrationId }
+        launch {
+            currentCallEndpoint.collect { endpoint ->
+                Log.d(TAG, "Telecom current endpoint: $endpoint")
+                if (isCurrentRegistration()) _audioRoute.update { it?.copy(currentEndpoint = endpoint) }
+            }
+        }
+        launch {
+            availableEndpoints.collect { endpoints ->
+                Log.d(TAG, "Telecom available endpoints: $endpoints")
+                if (isCurrentRegistration()) _audioRoute.update { it?.copy(availableEndpoints = endpoints) }
+            }
+        }
+    }
+
     @VisibleForTesting
     internal fun getCallType(isVideo: Boolean): Int =
         if (isVideo) CallAttributesCompat.CALL_TYPE_VIDEO_CALL else CallAttributesCompat.CALL_TYPE_AUDIO_CALL
@@ -323,3 +383,12 @@ class TelecomManager @Inject constructor(private val context: Context) {
         private val TAG = TelecomManager::class.java.simpleName
     }
 }
+
+/**
+ * Audio route Telecom reports for the call in [roomToken]. [currentEndpoint] is null until Telecom reported it.
+ */
+data class TelecomAudioRoute(
+    val roomToken: String,
+    val currentEndpoint: CallEndpointCompat?,
+    val availableEndpoints: List<CallEndpointCompat>
+)
