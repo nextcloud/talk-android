@@ -84,6 +84,14 @@ class TelecomManager @Inject constructor(private val context: Context, private v
      */
     val audioRoute: StateFlow<TelecomAudioRoute?> = _audioRoute.asStateFlow()
 
+    private val _isMuted = MutableStateFlow<Boolean?>(null)
+
+    /**
+     * Telecom's mute state of the call, i.e. the system-wide microphone mute (toggled e.g. by the mute button of a
+     * Bluetooth headset or a car head unit), or null while no call is registered or nothing was reported yet.
+     */
+    val isMuted: StateFlow<Boolean?> = _isMuted.asStateFlow()
+
     fun registerAppWithTelecom() {
         if (!isSupported) {
             logger.w(TAG, "Core-Telecom is not used below Android 14, calls are handled by the app only")
@@ -365,6 +373,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             isIncomingCall = false
             isCallAnsweredOrActive = false
             _audioRoute.value = null
+            _isMuted.value = null
         }
     }
 
@@ -376,7 +385,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         if (currentRegistrationId == registrationId) {
             currentCallControlScope = this
             Log.d(TAG, "Call registered in CallControlScope for room $roomToken (id=$registrationId)")
-            observeAudioRoute(registrationId, roomToken)
+            observeCallState(registrationId, roomToken)
             if (autoActivate || isPendingSetActive) {
                 launch { activateScope(this@onScopeAssigned) }
                 isPendingSetActive = false
@@ -391,8 +400,9 @@ class TelecomManager @Inject constructor(private val context: Context, private v
         }
     }
 
-    private fun CallControlScope.observeAudioRoute(registrationId: String, roomToken: String) {
+    private fun CallControlScope.observeCallState(registrationId: String, roomToken: String) {
         _audioRoute.value = TelecomAudioRoute(roomToken, null, emptyList())
+        _isMuted.value = null
         // Updates of a call that was already replaced by a newer registration are dropped
         val isCurrentRegistration = { currentRegistrationId == registrationId }
         launch {
@@ -405,6 +415,12 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             availableEndpoints.collect { endpoints ->
                 Log.d(TAG, "Telecom available endpoints: $endpoints")
                 if (isCurrentRegistration()) _audioRoute.update { it?.copy(availableEndpoints = endpoints) }
+            }
+        }
+        launch {
+            isMuted.collect { muted ->
+                Log.d(TAG, "Telecom mute state: $muted")
+                if (isCurrentRegistration()) _isMuted.value = muted
             }
         }
     }
