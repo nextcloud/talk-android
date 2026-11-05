@@ -2410,10 +2410,6 @@ class CallActivity : CallBaseActivity() {
 
         if (shutDownView) {
             terminateAudioVideo()
-            if (webSocketClient != null) {
-                webSocketClient!!.sendBye()
-                webSocketClient = null
-            }
         }
 
         val peerConnectionIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
@@ -2486,9 +2482,7 @@ class CallActivity : CallBaseActivity() {
         }
         localAudioTrack = null
         localVideoTrack = null
-        if (::conversationUser.isInitialized && conversationUser.id != null) {
-            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(conversationUser.id!!)
-        } else if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
             WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
         }
     }
