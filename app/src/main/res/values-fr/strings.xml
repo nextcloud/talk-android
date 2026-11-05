@@ -646,6 +646,7 @@
     <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_group_chat">Démarrer une discussion de groupe</string>
+    <string name="nc_start_screen_sharing">Partager l’écran</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
     <string name="nc_take_video">Prendre une vidéo</string>

@@ -510,6 +510,7 @@
     <string name="nc_show_notification_warning_title">ئادەتتىكى ئاگاھلاندۇرۇش ئۇقتۇرۇشى كۆرسەت</string>
     <string name="nc_sort_by">تەرتىپلەش</string>
     <string name="nc_start_group_chat">گۇرۇپپا سۆھبىتىنى باشلا</string>
+    <string name="nc_start_screen_sharing">ئېكراننى ھەمبەھىرلەش</string>
     <string name="nc_start_time">باشلىنىش ۋاقتى</string>
     <string name="nc_switch_account">ھېساباتنى ئالماشتۇرۇش</string>
     <string name="nc_team">ئەتىرەت</string>

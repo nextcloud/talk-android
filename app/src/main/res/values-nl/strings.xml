@@ -518,6 +518,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_show_notification_warning_title">Toon terugkerende meldingswaarschuwing</string>
     <string name="nc_sort_by">Sorteren op</string>
     <string name="nc_start_group_chat">Start groepsgesprek</string>
+    <string name="nc_start_screen_sharing">Scherm delen</string>
     <string name="nc_start_time">Begintijd</string>
     <string name="nc_switch_account">Account wisselen</string>
     <string name="nc_team">Team</string>

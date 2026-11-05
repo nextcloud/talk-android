@@ -530,6 +530,7 @@
     <string name="nc_show_notification_warning_title">Amosar a advertencia de notificación periódica</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_group_chat">Iniciar unha parola en grupo</string>
+    <string name="nc_start_screen_sharing">Compartir a pantalla</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
     <string name="nc_team">Equipo</string>

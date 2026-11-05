@@ -662,6 +662,7 @@
     <string name="nc_show_notification_warning_title">Visa vanlig varning för avisering</string>
     <string name="nc_sort_by">Sortera efter</string>
     <string name="nc_start_group_chat">Starta gruppchatt</string>
+    <string name="nc_start_screen_sharing">Dela skärm</string>
     <string name="nc_start_time">Starttid</string>
     <string name="nc_switch_account">Växla konto</string>
     <string name="nc_take_video">Spela in video</string>

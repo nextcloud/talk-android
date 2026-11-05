@@ -391,6 +391,7 @@
     <string name="nc_shared_location">공유된 위치</string>
     <string name="nc_show_ecosystem_title">앱 스위치 도구 보이기</string>
     <string name="nc_sort_by">정렬</string>
+    <string name="nc_start_screen_sharing">화면 공유</string>
     <string name="nc_start_time">시작 시간</string>
     <string name="nc_switch_account">계정 전환</string>
     <string name="nc_team">팀</string>

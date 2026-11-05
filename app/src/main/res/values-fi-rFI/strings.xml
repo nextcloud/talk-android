@@ -357,6 +357,7 @@
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_show_ecosystem_title">Näytä sovellusvaihdin</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
+    <string name="nc_start_screen_sharing">Jaa näyttö</string>
     <string name="nc_start_time">Aloitusaika</string>
     <string name="nc_switch_account">Vaihda tiliä</string>
     <string name="nc_team">Tiimi</string>

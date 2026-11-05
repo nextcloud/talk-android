@@ -230,7 +230,9 @@
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
     <string name="nc_confirm">Potvrdiť</string>
     <string name="nc_connecting_call">Pripájam sa …</string>
-    <string name="nc_contact_chat_start">Začiatok</string>
+    <string name="nc_contact_chat_start">Začať</string>
+    <string name="nc_contact_chat_start_message">S používateľom %1$s zatiaľ nemáte žiadnu konverzáciu. Po jej začatí sa pridá do zoznamu konverzácií vás oboch.</string>
+    <string name="nc_contact_chat_start_title">Začať konverzáciu?</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_created_invalid_participants">Niektorých účastníkov sa nepodarilo pridať</string>
     <string name="nc_conversation_created_invalid_participants_named">Títo účastníci nemohli byť pridaní: %1$s</string>
@@ -278,6 +280,8 @@
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_deep_link_join">Pripojiť sa</string>
+    <string name="nc_deep_link_join_message">Táto konverzácia na %1$s nie je vo vašom zozname konverzácií. Jej otvorením sa môžete stať účastníkom.</string>
+    <string name="nc_deep_link_join_title">Pripojiť sa ku konverzácii?</string>
     <string name="nc_delete">Zmazať</string>
     <string name="nc_delete_all">Vymazať všetko</string>
     <string name="nc_delete_call">Zmazať konverzáciu</string>
@@ -655,6 +659,7 @@
     <string name="nc_shared_items_location">Umiestnenie</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_shortcut_conversation_deleted">Táto konverzácia už neexistuje</string>
+    <string name="nc_shortcut_conversation_not_found">Konverzácia priradená k odkazu sa nenašla</string>
     <string name="nc_shortcut_created">Skratka bola vytvorená</string>
     <string name="nc_show_ecosystem_description">Odporúčania aplikácií Nextcloud v dialógovom okne výberu účtu</string>
     <string name="nc_show_ecosystem_title">Zobraziť prepínač aplikácií</string>
@@ -662,6 +667,7 @@
     <string name="nc_show_notification_warning_title">Zobraziť štandardné upozornenie</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_group_chat">Začať skupinový chat</string>
+    <string name="nc_start_screen_sharing">Sprístupniť obrazovku</string>
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_switch_account">Prepnúť účet</string>
     <string name="nc_take_video">Natočiť video</string>
