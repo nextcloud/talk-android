@@ -2408,7 +2408,7 @@ class CallActivity : CallBaseActivity() {
         dispose(nickSendingDisposable)
         nickSendingDisposable = null
 
-        if (shutDownView || currentCallStatus == CallStatus.CALLING_TIMEOUT) {
+        if (shutDownView) {
             terminateAudioVideo()
             if (webSocketClient != null) {
                 webSocketClient!!.sendBye()
