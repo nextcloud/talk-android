@@ -93,16 +93,19 @@ class ExternalAudioRouteController {
         pendingDevice = device
     }
 
-    /** The owner answered a request. On rejection the selection falls back to the active route. */
+    /**
+     * The owner answered a request, which ends it either way. On rejection the selection falls back to the active
+     * route. On acceptance, the switch is not awaited any further: the owner may end up on another device (e.g.
+     * Bluetooth falling back to the earpiece) and the route it reports, before or after this answer, is the truth.
+     * A report differing from the selection then becomes the selection via [onRouteReported].
+     */
     fun onRequestFinished(device: AudioDevice, accepted: Boolean) {
         if (device != pendingDevice) {
             return
         }
+        pendingDevice = AudioDevice.NONE
         if (!accepted) {
-            pendingDevice = AudioDevice.NONE
             userSelectedDevice = currentDevice
-        } else if (currentDevice == device) {
-            pendingDevice = AudioDevice.NONE
         }
     }
 
