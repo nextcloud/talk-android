@@ -23,6 +23,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.service.notification.StatusBarNotification
+import android.telecom.DisconnectCause
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
@@ -1163,6 +1164,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationManager.cancel(notificationId)
     }
 
+    /**
+     * Withdraws the ringing Telecom call registered for this push. Only acts while the call notification is still
+     * showing, i.e. the user has neither answered nor declined on this device; TelecomManager additionally ignores
+     * calls that were already answered or activated.
+     */
+    private fun endRingingTelecomCall(disconnectCause: Int) {
+        if (NotificationUtils.isNotificationVisible(context, pushMessage.timestamp.toInt())) {
+            telecomManager.endRingingCall(pushMessage.id, disconnectCause)
+        }
+    }
+
     private fun checkIfCallIsActive(conversation: ConversationModel) {
         Log.d(TAG, "checkIfCallIsActive")
         var hasParticipantsInCall = true
@@ -1207,12 +1219,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
                     if (inCallOnDifferentDevice) {
                         Log.d(TAG, "inCallOnDifferentDevice is true")
+                        endRingingTelecomCall(DisconnectCause.REMOTE)
                         removeNotification(pushMessage.timestamp.toInt())
                     }
 
                     if (!hasParticipantsInCall) {
                         showMissedCallNotification(conversation)
                         Log.d(TAG, "no participants in call")
+                        endRingingTelecomCall(DisconnectCause.MISSED)
                         removeNotification(pushMessage.timestamp.toInt())
                     }
 
@@ -1227,6 +1241,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     if (isCallNotificationVisible) {
                         showMissedCallNotification(conversation)
                     }
+                    endRingingTelecomCall(DisconnectCause.MISSED)
                     removeNotification(pushMessage.timestamp.toInt())
                 }
 
@@ -1236,6 +1251,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         showMissedCallNotification(conversation)
                     }
 
+                    endRingingTelecomCall(DisconnectCause.MISSED)
                     removeNotification(pushMessage.timestamp.toInt())
                 }
             })
