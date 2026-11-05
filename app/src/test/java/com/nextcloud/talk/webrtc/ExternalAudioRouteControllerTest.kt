@@ -188,4 +188,34 @@ class ExternalAudioRouteControllerTest {
         assertEquals(AudioDevice.SPEAKER_PHONE, controller.userSelectedDevice)
         assertEquals(AudioDevice.SPEAKER_PHONE, controller.deviceForUi)
     }
+
+    @Test
+    fun `changing back while a switch is in flight returns to the new choice once the switch is done`() {
+        val controller = controllerOnEarpiece()
+        assertEquals(AudioDevice.SPEAKER_PHONE, controller.select(AudioDevice.SPEAKER_PHONE, proximityNear = false))
+        controller.onRequestStarted(AudioDevice.SPEAKER_PHONE)
+
+        // the user changes their mind before Telecom switched
+        assertNull(controller.select(AudioDevice.EARPIECE, proximityNear = false))
+
+        // Telecom answers the first request, then carries it out
+        controller.onRequestFinished(AudioDevice.SPEAKER_PHONE, accepted = true)
+        val request = controller.onRouteReported(AudioDevice.SPEAKER_PHONE, phoneDevices, proximityNear = false)
+
+        assertEquals(AudioDevice.EARPIECE, request)
+        assertEquals(AudioDevice.EARPIECE, controller.userSelectedDevice)
+    }
+
+    @Test
+    fun `changing back while a switch is in flight also works when the switch is reported first`() {
+        val controller = controllerOnEarpiece()
+        controller.select(AudioDevice.SPEAKER_PHONE, proximityNear = false)
+        controller.onRequestStarted(AudioDevice.SPEAKER_PHONE)
+        controller.select(AudioDevice.EARPIECE, proximityNear = false)
+
+        val request = controller.onRouteReported(AudioDevice.SPEAKER_PHONE, phoneDevices, proximityNear = false)
+
+        assertEquals(AudioDevice.EARPIECE, request)
+        assertEquals(AudioDevice.EARPIECE, controller.userSelectedDevice)
+    }
 }
