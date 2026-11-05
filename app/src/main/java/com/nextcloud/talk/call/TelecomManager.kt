@@ -16,8 +16,11 @@ import androidx.core.telecom.CallAttributesCompat
 import androidx.core.telecom.CallControlResult
 import androidx.core.telecom.CallControlScope
 import androidx.core.telecom.CallsManager
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -26,7 +29,18 @@ import javax.inject.Singleton
 @Singleton
 class TelecomManager @Inject constructor(private val context: Context) {
     private val callsManager = CallsManager(context)
-    private val telecomScope = CoroutineScope(Dispatchers.Main)
+
+    // SupervisorJob: one failing Telecom operation must not cancel the scope for all later calls.
+    // The handler keeps exceptions from a closed CallSession (e.g. remote end racing a local hangup) from
+    // crashing the app.
+    private val telecomScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main + CoroutineExceptionHandler { _, throwable ->
+            Log.e(TAG, "Unhandled error in Core-Telecom operation", throwable)
+        }
+    )
+
+    // addCall must not run before the app is registered, which matters when a call push cold-starts the process
+    @Volatile private var registrationJob: Job? = null
 
     @Volatile private var currentCallControlScope: CallControlScope? = null
 
@@ -45,7 +59,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
     @Volatile private var currentCallType: Int = CallAttributesCompat.CALL_TYPE_AUDIO_CALL
 
     fun registerAppWithTelecom() {
-        telecomScope.launch(Dispatchers.IO) {
+        registrationJob = telecomScope.launch(Dispatchers.IO) {
             try {
                 val capabilities: @CallsManager.Companion.Capability Int =
                     CallsManager.CAPABILITY_BASELINE or CallsManager.CAPABILITY_SUPPORTS_VIDEO_CALLING
@@ -87,6 +101,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
 
         telecomScope.launch {
             try {
+                registrationJob?.join()
                 callsManager.addCall(
                     callAttributes = callAttributes,
                     onAnswer = { _ ->
@@ -134,6 +149,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
 
         telecomScope.launch {
             try {
+                registrationJob?.join()
                 callsManager.addCall(
                     callAttributes = callAttributes,
                     onAnswer = { },
@@ -197,10 +213,18 @@ class TelecomManager @Inject constructor(private val context: Context) {
         }
     }
 
-    fun setCallActive(roomToken: String? = null, onDisconnectCall: (() -> Unit)? = null) {
+    /**
+     * @param isVideo the call type the user actually joined with (e.g. "answer voice only" on a video call);
+     * null keeps the type the call was registered with.
+     */
+    fun setCallActive(roomToken: String? = null, isVideo: Boolean? = null, onDisconnectCall: (() -> Unit)? = null) {
         if (roomToken != null && currentRoomToken != null && currentRoomToken != roomToken) {
             Log.d(TAG, "setCallActive ignored: target room $roomToken does not match active room $currentRoomToken")
             return
+        }
+
+        if (isVideo != null) {
+            currentCallType = getCallType(isVideo)
         }
 
         if (onDisconnectCall != null) {
@@ -221,6 +245,7 @@ class TelecomManager @Inject constructor(private val context: Context) {
     }
 
     private suspend fun activateScope(scope: CallControlScope) {
+        // Exceptions propagate to telecomScope's handler (setCallActive) or addCall's catch (onScopeAssigned)
         val result = if (isIncomingCall) {
             val res = scope.answer(currentCallType)
             isIncomingCall = false

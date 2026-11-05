@@ -3337,7 +3337,11 @@ class CallActivity : CallBaseActivity() {
                 onDisconnectCall = disconnectHandler
             )
         } else {
-            telecomManager.setCallActive(roomToken, onDisconnectCall = disconnectHandler)
+            telecomManager.setCallActive(
+                roomToken,
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = disconnectHandler
+            )
         }
     }
 
