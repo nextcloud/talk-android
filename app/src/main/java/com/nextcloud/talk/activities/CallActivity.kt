@@ -97,6 +97,7 @@ import com.nextcloud.talk.call.ScreenCapture
 import com.nextcloud.talk.call.TelecomAudioDevices
 import com.nextcloud.talk.call.TelecomAudioRoute
 import com.nextcloud.talk.call.TelecomManager
+import com.nextcloud.talk.call.TelecomMuteSync
 import com.nextcloud.talk.call.components.CALL_VIEW_MODE_BUTTON_SIZE
 import com.nextcloud.talk.call.components.CallViewMode
 import com.nextcloud.talk.call.components.CallViewModeButton
@@ -1304,10 +1305,29 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    // While a Telecom call exists, Telecom owns the audio route; WebRtcAudioManager then switches through it
+    private val telecomMuteSync = TelecomMuteSync()
+
+    // While a Telecom call exists, Telecom owns the audio route; WebRtcAudioManager then switches through it.
+    // Mute changes made via Telecom (headset, car, watch) are applied to the microphone.
     private fun observeTelecomAudioRoute() {
         lifecycleScope.launch {
             telecomManager.audioRoute.collect { route -> applyTelecomAudioRoute(route) }
+        }
+        lifecycleScope.launch {
+            telecomManager.isMuted.collect { muted ->
+                telecomMuteSync.onTelecomMuteReported(muted)?.let { applyTelecomMute(it) }
+            }
+        }
+    }
+
+    private fun applyTelecomMute(muted: Boolean) {
+        val canApply = canPublishAudioStream &&
+            !isPushToTalkActive &&
+            permissionUtil?.isMicrophonePermissionGranted() == true
+        // microphoneOn == muted means the microphone state differs from Telecom's
+        if (canApply && microphoneOn == muted) {
+            Log.d(TAG, "Applying mute state from Telecom: muted=$muted")
+            onMicrophoneClick()
         }
     }
 
@@ -1907,6 +1927,11 @@ class CallActivity : CallBaseActivity() {
         } else {
             if (enable) {
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
+                if (telecomManager.isMuted.value == true) {
+                    // muted via Telecom (e.g. headset button): the microphone would stay silent otherwise
+                    telecomMuteSync.onSystemMicrophoneUnmutedByApp()
+                    audioManager?.unmuteSystemMicrophone()
+                }
             } else {
                 binding!!.microphoneButton.alpha = OPACITY_DISABLED
             }
