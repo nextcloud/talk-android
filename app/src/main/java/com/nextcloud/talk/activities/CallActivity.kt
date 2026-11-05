@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import android.os.SystemClock
 import android.provider.Settings
 import android.text.TextUtils
 import android.text.format.DateUtils
@@ -1242,7 +1243,8 @@ class CallActivity : CallBaseActivity() {
         }
         lifecycleScope.launch {
             telecomManager.isMuted.collect { muted ->
-                telecomMuteSync.onTelecomMuteReported(muted)?.let { applyTelecomMute(it) }
+                val muteToApply = telecomMuteSync.onTelecomMuteReported(muted, SystemClock.elapsedRealtime())
+                muteToApply?.let { applyTelecomMute(it) }
             }
         }
     }
@@ -1796,7 +1798,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
                 if (telecomManager.isMuted.value == true) {
                     // muted via Telecom (e.g. headset button): the microphone would stay silent otherwise
-                    telecomMuteSync.onSystemMicrophoneUnmutedByApp()
+                    telecomMuteSync.onSystemMicrophoneUnmutedByApp(SystemClock.elapsedRealtime())
                     audioManager?.unmuteSystemMicrophone()
                 }
             } else {
