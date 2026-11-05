@@ -216,6 +216,17 @@ class TelecomManager @Inject constructor(private val context: Context, private v
      * Safe to call from places that only know the ring has stopped (caller hung up, answered on another device,
      * ring timeout, notification gone): it never tears down a call the user has already picked up.
      */
+    /**
+     * The user answered the incoming call for [roomToken] on this device. From now on it doesn't count as ringing,
+     * so a disappearing call notification or the ring check can't end it as missed. Telecom itself is told when the
+     * call is joined, via [setCallActive].
+     */
+    fun markIncomingCallAnswered(roomToken: String?) {
+        if (!roomToken.isNullOrBlank() && currentRoomToken == roomToken && isIncomingCall) {
+            isCallAnsweredOrActive = true
+        }
+    }
+
     fun endRingingCall(roomToken: String?, disconnectCause: Int = DisconnectCause.MISSED) {
         if (roomToken.isNullOrBlank() || currentRoomToken != roomToken) {
             return
@@ -394,10 +405,6 @@ class TelecomManager @Inject constructor(private val context: Context, private v
     internal val isSupported: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
-    @VisibleForTesting
-    internal fun getCallType(isVideo: Boolean): Int =
-        if (isVideo) CallAttributesCompat.CALL_TYPE_VIDEO_CALL else CallAttributesCompat.CALL_TYPE_AUDIO_CALL
-
     companion object {
         private val TAG = TelecomManager::class.java.simpleName
 
@@ -408,6 +415,10 @@ class TelecomManager @Inject constructor(private val context: Context, private v
          * Talk call instead, which ends it in the app via onDisconnect.
          */
         private const val NO_CALL_CAPABILITIES = 0
+
+        @VisibleForTesting
+        internal fun getCallType(isVideo: Boolean): Int =
+            if (isVideo) CallAttributesCompat.CALL_TYPE_VIDEO_CALL else CallAttributesCompat.CALL_TYPE_AUDIO_CALL
     }
 }
 

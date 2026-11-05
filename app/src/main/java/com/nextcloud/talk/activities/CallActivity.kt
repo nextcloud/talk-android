@@ -828,6 +828,10 @@ class CallActivity : CallBaseActivity() {
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
+            if (isIncomingCallFromNotification) {
+                // before cancelling the notification below, which would otherwise read as the ring being withdrawn
+                telecomManager.markIncomingCallAnswered(extras.getString(KEY_ROOM_TOKEN, ""))
+            }
             val notificationId = extras.getInt(KEY_NOTIFICATION_TIMESTAMP, 0)
             if (notificationId != 0) {
                 // cancel the notification to stop the call ringing

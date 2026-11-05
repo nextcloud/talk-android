@@ -73,13 +73,13 @@ class TelecomManagerTest {
 
     @Test
     fun testGetCallTypeReturnsVideoCallWhenIsVideoIsTrue() {
-        val callType = telecomManager.getCallType(isVideo = true)
+        val callType = TelecomManager.getCallType(isVideo = true)
         assertEquals(CallAttributesCompat.CALL_TYPE_VIDEO_CALL, callType)
     }
 
     @Test
     fun testGetCallTypeReturnsAudioCallWhenIsVideoIsFalse() {
-        val callType = telecomManager.getCallType(isVideo = false)
+        val callType = TelecomManager.getCallType(isVideo = false)
         assertEquals(CallAttributesCompat.CALL_TYPE_AUDIO_CALL, callType)
     }
 
@@ -407,5 +407,42 @@ class TelecomManagerTest {
     @Test
     fun testCallsAreRegisteredOnAndroid14() {
         assertTrue(telecomManager.isSupported)
+    }
+
+    @Test
+    fun testAnsweredIncomingCallIsNotEndedAsRinging() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+        telecomManager.markIncomingCallAnswered("roomA")
+
+        // e.g. the call notification disappearing because CallActivity cancelled it
+        telecomManager.endRingingCall("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testMarkIncomingCallAnsweredIgnoresOtherRoomsAndOutgoingCalls() {
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = "roomA",
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+        telecomManager.markIncomingCallAnswered("roomB")
+        telecomManager.endRingingCall("roomA")
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+
+        telecomManager.addOutgoingCall(displayName = "User 1", roomToken = "roomC", isVideo = false)
+        telecomManager.markIncomingCallAnswered("roomC")
+        telecomManager.endCurrentCall(null)
+        // outgoing calls count as active anyway; marking must not change that
+        assertTrue(telecomManager.hasActiveCall("roomC"))
     }
 }
