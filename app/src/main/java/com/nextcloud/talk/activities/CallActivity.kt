@@ -3313,6 +3313,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun handleCallStateCallingTimeout() {
         hangup(shutDownView = false, endCallForAll = false)
+        // Nobody answered: the call is over for Telecom, also while the timeout screen stays open. Retrying
+        // registers a new Telecom call once the call is joined again.
+        telecomManager.endCurrentCall(roomToken)
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
