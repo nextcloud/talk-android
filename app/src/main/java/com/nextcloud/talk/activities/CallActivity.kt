@@ -94,6 +94,8 @@ import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.ScreenCapture
+import com.nextcloud.talk.call.TelecomAudioDevices
+import com.nextcloud.talk.call.TelecomAudioRoute
 import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.call.components.CALL_VIEW_MODE_BUTTON_SIZE
 import com.nextcloud.talk.call.components.CallViewMode
@@ -688,6 +690,7 @@ class CallActivity : CallBaseActivity() {
         )
 
         isCallSetUp = true
+        observeTelecomAudioRoute()
 
         if (!conversationUser.current) {
             // Taking part in a call uses its account, so it becomes the last used one.
@@ -1260,6 +1263,7 @@ class CallActivity : CallBaseActivity() {
         } else {
             setDefaultAudioOutputChannel(AudioDevice.SPEAKER_PHONE)
         }
+        applyTelecomAudioRoute(telecomManager.audioRoute.value)
         iceServers = ArrayList()
 
         // create sdpConstraints
@@ -1283,6 +1287,42 @@ class CallActivity : CallBaseActivity() {
             cameraInitialization()
         }
         microphoneInitialization()
+    }
+
+    private val telecomAudioRouter = WebRtcAudioManager.ExternalAudioRouter { device ->
+        val endpointType = TelecomAudioDevices.toEndpointType(device)
+        if (endpointType == null) {
+            audioManager?.onExternalAudioDeviceRequestFinished(device, false)
+        } else {
+            telecomManager.requestAudioEndpoint(endpointType) { accepted ->
+                runOnUiThread { audioManager?.onExternalAudioDeviceRequestFinished(device, accepted) }
+            }
+        }
+    }
+
+    // While a Telecom call exists, Telecom owns the audio route; WebRtcAudioManager then switches through it
+    private fun observeTelecomAudioRoute() {
+        lifecycleScope.launch {
+            telecomManager.audioRoute.collect { route -> applyTelecomAudioRoute(route) }
+        }
+    }
+
+    private fun applyTelecomAudioRoute(route: TelecomAudioRoute?) {
+        val activeAudioManager = audioManager ?: return
+        val currentDevice = route
+            ?.takeIf { it.roomToken == roomToken }
+            ?.currentEndpoint
+            ?.let { TelecomAudioDevices.toAudioDevice(it.type) }
+            ?: AudioDevice.NONE
+        if (route == null || currentDevice == AudioDevice.NONE) {
+            activeAudioManager.setExternalAudioRoute(null, AudioDevice.NONE, emptySet())
+            return
+        }
+        activeAudioManager.setExternalAudioRoute(
+            telecomAudioRouter,
+            currentDevice,
+            TelecomAudioDevices.availableDevices(route)
+        )
     }
 
     fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
