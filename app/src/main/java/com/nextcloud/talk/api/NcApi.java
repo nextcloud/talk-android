@@ -420,7 +420,8 @@ public interface NcApi {
                                                  @Field("shareWith") String roomToken,
                                                  @Field("shareType") String shareType,
                                                  @Field("talkMetaData") String talkMetaData,
-                                                 @Field("referenceId") String referenceId);
+                                                 @Field("referenceId") String referenceId,
+                                                 @Nullable @Field("permissions") Integer permissions);
 
     @FormUrlEncoded
     @PUT

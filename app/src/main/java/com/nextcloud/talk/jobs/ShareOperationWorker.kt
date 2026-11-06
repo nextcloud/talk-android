@@ -69,7 +69,8 @@ class ShareOperationWorker(context: Context, workerParams: WorkerParameters) : W
                 roomToken,
                 "10",
                 metaData,
-                "" // no reference id
+                "", // no reference id
+                null // server default permissions
             )
                 .subscribeOn(Schedulers.io())
                 .blockingSubscribe(
