@@ -17,6 +17,9 @@ buildscript {
     repositories {
         google()
         gradlePluginPortal()
+        // Google's mirror of Maven Central, first: Maven Central rate-limits the CI runners (HTTP 429). The dependency
+        // verification in gradle/verification-metadata.xml checks each artifact, whichever repository serves it.
+        maven { url = 'https://maven-central.storage-download.googleapis.com/maven2/' }
         mavenCentral()
     }
 
@@ -42,6 +45,9 @@ configurations.configureEach {
 allprojects {
     repositories {
         google()
+        // Google's mirror of Maven Central, first: Maven Central rate-limits the CI runners (HTTP 429). The dependency
+        // verification in gradle/verification-metadata.xml checks each artifact, whichever repository serves it.
+        maven { url = 'https://maven-central.storage-download.googleapis.com/maven2/' }
         mavenCentral()
         maven {
             url = 'https://jitpack.io'

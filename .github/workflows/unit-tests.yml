@@ -36,27 +36,44 @@ jobs:
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
-            -   name: Read the Robolectric version
+            # The cache holds one jar per SDK level the tests run on (@Config(sdk = [..])). Its key names the levels, so
+            # a test on a new level gets a new cache instead of downloading that jar on every run.
+            -   name: Read the Robolectric version and SDK levels
                 id: robolectric
-                run: echo "version=$(grep -oP 'org\.robolectric:robolectric:\K[0-9.]+' app/build.gradle.kts)" >> "$GITHUB_OUTPUT"
+                run: |
+                    {
+                        echo "version=$(grep -oP 'org\.robolectric:robolectric:\K[0-9.]+' app/build.gradle.kts)"
+                        echo "sdks=$(grep -rhoP 'sdk\s*=\s*\[\K[0-9, ]+' app/src/test | tr -d ' ' | tr ',' '\n' | sort -un | paste -sd- -)"
+                    } >> "$GITHUB_OUTPUT"
 
             -   name: Restore the Robolectric Android SDK jars
                 id: robolectric-cache
                 uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
                 with:
                     path: ~/.m2/repository/org/robolectric
-                    key: robolectric-sdks-${{ runner.os }}-${{ steps.robolectric.outputs.version }}
+                    key: robolectric-sdks-${{ runner.os }}-${{ steps.robolectric.outputs.version }}-${{ steps.robolectric.outputs.sdks }}
 
             -   name: Run unit tests with coverage
                 run: ./gradlew --no-daemon testGplayDebugUnit
 
+            # A cache is never replaced once its key exists, so only one with a jar for every SDK level is saved.
+            -   name: Check the Robolectric Android SDK jars
+                id: robolectric-jars
+                if: ${{ always() && steps.robolectric-cache.outputs.cache-hit != 'true' }}
+                env:
+                    SDKS: ${{ steps.robolectric.outputs.sdks }}
+                run: |
+                    jars=$(find ~/.m2/repository/org/robolectric/android-all-instrumented -name '*.jar' 2>/dev/null | wc -l)
+                    levels=$(echo "$SDKS" | tr '-' '\n' | wc -l)
+                    echo "complete=$([ "$jars" -ge "$levels" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
             # Saved even when the suite fails, so a red run still leaves the jars behind.
             -   name: Save the Robolectric Android SDK jars
-                if: ${{ always() && steps.robolectric-cache.outputs.cache-hit != 'true' }}
+                if: ${{ always() && steps.robolectric-jars.outputs.complete == 'true' }}
                 uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
                 with:
                     path: ~/.m2/repository/org/robolectric
-                    key: robolectric-sdks-${{ runner.os }}-${{ steps.robolectric.outputs.version }}
+                    key: robolectric-sdks-${{ runner.os }}-${{ steps.robolectric.outputs.version }}-${{ steps.robolectric.outputs.sdks }}
 
             -   name: Upload test artifacts
                 if: ${{ failure() }}
