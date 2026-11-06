@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Prebieha hovor</string>
     <string name="nc_call_ongoing_notification_end_action">Ukončiť hovor</string>
     <string name="nc_call_ongoing_notification_return_action">Návrat k hovoru</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Zdieľate svoju obrazovku</string>
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znovu pripájam …</string>
     <string name="nc_call_ringing">ZVONÍ</string>
@@ -540,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Zdieľanie obrazovky sa nepodarilo spustiť</string>
+    <string name="nc_screen_sharing_not_allowed">Nemáte oprávnenie zdieľať svoju obrazovku</string>
+    <string name="nc_screen_sharing_not_connected">Obrazovku môžete zdieľať po spojení hovoru</string>
+    <string name="nc_screen_sharing_permissions_missing">Ak chcete zdieľať obrazovku, povoľte upozornenia a prístup k mikrofónu</string>
     <string name="nc_search">Hľadať</string>
     <string name="nc_search_clear">Vymazať hľadanie</string>
     <string name="nc_search_location">Vyhľadať miesto</string>
@@ -667,8 +672,10 @@
     <string name="nc_show_notification_warning_title">Zobraziť štandardné upozornenie</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_group_chat">Začať skupinový chat</string>
-    <string name="nc_start_screen_sharing">Sprístupniť obrazovku</string>
+    <string name="nc_start_screen_sharing">Zdieľať obrazovku</string>
     <string name="nc_start_time">Čas začiatku</string>
+    <string name="nc_stop_screen_sharing">Zastaviť zdieľanie obrazovky</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Naozaj chcete zastaviť zdieľanie svojej obrazovky?</string>
     <string name="nc_switch_account">Prepnúť účet</string>
     <string name="nc_take_video">Natočiť video</string>
     <string name="nc_team">Tím</string>

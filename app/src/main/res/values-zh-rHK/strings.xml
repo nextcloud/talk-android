@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">正在通話中…</string>
     <string name="nc_call_ongoing_notification_end_action">結束通話</string>
     <string name="nc_call_ongoing_notification_return_action">返回通話</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">你正在分享螢幕</string>
     <string name="nc_call_raised_hand">%1$s 舉手</string>
     <string name="nc_call_reconnecting">正在重新連線 …</string>
     <string name="nc_call_ringing">鈴聲響</string>
@@ -231,6 +232,8 @@
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contact_chat_start">開始</string>
+    <string name="nc_contact_chat_start_message">你尚未與 %1$s 建立對話。開始對話後，對話將加入你們雙方的對話清單。</string>
+    <string name="nc_contact_chat_start_title">開始對話？</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_created_invalid_participants">部分參與者無法加入</string>
     <string name="nc_conversation_created_invalid_participants_named">這些參與者無法加入：%1$s</string>
@@ -278,6 +281,8 @@
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_deep_link_join">加入</string>
+    <string name="nc_deep_link_join_message">你尚未將 %1$s 上的這個對話加入對話清單。開啟對話可能會將你加入為參與者。</string>
+    <string name="nc_deep_link_join_title">加入對話？</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
@@ -536,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">無法開始分享螢幕</string>
+    <string name="nc_screen_sharing_not_allowed">你沒有權限分享螢幕</string>
+    <string name="nc_screen_sharing_not_connected">通話接通後，你便可以分享螢幕</string>
+    <string name="nc_screen_sharing_permissions_missing">如要分享螢幕，請允許通知及麥克風存取權限</string>
     <string name="nc_search">搜尋</string>
     <string name="nc_search_clear">清除搜尋</string>
     <string name="nc_search_location">搜尋位置</string>
@@ -655,6 +664,7 @@
     <string name="nc_shared_items_location">位置</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_shortcut_conversation_deleted">此對話不存在</string>
+    <string name="nc_shortcut_conversation_not_found">找不到捷徑所指向的對話</string>
     <string name="nc_shortcut_created">已建立捷徑</string>
     <string name="nc_show_ecosystem_description">在帳戶選擇對話框中顯示 Nextcloud 應用程式建議</string>
     <string name="nc_show_ecosystem_title">顯示應用程式切換器</string>
@@ -664,6 +674,8 @@
     <string name="nc_start_group_chat">開始群組聊天</string>
     <string name="nc_start_screen_sharing">分享螢幕</string>
     <string name="nc_start_time">開始時間</string>
+    <string name="nc_stop_screen_sharing">停止分享螢幕</string>
+    <string name="nc_stop_screen_sharing_confirm_message">確定要停止分享螢幕嗎？</string>
     <string name="nc_switch_account">切換帳戶</string>
     <string name="nc_take_video">拍攝影片</string>
     <string name="nc_team">團隊</string>
