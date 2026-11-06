@@ -55,12 +55,14 @@ object FileUtils {
      * otherwise let concurrent downloads (see MediaViewerViewModel's prefetch) resolve to, and
      * overwrite, the very same cache file. Nesting under the server-assigned [fileId] keeps every
      * attachment's cache slot unique regardless of what its sender named it.
+     * Without a [fileId], the file is resolved directly inside the dedicated cache directory.
      */
-    fun resolveSharedAttachmentFile(cacheDir: File, fileId: String, untrustedFileName: String?): File? {
-        val sharedDirectory = getSharedAttachmentsDirectory(cacheDir) ?: return null
-        val fileIdDirectory = resolveFileInDirectory(sharedDirectory, fileId) ?: return null
-        if (!fileIdDirectory.exists() && !fileIdDirectory.mkdirs()) return null
-        return resolveFileInDirectory(fileIdDirectory, untrustedFileName)
+    fun resolveSharedAttachmentFile(cacheDir: File, fileId: String?, untrustedFileName: String?): File? {
+        if (fileId.isNullOrEmpty()) return resolveSharedAttachmentFile(cacheDir, untrustedFileName)
+        val fileIdDirectory = getSharedAttachmentsDirectory(cacheDir)
+            ?.let { resolveFileInDirectory(it, fileId) }
+            ?.takeIf { it.exists() || it.mkdirs() }
+        return fileIdDirectory?.let { resolveFileInDirectory(it, untrustedFileName) }
     }
 
     /**

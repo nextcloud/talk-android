@@ -37,12 +37,14 @@ class SaveToStorageDialogFragment : DialogFragment() {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
     lateinit var fileName: String
+    private var fileId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         viewThemeUtils = hostViewThemeUtils(activity, viewThemeUtils)
         fileName = arguments?.getString(KEY_FILE_NAME)!!
+        fileId = arguments?.getString(KEY_FILE_ID)
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogText = StringBuilder()
@@ -55,7 +57,7 @@ class SaveToStorageDialogFragment : DialogFragment() {
             .setTitle(R.string.nc_dialog_save_to_storage_title)
             .setMessage(dialogText)
             .setPositiveButton(R.string.nc_dialog_save_to_storage_yes) { _: DialogInterface?, _: Int ->
-                saveImageToStorage(fileName)
+                saveImageToStorage(fileName, fileId)
             }
             .setNegativeButton(R.string.nc_dialog_save_to_storage_no) { _: DialogInterface?, _: Int ->
             }
@@ -73,12 +75,12 @@ class SaveToStorageDialogFragment : DialogFragment() {
     }
 
     @SuppressLint("LongLogTag")
-    private fun saveImageToStorage(fileName: String) {
-        val sourceDirectory = FileUtils.getSharedAttachmentsDirectory(requireContext().cacheDir) ?: run {
-            Log.e(TAG, "Failed to resolve shared attachments directory")
+    private fun saveImageToStorage(fileName: String, fileId: String?) {
+        val sourceFile = FileUtils.resolveSharedAttachmentFile(requireContext().cacheDir, fileId, fileName) ?: run {
+            Log.e(TAG, "Failed to resolve shared attachment file")
             return
         }
-        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileName
+        val workerTag = SAVE_TO_STORAGE_WORKER_PREFIX + fileId.orEmpty() + "_" + fileName
 
         val workers = WorkManager.getInstance(requireContext()).getWorkInfosByTag(workerTag)
         try {
@@ -95,7 +97,7 @@ class SaveToStorageDialogFragment : DialogFragment() {
 
         val data: Data = Data.Builder()
             .putString(SaveFileToStorageWorker.KEY_FILE_NAME, fileName)
-            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, "$sourceDirectory/$fileName")
+            .putString(SaveFileToStorageWorker.KEY_SOURCE_FILE_PATH, sourceFile.absolutePath)
             .build()
 
         val saveWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveFileToStorageWorker::class.java)
@@ -110,11 +112,13 @@ class SaveToStorageDialogFragment : DialogFragment() {
     companion object {
         val TAG = SaveToStorageDialogFragment::class.java.simpleName
         private const val KEY_FILE_NAME = "keyFileName"
+        private const val KEY_FILE_ID = "keyFileId"
         private const val SAVE_TO_STORAGE_WORKER_PREFIX = "saveToStorage_"
 
-        fun newInstance(fileName: String): SaveToStorageDialogFragment {
+        fun newInstance(fileName: String, fileId: String? = null): SaveToStorageDialogFragment {
             val args = Bundle()
             args.putString(KEY_FILE_NAME, fileName)
+            args.putString(KEY_FILE_ID, fileId)
             val fragment = SaveToStorageDialogFragment()
             fragment.arguments = args
             return fragment
