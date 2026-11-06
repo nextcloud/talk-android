@@ -226,7 +226,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -241,6 +243,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
@@ -2562,22 +2565,19 @@ class ChatActivity :
 
     private fun onSelectContactResult(intent: Intent?) {
         val contactUri = intent?.data ?: return
-        val cursor: Cursor? = contentResolver!!.query(contactUri, null, null, null, null)
-
-        if (cursor != null && cursor.moveToFirst()) {
-            val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-            val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
-            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
-            if (file == null) {
-                logger.e(TAG, "Refused to save contact with unsafe name: $fileName")
-                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                cursor.close()
-                return
-            }
-            writeContactToVcfFile(cursor, file)
-
+        lifecycleScope.launch {
+            val file = runProviderCall(
+                onFailure = { e ->
+                    logger.e(TAG, "Failed to read contact $contactUri", e)
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+            ) {
+                withContext(Dispatchers.IO) { saveContactAsVcfFile(contactUri) }
+            } ?: return@launch
             val shareUri = FileProvider.getUriForFile(
-                this,
+                this@ChatActivity,
                 BuildConfig.APPLICATION_ID,
                 File(file.absolutePath)
             )
@@ -2590,7 +2590,26 @@ class ChatActivity :
                 displayName = currentConversation?.displayName ?: ""
             )
         }
-        cursor?.close()
+    }
+
+    /** Runs on an IO thread: the contacts provider lives in another process. Null if there is nothing to share. */
+    private suspend fun saveContactAsVcfFile(contactUri: Uri): File? {
+        val cursor: Cursor = contentResolver!!.query(contactUri, null, null, null, null) ?: return null
+        return cursor.use {
+            if (!it.moveToFirst()) return@use null
+            val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+            val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
+            if (file == null) {
+                logger.e(TAG, "Refused to save contact with unsafe name: $fileName")
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+                return@use null
+            }
+            writeContactToVcfFile(it, file)
+            file
+        }
     }
 
     fun getReplyToMessageId(): Int =
@@ -3764,7 +3783,7 @@ class ChatActivity :
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun shareToNotes(
+    private suspend fun shareToNotes(
         shareUri: Uri?,
         roomToken: String,
         message: ChatMessage,
@@ -3789,7 +3808,7 @@ class ChatActivity :
                 val caption = if (message.message != "{file}") message.message else ""
                 if (null != shareUri) {
                     try {
-                        context.contentResolver.openInputStream(shareUri)?.close()
+                        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(shareUri)?.close() }
                         uploadFile(
                             fileUri = shareUri.toString(),
                             isVoiceMessage = false,
@@ -3799,6 +3818,8 @@ class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
                         downloadFileToCache(message, false) {
