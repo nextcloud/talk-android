@@ -15,6 +15,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.FileProvider
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -22,6 +23,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
@@ -31,6 +33,7 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.FileParameters
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.runProviderCall
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
@@ -76,6 +79,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CharacterAvatarUtils
+import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
@@ -2381,7 +2385,29 @@ class ChatViewModel @AssistedInject constructor(
 
     fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
+    /** Saves the picked contact as a vCard and uploads it, also when the chat is recreated meanwhile. */
     @Suppress("LongParameterList")
+    fun shareContact(contactUri: Uri, roomToken: String, replyToMessageId: Int?, displayName: String) {
+        val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
+        viewModelScope.launch {
+            val file = runProviderCall(onFailure = { e -> logger.e(TAG, "Failed to read contact $contactUri", e) }) {
+                ContactUtils.saveContactAsVcfFile(context, contactUri)
+            }
+            if (file == null) {
+                _actionFailures.emit(R.string.nc_common_error_sorry)
+                return@launch
+            }
+            val shareUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file)
+            uploadFile(
+                fileUri = shareUri.toString(),
+                isVoiceMessage = false,
+                roomToken = roomToken,
+                replyToMessageId = replyToMessageId,
+                displayName = displayName
+            )
+        }
+    }
+
     fun uploadFile(
         fileUri: String,
         isVoiceMessage: Boolean,

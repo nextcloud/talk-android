@@ -21,8 +21,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.AssetFileDescriptor
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -186,7 +184,6 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfClassifiedRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
-import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.DateConstants
@@ -2565,51 +2562,13 @@ class ChatActivity :
 
     private fun onSelectContactResult(intent: Intent?) {
         val contactUri = intent?.data ?: return
-        lifecycleScope.launch {
-            val file = runProviderCall(
-                onFailure = { e ->
-                    logger.e(TAG, "Failed to read contact $contactUri", e)
-                    withContext(Dispatchers.Main) {
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-                }
-            ) {
-                withContext(Dispatchers.IO) { saveContactAsVcfFile(contactUri) }
-            } ?: return@launch
-            val shareUri = FileProvider.getUriForFile(
-                this@ChatActivity,
-                BuildConfig.APPLICATION_ID,
-                File(file.absolutePath)
-            )
-            uploadFile(
-                fileUri = shareUri.toString(),
-                isVoiceMessage = false,
-                caption = "",
-                roomToken = roomToken,
-                replyToMessageId = getReplyToMessageId(),
-                displayName = currentConversation?.displayName ?: ""
-            )
-        }
-    }
-
-    /** Runs on an IO thread: the contacts provider lives in another process. Null if there is nothing to share. */
-    private suspend fun saveContactAsVcfFile(contactUri: Uri): File? {
-        val cursor: Cursor = contentResolver!!.query(contactUri, null, null, null, null) ?: return null
-        return cursor.use {
-            if (!it.moveToFirst()) return@use null
-            val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-            val fileName = ContactUtils.getDisplayNameFromDeviceContact(context, id) + ".vcf"
-            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
-            if (file == null) {
-                logger.e(TAG, "Refused to save contact with unsafe name: $fileName")
-                withContext(Dispatchers.Main) {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-                return@use null
-            }
-            writeContactToVcfFile(it, file)
-            file
-        }
+        chatViewModel.shareContact(
+            contactUri = contactUri,
+            roomToken = roomToken,
+            replyToMessageId = getReplyToMessageId(),
+            displayName = currentConversation?.displayName ?: ""
+        )
+        cancelReply()
     }
 
     fun getReplyToMessageId(): Int =
@@ -2666,23 +2625,6 @@ class ChatActivity :
             onResult(result.data)
         } else {
             Log.e(TAG, "resultCode for received intent was != ok")
-        }
-    }
-
-    private fun writeContactToVcfFile(cursor: Cursor, file: File) {
-        val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY))
-        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
-
-        val fd: AssetFileDescriptor = contentResolver!!.openAssetFileDescriptor(uri, "r")!!
-        fd.use {
-            val fis = fd.createInputStream()
-
-            file.createNewFile()
-            fis.use { input ->
-                file.outputStream().use { output ->
-                    input.copyTo(output)
-                }
-            }
         }
     }
 
