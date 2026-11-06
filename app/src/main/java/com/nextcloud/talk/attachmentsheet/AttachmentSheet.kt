@@ -24,10 +24,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -170,8 +171,7 @@ private fun AttachmentSheetBody(model: AttachmentSheetModel, callbacks: Attachme
         if (selection.isEmpty) {
             ActionBar(
                 model = model,
-                onAction = callbacks.onAction,
-                modifier = if (hiddenBottomPx.value > 0) Modifier.navigationBarsPadding() else Modifier
+                onAction = callbacks.onAction
             )
         } else {
             SendBar(
@@ -210,7 +210,7 @@ private fun rememberResumeRefreshKey(): MutableIntState {
  * Part of the sheet body that is currently pushed below the window bottom while the sheet is half open, so the
  * bars stay visible.
  */
-private class HiddenBottom(private val windowHeightPx: Int) {
+internal class HiddenBottom(private val windowHeightPx: Int) {
     var value by mutableIntStateOf(0)
         private set
 
@@ -221,7 +221,9 @@ private class HiddenBottom(private val windowHeightPx: Int) {
 
 @Composable
 private fun rememberHiddenBottomPx(): HiddenBottom {
-    val windowHeight = LocalWindowInfo.current.containerSize.height
+    // Read the raw inset: ancestor consumption must not move the visible window bottom.
+    val navigationBottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+    val windowHeight = LocalWindowInfo.current.containerSize.height - navigationBottom
     return remember(windowHeight) { HiddenBottom(windowHeight) }
 }
 
@@ -392,7 +394,7 @@ private fun SelectionBadge(position: Int?, modifier: Modifier = Modifier) {
 @Composable
 private fun SendBar(count: Int, onClear: () -> Unit, onSend: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
