@@ -101,6 +101,13 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
 
+    @RequiresApi(Build.VERSION_CODES.CINNAMON_BUN)
+    override fun isLocalNetworkPermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_LOCAL_NETWORK
+        ) == PermissionChecker.PERMISSION_GRANTED
+
     companion object {
         private val TAG = PlatformPermissionUtilImpl::class.simpleName
     }

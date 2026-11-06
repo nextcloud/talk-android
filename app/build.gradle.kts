@@ -56,7 +56,7 @@ android {
             providers.gradleProperty("NC_TEST_SERVER_PASSWORD").getOrElse("")
 
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
@@ -108,6 +108,12 @@ android {
             // Gradle's 512m default is too small for the Robolectric suites
             it.maxHeapSize = "2g"
             it.testLogging.events("started", "failed", "skipped")
+            // Robolectric downloads its Android SDK jars itself, from Maven Central unless told otherwise. Take them from
+            // the mirror the build uses too, see build.gradle; Robolectric checks them against their SHA-512.
+            it.systemProperty(
+                "robolectric.dependency.repo.url",
+                "https://maven-central.storage-download.googleapis.com/maven2/"
+            )
         }
         unitTests.isReturnDefaultValues = true
     }

@@ -117,6 +117,7 @@ import com.nextcloud.talk.models.json.signaling.DataChannelMessageDto
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.models.json.signaling.SignalingDto
 import com.nextcloud.talk.models.json.signaling.SignalingOverall
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsDto
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandState
@@ -164,6 +165,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.finishAndRemoveTaskIfPresent
 import com.nextcloud.talk.utils.isShareTask
 import com.nextcloud.talk.utils.moveToFrontIfPresent
+import com.nextcloud.talk.utils.permissions.LocalNetworkPermission
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
@@ -371,6 +373,16 @@ class CallActivity : CallBaseActivity() {
     private var roomJoinRefreshes = 0
     private var hasMCU = false
     private var hasExternalSignalingServer = false
+
+    // set while the call waits for the local network permission before connecting to its servers; a call activity
+    // recreated meanwhile starts its call anew and ignores the result
+    private var isAwaitingLocalNetwork = false
+    private val localNetworkPermission = LocalNetworkPermission(this, { viewThemeUtils }) {
+        if (isAwaitingLocalNetwork) {
+            isAwaitingLocalNetwork = false
+            checkCapabilities()
+        }
+    }
     private var isCallEndToEndEncryptionEnabled = false
     private var conversationPassword: String? = null
     private var powerManagerUtils: PowerManagerUtils? = null
@@ -1360,6 +1372,8 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
+        addLocalNetworkPermissionOnFirstCall(permissionsToRequest)
+
         if (permissionsToRequest.isNotEmpty()) {
             if (rationaleList.isNotEmpty()) {
                 showRationaleDialog(permissionsToRequest, rationaleList)
@@ -1368,6 +1382,18 @@ class CallActivity : CallBaseActivity() {
             }
         } else if (!isConnectionEstablished) {
             prepareCall()
+        }
+    }
+
+    // Peers on the same local network only connect directly with the local network permission. Without it the call
+    // still works through the TURN server, so don't ask again after a denial. After a second denial, here or on the
+    // conversation list, the request is still added, but the system answers it without showing a prompt.
+    private fun addLocalNetworkPermissionOnFirstCall(permissionsToRequest: MutableList<String>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
+            !permissionUtil!!.isLocalNetworkPermissionGranted() &&
+            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        ) {
+            permissionsToRequest.add(Manifest.permission.ACCESS_LOCAL_NETWORK)
         }
     }
 
@@ -1842,7 +1868,10 @@ class CallActivity : CallBaseActivity() {
 
                         addIceServers(signalingSettingsOverall, apiVersion)
                     }
-                    checkCapabilities()
+                    // The signaling, STUN and TURN servers can be on the local network even when the server isn't.
+                    // Without the permission the call still starts, and fails to reach them.
+                    isAwaitingLocalNetwork = true
+                    localNetworkPermission.ensure(callServerUrls(signalingSettingsOverall.ocs?.settings))
                 }
 
                 override fun onError(e: Throwable) {
@@ -1853,6 +1882,12 @@ class CallActivity : CallBaseActivity() {
                     // unused atm
                 }
             })
+    }
+
+    private fun callServerUrls(settings: SignalingSettingsDto?): List<String?> {
+        val iceServers = settings?.stunServers.orEmpty() + settings?.turnServers.orEmpty()
+        val iceServerUrls = iceServers.flatMap { it.urls.orEmpty() + it.url }
+        return iceServerUrls + settings?.externalSignalingServer
     }
 
     private fun addIceServers(signalingSettingsOverall: SignalingSettingsOverall, apiVersion: Int) {
