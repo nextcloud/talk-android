@@ -29,7 +29,7 @@ SHA-1: 74aa1702e714941be481e1f7ce4a8f779c19dcea
 
 |||||||
 |---|---|---|---|---|---|
-|![Cover art](/fastlane/metadata/android/en-US/images/phoneScreenshots/01_nextcloudtalkandroid_coverArt.png "Cover art")|![Conversations list](/fastlane/metadata/android/en-US/images/phoneScreenshots/02_nextcloudtalkandroid_conversationsList.png "Conversations list")|![Group chat](/fastlane/metadata/android/en-US/images/phoneScreenshots/03_nextcloudtalkandroid_groupChat.png "Group chat")|![Call](/fastlane/metadata/android/en-US/images/phoneScreenshots/04_nextcloudtalkandroid_call.png "Call")|![Share content](/fastlane/metadata/android/en-US/images/phoneScreenshots/05_nextcloudtalkandroid_share.png "Share content")|![Present](/fastlane/metadata/android/en-US/images/phoneScreenshots/06_nextcloudtalkandroid_present.png "Present")|
+|![Cover art](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/01_nextcloudtalkandroid_coverArt.png "Cover art")|![Conversations list](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/02_nextcloudtalkandroid_conversationsList.png "Conversations list")|![Group chat](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/03_nextcloudtalkandroid_groupChat.png "Group chat")|![Call](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/04_nextcloudtalkandroid_call.png "Call")|![Share content](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/05_nextcloudtalkandroid_share.png "Share content")|![Present](/src/generic/fastlane/metadata/android/en-US/images/phoneScreenshots/06_nextcloudtalkandroid_present.png "Present")|
 
 **Video & audio calls through Nextcloud on Android**
 
