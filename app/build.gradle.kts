@@ -62,8 +62,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 260000002
-        versionName = "26.0.0 Alpha 02"
+        versionCode = 260000003
+        versionName = "26.0.0 Alpha 03"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -200,7 +200,7 @@ dependencies {
     }
     implementation("androidx.media3:media3-session:1.11.1")
     kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
-    implementation("androidx.room:room-testing-android:$roomVersion")
+    androidTestImplementation("androidx.room:room-testing-android:$roomVersion")
     implementation("androidx.compose.foundation:foundation-layout:1.12.1")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
     spotbugsPlugins("com.mebigfatguy.fb-contrib:fb-contrib:7.7.4")
@@ -208,9 +208,9 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime:1.12.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.datastore:datastore-core:1.2.1")
+    implementation("androidx.datastore:datastore-core:1.3.0")
     implementation("androidx.datastore:datastore-preferences:1.3.0")
-    implementation("androidx.test.ext:junit-ktx:1.3.0")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.3.0")
 
     implementation(fileTree(mapOf("include" to listOf("*"), "dir" to "libs")))
 
@@ -336,6 +336,7 @@ dependencies {
     }
 
     implementation("androidx.core:core-ktx:1.19.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.sharetarget:sharetarget:1.2.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("com.github.nextcloud.android-common:ui:0.34.0")

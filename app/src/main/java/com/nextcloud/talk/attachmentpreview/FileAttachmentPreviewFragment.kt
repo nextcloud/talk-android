@@ -7,6 +7,7 @@
 package com.nextcloud.talk.attachmentpreview
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,12 +21,14 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.hostViewThemeUtils
+import com.nextcloud.talk.utils.SharedFileCopies
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import javax.inject.Inject
 
@@ -38,6 +41,9 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         (files: MutableList<String>, caption: String, compressImages: Boolean, allowUpdate: Boolean) -> Unit =
         { _, _, _, _ -> }
     private var composeView: ComposeView? = null
+
+    // set when the files are sent, so their copies are kept for the upload
+    private var isSent = false
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -118,6 +124,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
                         onDismiss = { dismiss() },
                         onSend = { files, caption, compressImages, allowUpdate ->
                             uploadFiles(files.toMutableList(), caption, compressImages, allowUpdate)
+                            isSent = true
                             dismiss()
                         }
                     )
@@ -129,6 +136,15 @@ class FileAttachmentPreviewFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         composeView = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        // unsent shared files remove their copies (see SharedFileCopies), not when the chat is only recreated
+        val isClosedWhileShown = lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
+        if (!isSent && (isClosedWhileShown || activity?.isFinishing == true)) {
+            SharedFileCopies.removeSharesLater(filesList.toList())
+        }
     }
 
     companion object {

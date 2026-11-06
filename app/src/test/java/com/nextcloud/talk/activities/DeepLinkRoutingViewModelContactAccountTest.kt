@@ -6,13 +6,13 @@
  */
 package com.nextcloud.talk.activities
 
-import com.nextcloud.talk.activities.MainActivity.Companion.accountForContactServer
+import com.nextcloud.talk.activities.DeepLinkRoutingViewModel.Companion.accountForContactServer
 import com.nextcloud.talk.data.user.model.User
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class MainActivityContactAccountTest {
+class DeepLinkRoutingViewModelContactAccountTest {
 
     private val accountA = User(id = 1, baseUrl = "https://a.example.com")
     private val accountB = User(id = 2, baseUrl = "https://b.example.com/nextcloud")

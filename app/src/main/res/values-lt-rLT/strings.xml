@@ -204,6 +204,7 @@
     <string name="nc_configure_cert_auth">Pasirinkti tapatybės nustatymo sertifikatą</string>
     <string name="nc_confirm">Patvirtinti</string>
     <string name="nc_connecting_call">Jungiamasi…</string>
+    <string name="nc_contact_chat_start">Pradėti</string>
     <string name="nc_contacts_done">Atlikta</string>
     <string name="nc_conversation_description">Pokalbio aprašas</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Eiti į failą</string>
@@ -237,6 +238,7 @@
     <string name="nc_custom_color">Tinkinta spalva</string>
     <string name="nc_date_header_today">Šiandien</string>
     <string name="nc_date_header_yesterday">Vakar</string>
+    <string name="nc_deep_link_join">Prisijungti</string>
     <string name="nc_delete">Ištrinti</string>
     <string name="nc_delete_all">Ištrinti visus</string>
     <string name="nc_delete_call">Ištrinti pokalbį</string>
@@ -604,6 +606,7 @@
     <string name="nc_show_notification_warning_title">Rodyti įprastą įspėjimą</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_group_chat">Pradėti grupinį pokalbį</string>
+    <string name="nc_start_screen_sharing">Bendrinti ekraną</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
     <string name="nc_take_video">Nufilmuoti</string>

@@ -177,6 +177,7 @@
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
     <string name="nc_confirm">Bevestigen</string>
     <string name="nc_connecting_call">Verbinden …</string>
+    <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Gereed</string>
     <string name="nc_conversation_description">Gespreksbeschrijving</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Naar bestand gaan</string>
@@ -205,6 +206,7 @@
     <string name="nc_custom_color">Kleur op maat</string>
     <string name="nc_date_header_today">Vandaag</string>
     <string name="nc_date_header_yesterday">Gisteren</string>
+    <string name="nc_deep_link_join">Deelnemen</string>
     <string name="nc_delete">Verwijderen</string>
     <string name="nc_delete_all">Alles verwijderen</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
@@ -516,6 +518,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_show_notification_warning_title">Toon terugkerende meldingswaarschuwing</string>
     <string name="nc_sort_by">Sorteren op</string>
     <string name="nc_start_group_chat">Start groepsgesprek</string>
+    <string name="nc_start_screen_sharing">Scherm delen</string>
     <string name="nc_start_time">Begintijd</string>
     <string name="nc_switch_account">Account wisselen</string>
     <string name="nc_team">Team</string>

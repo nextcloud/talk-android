@@ -9,7 +9,6 @@ package com.nextcloud.talk.invitation
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -19,14 +18,12 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityInvitationsBinding
 import com.nextcloud.talk.invitation.adapters.InvitationsAdapter
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -45,14 +42,6 @@ class InvitationsActivity : BaseActivity() {
     lateinit var adapter: InvitationsAdapter
 
     private lateinit var currentUser: User
-
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            val intent = Intent(this@InvitationsActivity, ConversationsListActivity::class.java)
-            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.id)
-            startActivity(intent)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +64,6 @@ class InvitationsActivity : BaseActivity() {
         binding.invitationsRecyclerView.adapter = adapter
 
         initObservers()
-
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     enum class InvitationAction {

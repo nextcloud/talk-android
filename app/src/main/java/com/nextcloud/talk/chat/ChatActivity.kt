@@ -204,6 +204,7 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ConversationUtils.checkIfVoiceRoom
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -418,11 +419,9 @@ class ChatActivity :
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
     var voiceOnly: Boolean = true
-    var focusInput: Boolean = false
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -449,6 +448,11 @@ class ChatActivity :
     lateinit var sharedText: String
     private var sharedFilePaths: List<String> = emptyList()
 
+    // Whether the shared text and files of the intent were taken. A chat recreated after its process was killed gets
+    // the intent it was started with again, with the shared content, as changes to the intent aren't kept.
+    private var isSharedTextTaken = false
+    private var areSharedFilesTaken = false
+
     private val _participantPermissionsFlow = MutableStateFlow<ParticipantPermissions?>(null)
     val participantPermissionsFlow: StateFlow<ParticipantPermissions?> = _participantPermissionsFlow.asStateFlow()
 
@@ -472,10 +476,9 @@ class ChatActivity :
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             } else {
-                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-                intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                startActivity(intent)
+                startActivity(
+                    ConversationsListActivity.createInPlaceAccountSwitchIntent(this@ChatActivity, conversationUserId)
+                )
                 finish()
             }
         }
@@ -515,38 +518,58 @@ class ChatActivity :
 
     private val conversationMessageListener = object : SignalingMessageReceiver.ConversationMessageListener {
         override fun onStartTyping(userId: String?, session: String?) {
+            if (session == null) {
+                return
+            }
             val userIdOrGuestSession = userId ?: session
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userIdOrGuestSession) {
-                var displayName = webSocketInstance?.getDisplayNameForSession(session)
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userIdOrGuestSession &&
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
+            ) {
+                var displayName = webSocketInstance?.getDisplayNameForSession(session).orEmpty()
+                if (displayName == "") {
+                    displayName = context.resources?.getString(R.string.nc_guest)!!
+                }
 
-                if (displayName != null && !typingParticipants.contains(userIdOrGuestSession)) {
-                    if (displayName == "") {
-                        displayName = context.resources?.getString(R.string.nc_guest)!!
-                    }
-
-                    runOnUiThread {
-                        val typingParticipant = TypingParticipant(userIdOrGuestSession!!, displayName) {
-                            typingParticipants.remove(userIdOrGuestSession)
-                            updateTypingIndicator()
-                        }
-
-                        typingParticipants[userIdOrGuestSession] = typingParticipant
+                runOnUiThread {
+                    val typingParticipant = typingParticipants[userIdOrGuestSession]
+                    if (typingParticipant != null) {
+                        typingParticipant.addSession(session)
+                    } else {
+                        typingParticipants[userIdOrGuestSession] =
+                            TypingParticipant(userIdOrGuestSession, displayName, session) { participant ->
+                                typingParticipants.remove(userIdOrGuestSession, participant)
+                                updateTypingIndicator()
+                            }
                         updateTypingIndicator()
                     }
-                } else if (typingParticipants.contains(userIdOrGuestSession)) {
-                    typingParticipants[userIdOrGuestSession]?.restartTimer()
                 }
             }
         }
 
         override fun onStopTyping(userId: String?, session: String?) {
-            val userIdOrGuestSession = userId ?: session
+            if (session == null) {
+                return
+            }
 
-            if (isTypingStatusEnabled() && conversationUser.userId != userId) {
-                typingParticipants[userIdOrGuestSession]?.cancelTimer()
-                typingParticipants.remove(userIdOrGuestSession)
-                updateTypingIndicator()
+            if (isTypingStatusEnabled() &&
+                conversationUser.userId != userId &&
+                webSocketInstance?.isSessionInRoom(session, roomToken) == true
+            ) {
+                runOnUiThread {
+                    if (TypingParticipant.stopTyping(typingParticipants, userId ?: session, session)) {
+                        updateTypingIndicator()
+                    }
+                }
+            }
+        }
+
+        override fun onSessionsLeft(sessions: List<String>) {
+            runOnUiThread {
+                if (TypingParticipant.removeSessions(typingParticipants, sessions)) {
+                    updateTypingIndicator()
+                }
             }
         }
 
@@ -561,6 +584,12 @@ class ChatActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         // Not loaded in a coroutine: initData() must have run before onResume() (activity and ChatViewModel),
         // and registerForActivityResult() must be called before the activity is started.
+        // before initialUser is set, as onDestroy() then cleans up the chat of that room token
+        if (intent.getStringExtra(KEY_ROOM_TOKEN)?.let(DeepLinkHandler::isValidToken) != true) {
+            Log.e(TAG, "Started without a valid room token")
+            finish()
+            return
+        }
         initialUser = setUpBoundUserOrFinish() ?: return
 
         chatAudioPlayer = ChatAudioPlayer(this, chatAudioStore, lifecycleScope)
@@ -619,10 +648,15 @@ class ChatActivity :
                 .launchIn(lifecycleScope)
         }
         handleIntent(intent)
+        isSharedTextTaken = savedInstanceState?.getBoolean(KEY_SHARED_TEXT_TAKEN) == true
+        areSharedFilesTaken = savedInstanceState?.getBoolean(KEY_SHARED_FILES_TAKEN) == true
+        if (isSharedTextTaken) sharedText = ""
+        if (areSharedFilesTaken) sharedFilePaths = emptyList()
         chatViewModel.initData()
         if (sharedText.isNotEmpty()) {
             chatViewModel.messageDraft.messageText = sharedText
             chatViewModel.saveMessageDraft()
+            isSharedTextTaken = true
         }
 
         conversationThreadId?.let {
@@ -1091,14 +1125,16 @@ class ChatActivity :
     }
 
     private fun openAudioMessage(key: ChatAudioKey, threadId: Long?) {
-        val isThisView = key.roomToken == roomToken &&
-            threadId == openThreadId() &&
+        val isThisRoom = key.roomToken == roomToken &&
             ::initialUser.isInitialized &&
             key.internalUserId == conversationUser.id
-        if (isThisView) {
+        if (isThisRoom && threadId == openThreadId()) {
             chatViewModel.jumpToQuotedMessage(key.messageId.toLong())
         } else {
             startActivity(key.openMessageIntent(this, threadId))
+            // The chat of another room replaces this one, so chats don't pile up. A thread and the chat of its room
+            // stay, as Back leads from one to the other.
+            if (!isThisRoom) finish()
         }
     }
 
@@ -1278,7 +1314,7 @@ class ChatActivity :
             val startCallAfterRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
             val isVoiceOnlyCall = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
 
-            if (newRoomToken != roomToken) {
+            if (newRoomToken != roomToken && DeepLinkHandler.isValidToken(newRoomToken)) {
                 switchToRoom(newRoomToken, startCallAfterRoomSwitch, isVoiceOnlyCall)
             }
         } else {
@@ -1292,8 +1328,11 @@ class ChatActivity :
         openedViaNotification = extras?.getBoolean(KEY_OPENED_VIA_NOTIFICATION) ?: false
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
-        sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS) ?: emptyList()
-        intent.removeExtra(BundleKeys.KEY_SHARED_FILE_PATHS)
+        // Checked by the conversation list, the only screen that shares files to the chat, and again here, so a screen
+        // that passes on shared files without that check can't make the attachment preview upload another file.
+        sharedFilePaths = extras?.getStringArrayList(BundleKeys.KEY_SHARED_FILE_PATHS)
+            ?.filter { FileUtils.isTrustedShareUri(it.toUri(), this) }
+            ?: emptyList()
 
         Log.d(TAG, "   roomToken = $roomToken")
         if (roomToken.isEmpty()) {
@@ -1308,12 +1347,9 @@ class ChatActivity :
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
         }
 
-        startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
         startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
 
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
-
-        focusInput = extras?.getBoolean(BundleKeys.KEY_FOCUS_INPUT) == true
 
         pendingTargetMessageId = extras?.getString(BundleKeys.KEY_MESSAGE_ID)?.toLongOrNull()?.takeIf { it > 0L }
             ?: extras?.getLong(BundleKeys.KEY_MESSAGE_ID)?.takeIf { it > 0L }
@@ -1333,6 +1369,8 @@ class ChatActivity :
         if (isChangingConfigurations) {
             chatViewModel.handleOrientationChange()
         }
+        outState.putBoolean(KEY_SHARED_TEXT_TAKEN, isSharedTextTaken)
+        outState.putBoolean(KEY_SHARED_FILES_TAKEN, areSharedFilesTaken)
         super.onSaveInstanceState(outState)
     }
 
@@ -1494,11 +1532,6 @@ class ChatActivity :
                             R.id.fragment_container_activity_chat,
                             if (recordingLocked) MessageInputVoiceRecordingFragment() else messageInputFragment
                         )
-                        runOnCommit {
-                            if (focusInput && !recordingLocked) {
-                                messageInputFragment.binding.fragmentMessageInputView.requestFocus()
-                            }
-                        }
                     }
 
                     if (isScreenResumed) {
@@ -1583,11 +1616,6 @@ class ChatActivity :
 
                     if (currentConversation.checkIfVoiceRoom()) {
                         startACall(false, true)
-                    }
-
-                    if (startCallFromNotification) {
-                        startCallFromNotification = false
-                        startACall(voiceOnly, false)
                     }
 
                     if (startCallFromRoomSwitch) {
@@ -2002,9 +2030,6 @@ class ChatActivity :
 
     private fun returnToChat(conversation: ConversationModel) {
         sendSharedFiles()
-        if (focusInput && messageInputFragment.isAdded) {
-            messageInputFragment.binding.fragmentMessageInputView.requestFocus()
-        }
         refreshConversationExtras(conversation)
         updateRoomTimerHandler(MILLIS_250)
     }
@@ -2013,6 +2038,8 @@ class ChatActivity :
         if (sharedFilePaths.isNotEmpty()) {
             onChooseFileResult(sharedFilePaths.map { it.toUri() })
             sharedFilePaths = emptyList()
+            // not before, so a chat recreated before its room was loaded still sends them
+            areSharedFilesTaken = true
         }
     }
 
@@ -3143,9 +3170,9 @@ class ChatActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        logConversationInfos("onDestroy")
 
         if (::initialUser.isInitialized) {
+            logConversationInfos("onDestroy")
             chatViewModel.leaveRoomViewState.removeObserver(leaveRoomObserver)
         }
 
@@ -3747,11 +3774,8 @@ class ChatActivity :
         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.message)
         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomToken)
 
-        val intent = Intent(this, ConversationsListActivity::class.java)
-        intent.putExtras(bundle)
-        intent.putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        startActivity(intent)
+        val intent = ConversationsListActivity.createInPlaceAccountSwitchIntent(this, conversationUserId)
+        startActivity(intent.putExtras(bundle))
         finish()
     }
 
@@ -4438,6 +4462,8 @@ class ChatActivity :
         private const val REQUEST_CAMERA_PERMISSION = 223
         private const val REQUEST_VIDEO_RECORD_PERMISSIONS = 224
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
+        private const val KEY_SHARED_TEXT_TAKEN = "sharedTextTaken"
+        private const val KEY_SHARED_FILES_TAKEN = "sharedFilesTaken"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val PICTURE_SUFFIX = ".jpg"
         private const val HTTP_BAD_REQUEST = 400

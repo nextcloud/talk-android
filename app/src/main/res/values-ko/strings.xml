@@ -125,6 +125,7 @@
     <string name="nc_configure_cert_auth">인증서 선택</string>
     <string name="nc_confirm">확인</string>
     <string name="nc_connecting_call">연결 중 …</string>
+    <string name="nc_contact_chat_start">시작</string>
     <string name="nc_contacts_done">완료</string>
     <string name="nc_conversation_menu_conversation_go_to_file">파일로 이동</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
@@ -149,6 +150,7 @@
     <string name="nc_custom_color">사용자 지정 색상</string>
     <string name="nc_date_header_today">오늘</string>
     <string name="nc_date_header_yesterday">어제</string>
+    <string name="nc_deep_link_join">참가</string>
     <string name="nc_delete">삭제</string>
     <string name="nc_delete_all">모두 삭제</string>
     <string name="nc_delete_call">대화 삭제</string>
@@ -389,6 +391,7 @@
     <string name="nc_shared_location">공유된 위치</string>
     <string name="nc_show_ecosystem_title">앱 스위치 도구 보이기</string>
     <string name="nc_sort_by">정렬</string>
+    <string name="nc_start_screen_sharing">화면 공유</string>
     <string name="nc_start_time">시작 시간</string>
     <string name="nc_switch_account">계정 전환</string>
     <string name="nc_team">팀</string>

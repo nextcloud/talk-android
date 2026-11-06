@@ -43,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
+import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
@@ -55,7 +56,6 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -927,9 +927,7 @@ class SettingsActivity :
     }
 
     private fun restartApp() {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        startActivity(AppTasks.createRestartIntent(context))
     }
 
     private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String =
@@ -1503,6 +1501,7 @@ class SettingsActivity :
                 if (newBoolean != state) {
                     state = newBoolean
                     binding.settingsScreenLockTimeout.isEnabled = newBoolean
+                    binding.settingsScreenLockTimeoutLayoutDropdown.isEnabled = newBoolean
                     if (newBoolean) {
                         binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
                     } else {

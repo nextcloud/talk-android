@@ -1091,14 +1091,11 @@ class MessageInputFragment : Fragment() {
 
     fun updateOwnTypingStatus(typedText: CharSequence) {
         fun sendStartTypingSignalingMessage() {
-            val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
-            if (concurrentSafeHashMap != null) {
-                for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessageDto()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
-                    chatActivity.signalingMessageSender!!.send(ncSignalingMessage)
-                }
+            chatActivity.webSocketInstance?.getRoomSessionIds()?.forEach { sessionId ->
+                val ncSignalingMessage = NCSignalingMessageDto()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STARTED_SIGNALING_MESSAGE_TYPE
+                chatActivity.signalingMessageSender!!.send(ncSignalingMessage)
             }
         }
 
@@ -1138,14 +1135,11 @@ class MessageInputFragment : Fragment() {
             typingTimer = null
             typedWhileTypingTimerIsRunning = false
 
-            val concurrentSafeHashMap = chatActivity.webSocketInstance?.getUserMap()
-            if (concurrentSafeHashMap != null) {
-                for ((sessionId, _) in concurrentSafeHashMap) {
-                    val ncSignalingMessage = NCSignalingMessageDto()
-                    ncSignalingMessage.to = sessionId
-                    ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
-                    chatActivity.signalingMessageSender?.send(ncSignalingMessage)
-                }
+            chatActivity.webSocketInstance?.getRoomSessionIds()?.forEach { sessionId ->
+                val ncSignalingMessage = NCSignalingMessageDto()
+                ncSignalingMessage.to = sessionId
+                ncSignalingMessage.type = TYPING_STOPPED_SIGNALING_MESSAGE_TYPE
+                chatActivity.signalingMessageSender?.send(ncSignalingMessage)
             }
         }
     }

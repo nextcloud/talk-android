@@ -32,6 +32,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -50,15 +51,17 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.DirectShareHelper
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.invitation.InvitationsActivity
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
@@ -78,7 +81,9 @@ import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.DeepLinkHandler
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.InternalEntryPoint
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
@@ -87,6 +92,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.PushUtils
+import com.nextcloud.talk.utils.ShortcutManagerHelper
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_DISMISS_RECORDING_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
@@ -96,7 +102,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
@@ -212,14 +217,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun handleInternalPushMessage() {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = getIntentFlags()
-        showNotification(intent, null)
+        showNotification(ConversationsListActivity.createAccountSwitchIntent(context!!, user.id!!), null)
     }
 
     private fun handleNonCallPushMessage() {
-        val mainActivityIntent = createMainActivityIntent()
-        getNcDataAndShowNotification(mainActivityIntent)
+        getNcDataAndShowNotification(createContentIntent())
     }
 
     /**
@@ -239,13 +241,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun handleRemoteTalkSharePushMessage() {
-        val mainActivityIntent = Intent(context, MainActivity::class.java)
-        mainActivityIntent.flags = getIntentFlags()
-        val bundle = Bundle()
-        bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
-        bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
-        mainActivityIntent.putExtras(bundle)
-        getNcDataAndShowNotification(mainActivityIntent)
+        getNcDataAndShowNotification(
+            Intent(context, InvitationsActivity::class.java).putExtra(KEY_INTERNAL_USER_ID, user.id!!)
+        )
     }
 
     @Suppress("LongMethod", "TooGenericExceptionCaught")
@@ -299,18 +297,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 context,
                 requestCode,
                 fullScreenIntent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                } else {
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                }
+                pendingIntentFlags()
             )
 
-            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
+            val pendingIntentFlags = pendingIntentFlags()
 
             val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
@@ -945,9 +935,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun pushConversationShortcut(notificationBuilder: NotificationCompat.Builder, avatarBitmap: Bitmap?) {
         val notificationUser = pushMessage.notificationUser ?: return
-        val roomToken = pushMessage.id ?: return
+        val roomToken = pushMessage.id?.takeIf(DeepLinkHandler::isValidToken) ?: return
+        // like the conversation shortcuts of the conversation list, which use the same id
+        val intent = ShortcutManagerHelper.createConversationIntent(context!!, roomToken, user) ?: return
 
-        val shortcutId = "conversation_${user.id}_$roomToken"
+        val shortcutId = ShortcutManagerHelper.getShortcutId(roomToken, user.id!!)
 
         val personBuilder = Person.Builder()
             .setKey(user.id.toString() + "@" + notificationUser.id)
@@ -955,12 +947,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         if (avatarBitmap != null) {
             personBuilder.setIcon(IconCompat.createWithBitmap(avatarBitmap))
-        }
-
-        val intent = Intent(context, MainActivity::class.java).apply {
-            action = Intent.ACTION_VIEW
-            putExtra(KEY_ROOM_TOKEN, roomToken)
-            putExtra(KEY_INTERNAL_USER_ID, user.id)
         }
 
         val shortcut = ShortcutInfoCompat.Builder(context!!, shortcutId)
@@ -989,13 +975,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         actualIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
         actualIntent.putExtra(KEY_MESSAGE_ID, messageId)
 
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val mutabilityFlag = if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
-            mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
-        return PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag)
+        return PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, pendingIntentFlags(mutable))
     }
 
     private fun addMarkAsReadAction(notificationBuilder: NotificationCompat.Builder, systemNotificationId: Int) {
@@ -1066,11 +1046,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         dismissIntent.putExtra(KEY_INTERNAL_USER_ID, user.id)
         dismissIntent.putExtra(KEY_DISMISS_RECORDING_URL, dismissRecordingUrl)
 
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
+        val intentFlag = pendingIntentFlags()
         val dismissPendingIntent = PendingIntent.getBroadcast(context, systemNotificationId, dismissIntent, intentFlag)
 
         val dismissAction = NotificationCompat.Action.Builder(R.drawable.ic_delete, dismissLabel, dismissPendingIntent)
@@ -1101,11 +1077,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         shareRecordingIntent.putExtra(KEY_SHARE_RECORDING_TO_CHAT_URL, shareToChatUrl)
         shareRecordingIntent.putExtra(KEY_ROOM_TOKEN, pushMessage.id)
 
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
+        val intentFlag = pendingIntentFlags()
         val shareRecordingPendingIntent = PendingIntent.getBroadcast(
             context,
             systemNotificationId,
@@ -1251,7 +1223,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     .NOTIFICATION_CHANNEL_MESSAGES_V4.name
             )
 
-            val intent = createMainActivityIntent()
+            val intent = createContentIntent()
 
             val notification: Notification = notificationBuilder
                 .setContentTitle(
@@ -1285,27 +1257,46 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-    private fun createMainActivityIntent(): Intent {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = getIntentFlags()
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
-        bundle.putBoolean(KEY_OPENED_VIA_NOTIFICATION, true)
-        intent.putExtras(bundle)
-        return intent
+    /**
+     * The intent the notification opens: the chat of its conversation, or else the conversation list of its account.
+     */
+    private fun createContentIntent(): Intent {
+        val roomToken = pushMessage.id?.takeIf(DeepLinkHandler::isValidToken)
+            ?: return ConversationsListActivity.createAccountSwitchIntent(context!!, user.id!!)
+        val extras = Bundle().apply { putBoolean(KEY_OPENED_VIA_NOTIFICATION, true) }
+        return ChatActivity.createIntent(context!!, user.id!!, roomToken, extras)
+    }
+
+    /**
+     * The flags of the pending intents of a notification. They are immutable unless [mutable], e.g. for a direct reply,
+     * so that apps that get hold of them, like a notification listener, can't add extras when sending them: before
+     * Android 12 they were mutable by default.
+     */
+    private fun pendingIntentFlags(mutable: Boolean = false): Int {
+        val mutabilityFlag = when {
+            !mutable -> PendingIntent.FLAG_IMMUTABLE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> PendingIntent.FLAG_MUTABLE
+            else -> 0
+        }
+        return mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
     }
 
     private fun createUniquePendingIntent(intent: Intent): PendingIntent? {
         // Use unique request code to make sure that a new PendingIntent gets created for each notification
         // See https://github.com/nextcloud/talk-android/issues/2111
         val requestCode = System.currentTimeMillis().toInt()
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val intentFlag = pendingIntentFlags()
+        val isConversationList = InternalEntryPoint.isStartedThrough(intent, ConversationsListActivity::class.java)
+        return if (!isConversationList) {
+            // a new back stack in the task of the app, with the conversation list of its account below the screen,
+            // which back leads to
+            val backStack = TaskStackBuilder.create(context!!)
+            ConversationsListActivity.createBackStack(context!!, user.id!!, intent)
+                .forEach { backStack.addNextIntent(it) }
+            backStack.getPendingIntent(requestCode, intentFlag)
         } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.getActivity(context, requestCode, intent, intentFlag)
         }
-        return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
 
     private fun getIntentFlags(): Int = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP

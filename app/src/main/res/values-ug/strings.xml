@@ -176,6 +176,7 @@
     <string name="nc_configure_cert_auth">دەلىللەش گۇۋاھنامىسىنى تاللاڭ</string>
     <string name="nc_confirm">جەزملەشتۈرۈڭ</string>
     <string name="nc_connecting_call">ئۇلىنىش…</string>
+    <string name="nc_contact_chat_start">باشلاش</string>
     <string name="nc_contacts_done">تامام</string>
     <string name="nc_conversation_description">سۆھبەت چۈشەندۈرۈشى</string>
     <string name="nc_conversation_menu_conversation_go_to_file">ھۆججەتكە بېرىڭ</string>
@@ -203,6 +204,7 @@
     <string name="nc_custom_color">ئىختىيارى رەڭ</string>
     <string name="nc_date_header_today">بۈگۈن</string>
     <string name="nc_date_header_yesterday">تۈنۈگۈن</string>
+    <string name="nc_deep_link_join">قوشۇلۇڭ</string>
     <string name="nc_delete">ئۆچۈرۈش</string>
     <string name="nc_delete_all">ھەممىنى ئۆچۈرۈڭ</string>
     <string name="nc_delete_call">سۆھبەتنى ئۆچۈرۈڭ</string>
@@ -508,6 +510,7 @@
     <string name="nc_show_notification_warning_title">ئادەتتىكى ئاگاھلاندۇرۇش ئۇقتۇرۇشى كۆرسەت</string>
     <string name="nc_sort_by">تەرتىپلەش</string>
     <string name="nc_start_group_chat">گۇرۇپپا سۆھبىتىنى باشلا</string>
+    <string name="nc_start_screen_sharing">ئېكراننى ھەمبەھىرلەش</string>
     <string name="nc_start_time">باشلىنىش ۋاقتى</string>
     <string name="nc_switch_account">ھېساباتنى ئالماشتۇرۇش</string>
     <string name="nc_team">ئەتىرەت</string>

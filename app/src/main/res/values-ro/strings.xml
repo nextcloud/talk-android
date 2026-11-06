@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Comută la propriul video</string>
     <string name="nc_call_e2ee_not_supported">Apelurile nu sunt acceptate momentan, deoarece criptarea end-to-end este activată pe server</string>
     <string name="nc_call_e2ee_not_supported_title">Apelul de la %s nu este disponibil</string>
+    <string name="nc_call_e2ee_requires_hpb">Apelurile criptate end-to-end necesită backendul de înaltă performanță (HPB)</string>
+    <string name="nc_call_e2ee_setup_failed">Criptarea end-to-end nu a putut fi configurată pentru acest apel</string>
     <string name="nc_call_incoming">APEL PRIMIT</string>
     <string name="nc_call_join_failed">Nu te-ai putut alătura apelului. Încearcă din nou.</string>
     <string name="nc_call_name">Numele conversației</string>
@@ -228,6 +230,7 @@
     <string name="nc_configure_cert_auth">Selectează certificatul de autentificare</string>
     <string name="nc_confirm">Confirmă</string>
     <string name="nc_connecting_call">Se conectează…</string>
+    <string name="nc_contact_chat_start">Plecare</string>
     <string name="nc_contacts_done">Gata</string>
     <string name="nc_conversation_created_invalid_participants">Unii participanți nu au putut fi adăugați</string>
     <string name="nc_conversation_created_invalid_participants_named">Acești participanți nu au putut fi adăugați: %1$s</string>
@@ -274,6 +277,7 @@
     <string name="nc_custom_color">Culoare personalizată</string>
     <string name="nc_date_header_today">Azi</string>
     <string name="nc_date_header_yesterday">Ieri</string>
+    <string name="nc_deep_link_join">Alătură-te</string>
     <string name="nc_delete">Șterge</string>
     <string name="nc_delete_all">Șterge tot</string>
     <string name="nc_delete_call">Șterge conversația</string>
@@ -465,7 +469,10 @@
     <string name="nc_open_conversation_to_registered_users">Deschide conversația pentru utilizatorii înregistrați</string>
     <string name="nc_open_to_guest_app_users">Deschide și pentru utilizatorii aplicației Guests</string>
     <string name="nc_owner">Proprietar</string>
+    <string name="nc_participant_in_call">În apel</string>
     <string name="nc_participant_type_change_failed">Tipul participantului nu a putut fi schimbat</string>
+    <string name="nc_participant_with_phone">Prin telefon</string>
+    <string name="nc_participant_with_video">Cu video</string>
     <string name="nc_participants">Participanți</string>
     <string name="nc_participants_add">Adaugă participanți</string>
     <string name="nc_password">Parolă</string>
@@ -655,6 +662,7 @@
     <string name="nc_show_notification_warning_title">Afișează avertismentul periodic despre notificări</string>
     <string name="nc_sort_by">Sortare după</string>
     <string name="nc_start_group_chat">Începe un chat de grup</string>
+    <string name="nc_start_screen_sharing">Partajează ecranul</string>
     <string name="nc_start_time">Ora de început</string>
     <string name="nc_switch_account">Schimbă contul</string>
     <string name="nc_take_video">Filmează un videoclip</string>

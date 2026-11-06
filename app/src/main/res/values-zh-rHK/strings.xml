@@ -230,6 +230,7 @@
     <string name="nc_configure_cert_auth">選擇驗證證書</string>
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
+    <string name="nc_contact_chat_start">開始</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_created_invalid_participants">部分參與者無法加入</string>
     <string name="nc_conversation_created_invalid_participants_named">這些參與者無法加入：%1$s</string>
@@ -276,6 +277,7 @@
     <string name="nc_custom_color">自訂顏色</string>
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
+    <string name="nc_deep_link_join">加入</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
@@ -467,7 +469,10 @@
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
+    <string name="nc_participant_in_call">通話中</string>
     <string name="nc_participant_type_change_failed">無法更改參與者類型</string>
+    <string name="nc_participant_with_phone">透過電話</string>
+    <string name="nc_participant_with_video">透過視訊</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
     <string name="nc_password">密碼</string>
@@ -657,6 +662,7 @@
     <string name="nc_show_notification_warning_title">顯示常規警告。</string>
     <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_group_chat">開始群組聊天</string>
+    <string name="nc_start_screen_sharing">分享螢幕</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳戶</string>
     <string name="nc_take_video">拍攝影片</string>

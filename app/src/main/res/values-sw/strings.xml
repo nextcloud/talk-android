@@ -176,6 +176,7 @@
     <string name="nc_configure_cert_auth">Chagua cheti cha uthibitishaji</string>
     <string name="nc_confirm">Thibitisha</string>
     <string name="nc_connecting_call">Inaunganisha...</string>
+    <string name="nc_contact_chat_start">Anza</string>
     <string name="nc_contacts_done">Imefanyika</string>
     <string name="nc_conversation_description">Maelezo ya mazungumzo</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Nenda kwenye faili</string>
@@ -202,6 +203,7 @@
     <string name="nc_custom_color">Rangi maalum</string>
     <string name="nc_date_header_today">Leo</string>
     <string name="nc_date_header_yesterday">Jana</string>
+    <string name="nc_deep_link_join">Jiunge</string>
     <string name="nc_delete">Futa</string>
     <string name="nc_delete_all">Futa zote</string>
     <string name="nc_delete_call">Futa mazungumzo</string>
@@ -515,6 +517,7 @@
     <string name="nc_show_notification_warning_title">Onyesha onyo la arifa za kawaida</string>
     <string name="nc_sort_by">Panga kwa </string>
     <string name="nc_start_group_chat">Anza gumzo la kundi</string>
+    <string name="nc_start_screen_sharing">Shirikisha screen</string>
     <string name="nc_start_time">Muda wa kuanza</string>
     <string name="nc_switch_account">Badili akaunti</string>
     <string name="nc_team">Timu</string>

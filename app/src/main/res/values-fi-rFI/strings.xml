@@ -114,6 +114,7 @@
     <string name="nc_configure_cert_auth">Valitse tunnistautumisvarmenne</string>
     <string name="nc_confirm">Vahvista</string>
     <string name="nc_connecting_call">Yhdistetään…</string>
+    <string name="nc_contact_chat_start">Alku</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Siirry tiedostoon</string>
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
@@ -141,6 +142,7 @@
     <string name="nc_custom_color">Mukautettu väri</string>
     <string name="nc_date_header_today">Tänään</string>
     <string name="nc_date_header_yesterday">Eilen</string>
+    <string name="nc_deep_link_join">Liity</string>
     <string name="nc_delete">Poista</string>
     <string name="nc_delete_all">Poista kaikki</string>
     <string name="nc_delete_call">Poista keskustelu</string>
@@ -355,6 +357,7 @@
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_show_ecosystem_title">Näytä sovellusvaihdin</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
+    <string name="nc_start_screen_sharing">Jaa näyttö</string>
     <string name="nc_start_time">Aloitusaika</string>
     <string name="nc_switch_account">Vaihda tiliä</string>
     <string name="nc_team">Tiimi</string>
@@ -372,6 +375,8 @@
     <string name="nc_zoom_in">Lähennä</string>
     <string name="nc_zoom_out">Loitonna</string>
     <string name="next_week">Seuraava viikko</string>
+    <string name="notification_all_messages">Kaikki viestit</string>
+    <string name="notification_off">Pois</string>
     <string name="notifications_default">Oletus</string>
     <string name="oneHour">1 tunti</string>
     <string name="online">Paikalla</string>

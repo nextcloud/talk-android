@@ -168,6 +168,8 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Athraigh go físeán féin</string>
     <string name="nc_call_e2ee_not_supported">Ní thacaítear le glaonna faoi láthair toisc go bhfuil criptiú ceann go ceann cumasaithe ar an bhfreastalaí.</string>
     <string name="nc_call_e2ee_not_supported_title">Níl glao ó %s ar fáil</string>
+    <string name="nc_call_e2ee_requires_hpb">Teastaíonn an cúlchóras ardfheidhmíochta (HPB) le haghaidh glaonna atá criptithe ó cheann go ceann.</string>
+    <string name="nc_call_e2ee_setup_failed">Níorbh fhéidir criptiú ceann go ceann a shocrú don ghlao seo</string>
     <string name="nc_call_incoming">ISTEACH</string>
     <string name="nc_call_join_failed">Níorbh fhéidir páirt a ghlacadh sa ghlao. Déan iarracht arís.</string>
     <string name="nc_call_name">Ainm an chomhrá</string>
@@ -228,6 +230,7 @@
     <string name="nc_configure_cert_auth">Roghnaigh teastas fíordheimhnithe</string>
     <string name="nc_confirm">Deimhnigh</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
+    <string name="nc_contact_chat_start">Tosaigh</string>
     <string name="nc_contacts_done">Déanta</string>
     <string name="nc_conversation_created_invalid_participants">Níorbh fhéidir roinnt rannpháirtithe a chur leis.</string>
     <string name="nc_conversation_created_invalid_participants_named">Níorbh fhéidir na rannpháirtithe seo a chur leis: %1$s</string>
@@ -274,6 +277,7 @@
     <string name="nc_custom_color">Dath saincheaptha</string>
     <string name="nc_date_header_today">Inniu</string>
     <string name="nc_date_header_yesterday">Inné</string>
+    <string name="nc_deep_link_join">Glac páirt</string>
     <string name="nc_delete">Scrios</string>
     <string name="nc_delete_all">Scrios go léir</string>
     <string name="nc_delete_call">Scrios an comhrá</string>
@@ -465,7 +469,10 @@
     <string name="nc_open_conversation_to_registered_users">Oscail an comhrá d\'úsáideoirí cláraithe</string>
     <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>
+    <string name="nc_participant_in_call">I nglao</string>
     <string name="nc_participant_type_change_failed">Níorbh fhéidir cineál an rannpháirtí a athrú</string>
+    <string name="nc_participant_with_phone">Le fón</string>
+    <string name="nc_participant_with_video">Le físeán</string>
     <string name="nc_participants">Rannpháirtithe</string>
     <string name="nc_participants_add">Cuir rannpháirtithe leis</string>
     <string name="nc_password">Pasfhocal</string>
@@ -655,6 +662,7 @@
     <string name="nc_show_notification_warning_title">Taispeáin rabhadh fógra rialta</string>
     <string name="nc_sort_by">Sórtáil de réir</string>
     <string name="nc_start_group_chat">Tosaigh comhrá grúpa</string>
+    <string name="nc_start_screen_sharing">Comhroinn scáileán</string>
     <string name="nc_start_time">Am tosaithe</string>
     <string name="nc_switch_account">Athraigh cuntas</string>
     <string name="nc_take_video">Glac físeán</string>

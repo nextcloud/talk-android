@@ -4,7 +4,7 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
-    <share-target android:targetClass="com.nextcloud.talk.conversationlist.ConversationsListActivity">
+    <share-target android:targetClass="com.nextcloud.talk.conversationlist.ShareActivity">
         <data android:mimeType="*/*" />
         <category android:name="com.nextcloud.talk.sharing.SHARE_TARGET_CATEGORY" />
     </share-target>

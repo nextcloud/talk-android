@@ -190,6 +190,7 @@
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_confirm">Potwierdź</string>
     <string name="nc_connecting_call">Łączę…</string>
+    <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Gotowe</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Przejdź do pliku</string>
@@ -219,6 +220,7 @@
     <string name="nc_custom_color">Kolor niestandardowy</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
+    <string name="nc_deep_link_join">Dołącz</string>
     <string name="nc_delete">Usuń</string>
     <string name="nc_delete_all">Usuń wszystko</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
@@ -550,6 +552,7 @@
     <string name="nc_show_notification_warning_title">Pokaż regularne ostrzeżenie o powiadomieniu</string>
     <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_group_chat">Rozpocznij czat grupowy</string>
+    <string name="nc_start_screen_sharing">Współdziel ekran</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_switch_account">Przełącz konto</string>
     <string name="nc_team">Zespół</string>

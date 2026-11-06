@@ -168,6 +168,7 @@
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
     <string name="nc_confirm">Confirma</string>
     <string name="nc_connecting_call">S\'està connectant …</string>
+    <string name="nc_contact_chat_start">Inici</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_description">Descripció de la conversa</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Vés al fitxer</string>
@@ -196,6 +197,7 @@
     <string name="nc_custom_color">Color personalitzat</string>
     <string name="nc_date_header_today">Avui</string>
     <string name="nc_date_header_yesterday">Ahir</string>
+    <string name="nc_deep_link_join">Uneix-te</string>
     <string name="nc_delete">Suprimir</string>
     <string name="nc_delete_all">Suprimir-ho tot</string>
     <string name="nc_delete_call">Suprimir la conversa</string>

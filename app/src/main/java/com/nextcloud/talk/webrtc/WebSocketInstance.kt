@@ -19,8 +19,6 @@ import com.nextcloud.talk.call.e2ee.EncryptionMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
-import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.models.json.participants.ParticipantDto.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto
 import com.nextcloud.talk.models.json.signaling.settings.FederationSettingsDto
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessageDto
@@ -80,7 +78,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private var currentNormalBackendSession: String? = null
     private var currentFederation: FederationSettingsDto? = null
     private var reconnecting = false
-    private val usersHashMap: HashMap<String?, ParticipantDto>
+    private val roomSessions = RoomSessionRegistry()
     private var messagesQueue: MutableList<String> = ArrayList()
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
@@ -104,7 +102,6 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         this.conversationUser = conversationUser
         this.webSocketTicket = webSocketTicket
         webSocketConnectionHelper = WebSocketConnectionHelper()
-        usersHashMap = HashMap()
         isConnected = false
         signalingMessageReceiver.addListener(
             SignalingMessageReceiver.EncryptionMessageListener(callEncryptionLifecycle::handleMessage)
@@ -272,45 +269,34 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     private fun processRoomJoinMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
-        val joinEventList = eventOverallWebSocketMessage.eventMap?.get("join") as List<HashMap<String, Any>>?
-        var internalHashMap: HashMap<String, Any>
-        var participant: ParticipantDto
-        for (i in joinEventList!!.indices) {
-            internalHashMap = joinEventList[i]
-            val userMap = internalHashMap["user"] as HashMap<String, Any>?
-            participant = ParticipantDto()
-            val userId = internalHashMap["userid"] as String?
-            if (userId != null) {
-                participant.actorType = ActorType.USERS
-                participant.actorId = userId
-            } else {
-                participant.actorType = ActorType.GUESTS
-                // FIXME seems to be not given by the HPB: participant.setActorId();
-            }
-            if (userMap != null) {
-                // There is no "user" attribute for guest participants.
-                participant.displayName = userMap["displayname"] as String?
-            }
-            usersHashMap[internalHashMap["sessionid"] as String?] = participant
-        }
-        callEncryptionLifecycle.usersJoined(joinEventList.mapNotNull { it["sessionid"] as String? })
+        val joinEventList = eventOverallWebSocketMessage.eventMap?.get("join") as List<Map<String, Any>>?
+        roomSessions.onJoin(joinEventList)
+        callEncryptionLifecycle.usersJoined(joinEventList.orEmpty().mapNotNull { it["sessionid"] as String? })
     }
 
     private fun processRoomLeaveMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
         val leaveEventList = eventOverallWebSocketMessage.eventMap?.get("leave") as List<String>?
-        for (i in leaveEventList!!.indices) {
-            usersHashMap.remove(leaveEventList[i])
-        }
-        callEncryptionLifecycle.usersLeft(leaveEventList)
+        roomSessions.onLeave(leaveEventList)
+        callEncryptionLifecycle.usersLeft(leaveEventList.orEmpty())
     }
 
-    fun getUserMap(): HashMap<String?, ParticipantDto> = usersHashMap
+    /**
+     * Snapshot of the signaling sessions of the current room, without the own session.
+     */
+    fun getRoomSessionIds(): List<String> = roomSessions.sessionIdsExcept(sessionId)
+
+    /**
+     * Whether [session] is in the room [roomToken] and the connection is in that room as well. A typing message is
+     * only trusted for the conversation of the room the session was seen in.
+     */
+    fun isSessionInRoom(session: String?, roomToken: String): Boolean = roomSessions.contains(session, roomToken)
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
         val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             val alreadyInRoom = roomWebSocketMessage.roomId == currentRoomToken
+            roomSessions.onRoomResponse(roomWebSocketMessage.roomId)
             currentRoomToken = roomWebSocketMessage.roomId
             if (TextUtils.isEmpty(currentRoomToken)) {
                 // The server took the client out of the room, so the keys of that room go with it, like on iOS
@@ -343,6 +329,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         resumeId = ""
         currentRoomToken = ""
         currentNormalBackendSession = ""
+        roomSessions.reset()
         restartWebSocket()
     }
 
@@ -370,6 +357,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "Joining the room was rejected, the room session needs to be refreshed")
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
+                roomSessions.reset()
                 eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", HashMap()))
             }
         }
@@ -412,6 +400,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         } else {
             currentRoomToken = ""
             currentNormalBackendSession = ""
+            roomSessions.reset()
         }
         if (!TextUtils.isEmpty(currentRoomToken)) {
             helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
@@ -470,6 +459,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
                 currentFederation = null
+                roomSessions.reset()
                 callEncryptionLifecycle.close()
                 sendMessage(message)
             } else if (
@@ -531,15 +521,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    fun getDisplayNameForSession(session: String?): String? {
-        val participant = usersHashMap[session]
-        if (participant != null) {
-            if (participant.displayName != null) {
-                return participant.displayName
-            }
-        }
-        return ""
-    }
+    fun getDisplayNameForSession(session: String?): String = roomSessions.displayNameFor(session)
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(networkEvent: NetworkEvent) {

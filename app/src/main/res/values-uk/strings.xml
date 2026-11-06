@@ -175,6 +175,7 @@
     <string name="nc_configure_cert_auth">Вибрати сертифікат автентифікації</string>
     <string name="nc_confirm">Підтвердити</string>
     <string name="nc_connecting_call">Підключення ...</string>
+    <string name="nc_contact_chat_start">Початок</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_description">Опис розмови</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Перейти до файлу</string>
@@ -202,6 +203,7 @@
     <string name="nc_custom_color">Власний колір</string>
     <string name="nc_date_header_today">Сьогодні</string>
     <string name="nc_date_header_yesterday">Вчора</string>
+    <string name="nc_deep_link_join">Приєднатися</string>
     <string name="nc_delete">Вилучити</string>
     <string name="nc_delete_all">Вилучити все</string>
     <string name="nc_delete_call">Вилучити розмову</string>
@@ -508,6 +510,7 @@
     <string name="nc_show_notification_warning_title">Показувати регулярні сповіщення про попередження</string>
     <string name="nc_sort_by">Впорядкувати за</string>
     <string name="nc_start_group_chat">Почніть груповий чат</string>
+    <string name="nc_start_screen_sharing">Екран спільного доступу</string>
     <string name="nc_start_time">Час початку</string>
     <string name="nc_switch_account">Перемкнути обліковий запис</string>
     <string name="nc_team">Команда</string>

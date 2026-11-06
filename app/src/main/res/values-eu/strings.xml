@@ -154,6 +154,7 @@
     <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
     <string name="nc_confirm">Berretsi</string>
     <string name="nc_connecting_call">Konektatzen …</string>
+    <string name="nc_contact_chat_start">Hasi</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_description">Elkarrizketaren deskribapena</string>
     <string name="nc_conversation_menu_conversation_go_to_file">Joan fitxategira</string>
@@ -182,6 +183,7 @@
     <string name="nc_custom_color">Kolore pertsonalizatua</string>
     <string name="nc_date_header_today">Gaur</string>
     <string name="nc_date_header_yesterday">Atzo</string>
+    <string name="nc_deep_link_join">Batu</string>
     <string name="nc_delete">Ezabatu</string>
     <string name="nc_delete_all">Ezabatu denak</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
@@ -446,6 +448,7 @@
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_show_ecosystem_title">Erakutsi aplikazioen aldatzailea</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
+    <string name="nc_start_screen_sharing">Partekatu pantaila</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>
     <string name="nc_team">Lantaldea</string>

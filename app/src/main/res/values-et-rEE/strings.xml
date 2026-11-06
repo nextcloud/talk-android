@@ -230,6 +230,9 @@
     <string name="nc_configure_cert_auth">Vali autentimise sertifikaat</string>
     <string name="nc_confirm">Kinnita</string>
     <string name="nc_connecting_call">Ühendan…</string>
+    <string name="nc_contact_chat_start">Algus</string>
+    <string name="nc_contact_chat_start_message">Sul pole kasutajaga „%1$s“ veel ühtegi vestlust. Sellise loomine lisab ta mõlema kasutaja vestluste loendisse.</string>
+    <string name="nc_contact_chat_start_title">Kas alustad vestlust?</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_created_invalid_participants">Mõnede osalejate lisamine ei õnnestunud</string>
     <string name="nc_conversation_created_invalid_participants_named">Nende osalejate lisamine ei õnnestunud: %1$s</string>
@@ -276,6 +279,9 @@
     <string name="nc_custom_color">Sinu valitud värv</string>
     <string name="nc_date_header_today">Täna</string>
     <string name="nc_date_header_yesterday">Eile</string>
+    <string name="nc_deep_link_join">Liitu</string>
+    <string name="nc_deep_link_join_message">See vestlus teenuses %1$s pole sinu vestluste loendis. Selle avamin võib sind lisada osalejaks.</string>
+    <string name="nc_deep_link_join_title">Kas liitud vestlustega?</string>
     <string name="nc_delete">Kustuta</string>
     <string name="nc_delete_all">Kustuta kõik</string>
     <string name="nc_delete_call">Kustuta vestlus</string>
@@ -653,6 +659,7 @@
     <string name="nc_shared_items_location">Asukoht</string>
     <string name="nc_shared_location">Jagatud asukoht</string>
     <string name="nc_shortcut_conversation_deleted">Seda vestlust pole enam olemas</string>
+    <string name="nc_shortcut_conversation_not_found">Viites näidatud vestlust ei leidu</string>
     <string name="nc_shortcut_created">Otselink on lisatud</string>
     <string name="nc_show_ecosystem_description">Nextcloudi rakenduste soovitused kasutajakonto valimisvaates</string>
     <string name="nc_show_ecosystem_title">Näita rakenduste vahetajat</string>
@@ -660,6 +667,7 @@
     <string name="nc_show_notification_warning_title">Näita tavalist teavituse hoiatust</string>
     <string name="nc_sort_by">Järjestuse alus</string>
     <string name="nc_start_group_chat">Alusta rühmavestlust</string>
+    <string name="nc_start_screen_sharing">Jaga ekraanivaadet</string>
     <string name="nc_start_time">Algusaeg</string>
     <string name="nc_switch_account">Vaheta kasutajakontot</string>
     <string name="nc_take_video">Filmi</string>
@@ -780,7 +788,7 @@
     <string name="scope_private_title">Privaatne</string>
     <string name="scope_published_description">Sünkrooni usaldusväärsetesse serveritesse ning üldisesse ja avalikku aadressiraamatusse</string>
     <string name="scope_published_title">Avaldatud</string>
-    <string name="scope_toggle_description">Muuda „%1$s“ privaatsuse taset</string>
+    <string name="scope_toggle_description">Muuda „%1$s“ vestlue privaatsuse taset</string>
     <string name="scroll_to_bottom">Keri alla äärde</string>
     <string name="search_icon">Otsinguikoon</string>
     <string name="secondsAgo">sekundit tagasi</string>

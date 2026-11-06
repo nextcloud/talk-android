@@ -230,6 +230,9 @@
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
     <string name="nc_confirm">確認</string>
     <string name="nc_connecting_call">連線中 …</string>
+    <string name="nc_contact_chat_start">開始</string>
+    <string name="nc_contact_chat_start_message">您與 %1$s 尚無對話。開始一則對話後，它便會加入你們兩個的對話清單中。</string>
+    <string name="nc_contact_chat_start_title">開始對話？</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_created_invalid_participants">無法新增部份參與者</string>
     <string name="nc_conversation_created_invalid_participants_named">無法新增這些參與者：%1$s</string>
@@ -276,6 +279,9 @@
     <string name="nc_custom_color">自訂顏色</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
+    <string name="nc_deep_link_join">加入</string>
+    <string name="nc_deep_link_join_message">這則關於 %1$s 的對話並未出現在您的對話清單中。開啟該對話可能會將您加入為參與者。</string>
+    <string name="nc_deep_link_join_title">加入對話？</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
@@ -653,6 +659,7 @@
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
     <string name="nc_shortcut_conversation_deleted">此對話不存在</string>
+    <string name="nc_shortcut_conversation_not_found">找不到該捷徑的對話</string>
     <string name="nc_shortcut_created">已建立捷徑</string>
     <string name="nc_show_ecosystem_description">帳號選擇器對話方塊中的 Nextcloud 應用程式建議</string>
     <string name="nc_show_ecosystem_title">顯示應用程式切換器</string>
@@ -660,6 +667,7 @@
     <string name="nc_show_notification_warning_title">顯示一般通知警告</string>
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_group_chat">開始群組聊天</string>
+    <string name="nc_start_screen_sharing">分享螢幕</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>
     <string name="nc_take_video">錄影</string>
