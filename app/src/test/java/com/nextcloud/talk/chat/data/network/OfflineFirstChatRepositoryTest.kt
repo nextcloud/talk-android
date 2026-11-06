@@ -349,6 +349,47 @@ class OfflineFirstChatRepositoryTest {
         }
 
     @Test
+    fun `addTemporaryMessage works before the conversation is loaded`() =
+        runTest {
+            // a forwarded message is sent while the chat opens, before the conversation came from the database
+
+            val result = repository.addTemporaryMessage(
+                message = "forwarded",
+                displayName = "Me",
+                replyTo = 0,
+                sendWithoutNotification = false,
+                referenceId = "ref-early"
+            ).toList().single()
+
+            assertTrue(result.isSuccess)
+            val entityCaptor = argumentCaptor<ChatMessageEntity>()
+            verifyBlocking(chatDao) { upsertChatMessage(entityCaptor.capture()) }
+            assertEquals(ROOM_TOKEN, entityCaptor.firstValue.token)
+            assertEquals("forwarded", entityCaptor.firstValue.message)
+        }
+
+    @Test
+    fun `temporary messages added in a burst keep their own rows`() =
+        runTest {
+            // a forward of several messages adds them one after the other, often within one millisecond; a row key
+            // made of the clock made the later message overwrite the earlier one, which was then never sent
+
+            repeat(BURST_SIZE) { index ->
+                repository.addTemporaryMessage(
+                    message = "forwarded $index",
+                    displayName = "Me",
+                    replyTo = 0,
+                    sendWithoutNotification = false,
+                    referenceId = "ref-burst-$index"
+                ).toList()
+            }
+
+            val entityCaptor = argumentCaptor<ChatMessageEntity>()
+            verifyBlocking(chatDao, times(BURST_SIZE)) { upsertChatMessage(entityCaptor.capture()) }
+            assertEquals(BURST_SIZE, entityCaptor.allValues.map { it.internalId }.toSet().size)
+        }
+
+    @Test
     fun `addTemporaryMessage tolerates a collector that stops after the first value`() =
         runTest {
             // first()/take(1) cancel the flow right after receiving one value, which used to
@@ -907,6 +948,7 @@ class OfflineFirstChatRepositoryTest {
     companion object {
         private const val ACCOUNT_ID = 1L
         private const val ROOM_TOKEN = "room1"
+        private const val BURST_SIZE = 200
         private const val INTERNAL_CONVERSATION_ID = "$ACCOUNT_ID@$ROOM_TOKEN"
         private const val CREDENTIALS = "credentials"
         private const val HTTP_UNAUTHORIZED = 401

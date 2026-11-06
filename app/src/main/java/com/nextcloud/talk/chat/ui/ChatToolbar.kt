@@ -89,12 +89,20 @@ fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifi
     Box(modifier = modifier) {
         TopAppBar(
             navigationIcon = {
-                IconButton(onClick = callbacks.onNavigateUp) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back_button))
+                if (state.selectedCount > 0) {
+                    IconButton(onClick = callbacks.onSelectionClose) {
+                        Icon(painterResource(R.drawable.ic_baseline_close_24), stringResource(R.string.close_icon))
+                    }
+                } else {
+                    IconButton(onClick = callbacks.onNavigateUp) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back_button))
+                    }
                 }
             },
             title = {
-                if (state.isSearchMode) {
+                if (state.selectedCount > 0) {
+                    Text(stringResource(R.string.nc_chat_selected_count, state.selectedCount))
+                } else if (state.isSearchMode) {
                     SearchField(state = state, callbacks = callbacks)
                 } else {
                     ConversationHeader(state = state, onClick = callbacks.onTitleClick.takeIf { state.titleClickable })
@@ -126,7 +134,16 @@ fun ChatToolbar(state: ChatToolbarState, callbacks: ChatToolbarCallbacks, modifi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallbacks) {
-    if (state.isSearchMode) {
+    if (state.selectedCount > 0) {
+        if (state.canForwardSelection) {
+            IconButton(onClick = callbacks.onSelectionForward) {
+                Icon(painterResource(R.drawable.forward_24), stringResource(R.string.nc_forward_message))
+            }
+        }
+        IconButton(onClick = callbacks.onSelectionCopy) {
+            Icon(painterResource(R.drawable.ic_content_copy), stringResource(R.string.nc_copy_message))
+        }
+    } else if (state.isSearchMode) {
         IconButton(onClick = callbacks.onSearchPrevious) {
             Icon(
                 painterResource(R.drawable.ic_keyboard_arrow_up),
