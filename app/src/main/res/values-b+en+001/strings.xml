@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
     <string name="nc_call_ongoing_notification_end_action">End call</string>
     <string name="nc_call_ongoing_notification_return_action">Return to call</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">You are sharing your screen</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
@@ -231,6 +232,8 @@
     <string name="nc_confirm">Confirm</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contact_chat_start">Start</string>
+    <string name="nc_contact_chat_start_message">You have no conversation with %1$s yet. Starting one adds it to the conversation list of both of you.</string>
+    <string name="nc_contact_chat_start_title">Start conversation?</string>
     <string name="nc_contacts_done">Done</string>
     <string name="nc_conversation_created_invalid_participants">Some participants could not be added</string>
     <string name="nc_conversation_created_invalid_participants_named">These participants could not be added: %1$s</string>
@@ -278,6 +281,8 @@
     <string name="nc_date_header_today">Today</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_deep_link_join">Join</string>
+    <string name="nc_deep_link_join_message">This conversation on %1$s is not in your conversation list. Opening it can add you as a participant.</string>
+    <string name="nc_deep_link_join_title">Join conversation?</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_all">Delete all</string>
     <string name="nc_delete_call">Delete conversation</string>
@@ -536,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Screen sharing could not be started</string>
+    <string name="nc_screen_sharing_not_allowed">You are not allowed to share your screen</string>
+    <string name="nc_screen_sharing_not_connected">You can share your screen once the call is connected</string>
+    <string name="nc_screen_sharing_permissions_missing">To share your screen, allow notifications and microphone access</string>
     <string name="nc_search">Search</string>
     <string name="nc_search_clear">Clear search</string>
     <string name="nc_search_location">Search location</string>
@@ -655,6 +664,7 @@
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_location">Shared location</string>
     <string name="nc_shortcut_conversation_deleted">This conversation no longer exists</string>
+    <string name="nc_shortcut_conversation_not_found">The conversation of the shortcut was not found</string>
     <string name="nc_shortcut_created">Shortcut created</string>
     <string name="nc_show_ecosystem_description">Nextcloud app suggestions in account chooser dialog</string>
     <string name="nc_show_ecosystem_title">Show app switcher</string>
@@ -662,7 +672,10 @@
     <string name="nc_show_notification_warning_title">Show regular notification warning</string>
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_start_group_chat">Start group chat</string>
+    <string name="nc_start_screen_sharing">Share screen</string>
     <string name="nc_start_time">Start time</string>
+    <string name="nc_stop_screen_sharing">Stop screen sharing</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Do you really want to stop sharing your screen?</string>
     <string name="nc_switch_account">Switch account</string>
     <string name="nc_take_video">Take a video</string>
     <string name="nc_team">Team</string>

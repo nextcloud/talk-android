@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Arama sürüyor</string>
     <string name="nc_call_ongoing_notification_end_action">Aramayı sonlandır</string>
     <string name="nc_call_ongoing_notification_return_action">Aramaya dön</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Ekranınızı paylaşıyorsunuz</string>
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
@@ -540,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Ekran paylaşımı başlatılamadı</string>
+    <string name="nc_screen_sharing_not_allowed">Ekranınızı paylaşma izniniz yok</string>
+    <string name="nc_screen_sharing_not_connected">Arama bağlandıktan sonra ekranınızı paylaşabilirsiniz</string>
+    <string name="nc_screen_sharing_permissions_missing">Ekranınızı paylaşmak için bildirimlere ve mikrofona erişme izni verin</string>
     <string name="nc_search">Ara</string>
     <string name="nc_search_clear">Aramayı temizle</string>
     <string name="nc_search_location">Arama konumu</string>
@@ -669,6 +674,8 @@
     <string name="nc_start_group_chat">Grup sohbeti başlat</string>
     <string name="nc_start_screen_sharing">Ekranı paylaş</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
+    <string name="nc_stop_screen_sharing">Ekran paylaşımını durdur</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Ekranınızı paylaşmayı durdurmak istediğinize emin misiniz?</string>
     <string name="nc_switch_account">Hesabı değiştir</string>
     <string name="nc_take_video">Bir görüntü kaydedin</string>
     <string name="nc_team">Takım</string>

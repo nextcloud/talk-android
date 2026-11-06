@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Opkald i gang</string>
     <string name="nc_call_ongoing_notification_end_action">Afslut opkald</string>
     <string name="nc_call_ongoing_notification_return_action">Tilbage til opkaldet</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Du deler din skærm</string>
     <string name="nc_call_raised_hand">%1$s løftede hånden</string>
     <string name="nc_call_reconnecting">Genopretter forbindelse …</string>
     <string name="nc_call_ringing">RINGER</string>
@@ -540,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Skærmdelingen kunne ikke startes</string>
+    <string name="nc_screen_sharing_not_allowed">Du har ikke tilladelse til at dele din skærm</string>
+    <string name="nc_screen_sharing_not_connected">Du kan dele din skærm, når opkaldet er forbundet</string>
+    <string name="nc_screen_sharing_permissions_missing">Giv tilladelse til notifikationer og adgang til mikrofonen for at dele din skærm</string>
     <string name="nc_search">Søg</string>
     <string name="nc_search_clear">Ryd søgning</string>
     <string name="nc_search_location">Søg efter sted</string>
@@ -667,7 +672,10 @@
     <string name="nc_show_notification_warning_title">Vis regelmæssig notifikationsadvarsel</string>
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_group_chat">Start gruppechat</string>
+    <string name="nc_start_screen_sharing">Del skærm</string>
     <string name="nc_start_time">Starttidspunkt</string>
+    <string name="nc_stop_screen_sharing">Stop skærmdeling</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Vil du stoppe med at dele din skærm?</string>
     <string name="nc_switch_account">Skift konto</string>
     <string name="nc_take_video">Optag en video</string>
     <string name="nc_team">Team</string>
