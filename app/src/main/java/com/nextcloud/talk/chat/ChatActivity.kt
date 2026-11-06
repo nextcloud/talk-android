@@ -223,7 +223,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -3724,7 +3723,6 @@ class ChatActivity :
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun shareToNotes(
         shareUri: Uri?,
         roomToken: String,
@@ -3749,8 +3747,13 @@ class ChatActivity :
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
                 val caption = if (message.message != "{file}") message.message else ""
                 if (null != shareUri) {
-                    try {
+                    val fileIsCached = runProviderCall(
+                        onFailure = { e -> Log.d(TAG, "$shareUri is not cached, downloading it first: ${e.message}") }
+                    ) {
                         withContext(Dispatchers.IO) { context.contentResolver.openInputStream(shareUri)?.close() }
+                        true
+                    } == true
+                    val uploadToNotes = {
                         uploadFile(
                             fileUri = shareUri.toString(),
                             isVoiceMessage = false,
@@ -3760,21 +3763,11 @@ class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
-                        downloadFileToCache(message, false) {
-                            uploadFile(
-                                fileUri = shareUri.toString(),
-                                isVoiceMessage = false,
-                                caption = caption!!,
-                                roomToken = roomToken,
-                                replyToMessageId = getReplyToMessageId(),
-                                displayName = currentConversation?.displayName ?: ""
-                            )
-                            showSnackBar(roomToken)
-                        }
+                    }
+                    if (fileIsCached) {
+                        uploadToNotes()
+                    } else {
+                        downloadFileToCache(message, false, uploadToNotes)
                     }
                 }
             }
