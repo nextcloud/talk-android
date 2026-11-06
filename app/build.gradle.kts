@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+import com.android.build.api.variant.FilterConfiguration
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
@@ -41,6 +42,15 @@ val androidxTestVersion = "1.5.0"
 val media3Version = "1.11.1"
 val coroutinesVersion = "1.11.0"
 val mockitoKotlinVersion = "6.4.0"
+
+val abiSplit = project.hasProperty("abiSplit")
+val abiVersionCodes = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86" to 3, "x86_64" to 4)
+val majorVersionCodeMultiplier = 10_000_000
+val abiVersionCodeMultiplier = 10
+
+fun abiVersionCode(versionCode: Int, abiCode: Int): Int =
+    versionCode / majorVersionCodeMultiplier * majorVersionCodeMultiplier +
+        versionCode % majorVersionCodeMultiplier * abiVersionCodeMultiplier + abiCode
 
 android {
     compileSdk = 37
@@ -133,6 +143,15 @@ android {
         }
     }
 
+    if (abiSplit) {
+        splits.abi {
+            isEnable = true
+            reset()
+            include(*abiVersionCodes.keys.toTypedArray())
+            isUniversalApk = false
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -160,6 +179,15 @@ android {
         )
         htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
         htmlReport = true
+    }
+}
+
+androidComponents.onVariants { variant ->
+    variant.outputs.forEach { output ->
+        val abi = output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier
+            ?: return@forEach
+        val abiCode = abiVersionCodes.getValue(abi)
+        output.versionCode.set(abiVersionCode(output.versionCode.get(), abiCode))
     }
 }
 
