@@ -84,11 +84,16 @@ object ContactUtils {
         val fd = context.contentResolver.openAssetFileDescriptor(uri, "r")!!
         fd.use {
             file.createNewFile()
-            fd.createInputStream().use { input ->
-                file.outputStream().use { output ->
-                    input.copyTo(output)
+            runCatching {
+                fd.createInputStream().use { input ->
+                    file.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
                 }
-            }
+            }.onFailure {
+                // a truncated vCard must not be shared later
+                file.delete()
+            }.getOrThrow()
         }
     }
 }
