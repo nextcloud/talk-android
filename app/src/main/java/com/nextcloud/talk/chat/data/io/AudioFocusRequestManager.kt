@@ -64,10 +64,19 @@ class AudioFocusRequestManager(private val context: Context) {
         .setOnAudioFocusChangeListener(audioFocusChangeListener)
         .build()
 
+    private val musicSilenceGate = MusicSilenceGate(audioManager::isMusicActive)
+
     /**
-     * Requests the OS for audio focus, before executing the callback on success
+     * Requests the OS for audio focus, before executing the callback on success.
+     *
+     * Another app gives its music up some time after it lost the focus, so a recording that is started right after
+     * the grant still picks the end of the music up from the speaker. With [waitForOtherAudio] the callback waits
+     * until the music is silent (see [MusicSilenceGate]). Abandoning the focus cancels a callback that still waits.
      */
-    fun audioFocusRequest(shouldRequestFocus: Boolean, onGranted: () -> Unit) {
+    fun audioFocusRequest(shouldRequestFocus: Boolean, waitForOtherAudio: Boolean = false, onGranted: () -> Unit) {
+        if (!shouldRequestFocus) {
+            musicSilenceGate.cancel()
+        }
         if (isPausedDueToBecomingNoisy) {
             onGranted()
             return
@@ -81,7 +90,11 @@ class AudioFocusRequestManager(private val context: Context) {
             }
 
         if (isGranted == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            onGranted()
+            if (shouldRequestFocus && waitForOtherAudio) {
+                musicSilenceGate.whenSilent(onGranted)
+            } else {
+                onGranted()
+            }
             handleBecomingNoisyBroadcast(shouldRequestFocus)
         }
     }
