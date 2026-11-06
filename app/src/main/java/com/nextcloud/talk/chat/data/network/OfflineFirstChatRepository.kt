@@ -35,7 +35,9 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.optimisticAction
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,9 +142,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private var newXChatLastCommonRead: Int? = null
 
-    // written on the main thread by handleOnPause/handleOnResume, read from fetch and polling coroutines
-    @Volatile
-    private var itIsPaused = false
+    // written on the main thread by handleOnPause/handleOnResume, read and observed by fetch and polling coroutines
+    private val isPaused = MutableStateFlow(false)
 
     lateinit var internalConversationId: String
     private lateinit var roomToken: String
@@ -296,50 +297,57 @@ class OfflineFirstChatRepository @Inject constructor(
     suspend fun initLongPolling() {
         Log.d(TAG, "---- initLongPolling ------------")
 
-        val initialMessageId = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
-        Log.d(TAG, "initialMessageId for initLongPolling: $initialMessageId")
-
-        var fieldMap = getFieldMap(
-            lookIntoFuture = true,
-            // timeout for first longpoll is 0, so "unread message" info is not shown if there were
-            // initially no messages but someone writes us in the first 30 seconds.
-            timeout = 0,
-            includeLastKnown = false,
-            lastKnown = initialMessageId.toInt()
-        )
-
+        // timeout for first longpoll is 0, so "unread message" info is not shown if there were
+        // initially no messages but someone writes us in the first 30 seconds.
+        var timeout = 0
         var failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
 
         while (true) {
-            if (!networkMonitor.isOnline.value || itIsPaused) {
-                failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
-                delay(HALF_SECOND)
-            } else {
-                // sync database with server
-                // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
-                Log.d(TAG, "Starting online request for long polling")
-                val outcome = syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents)
+            // A paused chat opens no new request. One that is already open is not cancelled: the server keeps
+            // processing a cancelled long poll until its timeout, so cancelling it on every pause, e.g. on each
+            // rotation, only piles up requests on the server.
+            isPaused.first { paused -> !paused }
 
+            // checked right before the request, as the device may have gone offline during the pause or the backoff
+            if (!networkMonitor.isOnline.value) {
+                failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
+                networkMonitor.isOnline.first { isOnline -> isOnline }
+                // the chat may have been paused meanwhile
+                continue
+            }
+
+            val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
+            val fieldMap = getFieldMap(
+                lookIntoFuture = true,
+                timeout = timeout,
+                includeLastKnown = false,
+                lastKnown = newestMessage.toInt()
+            )
+
+            // sync database with server
+            // (This is a long blocking call because long polling (lookIntoFuture and timeout) is set)
+            Log.d(TAG, "Starting online request for long polling after message $newestMessage")
+            val outcome = try {
+                // a failed request is not retried while the chat is paused or the device is offline, the loop waits
+                // for the resume or the network instead
+                syncer.pullAndPersistMessages(syncTarget, fieldMap, syncEvents) {
+                    !isPaused.value && networkMonitor.isOnline.value
+                }
+            } catch (e: CancellationException) {
+                // a cancellation of the polling itself is rethrown, any other CancellationException is a failed
+                // request that must not stop the polling
+                currentCoroutineContext().ensureActive()
+                Log.e(TAG, "Long polling request failed", e)
+                ChatMessageSyncer.SYNC_FAILED
+            }
+            if (outcome.syncFailed) {
                 // A failed request returns right away, e.g. with rejected credentials, which the server counts as a
                 // failed login. Without waiting, the next requests would follow at once until the server throttles.
-                failureDelayMillis = if (outcome.syncFailed) {
-                    waitAfterFailedRequest(failureDelayMillis)
-                } else {
-                    LONG_POLLING_FAILURE_INITIAL_DELAY
-                }
-
-                val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
-                    internalConversationId,
-                    threadId
-                ).toInt()
-
-                // update field map vars for next cycle
-                fieldMap = getFieldMap(
-                    lookIntoFuture = true,
-                    timeout = 30,
-                    includeLastKnown = false,
-                    lastKnown = newestMessage
-                )
+                // It is repeated as it was, so a failed first long poll keeps its timeout of 0.
+                failureDelayMillis = waitAfterFailedRequest(failureDelayMillis)
+            } else {
+                timeout = LONG_POLLING_TIMEOUT_SECONDS
+                failureDelayMillis = LONG_POLLING_FAILURE_INITIAL_DELAY
             }
         }
     }
@@ -367,7 +375,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
         while (true) {
             delay(INSURANCE_REQUEST_DELAY)
-            if (itIsPaused) {
+            if (isPaused.value) {
                 // ChatViewModel.onResume fetches right away when the chat comes back to the foreground
                 Log.d(TAG, "skip insurance request while paused")
                 continue
@@ -420,7 +428,7 @@ class OfflineFirstChatRepository @Inject constructor(
             fromMessageId = lastHttpSyncedMessageId,
             limit = 200,
             lastCommonRead = newXChatLastCommonRead,
-            markNotificationsAsRead = !itIsPaused,
+            markNotificationsAsRead = !isPaused.value,
             events = syncEvents
         )
         return outcome.persistedNewMessages
@@ -611,11 +619,11 @@ class OfflineFirstChatRepository @Inject constructor(
         syncer.isUntranslatedSystemMessage(messagesJson)
 
     override fun handleOnPause() {
-        itIsPaused = true
+        isPaused.value = true
     }
 
     override fun handleOnResume() {
-        itIsPaused = false
+        isPaused.value = false
     }
 
     override fun handleOnStop() {
@@ -1278,7 +1286,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     companion object {
         val TAG: String = OfflineFirstChatRepository::class.java.simpleName
-        private const val HALF_SECOND = 500L
+        private const val LONG_POLLING_TIMEOUT_SECONDS = 30
         private const val LONG_POLLING_FAILURE_INITIAL_DELAY = 1_000L
         private const val LONG_POLLING_FAILURE_MAX_DELAY = 60_000L
         private const val DEFAULT_MESSAGES_LIMIT = 100

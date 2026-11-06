@@ -27,12 +27,14 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 /**
@@ -714,13 +716,28 @@ class ChatMessageSyncer @Inject constructor(
      * [MAX_PULL_ATTEMPTS] times with a linearly growing delay in between. The requested limit is
      * kept across retries: a background catch-up that succeeds on a later attempt must still
      * create a full chat block, and backing off in time rather than in payload size also keeps a
-     * struggling or rate-limiting server from being hammered.
+     * struggling or rate-limiting server from being hammered. Cancelling the caller also ends the
+     * retries, e.g. a long poll of a chat that is closed.
+     * A failed request is only retried while [canRetry] returns true, e.g. a long poll is not
+     * retried while the chat is paused.
      */
-    fun pullMessagesFlow(target: SyncTarget, fieldMap: HashMap<String, Int>): Flow<ChatPullResult> =
+    fun pullMessagesFlow(
+        target: SyncTarget,
+        fieldMap: HashMap<String, Int>,
+        canRetry: () -> Boolean = { true }
+    ): Flow<ChatPullResult> =
         flow {
             var attempts = 1
+            var lastError: Throwable? = null
+            var retryAllowed = true
 
             while (attempts < MAX_PULL_ATTEMPTS) {
+                val error = lastError
+                if (error != null && !retryAllowed) {
+                    emit(ChatPullResult.Error(error))
+                    return@flow
+                }
+
                 runCatching {
                     network.pullChatMessages(target.credentials, target.urlForChatting, fieldMap)
                 }.fold(
@@ -740,15 +757,21 @@ class ChatMessageSyncer @Inject constructor(
                     },
                     onFailure = { e ->
                         Log.e(TAG, "Attempt $attempts failed", e)
+                        lastError = e
                         attempts++
                         if (attempts < MAX_PULL_ATTEMPTS) {
-                            delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
+                            retryAllowed = canRetry()
+                            if (retryAllowed) {
+                                delay(PULL_RETRY_DELAY_MILLIS * (attempts - 1))
+                                // asked again, as e.g. the chat may have been paused during the backoff
+                                retryAllowed = canRetry()
+                            }
                         }
                     }
                 )
             }
 
-            emit(ChatPullResult.Error(IllegalStateException("All attempts failed")))
+            emit(ChatPullResult.Error(lastError ?: IllegalStateException("All attempts failed")))
         }.flowOn(Dispatchers.IO)
 
     /**
@@ -758,7 +781,8 @@ class ChatMessageSyncer @Inject constructor(
     suspend fun pullAndPersistMessages(
         target: SyncTarget,
         fieldMap: HashMap<String, Int>,
-        events: Events = NO_EVENTS
+        events: Events = NO_EVENTS,
+        canRetry: () -> Boolean = { true }
     ): SyncOutcome {
         val isLongPoll = (fieldMap["timeout"] ?: 0) > 0
         if (!isLongPoll) events.onLoadingChanged(true)
@@ -770,9 +794,13 @@ class ChatMessageSyncer @Inject constructor(
             val queriedMessageId = fieldMap["lastKnownMessageId"]
             val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
-            return when (val result = pullMessagesFlow(target, fieldMap).first()) {
+            return when (val result = pullMessagesFlow(target, fieldMap, canRetry).first()) {
                 is ChatPullResult.Success ->
-                    handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                    // the messages and their chat block are written in several steps, a cancellation in between
+                    // would leave persisted messages that no chat block covers
+                    withContext(NonCancellable) {
+                        handleSuccessfulPull(target, result, queriedMessageId, lookIntoFuture, events)
+                    }
 
                 is ChatPullResult.NotModified -> {
                     Log.d(TAG, "Server returned NOT_MODIFIED, nothing to update")
@@ -1144,7 +1172,7 @@ class ChatMessageSyncer @Inject constructor(
         val NO_EVENTS: Events = object : Events {}
 
         private val NOTHING_SYNCED = SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null)
-        private val SYNC_FAILED =
+        internal val SYNC_FAILED =
             SyncOutcome(persistedNewMessages = false, newestPersistedMessageId = null, syncFailed = true)
 
         val CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES = setOf(
