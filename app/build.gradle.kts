@@ -367,6 +367,7 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:1.7.0")
     androidTestImplementation("org.mockito:mockito-android:5.24.0")
     testImplementation("androidx.work:work-testing:$workVersion")
+    testImplementation("androidx.concurrent:concurrent-futures:1.2.0")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion") {
         exclude(group = "com.android.support", module = "support-annotations")

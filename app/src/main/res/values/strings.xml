@@ -691,6 +691,7 @@ How to translate with transifex:
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
+    <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_upload_from_device">Upload from device</string>
     <string name="nc_gallery">Gallery</string>
 
