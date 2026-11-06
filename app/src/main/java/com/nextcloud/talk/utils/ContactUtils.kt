@@ -21,6 +21,7 @@ object ContactUtils {
     const val MAX_CONTACT_LIMIT = 50
     const val CACHE_MEMORY_SIZE_PERCENTAGE = 0.1
     const val CACHE_DISK_SIZE_PERCENTAGE = 0.02
+    private const val FALLBACK_VCARD_NAME = "contact"
 
     fun getDisplayNameFromDeviceContact(context: Context, id: String?): String? {
         var displayName: String? = null
@@ -58,7 +59,10 @@ object ContactUtils {
             context.contentResolver.query(contactUri, null, null, null, null)?.use { cursor ->
                 if (!cursor.moveToFirst()) return@use null
                 val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                val fileName = getDisplayNameFromDeviceContact(context, id) + ".vcf"
+                val pickedName = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+                    .takeIf { it >= 0 }
+                    ?.let { cursor.getString(it) }
+                val fileName = vcfFileName(getDisplayNameFromDeviceContact(context, id), pickedName)
                 val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
                 if (file == null) {
                     Log.e(TAG, "Refused to save contact with unsafe name: $fileName")
@@ -68,6 +72,10 @@ object ContactUtils {
                 file
             }
         }
+
+    /** The vCard file name for the first of [names] that is not blank, so a contact without a name still gets one. */
+    fun vcfFileName(vararg names: String?): String =
+        (names.firstOrNull { !it.isNullOrBlank() } ?: FALLBACK_VCARD_NAME) + ".vcf"
 
     private fun writeContactToVcfFile(context: Context, cursor: Cursor, file: File) {
         val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY))
