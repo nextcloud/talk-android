@@ -50,7 +50,7 @@
     <string name="create_conversation">Opret samtale</string>
     <string name="create_issue">Opret problem</string>
     <string name="custom">Brugerdefineret</string>
-    <string name="danger_zone">Farezone</string>
+    <string name="danger_zone">Risikable handlinger</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="default_room">Standard</string>
     <string name="default_room_preset">Send beskeder, opret tråde, og start tale- og videoopkald</string>
