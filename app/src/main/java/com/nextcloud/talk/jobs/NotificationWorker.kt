@@ -9,6 +9,7 @@
 package com.nextcloud.talk.jobs
 
 import android.Manifest
+import android.app.ActivityOptions
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -23,6 +24,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.service.notification.StatusBarNotification
+import android.telecom.DisconnectCause
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
@@ -55,6 +57,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -131,10 +134,14 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
-    @Inject lateinit var logger: Logger
+    @Inject
+    lateinit var logger: Logger
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @JvmField
     @Inject
@@ -255,6 +262,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
             bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
             bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, user.baseUrl)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
             val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -301,6 +309,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
 
             val pendingIntentFlags = pendingIntentFlags()
+            // captured for the Telecom answer callback, which runs after this worker is done
+            val callNotificationId = pushMessage.timestamp.toInt()
+            val callTitle = pushMessage.subject
 
             val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
@@ -322,8 +333,25 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 requestCode + DECLINE_CALL_REQUEST_OFFSET,
                 Intent(applicationContext, DeclineCallReceiver::class.java).apply {
                     putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+                    putExtra(KEY_ROOM_TOKEN, pushMessage.id)
                 },
                 pendingIntentFlags
+            )
+
+            telecomManager.addIncomingCall(
+                displayName = conversation.displayName.ifEmpty {
+                    applicationContext.getString(R.string.nc_app_product_name)
+                },
+                roomToken = pushMessage.id ?: "",
+                isVideo = isVideoCall,
+                onAnswerCall = { openCallAnsweredViaTelecom(primaryAnswerIntent, callNotificationId, callTitle) },
+                onRejectCall = {
+                    try {
+                        declinePendingIntent.send()
+                    } catch (e: PendingIntent.CanceledException) {
+                        Log.e(TAG, "Decline pending intent canceled", e)
+                    }
+                }
             )
 
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
@@ -1108,6 +1136,59 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun parseThreadId(objectId: String?): Long? = objectId?.split("/")?.getOrNull(2)?.toLongOrNull()
 
+    /**
+     * Telecom answered the call, e.g. from a Bluetooth headset, car or watch. The app is usually in the background
+     * then, and Android 14+ only lets it start an activity with an explicit opt-in, and only while it is allowed to
+     * at all (e.g. while the full-screen call screen is visible). As a fallback, the ringing call notification is
+     * replaced by a silent one whose full-screen intent opens the call: Android starts it directly while the device
+     * is locked, otherwise it can be tapped. CallActivity cancels that notification once it starts, and is
+     * singleTask, so being started by both paths is fine.
+     */
+    private fun openCallAnsweredViaTelecom(answerIntent: PendingIntent, notificationId: Int, title: String?) {
+        try {
+            answerIntent.send(applicationContext, 0, null, null, null, null, backgroundActivityStartOptions())
+        } catch (e: PendingIntent.CanceledException) {
+            logger.e(TAG, "Answer pending intent canceled", e)
+        }
+
+        val notification = NotificationCompat.Builder(
+            applicationContext,
+            NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        )
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setSmallIcon(R.drawable.ic_call_black_24dp)
+            .setContentTitle(title?.let { EmojiCompat.get().process(it) })
+            .setContentText(applicationContext.getString(R.string.nc_call_ongoing_notification_content))
+            .setContentIntent(answerIntent)
+            .setFullScreenIntent(answerIntent, true)
+            .setSilent(true)
+            .setOngoing(true)
+            .setAutoCancel(true)
+            .build()
+        sendNotification(notificationId, notification)
+    }
+
+    private fun backgroundActivityStartOptions(): Bundle? =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA ->
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+                    )
+                    .toBundle()
+
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+                @Suppress("DEPRECATION")
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                    .toBundle()
+
+            else -> null
+        }
+
     private fun sendNotification(notificationId: Int, notification: Notification) {
         logger.d(TAG, "show notification with id $notificationId")
         if (ActivityCompat.checkSelfPermission(
@@ -1130,6 +1211,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun removeNotification(notificationId: Int) {
         logger.d(TAG, "removed notification with id $notificationId")
         notificationManager.cancel(notificationId)
+    }
+
+    /**
+     * Withdraws the ringing Telecom call registered for this push. Only acts while the call notification is still
+     * showing, i.e. the user has neither answered nor declined on this device; TelecomManager additionally ignores
+     * calls that were already answered or activated.
+     */
+    private fun endRingingTelecomCall(disconnectCause: Int) {
+        if (NotificationUtils.isNotificationVisible(context, pushMessage.timestamp.toInt())) {
+            telecomManager.endRingingCall(pushMessage.id, disconnectCause)
+        }
     }
 
     private fun checkIfCallIsActive(conversation: ConversationModel) {
@@ -1176,12 +1268,14 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
                     if (inCallOnDifferentDevice) {
                         Log.d(TAG, "inCallOnDifferentDevice is true")
+                        endRingingTelecomCall(DisconnectCause.REMOTE)
                         removeNotification(pushMessage.timestamp.toInt())
                     }
 
                     if (!hasParticipantsInCall) {
                         showMissedCallNotification(conversation)
                         Log.d(TAG, "no participants in call")
+                        endRingingTelecomCall(DisconnectCause.MISSED)
                         removeNotification(pushMessage.timestamp.toInt())
                     }
 
@@ -1196,6 +1290,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     if (isCallNotificationVisible) {
                         showMissedCallNotification(conversation)
                     }
+                    endRingingTelecomCall(DisconnectCause.MISSED)
                     removeNotification(pushMessage.timestamp.toInt())
                 }
 
@@ -1205,6 +1300,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                         showMissedCallNotification(conversation)
                     }
 
+                    endRingingTelecomCall(DisconnectCause.MISSED)
                     removeNotification(pushMessage.timestamp.toInt())
                 }
             })
