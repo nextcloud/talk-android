@@ -21,16 +21,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isFinite
 import org.webrtc.EglBase
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.math.ceil
 import android.util.Log
 import com.nextcloud.talk.activities.ParticipantUiState
+
+/** Minimum height of a participant tile, also used for the tiles in the participant bar of the speaker view. */
+val PARTICIPANT_TILE_MIN_HEIGHT = 100.dp
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("LongParameterList", "LongMethod")
@@ -40,6 +50,8 @@ fun ParticipantGrid(
     eglBase: EglBase?,
     participantUiStates: List<ParticipantUiState>,
     isVoiceOnlyCall: Boolean,
+    speakers: List<String> = emptyList(),
+    onVisibleSessionKeysChanged: (Set<String>) -> Unit = {},
     onClick: () -> Unit,
     onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
@@ -48,7 +60,26 @@ fun ParticipantGrid(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    val minItemHeight = 100.dp
+    val gridState = rememberLazyGridState()
+
+    LaunchedEffect(gridState) {
+        snapshotFlow { gridState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? String }.toSet() }
+            .distinctUntilChanged()
+            .collect { onVisibleSessionKeysChanged(it) }
+    }
+
+    // A lazy grid keeps its first visible item in place when items move in front of it, so the grid has to be
+    // scrolled explicitly to keep showing the top, where promoted speakers are placed. Whether the grid was at the
+    // top is read in the composition with the new speaker order, before the grid is laid out with it.
+    val isScrolledToTop by remember {
+        derivedStateOf { gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0 }
+    }
+    val wasScrolledToTop = isScrolledToTop
+    LaunchedEffect(speakers) {
+        if (wasScrolledToTop) {
+            gridState.requestScrollToItem(0)
+        }
+    }
 
     if (participantUiStates.isEmpty()) return
 
@@ -82,9 +113,9 @@ fun ParticipantGrid(
         val itemHeight = if (hasBoundedHeight) {
             val gridAvailableHeight = maxHeight - totalVerticalSpacing - totalVerticalPadding
             val rawItemHeight = gridAvailableHeight / rows
-            maxOf(rawItemHeight, minItemHeight)
+            maxOf(rawItemHeight, PARTICIPANT_TILE_MIN_HEIGHT)
         } else {
-            minItemHeight
+            PARTICIPANT_TILE_MIN_HEIGHT
         }
 
         val gridHeight = if (hasBoundedHeight) {
@@ -95,6 +126,7 @@ fun ParticipantGrid(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
+            state = gridState,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(gridHeight),
@@ -103,15 +135,7 @@ fun ParticipantGrid(
             contentPadding = PaddingValues(vertical = edgePadding, horizontal = edgePadding)
         ) {
             items(
-                items = participantUiStates.sortedWith(
-                    compareBy(
-                        { !it.isScreenStreamEnabled },
-                        { !it.isStreamEnabled },
-                        { !it.isAudioEnabled },
-                        { !it.raisedHand },
-                        { !it.isConnected }
-                    )
-                ),
+                items = sortParticipants(participantUiStates, speakers),
                 key = { it.sessionKey!! }
             ) { participant ->
                 ParticipantTile(

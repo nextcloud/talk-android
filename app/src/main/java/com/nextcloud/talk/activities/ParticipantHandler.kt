@@ -53,7 +53,11 @@ class ParticipantHandler(
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            handleStreamChange(mediaStream)
+            // A renegotiation can add the new stream before the old one is removed, so only the current stream
+            // clears the state
+            if (mediaStream === _uiState.value.mediaStream) {
+                handleStreamChange(null)
+            }
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
@@ -69,7 +73,10 @@ class ParticipantHandler(
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            handleScreenStreamChange(mediaStream)
+            if (mediaStream === _uiState.value.screenMediaStream) {
+                handleScreenStreamChange(null)
+                onParticipantUnshareScreen.invoke(_uiState.value.sessionKey)
+            }
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
@@ -158,6 +165,14 @@ class ParticipantHandler(
             _uiState.update { it.copy(isStreamEnabled = false) }
         }
 
+        override fun onSpeaking() {
+            _uiState.update { it.copy(isSpeaking = true) }
+        }
+
+        override fun onStoppedSpeaking() {
+            _uiState.update { it.copy(isSpeaking = false) }
+        }
+
         override fun onNickChanged(nick: String?) {
             _uiState.update { it.copy(nick = nick) }
         }
@@ -189,6 +204,9 @@ class ParticipantHandler(
         }
 
         this.peerConnection = peerConnection
+
+        // "stoppedSpeaking" can no longer be received from the previous peer connection.
+        _uiState.update { it.copy(isSpeaking = false) }
 
         if (this.peerConnection == null) {
             // special case when participant has no permission. -> no streams are transmitted but he must be shown as

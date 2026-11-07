@@ -387,6 +387,20 @@ class PeerConnectionWrapperTest {
 
         Mockito.verify(mockedDataChannelMessageListener).onVideoOff()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
+
+        statusDataChannelObserverArgumentCaptor.value.onMessage(
+            dataChannelMessageToBuffer(DataChannelMessageDto("speaking"))
+        )
+
+        Mockito.verify(mockedDataChannelMessageListener).onSpeaking()
+        Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
+
+        statusDataChannelObserverArgumentCaptor.value.onMessage(
+            dataChannelMessageToBuffer(DataChannelMessageDto("stoppedSpeaking"))
+        )
+
+        Mockito.verify(mockedDataChannelMessageListener).onStoppedSpeaking()
+        Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
     }
 
     @Test
