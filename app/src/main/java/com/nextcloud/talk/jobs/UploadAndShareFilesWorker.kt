@@ -61,8 +61,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
+import java.net.HttpURLConnection
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -106,6 +108,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     lateinit var conversationName: String
     lateinit var currentUser: User
     private var isChunkedUploading = false
+
+    // true when the upload itself shared the file, i.e. via postConversationAttachment
+    private var isSharedByUpload = false
     private var file: File? = null
     private var chunkedFileUploader: ChunkedFileUploader? = null
     private var referenceId: String? = null
@@ -191,9 +196,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
 
             if (uploadSuccess) {
-                // useConversationSubfolders already shares as part of uploadFile() via
-                // postConversationAttachment, so only share explicitly for the plain upload path.
-                val shareSuccess = useConversationSubfolders || shareFile(remotePath, metaData)
+                // The conversation subfolder upload already shares via postConversationAttachment,
+                // so only share explicitly for an upload into the attachment folder.
+                val shareSuccess = isSharedByUpload ||
+                    shareFile(remotePath, metaData, sharePermissions(useConversationSubfolders, allowUpdate))
                 if (shareSuccess) {
                     updatePlaceholderStatus(SendStatus.SENT_PENDING_ACK)
                     _uploadCompletedFlow.tryEmit(roomToken)
@@ -270,11 +276,24 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         remotePath: String,
         useConversationSubfolders: Boolean,
         allowUpdate: Boolean
-    ): Boolean =
-        if (file == null) {
-            false
-        } else if (useConversationSubfolders) {
+    ): Boolean {
+        val trySubfolders = file != null && useConversationSubfolders
+        val subfolderUploadSuccess = if (trySubfolders) {
             uploadUsingConversationSubfolders(sourceFileUri, metaData, allowUpdate)
+        } else {
+            null
+        }
+        isSharedByUpload = subfolderUploadSuccess != null
+        if (trySubfolders && subfolderUploadSuccess == null) {
+            // The server answered 501 despite the capability, e.g. because the conversation has message
+            // expiration enabled. Upload to the attachment folder and share the file from there instead.
+            Log.i(TAG, "Conversation subfolders not available, using the attachment folder")
+        }
+
+        return if (file == null) {
+            false
+        } else if (subfolderUploadSuccess != null) {
+            subfolderUploadSuccess
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
             val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
@@ -299,6 +318,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .upload(sourceFileUri, fileName, remotePath, null)
             blockingUpload(observable)
         }
+    }
 
     // unlike .blockingFirst(), keeps a Disposable so onStopped() can cancel the underlying OkHttp call
     private fun blockingUpload(observable: Observable<Boolean>): Boolean {
@@ -328,11 +348,17 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return result
     }
 
+    /**
+     * Uploads into the conversation's Draft folder and shares the file via postConversationAttachment.
+     *
+     * @return null when the server answers the probe with 501 despite the capability, the
+     * attachment folder has to be used then.
+     */
     private fun uploadUsingConversationSubfolders(
         sourceFileUri: Uri,
         metaData: String?,
         allowUpdate: Boolean
-    ): Boolean =
+    ): Boolean? =
         runBlocking {
             val credentials = ApiUtils.getCredentials(
                 currentUser.username,
@@ -344,11 +370,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 this.allowUpdate = allowUpdate
             }
 
-            val probeResponse = ncApiCoroutines.probeConversationAttachmentFolder(
-                credentials,
-                ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
-                fileNames
-            )
+            val probeResponse = nullIfNotImplemented {
+                ncApiCoroutines.probeConversationAttachmentFolder(
+                    credentials,
+                    ApiUtils.getUrlForChatAttachmentFolder(ApiUtils.API_V1, currentUser.baseUrl, roomToken),
+                    fileNames
+                )
+            } ?: return@runBlocking null
 
             val draftFolderPath = probeResponse.ocs?.data?.folder
             if (draftFolderPath.isNullOrEmpty()) {
@@ -396,7 +424,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
 
     @SuppressLint("CheckResult")
-    private fun shareFile(remotePath: String, metaData: String?): Boolean =
+    private fun shareFile(remotePath: String, metaData: String?, permissions: Int?): Boolean =
         try {
             ncApi.createRemoteShare(
                 ApiUtils.getCredentials(currentUser.username, currentUser.token),
@@ -405,7 +433,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 roomToken,
                 "10",
                 metaData,
-                referenceId.orEmpty()
+                referenceId.orEmpty(),
+                permissions
             ).blockingFirst()
             true
         } catch (e: NoSuchElementException) {
@@ -485,6 +514,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         private const val COMPRESS_IMAGES = "COMPRESS_IMAGES"
         private const val ALLOW_UPDATE = "ALLOW_UPDATE"
         private const val CHUNK_UPLOAD_THRESHOLD_SIZE: Long = 1024 * 1024
+        private const val SHARE_PERMISSION_READ = 1
+        private const val SHARE_PERMISSION_UPDATE = 2
+        private const val SHARE_PERMISSION_SHARE = 16
 
         // Total attempts allowed for a single upload (1 initial run + retries) before giving up on a
         // transient network failure and marking the placeholder FAILED.
@@ -501,6 +533,32 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             extraBufferCapacity = 1
         )
         val uploadCompletedFlow: SharedFlow<String> = _uploadCompletedFlow
+
+        /**
+         * The user only picks view only or editable when the conversation subfolder capability is present,
+         * so only an attachment folder fallback after a 501 sends permissions. Otherwise the server applies
+         * its default share permissions.
+         */
+        internal fun sharePermissions(hasConversationSubfolders: Boolean, allowUpdate: Boolean): Int? =
+            when {
+                !hasConversationSubfolders -> null
+                allowUpdate -> SHARE_PERMISSION_READ or SHARE_PERMISSION_UPDATE or SHARE_PERMISSION_SHARE
+                else -> SHARE_PERMISSION_READ or SHARE_PERMISSION_SHARE
+            }
+
+        /**
+         * Returns null when the server answers 501, which the conversation subfolder endpoints do despite
+         * the capability when the conversation can not use them, e.g. because of message expiration.
+         */
+        internal suspend fun <T> nullIfNotImplemented(request: suspend () -> T): T? =
+            try {
+                request()
+            } catch (e: HttpException) {
+                if (e.code() != HttpURLConnection.HTTP_NOT_IMPLEMENTED) {
+                    throw e
+                }
+                null
+            }
 
         @OptIn(ExperimentalCoroutinesApi::class)
         fun clearUploadCompletedReplay() {

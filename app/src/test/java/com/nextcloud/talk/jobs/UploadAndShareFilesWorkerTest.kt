@@ -20,13 +20,20 @@ import androidx.work.testing.WorkManagerTestInitHelper
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.runBlocking
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import retrofit2.HttpException
+import retrofit2.Response
+import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
+import java.net.HttpURLConnection.HTTP_NOT_IMPLEMENTED
 import java.util.UUID
 
 /**
@@ -55,6 +62,35 @@ class UploadAndShareFilesWorkerTest {
         verify(chatDao).updateTempMessageSendStatus(CONVERSATION_ID, "ref-a", SendStatus.FAILED)
         verify(chatDao).updateTempMessageSendStatus(CONVERSATION_ID, "ref-b", SendStatus.FAILED)
     }
+
+    @Test
+    fun `a 501 of a conversation subfolder endpoint falls back instead of failing`() {
+        val result = runBlocking {
+            UploadAndShareFilesWorker.nullIfNotImplemented<String> { throw httpException(HTTP_NOT_IMPLEMENTED) }
+        }
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `other errors of a conversation subfolder endpoint still fail the upload`() {
+        val error = runCatching {
+            runBlocking {
+                UploadAndShareFilesWorker.nullIfNotImplemented<String> { throw httpException(HTTP_INTERNAL_ERROR) }
+            }
+        }.exceptionOrNull()
+
+        assertEquals(HTTP_INTERNAL_ERROR, (error as HttpException).code())
+    }
+
+    @Test
+    fun `the fallback share keeps the permissions the user picked`() {
+        assertEquals(READ or SHARE, UploadAndShareFilesWorker.sharePermissions(true, allowUpdate = false))
+        assertEquals(READ or UPDATE or SHARE, UploadAndShareFilesWorker.sharePermissions(true, allowUpdate = true))
+        assertNull(UploadAndShareFilesWorker.sharePermissions(false, allowUpdate = false))
+    }
+
+    private fun httpException(code: Int): HttpException = HttpException(Response.error<Any>(code, "".toResponseBody()))
 
     private fun upload(referenceId: String): UUID =
         UploadAndShareFilesWorker.upload(
@@ -108,5 +144,8 @@ class UploadAndShareFilesWorkerTest {
         private const val CONVERSATION_ID = "1@room"
         private const val WAIT_MILLIS = 30_000L
         private const val POLL_MILLIS = 20L
+        private const val READ = 1
+        private const val UPDATE = 2
+        private const val SHARE = 16
     }
 }
