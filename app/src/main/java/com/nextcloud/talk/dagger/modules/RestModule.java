@@ -20,6 +20,7 @@ import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.RejectedCredentialsInterceptor;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.serialization.KotlinxSerializationConverterFactory;
 import com.nextcloud.talk.utils.ssl.KeyManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 import com.nextcloud.talk.utils.ssl.TrustManager;
@@ -108,6 +109,7 @@ public class RestModule {
             .client(httpClient)
             .baseUrl("https://nextcloud.com")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(KotlinxSerializationConverterFactory.create())
             .addConverterFactory(LoganSquareConverterFactory.create());
 
         return retrofitBuilder.build();

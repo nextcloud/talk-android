@@ -11,13 +11,17 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject(serializeNullObjects = true)
+@Serializable
 data class GenericMetaDto(
     @JsonField(name = ["status"])
     var status: String? = null,
     @JsonField(name = ["statuscode"])
+    @SerialName("statuscode")
     var statusCode: Int = 0,
     @JsonField(name = ["message"])
     var message: String? = null

@@ -7,19 +7,10 @@
 package com.nextcloud.talk.models.json.tags
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
-@JsonObject
-data class ConversationTagOCS(
-    @JsonField(name = ["meta"])
-    var meta: GenericMetaDto?,
-    @JsonField(name = ["data"])
-    var data: ConversationTagDto? = null
-) : Parcelable {
-    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
-}
+@Serializable
+data class ConversationTagOCS(var meta: GenericMetaDto? = null, var data: ConversationTagDto? = null) : Parcelable
