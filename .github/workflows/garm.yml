@@ -52,6 +52,9 @@ jobs:
                     distribution: "temurin"
                     java-version: 25
 
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+
             -   name: create AVD and generate snapshot for caching
                 uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
                 with:
