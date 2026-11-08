@@ -86,11 +86,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     }
 
     private fun executeDownload(body: ResponseBody?, fileId: String?, fileName: String): Result {
-        val targetFile = if (fileId.isNullOrEmpty()) {
-            FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileName)
-        } else {
-            FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileId, fileName)
-        }
+        val targetFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileId, fileName)
         if (body == null || targetFile == null) {
             if (body == null) {
                 Log.e(TAG, "Response body when downloading $fileName is null!")

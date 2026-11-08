@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Anruf ist aktiv</string>
     <string name="nc_call_ongoing_notification_end_action">Anruf beenden</string>
     <string name="nc_call_ongoing_notification_return_action">Zurück zum Anruf</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Sie teilen Ihren Bildschirm</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
@@ -231,6 +232,7 @@
     <string name="nc_confirm">Bestätigen</string>
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contact_chat_start">Start</string>
+    <string name="nc_contact_chat_start_message">Sie haben noch keine Unterhaltung mit %1$s geführt. Wenn Sie eine starten, wird sie zur Unterhaltungsliste von beiden hinzugefügt.</string>
     <string name="nc_contact_chat_start_title">Unterhaltung beginnen?</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_created_invalid_participants">Einige Teilnehmer konnten nicht hinzugefügt werden</string>
@@ -279,6 +281,7 @@
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_deep_link_join">Beitreten</string>
+    <string name="nc_deep_link_join_message">Diese Unterhaltung auf %1$s ist nicht in Ihrer Unterhaltungsliste. Durch öffnen, werden Sie möglicherweise als Teilnehmer hinzugefügt.</string>
     <string name="nc_deep_link_join_title">Der Unterhaltung beitreten?</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_all">Alle löschen</string>
@@ -538,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Bildschirmfreigabe konnte nicht gestartet werden.</string>
+    <string name="nc_screen_sharing_not_allowed">Sie haben nicht die Berechtigung, Ihren Bildschirm zu teilen</string>
+    <string name="nc_screen_sharing_not_connected">Sobald der Anruf verbunden ist, kann der Bildschirm freigegeben werden</string>
+    <string name="nc_screen_sharing_permissions_missing">Um den Bildschirm zu teilen, bitte Benachrichtigungen und Mikrofonzugriff zulassen</string>
     <string name="nc_search">Suchen</string>
     <string name="nc_search_clear">Suche löschen</string>
     <string name="nc_search_location">Suchort</string>
@@ -657,6 +664,7 @@
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_shortcut_conversation_deleted">Diese Unterhaltung existiert nicht mehr</string>
+    <string name="nc_shortcut_conversation_not_found">Die Unterhaltung der Verknüpfung wurde nicht gefunden</string>
     <string name="nc_shortcut_created">Tastaturkürzel erstellt</string>
     <string name="nc_show_ecosystem_description">Nextcloud-App-Vorschläge im Konten-Auswahldialog</string>
     <string name="nc_show_ecosystem_title">App-Umschalter anzeigen</string>
@@ -664,7 +672,10 @@
     <string name="nc_show_notification_warning_title">Zeige regelmäßige Benachrichtigungswarnung</string>
     <string name="nc_sort_by">Sortieren nach</string>
     <string name="nc_start_group_chat">Gruppenchat starten</string>
+    <string name="nc_start_screen_sharing">Bildschirm teilen</string>
     <string name="nc_start_time">Startzeit</string>
+    <string name="nc_stop_screen_sharing">Bildschirmfreigabe beenden</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Soll die Bildschirmfreigabe beendet werden?</string>
     <string name="nc_switch_account">Konto wechseln</string>
     <string name="nc_take_video">Ein Video aufnehmen</string>
     <string name="nc_team">Team</string>

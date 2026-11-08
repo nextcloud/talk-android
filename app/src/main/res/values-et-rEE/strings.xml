@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Kõne on pooleli</string>
     <string name="nc_call_ongoing_notification_end_action">Lõpeta kõne</string>
     <string name="nc_call_ongoing_notification_return_action">Tagasi kõne juurde</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Sa oled jagamas ekraanivaadet</string>
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>
@@ -280,7 +281,7 @@
     <string name="nc_date_header_today">Täna</string>
     <string name="nc_date_header_yesterday">Eile</string>
     <string name="nc_deep_link_join">Liitu</string>
-    <string name="nc_deep_link_join_message">See vestlus teenuses %1$s pole sinu vestluste loendis. Selle avamin võib sind lisada osalejaks.</string>
+    <string name="nc_deep_link_join_message">See vestlus teenuses %1$s pole sinu vestluste loendis. Selle avamine võib sind lisada osalejaks.</string>
     <string name="nc_deep_link_join_title">Kas liitud vestlustega?</string>
     <string name="nc_delete">Kustuta</string>
     <string name="nc_delete_all">Kustuta kõik</string>
@@ -540,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Ekraanivaate jagamise alustamine ei õnnestunud</string>
+    <string name="nc_screen_sharing_not_allowed">Sul pole õigust jagada ekraanivaadet</string>
+    <string name="nc_screen_sharing_not_connected">Võid oma ekraanivaadet jagada niipea, kui kõne on ühendatud</string>
+    <string name="nc_screen_sharing_permissions_missing">Ekraanivaate jagamiseks luba teavitused ja ligipääs mikrofonile</string>
     <string name="nc_search">Otsi</string>
     <string name="nc_search_clear">Tühjenda otsing</string>
     <string name="nc_search_location">Otsi asukohta</string>
@@ -669,6 +674,8 @@
     <string name="nc_start_group_chat">Alusta rühmavestlust</string>
     <string name="nc_start_screen_sharing">Jaga ekraanivaadet</string>
     <string name="nc_start_time">Algusaeg</string>
+    <string name="nc_stop_screen_sharing">Lõpeta ekraanivaate jagamine</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Kas sa kindlasti tahad lõpetada ekraanivaate jagamist?</string>
     <string name="nc_switch_account">Vaheta kasutajakontot</string>
     <string name="nc_take_video">Filmi</string>
     <string name="nc_team">Tiim</string>
