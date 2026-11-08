@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Glao ar siúl</string>
     <string name="nc_call_ongoing_notification_end_action">Cuir deireadh leis an nglao</string>
     <string name="nc_call_ongoing_notification_return_action">Fill ar an nglao</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Tá tú ag roinnt do scáileáin</string>
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
     <string name="nc_call_ringing">AG FUAIMNIÚ</string>
@@ -231,6 +232,8 @@
     <string name="nc_confirm">Deimhnigh</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
     <string name="nc_contact_chat_start">Tosaigh</string>
+    <string name="nc_contact_chat_start_message">Níl aon chomhrá agat le %1$s go fóill. Má chuireann tú ceann ar bun, cuirfear leis an liosta comhráite agaibh beirt é.</string>
+    <string name="nc_contact_chat_start_title">Cuir tús le comhrá?</string>
     <string name="nc_contacts_done">Déanta</string>
     <string name="nc_conversation_created_invalid_participants">Níorbh fhéidir roinnt rannpháirtithe a chur leis.</string>
     <string name="nc_conversation_created_invalid_participants_named">Níorbh fhéidir na rannpháirtithe seo a chur leis: %1$s</string>
@@ -278,6 +281,8 @@
     <string name="nc_date_header_today">Inniu</string>
     <string name="nc_date_header_yesterday">Inné</string>
     <string name="nc_deep_link_join">Glac páirt</string>
+    <string name="nc_deep_link_join_message">Níl an comhrá seo ar %1$s i do liosta comhráite. Má osclaíonn tú é, d’fhéadfá a bheith curtha leis mar rannpháirtí.</string>
+    <string name="nc_deep_link_join_title">Glac páirt sa chomhrá?</string>
     <string name="nc_delete">Scrios</string>
     <string name="nc_delete_all">Scrios go léir</string>
     <string name="nc_delete_call">Scrios an comhrá</string>
@@ -536,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Níorbh fhéidir comhroinnt scáileáin a thosú</string>
+    <string name="nc_screen_sharing_not_allowed">Níl cead agat do scáileán a roinnt</string>
+    <string name="nc_screen_sharing_not_connected">Is féidir leat do scáileán a roinnt nuair a bhíonn an glao ceangailte.</string>
+    <string name="nc_screen_sharing_permissions_missing">Chun do scáileán a roinnt, ceadaigh fógraí agus rochtain ar an micreafón</string>
     <string name="nc_search">Cuardach</string>
     <string name="nc_search_clear">Glan cuardach</string>
     <string name="nc_search_location">Cuardaigh suíomh</string>
@@ -655,6 +664,7 @@
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
     <string name="nc_shortcut_conversation_deleted">Níl an comhrá seo ann a thuilleadh</string>
+    <string name="nc_shortcut_conversation_not_found">Níor aimsíodh comhrá an aicearra</string>
     <string name="nc_shortcut_created">Aicearra cruthaithe</string>
     <string name="nc_show_ecosystem_description">Moltaí aip Nextcloud i ndialóg roghnóra cuntais</string>
     <string name="nc_show_ecosystem_title">Taispeáin athróir aip</string>
@@ -664,6 +674,8 @@
     <string name="nc_start_group_chat">Tosaigh comhrá grúpa</string>
     <string name="nc_start_screen_sharing">Comhroinn scáileán</string>
     <string name="nc_start_time">Am tosaithe</string>
+    <string name="nc_stop_screen_sharing">Stop comhroinnt seat scáileáin</string>
+    <string name="nc_stop_screen_sharing_confirm_message">An bhfuil tú cinnte gur mian leat stop a chur le do scáileán a roinnt?</string>
     <string name="nc_switch_account">Athraigh cuntas</string>
     <string name="nc_take_video">Glac físeán</string>
     <string name="nc_team">Foireann</string>
