@@ -7,13 +7,18 @@
 
 package com.nextcloud.talk.call.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -34,15 +40,17 @@ import kotlin.math.max
 
 private val speakerViewSpacing = 8.dp
 private const val PARTICIPANT_BAR_TILE_ASPECT_RATIO = 1.5f
-private val participantBarTilePeekWidth = 16.dp
+private val participantBarTileWidth = PARTICIPANT_TILE_MIN_HEIGHT * PARTICIPANT_BAR_TILE_ASPECT_RATIO
+private val participantBarTilePeekLength = 16.dp
 
 /**
- * Shows the promoted participant fullscreen, optionally above a horizontally scrollable bar with the other
- * participants.
+ * Shows the promoted participant fullscreen, optionally next to a scrollable bar with the other participants. The bar
+ * is shown below the promoted participant and scrolls horizontally in portrait, and is shown at the side and scrolls
+ * vertically in landscape.
  *
  * @param speakerViewOrder session keys of the promoted participant followed by the participants in the bar
  */
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 fun ParticipantSpeakerView(
     modifier: Modifier = Modifier,
@@ -82,39 +90,103 @@ fun ParticipantSpeakerView(
             .collect { onVisibleSessionKeysChanged(it) }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(speakerViewSpacing),
-        verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)
-    ) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    val promotedTile: @Composable (Modifier) -> Unit = { tileModifier ->
         key(promotedParticipant.sessionKey) {
             ParticipantTile(
                 participantUiState = promotedParticipant,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+                modifier = tileModifier,
                 eglBase = eglBase,
                 isVoiceOnlyCall = isVoiceOnlyCall,
                 onScreenShareIconClick = onScreenShareIconClick
             )
         }
+    }
 
-        // When the bar is hidden its participants are not composed, so their videos are not rendered
+    // When the bar is hidden its participants are not composed, so their videos are not rendered
+    val participantBar: @Composable () -> Unit = {
         if (isBarShown) {
-            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-                val tileWidth = participantBarTileWidth(availableWidth = maxWidth, tileCount = barParticipants.size)
+            ParticipantBar(
+                participants = barParticipants,
+                state = barState,
+                isVertical = isLandscape,
+                eglBase = eglBase,
+                isVoiceOnlyCall = isVoiceOnlyCall,
+                onScreenShareIconClick = onScreenShareIconClick
+            )
+        }
+    }
 
-                LazyRow(state = barState, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-                    items(items = barParticipants, key = { it.sessionKey!! }) { participant ->
-                        ParticipantTile(
-                            participantUiState = participant,
-                            modifier = Modifier.size(width = tileWidth, height = PARTICIPANT_TILE_MIN_HEIGHT),
-                            eglBase = eglBase,
-                            isVoiceOnlyCall = isVoiceOnlyCall,
-                            onScreenShareIconClick = onScreenShareIconClick
-                        )
-                    }
+    val containerModifier = modifier
+        .fillMaxSize()
+        .padding(speakerViewSpacing)
+    if (isLandscape) {
+        Row(modifier = containerModifier, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+            promotedTile(
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+            )
+            participantBar()
+        }
+    } else {
+        Column(modifier = containerModifier, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+            promotedTile(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            )
+            participantBar()
+        }
+    }
+}
+
+/**
+ * Scrollable bar with the participants that are not promoted, scrolling vertically at the side of the promoted
+ * participant or horizontally below it.
+ */
+@Suppress("LongParameterList")
+@Composable
+private fun ParticipantBar(
+    participants: List<ParticipantUiState>,
+    state: LazyListState,
+    isVertical: Boolean,
+    eglBase: EglBase?,
+    isVoiceOnlyCall: Boolean,
+    onScreenShareIconClick: ((String?) -> Unit?)?
+) {
+    val tile: @Composable (ParticipantUiState, Modifier) -> Unit = { participant, tileModifier ->
+        ParticipantTile(
+            participantUiState = participant,
+            modifier = tileModifier,
+            eglBase = eglBase,
+            isVoiceOnlyCall = isVoiceOnlyCall,
+            onScreenShareIconClick = onScreenShareIconClick
+        )
+    }
+
+    if (isVertical) {
+        BoxWithConstraints(modifier = Modifier.fillMaxHeight()) {
+            val tileHeight = participantBarTileLength(
+                availableLength = maxHeight,
+                tileCount = participants.size,
+                preferredLength = PARTICIPANT_TILE_MIN_HEIGHT
+            )
+
+            LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+                items(items = participants, key = { it.sessionKey!! }) { participant ->
+                    tile(participant, Modifier.size(width = participantBarTileWidth, height = tileHeight))
+                }
+            }
+        }
+    } else {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            val tileWidth = participantBarTileLength(availableLength = maxWidth, tileCount = participants.size)
+
+            LazyRow(state = state, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+                items(items = participants, key = { it.sessionKey!! }) { participant ->
+                    tile(participant, Modifier.size(width = tileWidth, height = PARTICIPANT_TILE_MIN_HEIGHT))
                 }
             }
         }
@@ -122,37 +194,38 @@ fun ParticipantSpeakerView(
 }
 
 /**
- * Returns the width of the tiles in the participant bar.
+ * Returns the length of the tiles in the participant bar along its scroll direction, which is the width for a
+ * horizontal bar and the height for a vertical bar.
  *
  * When not all tiles fit and the tile at the edge is cut in a clearly visible way, the user can already see that the
- * bar is scrollable and the tiles keep their preferred width. Otherwise the tiles are made a bit narrower, so a few
+ * bar is scrollable and the tiles keep their preferred length. Otherwise the tiles are made a bit shorter, so a few
  * pixels of the next tile are visible, or all tiles fit when only a few pixels were missing.
  */
-fun participantBarTileWidth(
-    availableWidth: Dp,
+fun participantBarTileLength(
+    availableLength: Dp,
     tileCount: Int,
-    preferredWidth: Dp = PARTICIPANT_TILE_MIN_HEIGHT * PARTICIPANT_BAR_TILE_ASPECT_RATIO,
+    preferredLength: Dp = participantBarTileWidth,
     spacing: Dp = speakerViewSpacing,
-    peekWidth: Dp = participantBarTilePeekWidth
+    peekLength: Dp = participantBarTilePeekLength
 ): Dp {
-    val available = availableWidth.value
-    val preferred = preferredWidth.value
+    val available = availableLength.value
+    val preferred = preferredLength.value
     val gap = spacing.value
-    val peek = peekWidth.value
+    val peek = peekLength.value
 
-    val requiredWidth = tileCount * (preferred + gap) - gap
+    val requiredLength = tileCount * (preferred + gap) - gap
     val fullyFittingTiles = floor((available + gap) / (preferred + gap)).toInt()
-    val cutTileVisibleWidth = available - fullyFittingTiles * (preferred + gap)
-    val isCutTileClearlyVisible = cutTileVisibleWidth >= peek && cutTileVisibleWidth <= preferred - peek
-    if (requiredWidth <= available || isCutTileClearlyVisible) return preferredWidth
+    val cutTileVisibleLength = available - fullyFittingTiles * (preferred + gap)
+    val isCutTileClearlyVisible = cutTileVisibleLength >= peek && cutTileVisibleLength <= preferred - peek
+    if (requiredLength <= available || isCutTileClearlyVisible) return preferredLength
 
     val tilesToFit = max(ceil((available - peek) / (preferred + gap)).toInt(), 1)
-    val width = if (tilesToFit >= tileCount) {
+    val length = if (tilesToFit >= tileCount) {
         (available - (tileCount - 1) * gap) / tileCount
     } else {
         (available - peek) / tilesToFit - gap
     }
-    return floor(width).dp
+    return floor(length).dp
 }
 
 private const val PREVIEW_PARTICIPANT_COUNT = 5
@@ -169,4 +242,10 @@ fun SpeakerViewPreview() {
         isVoiceOnlyCall = false,
         onScreenShareIconClick = {}
     )
+}
+
+@Preview(heightDp = 360, widthDp = 800)
+@Composable
+fun SpeakerViewLandscapePreview() {
+    SpeakerViewPreview()
 }

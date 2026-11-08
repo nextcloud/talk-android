@@ -148,24 +148,24 @@ class SpeakerViewOrderTest {
 
     @Test
     fun `bar tiles keep their preferred width when all fit`() {
-        assertEquals(150.dp, participantBarTileWidth(availableWidth = 400.dp, tileCount = 2))
+        assertEquals(150.dp, participantBarTileLength(availableLength = 400.dp, tileCount = 2))
     }
 
     @Test
     fun `bar tiles keep their preferred width when the cut tile is clearly visible`() {
         // Two tiles fit fully, 84dp of the third one is visible
-        assertEquals(150.dp, participantBarTileWidth(availableWidth = 400.dp, tileCount = 3))
+        assertEquals(150.dp, participantBarTileLength(availableLength = 400.dp, tileCount = 3))
     }
 
     @Test
     fun `bar tiles are narrowed so the next tile peeks in`() {
         // Only 4dp of the third tile would be visible
-        assertEquals(144.dp, participantBarTileWidth(availableWidth = 320.dp, tileCount = 3))
+        assertEquals(144.dp, participantBarTileLength(availableLength = 320.dp, tileCount = 3))
     }
 
     @Test
     fun `bar tiles are narrowed so all fit when only a few pixels are missing`() {
-        assertEquals(148.dp, participantBarTileWidth(availableWidth = 460.dp, tileCount = 3))
+        assertEquals(148.dp, participantBarTileLength(availableLength = 460.dp, tileCount = 3))
     }
 
     private fun update(
