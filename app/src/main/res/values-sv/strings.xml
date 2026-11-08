@@ -178,6 +178,7 @@
     <string name="nc_call_ongoing_notification_default_title">Samtal pågår</string>
     <string name="nc_call_ongoing_notification_end_action">Avsluta samtal</string>
     <string name="nc_call_ongoing_notification_return_action">Återgå till samtalet</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Du delar din skärm</string>
     <string name="nc_call_raised_hand">%1$s räckte upp handen</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_ringing">RINGER</string>
@@ -231,6 +232,8 @@
     <string name="nc_confirm">Bekräfta</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contact_chat_start">Starta</string>
+    <string name="nc_contact_chat_start_message">Du har ännu ingen konversation med %1$s. Om du startar en läggs den till i konversationslistan för er båda.</string>
+    <string name="nc_contact_chat_start_title">Starta en konversation?</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_created_invalid_participants">Vissa deltagare kunde inte läggas till</string>
     <string name="nc_conversation_created_invalid_participants_named">Det gick inte att lägga till följande deltagare: %1$s</string>
@@ -278,6 +281,8 @@
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_date_header_yesterday">Igår</string>
     <string name="nc_deep_link_join">Gå med</string>
+    <string name="nc_deep_link_join_message">Den här konversationen på %1$s finns inte i din konversationslista. Om du öppnar den kan du läggas till som deltagare.</string>
+    <string name="nc_deep_link_join_title">Gå med i konversationen?</string>
     <string name="nc_delete">Ta bort</string>
     <string name="nc_delete_all">Ta bort alla</string>
     <string name="nc_delete_call">Ta bort konversation</string>
@@ -536,6 +541,10 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Kunde inte starta skärmdelning</string>
+    <string name="nc_screen_sharing_not_allowed">Du har inte behörighet att dela din skärm</string>
+    <string name="nc_screen_sharing_not_connected">Du kan dela din skärm när samtalet är anslutet</string>
+    <string name="nc_screen_sharing_permissions_missing">För att dela din skärm, tillåt notiser och åtkomst till mikrofonen</string>
     <string name="nc_search">Sök</string>
     <string name="nc_search_clear">Rensa sökning</string>
     <string name="nc_search_location">Sök plats</string>
@@ -655,6 +664,7 @@
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_shared_location">Delad plats</string>
     <string name="nc_shortcut_conversation_deleted">Den här konversationen finns inte längre</string>
+    <string name="nc_shortcut_conversation_not_found">Genvägens konversation hittades inte</string>
     <string name="nc_shortcut_created">Genväg skapad</string>
     <string name="nc_show_ecosystem_description">Förslag på Nextcloud-appar i kontoväljardialogen</string>
     <string name="nc_show_ecosystem_title">Visa appväxlare</string>
@@ -664,6 +674,8 @@
     <string name="nc_start_group_chat">Starta gruppchatt</string>
     <string name="nc_start_screen_sharing">Dela skärm</string>
     <string name="nc_start_time">Starttid</string>
+    <string name="nc_stop_screen_sharing">Stoppa skärmdelning</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Vill du verkligen sluta dela din skärm?</string>
     <string name="nc_switch_account">Växla konto</string>
     <string name="nc_take_video">Spela in video</string>
     <string name="nc_team">Team</string>
