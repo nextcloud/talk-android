@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.call.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,9 +42,9 @@ private val participantBarTileWidth = PARTICIPANT_TILE_MIN_HEIGHT * PARTICIPANT_
 private val participantBarTilePeekLength = 16.dp
 
 /**
- * Shows the promoted participant fullscreen, optionally next to a scrollable bar with the other participants. The bar
- * is shown below the promoted participant and scrolls horizontally in portrait, and is shown at the side and scrolls
- * vertically in landscape.
+ * Shows the promoted participant fullscreen, optionally next to a scrollable bar with the other participants. When the
+ * available space is wider than high, the bar is shown on the left and scrolls vertically, as the self video is placed
+ * on the right. Otherwise it is shown below the promoted participant and scrolls horizontally.
  *
  * @param speakerViewOrder session keys of the promoted participant followed by the participants in the bar
  */
@@ -90,8 +88,6 @@ fun ParticipantSpeakerView(
             .collect { onVisibleSessionKeysChanged(it) }
     }
 
-    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-
     val promotedTile: @Composable (Modifier) -> Unit = { tileModifier ->
         key(promotedParticipant.sessionKey) {
             ParticipantTile(
@@ -105,12 +101,12 @@ fun ParticipantSpeakerView(
     }
 
     // When the bar is hidden its participants are not composed, so their videos are not rendered
-    val participantBar: @Composable () -> Unit = {
+    val participantBar: @Composable (Boolean) -> Unit = { isVertical ->
         if (isBarShown) {
             ParticipantBar(
                 participants = barParticipants,
                 state = barState,
-                isVertical = isLandscape,
+                isVertical = isVertical,
                 eglBase = eglBase,
                 isVoiceOnlyCall = isVoiceOnlyCall,
                 onScreenShareIconClick = onScreenShareIconClick
@@ -118,33 +114,36 @@ fun ParticipantSpeakerView(
         }
     }
 
-    val containerModifier = modifier
-        .fillMaxSize()
-        .padding(speakerViewSpacing)
-    if (isLandscape) {
-        Row(modifier = containerModifier, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-            promotedTile(
-                Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            )
-            participantBar()
-        }
-    } else {
-        Column(modifier = containerModifier, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-            promotedTile(
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            )
-            participantBar()
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(speakerViewSpacing)
+    ) {
+        if (maxWidth > maxHeight) {
+            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+                participantBar(true)
+                promotedTile(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+            }
+        } else {
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
+                promotedTile(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                )
+                participantBar(false)
+            }
         }
     }
 }
 
 /**
- * Scrollable bar with the participants that are not promoted, scrolling vertically at the side of the promoted
- * participant or horizontally below it.
+ * Scrollable bar with the participants that are not promoted, scrolling vertically next to the promoted participant
+ * or horizontally below it.
  */
 @Suppress("LongParameterList")
 @Composable
@@ -225,7 +224,7 @@ fun participantBarTileLength(
     } else {
         (available - peek) / tilesToFit - gap
     }
-    return floor(length).dp
+    return floor(length.coerceAtLeast(0f)).dp
 }
 
 private const val PREVIEW_PARTICIPANT_COUNT = 5

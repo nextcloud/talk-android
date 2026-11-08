@@ -168,6 +168,28 @@ class SpeakerViewOrderTest {
         assertEquals(148.dp, participantBarTileLength(availableLength = 460.dp, tileCount = 3))
     }
 
+    @Test
+    fun `vertical bar tiles keep their preferred height when all fit`() {
+        assertEquals(
+            100.dp,
+            participantBarTileLength(availableLength = 300.dp, tileCount = 2, preferredLength = 100.dp)
+        )
+    }
+
+    @Test
+    fun `vertical bar tiles are shortened so the next tile peeks in`() {
+        // Only 4dp of the third tile would be visible
+        assertEquals(
+            94.dp,
+            participantBarTileLength(availableLength = 220.dp, tileCount = 3, preferredLength = 100.dp)
+        )
+    }
+
+    @Test
+    fun `bar tiles never get a negative length`() {
+        assertEquals(0.dp, participantBarTileLength(availableLength = 10.dp, tileCount = 3))
+    }
+
     private fun update(
         order: List<String>,
         participantSessionKeys: List<String> = participants,
