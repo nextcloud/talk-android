@@ -9,8 +9,13 @@ package com.nextcloud.talk.chat.data.io
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioManager
+import android.media.AudioRecordingConfiguration
 import android.media.MediaRecorder
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.domain.ConversationModel
 import java.io.IOException
@@ -49,11 +54,13 @@ class MediaRecorderManager : LifecycleAwareManager {
     val mediaRecorderState: MediaRecorderState
         get() = _mediaRecorderState
     private var recorder: MediaRecorder? = null
+    private var silenceCallback: AudioManager.AudioRecordingCallback? = null
 
     /**
-     * Initializes and starts the MediaRecorder
+     * Initializes and starts the MediaRecorder. [onSilenced] is called when Android silences the recording, e.g.
+     * because a call takes the microphone or the app went to the background (Android 10 and later).
      */
-    fun start(context: Context, currentConversation: ConversationModel) {
+    fun start(context: Context, currentConversation: ConversationModel, onSilenced: () -> Unit = {}) {
         if (_mediaRecorderState == MediaRecorderState.ERROR ||
             _mediaRecorderState == MediaRecorderState.RELEASED
         ) {
@@ -62,7 +69,7 @@ class MediaRecorderManager : LifecycleAwareManager {
 
         if (_mediaRecorderState == MediaRecorderState.INITIAL) {
             setVoiceRecordFileName(context, currentConversation)
-            initAndStartRecorder()
+            initAndStartRecorder(context, onSilenced)
         } else {
             Log.e(TAG, "Started MediaRecorder with invalid state ${_mediaRecorderState.name}")
         }
@@ -79,7 +86,7 @@ class MediaRecorderManager : LifecycleAwareManager {
         }
     }
 
-    private fun initAndStartRecorder() {
+    private fun initAndStartRecorder(context: Context, onSilenced: () -> Unit) {
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             _mediaRecorderState = MediaRecorderState.INITIALIZED
@@ -101,6 +108,10 @@ class MediaRecorderManager : LifecycleAwareManager {
                 Log.e(TAG, "prepare for audio recording failed")
             }
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                watchForSilencing(this, context, onSilenced)
+            }
+
             try {
                 start()
                 _mediaRecorderState = MediaRecorderState.RECORDING
@@ -112,8 +123,27 @@ class MediaRecorderManager : LifecycleAwareManager {
         }
     }
 
+    /** Registered before the recording starts, so a capture that is silenced right away is reported, too. */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun watchForSilencing(mediaRecorder: MediaRecorder, context: Context, onSilenced: () -> Unit) {
+        val callback = object : AudioManager.AudioRecordingCallback() {
+            override fun onRecordingConfigChanged(configs: List<AudioRecordingConfiguration>) {
+                if (mediaRecorder.activeRecordingConfiguration?.isClientSilenced == true) {
+                    Log.d(TAG, "recording silenced")
+                    onSilenced()
+                }
+            }
+        }
+        mediaRecorder.registerAudioRecordingCallback(ContextCompat.getMainExecutor(context), callback)
+        silenceCallback = callback
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun stopAndDestroyRecorder() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            silenceCallback?.let { recorder?.unregisterAudioRecordingCallback(it) }
+        }
+        silenceCallback = null
         recorder?.apply {
             try {
                 if (_mediaRecorderState == MediaRecorderState.RECORDING) {
