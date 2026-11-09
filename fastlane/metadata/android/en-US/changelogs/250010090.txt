@@ -1,0 +1,14 @@
+## Added
+- Refreshing of conversation list
+- Send messages in background
+- Draggable own video view during calls + options to choose size
+- In-chat audio player
+- Improved bluetooth handling (@flake92)
+
+## Fixed
+- New user handling behind the scenes, fixes multiple user related issues
+- Various bugs (@ToteMeiSter, @tareko, @fallmo)
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/114?closed=1
