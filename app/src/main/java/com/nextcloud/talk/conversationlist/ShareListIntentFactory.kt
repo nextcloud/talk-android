@@ -126,7 +126,7 @@ internal class ShareListIntentFactory(
     @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun copyToShareDirectory(uri: Uri, directoryOf: () -> File?): Uri? {
         if (!FileUtils.isTrustedShareUri(uri, context)) {
-            Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
+            Log.w(TAG, "Rejecting untrusted uri from share intent.")
             return null
         }
         return try {

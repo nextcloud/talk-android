@@ -1240,7 +1240,7 @@ class ConversationsListActivity : BaseActivity() {
         if (FileUtils.isTrustedShareUri(uri, this)) {
             filesToShare!!.add(uri.toString())
         } else {
-            Log.w(TAG, "Rejecting untrusted uri from share intent: $uri")
+            Log.w(TAG, "Rejecting untrusted uri from share intent.")
         }
     }
 
