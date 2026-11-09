@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -28,6 +29,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.activities.ParticipantUiState
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -41,10 +43,36 @@ private const val PARTICIPANT_BAR_TILE_ASPECT_RATIO = 1.5f
 private val participantBarTileWidth = PARTICIPANT_TILE_MIN_HEIGHT * PARTICIPANT_BAR_TILE_ASPECT_RATIO
 private val participantBarTilePeekLength = 16.dp
 
+enum class ParticipantBarPlacement {
+    SIDE,
+    BOTTOM,
+    NONE
+}
+
 /**
- * Shows the promoted participant fullscreen, optionally next to a scrollable bar with the other participants. When the
- * available space is wider than high, the bar is shown on the left and scrolls vertically, as the self video is placed
- * on the right. Otherwise it is shown below the promoted participant and scrolls horizontally.
+ * Returns where the participant bar is placed in a speaker view of the given size.
+ *
+ * The bar is placed at the side when the space is wider than high, and below the promoted participant otherwise. It
+ * may take at most half of the space and has to fit at least one tile of its preferred size, so it is placed at the
+ * other position or not at all in small windows like picture in picture.
+ */
+fun participantBarPlacement(width: Dp, height: Dp): ParticipantBarPlacement {
+    val sideBarFits = participantBarTileWidth + speakerViewSpacing <= width / 2 &&
+        height >= PARTICIPANT_TILE_MIN_HEIGHT
+    val bottomBarFits = PARTICIPANT_TILE_MIN_HEIGHT + speakerViewSpacing <= height / 2 &&
+        width >= participantBarTileWidth
+    return when {
+        width > height && sideBarFits -> ParticipantBarPlacement.SIDE
+        bottomBarFits -> ParticipantBarPlacement.BOTTOM
+        sideBarFits -> ParticipantBarPlacement.SIDE
+        else -> ParticipantBarPlacement.NONE
+    }
+}
+
+/**
+ * Shows the promoted participant fullscreen, optionally next to a scrollable bar with the other participants, placed
+ * as returned by [participantBarPlacement]. A bar at the side is always shown on the left, also in right-to-left
+ * layouts, as the self video is placed on the right.
  *
  * @param speakerViewOrder session keys of the promoted participant followed by the participants in the bar
  */
@@ -66,7 +94,6 @@ fun ParticipantSpeakerView(
         participantUiStates.filter { it.sessionKey !in speakerViewOrder }
     val promotedParticipant = orderedParticipants.firstOrNull() ?: return
     val barParticipants = orderedParticipants.drop(1)
-    val isBarShown = isParticipantBarVisible && barParticipants.isNotEmpty()
     val barState = rememberLazyListState()
 
     // The previously promoted participant is inserted at the start of the bar. As the bar keeps the position of its
@@ -75,67 +102,83 @@ fun ParticipantSpeakerView(
         barState.scrollToItem(0)
     }
 
-    LaunchedEffect(barState, promotedParticipant.sessionKey, isBarShown) {
-        snapshotFlow {
-            val barSessionKeys = if (isBarShown) {
-                barState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? String }
-            } else {
-                emptyList()
-            }
-            setOfNotNull(promotedParticipant.sessionKey) + barSessionKeys
-        }
-            .distinctUntilChanged()
-            .collect { onVisibleSessionKeysChanged(it) }
-    }
-
-    val promotedTile: @Composable (Modifier) -> Unit = { tileModifier ->
-        key(promotedParticipant.sessionKey) {
-            ParticipantTile(
-                participantUiState = promotedParticipant,
-                modifier = tileModifier,
-                eglBase = eglBase,
-                isVoiceOnlyCall = isVoiceOnlyCall,
-                onScreenShareIconClick = onScreenShareIconClick
-            )
-        }
-    }
-
-    // When the bar is hidden its participants are not composed, so their videos are not rendered
-    val participantBar: @Composable (Boolean) -> Unit = { isVertical ->
-        if (isBarShown) {
-            ParticipantBar(
-                participants = barParticipants,
-                state = barState,
-                isVertical = isVertical,
-                eglBase = eglBase,
-                isVoiceOnlyCall = isVoiceOnlyCall,
-                onScreenShareIconClick = onScreenShareIconClick
-            )
-        }
-    }
-
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .padding(speakerViewSpacing)
     ) {
-        if (maxWidth > maxHeight) {
-            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-                participantBar(true)
-                promotedTile(
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
+        val availableWidth = maxWidth
+        val availableHeight = maxHeight
+        val placement = if (isParticipantBarVisible && barParticipants.isNotEmpty()) {
+            participantBarPlacement(width = availableWidth, height = availableHeight)
+        } else {
+            ParticipantBarPlacement.NONE
+        }
+
+        LaunchedEffect(barState, promotedParticipant.sessionKey, placement) {
+            snapshotFlow {
+                val barSessionKeys = if (placement != ParticipantBarPlacement.NONE) {
+                    barState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? String }
+                } else {
+                    emptyList()
+                }
+                setOfNotNull(promotedParticipant.sessionKey) + barSessionKeys
+            }
+                .distinctUntilChanged()
+                .collect { onVisibleSessionKeysChanged(it) }
+        }
+
+        // When the bar is not placed its participants are not composed, so their videos are not rendered
+        if (placement == ParticipantBarPlacement.SIDE) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Absolute.spacedBy(speakerViewSpacing)
+            ) {
+                ParticipantBar(
+                    participants = barParticipants,
+                    state = barState,
+                    isVertical = true,
+                    availableLength = availableHeight,
+                    eglBase = eglBase,
+                    isVoiceOnlyCall = isVoiceOnlyCall,
+                    onScreenShareIconClick = onScreenShareIconClick
                 )
+                key(promotedParticipant.sessionKey) {
+                    ParticipantTile(
+                        participantUiState = promotedParticipant,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        eglBase = eglBase,
+                        isVoiceOnlyCall = isVoiceOnlyCall,
+                        onScreenShareIconClick = onScreenShareIconClick
+                    )
+                }
             }
         } else {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-                promotedTile(
-                    Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                )
-                participantBar(false)
+                key(promotedParticipant.sessionKey) {
+                    ParticipantTile(
+                        participantUiState = promotedParticipant,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        eglBase = eglBase,
+                        isVoiceOnlyCall = isVoiceOnlyCall,
+                        onScreenShareIconClick = onScreenShareIconClick
+                    )
+                }
+                if (placement == ParticipantBarPlacement.BOTTOM) {
+                    ParticipantBar(
+                        participants = barParticipants,
+                        state = barState,
+                        isVertical = false,
+                        availableLength = availableWidth,
+                        eglBase = eglBase,
+                        isVoiceOnlyCall = isVoiceOnlyCall,
+                        onScreenShareIconClick = onScreenShareIconClick
+                    )
+                }
             }
         }
     }
@@ -144,6 +187,8 @@ fun ParticipantSpeakerView(
 /**
  * Scrollable bar with the participants that are not promoted, scrolling vertically next to the promoted participant
  * or horizontally below it.
+ *
+ * @param availableLength the length of the bar along its scroll direction
  */
 @Suppress("LongParameterList")
 @Composable
@@ -151,44 +196,35 @@ private fun ParticipantBar(
     participants: List<ParticipantUiState>,
     state: LazyListState,
     isVertical: Boolean,
+    availableLength: Dp,
     eglBase: EglBase?,
     isVoiceOnlyCall: Boolean,
     onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
-    val tile: @Composable (ParticipantUiState, Modifier) -> Unit = { participant, tileModifier ->
-        ParticipantTile(
-            participantUiState = participant,
-            modifier = tileModifier,
-            eglBase = eglBase,
-            isVoiceOnlyCall = isVoiceOnlyCall,
-            onScreenShareIconClick = onScreenShareIconClick
-        )
+    val tileSize = if (isVertical) {
+        val height = participantBarTileLength(availableLength, participants.size, PARTICIPANT_TILE_MIN_HEIGHT)
+        DpSize(width = participantBarTileWidth, height = height)
+    } else {
+        val width = participantBarTileLength(availableLength, participants.size)
+        DpSize(width = width, height = PARTICIPANT_TILE_MIN_HEIGHT)
+    }
+
+    val content: LazyListScope.() -> Unit = {
+        items(items = participants, key = { it.sessionKey!! }) { participant ->
+            ParticipantTile(
+                participantUiState = participant,
+                modifier = Modifier.size(tileSize),
+                eglBase = eglBase,
+                isVoiceOnlyCall = isVoiceOnlyCall,
+                onScreenShareIconClick = onScreenShareIconClick
+            )
+        }
     }
 
     if (isVertical) {
-        BoxWithConstraints(modifier = Modifier.fillMaxHeight()) {
-            val tileHeight = participantBarTileLength(
-                availableLength = maxHeight,
-                tileCount = participants.size,
-                preferredLength = PARTICIPANT_TILE_MIN_HEIGHT
-            )
-
-            LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-                items(items = participants, key = { it.sessionKey!! }) { participant ->
-                    tile(participant, Modifier.size(width = participantBarTileWidth, height = tileHeight))
-                }
-            }
-        }
+        LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
     } else {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-            val tileWidth = participantBarTileLength(availableLength = maxWidth, tileCount = participants.size)
-
-            LazyRow(state = state, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing)) {
-                items(items = participants, key = { it.sessionKey!! }) { participant ->
-                    tile(participant, Modifier.size(width = tileWidth, height = PARTICIPANT_TILE_MIN_HEIGHT))
-                }
-            }
-        }
+        LazyRow(state = state, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
     }
 }
 

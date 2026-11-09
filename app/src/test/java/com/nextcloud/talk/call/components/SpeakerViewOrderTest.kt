@@ -190,6 +190,26 @@ class SpeakerViewOrderTest {
         assertEquals(0.dp, participantBarTileLength(availableLength = 10.dp, tileCount = 3))
     }
 
+    @Test
+    fun `bar is placed at the side when the space is wider than high`() {
+        assertEquals(ParticipantBarPlacement.SIDE, participantBarPlacement(width = 700.dp, height = 300.dp))
+    }
+
+    @Test
+    fun `bar is placed at the bottom when the space is higher than wide`() {
+        assertEquals(ParticipantBarPlacement.BOTTOM, participantBarPlacement(width = 360.dp, height = 600.dp))
+    }
+
+    @Test
+    fun `bar is placed at the bottom when it would take more than half of the width at the side`() {
+        assertEquals(ParticipantBarPlacement.BOTTOM, participantBarPlacement(width = 300.dp, height = 250.dp))
+    }
+
+    @Test
+    fun `bar is not placed when it does not fit at the side or the bottom`() {
+        assertEquals(ParticipantBarPlacement.NONE, participantBarPlacement(width = 240.dp, height = 135.dp))
+    }
+
     private fun update(
         order: List<String>,
         participantSessionKeys: List<String> = participants,
