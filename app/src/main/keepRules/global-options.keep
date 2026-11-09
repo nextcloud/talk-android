@@ -1,0 +1,10 @@
+# Nextcloud Talk - Android Client
+#
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Keep the original names of the app's own classes and members so that the stack traces and log tags
+# in crash reports sent by mail are readable without a mapping file. Library code is still obfuscated,
+# which Google Play requires (minimum obfuscation percentage for apps with large DEX code).
+# Shrinking and optimization (inlining, class merging, ...) stay allowed for the app's code.
+-keepnames,allowoptimization class com.nextcloud.talk.** { *; }
