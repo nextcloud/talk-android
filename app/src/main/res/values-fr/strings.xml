@@ -145,6 +145,7 @@
     <string name="nc_audio_player_previous">Précédent</string>
     <string name="nc_audio_player_queue">Liste de lecture</string>
     <string name="nc_audio_player_repeat_off">Désactiver la répétition</string>
+    <string name="nc_audio_player_show_message">Afficher le message</string>
     <string name="nc_audio_seek">Position de lecture</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
@@ -169,6 +170,7 @@
     <string name="nc_call_ongoing_notification_default_title">Appel en cours</string>
     <string name="nc_call_ongoing_notification_end_action">Terminer l\'appel</string>
     <string name="nc_call_ongoing_notification_return_action">Revenir à l\'appel</string>
+    <string name="nc_call_ongoing_notification_screen_sharing">Vous partagez votre écran</string>
     <string name="nc_call_raised_hand">%1$s a levé la main</string>
     <string name="nc_call_reconnecting">Reconnexion…</string>
     <string name="nc_call_ringing">APPEL EN COURS</string>
@@ -219,6 +221,8 @@
     <string name="nc_confirm">Confirmer</string>
     <string name="nc_connecting_call">Connexion…</string>
     <string name="nc_contact_chat_start">Début</string>
+    <string name="nc_contact_chat_start_message">Vous n\'avez pas de conversation avec %1$s pour le moment. En commencer une l\'ajoute à vos listes de conversations respectives.</string>
+    <string name="nc_contact_chat_start_title">Commencer une conversation ?</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_created_invalid_participants">Certains participants n\'ont pas pu être ajoutés</string>
     <string name="nc_conversation_created_invalid_participants_named">Ces participants n\'ont pas pu être ajoutés : %1$s</string>
@@ -266,6 +270,8 @@
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_deep_link_join">Rejoindre</string>
+    <string name="nc_deep_link_join_message">Cette conversation sur %1$s ne figure pas dans votre liste de conversations. L\'ouvrir peut vous ajouter comme participant.</string>
+    <string name="nc_deep_link_join_title">Rejoindre la conversation ?</string>
     <string name="nc_delete">Supprimer</string>
     <string name="nc_delete_all">Supprimer tout</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
@@ -457,7 +463,10 @@
     <string name="nc_open_conversation_to_registered_users">Ouvrir la conversation aux utilisateurs enregistrés</string>
     <string name="nc_open_to_guest_app_users">Également ouvert aux utilisateurs invités de l\'application</string>
     <string name="nc_owner">Propriétaire</string>
+    <string name="nc_participant_in_call">En communication</string>
     <string name="nc_participant_type_change_failed">Impossible de modifier le type du participant</string>
+    <string name="nc_participant_with_phone">Avec un téléphone</string>
+    <string name="nc_participant_with_video">Avec vidéo</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Ajouter des participants</string>
     <string name="nc_password">Mot de passe</string>
@@ -521,6 +530,9 @@
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_sharing_failed">Le partage d\'écran n\'a pas pu être démarré</string>
+    <string name="nc_screen_sharing_not_allowed">Vous n\'êtes pas autorisé à partager votre écran</string>
+    <string name="nc_screen_sharing_permissions_missing">Pour partager votre écran, autoriser les notifications et l\'accès au microphone</string>
     <string name="nc_search">Recherche</string>
     <string name="nc_search_clear">Effacer la recherche</string>
     <string name="nc_search_location">Rechercher la position</string>
@@ -544,6 +556,7 @@
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
     <string name="nc_server_helper_text">Adresse URL visible dans la barre d\'adresse de votre navigateur Web lorsque vous êtes connecté à %1$s.</string>
+    <string name="nc_server_http_fallback_confirm">Utiliser HTTP</string>
     <string name="nc_server_http_fallback_message">Impossible de se connecter au serveur en HTTPS. Se connecter de manière non sécurisée en HTTP à la place ?</string>
     <string name="nc_server_http_fallback_title">Connexion non sécurisée</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
@@ -639,6 +652,7 @@
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_shortcut_conversation_deleted">Cette conversation n\'existe plus</string>
+    <string name="nc_shortcut_conversation_not_found">La conversation du raccourci n\'a pas été trouvée</string>
     <string name="nc_shortcut_created">Raccourci créé</string>
     <string name="nc_show_ecosystem_description">Suggestions d\'applications Nextcloud dans la boîte de dialogue de sélection de compte</string>
     <string name="nc_show_ecosystem_title">Afficher le sélecteur d\'applications</string>
@@ -648,6 +662,8 @@
     <string name="nc_start_group_chat">Démarrer une discussion de groupe</string>
     <string name="nc_start_screen_sharing">Partager l’écran</string>
     <string name="nc_start_time">Heure de début</string>
+    <string name="nc_stop_screen_sharing">Arrêter le partage d\'écran</string>
+    <string name="nc_stop_screen_sharing_confirm_message">Voulez-vous vraiment arrêter de partager votre écran ?</string>
     <string name="nc_switch_account">Changer de compte</string>
     <string name="nc_take_video">Prendre une vidéo</string>
     <string name="nc_team">Équipe</string>
