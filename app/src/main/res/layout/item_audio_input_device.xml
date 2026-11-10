@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/bottom_sheet_item_height"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/standard_dialog_padding"
+    android:paddingEnd="@dimen/standard_dialog_padding"
+    tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/audio_input_device_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_mic_white_24px"
+        app:tint="@color/high_emphasis_menu_icon_inverse" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/audio_input_device_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingEnd="@dimen/zero"
+        android:textAlignment="viewStart"
+        android:textColor="@color/high_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        tools:text="@string/audio_input_automatic" />
+
+</LinearLayout>

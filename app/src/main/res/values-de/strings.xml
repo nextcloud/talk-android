@@ -10,6 +10,10 @@
     <string name="archived">Archiviert</string>
     <string name="archived_conversation">%1$s archiviert</string>
     <string name="audio_call">Audioanruf</string>
+    <string name="audio_input_automatic">Automatisch</string>
+    <string name="audio_input_dialog_headline">Mikrofon</string>
+    <string name="audio_input_phone">Telefon-Mikrofon</string>
+    <string name="audio_input_usb">USB-Mikrofon</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio-Ausgabe</string>
     <string name="audio_output_phone">Telefon</string>
