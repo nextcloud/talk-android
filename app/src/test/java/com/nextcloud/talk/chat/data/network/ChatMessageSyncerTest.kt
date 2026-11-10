@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.database.sqlite.SQLiteConstraintException
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.domain.ChatPullResult
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
@@ -25,6 +26,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import java.io.IOException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -236,6 +238,46 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `pullMessagesFlow does not retry a failed request once retrying is not allowed`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { false }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullMessagesFlow does not retry without backoff when retrying becomes allowed again right away`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+            // not allowed right after the failure, e.g. paused, and allowed again a moment later, e.g. resumed
+            val answers = mutableListOf(false, true)
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeAt(0) }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
+    fun `pullMessagesFlow does not send the retry when retrying is no longer allowed after the backoff`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .doSuspendableAnswer { throw IOException("connection reset") }
+            // allowed right after the failure, no longer allowed once the backoff has passed
+            val answers = mutableListOf(true, false)
+
+            val result = syncer.pullMessagesFlow(target(), HashMap(), canRetry = { answers.removeAt(0) }).first()
+
+            assertTrue(result is ChatPullResult.Error)
+            verifyBlocking(network, times(1)) { pullChatMessages(any(), any(), any()) }
+        }
+
+    @Test
     fun `catchUpRoom marks the sync as failed when the server request errors`() =
         runTest {
             whenever(chatBlocksDao.getNewestMessageIdFromChatBlocks(INTERNAL_CONVERSATION_ID, null))
@@ -440,6 +482,36 @@ class ChatMessageSyncerTest {
             verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(blockCaptor.capture()) }
             assertEquals(3L, blockCaptor.firstValue.oldestMessageId)
             assertEquals(44L, blockCaptor.firstValue.newestMessageId)
+        }
+
+    @Test
+    fun `pullAndPersistMessages still writes the chat block when the caller is cancelled while persisting`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(43))))
+            val persistStarted = CompletableDeferred<Unit>()
+            val finishPersist = CompletableDeferred<Unit>()
+            wheneverBlocking { chatDao.upsertChatMessagesAndDeleteTemp(any(), any()) }.doSuspendableAnswer {
+                persistStarted.complete(Unit)
+                finishPersist.await()
+            }
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = true,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = 42
+            )
+            val pull = launch { syncer.pullAndPersistMessages(target(), fieldMap) }
+            persistStarted.await()
+            pull.cancel()
+            finishPersist.complete(Unit)
+            pull.join()
+
+            // persisted messages without a chat block covering them would leave a gap in the chat
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(any()) }
         }
 
     @Test

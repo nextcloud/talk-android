@@ -69,6 +69,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
@@ -98,6 +99,7 @@ class ChatViewModelRoomJoinTest {
     private var pendingLeave: CompletableDeferred<Unit>? = null
 
     private lateinit var viewModel: ChatViewModel
+    private lateinit var chatRepository: ChatMessageRepository
     private var capabilitiesState: ChatViewModel.ViewState? = null
     private var initialLoads = 0
     private var joins = 0
@@ -127,7 +129,7 @@ class ChatViewModelRoomJoinTest {
             pendingLeave?.await()
             GenericOverall(GenericOCS(GenericMetaDto(statusCode = HTTP_OK)))
         }
-        val chatRepository: ChatMessageRepository = mockWithEmptyFlows()
+        chatRepository = mockWithEmptyFlows()
 
         val newViewModel = ChatViewModel(
             mock<Logger>(),
@@ -269,6 +271,22 @@ class ChatViewModelRoomJoinTest {
         assertEquals(2, initialLoads)
         assertEquals(2, joins)
         assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesUpdateState)
+    }
+
+    @Test
+    fun `a configuration change does not start a second message polling`() {
+        owner.send(Lifecycle.Event.ON_CREATE)
+        resumeScreen()
+        viewModel.initData()
+
+        pauseScreen()
+        viewModel.handleOrientationChange()
+        owner.send(Lifecycle.Event.ON_STOP)
+        viewModel.initData()
+        resumeScreen()
+
+        // each polling loop keeps its own request open, one per rotation would pile up on the server
+        verifyBlocking(chatRepository, times(1)) { startMessagePolling(any()) }
     }
 
     @Test

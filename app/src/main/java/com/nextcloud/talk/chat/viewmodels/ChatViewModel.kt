@@ -388,6 +388,10 @@ class ChatViewModel @AssistedInject constructor(
 
     private var lobbyPollingJob: Job? = null
 
+    // The message polling lives as long as this view model. A new screen after a configuration change calls
+    // initData() again, which must not start a second polling loop next to the running one.
+    private var messagePollingJob: Job? = null
+
     private val _uploadProgressMap = MutableStateFlow<Map<String, Int>>(emptyMap())
     val uploadProgressMap: StateFlow<Map<String, Int>> = _uploadProgressMap
 
@@ -1468,11 +1472,13 @@ class ChatViewModel @AssistedInject constructor(
 
                 // The live-update mode (chat relay vs long polling) is decided in parallel: the
                 // initial load must never wait for the websocket to connect.
-                viewModelScope.launch {
-                    val isChatRelaySupported = withTimeoutOrNull(WEBSOCKET_CONNECT_TIMEOUT_MS) {
-                        awaitChatRelaySupport(user)
-                    } ?: false
-                    startMessagePolling(isChatRelaySupported)
+                if (messagePollingJob == null) {
+                    messagePollingJob = viewModelScope.launch {
+                        val isChatRelaySupported = withTimeoutOrNull(WEBSOCKET_CONNECT_TIMEOUT_MS) {
+                            awaitChatRelaySupport(user)
+                        } ?: false
+                        startMessagePolling(isChatRelaySupported)
+                    }
                 }
 
                 loadInitialMessages(
