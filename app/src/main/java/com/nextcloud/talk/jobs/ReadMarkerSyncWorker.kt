@@ -118,13 +118,15 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
      * The marker has reached the server by now, so a failure here must not send it again: the value
      * only saves a request, and the next room list sync brings it anyway.
      */
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun storeLastCommonRead(userId: Long, roomToken: String, response: Response<*>) {
         val lastCommonRead = lastCommonReadOf(response) ?: return
-        runCatching {
+        try {
             conversationListUpdater.updateLastCommonRead("$userId@$roomToken", lastCommonRead)
-        }.onFailure { throwable ->
-            if (throwable is CancellationException) throw throwable
-            Log.w(TAG, "Last common read $lastCommonRead for room $roomToken could not be stored: $throwable")
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Last common read $lastCommonRead for room $roomToken could not be stored: $e")
         }
     }
 
