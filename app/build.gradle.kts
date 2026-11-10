@@ -183,18 +183,25 @@ configurations.configureEach {
     exclude(group = "com.google.firebase", module = "firebase-measurement-connector")
     exclude(group = "org.jetbrains", module = "annotations-java5") // via prism4j, already using annotations explicitly
 
-    // com.google.crypto.tink (pulled in by org.unifiedpush.android:connector) transitively depends on
-    // protobuf-java, which conflicts with protobuf-javalite used by com.google.mediapipe:tasks-core,
-    // pulled by com.google.mediapipe:tasks-vision
+    // com.google.crypto.tink:tink (pulled in by org.unifiedpush.android:connector) depends on the full
+    // protobuf-java runtime, while com.google.mediapipe:tasks-vision / tasks-core require
+    // protobuf-javalite. The two runtimes ship the same classes and cannot coexist. Forcing full
+    // protobuf-java breaks MediaPipe's model initialization at runtime
+    // ("Full runtime messages are not supported by this schema factory: com.google.protobuf.Any"),
+    // which disables background blur.
+    //
+    // Use Tink's Android artifact (tink-android), which is built against protobuf-lite, so Tink and
+    // MediaPipe can share protobuf-javalite. Tink is only used transitively by the UnifiedPush
+    // connector for RFC 8291 push decryption, so verify UnifiedPush notifications still work after
+    // changing this.
     //
     // To analyse the dependencies:
-    // `./gradlew :app:dependencyInsight --configuration genericDebugRuntimeClasspath --dependency com.google.protobuf:protobuf-java`
-    val protobufJava = "com.google.protobuf:protobuf-java:4.36.2"
+    // `./gradlew :app:dependencyInsight --configuration gplayDebugRuntimeClasspath --dependency com.google.protobuf`
     resolutionStrategy {
-        force(protobufJava)
         dependencySubstitution {
-            substitute(module("com.google.protobuf:protobuf-javalite"))
-                .using(module(protobufJava))
+            substitute(module("com.google.crypto.tink:tink"))
+                .using(module("com.google.crypto.tink:tink-android:1.23.0"))
+                .because("tink-android uses protobuf-lite, compatible with MediaPipe's protobuf-javalite")
         }
     }
 }
