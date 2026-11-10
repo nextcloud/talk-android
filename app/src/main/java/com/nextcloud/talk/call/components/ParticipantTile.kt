@@ -10,6 +10,7 @@ package com.nextcloud.talk.call.components
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +47,7 @@ import kotlin.String
 const val NICK_OFFSET = 4f
 const val NICK_BLUR_RADIUS = 4f
 const val AVATAR_SIZE_FACTOR = 0.6f
+val SPEAKING_BORDER_WIDTH = 3.dp
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("Detekt.LongMethod")
@@ -65,9 +67,11 @@ fun ParticipantTile(
 
     val color = Color(ColorGenerator.usernameToColor(displayName))
 
+    val tileShape = RoundedCornerShape(12.dp)
+
     BoxWithConstraints(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(tileShape)
             .background(color)
     ) {
         val avatarSize = min(maxWidth, maxHeight) * AVATAR_SIZE_FACTOR
@@ -139,6 +143,14 @@ fun ParticipantTile(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
+
+        if (participantUiState.isActiveSpeaker) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(SPEAKING_BORDER_WIDTH, Color.White, tileShape)
+            )
+        }
     }
 }
 
@@ -166,7 +178,8 @@ fun ParticipantTilePreview() {
         roomToken = "",
         nick = "testuser one",
         isConnected = true,
-        isAudioEnabled = false,
+        isAudioEnabled = true,
+        isSpeaking = true,
         isStreamEnabled = true,
         isScreenStreamEnabled = true,
         raisedHand = true,
