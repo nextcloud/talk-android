@@ -142,23 +142,19 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
             try {
-                val requestedAtNanos = System.nanoTime()
                 val model = chatNetworkDataSource.getRoom(user, roomToken)
                 val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
                 model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                 _conversationFlow.emit(model)
                 val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                conversationListUpdater.syncWriteLock.withLock {
-                    val entityList = conversationListUpdater.preservePendingLocalState(
-                        previous,
-                        listOf(model.asEntity()),
-                        requestedAtNanos
-                    )
-                    try {
-                        dao.upsertConversations(user.id!!, entityList)
-                    } catch (e: SQLiteConstraintException) {
-                        Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
-                    }
+                val entityList = conversationListUpdater.preservePendingLocalState(
+                    previous,
+                    listOf(model.asEntity())
+                )
+                try {
+                    dao.upsertConversations(user.id!!, entityList)
+                } catch (e: SQLiteConstraintException) {
+                    Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
                 }
             } catch (e: Exception) {
                 // In case network is offline, the call fails, or getRoom can't resolve a supported
@@ -258,7 +254,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
         // not something the response can be read as having left out
         val knownBeforeRequest = dao.getConversationIdsForUser(accountId).toSet()
 
-        val requestedAtNanos = System.nanoTime()
         val roomList = withRetry(
             retries = NETWORK_FETCH_RETRIES,
             initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
@@ -284,23 +279,19 @@ class OfflineFirstConversationsRepository @Inject constructor(
             keepCachedStatus(conversationsFromSync, previousConversations)
         }
 
-        // merge and write as one step with respect to a last common read arriving from a read marker
-        conversationListUpdater.syncWriteLock.withLock {
-            dao.syncConversationsForUser(
-                accountId = accountId,
-                serverItems = conversationListUpdater.preservePendingLocalState(
-                    previousConversations,
-                    serverItems,
-                    requestedAtNanos
-                ),
-                conversationIdsToDelete = if (roomList.wasDelta) {
-                    emptyList()
-                } else {
-                    determineLeftConversationIds(previousConversations, conversationsFromSync)
-                        .filter { it in knownBeforeRequest }
-                }
-            )
-        }
+        dao.syncConversationsForUser(
+            accountId = accountId,
+            serverItems = conversationListUpdater.preservePendingLocalState(
+                previousConversations,
+                serverItems
+            ),
+            conversationIdsToDelete = if (roomList.wasDelta) {
+                emptyList()
+            } else {
+                determineLeftConversationIds(previousConversations, conversationsFromSync)
+                    .filter { it in knownBeforeRequest }
+            }
+        )
 
         rememberSyncedState(accountId, roomList)
 
