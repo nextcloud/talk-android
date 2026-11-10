@@ -199,9 +199,11 @@ class BackgroundBlurFrameProcessor(val context: Context, val surfaceTextureHelpe
 
     override fun onFrameCaptured(videoFrame: VideoFrame) {
         val helper = segmenterHelper
-        if (helper == null) {
-            // Segmenter not initialized (or unavailable): pass the frame through untouched so
-            // enabling blur never freezes the outgoing video.
+        if (helper == null || !helper.isReady()) {
+            // Segmenter unavailable or failed to initialize (e.g. the model could not load): pass
+            // the frame straight through. Parking/retaining frames here would hold the camera's
+            // texture buffers waiting for results that never come, starving the capture pool and
+            // freezing the camera - so this path must never park a frame.
             sink?.onFrame(videoFrame)
             return
         }

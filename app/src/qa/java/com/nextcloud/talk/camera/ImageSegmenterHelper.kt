@@ -16,6 +16,8 @@ import android.content.Context
  */
 class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
 
+    fun isReady(): Boolean = false
+
     fun destroyImageSegmenter() {
         // does nothing
     }

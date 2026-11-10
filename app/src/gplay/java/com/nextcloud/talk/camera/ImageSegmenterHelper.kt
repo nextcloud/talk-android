@@ -27,6 +27,11 @@ class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: Seg
         setupImageSegmenter()
     }
 
+    // True only once the underlying segmenter has successfully initialized. If model init failed
+    // (e.g. a protobuf runtime conflict), this stays false so callers can pass frames through
+    // untouched instead of parking them for results that will never arrive.
+    fun isReady(): Boolean = imageSegmenter != null
+
     // Segmenter must be closed when creating a new one to avoid returning results to a non-existent object
     fun destroyImageSegmenter() {
         imageSegmenter?.close()
