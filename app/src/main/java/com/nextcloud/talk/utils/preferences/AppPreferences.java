@@ -126,6 +126,10 @@ public interface AppPreferences {
 
     void setCallViewMode(String value);
 
+    String getPreferredAudioInputDevice();
+
+    void setPreferredAudioInputDevice(String value);
+
     boolean getIsKeyboardIncognito();
 
     void setIncognitoKeyboard(boolean value);

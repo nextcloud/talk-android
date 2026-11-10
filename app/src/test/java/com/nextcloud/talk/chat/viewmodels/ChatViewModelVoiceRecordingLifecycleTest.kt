@@ -26,6 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.eq
@@ -96,7 +97,7 @@ class ChatViewModelVoiceRecordingLifecycleTest {
         viewModel.startAudioRecording(mock<Context>(), mock<ConversationModel>())
         idleMainLooper()
         val onSilenced = argumentCaptor<() -> Unit>()
-        verify(mediaRecorderManager).start(any(), any(), onSilenced.capture())
+        verify(mediaRecorderManager).start(any(), any(), anyOrNull(), onSilenced.capture())
 
         onSilenced.firstValue.invoke()
         idleMainLooper()

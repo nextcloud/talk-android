@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.io
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.AudioRecordingConfiguration
 import android.media.MediaRecorder
@@ -57,10 +58,16 @@ class MediaRecorderManager : LifecycleAwareManager {
     private var silenceCallback: AudioManager.AudioRecordingCallback? = null
 
     /**
-     * Initializes and starts the MediaRecorder. [onSilenced] is called when Android silences the recording, e.g.
-     * because a call takes the microphone or the app went to the background (Android 10 and later).
+     * Initializes and starts the MediaRecorder, recording from [preferredInputDevice] or the system default for null.
+     * [onSilenced] is called when Android silences the recording, e.g. because a call takes the microphone or the app
+     * went to the background (Android 10 and later).
      */
-    fun start(context: Context, currentConversation: ConversationModel, onSilenced: () -> Unit = {}) {
+    fun start(
+        context: Context,
+        currentConversation: ConversationModel,
+        preferredInputDevice: AudioDeviceInfo? = null,
+        onSilenced: () -> Unit = {}
+    ) {
         if (_mediaRecorderState == MediaRecorderState.ERROR ||
             _mediaRecorderState == MediaRecorderState.RELEASED
         ) {
@@ -69,7 +76,7 @@ class MediaRecorderManager : LifecycleAwareManager {
 
         if (_mediaRecorderState == MediaRecorderState.INITIAL) {
             setVoiceRecordFileName(context, currentConversation)
-            initAndStartRecorder(context, onSilenced)
+            initAndStartRecorder(context, preferredInputDevice, onSilenced)
         } else {
             Log.e(TAG, "Started MediaRecorder with invalid state ${_mediaRecorderState.name}")
         }
@@ -86,9 +93,12 @@ class MediaRecorderManager : LifecycleAwareManager {
         }
     }
 
-    private fun initAndStartRecorder(context: Context, onSilenced: () -> Unit) {
+    private fun initAndStartRecorder(context: Context, preferredInputDevice: AudioDeviceInfo?, onSilenced: () -> Unit) {
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
+            if (preferredInputDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                setPreferredDevice(preferredInputDevice)
+            }
             _mediaRecorderState = MediaRecorderState.INITIALIZED
 
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)

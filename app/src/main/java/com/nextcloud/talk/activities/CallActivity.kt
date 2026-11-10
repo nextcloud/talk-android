@@ -26,6 +26,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
 import android.media.AudioAttributes
+import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaPlayer
@@ -181,6 +182,7 @@ import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStop
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingErrorState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartedState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartingState
+import com.nextcloud.talk.webrtc.AudioInputDeviceManager
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
 import com.nextcloud.talk.webrtc.WebRTCUtils
@@ -224,6 +226,7 @@ import org.webrtc.SurfaceTextureHelper
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoSource
 import org.webrtc.VideoTrack
+import org.webrtc.audio.JavaAudioDeviceModule
 import java.io.IOException
 import java.util.Objects
 import java.util.concurrent.CopyOnWriteArrayList
@@ -252,6 +255,9 @@ class CallActivity : CallBaseActivity() {
     lateinit var callViewModel: CallViewModel
 
     var audioManager: WebRtcAudioManager? = null
+    var audioInputDeviceManager: AudioInputDeviceManager? = null
+    private var audioDeviceModule: JavaAudioDeviceModule? = null
+    private var audioDeviceModuleInputOverridden = false
     var callRecordingViewModel: CallRecordingViewModel? = null
     var raiseHandViewModel: RaiseHandViewModel? = null
     val blurBackgroundViewModel: BlurBackgroundViewModel = BlurBackgroundViewModel()
@@ -1208,8 +1214,10 @@ class CallActivity : CallBaseActivity() {
         val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(
             rootEglBase!!.eglBaseContext
         )
+        audioDeviceModule = JavaAudioDeviceModule.builder(applicationContext).createAudioDeviceModule()
         peerConnectionFactory = PeerConnectionFactory.builder()
             .setOptions(options)
+            .setAudioDeviceModule(audioDeviceModule)
             .setVideoEncoderFactory(defaultVideoEncoderFactory)
             .setVideoDecoderFactory(defaultVideoDecoderFactory)
             .createPeerConnectionFactory()
@@ -1236,6 +1244,8 @@ class CallActivity : CallBaseActivity() {
         } else {
             setDefaultAudioOutputChannel(AudioDevice.SPEAKER_PHONE)
         }
+        audioInputDeviceManager = AudioInputDeviceManager(applicationContext, appPreferences)
+        audioInputDeviceManager!!.start { onAudioInputDeviceChanged() }
         iceServers = ArrayList()
 
         // create sdpConstraints
@@ -1275,6 +1285,41 @@ class CallActivity : CallBaseActivity() {
             updateAudioOutputButton(activeAudioManager.audioDeviceForUi)
         }
         return accepted
+    }
+
+    /**
+     * Returns the microphone to record from: the selected one, or in automatic mode the input matching the current
+     * output route. The built-in microphone is left to Android until an explicit device was applied, because
+     * JavaAudioDeviceModule.setPreferredInputDevice does not accept null to undo a selection.
+     */
+    private fun getEffectiveAudioInputDevice(): AudioDeviceInfo? {
+        val inputDeviceManager = audioInputDeviceManager ?: return null
+        inputDeviceManager.selectedDevice?.let { return it }
+        val automaticDevice =
+            inputDeviceManager.getInputDeviceForOutputRoute(audioManager?.currentAudioDevice ?: AudioDevice.NONE)
+        return automaticDevice?.takeIf {
+            audioDeviceModuleInputOverridden || it.type != AudioDeviceInfo.TYPE_BUILTIN_MIC
+        }
+    }
+
+    private fun applyAudioInputDevice() {
+        val device = getEffectiveAudioInputDevice()
+        if (device != null) {
+            audioDeviceModule?.setPreferredInputDevice(device)
+            audioDeviceModuleInputOverridden = true
+        }
+        if (micInputAudioRecordThread != null) {
+            micInputAudioRecorder.setPreferredDevice(device)
+        }
+    }
+
+    fun setAudioInputDevice(device: AudioDeviceInfo?) {
+        audioInputDeviceManager?.select(device)
+    }
+
+    private fun onAudioInputDeviceChanged() {
+        applyAudioInputDevice()
+        audioOutputDialog?.updateInputDeviceList()
     }
 
     private fun updateAudioOutputButton(activeAudioDevice: AudioDevice) {
@@ -1529,6 +1574,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun onAudioManagerDevicesChanged(currentDevice: AudioDevice, availableDevices: Set<AudioDevice>) {
         Log.d(TAG, "onAudioManagerDevicesChanged: $availableDevices, currentDevice: $currentDevice")
+        applyAudioInputDevice()
         audioRouteReady = audioManager?.isAudioRouteReady == true
         updateAudioRouteReadyTimeout()
         updateRemoteAudioPlayout()
@@ -1600,6 +1646,7 @@ class CallActivity : CallBaseActivity() {
                 AudioFormat.ENCODING_PCM_16BIT,
                 bufferSize
             )
+            micInputAudioRecorder.setPreferredDevice(getEffectiveAudioInputDevice())
             isMicInputAudioThreadRunning = true
             micInputAudioRecorder.startRecording()
             micInputAudioRecordThread = Thread(
@@ -2521,6 +2568,8 @@ class CallActivity : CallBaseActivity() {
                 audioManager!!.stop()
                 audioManager = null
             }
+            audioInputDeviceManager?.stop()
+            audioInputDeviceManager = null
         }
         if (videoSource != null) {
             videoSource = null
@@ -2528,6 +2577,8 @@ class CallActivity : CallBaseActivity() {
         if (peerConnectionFactory != null) {
             peerConnectionFactory = null
         }
+        audioDeviceModule = null
+        audioDeviceModuleInputOverridden = false
         localAudioTrack = null
         localVideoTrack = null
         if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
