@@ -729,6 +729,7 @@ How to translate with transifex:
     <string name="nc_voice_message">Voice message</string>
     <string name="nc_voice_message_filename" translatable="false">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
+    <string name="nc_voice_message_recording_interrupted">Recording stopped</string>
     <string name="nc_description_record_voice">Record voice message</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>

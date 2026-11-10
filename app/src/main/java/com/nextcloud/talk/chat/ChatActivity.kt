@@ -80,8 +80,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.dagger.modules.assistedViewModels
-import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -125,6 +123,7 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -214,6 +213,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.keepContentOutOfDisplayCutout
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
+import com.nextcloud.talk.utils.setExpeditedIfSupported
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.webrtc.Globals
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
@@ -231,7 +231,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -308,6 +307,10 @@ class ChatActivity :
             roomToken,
             conversationThreadId
         )
+    }
+
+    private val voiceRecordingInterrupter = VoiceRecordingInterrupter(this) {
+        chatViewModel.interruptAudioRecording()
     }
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
@@ -636,6 +639,7 @@ class ChatActivity :
         if (isSharedTextTaken) sharedText = ""
         if (areSharedFilesTaken) sharedFilePaths = emptyList()
         chatViewModel.initData()
+        voiceRecordingInterrupter.register()
         if (sharedText.isNotEmpty()) {
             chatViewModel.messageDraft.messageText = sharedText
             chatViewModel.saveMessageDraft()
@@ -2861,6 +2865,7 @@ class ChatActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+        voiceRecordingInterrupter.unregister()
 
         if (::initialUser.isInitialized) {
             logConversationInfos("onDestroy")

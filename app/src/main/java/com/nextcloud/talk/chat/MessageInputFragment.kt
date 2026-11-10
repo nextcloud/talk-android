@@ -276,6 +276,14 @@ class MessageInputFragment : Fragment() {
             }
         }
 
+        // a held recording can also end without a touch, e.g. when the app goes to the background
+        chatActivity.chatViewModel.getVoiceRecordingInProgress.observe(viewLifecycleOwner) { inProgress ->
+            if (!inProgress && binding.fragmentMessageInputView.microphoneEnabledInfo.isVisible) {
+                showRecordAudioUi(false)
+                resetSlider()
+            }
+        }
+
         chatActivity.chatViewModel.scheduledMessagesCount.observe(viewLifecycleOwner) { count ->
             if (chatActivity.conversationThreadId != null && chatActivity.conversationThreadId!! > 0) {
                 val threadId = chatActivity.conversationThreadId

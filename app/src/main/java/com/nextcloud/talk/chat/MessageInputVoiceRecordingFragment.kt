@@ -17,8 +17,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -51,6 +53,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
     lateinit var binding: FragmentMessageInputVoiceRecordingBinding
     private lateinit var chatActivity: ChatActivity
     private var pause = false
+    private var micInputPausedByStop = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +77,39 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         this.lifecycle.removeObserver(messageInputViewModel)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // MessageInputViewModel stops the mic input when the fragment stops, e.g. under the media viewer
+        if (micInputPausedByStop && isRecordingShown()) {
+            messageInputViewModel.resumeMicInput(requireContext())
+        }
+        micInputPausedByStop = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showInterruptionIfPending()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        micInputPausedByStop = isRecordingShown()
+    }
+
+    private fun isRecordingShown() =
+        chatActivity.chatViewModel.getVoiceRecordingInProgress.value == true &&
+            binding.voicePreviewContainer.visibility != View.VISIBLE
+
     private fun initObservers() {
         messageInputViewModel.startMicInput(requireContext())
+
+        // an interruption can come while another screen already covers the chat: it is shown once the chat is back
+        chatActivity.chatViewModel.voiceRecordingInterrupted.observe(viewLifecycleOwner) {
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                showInterruptionIfPending()
+            }
+        }
+
         messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
             binding.micInputCloud.setRotationSpeed(it.first, it.second)
         }
@@ -164,9 +198,38 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         binding.audioRecordDuration.clearAnimation()
     }
 
+    /**
+     * The recording was stopped without the user, e.g. by leaving the app: shows what was recorded like after
+     * stopping it by hand, so it can be played, sent or deleted.
+     */
+    private fun showInterruptionIfPending() {
+        if (chatActivity.chatViewModel.voiceRecordingInterrupted.value != true) {
+            return
+        }
+        chatActivity.chatViewModel.onVoiceRecordingInterruptionShown()
+        showPreview()
+        Snackbar.make(
+            binding.root,
+            R.string.nc_voice_message_recording_interrupted,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    /** Shows the preview of a stopped recording instead of the running one. */
+    private fun showPreview() {
+        pause = false
+        binding.seekbar.progress = 0
+        messageInputViewModel.stopMicInput()
+        binding.audioRecordDuration.visibility = View.GONE
+        binding.audioRecordDuration.stop()
+        binding.voicePreviewContainer.visibility = View.VISIBLE
+    }
+
     private fun togglePreviewVisibility() {
-        val visibility = binding.voicePreviewContainer.visibility
-        binding.voicePreviewContainer.visibility = if (visibility == View.VISIBLE) {
+        if (binding.voicePreviewContainer.visibility != View.VISIBLE) {
+            chatActivity.chatViewModel.stopAudioRecording()
+            showPreview()
+        } else {
             messageInputViewModel.stopMediaPlayer()
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 requireContext(),
@@ -178,15 +241,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
             binding.audioRecordDuration.visibility = View.VISIBLE
             binding.audioRecordDuration.base = SystemClock.elapsedRealtime()
             binding.audioRecordDuration.start()
-            View.GONE
-        } else {
-            pause = false
-            binding.seekbar.progress = 0
-            messageInputViewModel.stopMicInput()
-            chatActivity.chatViewModel.stopAudioRecording()
-            binding.audioRecordDuration.visibility = View.GONE
-            binding.audioRecordDuration.stop()
-            View.VISIBLE
+            binding.voicePreviewContainer.visibility = View.GONE
         }
     }
 

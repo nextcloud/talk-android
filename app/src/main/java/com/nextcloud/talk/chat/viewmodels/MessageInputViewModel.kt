@@ -346,6 +346,14 @@ class MessageInputViewModel :
         }
     }
 
+    /**
+     * Starts the mic input again after it was stopped with the lifecycle, which keeps the audio focus: asking for it
+     * again would take it once more on every return to the chat.
+     */
+    fun resumeMicInput(context: Context) {
+        audioRecorderManager.start(context)
+    }
+
     fun stopMicInput() {
         audioFocusRequestManager.audioFocusRequest(false) {
             audioRecorderManager.stop()
