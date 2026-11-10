@@ -22,9 +22,11 @@ data class FederationSettingsDto(
     var nextcloudServer: String? = null,
     @JsonField(name = ["helloAuthParams"])
     var helloAuthParams: FederationHelloAuthParamsDto? = null,
+    @JsonField(name = ["joinAuthParams"])
+    var joinAuthParams: FederationJoinAuthParamsDto? = null,
     @JsonField(name = ["roomId"])
     var roomId: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null)
+    constructor() : this(null, null, null, null, null)
 }

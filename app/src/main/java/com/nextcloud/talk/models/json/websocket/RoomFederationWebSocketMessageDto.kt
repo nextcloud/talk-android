@@ -21,8 +21,10 @@ class RoomFederationWebSocketMessageDto(
     @JsonField(name = ["roomid"])
     var roomid: String? = null,
     @JsonField(name = ["token"])
-    var token: String? = null
+    var token: String? = null,
+    @JsonField(name = ["auth"])
+    var auth: RoomFederationJoinAuthParamsWebSocketMessageDto? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null)
+    constructor() : this(null, null, null, null, null)
 }

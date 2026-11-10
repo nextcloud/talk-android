@@ -12,6 +12,7 @@ import android.util.Log;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessageDto;
+import com.nextcloud.talk.models.json.signaling.settings.FederationJoinAuthParamsDto;
 import com.nextcloud.talk.models.json.signaling.settings.FederationSettingsDto;
 import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessageDto;
@@ -20,6 +21,7 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessageDto;
+import com.nextcloud.talk.models.json.websocket.RoomFederationJoinAuthParamsWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.RoomFederationWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessageDto;
@@ -168,6 +170,16 @@ public class WebSocketConnectionHelper {
             roomFederationWebSocketMessage.setUrl(federation.getNextcloudServer() + "/ocs/v2.php/apps/spreed/api/v3/signaling/backend");
             roomFederationWebSocketMessage.setRoomid(federation.getRoomId());
             roomFederationWebSocketMessage.setToken(federationAuthToken);
+            String federationJoinAuthToken = null;
+            FederationJoinAuthParamsDto joinAuthParams = federation.getJoinAuthParams();
+            if (joinAuthParams != null) {
+                federationJoinAuthToken = joinAuthParams.getToken();
+            }
+            if (federationJoinAuthToken != null && !federationJoinAuthToken.isEmpty()) {
+                roomFederationWebSocketMessage.setAuth(new RoomFederationJoinAuthParamsWebSocketMessageDto(
+                    RoomFederationJoinAuthParamsWebSocketMessageDto.VERSION,
+                    federationJoinAuthToken));
+            }
             roomWebSocketMessage.setRoomFederationWebSocketMessage(roomFederationWebSocketMessage);
         }
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
