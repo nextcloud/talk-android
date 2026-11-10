@@ -84,6 +84,10 @@ public class WebRtcAudioManager {
 
     private final PowerManagerUtils powerManagerUtils;
 
+    // Set while Android Telecom owns the call's communication route, see setExternalAudioRoute()
+    @Nullable private ExternalAudioRouter externalAudioRouter = null;
+    private final ExternalAudioRouteController externalRoute = new ExternalAudioRouteController();
+
     private WebRtcAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
@@ -238,6 +242,10 @@ public class WebRtcAudioManager {
     void onAudioFocusChange(int focusChange) {
         if (audioFocusState.handle(focusChange) && amState == AudioManagerState.RUNNING) {
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            if (externalAudioRouter != null) {
+                Log.d(TAG, "onAudioFocusChange: " + focusChange + ", route is owned externally");
+                return;
+            }
             bluetoothManager.reassertBluetoothAudioAfterFocusGain(bluetoothPreferredForCall, hasWiredHeadset);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S
                 && currentAudioDevice != AudioDevice.NONE
@@ -306,6 +314,8 @@ public class WebRtcAudioManager {
             return;
         }
         amState = AudioManagerState.UNINITIALIZED;
+        externalAudioRouter = null;
+        externalRoute.reset(AudioDevice.NONE);
 
         unregisterReceiver(wiredHeadsetReceiver);
         audioManager.unregisterAudioDeviceCallback(wiredAudioDeviceCallback);
@@ -405,6 +415,9 @@ public class WebRtcAudioManager {
      */
     public boolean selectAudioDevice(AudioDevice device) {
         ThreadUtils.checkIsOnMainThread();
+        if (externalAudioRouter != null) {
+            return selectExternalAudioDevice(device);
+        }
         if (device == AudioDevice.BLUETOOTH) {
             AudioDevice previousUserSelectedAudioDevice = userSelectedAudioDevice;
             boolean wasBluetoothPreferredForCall = bluetoothPreferredForCall;
@@ -477,6 +490,9 @@ public class WebRtcAudioManager {
      */
     public AudioDevice getAudioDeviceForUi() {
         ThreadUtils.checkIsOnMainThread();
+        if (externalAudioRouter != null) {
+            return externalRoute.getDeviceForUi();
+        }
         if (bluetoothPreferredForCall
                 && !hasWiredHeadset
                 && audioDevices.contains(AudioDevice.BLUETOOTH)
@@ -492,6 +508,9 @@ public class WebRtcAudioManager {
      */
     public boolean isAudioRouteReady() {
         ThreadUtils.checkIsOnMainThread();
+        if (externalAudioRouter != null) {
+            return externalRoute.isRouteReady();
+        }
         boolean bluetoothConnected = bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED;
         boolean selectedCommunicationRouteConfirmed = currentAudioDevice == AudioDevice.BLUETOOTH
             || Build.VERSION.SDK_INT < Build.VERSION_CODES.S
@@ -622,6 +641,14 @@ public class WebRtcAudioManager {
     }
 
     /**
+     * Lifts the system-wide microphone mute, which Telecom sets e.g. when the mute button of a Bluetooth headset is
+     * pressed. Without this, the microphone stays silent although the call has it turned on.
+     */
+    public void unmuteSystemMicrophone() {
+        setMicrophoneMute(false);
+    }
+
+    /**
      * Sets the microphone mute state.
      */
     private void setMicrophoneMute(boolean on) {
@@ -722,6 +749,12 @@ public class WebRtcAudioManager {
 
     public final void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
+        if (externalAudioRouter != null) {
+            // Telecom picks the route for plugged/connected devices itself; only the proximity override is applied
+            requestExternalAudioDevice(externalRoute.onProximityChanged(isProximityNear()));
+            notifyAudioRouteStateIfChanged(false);
+            return;
+        }
         Log.d(TAG, "--- updateAudioDeviceState: "
             + "wired headset=" + hasWiredHeadset + ", "
             + "BT state=" + bluetoothManager.getState());
@@ -890,6 +923,98 @@ public class WebRtcAudioManager {
         Log.d(TAG, "--- updateAudioDeviceState done");
     }
 
+    /**
+     * Hands the communication route over to an external owner (Android Telecom), or takes it back with a null
+     * {@code router}. While a router is set, this class stops selecting devices and handling Bluetooth itself:
+     * Telecom applies its own route and requests made via AudioManager don't take effect. Device selections and the
+     * proximity override are forwarded to the router instead.
+     *
+     * Call it with every route Telecom reports.
+     */
+    public void setExternalAudioRoute(@Nullable ExternalAudioRouter router,
+                                      AudioDevice currentDevice,
+                                      Set<AudioDevice> availableDevices) {
+        ThreadUtils.checkIsOnMainThread();
+        if (amState != AudioManagerState.RUNNING) {
+            return;
+        }
+        if (router == null) {
+            if (externalAudioRouter != null) {
+                Log.d(TAG, "Communication route is no longer owned externally");
+                externalAudioRouter = null;
+                userSelectedAudioDevice = externalRoute.getUserSelectedDevice();
+                externalRoute.reset(AudioDevice.NONE);
+                updateAudioDeviceState();
+            }
+            return;
+        }
+
+        if (externalAudioRouter == null) {
+            Log.d(TAG, "Communication route is owned externally from now on");
+            externalRoute.reset(userSelectedAudioDevice);
+            // Stop competing with the owner for the communication device
+            if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
+                || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING) {
+                bluetoothManager.stopScoAudio();
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                clearCommunicationDevice();
+            }
+        }
+        externalAudioRouter = router;
+
+        AudioDevice previousDevice = currentAudioDevice;
+        Set<AudioDevice> previousDevices = audioDevices;
+        AudioDevice deviceToRequest = externalRoute.onRouteReported(currentDevice, availableDevices, isProximityNear());
+        currentAudioDevice = currentDevice;
+        audioDevices = new HashSet<>(availableDevices);
+        internalAudioDevices = new HashSet<>(availableDevices);
+        userSelectedAudioDevice = externalRoute.getUserSelectedDevice();
+        Log.d(TAG, "External route: current=" + currentDevice + ", available=" + availableDevices
+            + ", user selected=" + userSelectedAudioDevice + ", pending=" + externalRoute.getPendingDevice());
+
+        requestExternalAudioDevice(deviceToRequest);
+        notifyAudioRouteStateIfChanged(previousDevice != currentAudioDevice || !previousDevices.equals(audioDevices));
+    }
+
+    /**
+     * Result of a {@link ExternalAudioRouter#requestAudioDevice} request; must be called on the main thread.
+     */
+    public void onExternalAudioDeviceRequestFinished(AudioDevice device, boolean accepted) {
+        ThreadUtils.checkIsOnMainThread();
+        if (externalAudioRouter == null) {
+            return;
+        }
+        if (!accepted) {
+            Log.w(TAG, "External route owner rejected switching to " + device);
+        }
+        externalRoute.onRequestFinished(device, accepted);
+        userSelectedAudioDevice = externalRoute.getUserSelectedDevice();
+        notifyAudioRouteStateIfChanged(false);
+    }
+
+    private boolean selectExternalAudioDevice(AudioDevice device) {
+        AudioDevice deviceToRequest = externalRoute.select(device, isProximityNear());
+        if (deviceToRequest == AudioDevice.NONE) {
+            Log.e(TAG, "Can not select " + device + " from externally available " + audioDevices);
+            return false;
+        }
+        userSelectedAudioDevice = externalRoute.getUserSelectedDevice();
+        requestExternalAudioDevice(deviceToRequest);
+        notifyAudioRouteStateIfChanged(false);
+        // A synchronous rejection already reset the selection to the active route
+        return externalRoute.getUserSelectedDevice() == device;
+    }
+
+    private void requestExternalAudioDevice(@Nullable AudioDevice device) {
+        if (device == null || externalAudioRouter == null) {
+            return;
+        }
+        Log.d(TAG, "Requesting " + device + " from the external route owner");
+        externalRoute.onRequestStarted(device);
+        externalAudioRouter.requestAudioDevice(device);
+    }
+
     private void notifyAudioRouteStateIfChanged(boolean audioDeviceChanged) {
         AudioDevice audioDeviceForUi = getAudioDeviceForUi();
         boolean audioDeviceForUiChanged = audioDeviceForUi != lastReportedAudioDeviceForUi;
@@ -927,6 +1052,18 @@ public class WebRtcAudioManager {
         // Callback fired once audio device is changed or list of available audio devices changed.
         void onAudioDeviceChanged(
             AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);
+    }
+
+    /**
+     * Component that owns the call's communication route, e.g. Android Telecom.
+     */
+    public interface ExternalAudioRouter {
+        /**
+         * Asks the owner to switch to {@code device}. The owner must answer with
+         * {@link WebRtcAudioManager#onExternalAudioDeviceRequestFinished} and report the resulting route with
+         * {@link WebRtcAudioManager#setExternalAudioRoute}.
+         */
+        void requestAudioDevice(AudioDevice device);
     }
 
     /* Receiver which handles changes in wired headset availability. */
