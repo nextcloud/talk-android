@@ -57,9 +57,8 @@ class CallNotificationActivity : CallBaseActivity() {
     private var isOneToOneCall: Boolean = true
     private var conversationName: String? = null
     private lateinit var userBeingCalled: User
-    private var leavingScreen = false
-    private var handler: Handler? = null
-    private val notificationCheckHandler = Handler(Looper.getMainLooper())
+    private var isCacheEvicted = false
+    private val handler = Handler(Looper.getMainLooper())
     private var binding: CallNotificationActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,10 +163,10 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun setupNotificationCanceledRoutine() {
-        notificationCheckHandler.post(object : Runnable {
+        handler.post(object : Runnable {
             override fun run() {
                 if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationCheckHandler.postDelayed(this, ONE_SECOND)
+                    handler.postDelayed(this, ONE_SECOND)
                 } else {
                     finish()
                 }
@@ -177,8 +176,8 @@ class CallNotificationActivity : CallBaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (handler == null) {
-            handler = Handler()
+        if (!isCacheEvicted) {
+            isCacheEvicted = true
             try {
                 cache!!.evictAll()
             } catch (e: IOException) {
@@ -202,7 +201,6 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun hangup() {
-        leavingScreen = true
         finish()
     }
 
@@ -216,15 +214,10 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
     public override fun onDestroy() {
-        notificationCheckHandler.removeCallbacksAndMessages(null)
+        handler.removeCallbacksAndMessages(null)
         // only decline or closing the window ends the ringing, a sleeping screen may stop the window on its own
         if (isFinishing) {
             notificationTimestamp?.let { NotificationManagerCompat.from(context).cancel(it) }
-        }
-        leavingScreen = true
-        if (handler != null) {
-            handler!!.removeCallbacksAndMessages(null)
-            handler = null
         }
         super.onDestroy()
     }
