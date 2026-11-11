@@ -76,6 +76,15 @@ class ConversationListUpdater @Inject constructor(
 
     private val fieldGroupWriteStarts = ConcurrentHashMap<Pair<String, FieldGroup>, Long>()
 
+    /**
+     * Rooms whose stored unread count a catch-up could not derive, so the row still holds the
+     * count of an older state. A response with the same read marker must not adopt that count as
+     * if it belonged to the marker: the count of the response is the newer server value. A write
+     * that sets the count — a derived catch-up, a whole-entry write or a local read state —
+     * removes the room from here.
+     */
+    private val underivedUnreadCounts = ConcurrentHashMap.newKeySet<String>()
+
     private val serverWriteLocks = ConcurrentHashMap<Long, Mutex>()
 
     /**
@@ -118,6 +127,7 @@ class ConversationListUpdater @Inject constructor(
         internalConversationIds.forEach { id ->
             if (fieldGroup == null) {
                 serverWriteStarts.merge(id, requestedAtNanos, ::newerOf)
+                underivedUnreadCounts.remove(id)
             } else {
                 fieldGroupWriteStarts.merge(id to fieldGroup, requestedAtNanos, ::newerOf)
             }
@@ -147,26 +157,41 @@ class ConversationListUpdater @Inject constructor(
     /**
      * The unread count is not a server value but follows from the last read message, so a pair of
      * the two must come from one state. With the marker of the response unchanged the stored count
-     * stands; otherwise it is derived again from the marker of the response. Where that is not
-     * possible the count of the response is taken, for a lower marker the higher of it and the
-     * stored count: both are lower bounds, the response does not know the new messages and the
-     * stored count was derived from a higher marker.
+     * stands; otherwise it is derived again from the marker of the response. For a marker the
+     * response moved back the user's own messages sit above it as well, so they are counted in and
+     * the result never falls below the count of the response. Where the count cannot be derived
+     * the count of the response is taken, for a lower marker the higher of it and the stored
+     * count: both are lower bounds, the response does not know the new messages and the stored
+     * count was derived from a higher marker.
      */
     private suspend fun unreadFollowingMarker(
         serverItem: ConversationEntity,
         stored: ConversationEntity,
         ownUserId: String?
     ): Int {
-        if (serverItem.lastReadMessage == stored.lastReadMessage) {
-            return stored.unreadMessages
+        val sameMarker = serverItem.lastReadMessage == stored.lastReadMessage
+        val movedBack = serverItem.lastReadMessage < stored.lastReadMessage
+        // the user moved a marker back on purpose, so it sits below their own messages and the
+        // server counts those as unread as well; the count of the response is a lower bound, as the
+        // cache above the marker may be incomplete despite the boundary check
+        val derived = if (sameMarker) {
+            UNREAD_COUNT_UNKNOWN
+        } else {
+            deriveUnreadMessagesCount(
+                serverItem.internalId,
+                ownUserId,
+                serverItem.lastReadMessage,
+                includeOwnMessages = movedBack
+            )
         }
-        val derived = ownUserId?.let {
-            deriveUnreadMessagesCount(serverItem.internalId, it, serverItem.lastReadMessage)
-        } ?: UNREAD_COUNT_UNKNOWN
         return when {
+            // the stored count only belongs to this marker when it was set with it; a catch-up that
+            // could not derive it left an older count in the row, which the response beats
+            sameMarker && serverItem.internalId in underivedUnreadCounts -> serverItem.unreadMessages
+            sameMarker -> stored.unreadMessages
+            movedBack && derived != UNREAD_COUNT_UNKNOWN -> maxOf(derived, serverItem.unreadMessages)
+            movedBack -> maxOf(serverItem.unreadMessages, stored.unreadMessages)
             derived != UNREAD_COUNT_UNKNOWN -> derived
-            serverItem.lastReadMessage < stored.lastReadMessage ->
-                maxOf(serverItem.unreadMessages, stored.unreadMessages)
             else -> serverItem.unreadMessages
         }
     }
@@ -295,6 +320,7 @@ class ConversationListUpdater @Inject constructor(
         )
         switchToPendingMarkAsRead(target.internalConversationId, lastReadMessage)
         conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
+        underivedUnreadCounts.remove(target.internalConversationId)
         Log.d(TAG, "Local read state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
     }
 
@@ -351,6 +377,7 @@ class ConversationListUpdater @Inject constructor(
 
         switchToPendingMarkAsUnread(target.internalConversationId)
         conversationsDao.updateReadState(conversation.internalId, lastReadMessage, unreadMessages)
+        underivedUnreadCounts.remove(target.internalConversationId)
         Log.d(TAG, "Local unread state for room ${target.roomToken}: lastRead=$lastReadMessage, unread=$unreadMessages")
     }
 
@@ -661,7 +688,7 @@ class ConversationListUpdater @Inject constructor(
                 pendingReadMarker(target.internalConversationId) ?: 0
             )
             val unreadMessages =
-                deriveUnreadMessagesCount(target.internalConversationId, target.user.userId!!, lastReadMessage)
+                deriveUnreadMessagesCount(target.internalConversationId, target.user.userId, lastReadMessage)
             // the write and its mark are one step even if the caller gives up meanwhile
             val updatedRows = withContext(NonCancellable) {
                 conversationsDao.updateConversationFromCatchUp(
@@ -674,6 +701,11 @@ class ConversationListUpdater @Inject constructor(
                     if (rows > 0) {
                         outcome.newestMessageRequestedAtNanos?.let {
                             recordServerWrite(listOf(conversation.internalId), it, FieldGroup.PREVIEW)
+                        }
+                        if (unreadMessages == UNREAD_COUNT_UNKNOWN) {
+                            underivedUnreadCounts.add(conversation.internalId)
+                        } else {
+                            underivedUnreadCounts.remove(conversation.internalId)
                         }
                     }
                 }
@@ -689,15 +721,21 @@ class ConversationListUpdater @Inject constructor(
 
     /**
      * Derives the room's unread count from the cached messages, or [UNREAD_COUNT_UNKNOWN] when it
-     * cannot be derived — the count is only trustworthy when the latest chat block reaches back to
-     * the last read message. Own messages don't count: sending from another device advances the
-     * server-side read marker, which the locally cached [lastReadMessage] may lag behind.
+     * cannot be derived — without the account's user id, or when the latest chat block does not
+     * reach back to the last read message. Own messages don't count by default: sending from
+     * another device advances the server-side read marker, which the locally cached
+     * [lastReadMessage] may lag behind. A marker the user moved back on purpose really does sit
+     * below them, though, so [includeOwnMessages] counts them the way the server does.
      */
     private suspend fun deriveUnreadMessagesCount(
         internalConversationId: String,
-        ownUserId: String,
-        lastReadMessage: Int
+        ownUserId: String?,
+        lastReadMessage: Int,
+        includeOwnMessages: Boolean = false
     ): Int {
+        if (ownUserId == null) {
+            return UNREAD_COUNT_UNKNOWN
+        }
         val latestBlock = if (lastReadMessage > 0) {
             chatBlocksDao.getLatestChatBlock(internalConversationId, null).first()
         } else {
@@ -707,11 +745,18 @@ class ConversationListUpdater @Inject constructor(
             (latestBlock.oldestMessageId <= lastReadMessage || !latestBlock.hasHistory)
 
         return if (blockReachesUnreadBoundary) {
-            chatDao.countMessagesNewerThan(
-                internalConversationId = internalConversationId,
-                messageId = lastReadMessage.toLong(),
-                excludedActorId = ownUserId
-            )
+            if (includeOwnMessages) {
+                chatDao.countMessagesNewerThanIncludingOwn(
+                    internalConversationId = internalConversationId,
+                    messageId = lastReadMessage.toLong()
+                )
+            } else {
+                chatDao.countMessagesNewerThan(
+                    internalConversationId = internalConversationId,
+                    messageId = lastReadMessage.toLong(),
+                    excludedActorId = ownUserId
+                )
+            }
         } else {
             UNREAD_COUNT_UNKNOWN
         }

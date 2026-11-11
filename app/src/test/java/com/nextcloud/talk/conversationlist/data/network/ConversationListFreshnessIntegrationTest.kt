@@ -150,6 +150,62 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `a catch-up of an account without a user id keeps the stored unread count`() {
+        runBlocking {
+            seedConversation(lastActivity = 10, lastReadMessage = 10, unreadMessages = 2)
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12))))
+
+            syncer.catchUpRoom(target(userId = null), lastReadMessage = 10, unreadMessages = 2)
+
+            val conversation = conversationEntity()
+            assertEquals(12L, conversation.lastActivity)
+            assertEquals(
+                "without a user id the count cannot be derived and the stored one stands",
+                2,
+                conversation.unreadMessages
+            )
+        }
+    }
+
+    @Test
+    fun `a catch-up that cannot derive the count lets the server's higher count through`() {
+        val user = user(withKeepNotificationsCapability = false)
+        val repository = repository()
+        runBlocking {
+            // a never-read room: lastReadMessage == 0, so the catch-up cannot derive the count
+            seedConversation(lastActivity = 10, lastReadMessage = 0, unreadMessages = 3)
+            val syncRequested = CountDownLatch(1)
+            val syncAnswer = CountDownLatch(1)
+            whenever(conversationsNetwork.getRooms(any(), any(), any(), anyOrNull())).thenReturn(
+                Observable.fromCallable {
+                    syncRequested.countDown()
+                    syncAnswer.await()
+                    RoomListResult(
+                        listOf(serverRoom(lastActivity = 12, lastRead = 0, unread = 7)),
+                        modifiedBefore = null,
+                        wasDelta = false
+                    )
+                }
+            )
+            val sync = repository.getRooms(user)
+            runInterruptible { syncRequested.await() }
+
+            wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall(message(10), message(11), message(12))))
+            syncer.catchUpRoom(target(), lastReadMessage = 0, unreadMessages = 3)
+            syncAnswer.countDown()
+            sync.join()
+
+            assertEquals(
+                "the stale stored count must not reduce the server's count at the same marker",
+                7,
+                conversationEntity().unreadMessages
+            )
+        }
+    }
+
+    @Test
     fun `background catch-up does not regress unread while a read marker is pending but not yet committed`() {
         runBlocking {
             // Simulates leaving the chat racing a concurrent catch-up: the read marker is
@@ -870,6 +926,22 @@ class ConversationListFreshnessIntegrationTest {
     }
 
     @Test
+    fun `own messages marked as unread on another device keep the conversation unread`() {
+        runBlocking {
+            // the user sent 11 and 12 from another device and marked them as unread there
+            refreshAcrossCatchUp(
+                storedLastRead = 12,
+                answer = serverRoom(lastActivity = 12, lastRead = 10, unread = 2),
+                fetched = listOf(message(10), message(11, actorId = "me"), message(12, actorId = "me"))
+            )
+
+            val conversation = conversationEntity()
+            assertEquals(10, conversation.lastReadMessage)
+            assertEquals("a marker below the own messages makes them unread as well", 2, conversation.unreadMessages)
+        }
+    }
+
+    @Test
     fun `a lowered marker with an unknown count keeps the higher of the stored and the answered count`() {
         runBlocking {
             // the cached messages start above the marker of the answer, so the count cannot be derived
@@ -877,7 +949,7 @@ class ConversationListFreshnessIntegrationTest {
                 storedLastRead = 12,
                 answer = serverRoom(lastActivity = 15, lastRead = 10, unread = 2),
                 storedUnread = 3,
-                fetched = listOf(14, 15)
+                fetched = listOf(message(14), message(15))
             )
 
             val conversation = conversationEntity()
@@ -894,7 +966,7 @@ class ConversationListFreshnessIntegrationTest {
         storedLastRead: Int,
         answer: ConversationDto,
         storedUnread: Int = 0,
-        fetched: List<Long> = listOf(10, 11, 12)
+        fetched: List<ChatMessageDto> = listOf(message(10), message(11), message(12))
     ) {
         val user = user(withKeepNotificationsCapability = false)
         seedConversation(lastActivity = 10, lastReadMessage = storedLastRead, unreadMessages = storedUnread)
@@ -909,7 +981,7 @@ class ConversationListFreshnessIntegrationTest {
         refreshRequested.await()
 
         wheneverBlocking { chatNetwork.pullChatMessages(any(), any(), any()) }
-            .thenReturn(Response.success(ChatOverall(ocs = ChatOCS(meta = null, data = fetched.map { message(it) }))))
+            .thenReturn(Response.success(ChatOverall(ocs = ChatOCS(meta = null, data = fetched))))
         syncer.catchUpRoom(target(), lastReadMessage = storedLastRead, unreadMessages = storedUnread)
         refreshAnswer.complete(Unit)
         refresh.join()
@@ -1068,9 +1140,9 @@ class ConversationListFreshnessIntegrationTest {
         )
     }
 
-    private fun target(): ChatMessageSyncer.SyncTarget =
+    private fun target(userId: String? = "me"): ChatMessageSyncer.SyncTarget =
         ChatMessageSyncer.SyncTarget(
-            user = user(),
+            user = user().copy(userId = userId),
             roomToken = ROOM_TOKEN,
             threadId = null,
             credentials = "credentials",

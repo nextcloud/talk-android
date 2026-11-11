@@ -287,6 +287,8 @@ class OfflineFirstConversationsRepository @Inject constructor(
             it.asEntity(accountId)
         }
 
+        var heldBackTokens = emptyList<String>()
+        var landedFully = true
         val previousConversations = conversationListUpdater.withServerWriteLock(accountId) {
             val stored = dao.getConversationsForUser(accountId).first()
                 .associateBy { it.internalId }
@@ -297,20 +299,16 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 keepCachedStatus(conversationsFromSync, stored)
             }
 
-            // a conversation that holds state from a later request is not one this response can delete
-            val conversationIdsToDelete = if (roomList.wasDelta) {
+            val leftConversationIds = if (roomList.wasDelta) {
                 emptyList()
             } else {
-                determineLeftConversationIds(stored, conversationsFromSync)
-                    .filter { it in knownBeforeRequest }
-                    .filterNot { conversationListUpdater.hasNewerWrite(it, requestedAtNanos) }
+                determineLeftConversationIds(stored, conversationsFromSync).filter { it in knownBeforeRequest }
             }
-            val mergedItems = conversationListUpdater.preservePendingLocalState(
-                stored,
-                serverItems,
-                requestedAtNanos,
-                user.userId
-            )
+            val conversationIdsToDelete = deletableAt(leftConversationIds, requestedAtNanos)
+            val mergedItems =
+                conversationListUpdater.preservePendingLocalState(stored, serverItems, requestedAtNanos, user.userId)
+            heldBackTokens = tokensHeldBack(serverItems, mergedItems)
+            landedFully = heldBackTokens.isEmpty() && conversationIdsToDelete.size == leftConversationIds.size
             // the write and its mark are one step even if the worker's time budget runs out meanwhile
             withContext(NonCancellable) {
                 dao.syncConversationsForUser(
@@ -326,10 +324,27 @@ class OfflineFirstConversationsRepository @Inject constructor(
             stored
         }
 
-        rememberSyncedState(accountId, roomList)
+        rememberSyncedState(accountId, roomList, landedFully)
+        // a fresh request is newer than every write that held the response back, so it applies, and
+        // the server's value stands whatever its activity is, e.g. after the last message was deleted
+        heldBackTokens.forEach { getRoom(user, it) }
 
         return getRoomsWithNewMessages(conversationsFromSync, previousConversations)
     }
+
+    /** A conversation that holds state from a later request is not one this response can delete. */
+    private fun deletableAt(leftConversationIds: List<String>, requestedAtNanos: Long) =
+        leftConversationIds.filterNot { conversationListUpdater.hasNewerWrite(it, requestedAtNanos) }
+
+    /**
+     * The rooms of the response that the merge did not take: dropped, or kept with the stored
+     * preview. The response is not fully reflected in the database for them.
+     */
+    private fun tokensHeldBack(serverItems: List<ConversationEntity>, mergedItems: List<ConversationEntity>) =
+        serverItems.filter { item ->
+            val merged = mergedItems.firstOrNull { it.internalId == item.internalId }
+            merged == null || merged.lastMessage != item.lastMessage || merged.lastActivity != item.lastActivity
+        }.map { it.token }
 
     override fun requireFullSync(accountId: Long) {
         storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, null)
@@ -370,10 +385,17 @@ class OfflineFirstConversationsRepository @Inject constructor(
     /**
      * Stores the timestamp [roomList] reported for the next request, and, when it was a full
      * response, the time of this full sync. Called after the response has been written to the
-     * database.
+     * database. When the response did not [landedFully] — a room was held back by a newer write, or
+     * a deletion was suppressed — the timestamp is not advanced, as the next delta would start past
+     * the change of that room; a full response clears it, so the next sync is a full one.
      */
-    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult) {
-        storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult, landedFully: Boolean) {
+        if (landedFully) {
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+        } else if (!roomList.wasDelta) {
+            // a response that did not land in full has no timestamp the next delta could start from
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
+        }
         if (!roomList.wasDelta) {
             storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, System.currentTimeMillis())
         }
