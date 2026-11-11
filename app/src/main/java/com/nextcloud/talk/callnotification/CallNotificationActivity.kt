@@ -59,6 +59,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private lateinit var userBeingCalled: User
     private var leavingScreen = false
     private var handler: Handler? = null
+    private val notificationCheckHandler = Handler(Looper.getMainLooper())
     private var binding: CallNotificationActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,11 +153,10 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun setupNotificationCanceledRoutine() {
-        val notificationHandler = Handler(Looper.getMainLooper())
-        notificationHandler.post(object : Runnable {
+        notificationCheckHandler.post(object : Runnable {
             override fun run() {
                 if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationHandler.postDelayed(this, ONE_SECOND)
+                    notificationCheckHandler.postDelayed(this, ONE_SECOND)
                 } else {
                     finish()
                 }
@@ -205,6 +205,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
     public override fun onDestroy() {
+        notificationCheckHandler.removeCallbacksAndMessages(null)
         // The call notification is the state of the call. The window may stop and start again on its own (sleeping
         // screen), so only a decision of the user removes it: decline, closing the window, e2ee refusal. All of
         // them finish the window. notificationTimestamp is null when the window finished in onCreate.
