@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -45,6 +46,7 @@ import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -75,6 +77,7 @@ class ConversationsListViewModelSearchTest {
     private val openConversations = MutableSharedFlow<List<ConversationDto>>()
     private val contacts = MutableSharedFlow<List<AutocompleteUserDto>>()
     private val messages = CompletableDeferred<UnifiedSearchResults<SearchMessageEntry>>()
+    private val moreMessages = CompletableDeferred<UnifiedSearchResults<SearchMessageEntry>>()
     private val unifiedSearchRepository = object : UnifiedSearchRepository {
         override suspend fun searchMessages(
             credentials: String?,
@@ -82,7 +85,7 @@ class ConversationsListViewModelSearchTest {
             searchTerm: String,
             cursor: Int,
             limit: Int
-        ) = messages.await()
+        ) = if (cursor == 0) messages.await() else moreMessages.await()
 
         override suspend fun searchInRoom(
             credentials: String?,
@@ -123,6 +126,8 @@ class ConversationsListViewModelSearchTest {
 
     @After
     fun tearDown() {
+        messages.complete(NO_MESSAGES)
+        moreMessages.complete(NO_MESSAGES)
         Dispatchers.resetMain()
     }
 
@@ -141,7 +146,7 @@ class ConversationsListViewModelSearchTest {
         runBlocking {
             openConversations.emit(emptyList())
             contacts.emit(emptyList())
-            messages.complete(UnifiedSearchResults(cursor = 0, hasMore = false, entries = emptyList()))
+            messages.complete(NO_MESSAGES)
             awaitLoading(false)
         }
 
@@ -159,16 +164,78 @@ class ConversationsListViewModelSearchTest {
 
         runBlocking {
             openConversations.emit(emptyList())
-            messages.complete(UnifiedSearchResults(cursor = 0, hasMore = false, entries = emptyList()))
+            messages.complete(NO_MESSAGES)
             awaitLoading(false)
         }
 
         assertTrue(CONVERSATION_ENTRY in viewModel.conversationListEntriesFlow.value)
     }
 
+    @Test
+    fun `messages loaded with load more are kept when a later server response arrives`() {
+        search()
+        runBlocking {
+            messages.complete(UnifiedSearchResults(cursor = 1, hasMore = true, entries = listOf(FIRST_MESSAGE)))
+            awaitEntries { ConversationListEntry.LoadMore in it }
+
+            viewModel.loadMoreMessages(context)
+            moreMessages.complete(UnifiedSearchResults(cursor = 2, hasMore = false, entries = listOf(SECOND_MESSAGE)))
+            awaitEntries { ConversationListEntry.MessageResultEntry(SECOND_MESSAGE) in it }
+
+            openConversations.emit(emptyList())
+            contacts.emit(emptyList())
+            awaitLoading(false)
+        }
+
+        val entries = viewModel.conversationListEntriesFlow.value
+        assertTrue(ConversationListEntry.MessageResultEntry(FIRST_MESSAGE) in entries)
+        assertTrue(ConversationListEntry.MessageResultEntry(SECOND_MESSAGE) in entries)
+        assertFalse(ConversationListEntry.LoadMore in entries)
+    }
+
+    @Test
+    fun `the search of the previous query stops when the query changes`() {
+        search()
+        runBlocking {
+            messages.complete(UnifiedSearchResults(cursor = 1, hasMore = false, entries = listOf(FIRST_MESSAGE)))
+            awaitEntries { ConversationListEntry.MessageResultEntry(FIRST_MESSAGE) in it }
+        }
+
+        viewModel.setSearchQuery("$QUERY-changed")
+        runBlocking {
+            openConversations.emit(emptyList())
+            contacts.emit(emptyList())
+        }
+
+        assertTrue(viewModel.isSearchLoadingFlow.value)
+    }
+
+    @Test
+    fun `returning to the previous query before the debounce ends searches it again`() {
+        search()
+        runBlocking {
+            openConversations.emit(emptyList())
+            contacts.emit(emptyList())
+            messages.complete(NO_MESSAGES)
+            awaitLoading(false)
+        }
+
+        whenever(openConversationsRepository.fetchOpenConversationsFlow(any(), any())).thenReturn(flowOf(emptyList()))
+        whenever(contactsRepository.getContactsFlow(any(), anyOrNull())).thenReturn(flowOf(emptyList()))
+
+        viewModel.setSearchQuery("$QUERY-changed")
+        search()
+
+        runBlocking { awaitLoading(false) }
+    }
+
     private fun search() {
         viewModel.setSearchQuery(QUERY)
         viewModel.getSearchQuery(context, QUERY)
+    }
+
+    private suspend fun awaitEntries(predicate: (List<ConversationListEntry>) -> Boolean) {
+        withTimeout(TIMEOUT_MS) { viewModel.conversationListEntriesFlow.first(predicate) }
     }
 
     private suspend fun awaitLoading(isLoading: Boolean) {
@@ -179,6 +246,8 @@ class ConversationsListViewModelSearchTest {
         private const val QUERY = "conv"
         private const val TIMEOUT_MS = 5_000L
         private const val HEADER_TITLE = "Header"
+        private val NO_MESSAGES =
+            UnifiedSearchResults<SearchMessageEntry>(cursor = 0, hasMore = false, entries = emptyList())
 
         private val USER = User(
             id = 1,
@@ -215,5 +284,18 @@ class ConversationsListViewModelSearchTest {
         )
 
         private val CONVERSATION_ENTRY = ConversationListEntry.ConversationEntry(CONVERSATION)
+        private val FIRST_MESSAGE = searchMessage("1")
+        private val SECOND_MESSAGE = searchMessage("2")
+
+        private fun searchMessage(id: String) =
+            SearchMessageEntry(
+                searchTerm = QUERY,
+                thumbnailURL = null,
+                title = "Message $id",
+                messageExcerpt = "$QUERY message $id",
+                conversationToken = CONVERSATION.token,
+                threadId = null,
+                messageId = id
+            )
     }
 }

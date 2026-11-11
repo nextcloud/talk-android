@@ -222,6 +222,12 @@ class ConversationsListViewModel @AssistedInject constructor(
      */
     private var lastSearchedFilter: String = ""
 
+    /**
+     * The message entries shown after "load more", which replace the first page of messages
+     * whenever a later server response rebuilds the search results.
+     */
+    private var loadedMoreMessageEntries: List<ConversationListEntry>? = null
+
     private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
         mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
     )
@@ -359,10 +365,8 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     /** Cancel any active message search and clear search results. */
     fun cancelSearch() {
-        lastSearchedFilter = ""
+        cancelRunningSearch()
         _isSearchLoadingFlow.value = false
-        searchJob?.cancel()
-        searchJob = null
         searchHelper.cancelSearch()
         searchResultEntries.value = emptyList()
         _currentSearchQueryFlow.value = ""
@@ -375,12 +379,26 @@ class ConversationsListViewModel @AssistedInject constructor(
      */
     fun setSearchQuery(text: String) {
         _currentSearchQueryFlow.value = text
-        if (text.isEmpty()) {
-            _isSearchLoadingFlow.value = false
-            searchResultEntries.value = emptyList()
-        } else {
-            _isSearchLoadingFlow.value = true
+        when {
+            text.isEmpty() -> {
+                cancelRunningSearch()
+                _isSearchLoadingFlow.value = false
+                searchResultEntries.value = emptyList()
+            }
+
+            text != lastSearchedFilter -> {
+                cancelRunningSearch()
+                _isSearchLoadingFlow.value = true
+            }
         }
+    }
+
+    /** Stops the search of the previous query, so that its server responses no longer replace the results. */
+    private fun cancelRunningSearch() {
+        searchJob?.cancel()
+        searchJob = null
+        lastSearchedFilter = ""
+        loadedMoreMessageEntries = null
     }
 
     /** Mark the SearchView as expanded (true) or collapsed (false). */
@@ -391,7 +409,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         } else {
             // Clear any stale results from a previous search so they don't
             // flash on screen before the user has typed the first character.
-            lastSearchedFilter = ""
+            cancelRunningSearch()
             _isSearchLoadingFlow.value = false
             searchResultEntries.value = emptyList()
             _currentSearchQueryFlow.value = ""
@@ -429,20 +447,21 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String) {
-        // Rotation / display-off guard: if the composition restarts (config change) the
-        // LaunchedEffect fires again with the same query.  Skip the search so the existing
-        // results are not replaced by a partial first-emit from the cold network flows.
+        // The LaunchedEffect fires again with the same query when the composition restarts
+        // (rotation, display off). The search of that query is still running or done, because
+        // [setSearchQuery] cancels it as soon as the query changes, so it is not started again.
         if (filter == lastSearchedFilter && searchResultEntries.value.isNotEmpty()) return
 
+        cancelRunningSearch()
         _isSearchLoadingFlow.value = true
         lastSearchedFilter = filter
-        searchJob?.cancel()
         _currentSearchQueryFlow.value = filter
         val conversationsTitle = context.resources.getString(R.string.conversations)
         val openConversationsTitle = context.resources.getString(R.string.openConversations)
         val usersTitle = context.resources.getString(R.string.nc_user)
         val messagesTitle = context.resources.getString(R.string.messages)
         val actorTypeConverter = EnumActorTypeConverter()
+        val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
 
         searchJob = viewModelScope.launch {
             combine(
@@ -466,7 +485,6 @@ class ConversationsListViewModel @AssistedInject constructor(
                     .filter { it.token !in joinedTokens }
                     .distinctBy { it.token }
                 val entries = mutableListOf<ConversationListEntry>()
-                val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
 
                 if (localConvs.isNotEmpty()) {
                     entries.add(ConversationListEntry.Header(conversationsTitle))
@@ -505,14 +523,20 @@ class ConversationsListViewModel @AssistedInject constructor(
                             entries.add(ConversationListEntry.ContactEntry(participant))
                         }
                 }
-                if (messages.isNotEmpty()) {
+                val messageEntries = loadedMoreMessageEntries
+                    ?: sortedByMatchQuality(
+                        messages,
+                        { it.messageExcerpt },
+                        filter,
+                        wordPattern,
+                        exactMatchEnabled = false
+                    )
+                        .map { ConversationListEntry.MessageResultEntry(it) }
+                        .plus(listOfNotNull(ConversationListEntry.LoadMore.takeIf { hasMore }))
+                if (messageEntries.any { it is ConversationListEntry.MessageResultEntry }) {
                     entries.add(ConversationListEntry.Header(messagesTitle))
-                    sortedByMatchQuality(messages, {
-                        it.messageExcerpt
-                    }, filter, wordPattern, exactMatchEnabled = false)
-                        .forEach { msg -> entries.add(ConversationListEntry.MessageResultEntry(msg)) }
                 }
-                if (hasMore) entries.add(ConversationListEntry.LoadMore)
+                entries.addAll(messageEntries)
 
                 entries.toList() to isAnyRemotePending
             }.collect { (results, isAnyRemotePending) ->
@@ -573,10 +597,12 @@ class ConversationsListViewModel @AssistedInject constructor(
         }.flowOn(Dispatchers.IO)
 
     fun loadMoreMessages(context: Context) {
+        val search = searchJob ?: return
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 searchHelper.loadMore()
             } ?: return@launch
+            if (search != searchJob) return@launch
 
             val newEntries: List<ConversationListEntry> =
                 result.messages.map { ConversationListEntry.MessageResultEntry(it) }
@@ -585,6 +611,7 @@ class ConversationsListViewModel @AssistedInject constructor(
             } else {
                 newEntries
             }
+            loadedMoreMessageEntries = entriesWithLoadMore
 
             searchResultEntries.update { current ->
                 val withoutOld = current.filter { entry ->
