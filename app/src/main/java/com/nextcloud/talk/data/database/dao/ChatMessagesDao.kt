@@ -99,9 +99,21 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 
+    /**
+     * Stores [chatMessages], drops the temporary messages their server copies replace, and carries the
+     * reply count of every thread in [chatMessages] over to its cached root message. The server sends the
+     * thread's current count with each message of the thread; the newest one of a thread wins.
+     */
     @Transaction
     suspend fun upsertChatMessagesAndDeleteTemp(internalConversationId: String, chatMessages: List<ChatMessageEntity>) {
         upsertChatMessages(chatMessages)
+
+        chatMessages
+            .filter { it.isThread && it.threadId != null && it.threadReplies != null }
+            .groupBy { it.threadId!! }
+            .forEach { (threadId, messages) ->
+                updateThreadReplies(internalConversationId, threadId, messages.maxBy { it.id }.threadReplies!!)
+            }
 
         val referenceIds = chatMessages
             .mapNotNull { it.referenceId }
@@ -112,6 +124,27 @@ interface ChatMessagesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
+
+    @Query(
+        """
+        UPDATE ChatMessages
+        SET threadReplies = :threadReplies
+        WHERE internalConversationId = :internalConversationId
+        AND id = :threadId
+        """
+    )
+    suspend fun updateThreadReplies(internalConversationId: String, threadId: Long, threadReplies: Int)
+
+    /**
+     * Writes reply counts, keyed by thread id, into the cached root messages of those threads, all in one
+     * transaction.
+     */
+    @Transaction
+    suspend fun updateThreadRepliesOfThreads(internalConversationId: String, threadReplies: Map<Long, Int>) {
+        threadReplies.forEach { (threadId, replies) ->
+            updateThreadReplies(internalConversationId, threadId, replies)
+        }
+    }
 
     @Query(
         """

@@ -66,6 +66,10 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         /* */
     }
 
+    override suspend fun updateThreadReplies(internalConversationId: String, threadId: Long, threadReplies: Int) {
+        /* */
+    }
+
     override suspend fun hasServerCopyOfReferenceId(internalConversationId: String, referenceId: String): Boolean =
         false
 
