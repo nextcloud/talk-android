@@ -7,12 +7,7 @@
 
 package com.nextcloud.talk.models.json.tags
 
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.serialization.Serializable
 
-@JsonObject
-class AssignConversationTagsRequestDto {
-
-    @JsonField(name = ["tagIds"])
-    var tagIds: List<String>? = null
-}
+@Serializable
+data class AssignConversationTagsRequestDto(val tagIds: List<String>)

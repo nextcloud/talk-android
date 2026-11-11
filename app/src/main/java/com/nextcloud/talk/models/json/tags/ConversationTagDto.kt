@@ -7,26 +7,16 @@
 package com.nextcloud.talk.models.json.tags
 
 import android.os.Parcelable
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
-@JsonObject
+@Serializable
 data class ConversationTagDto(
-    @JsonField(name = ["id"])
     var id: String = "",
-
-    @JsonField(name = ["name"])
     var name: String = "",
-
-    @JsonField(name = ["sortOrder"])
     var sortOrder: Int = 0,
-
-    @JsonField(name = ["collapsed"])
     var collapsed: Boolean = false,
-
-    @JsonField(name = ["type"])
     var type: String = TYPE_CUSTOM
 ) : Parcelable {
     companion object {

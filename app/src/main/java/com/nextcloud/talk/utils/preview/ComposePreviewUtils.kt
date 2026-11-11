@@ -61,6 +61,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
+import com.nextcloud.talk.utils.serialization.KotlinxSerializationConverterFactory
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -124,6 +125,7 @@ class ComposePreviewUtils private constructor(context: Context) {
                 .client(OkHttpClient.Builder().build())
                 .baseUrl("https://nextcloud.com")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addConverterFactory(KotlinxSerializationConverterFactory.create())
                 .addConverterFactory(LoganSquareConverterFactory.create())
 
             return retrofitBuilder.build()
