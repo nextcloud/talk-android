@@ -217,9 +217,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
     public override fun onDestroy() {
         notificationCheckHandler.removeCallbacksAndMessages(null)
-        // The call notification is the state of the call. The window may stop and start again on its own (sleeping
-        // screen), so only a decision of the user removes it: decline, closing the window, e2ee refusal. All of
-        // them finish the window. notificationTimestamp is null when the window finished in onCreate.
+        // only decline or closing the window ends the ringing, a sleeping screen may stop the window on its own
         if (isFinishing) {
             notificationTimestamp?.let { NotificationManagerCompat.from(context).cancel(it) }
         }

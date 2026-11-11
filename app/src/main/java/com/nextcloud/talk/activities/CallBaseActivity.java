@@ -8,7 +8,6 @@ package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -110,7 +109,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
         super.onTopResumedActivityChanged(isTopResumedActivity);
         Log.d(TAG, "onTopResumedActivityChanged: isTopResumedActivity=" + isTopResumedActivity
-                + " isInPictureInPictureMode=" + isInPictureInPictureMode() + screenState());
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
         if (isTopResumedActivity || isInPictureInPictureMode()
                 || !shouldEnterPipModeAutomatically()
                 || isChangingConfigurations()
@@ -123,16 +122,10 @@ public abstract class CallBaseActivity extends BaseActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart" + screenState());
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: isInPipMode=" + isInPipMode
-                + " isInPictureInPictureMode=" + isInPictureInPictureMode() + screenState());
+                + " isInPictureInPictureMode=" + isInPictureInPictureMode());
         // Fallback for API 26-28 where onTopResumedActivityChanged doesn't exist.
         // On API 29+, onTopResumedActivityChanged already handled this.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
@@ -147,7 +140,7 @@ public abstract class CallBaseActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing() + screenState());
+        Log.d(TAG, "onStop: isInPipMode=" + isInPipMode + " isFinishing=" + isFinishing());
     }
 
     @Override
@@ -176,15 +169,8 @@ public abstract class CallBaseActivity extends BaseActivity {
         return powerManager == null || powerManager.isInteractive();
     }
 
-    private String screenState() {
-        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        return " interactive=" + isInteractive()
-            + " keyguardLocked=" + (keyguardManager != null && keyguardManager.isKeyguardLocked());
-    }
-
     void enterPipMode() {
-        Log.d(TAG, "enterPipMode: isPipModePossible=" + isPipModePossible() + " isInPipMode=" + isInPipMode
-                + screenState());
+        Log.d(TAG, "enterPipMode: isPipModePossible=" + isPipModePossible() + " isInPipMode=" + isInPipMode);
         if (!isInteractive()) {
             Log.d(TAG, "enterPipMode skipped: the screen is off, this is not the user leaving the call");
             return;
