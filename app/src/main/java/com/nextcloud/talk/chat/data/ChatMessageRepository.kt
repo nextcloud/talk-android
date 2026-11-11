@@ -134,6 +134,11 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int
 
+    /**
+     * Writes reply counts, keyed by thread id, into the cached root messages of those threads.
+     */
+    suspend fun updateThreadReplies(threadReplies: Map<Long, Int>)
+
     @Suppress("LongParameterList")
     suspend fun sendChatMessage(
         credentials: String,
