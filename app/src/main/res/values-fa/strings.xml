@@ -160,6 +160,8 @@
     <string name="nc_call_timeout">در ۴۵ ثانیه پاسخی وجود نداشت، برای آزمایش دوباره ضربه بزنید</string>
     <string name="nc_call_unknown">تماس %s</string>
     <string name="nc_call_video">تماس ویدئویی %s</string>
+    <string name="nc_call_view_mode_grid">نمای شبکه</string>
+    <string name="nc_call_view_mode_speaker">نمای سخنران</string>
     <string name="nc_call_voice">تماس صوتی %s</string>
     <string name="nc_camera_permission_hint">برای فعال‌سازی ارتباط ویدئویی، لطفاً مجوز «دوربین» را اعطا کنید.</string>
     <string name="nc_cancel">لغو</string>

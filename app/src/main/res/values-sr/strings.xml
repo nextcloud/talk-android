@@ -145,6 +145,8 @@
     <string name="nc_call_timeout">Нема одговора у 45 секунди, притисните да пробате поново</string>
     <string name="nc_call_unknown">%s позив</string>
     <string name="nc_call_video">%s видео позив</string>
+    <string name="nc_call_view_mode_grid">Приказ мреже</string>
+    <string name="nc_call_view_mode_speaker">Поглед говорника</string>
     <string name="nc_call_voice">%s гласовни позив</string>
     <string name="nc_camera_permission_hint">Ако желите да укључите видео комуникацију, молимо вас да дате дозволу „Камера”</string>
     <string name="nc_cancel">Откажи</string>

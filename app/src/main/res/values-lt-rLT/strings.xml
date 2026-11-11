@@ -165,6 +165,8 @@
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_call_unknown">%s skambutis</string>
     <string name="nc_call_video">%s vaizdo skambutis</string>
+    <string name="nc_call_view_mode_grid">Tinklelio rodinys</string>
+    <string name="nc_call_view_mode_speaker">Pranešėjo rodinys</string>
     <string name="nc_call_voice">%s baldo skambutis</string>
     <string name="nc_camera_permission_hint">Norėdami įjungti vaizdo ryšį, suteikite leidimą „Kamera“.</string>
     <string name="nc_cancel">Atsisakyti</string>

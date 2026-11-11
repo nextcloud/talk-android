@@ -145,6 +145,8 @@
     <string name="nc_call_timeout">45 سېكۇنتتا جاۋاب يوق ، قايتا سىناڭ</string>
     <string name="nc_call_unknown">%s تېلېفون</string>
     <string name="nc_call_video">%s سىنلىق سۆزلىشىش</string>
+    <string name="nc_call_view_mode_grid">كاتەكچە كۆرۈنۈش</string>
+    <string name="nc_call_view_mode_speaker">ياڭراتقۇ كۆرۈنۈشى</string>
     <string name="nc_call_voice">%s ئاۋازلىق تېلېفون</string>
     <string name="nc_camera_permission_hint">سىن ئالاقىسىنى قوزغىتىش ئۈچۈن \ \"كامېرا \" ئىجازەت بېرىڭ.</string>
     <string name="nc_cancel">بىكار قىلىش</string>

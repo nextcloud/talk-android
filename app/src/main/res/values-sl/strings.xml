@@ -108,6 +108,8 @@
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_unknown">Klic %s</string>
     <string name="nc_call_video">Glasovni klic %s</string>
+    <string name="nc_call_view_mode_grid">Mrežni pogled</string>
+    <string name="nc_call_view_mode_speaker">Pogled govorca</string>
     <string name="nc_call_voice">Glasovni klic %s</string>
     <string name="nc_cancel">Prekliči</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>

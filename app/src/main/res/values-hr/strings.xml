@@ -94,6 +94,8 @@
     <string name="nc_call_timeout">Nema odgovora nakon 45 sekundi, dodirnite za ponovni pokušaj</string>
     <string name="nc_call_unknown">%s poziv</string>
     <string name="nc_call_video">%s videopoziv</string>
+    <string name="nc_call_view_mode_grid">Prikaz rešetke</string>
+    <string name="nc_call_view_mode_speaker">Prikaz govornika</string>
     <string name="nc_call_voice">%s glasovni poziv</string>
     <string name="nc_cancel">Odustani</string>
     <string name="nc_capabilities_failed">Neuspješno dohvaćanje mogućnosti, prekid</string>

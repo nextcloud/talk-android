@@ -189,6 +189,8 @@
     <string name="nc_call_timeout">Niciun răspuns în 45 de secunde, atinge pentru a încerca din nou</string>
     <string name="nc_call_unknown">Apel %s</string>
     <string name="nc_call_video">Apel video %s</string>
+    <string name="nc_call_view_mode_grid">Vizualizare tip grilă</string>
+    <string name="nc_call_view_mode_speaker">Vizualizare vorbitor</string>
     <string name="nc_call_voice">Apel vocal %s</string>
     <string name="nc_camera_permission_hint">Pentru a activa comunicarea video, acordă permisiunea „Cameră”.</string>
     <string name="nc_cancel">Anulează</string>

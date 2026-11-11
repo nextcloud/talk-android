@@ -190,6 +190,7 @@
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken, um es erneut zu versuchen</string>
     <string name="nc_call_unknown">%s Anruf</string>
     <string name="nc_call_video">%s Videoanruf</string>
+    <string name="nc_call_view_mode_speaker">Sprecheransicht</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
     <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung \"Kamera\" erteilen.</string>
     <string name="nc_cancel">Abbrechen</string>

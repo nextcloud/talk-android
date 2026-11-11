@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_unknown">%s 通話</string>
     <string name="nc_call_video">%s 視像通話</string>
+    <string name="nc_call_view_mode_grid">網格檢視</string>
+    <string name="nc_call_view_mode_speaker">演講者視圖</string>
     <string name="nc_call_voice">%s 音頻通話</string>
     <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
     <string name="nc_cancel">取消</string>

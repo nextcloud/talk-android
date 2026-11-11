@@ -128,6 +128,8 @@
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
     <string name="nc_call_unknown">%s anrop</string>
     <string name="nc_call_video">%s videosamtale</string>
+    <string name="nc_call_view_mode_grid">Rutenett-visning</string>
+    <string name="nc_call_view_mode_speaker">Høyttalervisning</string>
     <string name="nc_call_voice">%s taleanrop</string>
     <string name="nc_camera_permission_hint">For å aktivere videokommunikasjon, vennligst gi \"Kamera\" tillatelse.</string>
     <string name="nc_cancel">Avbryt</string>

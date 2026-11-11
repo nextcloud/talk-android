@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">Žiadna odpoveď počas 45 sekúnd, ťuknite a skúste znova</string>
     <string name="nc_call_unknown">%s hovor</string>
     <string name="nc_call_video">%s videohovor</string>
+    <string name="nc_call_view_mode_grid">Zobrazenie v mriežke</string>
+    <string name="nc_call_view_mode_speaker">Zobrazenie rečníka</string>
     <string name="nc_call_voice">%s hlasový hovor</string>
     <string name="nc_camera_permission_hint">Ak chcete povoliť videokomunikáciu, udeľte povolenie „Kamera“.</string>
     <string name="nc_cancel">Zrušiť</string>

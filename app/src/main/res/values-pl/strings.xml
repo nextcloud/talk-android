@@ -159,6 +159,8 @@
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, dotknij, aby spróbować ponownie</string>
     <string name="nc_call_unknown">%s połączenie</string>
     <string name="nc_call_video">%s połączenie wideo</string>
+    <string name="nc_call_view_mode_grid">Widok siatki</string>
+    <string name="nc_call_view_mode_speaker">Widok mówcy</string>
     <string name="nc_call_voice">%s połączenie głosowe</string>
     <string name="nc_camera_permission_hint">Aby umożliwić komunikację wideo, należy udzielić dostępu dla \"Kamera\".</string>
     <string name="nc_cancel">Anuluj</string>

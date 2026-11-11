@@ -134,6 +134,8 @@
     <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_video">%s اتصال فيديو</string>
+    <string name="nc_call_view_mode_grid">عرض كمخطط</string>
+    <string name="nc_call_view_mode_speaker">عرض المتحدث</string>
     <string name="nc_call_voice">%s اتصال صوتي</string>
     <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
     <string name="nc_cancel">إلغاء</string>
@@ -481,6 +483,7 @@
     <string name="nc_show_notification_warning_title">أظِهر تحذيراً بالإشعارات الاعتيادية</string>
     <string name="nc_sort_by">رتِّب حسب</string>
     <string name="nc_start_group_chat">إبدأ الدردشة الجماعية</string>
+    <string name="nc_start_screen_sharing">مشاركة الشاشة</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
     <string name="nc_team">الفريق</string>
