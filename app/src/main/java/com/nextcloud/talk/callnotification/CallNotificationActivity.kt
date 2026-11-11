@@ -80,6 +80,17 @@ class CallNotificationActivity : CallBaseActivity() {
         setupNotificationCanceledRoutine()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val newNotificationTimestamp = intent.extras?.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+        // a window still open for an earlier call is set up again for the new one
+        if (newNotificationTimestamp != null && newNotificationTimestamp != notificationTimestamp) {
+            Log.d(TAG, "onNewIntent: another incoming call, recreating the window")
+            setIntent(intent)
+            recreate()
+        }
+    }
+
     private fun handleExtras() {
         val extras = intent.extras!!
         roomToken = extras.getString(KEY_ROOM_TOKEN, "")
