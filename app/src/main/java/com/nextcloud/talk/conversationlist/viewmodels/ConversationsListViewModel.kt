@@ -54,6 +54,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -248,7 +249,7 @@ class ConversationsListViewModel @AssistedInject constructor(
     val currentSearchQueryFlow: StateFlow<String> = _currentSearchQueryFlow.asStateFlow()
 
     /**
-     * True from the moment the user types a non-empty query (debounce starts) until every
+     * True from the moment the user types a non-empty query until every
      * server request of the search has answered.  Used by the UI to distinguish "waiting for results" from
      * "search completed with no results", so that [SearchNoResultsView] is not shown
      * prematurely during the search round-trip.
@@ -381,9 +382,9 @@ class ConversationsListViewModel @AssistedInject constructor(
     }
 
     /**
-     * Updates the displayed query text without triggering an immediate search.
-     * Debouncing is handled by the caller via [kotlinx.coroutines.delay] in a
-     * [androidx.compose.runtime.LaunchedEffect].
+     * Updates the displayed query text and stops the search of a previous query. The search
+     * itself is started by [getSearchQuery], which waits for a pause in typing before it sends
+     * the server requests.
      */
     fun setSearchQuery(text: String) {
         _currentSearchQueryFlow.value = text
@@ -478,9 +479,14 @@ class ConversationsListViewModel @AssistedInject constructor(
             combine(
                 getRoomsStateFlow,
                 openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                    .afterTypingPause()
                     .pendingUntilLoaded(emptyList()),
-                contactsRepository.getContactsFlow(currentUser, filter).pendingUntilLoaded(emptyList()),
-                getMessagesFlow(filter).pendingUntilLoaded(MessageSearchResults(emptyList(), false))
+                contactsRepository.getContactsFlow(currentUser, filter)
+                    .afterTypingPause()
+                    .pendingUntilLoaded(emptyList()),
+                getMessagesFlow(filter)
+                    .afterTypingPause()
+                    .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
             ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages ->
                 val isAnyRemotePending = pendingOpenConvs == null || pendingContacts == null || pendingMessages == null
                 val fetchedOpenConvs = pendingOpenConvs.orEmpty()
@@ -557,6 +563,13 @@ class ConversationsListViewModel @AssistedInject constructor(
             }
         }
     }
+
+    /**
+     * Starts the server request only once the query has stayed unchanged for [SEARCH_DEBOUNCE_MS],
+     * so that typing does not send a request per keystroke. Changing the query cancels the search
+     * while it still waits.
+     */
+    private fun <T> Flow<T>.afterTypingPause(): Flow<T> = onStart { delay(SEARCH_DEBOUNCE_MS) }
 
     /**
      * Emits null at once so that [combine] does not wait for the server before showing local results.
@@ -1102,6 +1115,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         private const val MATCH_RANK_PREFIX = 1
         private const val MATCH_RANK_WORD = 2
         private const val MATCH_RANK_NONE = 3
+        private const val SEARCH_DEBOUNCE_MS = 300L
         private const val SINGLE_USER_RANK = 0
         private const val MULTI_USER_RANK = 1
     }

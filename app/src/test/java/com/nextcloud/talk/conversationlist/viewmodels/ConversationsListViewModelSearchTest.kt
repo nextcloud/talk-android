@@ -117,11 +117,13 @@ class ConversationsListViewModelSearchTest {
         ) = messages.await()
     }
 
+    private val mainDispatcher = UnconfinedTestDispatcher()
+
     private lateinit var viewModel: ConversationsListViewModel
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        Dispatchers.setMain(mainDispatcher)
         whenever(repository.roomListFlow(any())).thenReturn(MutableStateFlow(listOf(CONVERSATION)))
         whenever(repository.syncErrorFlow).thenReturn(emptyFlow())
         whenever(openConversationsRepository.fetchOpenConversationsFlow(any(), any())).thenReturn(openConversations)
@@ -211,6 +213,26 @@ class ConversationsListViewModelSearchTest {
         assertTrue(ConversationListEntry.MessageResultEntry(FIRST_MESSAGE) in entries)
         assertTrue(ConversationListEntry.MessageResultEntry(SECOND_MESSAGE) in entries)
         assertFalse(ConversationListEntry.LoadMore in entries)
+    }
+
+    @Test
+    fun `typing quickly sends the server requests only for the last query`() {
+        val requestedQueries = CopyOnWriteArrayList<String>()
+        whenever(contactsRepository.getContactsFlow(any(), anyOrNull())).thenAnswer { invocation ->
+            val query = invocation.getArgument<String>(1)
+            flow {
+                requestedQueries.add(query)
+                emit(emptyList<AutocompleteUserDto>())
+            }
+        }
+
+        listOf("c", "co", "con").forEach { query ->
+            viewModel.setSearchQuery(query)
+            viewModel.getSearchQuery(context, query)
+        }
+        skipTypingPause()
+
+        assertEquals(listOf("con"), requestedQueries)
     }
 
     @Test
@@ -342,6 +364,12 @@ class ConversationsListViewModelSearchTest {
     private fun search() {
         viewModel.setSearchQuery(QUERY)
         viewModel.getSearchQuery(context, QUERY)
+        skipTypingPause()
+    }
+
+    private fun skipTypingPause() {
+        mainDispatcher.scheduler.advanceTimeBy(TYPING_PAUSE_MS)
+        mainDispatcher.scheduler.runCurrent()
     }
 
     private suspend fun awaitEntries(predicate: (List<ConversationListEntry>) -> Boolean) {
@@ -357,6 +385,7 @@ class ConversationsListViewModelSearchTest {
         private const val QUERY_WITHOUT_LOCAL_MATCH = "nomatch"
         private const val TIMEOUT_MS = 5_000L
         private const val SETTLE_MS = 300L
+        private const val TYPING_PAUSE_MS = 600L
         private const val POLL_MS = 10L
         private const val HEADER_TITLE = "Header"
         private val NO_MESSAGES =
