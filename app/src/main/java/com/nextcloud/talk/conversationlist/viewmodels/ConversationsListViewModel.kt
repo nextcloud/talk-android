@@ -66,7 +66,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -236,8 +238,8 @@ class ConversationsListViewModel @AssistedInject constructor(
     val currentSearchQueryFlow: StateFlow<String> = _currentSearchQueryFlow.asStateFlow()
 
     /**
-     * True from the moment the user types a non-empty query (debounce starts) until the first
-     * set of search results arrives.  Used by the UI to distinguish "waiting for results" from
+     * True from the moment the user types a non-empty query (debounce starts) until every
+     * server request of the search has answered.  Used by the UI to distinguish "waiting for results" from
      * "search completed with no results", so that [SearchNoResultsView] is not shown
      * prematurely during the search round-trip.
      */
@@ -449,10 +451,16 @@ class ConversationsListViewModel @AssistedInject constructor(
         searchJob = viewModelScope.launch {
             combine(
                 getRoomsStateFlow,
-                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter),
-                contactsRepository.getContactsFlow(currentUser, filter),
-                getMessagesFlow(filter)
-            ) { rooms, fetchedOpenConvs, contacts, (messages, hasMore) ->
+                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                    .pendingUntilLoaded(emptyList()),
+                contactsRepository.getContactsFlow(currentUser, filter).pendingUntilLoaded(emptyList()),
+                getMessagesFlow(filter).pendingUntilLoaded(MessageSearchResults(emptyList(), false))
+            ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages ->
+                val isAnyRemotePending = pendingOpenConvs == null || pendingContacts == null || pendingMessages == null
+                val fetchedOpenConvs = pendingOpenConvs.orEmpty()
+                val contacts = pendingContacts.orEmpty()
+                val messages = pendingMessages?.messages.orEmpty()
+                val hasMore = pendingMessages?.hasMore == true
                 val localConvs = rooms
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
                     .distinctBy { it.token }
@@ -510,13 +518,25 @@ class ConversationsListViewModel @AssistedInject constructor(
                 }
                 if (hasMore) entries.add(ConversationListEntry.LoadMore)
 
-                entries.toList()
-            }.collect { results ->
+                entries.toList() to isAnyRemotePending
+            }.collect { (results, isAnyRemotePending) ->
                 searchResultEntries.emit(results)
-                _isSearchLoadingFlow.value = false
+                _isSearchLoadingFlow.value = isAnyRemotePending
             }
         }
     }
+
+    /**
+     * Emits null at once so that [combine] does not wait for the server before showing local results.
+     * A failed request emits [onError] so that it does not stay pending.
+     */
+    private fun <T : Any> Flow<T>.pendingUntilLoaded(onError: T): Flow<T?> =
+        map<T, T?> { it }
+            .onStart { emit(null) }
+            .catch { e ->
+                Log.e(TAG, "Search request failed", e)
+                emit(onError)
+            }
 
     // Sort keys in order:
     //   1. tier: 0 = exact title, 1 = starts with filter, 2 = whole-word match, 3 = substring
