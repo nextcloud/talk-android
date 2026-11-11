@@ -232,6 +232,9 @@ class ConversationsListViewModel @AssistedInject constructor(
      */
     private var loadedMoreMessageEntries: List<ConversationListEntry>? = null
 
+    /** Job of the running [loadMoreMessages] call, which belongs to [searchJob]. */
+    private var loadMoreJob: Job? = null
+
     private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
         mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
     )
@@ -399,6 +402,8 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     /** Stops the search of the previous query, so that its server responses no longer replace the results. */
     private fun cancelRunningSearch() {
+        loadMoreJob?.cancel()
+        loadMoreJob = null
         searchJob?.cancel()
         searchJob = null
         lastSearchedFilter = ""
@@ -454,7 +459,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         // The LaunchedEffect fires again with the same query when the composition restarts
         // (rotation, display off). The search of that query is still running or done, because
         // [setSearchQuery] cancels it as soon as the query changes, so it is not started again.
-        if (filter == lastSearchedFilter && searchResultEntries.value.isNotEmpty()) return
+        if (filter == lastSearchedFilter && searchJob != null) return
 
         cancelRunningSearch()
         _isSearchLoadingFlow.value = true
@@ -601,12 +606,16 @@ class ConversationsListViewModel @AssistedInject constructor(
         }.flowOn(Dispatchers.IO)
 
     fun loadMoreMessages(context: Context) {
-        val search = searchJob ?: return
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                searchHelper.loadMore()
+        if (searchJob == null || loadMoreJob?.isActive == true) return
+        loadMoreJob = viewModelScope.launch {
+            val result = try {
+                withContext(Dispatchers.IO) { searchHelper.loadMore() }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (@Suppress("Detekt.TooGenericExceptionCaught") e: Exception) {
+                Log.e(TAG, "Loading more messages failed", e)
+                null
             } ?: return@launch
-            if (search != searchJob) return@launch
 
             val newEntries: List<ConversationListEntry> =
                 result.messages.map { ConversationListEntry.MessageResultEntry(it) }
