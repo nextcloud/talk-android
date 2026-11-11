@@ -66,7 +66,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -234,6 +233,12 @@ class ConversationsListViewModel @AssistedInject constructor(
 
     /** Job of the running [loadMoreMessages] call, which belongs to [searchJob]. */
     private var loadMoreJob: Job? = null
+
+    /**
+     * Whether the first page of messages of [searchJob] has arrived. Until then, a "load more"
+     * entry still shown from the previous query must not load more messages.
+     */
+    private var areMessagesLoaded = false
 
     private val _filterStateFlow = MutableStateFlow<Map<String, Boolean>>(
         mapOf(MENTION to false, UNREAD to false, ARCHIVE to false, DEFAULT to true)
@@ -408,6 +413,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         searchJob = null
         lastSearchedFilter = ""
         loadedMoreMessageEntries = null
+        areMessagesLoaded = false
     }
 
     /** Mark the SearchView as expanded (true) or collapsed (false). */
@@ -485,6 +491,7 @@ class ConversationsListViewModel @AssistedInject constructor(
                 val contacts = pendingContacts.orEmpty()
                 val messages = pendingMessages?.messages.orEmpty()
                 val hasMore = pendingMessages?.hasMore == true
+                areMessagesLoaded = pendingMessages != null
                 val localConvs = rooms
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
                     .distinctBy { it.token }
@@ -560,8 +567,7 @@ class ConversationsListViewModel @AssistedInject constructor(
      * A failed request emits [onError] so that it does not stay pending.
      */
     private fun <T : Any> Flow<T>.pendingUntilLoaded(onError: T): Flow<T?> =
-        map<T, T?> { it }
-            .onStart { emit(null) }
+        onStart<T?> { emit(null) }
             .catch { e ->
                 Log.e(TAG, "Search request failed", e)
                 emit(onError)
@@ -606,7 +612,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         }.flowOn(Dispatchers.IO)
 
     fun loadMoreMessages(context: Context) {
-        if (searchJob == null || loadMoreJob?.isActive == true) return
+        if (!areMessagesLoaded || loadMoreJob?.isActive == true) return
         loadMoreJob = viewModelScope.launch {
             val result = try {
                 withContext(Dispatchers.IO) { searchHelper.loadMore() }
@@ -615,7 +621,11 @@ class ConversationsListViewModel @AssistedInject constructor(
             } catch (@Suppress("Detekt.TooGenericExceptionCaught") e: Exception) {
                 Log.e(TAG, "Loading more messages failed", e)
                 null
-            } ?: return@launch
+            }
+            if (result == null) {
+                removeLoadMoreEntry()
+                return@launch
+            }
 
             val newEntries: List<ConversationListEntry> =
                 result.messages.map { ConversationListEntry.MessageResultEntry(it) }
@@ -634,6 +644,13 @@ class ConversationsListViewModel @AssistedInject constructor(
                 withoutOld + entriesWithLoadMore
             }
         }
+    }
+
+    /** Removes the "load more" entry, as the message search can't continue after a failed request. */
+    private fun removeLoadMoreEntry() {
+        val entries = searchResultEntries.value.filterNot { it is ConversationListEntry.LoadMore }
+        loadedMoreMessageEntries = entries.filterIsInstance<ConversationListEntry.MessageResultEntry>()
+        searchResultEntries.value = entries
     }
 
     /**

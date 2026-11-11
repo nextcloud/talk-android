@@ -235,6 +235,24 @@ class ConversationsListViewModelSearchTest {
     }
 
     @Test
+    fun `a failed load more removes the load more entry also when the results are rebuilt`() {
+        searchWithMoreMessages()
+
+        viewModel.loadMoreMessages(context)
+        moreMessages.completeExceptionally(IOException("offline"))
+        runBlocking {
+            awaitEntries { ConversationListEntry.LoadMore !in it }
+            openConversations.emit(emptyList())
+            contacts.emit(emptyList())
+            awaitLoading(false)
+        }
+
+        val entries = viewModel.conversationListEntriesFlow.value
+        assertFalse(ConversationListEntry.LoadMore in entries)
+        assertTrue(ConversationListEntry.MessageResultEntry(FIRST_MESSAGE) in entries)
+    }
+
+    @Test
     fun `tapping load more again while it loads requests the next page once`() {
         searchWithMoreMessages()
 
