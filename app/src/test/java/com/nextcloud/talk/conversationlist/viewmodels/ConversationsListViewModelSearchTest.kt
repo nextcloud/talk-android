@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2026 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -30,9 +30,11 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository.UnifiedSearchResults
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -55,14 +57,20 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.io.IOException
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Tests for [ConversationsListViewModel.getSearchQuery]: local matches are listed without waiting
  * for the server, and the search counts as loading until every server request has answered.
  */
+@Suppress("TooManyFunctions")
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -78,6 +86,8 @@ class ConversationsListViewModelSearchTest {
     private val contacts = MutableSharedFlow<List<AutocompleteUserDto>>()
     private val messages = CompletableDeferred<UnifiedSearchResults<SearchMessageEntry>>()
     private val moreMessages = CompletableDeferred<UnifiedSearchResults<SearchMessageEntry>>()
+    private val moreMessagesRequests = AtomicInteger()
+    private val moreMessagesCanceled = CompletableDeferred<Unit>()
     private val unifiedSearchRepository = object : UnifiedSearchRepository {
         override suspend fun searchMessages(
             credentials: String?,
@@ -85,7 +95,17 @@ class ConversationsListViewModelSearchTest {
             searchTerm: String,
             cursor: Int,
             limit: Int
-        ) = if (cursor == 0) messages.await() else moreMessages.await()
+        ) = if (cursor == 0) messages.await() else awaitMoreMessages()
+
+        private suspend fun awaitMoreMessages(): UnifiedSearchResults<SearchMessageEntry> {
+            moreMessagesRequests.incrementAndGet()
+            return try {
+                moreMessages.await()
+            } catch (e: CancellationException) {
+                moreMessagesCanceled.complete(Unit)
+                throw e
+            }
+        }
 
         override suspend fun searchInRoom(
             credentials: String?,
@@ -194,6 +214,70 @@ class ConversationsListViewModelSearchTest {
     }
 
     @Test
+    fun `a failed load more keeps the shown messages`() {
+        val uncaught = CopyOnWriteArrayList<Throwable>()
+        val previousHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { _, e -> uncaught.add(e) }
+        try {
+            searchWithMoreMessages()
+
+            viewModel.loadMoreMessages(context)
+            moreMessages.completeExceptionally(IOException("offline"))
+            runBlocking { delay(SETTLE_MS) }
+        } finally {
+            Thread.setDefaultUncaughtExceptionHandler(previousHandler)
+        }
+
+        assertEquals(emptyList<Throwable>(), uncaught)
+        assertTrue(
+            ConversationListEntry.MessageResultEntry(FIRST_MESSAGE) in viewModel.conversationListEntriesFlow.value
+        )
+    }
+
+    @Test
+    fun `tapping load more again while it loads requests the next page once`() {
+        searchWithMoreMessages()
+
+        viewModel.loadMoreMessages(context)
+        viewModel.loadMoreMessages(context)
+        runBlocking {
+            delay(SETTLE_MS)
+            moreMessages.complete(UnifiedSearchResults(cursor = 2, hasMore = false, entries = listOf(SECOND_MESSAGE)))
+            awaitEntries { ConversationListEntry.MessageResultEntry(SECOND_MESSAGE) in it }
+            delay(SETTLE_MS)
+        }
+
+        assertEquals(1, moreMessagesRequests.get())
+        assertEquals(
+            1,
+            viewModel.conversationListEntriesFlow.value.count {
+                it == ConversationListEntry.MessageResultEntry(SECOND_MESSAGE)
+            }
+        )
+    }
+
+    @Test
+    fun `load more of the previous query stops when the query changes`() {
+        searchWithMoreMessages()
+        viewModel.loadMoreMessages(context)
+        runBlocking { withTimeout(TIMEOUT_MS) { while (moreMessagesRequests.get() == 0) delay(POLL_MS) } }
+
+        viewModel.setSearchQuery("$QUERY-changed")
+
+        runBlocking { withTimeout(TIMEOUT_MS) { moreMessagesCanceled.await() } }
+    }
+
+    @Test
+    fun `repeating the query while its server requests are pending does not start them again`() {
+        viewModel.setSearchQuery(QUERY_WITHOUT_LOCAL_MATCH)
+        viewModel.getSearchQuery(context, QUERY_WITHOUT_LOCAL_MATCH)
+
+        viewModel.getSearchQuery(context, QUERY_WITHOUT_LOCAL_MATCH)
+
+        verify(openConversationsRepository, times(1)).fetchOpenConversationsFlow(any(), any())
+    }
+
+    @Test
     fun `the search of the previous query stops when the query changes`() {
         search()
         runBlocking {
@@ -229,6 +313,14 @@ class ConversationsListViewModelSearchTest {
         runBlocking { awaitLoading(false) }
     }
 
+    private fun searchWithMoreMessages() {
+        search()
+        runBlocking {
+            messages.complete(UnifiedSearchResults(cursor = 1, hasMore = true, entries = listOf(FIRST_MESSAGE)))
+            awaitEntries { ConversationListEntry.LoadMore in it }
+        }
+    }
+
     private fun search() {
         viewModel.setSearchQuery(QUERY)
         viewModel.getSearchQuery(context, QUERY)
@@ -244,7 +336,10 @@ class ConversationsListViewModelSearchTest {
 
     companion object {
         private const val QUERY = "conv"
+        private const val QUERY_WITHOUT_LOCAL_MATCH = "nomatch"
         private const val TIMEOUT_MS = 5_000L
+        private const val SETTLE_MS = 300L
+        private const val POLL_MS = 10L
         private const val HEADER_TITLE = "Header"
         private val NO_MESSAGES =
             UnifiedSearchResults<SearchMessageEntry>(cursor = 0, hasMore = false, entries = emptyList())
