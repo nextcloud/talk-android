@@ -32,6 +32,10 @@ import com.nextcloud.talk.models.json.generic.GenericMetaDto
 import com.nextcloud.talk.models.json.generic.GenericOCS
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.ParticipantDto
+import com.nextcloud.talk.models.json.threads.ThreadDto
+import com.nextcloud.talk.models.json.threads.ThreadInfoDto
+import com.nextcloud.talk.models.json.threads.ThreadsOCS
+import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -65,6 +69,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
@@ -100,6 +105,7 @@ class ChatViewModelRoomJoinTest {
 
     private lateinit var viewModel: ChatViewModel
     private lateinit var chatRepository: ChatMessageRepository
+    private val threadsRepository: ThreadsRepository = mock()
     private var capabilitiesState: ChatViewModel.ViewState? = null
     private var initialLoads = 0
     private var joins = 0
@@ -136,7 +142,7 @@ class ChatViewModelRoomJoinTest {
             mock<AppPreferences>(),
             network,
             chatRepository,
-            mock<ThreadsRepository>(),
+            threadsRepository,
             conversations,
             mock<ReactionsRepository>(),
             mock<UnifiedSearchRepository>(),
@@ -386,6 +392,41 @@ class ChatViewModelRoomJoinTest {
         assertTrue(capabilitiesState is ChatViewModel.GetCapabilitiesUpdateState)
     }
 
+    @Test
+    fun `opening the main chat writes the reply counts of the recent threads into the cached thread roots`() {
+        whenever(network.getCapabilities(any(), any())).thenReturn(
+            Observable.just(SpreedCapabilityDto(features = listOf("threads"), config = null, version = ""))
+        )
+        wheneverBlocking { threadsRepository.getThreads(any(), any(), any()) }.doReturn(
+            ThreadsOverall(
+                ThreadsOCS(
+                    meta = null,
+                    data = listOf(
+                        ThreadInfoDto(thread = ThreadDto(id = THREAD_ID, numReplies = THREAD_REPLIES))
+                    )
+                )
+            )
+        )
+        conversation.value = ConversationResult.Found(conversationModel(5, remoteServer = REMOTE_SERVER))
+
+        owner.send(Lifecycle.Event.ON_CREATE)
+        viewModel.initData()
+
+        verifyBlocking(threadsRepository) { getThreads(any(), any(), eq(MAX_RECENT_THREADS)) }
+        verifyBlocking(chatRepository) { updateThreadReplies(mapOf(THREAD_ID.toLong() to THREAD_REPLIES)) }
+    }
+
+    @Test
+    fun `opening the main chat does not ask for threads when the server has none`() {
+        whenever(network.getCapabilities(any(), any())).thenReturn(Observable.just(SpreedCapabilityDto()))
+        conversation.value = ConversationResult.Found(conversationModel(5, remoteServer = REMOTE_SERVER))
+
+        owner.send(Lifecycle.Event.ON_CREATE)
+        viewModel.initData()
+
+        verifyBlocking(threadsRepository, never()) { getThreads(any(), any(), any()) }
+    }
+
     private fun conversationModel(lastReadMessage: Int, remoteServer: String = ""): ConversationModel =
         ConversationModel.mapToConversationModel(
             ConversationDto(
@@ -420,6 +461,9 @@ class ChatViewModelRoomJoinTest {
         private const val TOKEN = "room-token"
         private const val HTTP_OK = 200
         private const val REMOTE_SERVER = "https://remote.example.com"
+        private const val THREAD_ID = 100
+        private const val THREAD_REPLIES = 23
+        private const val MAX_RECENT_THREADS = 50
         private val USER = User(
             id = 1,
             userId = "me",
