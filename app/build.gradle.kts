@@ -13,7 +13,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
     id("com.android.built-in-kotlin")
     id("com.android.legacy-kapt")
-    id("com.google.devtools.ksp") version "2.3.12"
+    id("com.google.devtools.ksp") version "2.3.13"
     id("com.android.application")
     id("kotlin-parcelize")
     id("com.github.spotbugs")
