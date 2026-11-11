@@ -6,17 +6,8 @@
  */
 package com.nextcloud.talk.models.json.tags
 
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.generic.GenericMetaDto
+import kotlinx.serialization.Serializable
 
-@JsonObject
-data class ConversationTagErrorOCS(
-    @JsonField(name = ["meta"])
-    var meta: GenericMetaDto?,
-    @JsonField(name = ["data"])
-    var data: ConversationTagErrorResponseDto? = null
-) {
-    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
-}
+@Serializable
+data class ConversationTagErrorOCS(val meta: GenericMetaDto? = null, val data: ConversationTagErrorResponseDto? = null)

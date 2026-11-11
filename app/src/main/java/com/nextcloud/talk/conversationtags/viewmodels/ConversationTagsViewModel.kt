@@ -10,7 +10,6 @@ package com.nextcloud.talk.conversationtags.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.ConversationListUpdater
 import com.nextcloud.talk.conversationtags.data.ConversationTagsRepository
@@ -22,6 +21,7 @@ import com.nextcloud.talk.models.json.tags.ConversationTagErrorOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.serialization.KotlinxJson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -207,7 +207,7 @@ class ConversationTagsViewModel @AssistedInject constructor(
         val httpException = exception as? HttpException ?: return null
         return runCatching {
             val errorBody = httpException.response()?.errorBody()?.string()
-            errorBody?.let { LoganSquare.parse(it, ConversationTagErrorOverall::class.java).ocs?.data?.error }
+            errorBody?.let { KotlinxJson.decodeFromString<ConversationTagErrorOverall>(it).ocs?.data?.error }
         }.getOrNull()
     }
 
