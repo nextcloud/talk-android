@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -87,7 +88,7 @@ fun ContactItemRow(contact: AutocompleteUserDto, contactsViewModel: ContactsView
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
                     contentDescription = stringResource(R.string.selected_list_item),
-                    tint = Color.Blue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(end = 8.dp)
                 )
             }
