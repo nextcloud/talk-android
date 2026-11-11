@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">45 sekundi jooksul pole vastust, uuesti proovimiseks klõpsi</string>
     <string name="nc_call_unknown">„%s“ kõne</string>
     <string name="nc_call_video">„%s“ videokõne</string>
+    <string name="nc_call_view_mode_grid">Ruudustikvaade</string>
+    <string name="nc_call_view_mode_speaker">Esineja vaade</string>
     <string name="nc_call_voice">„%s“ häälkõne</string>
     <string name="nc_camera_permission_hint">Et saaksid suhtlemisel kasutada videoedastust, palun luba rakendusel kasutada kaamerat.</string>
     <string name="nc_cancel">Loobu</string>

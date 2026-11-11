@@ -146,6 +146,8 @@
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
     <string name="nc_call_unknown">%s oproep</string>
     <string name="nc_call_video">%s videogesprek</string>
+    <string name="nc_call_view_mode_grid">Rasterweergave</string>
+    <string name="nc_call_view_mode_speaker">Sprekerweergave</string>
     <string name="nc_call_voice">%s gesprek</string>
     <string name="nc_camera_permission_hint">Om videogesprekken te houden, verleen \"Camera\" machtiging.</string>
     <string name="nc_cancel">Annuleren</string>

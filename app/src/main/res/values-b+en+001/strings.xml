@@ -190,6 +190,7 @@
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_video">%s video call</string>
+    <string name="nc_call_view_mode_speaker">Speaker view</string>
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_cancel">Cancel</string>

@@ -123,6 +123,8 @@
     <string name="nc_call_timeout">Ez da erantzunik egon 45 segundutan, sakatu berriro saiatzeko</string>
     <string name="nc_call_unknown">%s deia</string>
     <string name="nc_call_video">%s bideo-deia</string>
+    <string name="nc_call_view_mode_grid">Sareta ikuspegia</string>
+    <string name="nc_call_view_mode_speaker">Hizlari ikuspegia</string>
     <string name="nc_call_voice">%s ahots-deia</string>
     <string name="nc_camera_permission_hint">Bideo komunikazioa gaitzeko, eman \"Kamera\" baimena.</string>
     <string name="nc_cancel">Utzi</string>

@@ -190,6 +190,7 @@
     <string name="nc_call_timeout">Intet svar i 45 sekunder, tryk for at prøve igen</string>
     <string name="nc_call_unknown">%s opkald</string>
     <string name="nc_call_video">%s videoopkald</string>
+    <string name="nc_call_view_mode_speaker">Talervisning</string>
     <string name="nc_call_voice">%s stemmeopkald</string>
     <string name="nc_camera_permission_hint">Giv tilladelsen \"Kamera\" for at aktivere videokommunikation.</string>
     <string name="nc_cancel">Annuller</string>

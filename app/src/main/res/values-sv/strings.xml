@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_call_unknown">%s samtal</string>
     <string name="nc_call_video">%s videosamtal</string>
+    <string name="nc_call_view_mode_grid">Rutnätsvy</string>
+    <string name="nc_call_view_mode_speaker">Talarvy</string>
     <string name="nc_call_voice">%s röstsamtal</string>
     <string name="nc_camera_permission_hint">För att aktivera videokommunikation måste du bevilja \"Kamera\"-tillstånd.</string>
     <string name="nc_cancel">Avbryt</string>

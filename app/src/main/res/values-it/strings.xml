@@ -146,6 +146,8 @@
     <string name="nc_call_timeout">Nessuna risposta in 45 secondi, tocca per provare ancora</string>
     <string name="nc_call_unknown">%s chiamata</string>
     <string name="nc_call_video">%s videochiamata</string>
+    <string name="nc_call_view_mode_grid">Vista griglia</string>
+    <string name="nc_call_view_mode_speaker">Visualizzazione oratore</string>
     <string name="nc_call_voice">%s chiamata vocale</string>
     <string name="nc_camera_permission_hint">Per abilitare la comunicazione video, concedi l\'autorizzazione “Fotocamera”.</string>
     <string name="nc_cancel">Annulla</string>

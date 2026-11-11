@@ -121,6 +121,8 @@
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
     <string name="nc_call_unknown">%s通話</string>
     <string name="nc_call_video">%s映像通話</string>
+    <string name="nc_call_view_mode_grid">グリッド表示</string>
+    <string name="nc_call_view_mode_speaker">スピーカービュー</string>
     <string name="nc_call_voice">%s音声通話</string>
     <string name="nc_camera_permission_hint">ビデオ通信コミュニケーションを有効にするには、「カメラ」の権限を付与してください。</string>
     <string name="nc_cancel">キャンセル</string>

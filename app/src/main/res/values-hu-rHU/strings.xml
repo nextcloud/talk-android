@@ -160,6 +160,8 @@
     <string name="nc_call_timeout">Nincs válasz 45 másodpercen belül, koppintson az újrapróbálkozáshoz</string>
     <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_video">%s videóhívás</string>
+    <string name="nc_call_view_mode_grid">Rács nézet</string>
+    <string name="nc_call_view_mode_speaker">Beszélő nézet</string>
     <string name="nc_call_voice">%s hanghívás</string>
     <string name="nc_camera_permission_hint">A videóhívás engedélyezéséhez adja meg a „Kamera” engedélyt.</string>
     <string name="nc_cancel">Mégse</string>

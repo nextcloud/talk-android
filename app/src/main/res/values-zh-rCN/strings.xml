@@ -116,6 +116,8 @@
     <string name="nc_call_timeout">45秒内无响应，点击以重试</string>
     <string name="nc_call_unknown">%s 通话</string>
     <string name="nc_call_video">%s 语音通话</string>
+    <string name="nc_call_view_mode_grid">网格视图</string>
+    <string name="nc_call_view_mode_speaker">扬声器视图</string>
     <string name="nc_call_voice">%s 语音通话</string>
     <string name="nc_camera_permission_hint">使用视频通话需要“相机”权限</string>
     <string name="nc_cancel">取消</string>

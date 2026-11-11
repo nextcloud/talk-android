@@ -97,6 +97,8 @@
     <string name="nc_call_timeout">45초 동안 응답이 없다면 다시 시도하기를 눌러주십시오.</string>
     <string name="nc_call_unknown">%s 통화</string>
     <string name="nc_call_video">%s 영상 통화</string>
+    <string name="nc_call_view_mode_grid">바둑판식 보기</string>
+    <string name="nc_call_view_mode_speaker">말하는 사람 보기</string>
     <string name="nc_call_voice">%s 음성 통화</string>
     <string name="nc_cancel">취소</string>
     <string name="nc_capabilities_failed">기능을 가져올 수 없음,  중단함</string>

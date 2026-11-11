@@ -94,6 +94,8 @@
     <string name="nc_call_timeout">Πέρασαν 45 δεύτερα, δοκιμάστε ξανά</string>
     <string name="nc_call_unknown">%s κλήση</string>
     <string name="nc_call_video">%s βίντεο κλήση</string>
+    <string name="nc_call_view_mode_grid">Προβολή πλέγματος</string>
+    <string name="nc_call_view_mode_speaker">Προβολή ομιλητή</string>
     <string name="nc_call_voice">%s κλήση με ήχο</string>
     <string name="nc_cancel">Ακύρωση</string>
     <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
@@ -389,6 +391,7 @@
     <string name="nc_shared_items_location">Τοποθεσία</string>
     <string name="nc_shared_location">Διαμοιρασμένες τοποθεσίες</string>
     <string name="nc_sort_by">Ταξινόμηση κατά</string>
+    <string name="nc_start_screen_sharing">Διαμοιρασμός οθόνης</string>
     <string name="nc_start_time">Ώρα έναρξης</string>
     <string name="nc_switch_account">Αλλαγή λογαριασμού</string>
     <string name="nc_team">Ομάδα</string>

@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">Gan freagra i gceann 45 soicind, tapáil chun triail eile a bhaint as</string>
     <string name="nc_call_unknown">%s glaoch</string>
     <string name="nc_call_video">%sfísghlao</string>
+    <string name="nc_call_view_mode_grid">Radharc greille</string>
+    <string name="nc_call_view_mode_speaker">Amharc cainteoir</string>
     <string name="nc_call_voice">%s glao gutha</string>
     <string name="nc_camera_permission_hint">Chun físchumarsáid a chumasú deonaigh cead \"Ceamara\" le do thoil.</string>
     <string name="nc_cancel">Cealaigh</string>

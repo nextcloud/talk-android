@@ -180,6 +180,8 @@
     <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
     <string name="nc_call_unknown">%s appel</string>
     <string name="nc_call_video">%s appel vidéo</string>
+    <string name="nc_call_view_mode_grid">Vue en grille</string>
+    <string name="nc_call_view_mode_speaker">Vue intervenant</string>
     <string name="nc_call_voice">%s appel audio</string>
     <string name="nc_camera_permission_hint">Pour activer la communication vidéo, merci de donner l\'autorisation « Appareil photo ».</string>
     <string name="nc_cancel">Annuler</string>
@@ -532,6 +534,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_sharing_failed">Le partage d\'écran n\'a pas pu être démarré</string>
     <string name="nc_screen_sharing_not_allowed">Vous n\'êtes pas autorisé à partager votre écran</string>
+    <string name="nc_screen_sharing_not_connected">Vous pouvez partager votre écran une fois connecté à l\'appel</string>
     <string name="nc_screen_sharing_permissions_missing">Pour partager votre écran, autoriser les notifications et l\'accès au microphone</string>
     <string name="nc_search">Recherche</string>
     <string name="nc_search_clear">Effacer la recherche</string>

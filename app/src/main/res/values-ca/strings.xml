@@ -477,6 +477,7 @@
     <string name="nc_show_notification_warning_description">Quan les notificacions no estan configurades correctament, mostra un avís regular</string>
     <string name="nc_show_notification_warning_title">Mostra un avís regular de notificacions</string>
     <string name="nc_sort_by">Ordena per</string>
+    <string name="nc_start_screen_sharing">Comparteix la pantalla</string>
     <string name="nc_start_time">Hora d\'inici</string>
     <string name="nc_switch_account">Canvia el compte</string>
     <string name="nc_team">Equip</string>

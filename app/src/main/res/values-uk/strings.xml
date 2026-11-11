@@ -144,6 +144,8 @@
     <string name="nc_call_timeout">Немає відповіді 45 секунд, торкніться щоб повторити</string>
     <string name="nc_call_unknown">%s телефонує</string>
     <string name="nc_call_video">%s, відеодзвінок</string>
+    <string name="nc_call_view_mode_grid">Показувати сіткою</string>
+    <string name="nc_call_view_mode_speaker">Вигляд динаміка</string>
     <string name="nc_call_voice">%s, голосовий дзвінок</string>
     <string name="nc_camera_permission_hint">Щоб увімкнути відеозв\'язок, будь ласка, надайте дозвіл \"Камера\".</string>
     <string name="nc_cancel">Скасувати</string>

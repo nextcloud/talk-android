@@ -99,6 +99,8 @@
     <string name="nc_call_timeout">Sin respuesta en 45 segundos, toca para intentarlo de nuevo</string>
     <string name="nc_call_unknown">%s llamada</string>
     <string name="nc_call_video">%s videollamada</string>
+    <string name="nc_call_view_mode_grid">Vista de cuadrícula</string>
+    <string name="nc_call_view_mode_speaker">Vista de orador</string>
     <string name="nc_call_voice">%s llamada de voz</string>
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Se presentó una falla al recuperar las capacidades, abortando</string>

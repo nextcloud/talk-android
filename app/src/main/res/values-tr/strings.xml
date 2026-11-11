@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
     <string name="nc_call_unknown">%s arama</string>
     <string name="nc_call_video">%s görüntülü arama</string>
+    <string name="nc_call_view_mode_grid">Izgara görünümü</string>
+    <string name="nc_call_view_mode_speaker">Konuşmacı görünümü</string>
     <string name="nc_call_voice">%s sesli arama</string>
     <string name="nc_camera_permission_hint">Görüntülü iletişim kurabilmek için \"Kamera\" için erişme izni verin.</string>
     <string name="nc_cancel">İptal</string>

@@ -145,6 +145,8 @@
     <string name="nc_call_timeout">Hakuna jibu katika sekunde 45, bonyeza kujaribu tena</string>
     <string name="nc_call_unknown">%s piga simu</string>
     <string name="nc_call_video">%s simu ya video</string>
+    <string name="nc_call_view_mode_grid">Mwonekano wa gridi</string>
+    <string name="nc_call_view_mode_speaker">Mtazamo wa mzungumzaji</string>
     <string name="nc_call_voice">%s simu ya sauti</string>
     <string name="nc_camera_permission_hint">Kuwezesha mawasiliano ya video tafadhali toa ruhusa ya kamera</string>
     <string name="nc_cancel">Ghairi</string>

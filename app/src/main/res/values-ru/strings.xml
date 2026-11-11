@@ -190,6 +190,8 @@
     <string name="nc_call_timeout">Нет ответа в течение 45 секунд, нажмите, чтобы повторить попытку</string>
     <string name="nc_call_unknown">%s вызов</string>
     <string name="nc_call_video">%s видеовызов</string>
+    <string name="nc_call_view_mode_grid">Вид сеткой</string>
+    <string name="nc_call_view_mode_speaker">Вид выступающего</string>
     <string name="nc_call_voice">%s голосовой вызов</string>
     <string name="nc_camera_permission_hint">Для включения видеосвязи предоставьте разрешение «Камера».</string>
     <string name="nc_cancel">Отмена</string>

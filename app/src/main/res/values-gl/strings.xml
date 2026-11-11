@@ -146,6 +146,8 @@
     <string name="nc_call_timeout">Se non hai resposta en 45 segundos, toque para tentalo de novo</string>
     <string name="nc_call_unknown">%s chamada</string>
     <string name="nc_call_video">%s videochamada</string>
+    <string name="nc_call_view_mode_grid">Ver como grade</string>
+    <string name="nc_call_view_mode_speaker">Vista do relator</string>
     <string name="nc_call_voice">%s chamada de voz</string>
     <string name="nc_camera_permission_hint">Para activar a comunicación por vídeo, conceda o permiso de «Cámara».</string>
     <string name="nc_cancel">Cancelar</string>
