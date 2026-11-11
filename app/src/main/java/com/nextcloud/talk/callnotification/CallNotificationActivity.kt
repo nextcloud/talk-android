@@ -78,14 +78,22 @@ class CallNotificationActivity : CallBaseActivity() {
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
         setupNotificationCanceledRoutine()
+        // a window recreated for another call while in picture in picture gets no mode change
+        if (isInPictureInPictureMode) {
+            isInPipMode = true
+            updateUiForPipMode()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val newNotificationTimestamp = intent.extras?.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+        val extras = intent.extras ?: return
         // a window still open for an earlier call is set up again for the new one
-        if (newNotificationTimestamp != null && newNotificationTimestamp != notificationTimestamp) {
+        if (extras.containsKey(BundleKeys.KEY_NOTIFICATION_TIMESTAMP) &&
+            extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP) != notificationTimestamp
+        ) {
             Log.d(TAG, "onNewIntent: another incoming call, recreating the window")
+            handler.removeCallbacksAndMessages(null)
             setIntent(intent)
             recreate()
         }
