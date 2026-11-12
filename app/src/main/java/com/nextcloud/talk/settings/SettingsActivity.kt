@@ -33,6 +33,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.MutableState
@@ -154,16 +155,13 @@ class SettingsActivity :
             }
         }
 
-    private val callRingtonePickerLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val pickedUri = result.data?.let {
-                    IntentCompat.getParcelableExtra(it, RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
-                }
-                NotificationUtils.updateCallRingtone(context, appPreferences, pickedUri)
-                setupNotificationSoundsSettings()
-            }
-        }
+    private val callRingtonePickerLauncher = registerSoundPickerLauncher { uri ->
+        NotificationUtils.updateCallRingtone(context, appPreferences, uri)
+    }
+
+    private val messageRingtonePickerLauncher = registerSoundPickerLauncher { uri ->
+        NotificationUtils.updateMessageRingtone(context, appPreferences, uri)
+    }
 
     private var currentUser: User? = null
     private var credentials: String? = null
@@ -610,48 +608,129 @@ class SettingsActivity :
             }
         }
 
-        binding.settingsCallSound.setOnClickListener {
-            if (NotificationUtils.isCallsNotificationChannelEnabled(context)) {
-                openCallRingtonePicker()
-            } else {
-                openCallsChannelSettings()
+        binding.settingsCallSound.setOnClickListener { onCallSoundClicked() }
+        binding.settingsMessageSound.setOnClickListener { onMessageSoundClicked() }
+    }
+
+    private fun onCallSoundClicked() {
+        if (NotificationUtils.isCallsNotificationChannelEnabled(context)) {
+            showSoundDialog(
+                R.string.nc_settings_call_ringtone,
+                onDefaultSelected = {
+                    NotificationUtils.updateCallRingtone(
+                        context,
+                        appPreferences,
+                        NotificationUtils.DEFAULT_CALL_RINGTONE_URI.toUri()
+                    )
+                },
+                onOtherSelected = {
+                    openSoundPicker(
+                        callRingtonePickerLauncher,
+                        RingtoneManager.TYPE_RINGTONE,
+                        R.string.nc_settings_call_ringtone,
+                        Settings.System.DEFAULT_RINGTONE_URI,
+                        getCallRingtoneUri(context, appPreferences),
+                        NotificationUtils.getCallsNotificationChannelId(context)
+                    )
+                }
+            )
+        } else {
+            openChannelSettings(NotificationUtils.getCallsNotificationChannelId(context))
+        }
+    }
+
+    private fun onMessageSoundClicked() {
+        if (NotificationUtils.isMessagesNotificationChannelEnabled(context)) {
+            showSoundDialog(
+                R.string.nc_settings_other_notifications_ringtone,
+                onDefaultSelected = {
+                    NotificationUtils.updateMessageRingtone(
+                        context,
+                        appPreferences,
+                        NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI.toUri()
+                    )
+                },
+                onOtherSelected = {
+                    openSoundPicker(
+                        messageRingtonePickerLauncher,
+                        RingtoneManager.TYPE_NOTIFICATION,
+                        R.string.nc_settings_other_notifications_ringtone,
+                        Settings.System.DEFAULT_NOTIFICATION_URI,
+                        getMessageRingtoneUri(context, appPreferences),
+                        NotificationUtils.getMessagesNotificationChannelId(context)
+                    )
+                }
+            )
+        } else {
+            openChannelSettings(NotificationUtils.getMessagesNotificationChannelId(context))
+        }
+    }
+
+    private fun registerSoundPickerLauncher(onPicked: (Uri?) -> Unit) =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val pickedUri = result.data?.let {
+                    IntentCompat.getParcelableExtra(it, RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
+                }
+                onPicked(pickedUri)
+                setupNotificationSoundsSettings()
             }
         }
-        binding.settingsMessageSound.setOnClickListener {
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-            intent.putExtra(
-                Settings.EXTRA_CHANNEL_ID,
-                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-            )
-            startActivity(intent)
-        }
-    }
 
     /**
-     * Use an in-app ringtone picker instead of the system channel settings, because on some OEMs (e.g. Samsung)
-     * the channel settings only offer notification sounds, even for the calls channel.
+     * Sounds are chosen in-app instead of in the system channel settings, because the bundled default sounds are
+     * not part of the system sounds, and some OEMs (e.g. Samsung) only offer notification sounds for the calls
+     * channel.
      */
-    private fun openCallRingtonePicker() {
+    private fun showSoundDialog(titleRes: Int, onDefaultSelected: () -> Unit, onOtherSelected: () -> Unit) {
+        val items = arrayOf(
+            getString(R.string.nc_settings_default_ringtone),
+            getString(R.string.nc_settings_other_sound)
+        )
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(titleRes)
+            .setItems(items) { _, which ->
+                if (which == 0) {
+                    onDefaultSelected()
+                    setupNotificationSoundsSettings()
+                } else {
+                    onOtherSelected()
+                }
+            }
+            .setNegativeButton(R.string.nc_cancel, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(dialog.getButton(AlertDialog.BUTTON_NEGATIVE))
+    }
+
+    @Suppress("LongParameterList")
+    private fun openSoundPicker(
+        launcher: ActivityResultLauncher<Intent>,
+        ringtoneType: Int,
+        titleRes: Int,
+        systemDefaultUri: Uri,
+        existingUri: Uri?,
+        fallbackChannelId: String
+    ) {
         val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-            .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
-            .putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.nc_settings_call_ringtone))
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, ringtoneType)
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(titleRes))
             .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
-            .putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, NotificationUtils.DEFAULT_CALL_RINGTONE_URI.toUri())
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, systemDefaultUri)
             .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
-            .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, getCallRingtoneUri(context, appPreferences))
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, existingUri)
         try {
-            callRingtonePickerLauncher.launch(intent)
+            launcher.launch(intent)
         } catch (e: ActivityNotFoundException) {
             Log.w(TAG, "No ringtone picker available, falling back to channel settings", e)
-            openCallsChannelSettings()
+            openChannelSettings(fallbackChannelId)
         }
     }
 
-    private fun openCallsChannelSettings() {
+    private fun openChannelSettings(channelId: String) {
         val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-        intent.putExtra(Settings.EXTRA_CHANNEL_ID, NotificationUtils.getCallsNotificationChannelId(context))
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
         startActivity(intent)
     }
 

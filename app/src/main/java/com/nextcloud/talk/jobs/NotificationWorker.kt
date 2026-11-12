@@ -770,7 +770,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             TYPE_ADMIN_NOTIFICATIONS,
             TYPE_REMOTE_TALK_SHARE -> {
                 notificationBuilder.setChannelId(
-                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+                    NotificationUtils.getMessagesNotificationChannelId(applicationContext)
                 )
             }
         }
@@ -1219,8 +1219,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (isOngoingCallNotificationVisible) {
             val notificationBuilder = NotificationCompat.Builder(
                 context!!,
-                NotificationUtils.NotificationChannels
-                    .NOTIFICATION_CHANNEL_MESSAGES_V4.name
+                NotificationUtils.getMessagesNotificationChannelId(context!!)
             )
 
             val intent = createContentIntent()
