@@ -54,6 +54,9 @@ interface UsersDao {
     @Query("SELECT * FROM User where scheduledForDeletion != 1")
     suspend fun getUsers(): List<UserEntity>
 
+    @Query("SELECT * FROM User where scheduledForDeletion != 1")
+    fun getUsersFlow(): Flow<List<UserEntity>>
+
     @Query("SELECT * FROM User where id = :id")
     suspend fun getUserWithId(id: Long): UserEntity?
 

@@ -19,49 +19,74 @@ class ClientCertificateSelectorTest {
     private val otherCertB = User(id = 4, baseUrl = "https://b.example.com", clientCertificate = "otherB")
 
     @Test
-    fun `the certificate of the server's account is used, not the default account's`() {
-        assertEquals("certA", select(HOST_A, HTTPS_PORT, listOf(withCertA, withoutCertB), withoutCertB))
+    fun `the certificate of the server's account is used, not the active account's`() {
+        assertEquals("certA", select(HOST_A, HTTPS_PORT, listOf(withCertA, active(withoutCertB))))
     }
 
     @Test
-    fun `no certificate for a server whose accounts use none, even if the default account has one`() {
-        assertNull(select(HOST_B, HTTPS_PORT, listOf(withCertA, withoutCertB), withCertA))
+    fun `no certificate for a server whose accounts use none, even if the active account has one`() {
+        assertNull(select(HOST_B, HTTPS_PORT, listOf(active(withCertA), withoutCertB)))
+    }
+
+    @Test
+    fun `no certificate for a server without accounts`() {
+        assertNull(select("c.example.com", HTTPS_PORT, listOf(active(withCertA), withCertB)))
     }
 
     @Test
     fun `accounts on the same server with one certificate share it`() {
-        assertEquals("certB", select(HOST_B, HTTPS_PORT, listOf(withoutCertB, withCertB), withoutCertB))
+        assertEquals("certB", select(HOST_B, HTTPS_PORT, listOf(active(withoutCertB), withCertB)))
     }
 
     @Test
-    fun `different certificates on the same server are decided by the default account`() {
-        val users = listOf(withCertB, otherCertB, withCertA)
+    fun `different certificates on the same server are decided by the active account`() {
+        assertEquals("otherB", select(HOST_B, HTTPS_PORT, listOf(withCertB, active(otherCertB), withCertA)))
+        assertNull(select(HOST_B, HTTPS_PORT, listOf(withCertB, otherCertB, active(withCertA))))
+    }
 
-        assertEquals("otherB", select(HOST_B, HTTPS_PORT, users, otherCertB))
-        assertNull(select(HOST_B, HTTPS_PORT, users, withCertA))
+    @Test
+    fun `the host is matched case-insensitively`() {
+        assertEquals("certA", select("A.Example.COM", HTTPS_PORT, listOf(withCertA)))
     }
 
     @Test
     fun `accounts on another port of the same host are another server`() {
         val onOtherPort = User(id = 5, baseUrl = "https://b.example.com:8443", clientCertificate = "portB")
-        val users = listOf(withCertB, onOtherPort)
 
-        assertEquals("certB", select(HOST_B, HTTPS_PORT, users, onOtherPort))
-        assertEquals("portB", select(HOST_B, OTHER_PORT, users, withCertB))
+        assertEquals("certB", select(HOST_B, HTTPS_PORT, listOf(withCertB, active(onOtherPort))))
+        assertEquals("portB", select(HOST_B, OTHER_PORT, listOf(active(withCertB), onOtherPort)))
     }
 
     @Test
     fun `an unknown port matches the host only`() {
-        assertEquals("certA", select(HOST_A, UNKNOWN_PORT, listOf(withCertA), null))
+        assertEquals("certA", select(HOST_A, UNKNOWN_PORT, listOf(withCertA)))
     }
 
     @Test
-    fun `without a host the default account's certificate is used`() {
-        assertEquals("certA", select(null, UNKNOWN_PORT, listOf(withCertA, withCertB), withCertA))
+    fun `accounts with an invalid base url match no server`() {
+        val invalid = User(id = 6, baseUrl = "https://a.example.com/ invalid", clientCertificate = "invalid")
+
+        assertEquals("certA", select(HOST_A, HTTPS_PORT, listOf(invalid, withCertA)))
     }
 
-    private fun select(host: String?, port: Int, users: List<User>, defaultUser: User?) =
-        ClientCertificateSelector.selectAlias(host, port, users, defaultUser)
+    @Test
+    fun `without a host the active account's certificate is used`() {
+        assertEquals("certA", select(null, UNKNOWN_PORT, listOf(active(withCertA), withCertB)))
+        assertNull(select(null, UNKNOWN_PORT, listOf(withCertA, withCertB)))
+    }
+
+    @Test
+    fun `the aliases of all accounts are distinct and skip accounts without certificate`() {
+        assertEquals(
+            setOf("certA", "certB"),
+            ClientCertificateSelector.aliasesOf(listOf(withCertA, withoutCertB, withCertB, withCertB.copy(id = 7)))
+        )
+    }
+
+    private fun active(user: User) = user.copy(current = true)
+
+    private fun select(host: String?, port: Int, users: List<User>) =
+        ClientCertificateSelector.selectAlias(host, port, users)
 
     companion object {
         private const val HOST_A = "a.example.com"

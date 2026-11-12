@@ -32,6 +32,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     suspend fun getUsers(): List<User> = userRepository.getUsers()
 
+    /**
+     * Emits the users not scheduled for deletion whenever the user table changes.
+     */
+    fun usersFlow(): Flow<List<User>> = userRepository.getUsersFlow()
+
     suspend fun getUsersScheduledForDeletion(): List<User> = userRepository.getUsersScheduledForDeletion()
 
     suspend fun getUsersNotScheduledForDeletion(): List<User> = userRepository.getUsersNotScheduledForDeletion()
