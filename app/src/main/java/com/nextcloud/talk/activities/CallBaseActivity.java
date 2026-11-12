@@ -152,8 +152,8 @@ public abstract class CallBaseActivity extends BaseActivity {
         // moveTaskToBack here: onUserLeaveHint also fires when a transient overlay like the
         // permission dialog appears at call start, which would throw the call to the background.
         if (!isInPipMode
-                && isPipModePossible()
-                && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                && isPipModePossible()) {
             enterPipMode();
         }
     }
