@@ -327,7 +327,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
 
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
-            val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+            val notificationChannelId = NotificationUtils.getCallsNotificationChannelId(applicationContext)
             val uri = user.baseUrl!!.toUri()
             val baseUrl = uri.host
 
