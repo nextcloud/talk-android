@@ -16,6 +16,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -37,6 +38,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
@@ -149,6 +151,17 @@ class SettingsActivity :
                         saveLogsAsZip(this@SettingsActivity, os, diagnosisText)
                     }
                 }
+            }
+        }
+
+    private val callRingtonePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val pickedUri = result.data?.let {
+                    IntentCompat.getParcelableExtra(it, RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
+                }
+                NotificationUtils.updateCallRingtone(context, appPreferences, pickedUri)
+                setupNotificationSoundsSettings()
             }
         }
 
@@ -598,14 +611,11 @@ class SettingsActivity :
         }
 
         binding.settingsCallSound.setOnClickListener {
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-            intent.putExtra(
-                Settings.EXTRA_CHANNEL_ID,
-                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
-            )
-
-            startActivity(intent)
+            if (NotificationUtils.isCallsNotificationChannelEnabled(context)) {
+                openCallRingtonePicker()
+            } else {
+                openCallsChannelSettings()
+            }
         }
         binding.settingsMessageSound.setOnClickListener {
             val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
@@ -616,6 +626,33 @@ class SettingsActivity :
             )
             startActivity(intent)
         }
+    }
+
+    /**
+     * Use an in-app ringtone picker instead of the system channel settings, because on some OEMs (e.g. Samsung)
+     * the channel settings only offer notification sounds, even for the calls channel.
+     */
+    private fun openCallRingtonePicker() {
+        val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.nc_settings_call_ringtone))
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, NotificationUtils.DEFAULT_CALL_RINGTONE_URI.toUri())
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
+            .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, getCallRingtoneUri(context, appPreferences))
+        try {
+            callRingtonePickerLauncher.launch(intent)
+        } catch (e: ActivityNotFoundException) {
+            Log.w(TAG, "No ringtone picker available, falling back to channel settings", e)
+            openCallsChannelSettings()
+        }
+    }
+
+    private fun openCallsChannelSettings() {
+        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, NotificationUtils.getCallsNotificationChannelId(context))
+        startActivity(intent)
     }
 
     private fun setTroubleshootingClickListenersIfNecessary() {
