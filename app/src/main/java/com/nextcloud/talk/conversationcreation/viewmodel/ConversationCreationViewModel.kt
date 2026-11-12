@@ -243,7 +243,7 @@ class ConversationCreationViewModel @AssistedInject constructor(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants() {
         val user = currentUser
-        if (_isCreatingRoom.value) {
+        if (_isCreatingRoom.value || _roomName.value.isBlank()) {
             return
         }
         _isCreatingRoom.value = true
