@@ -133,6 +133,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
+import com.nextcloud.talk.utils.permissions.LocalNetworkPermission
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.setExpeditedIfSupported
@@ -204,6 +205,10 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private lateinit var currentUser: User
+    private val localNetworkPermission = LocalNetworkPermission(this, { viewThemeUtils })
+
+    // checked when the list is created, not again when it is recreated, e.g. after a rotation
+    private var isLocalNetworkCheckDue = false
     private val snackbarHostState = SnackbarHostState()
     private val isMaintenanceModeState = MutableStateFlow(false)
     private val showUnreadBubbleState = MutableStateFlow(false)
@@ -584,12 +589,27 @@ class ConversationsListActivity : BaseActivity() {
     @SuppressLint("InlinedApi")
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+        isLocalNetworkCheckDue = savedInstanceState == null
 
         // handle notification permission on API level >= 33
         if (needsPostNotificationsPermission()) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 REQUEST_POST_NOTIFICATIONS_PERMISSION
+            )
+        } else {
+            checkLocalNetworkPermission()
+        }
+    }
+
+    // Accounts added before the local network permission existed, or a server that only resolves to the local
+    // network at home, never went through the check on server selection. The chat also connects to the signaling
+    // server of a high-performance backend, which can be on the local network behind a public server.
+    private fun checkLocalNetworkPermission() {
+        if (isLocalNetworkCheckDue && ::currentUser.isInitialized) {
+            isLocalNetworkCheckDue = false
+            localNetworkPermission.ensure(
+                listOf(currentUser.baseUrl, currentUser.externalSignalingServer?.externalSignalingServer)
             )
         }
     }
@@ -1283,6 +1303,7 @@ class ConversationsListActivity : BaseActivity() {
                             "Or permission is already denied and android decided to not offer the dialog."
                     )
                 }
+                checkLocalNetworkPermission()
             }
         }
     }
