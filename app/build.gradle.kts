@@ -314,7 +314,7 @@ dependencies {
 
     // Computer Vision - for background effects during video calls (gplay only for now)
     "gplayImplementation"("com.google.ai.edge.litert:litert:1.4.2")
-    implementation("io.github.crow-misia.libyuv:libyuv-android:0.43.2")
+    implementation("io.github.crow-misia.libyuv:libyuv-android:0.44.0")
 
     // Avatar picker
     implementation("com.github.nextcloud-deps:ImagePicker:2.1.0.2")
