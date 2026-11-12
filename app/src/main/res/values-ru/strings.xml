@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">Нет ответа в течение 45 секунд, нажмите, чтобы повторить попытку</string>
     <string name="nc_call_unknown">%s вызов</string>
     <string name="nc_call_video">%s видеовызов</string>
+    <string name="nc_call_view_mode">Вид экрана вызова</string>
     <string name="nc_call_view_mode_grid">Вид сеткой</string>
     <string name="nc_call_view_mode_speaker">Вид выступающего</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Вид выступающего с панелью участников</string>
     <string name="nc_call_voice">%s голосовой вызов</string>
     <string name="nc_camera_permission_hint">Для включения видеосвязи предоставьте разрешение «Камера».</string>
     <string name="nc_cancel">Отмена</string>
@@ -703,6 +705,7 @@
     <string name="nc_voice_message">Голосовое сообщение</string>
     <string name="nc_voice_message_hold_to_record_info">Удерживайте для записи, отпустите для отправки.</string>
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>
+    <string name="nc_voice_message_recording_interrupted">Запись остановлена</string>
     <string name="nc_voice_message_slide_to_cancel">« Сдвиньте для отмены</string>
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_webinar_description">Ограниченное обсуждение с включённым лобби — подходит для открытых вебинаров</string>

@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">Žiadna odpoveď počas 45 sekúnd, ťuknite a skúste znova</string>
     <string name="nc_call_unknown">%s hovor</string>
     <string name="nc_call_video">%s videohovor</string>
+    <string name="nc_call_view_mode">Režim zobrazenia hovoru</string>
     <string name="nc_call_view_mode_grid">Zobrazenie v mriežke</string>
     <string name="nc_call_view_mode_speaker">Zobrazenie rečníka</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Zobrazenie rečníka s panelom účastníkov</string>
     <string name="nc_call_voice">%s hlasový hovor</string>
     <string name="nc_camera_permission_hint">Ak chcete povoliť videokomunikáciu, udeľte povolenie „Kamera“.</string>
     <string name="nc_cancel">Zrušiť</string>
@@ -703,6 +705,7 @@
     <string name="nc_voice_message">Hlasová správa</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
+    <string name="nc_voice_message_recording_interrupted">Nahrávanie sa zastavilo</string>
     <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_webinar_description">Obmedzená konverzácia s povoleným lobby, ideálna pre verejné webináre</string>

@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_unknown">%s 通話</string>
     <string name="nc_call_video">%s 視訊通話</string>
+    <string name="nc_call_view_mode">通話檢視模式</string>
     <string name="nc_call_view_mode_grid">格狀檢視</string>
     <string name="nc_call_view_mode_speaker">演講者檢視</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">附參與者列的講者檢視</string>
     <string name="nc_call_voice">%s 語音通話</string>
     <string name="nc_camera_permission_hint">要啟用影像通訊，請授予「相機」權限。</string>
     <string name="nc_cancel">取消</string>
@@ -703,6 +705,7 @@
     <string name="nc_voice_message">音訊訊息</string>
     <string name="nc_voice_message_hold_to_record_info">按住以錄音，放開以傳送</string>
     <string name="nc_voice_message_missing_audio_permission">需要錄音權限</string>
+    <string name="nc_voice_message_recording_interrupted">已停止錄製</string>
     <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網路研討會</string>
     <string name="nc_webinar_description">啟用大廳功能的受限對話，非常適合公開網路研討會</string>
