@@ -134,6 +134,8 @@
     <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_video">%s اتصال فيديو</string>
+    <string name="nc_call_view_mode_grid">عرض كمخطط</string>
+    <string name="nc_call_view_mode_speaker">عرض المتحدث</string>
     <string name="nc_call_voice">%s اتصال صوتي</string>
     <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
     <string name="nc_cancel">إلغاء</string>

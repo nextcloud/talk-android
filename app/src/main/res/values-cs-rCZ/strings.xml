@@ -161,6 +161,8 @@
     <string name="nc_call_timeout">Žádná odezva po 45 sekundách, ťukněte, pokud chcete zkusit znovu</string>
     <string name="nc_call_unknown">%s hovor</string>
     <string name="nc_call_video">%s video hovor</string>
+    <string name="nc_call_view_mode_grid">Zobrazení v mřížce</string>
+    <string name="nc_call_view_mode_speaker">Zobrazení řečníka</string>
     <string name="nc_call_voice">%s hlasový hovor</string>
     <string name="nc_camera_permission_hint">Pro zapnutí videokomunikace udělte oprávnění „Kamera“ .</string>
     <string name="nc_cancel">Storno</string>

@@ -99,6 +99,8 @@
     <string name="nc_call_timeout">При липса на отговор до 45 секунди, докоснете, за да опитате отново</string>
     <string name="nc_call_unknown">%sобаждане</string>
     <string name="nc_call_video">%sвидео обаждане</string>
+    <string name="nc_call_view_mode_grid">Решетъчен изглед</string>
+    <string name="nc_call_view_mode_speaker">Изглед на високоговорителя</string>
     <string name="nc_call_voice">%sгласово обаждане</string>
     <string name="nc_cancel">Отказ</string>
     <string name="nc_capabilities_failed">Прекъсване, извличането на възможности не беше успешно </string>

@@ -137,6 +137,8 @@
     <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc i torneu-ho a provar</string>
     <string name="nc_call_unknown">%strucada </string>
     <string name="nc_call_video">%s trucada de vídeo</string>
+    <string name="nc_call_view_mode_grid">Visualització de quadrícula</string>
+    <string name="nc_call_view_mode_speaker">Visualització de qui parla</string>
     <string name="nc_call_voice">%s trucada de veu</string>
     <string name="nc_camera_permission_hint">Per habilitar la comunicació per vídeo,  concediu el permís de \"Càmera\".</string>
     <string name="nc_cancel">Cancel·la</string>

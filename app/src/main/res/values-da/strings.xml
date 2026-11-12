@@ -190,7 +190,10 @@
     <string name="nc_call_timeout">Intet svar i 45 sekunder, tryk for at prøve igen</string>
     <string name="nc_call_unknown">%s opkald</string>
     <string name="nc_call_video">%s videoopkald</string>
+    <string name="nc_call_view_mode">Visning i opkald</string>
+    <string name="nc_call_view_mode_grid">Gittervisning</string>
     <string name="nc_call_view_mode_speaker">Talervisning</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Talervisning med deltagerbjælke</string>
     <string name="nc_call_voice">%s stemmeopkald</string>
     <string name="nc_camera_permission_hint">Giv tilladelsen \"Kamera\" for at aktivere videokommunikation.</string>
     <string name="nc_cancel">Annuller</string>
@@ -702,6 +705,7 @@
     <string name="nc_voice_message">Talebesked</string>
     <string name="nc_voice_message_hold_to_record_info">Hold for at optage, slip for at sende.</string>
     <string name="nc_voice_message_missing_audio_permission">Tilladelse til lydoptagelse kræves</string>
+    <string name="nc_voice_message_recording_interrupted">Optagelsen er stoppet</string>
     <string name="nc_voice_message_slide_to_cancel">« Stryg for at annullere</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_webinar_description">Begrænset samtale med lobby slået til, ideel til offentlige webinarer</string>
