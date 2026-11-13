@@ -42,7 +42,7 @@ import javax.inject.Inject
  * of [MediaViewerGroup]s. Seeded synchronously from whatever the chat screen already had loaded
  * (see ChatViewModel.mediaViewerSeed()) - which alone covers all "newer" navigation, since that
  * direction has no network fallback. "Older" navigation pages further back through conversation
- * history via [SharedItemsRepository] once the locally seeded items run out.
+ * history via [SharedItemsRepository] before the locally seeded items run out.
  */
 class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository: SharedItemsRepository) :
     ViewModel() {
@@ -94,7 +94,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     fun onPageSettled(globalIndex: Int) {
         _uiState.update { it.copy(currentGlobalIndex = globalIndex) }
         ensureCachedAround(globalIndex)
-        if (globalIndex <= EDGE_LOAD_THRESHOLD) {
+        if (globalIndex < EDGE_LOAD_THRESHOLD) {
             loadOlderGroups()
         }
     }
@@ -243,6 +243,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     companion object {
         private val TAG = MediaViewerViewModel::class.simpleName
         private const val PREFETCH_RADIUS = 1
-        private const val EDGE_LOAD_THRESHOLD = 1
+        private const val EDGE_LOAD_THRESHOLD = 10
     }
 }

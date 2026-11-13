@@ -468,8 +468,8 @@ class ChatViewModel @AssistedInject constructor(
      * The locally known media (image/video) groups for the media viewer, oldest first - every
      * already-synced MessageItem/MediaGroupItem currently loaded in this chat. This is what lets
      * the viewer navigate toward newer items instantly (bounded by what's already loaded here) and
-     * toward older items without a network round trip until this local knowledge is exhausted -
-     * see MediaViewerViewModel.loadOlderGroups(). The caller locates the tapped message's own
+     * toward older items, which MediaViewerViewModel.loadOlderGroups() extends from the network
+     * before this local knowledge is exhausted. The caller locates the tapped message's own
      * position within the result.
      */
     fun mediaViewerSeed(): List<MediaViewerGroup> =
