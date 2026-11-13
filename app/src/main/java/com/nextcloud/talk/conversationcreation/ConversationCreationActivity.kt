@@ -774,6 +774,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
     val isCreatingRoom by conversationCreationViewModel.isCreatingRoom.collectAsState()
     val creationState by conversationCreationViewModel.creationState.collectAsState()
     val password by conversationCreationViewModel.password.collectAsState()
+    val roomName by conversationCreationViewModel.roomName.collectAsState()
     var createdPublicConversation by rememberSaveable { mutableStateOf<String?>(null) }
     var createdWithPassword by rememberSaveable { mutableStateOf(false) }
     val isPasswordMissing = conversationCreationViewModel.isPasswordEnforced &&
@@ -811,6 +812,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
     ) {
         Button(
             enabled = !isCreatingRoom &&
+                roomName.isNotBlank() &&
                 !conversationCreationViewModel.isLoadingPresets &&
                 !isPasswordMissing,
             onClick = {
