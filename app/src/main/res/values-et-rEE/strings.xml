@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">45 sekundi jooksul pole vastust, uuesti proovimiseks klõpsi</string>
     <string name="nc_call_unknown">„%s“ kõne</string>
     <string name="nc_call_video">„%s“ videokõne</string>
+    <string name="nc_call_view_mode">Kõnevaate liik</string>
     <string name="nc_call_view_mode_grid">Ruudustikvaade</string>
     <string name="nc_call_view_mode_speaker">Esineja vaade</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Esineja vaade osalejate ribaga</string>
     <string name="nc_call_voice">„%s“ häälkõne</string>
     <string name="nc_camera_permission_hint">Et saaksid suhtlemisel kasutada videoedastust, palun luba rakendusel kasutada kaamerat.</string>
     <string name="nc_cancel">Loobu</string>
@@ -703,6 +705,7 @@
     <string name="nc_voice_message">Häälsõnum</string>
     <string name="nc_voice_message_hold_to_record_info">Salvestamiseks hoia nupp all ja saatmiseks vabasta nupp</string>
     <string name="nc_voice_message_missing_audio_permission">Vajalikud on õigused heli salvestamiseks</string>
+    <string name="nc_voice_message_recording_interrupted">Salvestamine lõppes</string>
     <string name="nc_voice_message_slide_to_cancel">« Katkestamiseks viipa</string>
     <string name="nc_webinar">Veebiseminar</string>
     <string name="nc_webinar_description">Piiratud vestlus, mis kasutab ooteruumi. Sobib hästi avalike veebiseminaride jaoks</string>
@@ -797,7 +800,7 @@
     <string name="scope_private_title">Privaatne</string>
     <string name="scope_published_description">Sünkrooni usaldusväärsetesse serveritesse ning üldisesse ja avalikku aadressiraamatusse</string>
     <string name="scope_published_title">Avaldatud</string>
-    <string name="scope_toggle_description">Muuda „%1$s“ vestlue privaatsuse taset</string>
+    <string name="scope_toggle_description">Muuda „%1$s“ vestluse privaatsuse taset</string>
     <string name="scroll_to_bottom">Keri alla äärde</string>
     <string name="search_icon">Otsinguikoon</string>
     <string name="secondsAgo">sekundit tagasi</string>
