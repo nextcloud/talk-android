@@ -201,7 +201,7 @@ After finishing code changes, run `./gradlew detekt ktlintCheck` and fix any new
 
 ## R8 App Optimization
 
-Release builds are optimized, shrunk and obfuscated by R8 (`optimization { enable = true }` in `app/build.gradle.kts`). Keep rules live in `app/src/main/keepRules/*.keep`, one file per library or concern. Code reached only through reflection or JNI (e.g. LoganSquare mappers, Gson models without `@SerializedName`) needs a narrow keep rule there. Use the [`r8-analyzer`](https://github.com/android/skills/tree/main/performance/r8-analyzer) skill and `./gradlew :app:analyzeGplayReleaseR8Config` to check rule impact when changing keep rules.
+Release builds are optimized, shrunk and partially obfuscated by R8 (`optimization { enable = true }` in `app/build.gradle.kts`). Library code is obfuscated, but `app/src/main/keepRules/global-options.keep` keeps the names of `com.nextcloud.talk.**` so crash reports sent by mail stay readable without a mapping file. Do not use `-dontobfuscate`: Google Play requires a minimum obfuscation percentage for apps with more than 10 MB of DEX code. Keep rules live in `app/src/main/keepRules/*.keep`, one file per library or concern. Code reached only through reflection or JNI (e.g. LoganSquare mappers, Gson models without `@SerializedName`) needs a narrow keep rule there. Use the [`r8-analyzer`](https://github.com/android/skills/tree/main/performance/r8-analyzer) skill and `./gradlew :app:analyzeGplayReleaseR8Config` to check rule impact when changing keep rules.
 
 ## Testing
 
