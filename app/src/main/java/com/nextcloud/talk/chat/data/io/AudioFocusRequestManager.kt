@@ -21,7 +21,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
  * Abstraction over the [AudioFocusManager](https://developer.android.com/reference/kotlin/android/media/AudioFocusRequest)
  * class used to manage audio focus requests automatically
  */
-class AudioFocusRequestManager(private val context: Context) {
+class AudioFocusRequestManager(
+    private val context: Context,
+    private val duration: Int = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+) {
     companion object {
         val TAG: String = AudioFocusRequestManager::class.java.simpleName
     }
@@ -38,7 +41,6 @@ class AudioFocusRequestManager(private val context: Context) {
 
     private var isPausedDueToBecomingNoisy = false
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private val duration = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
     private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener =
         AudioManager.OnAudioFocusChangeListener { flag ->
             when (flag) {
@@ -69,8 +71,12 @@ class AudioFocusRequestManager(private val context: Context) {
      */
     fun audioFocusRequest(shouldRequestFocus: Boolean, onGranted: () -> Unit) {
         if (isPausedDueToBecomingNoisy) {
-            onGranted()
-            return
+            if (shouldRequestFocus) {
+                onGranted()
+                return
+            }
+            // the focus is still held, a paused-by-noise state must not keep it for good
+            isPausedDueToBecomingNoisy = false
         }
 
         val isGranted: Int =
