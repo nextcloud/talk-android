@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.viewmodels
 
 import android.content.Context
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -93,6 +94,7 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.message.groupHashOf
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.throttleLatest
+import com.nextcloud.talk.webrtc.AudioInputDeviceManager
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -2383,7 +2385,16 @@ class ChatViewModel @AssistedInject constructor(
     fun startAudioRecording(context: Context, currentConversation: ConversationModel) {
         audioFocusRequestManager.audioFocusRequest(true) {
             Log.d(TAG, "Recording Started")
-            mediaRecorderManager.start(context, currentConversation, onSilenced = ::interruptAudioRecording)
+            val preferredInputDevice = AudioInputDeviceManager.findPreferredInputDevice(
+                context.getSystemService(AudioManager::class.java),
+                appPreferences.preferredAudioInputDevice
+            )
+            mediaRecorderManager.start(
+                context,
+                currentConversation,
+                preferredInputDevice,
+                onSilenced = ::interruptAudioRecording
+            )
             _getVoiceRecordingInProgress.postValue(true)
         }
     }

@@ -849,6 +849,10 @@ How to translate with transifex:
     <string name="nc_take_video">Take a video</string>
 
     <!-- Audio selection -->
+    <string name="audio_input_dialog_headline">Microphone</string>
+    <string name="audio_input_automatic">Automatic</string>
+    <string name="audio_input_phone">Phone microphone</string>
+    <string name="audio_input_usb">USB microphone</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_speaker">Speaker</string>
     <string name="audio_output_phone">Phone</string>

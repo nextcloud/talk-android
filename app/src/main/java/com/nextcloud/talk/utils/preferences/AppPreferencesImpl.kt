@@ -333,6 +333,18 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getPreferredAudioInputDevice(): String =
+        runBlocking {
+            async { readString(PREFERRED_AUDIO_INPUT_DEVICE).first() }
+        }.getCompleted()
+
+    override fun setPreferredAudioInputDevice(value: String?) =
+        runBlocking<Unit> {
+            async {
+                writeString(PREFERRED_AUDIO_INPUT_DEVICE, value ?: "")
+            }
+        }
+
     override fun getIsKeyboardIncognito(): Boolean {
         val read = runBlocking { async { readBoolean(INCOGNITO_KEYBOARD).first() } }.getCompleted()
         return read
@@ -738,6 +750,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val SCREEN_LOCK = "screen_lock"
         const val CALL_MICROPHONE_MUTED = "call_microphone_muted"
         const val CALL_VIEW_MODE = "call_view_mode"
+        const val PREFERRED_AUDIO_INPUT_DEVICE = "preferred_audio_input_device"
         const val INCOGNITO_KEYBOARD = "incognito_keyboard"
         const val SHOW_ECOSYSTEM = "SHOW_ECOSYSTEM"
         const val PHONE_BOOK_INTEGRATION = "phone_book_integration"
