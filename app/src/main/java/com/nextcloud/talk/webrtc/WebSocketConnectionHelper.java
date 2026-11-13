@@ -20,6 +20,7 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessageDto;
+import com.nextcloud.talk.models.json.websocket.RoomFederationJoinAuthParamsWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.RoomFederationWebSocketMessageDto;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessageDto;
@@ -168,6 +169,15 @@ public class WebSocketConnectionHelper {
             roomFederationWebSocketMessage.setUrl(federation.getNextcloudServer() + "/ocs/v2.php/apps/spreed/api/v3/signaling/backend");
             roomFederationWebSocketMessage.setRoomid(federation.getRoomId());
             roomFederationWebSocketMessage.setToken(federationAuthToken);
+            String federationJoinAuthToken = null;
+            if (federation.getJoinAuthParams() != null) {
+                federationJoinAuthToken = federation.getJoinAuthParams().getToken();
+            }
+            if (federationJoinAuthToken != null && !federationJoinAuthToken.isEmpty()) {
+                roomFederationWebSocketMessage.setAuth(new RoomFederationJoinAuthParamsWebSocketMessageDto(
+                    RoomFederationJoinAuthParamsWebSocketMessageDto.VERSION,
+                    federationJoinAuthToken));
+            }
             roomWebSocketMessage.setRoomFederationWebSocketMessage(roomFederationWebSocketMessage);
         }
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
