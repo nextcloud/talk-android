@@ -31,6 +31,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.ChatMessageRepository
+import com.nextcloud.talk.chat.data.LinkPreviewCache
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -702,6 +703,14 @@ class ChatViewModel @AssistedInject constructor(
     val actionFailures: SharedFlow<Int> = _actionFailures
 
     private val reactionLocks = mutableMapOf<Int, Mutex>()
+
+    private val linkPreviews = LinkPreviewCache(viewModelScope, LINK_PREVIEW_CACHE_SIZE) { url ->
+        withContext(linkPreviewDispatcher) {
+            chatNetworkDataSource
+                .getOpenGraph(currentUser.getCredentials(), currentUser.baseUrl!!, url)
+                ?.openGraphObject
+        }
+    }
 
     @Volatile private var firstUnreadMessageId: Int? = null
 
@@ -2734,16 +2743,8 @@ class ChatViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                chatNetworkDataSource.getOpenGraph(
-                    currentUser.getCredentials(),
-                    currentUser.baseUrl!!,
-                    url
-                )?.openGraphObject
-            }.getOrNull()
-        }
+    /** Returns the preview of the link [url], resolving each URL at most once while the chat is open. */
+    suspend fun fetchOpenGraph(url: String): OpenGraphObjectDto? = linkPreviews.get(url)
 
     suspend fun updateMessageDraft() {
         val model = conversationRepository.getLocallyStoredConversation(
@@ -2949,6 +2950,9 @@ class ChatViewModel @AssistedInject constructor(
         const val HTTP_CODE_OK: Int = 200
         private const val CONVERSATION_AND_USER_FLOW_SHARING_TIMEOUT_MS = 5_000L
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
+        private const val LINK_PREVIEW_CACHE_SIZE = 100
+        private const val MAX_PARALLEL_LINK_PREVIEW_REQUESTS = 4
+        private val linkPreviewDispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLEL_LINK_PREVIEW_REQUESTS)
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
         private const val MESSAGES_REBUILD_WINDOW_MS = 200L
