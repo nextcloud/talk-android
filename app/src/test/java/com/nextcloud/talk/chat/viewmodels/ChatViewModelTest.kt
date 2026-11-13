@@ -555,6 +555,32 @@ class ChatViewModelTest {
             sendStatus = status
         }
 
+    @Test
+    fun `link previews are prefetched for the newest link messages only`() {
+        val items = listOf(
+            linkItem(id = 5, url = "https://example.com/newest"),
+            messageItem(4),
+            linkItem(id = 3, url = "https://example.com/newest"),
+            linkItem(id = 2, url = "https://example.com/second"),
+            linkItem(id = 1, url = "https://example.com/oldest")
+        )
+
+        assertEquals(
+            listOf("https://example.com/newest", "https://example.com/second"),
+            ChatViewModel.linkPreviewUrlsToPrefetch(items, limit = 2)
+        )
+    }
+
+    @Test
+    fun `nothing is prefetched without link messages`() {
+        val items = listOf(messageItem(2), messageItem(1))
+
+        assertEquals(emptyList<String>(), ChatViewModel.linkPreviewUrlsToPrefetch(items, limit = 20))
+    }
+
+    private fun linkItem(id: Int, url: String): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(uiMessage(id).copy(content = MessageTypeContent.LinkPreview(url = url)))
+
     private fun messageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
         ChatViewModel.ChatItem.MessageItem(uiMessage(id))
 

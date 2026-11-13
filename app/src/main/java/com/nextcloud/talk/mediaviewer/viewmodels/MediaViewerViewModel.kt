@@ -240,6 +240,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     companion object {
         private val TAG = MediaViewerViewModel::class.simpleName
         private const val PREFETCH_RADIUS = 1
-        private const val EDGE_LOAD_THRESHOLD = 1
+        private const val EDGE_LOAD_THRESHOLD = 10
     }
 }
