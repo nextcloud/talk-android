@@ -181,8 +181,6 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         oldestMessageId: Long,
         newestMessageId: Long
     ): Long? = null
-
-    override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
 
 class DummyUserDaoImpl : UsersDao {
