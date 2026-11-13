@@ -1522,8 +1522,33 @@ class ChatViewModel @AssistedInject constructor(
                 )
 
                 getCapabilities(user, chatRoomToken, conversation)
+                refreshThreadReplies(credentials, user)
             }
             .launchIn(viewModelScope)
+    }
+
+    /**
+     * Updates the reply counts of the cached thread roots of the main chat with the counts of the recently
+     * active threads on the server. Does nothing inside a thread or when the server has no threads.
+     */
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun refreshThreadReplies(credentials: String, user: User) {
+        if (conversationThreadId != null) return
+        viewModelScope.launch {
+            val capabilities = spreedCapabilities.filterNotNull().first()
+            if (!hasSpreedFeatureCapability(capabilities, SpreedFeatures.THREADS)) return@launch
+            try {
+                val url = ApiUtils.getUrlForRecentThreads(version = 1, baseUrl = user.baseUrl, token = chatRoomToken)
+                val threads = threadsRepository.getThreads(credentials, url, RECENT_THREADS_LIMIT).ocs?.data.orEmpty()
+                chatRepository.updateThreadReplies(
+                    threads.mapNotNull { it.thread }.associate { it.id.toLong() to it.numReplies }
+                )
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.e(TAG, "Failed to refresh the reply counts of the recent threads", e)
+            }
+        }
     }
 
     fun isChatRelaySupported(user: User): Boolean {
@@ -2949,6 +2974,7 @@ class ChatViewModel @AssistedInject constructor(
         const val HTTP_CODE_OK: Int = 200
         private const val CONVERSATION_AND_USER_FLOW_SHARING_TIMEOUT_MS = 5_000L
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
+        private const val RECENT_THREADS_LIMIT = 50
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
         private const val MESSAGES_REBUILD_WINDOW_MS = 200L

@@ -497,8 +497,8 @@ class OfflineFirstChatRepository @Inject constructor(
             lastCommonRead = newXChatLastCommonRead
         )
 
-    override suspend fun getNumberOfThreadReplies(threadId: Long): Int =
-        chatDao.getNumberOfThreadReplies(internalConversationId, threadId)
+    override suspend fun updateThreadReplies(threadReplies: Map<Long, Int>) =
+        chatDao.updateThreadRepliesOfThreads(internalConversationId, threadReplies)
 
     override fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> =
         flow {
