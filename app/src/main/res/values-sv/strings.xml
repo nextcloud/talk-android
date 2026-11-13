@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_call_unknown">%s samtal</string>
     <string name="nc_call_video">%s videosamtal</string>
+    <string name="nc_call_view_mode">Visningsläge för samtal</string>
     <string name="nc_call_view_mode_grid">Rutnätsvy</string>
     <string name="nc_call_view_mode_speaker">Talarvy</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Talarvy med deltagarfält</string>
     <string name="nc_call_voice">%s röstsamtal</string>
     <string name="nc_camera_permission_hint">För att aktivera videokommunikation måste du bevilja \"Kamera\"-tillstånd.</string>
     <string name="nc_cancel">Avbryt</string>
@@ -703,6 +705,7 @@
     <string name="nc_voice_message">Röstmeddelande</string>
     <string name="nc_voice_message_hold_to_record_info">Håll ned för att spela in, släpp för att skicka.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>
+    <string name="nc_voice_message_recording_interrupted">Inspelningen stoppades</string>
     <string name="nc_voice_message_slide_to_cancel">« Dra för att avbryta</string>
     <string name="nc_webinar">Webbinarium</string>
     <string name="nc_webinar_description">Begränsad konversation med lobby aktiverad, idealisk för offentliga webbseminarier</string>
