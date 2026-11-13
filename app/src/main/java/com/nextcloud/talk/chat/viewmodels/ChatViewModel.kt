@@ -1339,8 +1339,16 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
+                prefetchLinkPreviews(items)
             }
             .launchIn(viewModelScope)
+    }
+
+    /** Resolves the previews of the newest link messages in [items] before their bubbles are shown. */
+    private fun prefetchLinkPreviews(items: List<ChatItem>) {
+        linkPreviewUrlsToPrefetch(items, LINK_PREVIEW_PREFETCH_COUNT).forEach { url ->
+            viewModelScope.launch { linkPreviews.get(url) }
+        }
     }
 
     // ------------------------------
@@ -2909,6 +2917,19 @@ class ChatViewModel @AssistedInject constructor(
                 ?: listOf(messageId)
 
         /**
+         * Returns the URLs of the newest [limit] link messages in [items], newest first and without duplicates.
+         * [items] run newest first, the way the chat list renders them bottom-up.
+         */
+        internal fun linkPreviewUrlsToPrefetch(items: List<ChatItem>, limit: Int): List<String> =
+            items.asSequence()
+                .mapNotNull { (it as? ChatItem.MessageItem)?.uiMessage?.content as? MessageTypeContent.LinkPreview }
+                .map { it.url }
+                .filter { it.isNotEmpty() }
+                .distinct()
+                .take(limit)
+                .toList()
+
+        /**
          * Returns the read marker that makes [messageId] the first unread message: the id of the
          * message right before it, or 0 when it is the oldest message there is, which marks the whole
          * conversation as unread. Returns null when the message is not part of [items] at all.
@@ -2952,6 +2973,7 @@ class ChatViewModel @AssistedInject constructor(
         private const val WEBSOCKET_CONNECT_TIMEOUT_MS = 3000L
         private const val LINK_PREVIEW_CACHE_SIZE = 100
         private const val MAX_PARALLEL_LINK_PREVIEW_REQUESTS = 4
+        private const val LINK_PREVIEW_PREFETCH_COUNT = 20
         private val linkPreviewDispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLEL_LINK_PREVIEW_REQUESTS)
         private const val WEBSOCKET_POLL_INTERVAL_MS = 50L
         private const val ROOM_REFRESH_DEBOUNCE_MS = 500L
