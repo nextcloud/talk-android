@@ -46,6 +46,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.core.utils.AccountNameUtils
 import com.nextcloud.android.common.core.utils.ecosystem.AccountReceiverCallback
 import com.nextcloud.android.common.core.utils.ecosystem.EcosystemManager
 import com.nextcloud.talk.R
@@ -97,6 +98,7 @@ import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
+import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.BrandingUtils
@@ -561,22 +563,16 @@ class ConversationsListActivity : BaseActivity() {
         ecosystemManager.receiveAccount(
             intent,
             object : AccountReceiverCallback {
-                @SuppressLint("UseKtx")
                 override fun onAccountReceived(accountName: String) {
-                    val baseUrl = accountName.substringAfterLast("@")
-                    val trimmedAccountName = accountName.substringBeforeLast("@")
                     lifecycleScope.launch {
-                        val users = userManager.getUsers()
-                        val user = users.firstOrNull { user ->
-                            user.username == trimmedAccountName && baseUrl == user.baseUrl?.toUri()?.host
-                        }
+                        val user = AccountUtils.findUserForFilesAccount(context, accountName, userManager.getUsers())
                         if (user != null && userManager.setUserAsActive(user)) {
                             startActivity(createInPlaceAccountSwitchIntent(context, user.id!!))
                         } else {
                             showSnackbar(getString(R.string.nc_no_account_found))
                         }
                     }
-                    Log.d(TAG, trimmedAccountName)
+                    Log.d(TAG, AccountNameUtils.getUserPart(accountName))
                 }
 
                 override fun onAccountError(reason: String) {

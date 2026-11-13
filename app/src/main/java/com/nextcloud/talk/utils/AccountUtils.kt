@@ -16,6 +16,7 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import com.nextcloud.android.common.core.utils.AccountNameUtils
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
@@ -26,58 +27,62 @@ object AccountUtils {
 
     private val TAG = AccountUtils::class.java.simpleName
     private const val MIN_SUPPORTED_FILES_APP_VERSION = 30060151
+    private const val FILES_KEY_USER_ID = "oc_id"
+    private const val FILES_KEY_BASE_URL = "oc_base_url"
 
     fun findAvailableAccountsOnDevice(users: List<User>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
         val accMgr = AccountManager.get(context)
         val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
 
-        val accountsAvailable = ArrayList<Account>()
-        var accountFound: Boolean
-        for (account in accounts) {
-            accountFound = false
-
-            for (user in users) {
-                if (matchAccounts(getInformationFromAccount(account), user)) {
-                    accountFound = true
-                    break
-                }
-            }
-
-            if (!accountFound) {
-                accountsAvailable.add(account)
-            }
+        return accounts.filter { account ->
+            val canImport = users.isEmpty() || getInformationFromAccount(account).token != null
+            canImport && users.none { accMgr.isSameAccount(account, it) }
         }
-
-        return accountsAvailable
     }
 
-    private fun matchAccounts(importAccount: ImportAccount, user: User): Boolean {
-        var accountFound = false
-        if (importAccount.token != null) {
-            if (UriUtils.hasHttpProtocolPrefixed(importAccount.baseUrl!!)) {
-                if (
-                    user.username == importAccount.username &&
-                    user.baseUrl == importAccount.baseUrl
-                ) {
-                    accountFound = true
-                }
-            } else {
-                if (user.username == importAccount.username &&
-                    (
-                        user.baseUrl == "http://" + importAccount.baseUrl ||
-                            user.baseUrl == "https://" + importAccount.baseUrl
-                        )
-                ) {
-                    accountFound = true
-                }
-            }
+    fun findFilesAccountName(context: Context, user: User): String? {
+        val accMgr = AccountManager.get(context)
+        return accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
+            .firstOrNull { accMgr.isSameAccount(it, user) }
+            ?.name
+    }
+
+    fun findUserForFilesAccount(context: Context, accountName: String, users: List<User>): User? {
+        val accountType = context.getString(R.string.nc_import_account_type)
+        val accMgr = AccountManager.get(context)
+        val account = accMgr.getAccountsByType(accountType).firstOrNull { it.name == accountName }
+            ?: Account(accountName, accountType)
+        return users.firstOrNull { accMgr.isSameAccount(account, it) }
+    }
+
+    fun buildAccountName(user: User): String? {
+        val username = user.username
+        val baseUrl = user.baseUrl
+        if (username == null || baseUrl == null) {
+            return null
+        }
+
+        return AccountNameUtils.build(username, AccountNameUtils.removeScheme(baseUrl))
+    }
+
+    private fun AccountManager.isSameAccount(account: Account, user: User): Boolean {
+        val userBaseUrl = user.baseUrl ?: return false
+        val filesBaseUrl = getUserDataOrNull(account, FILES_KEY_BASE_URL)
+            ?: AccountNameUtils.getServerPart(account.name)
+        val filesUserId = getUserDataOrNull(account, FILES_KEY_USER_ID)
+        val userId = user.userId
+
+        return if (filesUserId != null && userId != null) {
+            AccountNameUtils.isSameAccount(filesBaseUrl, filesUserId, userBaseUrl, userId)
         } else {
-            accountFound = true
+            AccountNameUtils.isSameServer(filesBaseUrl, userBaseUrl) &&
+                AccountNameUtils.getUserPart(account.name).equals(user.username, ignoreCase = true)
         }
-
-        return accountFound
     }
+
+    private fun AccountManager.getUserDataOrNull(account: Account, key: String): String? =
+        runCatching { getUserData(account, key) }.getOrNull()
 
     fun getAppNameBasedOnPackage(packageName: String): String {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
@@ -97,7 +102,7 @@ object AccountUtils {
         return appName
     }
 
-    fun canWeOpenFilesApp(context: Context, accountName: String): Boolean {
+    fun resolveFilesAccountName(context: Context, user: User): String? {
         val pm = context.packageManager
         try {
             val packageInfo = pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), 0)
@@ -109,11 +114,9 @@ object AccountUtils {
                 ).signatures
 
                 return if (Arrays.equals(ownSignatures, filesAppSignatures)) {
-                    val accMgr = AccountManager.get(context)
-                    val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
-                    accounts.any { it.name == accountName }
+                    findFilesAccountName(context, user)
                 } else {
-                    true
+                    buildAccountName(user)
                 }
             }
         } catch (appNotFoundException: PackageManager.NameNotFoundException) {
@@ -124,7 +127,7 @@ object AccountUtils {
             )
         }
 
-        return false
+        return null
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
