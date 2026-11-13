@@ -336,8 +336,8 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.sharetarget:sharetarget:1.2.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
-    implementation("com.github.nextcloud.android-common:ui:f6515c1c36")
-    implementation("com.github.nextcloud.android-common:core:f6515c1c36")
+    implementation("com.github.nextcloud.android-common:ui:580a84868ae2af10b2ace13dadc083f166047493")
+    implementation("com.github.nextcloud.android-common:core:580a84868ae2af10b2ace13dadc083f166047493")
     implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.1")
     implementation("com.github.nextcloud-releases:talk-clients-vodozemac:0.0.2")
 
