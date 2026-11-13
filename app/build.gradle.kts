@@ -267,6 +267,7 @@ dependencies {
     implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version")
     implementation("com.squareup.retrofit2:converter-gson:$retrofit2Version")
     implementation("de.mannodermaus.retrofit2:converter-logansquare:1.4.1")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:$retrofit2Version")
 
     implementation("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
