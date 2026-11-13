@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -225,6 +226,7 @@ class ConversationsListViewModel @AssistedInject constructor(
      * that the next explicit search always runs.
      */
     private var lastSearchedFilter: String = ""
+    private var lastSearchedConversationsOnly = false
 
     /**
      * The message entries shown after "load more", which replace the first page of messages
@@ -461,16 +463,23 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
-    @Suppress("LongMethod")
-    fun getSearchQuery(context: Context, filter: String) {
+    /**
+     * Searches for [filter]. With [conversationsOnly] only the joined conversations are searched, for picking the
+     * conversation to share or forward to.
+     */
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
+    fun getSearchQuery(context: Context, filter: String, conversationsOnly: Boolean = false) {
         // The LaunchedEffect fires again with the same query when the composition restarts
         // (rotation, display off). The search of that query is still running or done, because
         // [setSearchQuery] cancels it as soon as the query changes, so it is not started again.
-        if (filter == lastSearchedFilter && searchJob != null) return
+        if (filter == lastSearchedFilter && conversationsOnly == lastSearchedConversationsOnly && searchJob != null) {
+            return
+        }
 
         cancelRunningSearch()
         _isSearchLoadingFlow.value = true
         lastSearchedFilter = filter
+        lastSearchedConversationsOnly = conversationsOnly
         _currentSearchQueryFlow.value = filter
         val conversationsTitle = context.resources.getString(R.string.conversations)
         val openConversationsTitle = context.resources.getString(R.string.openConversations)
@@ -482,16 +491,29 @@ class ConversationsListViewModel @AssistedInject constructor(
         searchJob = viewModelScope.launch {
             combine(
                 getRoomsStateFlow,
-                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(emptyList()),
-                contactsRepository.getContactsFlow(currentUser, filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(emptyList()),
-                getMessagesFlow(filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
-            ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages ->
+                if (conversationsOnly) {
+                    flowOf(emptyList())
+                } else {
+                    openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                        .afterTypingPause()
+                        .pendingUntilLoaded(emptyList())
+                },
+                if (conversationsOnly) {
+                    flowOf(emptyList())
+                } else {
+                    contactsRepository.getContactsFlow(currentUser, filter)
+                        .afterTypingPause()
+                        .pendingUntilLoaded(emptyList())
+                },
+                if (conversationsOnly) {
+                    flowOf(MessageSearchResults(emptyList(), false))
+                } else {
+                    getMessagesFlow(filter)
+                        .afterTypingPause()
+                        .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
+                },
+                excludedRoomTokens
+            ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages, excludedTokens ->
                 val isAnyRemotePending = pendingOpenConvs == null || pendingContacts == null || pendingMessages == null
                 val fetchedOpenConvs = pendingOpenConvs.orEmpty()
                 val contacts = pendingContacts.orEmpty()
@@ -500,6 +522,7 @@ class ConversationsListViewModel @AssistedInject constructor(
                 areMessagesLoaded = pendingMessages != null
                 val localConvs = rooms
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
+                    .filter { it.token !in excludedTokens }
                     .distinctBy { it.token }
                 // Open conversations were fetched once, so a room joined afterwards would otherwise be listed twice
                 val joinedTokens = rooms.mapTo(HashSet()) { it.token }

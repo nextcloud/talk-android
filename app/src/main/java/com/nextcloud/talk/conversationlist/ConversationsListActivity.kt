@@ -1169,6 +1169,7 @@ class ConversationsListActivity : BaseActivity() {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
                     openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
                     forwardMessageState.value = false
+                    conversationsListViewModel.setIsSearchActive(false)
                 } else {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }

@@ -200,7 +200,11 @@ fun ConversationsListScreen(
         !showShareTo &&
         !isForward
 
+    val isPickingConversation = showShareTo || isForward
+
     val mode: TopBarMode = when {
+        isSearchActive -> TopBarMode.SearchActive(query = searchQuery)
+
         showShareTo -> TopBarMode.TitleBar(
             title = stringResource(R.string.send_to_three_dots),
             showAccountChooser = hasMultipleAccounts
@@ -211,7 +215,6 @@ fun ConversationsListScreen(
             showAccountChooser = false
         )
 
-        isSearchActive -> TopBarMode.SearchActive(query = searchQuery)
         else -> TopBarMode.SearchBarIdle
     }
 
@@ -231,9 +234,9 @@ fun ConversationsListScreen(
         onDispose { callbacks.onLazyListStateAvailable(null) }
     }
 
-    LaunchedEffect(searchQuery) {
+    LaunchedEffect(searchQuery, isPickingConversation) {
         if (searchQuery.length >= SEARCH_MIN_CHARS) {
-            viewModel.getSearchQuery(context, searchQuery)
+            viewModel.getSearchQuery(context, searchQuery, conversationsOnly = isPickingConversation)
         }
     }
 

@@ -42,6 +42,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -146,6 +147,7 @@ fun ConversationListTopBar(
                 avatarUrl = state.avatarUrl,
                 credentials = state.credentials,
                 onNavigateBack = actions.onNavigateBack,
+                onSearchActivate = actions.onSearchActivate,
                 onAccountChooserClick = actions.onAccountChooserClick
             )
         }
@@ -390,6 +392,7 @@ private fun TopBarTitleContent(
     avatarUrl: String?,
     credentials: String,
     onNavigateBack: () -> Unit,
+    onSearchActivate: () -> Unit,
     onAccountChooserClick: () -> Unit
 ) {
     TopAppBar(
@@ -403,6 +406,12 @@ private fun TopBarTitleContent(
             }
         },
         actions = {
+            IconButton(onClick = onSearchActivate) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = stringResource(R.string.nc_search)
+                )
+            }
             if (showAccountChooser) {
                 IconButton(onClick = onAccountChooserClick) {
                     AsyncImage(
