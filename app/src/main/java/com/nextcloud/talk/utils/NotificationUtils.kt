@@ -150,39 +150,64 @@ object NotificationUtils {
 
     /**
      * @param ringtoneUri null for silent
+     * @return false if the ringtone could not be set
      */
-    fun updateCallRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?) {
-        appPreferences.callRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
-        replaceChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name, ringtoneUri) { channelId ->
+    fun updateCallRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
+        val baseId = NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId ->
             createCallsNotificationChannel(context, channelId, ringtoneUri)
         }
+        if (replaced) {
+            appPreferences.callRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
+        }
+        return replaced
     }
 
     /**
      * @param ringtoneUri null for silent
+     * @return false if the sound could not be set
      */
-    fun updateMessageRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?) {
-        appPreferences.messageRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
-        replaceChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name, ringtoneUri) { channelId ->
+    fun updateMessageRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
+        val baseId = NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId ->
             createMessagesNotificationChannel(context, channelId, ringtoneUri)
         }
+        if (replaced) {
+            appPreferences.messageRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
+        }
+        return replaced
     }
 
     /**
      * Creates a new channel with a new id and then deletes the old ones. Other settings the user changed in the
      * system settings for the old channel are not kept.
      */
-    private fun replaceChannel(context: Context, baseId: String, sound: Uri?, createChannel: (String) -> Unit) {
+    private fun replaceChannel(
+        context: Context,
+        baseId: String,
+        sound: Uri?,
+        createChannel: (String) -> Unit
+    ): Boolean {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val oldChannels = notificationManager.notificationChannels.filter { channelVersion(it.id, baseId) != null }
         if (oldChannels.size == 1 && oldChannels.first().sound == sound) {
-            return
+            return true
         }
 
         val newChannelId = baseId + CHANNEL_ID_VERSION_SEPARATOR + System.currentTimeMillis()
-        createChannel(newChannelId)
-        oldChannels.forEach { notificationManager.deleteNotificationChannel(it.id) }
-        Log.i(TAG, "Replaced channels ${oldChannels.map { it.id }} with $newChannelId")
+        val created = try {
+            createChannel(newChannelId)
+            true
+        } catch (e: SecurityException) {
+            // the system rejects sounds the app is not allowed to read
+            Log.e(TAG, "Failed to create channel $newChannelId with sound $sound", e)
+            false
+        }
+        if (created) {
+            oldChannels.forEach { notificationManager.deleteNotificationChannel(it.id) }
+            Log.i(TAG, "Replaced channels ${oldChannels.map { it.id }} with $newChannelId")
+        }
+        return created
     }
 
     /**
