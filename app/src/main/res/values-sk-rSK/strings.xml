@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Tento rozhovor je naplánovaný na %1$s</string>
     <string name="nc_lobby_start_soon">Stretnutie sa začne čoskoro</string>
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
+    <string name="nc_local_network_permission_denied">Povoľte prístup k miestnej sieti, aby ste sa mohli pripojiť k tomuto serveru.</string>
+    <string name="nc_local_network_permission_message">Tento server sa nachádza vo vašej miestnej sieti. Je dostupný iba s povolením „Zariadenia v okolí“. Bez neho sa pripojenie k serveru nepodarí.</string>
+    <string name="nc_local_network_permission_title">Povoliť prístup k miestnej sieti</string>
     <string name="nc_location_current_position_description">Vaša súčasná poloha</string>
     <string name="nc_location_unknown">Neznáma poloha</string>
     <string name="nc_locked">Uzamknuté</string>

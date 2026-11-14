@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Selle kohtumise algusaeg on %1$s</string>
     <string name="nc_lobby_start_soon">Kohtumine algab õige pea</string>
     <string name="nc_lobby_waiting">Sa asud hetkel ooteruumis</string>
+    <string name="nc_local_network_permission_denied">Ühendamiseks selle serveriga luba ligipääs kohtvõrgule.</string>
+    <string name="nc_local_network_permission_message">See server asub sinu kohtvõrgus. Ta on leitav siis, kui „Lähedalasuvad seadmed“ õigus on lubatud. Ilma selleta ühendamine ei toimi.</string>
+    <string name="nc_local_network_permission_title">Luba ligipääs kohtvõrgule</string>
     <string name="nc_location_current_position_description">Sinu praegune asukoht</string>
     <string name="nc_location_unknown">Asukoht pole teada</string>
     <string name="nc_locked">Lukus</string>
@@ -806,7 +809,7 @@
     <string name="secondsAgo">sekundit tagasi</string>
     <string name="selected_list_item">Valitud</string>
     <string name="send_email">Saada e-kiri</string>
-    <string name="send_to">Saada...</string>
+    <string name="send_to">Saada</string>
     <string name="send_to_forbidden">Sul pole õigust selle vestluse sisu jagada</string>
     <string name="send_to_three_dots">Saada...</string>
     <string name="send_without_notification">Saada ilma teavituseta</string>

@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Эта встреча запланирована на %1$s</string>
     <string name="nc_lobby_start_soon">Встреча скоро начнётся</string>
     <string name="nc_lobby_waiting">Вы сейчас ждёте в лобби.</string>
+    <string name="nc_local_network_permission_denied">Разрешите доступ к локальной сети, чтобы подключиться к этому серверу.</string>
+    <string name="nc_local_network_permission_message">Этот сервер находится в вашей локальной сети. Подключиться к нему можно только с разрешением «Устройства поблизости», без него подключение не удастся.</string>
+    <string name="nc_local_network_permission_title">Разрешить доступ к локальной сети</string>
     <string name="nc_location_current_position_description">Ваше текущее местоположение</string>
     <string name="nc_location_unknown">Местоположение неизвестно</string>
     <string name="nc_locked">Заблокировано</string>

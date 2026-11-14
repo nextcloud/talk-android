@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Esta reunião está agendada para %1$s</string>
     <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
     <string name="nc_lobby_waiting">No momento, você está esperando na sala de espera.</string>
+    <string name="nc_local_network_permission_denied">Permita o acesso à rede local para se conectar a este servidor.</string>
+    <string name="nc_local_network_permission_message">Este servidor está na sua rede local. Só é possível acessá-lo com a permissão “Dispositivos próximos”. Sem ela, a conexão com o servidor falha.</string>
+    <string name="nc_local_network_permission_title">Permitir acesso à rede local</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_unknown">Posição desconhecida</string>
     <string name="nc_locked">Trancado</string>
