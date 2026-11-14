@@ -312,6 +312,7 @@
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>
     <string name="nc_logs_disable_delete">Eliminar registros</string>
+    <string name="nc_logs_share_diagnosis">Informe de diagnóstico</string>
     <string name="nc_logs_title">Registros</string>
     <string name="nc_manual">No configurado</string>
     <string name="nc_mark_as_read">Marcar como leído</string>

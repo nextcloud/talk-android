@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Dieses Treffen ist geplant für %1$s</string>
     <string name="nc_lobby_start_soon">Das Treffen beginnt bald</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
+    <string name="nc_local_network_permission_denied">Lokalen Netzwerkzugriff zulassen, um eine Verbindung zu diesem Server herzustellen.</string>
+    <string name="nc_local_network_permission_message">Dieser Server befindet sich in Ihrem lokalen Netzwerk. Er ist nur mit der Berechtigung \"Geräte in der Nähe\" erreichbar. Ohne sie schlägt die Verbindung zum Server fehl.</string>
+    <string name="nc_local_network_permission_title">Lokalen Netzwerkzugriff zulassen</string>
     <string name="nc_location_current_position_description">Ihre aktuelle Position</string>
     <string name="nc_location_unknown">Position unbekannt</string>
     <string name="nc_locked">Gesperrt</string>

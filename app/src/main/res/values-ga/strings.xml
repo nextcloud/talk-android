@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">Gan freagra i gceann 45 soicind, tapáil chun triail eile a bhaint as</string>
     <string name="nc_call_unknown">%s glaoch</string>
     <string name="nc_call_video">%sfísghlao</string>
+    <string name="nc_call_view_mode">Modh amhairc glaonna</string>
     <string name="nc_call_view_mode_grid">Radharc greille</string>
     <string name="nc_call_view_mode_speaker">Amharc cainteoir</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Amharc an chainteora le barra na rannpháirtithe</string>
     <string name="nc_call_voice">%s glao gutha</string>
     <string name="nc_camera_permission_hint">Chun físchumarsáid a chumasú deonaigh cead \"Ceamara\" le do thoil.</string>
     <string name="nc_cancel">Cealaigh</string>
@@ -388,6 +390,8 @@
     <string name="nc_lobby_start_date">Tá an cruinniú seo sceidealaithe le haghaidh %1$s</string>
     <string name="nc_lobby_start_soon">Cuirfear tús leis an gcruinniú go luath</string>
     <string name="nc_lobby_waiting">Tá tú ag fanacht sa stocaireacht faoi láthair.</string>
+    <string name="nc_local_network_permission_denied">Ceadaigh rochtain ón líonra áitiúil chun ceangal leis an bhfreastalaí seo.</string>
+    <string name="nc_local_network_permission_title">Ceadaigh rochtain ar an líonra áitiúil</string>
     <string name="nc_location_current_position_description">Do shuíomh reatha</string>
     <string name="nc_location_unknown">Post anaithnid</string>
     <string name="nc_locked">Faoi ghlas</string>
@@ -703,6 +707,7 @@
     <string name="nc_voice_message">Teachtaireacht gutha</string>
     <string name="nc_voice_message_hold_to_record_info">Coinnigh a thaifeadadh, scaoileadh a sheoladh.</string>
     <string name="nc_voice_message_missing_audio_permission">Tá cead taifeadta fuaime ag teastáil</string>
+    <string name="nc_voice_message_recording_interrupted">Tá deireadh leis an taifeadadh</string>
     <string name="nc_voice_message_slide_to_cancel">« Sleamhnán le cur ar ceal</string>
     <string name="nc_webinar">webinar</string>
     <string name="nc_webinar_description">Comhrá srianta le seomra feithimh curtha i ngníomh; oiriúnach do sheimineáir ghréasáin phoiblí.</string>
