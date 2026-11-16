@@ -126,7 +126,8 @@ class SharedItemsRepositoryImpl @Inject constructor(
         // sort "10" before "9") - the viewer that consumes this list depends on true chronological
         // order to reconstruct upload-batch groups and page adjacency correctly.
         val sortedMutableItems = items.toSortedMap(compareBy { it.toLong() }).values.toList().reversed().toMutableList()
-        val moreItemsExisting = items.count() == BATCH_SIZE
+        // Counts the returned messages, not the mapped items, as messages that cannot be mapped are skipped.
+        val moreItemsExisting = mediaItems?.size == BATCH_SIZE
 
         return SharedItems(
             sortedMutableItems,

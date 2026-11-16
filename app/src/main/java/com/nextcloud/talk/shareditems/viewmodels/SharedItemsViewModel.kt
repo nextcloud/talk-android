@@ -27,6 +27,7 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
 
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
 
+    private var typesJob: Job? = null
     private var itemsJob: Job? = null
 
     sealed interface ViewState
@@ -43,13 +44,10 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
 
     /**
-     * Starts loading the shared items. Does nothing once loading has succeeded, so a recreated activity keeps the
-     * loaded pages and the selected type.
+     * Starts loading the shared items, or resumes a load that failed. Requests that are running or have succeeded
+     * are kept, so a recreated activity keeps the loaded pages and the selected type.
      */
     fun initialize(user: User, roomToken: String) {
-        if (_viewState.value != InitialState) {
-            return
-        }
         repositoryParameters = SharedItemsRepository.Parameters(
             // The login name, as it authenticates the requests. The user id can differ from it.
             user.username!!,
@@ -57,12 +55,16 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
             user.baseUrl!!,
             roomToken
         )
-        loadAvailableTypes()
+        when (val state = _viewState.value) {
+            InitialState -> if (typesJob?.isActive != true) loadAvailableTypes()
+            is LoadingItemsState -> if (itemsJob?.isActive != true) initialLoadItems(state.selectedType)
+            else -> Unit
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
     private fun loadAvailableTypes() {
-        viewModelScope.launch {
+        typesJob = viewModelScope.launch {
             val types = try {
                 repository.availableTypes(repositoryParameters)
             } catch (e: CancellationException) {

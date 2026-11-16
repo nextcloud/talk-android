@@ -23,6 +23,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.isNull
@@ -108,6 +109,35 @@ class SharedItemsViewModelTest {
 
         verifyBlocking(repository, times(1)) { availableTypes(any()) }
         assertEquals(listOf("3", "2", "1", "6", "5", "4"), loadedItemIds())
+    }
+
+    @Test
+    fun `initializing again retries a failed first page`() {
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), isNull()) }
+            .thenThrow(RuntimeException("network"))
+            .thenReturn(page(SharedItemType.FILE, 1..3, lastSeenId = 1))
+        val viewModel = SharedItemsViewModel(repository)
+        viewModel.initialize(user, "roomToken")
+
+        viewModel.initialize(user, "roomToken")
+
+        val state = viewModel.viewState.value as SharedItemsViewModel.LoadedState
+        assertEquals(listOf("3", "2", "1"), state.items.items.map(SharedItem::id))
+    }
+
+    @Test
+    fun `initializing again while the types are loading does not load them twice`() {
+        clearInvocations(repository)
+        val types = CompletableDeferred<Set<SharedItemType>>()
+        wheneverBlocking { repository.availableTypes(any()) }.doSuspendableAnswer { types.await() }
+        val viewModel = SharedItemsViewModel(repository)
+        viewModel.initialize(user, "roomToken")
+
+        viewModel.initialize(user, "roomToken")
+        types.complete(setOf(SharedItemType.FILE))
+
+        verifyBlocking(repository, times(1)) { availableTypes(any()) }
+        verifyBlocking(repository, times(1)) { media(any(), eq(SharedItemType.FILE), isNull()) }
     }
 
     private fun loadedItemIds(): List<String> =
