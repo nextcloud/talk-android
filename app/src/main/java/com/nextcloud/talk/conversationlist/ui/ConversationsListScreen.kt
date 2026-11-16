@@ -203,7 +203,10 @@ fun ConversationsListScreen(
     val isPickingConversation = showShareTo || isForward
 
     val mode: TopBarMode = when {
-        isSearchActive -> TopBarMode.SearchActive(query = searchQuery)
+        isSearchActive -> TopBarMode.SearchActive(
+            query = searchQuery,
+            hint = if (isPickingConversation) stringResource(R.string.send_to) else null
+        )
 
         showShareTo -> TopBarMode.TitleBar(
             title = stringResource(R.string.send_to_three_dots),

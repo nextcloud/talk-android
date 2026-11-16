@@ -87,7 +87,8 @@ import com.nextcloud.talk.R
 sealed class TopBarMode {
     data object SearchBarIdle : TopBarMode()
 
-    data class SearchActive(val query: String) : TopBarMode()
+    /** [hint] replaces the default search hint while the query is empty. */
+    data class SearchActive(val query: String, val hint: String? = null) : TopBarMode()
 
     data class TitleBar(val title: String, val showAccountChooser: Boolean = false) : TopBarMode()
 }
@@ -186,6 +187,7 @@ private fun TopBarSearchContent(
                     state = state,
                     actions = actions,
                     query = activeMode?.query,
+                    hint = activeMode?.hint,
                     focusRequester = focusRequester
                 )
             }
@@ -226,6 +228,7 @@ private fun SearchBarCardContent(
     state: ConversationListTopBarState,
     actions: ConversationListTopBarActions,
     query: String?,
+    hint: String?,
     focusRequester: FocusRequester
 ) {
     val isActive = query != null
@@ -256,6 +259,7 @@ private fun SearchBarCardContent(
             SearchTextField(
                 query = query,
                 onQueryChange = actions.onSearchQueryChange,
+                hint = hint,
                 focusRequester = focusRequester,
                 modifier = textModifier
             )
@@ -284,9 +288,9 @@ private fun SearchBarCardContent(
 }
 
 @Composable
-private fun SearchPlaceholder(modifier: Modifier = Modifier) {
+private fun SearchPlaceholder(modifier: Modifier = Modifier, text: String? = null) {
     Text(
-        text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
+        text = text ?: stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -361,6 +365,7 @@ private fun IdleSearchBarActions(
 private fun SearchTextField(
     query: String,
     onQueryChange: (String) -> Unit,
+    hint: String?,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
@@ -380,7 +385,7 @@ private fun SearchTextField(
         decorationBox = { innerTextField ->
             Box(contentAlignment = Alignment.CenterStart) {
                 if (query.isEmpty()) {
-                    SearchPlaceholder()
+                    SearchPlaceholder(text = hint)
                 }
                 innerTextField()
             }
