@@ -185,22 +185,25 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
         _uiState.update { it.copy(loadingOlder = true) }
         viewModelScope.launch {
-            val olderPage = loadOlderPage(cursor)
-            val olderItems = olderPage?.items.orEmpty()
+            val olderPage = loadOlderPage(cursor) ?: run {
+                _uiState.update { it.copy(loadingOlder = false) }
+                return@launch
+            }
+            val olderItems = olderPage.items
 
             if (olderItems.isEmpty()) {
                 _uiState.update { it.copy(loadingOlder = false, canLoadOlder = false) }
                 return@launch
             }
 
-            olderPagesCursor = olderPage?.cursor
+            olderPagesCursor = olderPage.cursor
             _uiState.update { current ->
                 val combined = (olderItems + current.flattenedItems).toMediaViewerGroups()
                 current.copy(
                     groups = combined,
                     currentGlobalIndex = current.currentGlobalIndex + olderItems.size,
                     loadingOlder = false,
-                    canLoadOlder = olderPage?.moreItemsExisting == true && olderPage.cursor != null
+                    canLoadOlder = olderPage.moreItemsExisting && olderPage.cursor != null
                 )
             }
         }
