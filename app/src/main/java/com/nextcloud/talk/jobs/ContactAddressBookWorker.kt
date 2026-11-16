@@ -9,7 +9,6 @@ package com.nextcloud.talk.jobs
 import android.Manifest
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.app.Activity
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.content.OperationApplicationException
@@ -454,7 +453,6 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
     companion object {
         const val TAG = "ContactAddressBook"
-        const val REQUEST_PERMISSION = 231
         const val KEY_FORCE = "KEY_FORCE"
         const val DELETE_ALL = "DELETE_ALL"
         private const val HTTP_CODE_TOO_MANY_REQUESTS: Int = 429
@@ -472,37 +470,21 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        fun checkPermission(activity: Activity, context: Context): Boolean {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) !=
-                PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) !=
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                activity.requestPermissions(
-                    arrayOf(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS),
-                    REQUEST_PERMISSION
-                )
-                return false
-            } else {
-                WorkManager
-                    .getInstance()
-                    .enqueue(
-                        OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
-                            .setInputData(Data.Builder().putBoolean(KEY_FORCE, true).build())
-                            .build()
-                    )
-                return true
-            }
+        /** Synchronizes the address book now, regardless of when it was synchronized last. */
+        fun syncNow(workManager: WorkManager) {
+            workManager.enqueue(
+                OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                    .setInputData(Data.Builder().putBoolean(KEY_FORCE, true).build())
+                    .build()
+            )
         }
 
-        fun deleteAll() {
-            WorkManager
-                .getInstance()
-                .enqueue(
-                    OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
-                        .setInputData(Data.Builder().putBoolean(DELETE_ALL, true).build())
-                        .build()
-                )
+        fun deleteAll(workManager: WorkManager) {
+            workManager.enqueue(
+                OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                    .setInputData(Data.Builder().putBoolean(DELETE_ALL, true).build())
+                    .build()
+            )
         }
     }
 }

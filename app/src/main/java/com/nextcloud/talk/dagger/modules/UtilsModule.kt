@@ -8,6 +8,7 @@
 package com.nextcloud.talk.dagger.modules
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.nextcloud.talk.logger.FileLogHandler
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.Logger
@@ -39,6 +40,9 @@ class UtilsModule {
     @Provides
     @Reusable
     fun provideMessageUtils(context: Context): MessageUtils = MessageUtils(context)
+
+    @Provides
+    fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
     @Provides
     @Singleton

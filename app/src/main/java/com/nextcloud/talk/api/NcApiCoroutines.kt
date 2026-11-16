@@ -629,6 +629,15 @@ interface NcApiCoroutines {
     @GET
     suspend fun getUserProfile(@Header("Authorization") authorization: String, @Url url: String): UserProfileOverall
 
+    @FormUrlEncoded
+    @PUT
+    suspend fun setUserData(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("key") key: String,
+        @Field("value") value: String
+    ): GenericOverall
+
     @GET
     suspend fun getReminder(@Header("Authorization") authorization: String, @Url url: String): ReminderOverall
 

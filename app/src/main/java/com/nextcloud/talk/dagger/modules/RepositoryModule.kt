@@ -66,6 +66,8 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
+import com.nextcloud.talk.settings.data.SettingsRepository
+import com.nextcloud.talk.settings.data.SettingsRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -224,6 +226,10 @@ class RepositoryModule {
     @Provides
     fun provideContactsRepository(ncApiCoroutines: NcApiCoroutines): ContactsRepository =
         ContactsRepositoryImpl(ncApiCoroutines)
+
+    @Provides
+    fun provideSettingsRepository(ncApiCoroutines: NcApiCoroutines): SettingsRepository =
+        SettingsRepositoryImpl(ncApiCoroutines)
 
     @Provides
     fun provideConversationCreationRepository(ncApiCoroutines: NcApiCoroutines): ConversationCreationRepository =

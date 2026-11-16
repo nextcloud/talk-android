@@ -173,14 +173,6 @@ public interface AppPreferences {
 
     long getPhoneBookIntegrationLastRun(Long defaultValue);
 
-    void setReadPrivacy(boolean value);
-
-    boolean getReadPrivacy();
-
-    void setTypingStatus(boolean value);
-
-    boolean getTypingStatus();
-
     void setSorting(String value);
 
     String getSorting();
