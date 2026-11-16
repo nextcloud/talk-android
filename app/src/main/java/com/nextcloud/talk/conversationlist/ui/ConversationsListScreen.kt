@@ -205,7 +205,11 @@ fun ConversationsListScreen(
     val mode: TopBarMode = when {
         isSearchActive -> TopBarMode.SearchActive(
             query = searchQuery,
-            hint = if (isPickingConversation) stringResource(R.string.send_to) else null
+            hint = when {
+                showShareTo -> stringResource(R.string.send_to)
+                isForward -> stringResource(R.string.nc_forward_to)
+                else -> null
+            }
         )
 
         showShareTo -> TopBarMode.TitleBar(
