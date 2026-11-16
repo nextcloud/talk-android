@@ -473,7 +473,7 @@ class ConversationsListViewModel @AssistedInject constructor(
         // The LaunchedEffect fires again with the same query when the composition restarts
         // (rotation, display off). The search of that query is still running or done, because
         // [setSearchQuery] cancels it as soon as the query changes, so it is not started again.
-        if (filter == lastSearchedFilter && conversationsOnly == lastSearchedConversationsOnly && searchJob != null) {
+        if (isStartedSearch(filter, conversationsOnly)) {
             return
         }
 
@@ -504,12 +504,7 @@ class ConversationsListViewModel @AssistedInject constructor(
                 val messages = pendingMessages?.messages.orEmpty()
                 val hasMore = pendingMessages?.hasMore == true
                 areMessagesLoaded = pendingMessages != null
-                val searchableRooms = if (conversationsOnly) {
-                    baseFilterRooms(rooms, emptyMap(), SearchDisplayMode.ALL_CONVERSATIONS, excludedTokens)
-                } else {
-                    rooms.filter { it.token !in excludedTokens }
-                }
-                val localConvs = searchableRooms
+                val localConvs = searchableRooms(rooms, excludedTokens, conversationsOnly)
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
                     .distinctBy { it.token }
                 // Open conversations were fetched once, so a room joined afterwards would otherwise be listed twice
@@ -578,6 +573,24 @@ class ConversationsListViewModel @AssistedInject constructor(
             }
         }
     }
+
+    private fun isStartedSearch(filter: String, conversationsOnly: Boolean): Boolean =
+        filter == lastSearchedFilter && conversationsOnly == lastSearchedConversationsOnly && searchJob != null
+
+    /**
+     * While picking a conversation only the ones that can be shared or forwarded to are searchable, as in the
+     * unfiltered list.
+     */
+    private fun searchableRooms(
+        rooms: List<ConversationModel>,
+        excludedTokens: Set<String>,
+        conversationsOnly: Boolean
+    ): List<ConversationModel> =
+        if (conversationsOnly) {
+            baseFilterRooms(rooms, emptyMap(), SearchDisplayMode.ALL_CONVERSATIONS, excludedTokens)
+        } else {
+            rooms.filter { it.token !in excludedTokens }
+        }
 
     /**
      * Starts the server request only once the query has stayed unchanged for [SEARCH_DEBOUNCE_MS],
