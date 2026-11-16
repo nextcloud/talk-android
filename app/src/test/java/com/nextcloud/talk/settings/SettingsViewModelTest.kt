@@ -9,7 +9,6 @@ package com.nextcloud.talk.settings
 import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.ViewModelStore
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.network.NetworkMonitor
@@ -24,6 +23,7 @@ import com.nextcloud.talk.settings.data.SettingsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,11 +31,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -43,15 +43,13 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import java.io.IOException
-import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("TooManyFunctions")
@@ -77,6 +75,8 @@ class SettingsViewModelTest {
     private lateinit var workManager: WorkManager
     private lateinit var context: Context
     private val repository = FakeSettingsRepository()
+    private val accountRemover = mock<AccountRemover>()
+    private var deviceState = DEVICE_STATE
 
     @Before
     fun setUp() {
@@ -84,14 +84,13 @@ class SettingsViewModelTest {
         appPreferences = mock {
             on { proxyType } doReturn NO_PROXY
             on { theme } doReturn "night_yes"
-            on { screenLockTimeout } doReturn "60"
+            on { screenLockTimeout } doReturn "30"
             on { showRegularNotificationWarning } doReturn true
         }
         userManager = mock {
             on { userFlow(USER_ID) } doReturn userFlow
         }
         userManager.stub {
-            onBlocking { scheduleUserForDeletionWithId(any()) } doReturn true
             onBlocking { getUsers() } doReturn listOf(user)
         }
         workManager = mock()
@@ -103,6 +102,7 @@ class SettingsViewModelTest {
             on { getString(R.string.nc_no_proxy) } doReturn NO_PROXY
             on { getString(R.string.nc_settings_http_value) } doReturn "3128"
             on { getString(R.string.nc_settings_socks_value) } doReturn "1080"
+            on { getString(R.string.nc_screen_lock_timeout_sixty) } doReturn "60"
         }
     }
 
@@ -121,7 +121,8 @@ class SettingsViewModelTest {
             userManager = userManager,
             settingsRepository = repository,
             logsRepository = logsRepository,
-            deviceStateReader = mock { on { read() } doReturn DEVICE_STATE },
+            deviceStateReader = mock { on { read() } doAnswer { deviceState } },
+            accountRemover = accountRemover,
             workManager = workManager,
             logger = mock<Logger>(),
             networkMonitor = networkMonitor,
@@ -140,7 +141,7 @@ class SettingsViewModelTest {
         val state = createViewModel(highlightNotificationIssues = true).uiState.value
 
         assertEquals("night_yes", state.appearance.theme)
-        assertEquals("60", state.privacy.screenLockTimeout)
+        assertEquals("30", state.privacy.screenLockTimeout)
         assertTrue(state.notifications.showNotificationWarning)
         assertEquals("Jane", state.account.displayName)
         assertTrue(state.privacy.readStatusAvailable)
@@ -186,7 +187,7 @@ class SettingsViewModelTest {
 
         viewModel.setProxyType("HTTP")
 
-        assertEquals(ProxyUiState(type = "HTTP", port = "3128"), viewModel.uiState.value.proxy)
+        assertEquals(ProxyUiState(type = "HTTP", enabled = true, port = "3128"), viewModel.uiState.value.proxy)
         verify(appPreferences, timeout(TIMEOUT_MS)).proxyPort = "3128"
     }
 
@@ -274,16 +275,16 @@ class SettingsViewModelTest {
         }
 
     @Test
-    fun `removed account is reported once the removal finished`() =
+    fun `screen stays open while its account is removed`() =
         runTest(dispatcher) {
-            val workInfo = WorkInfo(UUID.randomUUID(), WorkInfo.State.SUCCEEDED, emptySet())
-            whenever(workManager.getWorkInfoByIdFlow(any())).thenReturn(flowOf(workInfo))
             val viewModel = createViewModel()
 
             viewModel.removeAccount()
             userFlow.value = user.copy(scheduledForDeletion = true)
+            userFlow.value = null
 
-            assertEquals(SettingsEvent.AccountRemoved("Jane"), viewModel.events.first())
+            verify(accountRemover).remove(USER_ID, "Jane")
+            assertNull(withTimeoutOrNull(TIMEOUT_MS) { viewModel.events.first() })
         }
 
     @Test
@@ -310,6 +311,71 @@ class SettingsViewModelTest {
         assertNull(viewModel.uiState.value.accountMessage)
     }
 
+    @Test
+    fun `selecting the current proxy type again keeps a custom port`() {
+        val viewModel = createViewModel()
+        viewModel.setProxyType("HTTP")
+        viewModel.setProxyPort("8888")
+
+        viewModel.setProxyType("HTTP")
+
+        assertEquals("8888", viewModel.uiState.value.proxy.port)
+    }
+
+    @Test
+    fun `proxy text committed after the proxy was turned off is ignored`() {
+        val viewModel = createViewModel()
+        viewModel.setProxyType("HTTP")
+        viewModel.setProxyType(NO_PROXY)
+
+        viewModel.setProxyHost("proxy.example.com")
+
+        assertEquals("", viewModel.uiState.value.proxy.host)
+    }
+
+    @Test
+    fun `failed quick read status changes show the value the server confirmed`() {
+        val viewModel = createViewModel()
+        val gate = CompletableDeferred<Unit>()
+        repository.gate = gate
+        repository.failPrivacyRequests = true
+
+        viewModel.setReadStatusShared(false)
+        viewModel.setReadStatusShared(true)
+        viewModel.setReadStatusShared(false)
+        gate.complete(Unit)
+
+        assertTrue(viewModel.uiState.value.privacy.readStatusShared)
+        assertEquals(listOf(false), repository.readStatusRequests)
+    }
+
+    @Test
+    fun `quick read status changes reach the server in order`() {
+        val viewModel = createViewModel()
+        val gate = CompletableDeferred<Unit>()
+        repository.gate = gate
+
+        viewModel.setReadStatusShared(false)
+        viewModel.setReadStatusShared(true)
+        gate.complete(Unit)
+
+        assertTrue(viewModel.uiState.value.privacy.readStatusShared)
+        assertEquals(listOf(false, true), repository.readStatusRequests)
+    }
+
+    @Test
+    fun `screen lock timeout is reset when the device lock screen is not secure`() {
+        deviceState = DEVICE_STATE.copy(isKeyguardSecure = false)
+        val viewModel = createViewModel()
+
+        viewModel.onResume()
+
+        val privacy = viewModel.uiState.value.privacy
+        assertFalse(privacy.screenLockAvailable)
+        assertFalse(privacy.screenLock)
+        assertEquals("60", privacy.screenLockTimeout)
+    }
+
     private fun capabilities(readStatusPrivate: Boolean) =
         CapabilitiesDto().apply {
             spreedCapability = SpreedCapabilityDto(
@@ -323,6 +389,7 @@ class SettingsViewModelTest {
         var profile: UserProfileDataDto? = null
         var acceptPhoneNumber = true
         var failPrivacyRequests = false
+        var gate: CompletableDeferred<Unit>? = null
         val readStatusRequests = mutableListOf<Boolean>()
 
         override suspend fun getUserProfile(user: User): UserProfileDataDto? = profile
@@ -331,6 +398,7 @@ class SettingsViewModelTest {
 
         override suspend fun setReadStatusShared(user: User, shared: Boolean) {
             readStatusRequests += shared
+            gate?.await()
             if (failPrivacyRequests) throw IOException("rejected")
         }
 

@@ -31,6 +31,8 @@ data class AccountUiState(
     val displayName: String = "",
     val baseUrl: String = "",
     val avatarId: String = "",
+    /** Authorization for loading the avatar. */
+    val credentials: String = "",
     val serverAgeWarning: ServerAgeWarning = ServerAgeWarning.NONE
 )
 
@@ -128,6 +130,8 @@ enum class LoggingStatus {
 data class ProxyUiState(
     /** One of `R.array.proxy_type_descriptions`. */
     val type: String = "",
+    /** Whether [type] is a proxy, not "No proxy". */
+    val enabled: Boolean = false,
     val host: String = "",
     val port: String = "",
     val useCredentials: Boolean = false,
@@ -138,8 +142,6 @@ data class ProxyUiState(
 /** One-off effects of the settings screen that the activity performs. */
 sealed interface SettingsEvent {
     data class ShowMessage(val messageRes: Int) : SettingsEvent
-    data class AccountRemoved(val displayName: String) : SettingsEvent
-    data object AccountRemovalFailed : SettingsEvent
 
     /** The account of the screen doesn't exist anymore. */
     data object AccountUnavailable : SettingsEvent

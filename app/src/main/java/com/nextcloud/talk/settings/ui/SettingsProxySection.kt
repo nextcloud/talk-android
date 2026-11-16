@@ -19,11 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -32,13 +35,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.nextcloud.talk.R
 import com.nextcloud.talk.settings.ProxyUiState
 
 @Composable
 internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
     val proxyTypes = stringArrayResource(R.array.proxy_type_descriptions)
-    val proxyEnabled = state.type.isNotEmpty() && state.type != proxyTypes.first()
     Column {
         SettingsDropdown(
             label = stringResource(R.string.nc_settings_proxy_type_title),
@@ -46,12 +50,12 @@ internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
             selectedValue = state.type,
             onValueSelected = callbacks.onTypeChange
         )
-        if (proxyEnabled) {
+        if (state.enabled) {
             ProxyTextField(
                 label = stringResource(R.string.nc_settings_proxy_host_title),
                 initialValue = state.host,
                 keyboardType = KeyboardType.Uri,
-                onValueChange = callbacks.onHostChange
+                onCommit = callbacks.onHostChange
             )
             // the port is replaced by the default port of a newly selected type
             ProxyTextField(
@@ -59,7 +63,7 @@ internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
                 initialValue = state.port,
                 resetKey = state.type,
                 keyboardType = KeyboardType.Number,
-                onValueChange = callbacks.onPortChange
+                onCommit = callbacks.onPortChange
             )
             SettingsSwitchItem(
                 title = stringResource(R.string.nc_settings_use_credentials_title),
@@ -71,13 +75,13 @@ internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
                     label = stringResource(R.string.nc_settings_proxy_username_title),
                     initialValue = state.username,
                     keyboardType = KeyboardType.Text,
-                    onValueChange = callbacks.onUsernameChange
+                    onCommit = callbacks.onUsernameChange
                 )
                 ProxyTextField(
                     label = stringResource(R.string.nc_settings_proxy_password_title),
                     initialValue = state.password,
                     keyboardType = KeyboardType.Password,
-                    onValueChange = callbacks.onPasswordChange
+                    onCommit = callbacks.onPasswordChange
                 )
             }
         }
@@ -85,24 +89,34 @@ internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
 }
 
 /**
- * A text field that keeps its text locally, so that typing isn't delayed by the round trip through the view model. The
- * text is reset to [initialValue] when [resetKey] changes.
+ * A text field whose text is committed with [onCommit] once editing ends: when it loses the focus, leaves the screen or
+ * the app goes to the background. That avoids storing every intermediate value. The text is reset to [initialValue]
+ * when [resetKey] changes.
  */
 @Composable
 private fun ProxyTextField(
     label: String,
     initialValue: String,
     keyboardType: KeyboardType,
-    onValueChange: (String) -> Unit,
+    onCommit: (String) -> Unit,
     resetKey: Any? = null
 ) {
     var text by rememberSaveable(resetKey) { mutableStateOf(initialValue) }
+    var committedText by rememberSaveable(resetKey) { mutableStateOf(initialValue) }
+    val currentOnCommit by rememberUpdatedState(onCommit)
+    val commit by rememberUpdatedState {
+        if (text != committedText) {
+            committedText = text
+            currentOnCommit(text)
+        }
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { commit() }
+    DisposableEffect(Unit) {
+        onDispose { commit() }
+    }
     OutlinedTextField(
         value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)
-        },
+        onValueChange = { text = it },
         label = { Text(label) },
         singleLine = true,
         visualTransformation = if (keyboardType == KeyboardType.Password) {
@@ -118,6 +132,7 @@ private fun ProxyTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .onFocusChanged { if (!it.isFocused) commit() }
     )
 }
 

@@ -46,8 +46,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.settings.AccountMessage
 import com.nextcloud.talk.settings.AccountUiState
 import com.nextcloud.talk.settings.ServerAgeWarning
@@ -162,12 +163,14 @@ private fun AccountAvatar(account: AccountUiState) {
     }
     val context = LocalContext.current
     val isDarkTheme = isSystemInDarkTheme()
-    val request = remember(account.baseUrl, account.avatarId, isDarkTheme) {
-        loadImage(
-            ApiUtils.getUrlForAvatar(account.baseUrl, account.avatarId, true, isDarkTheme),
-            context,
-            R.drawable.account_circle_96dp
-        )
+    val request = remember(account.baseUrl, account.avatarId, account.credentials, isDarkTheme) {
+        ImageRequest.Builder(context)
+            .data(ApiUtils.getUrlForAvatar(account.baseUrl, account.avatarId, true, isDarkTheme))
+            .addHeader("Authorization", account.credentials)
+            .transformations(CircleCropTransformation())
+            .placeholder(R.drawable.account_circle_96dp)
+            .error(R.drawable.account_circle_96dp)
+            .build()
     }
     AsyncImage(model = request, contentDescription = stringResource(R.string.avatar), modifier = modifier)
 }

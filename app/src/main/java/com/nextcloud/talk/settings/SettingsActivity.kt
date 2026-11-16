@@ -19,7 +19,6 @@ import android.provider.Settings
 import android.security.KeyChain
 import android.util.Log
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +47,6 @@ import com.nextcloud.talk.settings.ui.ProxyCallbacks
 import com.nextcloud.talk.settings.ui.SettingsScreen
 import com.nextcloud.talk.settings.ui.SettingsScreenCallbacks
 import com.nextcloud.talk.settings.ui.SystemSettingsScreen
-import com.nextcloud.talk.utils.AppTasks
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UnifiedPushUtils
@@ -208,14 +206,6 @@ class SettingsActivity : BaseActivity() {
     private suspend fun handleEvent(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.ShowMessage -> snackbarHostState.showSnackbar(getString(event.messageRes))
-            is SettingsEvent.AccountRemoved -> {
-                Toast.makeText(this, getString(R.string.nc_deleted_user, event.displayName), Toast.LENGTH_LONG).show()
-                startActivity(AppTasks.createRestartIntent(this))
-            }
-            SettingsEvent.AccountRemovalFailed -> {
-                Toast.makeText(this, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-                startActivity(AppTasks.createRestartIntent(this))
-            }
             SettingsEvent.AccountUnavailable -> finish()
         }
     }

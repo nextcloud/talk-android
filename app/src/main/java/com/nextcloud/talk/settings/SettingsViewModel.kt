@@ -12,14 +12,12 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
 import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.logger.Level
@@ -27,6 +25,7 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.settings.data.SettingsRepository
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -45,10 +44,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -60,6 +60,7 @@ class SettingsViewModel @AssistedInject constructor(
     private val settingsRepository: SettingsRepository,
     private val logsRepository: LogsRepository,
     private val deviceStateReader: DeviceStateReader,
+    private val accountRemover: AccountRemover,
     private val workManager: WorkManager,
     private val logger: Logger,
     networkMonitor: NetworkMonitor,
@@ -82,8 +83,10 @@ class SettingsViewModel @AssistedInject constructor(
 
     // The last values in the stored account, which are only updated with the capabilities. A change is shown until
     // they change, so that an update of e.g. the display name doesn't revert it.
-    private var serverReadStatusShared: Boolean? = null
-    private var serverTypingStatusShared: Boolean? = null
+    private var storedReadStatusShared: Boolean? = null
+    private var storedTypingStatusShared: Boolean? = null
+    private val readStatusSetting = ServerSetting()
+    private val typingStatusSetting = ServerSetting()
 
     private var allAccountsSupportWebPush = false
     private var unifiedPushPreference = false
@@ -103,16 +106,28 @@ class SettingsViewModel @AssistedInject constructor(
         clearDisabledProxySettings()
         viewModelScope.launch {
             userManager.userFlow(userId).collect { updatedUser ->
-                if (updatedUser == null || (updatedUser.scheduledForDeletion && !isRemovingAccount)) {
-                    _events.send(SettingsEvent.AccountUnavailable)
-                } else {
-                    user.value = updatedUser
+                when {
+                    // the account disappears while it is removed, which restarts the app when done
+                    isRemovingAccount -> Unit
+                    updatedUser == null || updatedUser.scheduledForDeletion ->
+                        _events.send(SettingsEvent.AccountUnavailable)
+                    else -> user.value = updatedUser
                 }
             }
         }
         viewModelScope.launch {
             combine(user, networkMonitor.isOnline, ::Pair).collect { (currentUser, isOnline) ->
-                _uiState.update { it.withUser(currentUser, isOnline) }
+                val readStatusChange = storedValueChange(
+                    value = !CapabilitiesUtil.isReadStatusPrivate(currentUser),
+                    previous = storedReadStatusShared,
+                    setting = readStatusSetting
+                ).also { storedReadStatusShared = it ?: storedReadStatusShared }
+                val typingStatusChange = storedValueChange(
+                    value = !CapabilitiesUtil.isTypingStatusPrivate(currentUser),
+                    previous = storedTypingStatusShared,
+                    setting = typingStatusSetting
+                ).also { storedTypingStatusShared = it ?: storedTypingStatusShared }
+                _uiState.update { it.withUser(currentUser, isOnline, readStatusChange, typingStatusChange) }
             }
         }
     }
@@ -144,10 +159,15 @@ class SettingsViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(
                     notifications = notificationsState(state),
-                    privacy = it.privacy.copy(
-                        screenLockAvailable = state.isKeyguardSecure,
-                        screenLock = state.isKeyguardSecure && it.privacy.screenLock
-                    )
+                    privacy = if (state.isKeyguardSecure) {
+                        it.privacy.copy(screenLockAvailable = true)
+                    } else {
+                        it.privacy.copy(
+                            screenLockAvailable = false,
+                            screenLock = false,
+                            screenLockTimeout = context.getString(R.string.nc_screen_lock_timeout_sixty)
+                        )
+                    }
                 )
             }
         }
@@ -284,14 +304,16 @@ class SettingsViewModel @AssistedInject constructor(
 
     fun setReadStatusShared(shared: Boolean) {
         updatePrivacySetting(
+            setting = readStatusSetting,
             apply = { state, value -> state.copy(readStatusShared = value) },
             shared = shared,
-            request = { settingsRepository.setReadStatusShared(user.value, shared) }
+            request = { settingsRepository.setReadStatusShared(user.value, it) }
         )
     }
 
     fun setTypingStatusShared(shared: Boolean) {
         updatePrivacySetting(
+            setting = typingStatusSetting,
             apply = { state, value ->
                 if (state.typingStatus is TypingStatusUiState.Available) {
                     state.copy(typingStatus = TypingStatusUiState.Available(value))
@@ -300,7 +322,7 @@ class SettingsViewModel @AssistedInject constructor(
                 }
             },
             shared = shared,
-            request = { settingsRepository.setTypingStatusShared(user.value, shared) }
+            request = { settingsRepository.setTypingStatusShared(user.value, it) }
         )
     }
 
@@ -318,6 +340,7 @@ class SettingsViewModel @AssistedInject constructor(
     }
 
     fun setProxyType(type: String) {
+        if (type == _uiState.value.proxy.type) return
         if (!isProxyEnabled(type)) {
             _uiState.update { it.copy(proxy = ProxyUiState(type = type)) }
             persist { prefs -> prefs.proxyType = type }
@@ -325,19 +348,22 @@ class SettingsViewModel @AssistedInject constructor(
             return
         }
         val port = defaultProxyPort(type) ?: _uiState.value.proxy.port
-        _uiState.update { it.copy(proxy = it.proxy.copy(type = type, port = port)) }
+        _uiState.update { it.copy(proxy = it.proxy.copy(type = type, enabled = true, port = port)) }
         persist { prefs ->
             prefs.proxyType = type
             prefs.proxyPort = port
         }
     }
 
+    // the text fields commit when they leave the screen, also after the proxy or its credentials were turned off
     fun setProxyHost(host: String) {
+        if (!_uiState.value.proxy.enabled) return
         _uiState.update { it.copy(proxy = it.proxy.copy(host = host)) }
         persist { prefs -> prefs.proxyHost = host }
     }
 
     fun setProxyPort(port: String) {
+        if (!_uiState.value.proxy.enabled) return
         _uiState.update { it.copy(proxy = it.proxy.copy(port = port)) }
         persist { prefs -> prefs.proxyPort = port }
     }
@@ -362,11 +388,13 @@ class SettingsViewModel @AssistedInject constructor(
     }
 
     fun setProxyUsername(username: String) {
+        if (!_uiState.value.proxy.useCredentials) return
         _uiState.update { it.copy(proxy = it.proxy.copy(username = username)) }
         persist { prefs -> prefs.proxyUsername = username }
     }
 
     fun setProxyPassword(password: String) {
+        if (!_uiState.value.proxy.useCredentials) return
         _uiState.update { it.copy(proxy = it.proxy.copy(password = password)) }
         persist { prefs -> prefs.proxyPassword = password }
     }
@@ -374,21 +402,7 @@ class SettingsViewModel @AssistedInject constructor(
     fun removeAccount() {
         if (isRemovingAccount) return
         isRemovingAccount = true
-        val displayName = _uiState.value.account.displayName
-        viewModelScope.launch {
-            userManager.scheduleUserForDeletionWithId(userId)
-            val request = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-                .setExpeditedIfSupported()
-                .build()
-            workManager.enqueue(request)
-            val result = workManager.getWorkInfoByIdFlow(request.id).first { it?.state?.isFinished == true }
-            if (result?.state == WorkInfo.State.SUCCEEDED) {
-                _events.send(SettingsEvent.AccountRemoved(displayName))
-            } else {
-                logger.e(TAG, "Failed to remove the account with id $userId")
-                _events.send(SettingsEvent.AccountRemovalFailed)
-            }
-        }
+        accountRemover.remove(userId, _uiState.value.account.displayName)
     }
 
     private fun initialState(initialUser: User, highlightNotificationIssues: Boolean): SettingsUiState {
@@ -417,6 +431,7 @@ class SettingsViewModel @AssistedInject constructor(
             proxy = if (isProxyEnabled(proxyType)) {
                 ProxyUiState(
                     type = proxyType,
+                    enabled = true,
                     host = appPreferences.proxyHost,
                     port = appPreferences.proxyPort,
                     useCredentials = useCredentials,
@@ -430,21 +445,24 @@ class SettingsViewModel @AssistedInject constructor(
         )
     }
 
-    private fun SettingsUiState.withUser(currentUser: User, isOnline: Boolean): SettingsUiState {
-        val readStatusShared = !CapabilitiesUtil.isReadStatusPrivate(currentUser)
-        val typingStatusShared = !CapabilitiesUtil.isTypingStatusPrivate(currentUser)
-        val readStatusChangedOnServer = readStatusShared != serverReadStatusShared
-        val typingStatusChangedOnServer = typingStatusShared != serverTypingStatusShared
-        serverReadStatusShared = readStatusShared
-        serverTypingStatusShared = typingStatusShared
-
+    /**
+     * Applies [currentUser]. [readStatusChange] and [typingStatusChange] are the values of the stored account if they
+     * changed, else null to keep what the screen shows.
+     */
+    private fun SettingsUiState.withUser(
+        currentUser: User,
+        isOnline: Boolean,
+        readStatusChange: Boolean?,
+        typingStatusChange: Boolean?
+    ): SettingsUiState {
         val spreedCapability = currentUser.capabilities?.spreedCapability
         val typingStatus = when {
             currentUser.externalSignalingServer?.externalSignalingServer.isNullOrEmpty() ->
                 TypingStatusUiState.RequiresHighPerformanceBackend
             !isOnline || !CapabilitiesUtil.isTypingStatusAvailable(currentUser) -> TypingStatusUiState.Hidden
-            typingStatusChangedOnServer || privacy.typingStatus !is TypingStatusUiState.Available ->
-                TypingStatusUiState.Available(typingStatusShared)
+            typingStatusChange != null -> TypingStatusUiState.Available(typingStatusChange)
+            privacy.typingStatus !is TypingStatusUiState.Available ->
+                TypingStatusUiState.Available(typingStatusSetting.requested ?: false)
             else -> privacy.typingStatus
         }
         return copy(
@@ -458,7 +476,7 @@ class SettingsViewModel @AssistedInject constructor(
                 phoneBookIntegrationAvailable = isOnline &&
                     CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapability, SpreedFeatures.PHONEBOOK_SEARCH),
                 readStatusAvailable = isOnline && CapabilitiesUtil.isReadStatusAvailable(spreedCapability),
-                readStatusShared = if (readStatusChangedOnServer) readStatusShared else privacy.readStatusShared,
+                readStatusShared = readStatusChange ?: privacy.readStatusShared,
                 typingStatus = typingStatus
             )
         )
@@ -470,6 +488,7 @@ class SettingsViewModel @AssistedInject constructor(
             displayName = currentUser.displayName.orEmpty(),
             baseUrl = currentUser.baseUrl.orEmpty(),
             avatarId = currentUser.userId?.takeIf { it.isNotEmpty() } ?: currentUser.username.orEmpty(),
+            credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token).orEmpty(),
             serverAgeWarning = when {
                 CapabilitiesUtil.isServerEOL(serverVersion) -> ServerAgeWarning.END_OF_LIFE
                 CapabilitiesUtil.isServerAlmostEOL(serverVersion) -> ServerAgeWarning.ALMOST_END_OF_LIFE
@@ -511,22 +530,55 @@ class SettingsViewModel @AssistedInject constructor(
         )
     }
 
+    /**
+     * Returns [value] if it differs from the [previous] value of the stored account, after taking it over as the
+     * confirmed value of [setting]. Returns null if it didn't change.
+     */
+    private fun storedValueChange(value: Boolean, previous: Boolean?, setting: ServerSetting): Boolean? {
+        if (value == previous) return null
+        setting.confirmed = value
+        setting.requested = value
+        return value
+    }
+
+    /**
+     * Shows [shared] right away and sends it to the server. Requests are sent one at a time, a change replaced by a
+     * newer one is skipped, and a failed change shows the value the server confirmed last.
+     */
     private fun updatePrivacySetting(
+        setting: ServerSetting,
         apply: (PrivacyUiState, Boolean) -> PrivacyUiState,
         shared: Boolean,
-        request: suspend () -> Unit
+        request: suspend (Boolean) -> Unit
     ) {
+        setting.requested = shared
         _uiState.update { it.copy(privacy = apply(it.privacy, shared)) }
         viewModelScope.launch {
-            try {
-                request()
-            } catch (e: IOException) {
-                logger.e(TAG, "Failed to change a privacy setting", e)
-                _uiState.update { it.copy(privacy = apply(it.privacy, !shared)) }
-            } catch (e: HttpException) {
-                logger.e(TAG, "Failed to change a privacy setting", e)
-                _uiState.update { it.copy(privacy = apply(it.privacy, !shared)) }
+            setting.mutex.withLock {
+                if (setting.requested != shared || setting.confirmed == shared) return@withLock
+                try {
+                    request(shared)
+                    setting.confirmed = shared
+                } catch (e: IOException) {
+                    logger.e(TAG, "Failed to change a privacy setting", e)
+                    revertPrivacySetting(setting, apply, shared)
+                } catch (e: HttpException) {
+                    logger.e(TAG, "Failed to change a privacy setting", e)
+                    revertPrivacySetting(setting, apply, shared)
+                }
             }
+        }
+    }
+
+    private fun revertPrivacySetting(
+        setting: ServerSetting,
+        apply: (PrivacyUiState, Boolean) -> PrivacyUiState,
+        failed: Boolean
+    ) {
+        val confirmed = setting.confirmed ?: !failed
+        if (setting.requested == failed) {
+            setting.requested = confirmed
+            _uiState.update { it.copy(privacy = apply(it.privacy, confirmed)) }
         }
     }
 
@@ -619,4 +671,15 @@ class SettingsViewModel @AssistedInject constructor(
         private const val PROXY_TYPE_DIRECT = "DIRECT"
         private const val PROXY_TYPE_SOCKS = "SOCKS"
     }
+}
+
+/** A setting stored on the server, which the screen changes one request at a time. */
+private class ServerSetting {
+    val mutex = Mutex()
+
+    /** The value the server confirmed last, or the one of the stored account. */
+    var confirmed: Boolean? = null
+
+    /** The value chosen last on the screen. */
+    var requested: Boolean? = null
 }

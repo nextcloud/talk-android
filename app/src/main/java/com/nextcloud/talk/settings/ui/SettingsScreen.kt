@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.ColoredStatusBar
+import com.nextcloud.talk.components.IncognitoKeyboard
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.settings.AccountUiState
 import com.nextcloud.talk.settings.NotificationsUiState
@@ -114,22 +115,24 @@ fun SettingsScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     ColoredStatusBar()
-    Scaffold(
-        modifier = Modifier
-            .statusBarsPadding()
-            .displayCutoutPadding(),
-        topBar = { StandardAppBar(title = stringResource(R.string.nc_settings), menuItems = null) },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
-        SettingsContent(state = state, callbacks = callbacks, paddingValues = paddingValues)
-    }
-    if (state.showPhoneNumberDialog) {
-        PhoneNumberDialog(
-            isError = state.phoneNumberError,
-            onPhoneNumberChange = callbacks.onPhoneNumberChange,
-            onSubmit = callbacks.onSubmitPhoneNumber,
-            onDismiss = callbacks.onDismissPhoneNumberDialog
-        )
+    IncognitoKeyboard(enabled = state.privacy.incognitoKeyboard) {
+        Scaffold(
+            modifier = Modifier
+                .statusBarsPadding()
+                .displayCutoutPadding(),
+            topBar = { StandardAppBar(title = stringResource(R.string.nc_settings), menuItems = null) },
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) { paddingValues ->
+            SettingsContent(state = state, callbacks = callbacks, paddingValues = paddingValues)
+        }
+        if (state.showPhoneNumberDialog) {
+            PhoneNumberDialog(
+                isError = state.phoneNumberError,
+                onPhoneNumberChange = callbacks.onPhoneNumberChange,
+                onSubmit = callbacks.onSubmitPhoneNumber,
+                onDismiss = callbacks.onDismissPhoneNumberDialog
+            )
+        }
     }
 }
 
@@ -200,7 +203,13 @@ internal fun previewSettingsState(): SettingsUiState =
             readStatusShared = true,
             typingStatus = TypingStatusUiState.RequiresHighPerformanceBackend
         ),
-        proxy = ProxyUiState(type = "HTTP", host = "proxy.example.com", port = "3128", useCredentials = true)
+        proxy = ProxyUiState(
+            type = "HTTP",
+            enabled = true,
+            host = "proxy.example.com",
+            port = "3128",
+            useCredentials = true
+        )
     )
 
 @Preview(name = "Light", heightDp = 2400)
