@@ -126,7 +126,10 @@ internal fun MediaQualityDialog(reducedQuality: Boolean, onSelect: (Boolean) -> 
                 )
             }
         },
-        confirmButton = {}
+        // selecting an option applies it, so the only button cancels
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.nc_cancel)) }
+        }
     )
 }
 
