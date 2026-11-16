@@ -259,54 +259,60 @@ private fun TopBarSearchActiveContent(
     onSearchClose: () -> Unit,
     focusRequester: FocusRequester
 ) {
-    Column {
-        TopAppBar(
-            navigationIcon = {
-                IconButton(onClick = {
-                    onQueryChange("")
-                    onSearchClose()
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = stringResource(R.string.nc_cancel),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            },
-            title = {
-                SearchTextField(
-                    query = query,
-                    onQueryChange = onQueryChange,
-                    focusRequester = focusRequester,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            actions = {
-                if (query.isNotEmpty()) {
+    Box {
+        Column {
+            TopAppBar(
+                navigationIcon = {
                     IconButton(onClick = {
                         onQueryChange("")
-                        focusRequester.requestFocus()
+                        onSearchClose()
                     }) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
-                            contentDescription = stringResource(R.string.nc_search_clear),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.nc_cancel),
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            windowInsets = WindowInsets(0)
-        )
+                },
+                title = {
+                    SearchTextField(
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        focusRequester = focusRequester,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
+                actions = {
+                    if (query.isNotEmpty()) {
+                        IconButton(onClick = {
+                            onQueryChange("")
+                            focusRequester.requestFocus()
+                        }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
+                                contentDescription = stringResource(R.string.nc_search_clear),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                windowInsets = WindowInsets(0)
+            )
+            HorizontalDivider()
+        }
+        // Drawn on top of the app bar's bottom edge (like in the chat toolbar) so that showing
+        // the indicator doesn't change the height of the top bar and push the content below.
         if (isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surface
             )
-        } else {
-            HorizontalDivider()
         }
     }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
