@@ -12,8 +12,14 @@ import com.nextcloud.talk.shareditems.model.SharedItems
 
 interface SharedItemsRepository {
 
+    /**
+     * Throws a [retrofit2.HttpException] if the server responds with an error.
+     */
     suspend fun media(parameters: Parameters, type: SharedItemType, lastKnownMessageId: Int? = null): SharedItems
 
+    /**
+     * Throws a [retrofit2.HttpException] if the server responds with an error.
+     */
     suspend fun availableTypes(parameters: Parameters): Set<SharedItemType>
 
     /**

@@ -33,7 +33,7 @@ import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
-import com.nextcloud.talk.shareditems.adapters.SharedItemsLoadingAdapter
+import com.nextcloud.talk.shareditems.adapters.SharedItemsLoadStateAdapter
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
@@ -84,7 +84,7 @@ class SharedItemsActivity : BaseActivity() {
 
     private var adapter: SharedItemsAdapter? = null
     private var adapterType: SharedItemType? = null
-    private var loadingAdapter: SharedItemsLoadingAdapter? = null
+    private var loadStateAdapter: SharedItemsLoadStateAdapter? = null
     private var shownTypes: Set<SharedItemType>? = null
 
     private val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
@@ -115,6 +115,8 @@ class SharedItemsActivity : BaseActivity() {
         viewThemeUtils.material.themeToolbar(binding.sharedItemsToolbar)
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
         viewThemeUtils.material.colorProgressBar(binding.sharedItemsLoadingProgress)
+        viewThemeUtils.material.colorMaterialButtonPrimaryTonal(binding.sharedItemsErrorRetry)
+        binding.sharedItemsErrorRetry.setOnClickListener { viewModel.retry() }
 
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -141,7 +143,9 @@ class SharedItemsActivity : BaseActivity() {
             // change while the RecyclerView is in a layout or scroll pass.
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
-                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - LOAD_MORE_THRESHOLD) {
+                if (viewModel.canLoadNextItems() &&
+                    layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - LOAD_MORE_THRESHOLD
+                ) {
                     recyclerView.post { viewModel.loadNextItems() }
                 }
             }
@@ -164,6 +168,7 @@ class SharedItemsActivity : BaseActivity() {
             shownTypes = state.types
         }
         binding.sharedItemsLoading.visibility = if (state.isLoadingFirstPage()) View.VISIBLE else View.GONE
+        binding.sharedItemsError.visibility = if (state.isFailed()) View.VISIBLE else View.GONE
         when (state) {
             is SharedItemsViewModel.NoSharedItemsState -> {
                 showEmpty()
@@ -181,7 +186,8 @@ class SharedItemsActivity : BaseActivity() {
                 if (state is SharedItemsViewModel.LoadedState) {
                     currentAdapter.submitList(state.items.items)
                 }
-                loadingAdapter?.isLoading = state is SharedItemsViewModel.LoadedState && state.isLoadingMore
+                loadStateAdapter?.nextPageState = (state as? SharedItemsViewModel.LoadedState)?.nextPageState
+                    ?: SharedItemsViewModel.NextPageState.IDLE
             }
             else -> {}
         }
@@ -209,7 +215,7 @@ class SharedItemsActivity : BaseActivity() {
             isOne2One,
             viewThemeUtils
         )
-        val footerAdapter = SharedItemsLoadingAdapter(viewThemeUtils)
+        val footerAdapter = SharedItemsLoadStateAdapter(viewThemeUtils) { viewModel.retry() }
         binding.imageRecycler.layoutManager = if (showGrid) {
             GridLayoutManager(this, SPAN_COUNT).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -223,7 +229,7 @@ class SharedItemsActivity : BaseActivity() {
         binding.imageRecycler.adapter = ConcatAdapter(itemsAdapter, footerAdapter)
         adapter = itemsAdapter
         adapterType = type
-        loadingAdapter = footerAdapter
+        loadStateAdapter = footerAdapter
         return itemsAdapter
     }
 
@@ -260,6 +266,9 @@ class SharedItemsActivity : BaseActivity() {
 
     private fun SharedItemsViewModel.ViewState.isLoadingFirstPage(): Boolean =
         this == SharedItemsViewModel.InitialState || this is SharedItemsViewModel.LoadingItemsState
+
+    private fun SharedItemsViewModel.ViewState.isFailed(): Boolean =
+        this == SharedItemsViewModel.TypesErrorState || this is SharedItemsViewModel.ItemsErrorState
 
     private fun showEmpty() {
         binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)

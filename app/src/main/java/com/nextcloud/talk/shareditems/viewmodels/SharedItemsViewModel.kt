@@ -32,27 +32,33 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
 
     sealed interface ViewState
     object InitialState : ViewState
+    object TypesErrorState : ViewState
     object NoSharedItemsState : ViewState
     open class TypesLoadedState(val types: Set<SharedItemType>, val selectedType: SharedItemType) : ViewState
     class LoadingItemsState(types: Set<SharedItemType>, selectedType: SharedItemType) :
         TypesLoadedState(types, selectedType)
 
+    class ItemsErrorState(types: Set<SharedItemType>, selectedType: SharedItemType) :
+        TypesLoadedState(types, selectedType)
+
+    enum class NextPageState { IDLE, LOADING, FAILED }
+
     /**
-     * [isLoadingMore] is true while the page following [items] is being loaded.
+     * [nextPageState] tells whether the page following [items] is being loaded or failed to load.
      */
     class LoadedState(
         types: Set<SharedItemType>,
         selectedType: SharedItemType,
         val items: SharedItems,
-        val isLoadingMore: Boolean = false
+        val nextPageState: NextPageState = NextPageState.IDLE
     ) : TypesLoadedState(types, selectedType)
 
     private val _viewState = MutableStateFlow<ViewState>(InitialState)
     val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
 
     /**
-     * Starts loading the shared items, or resumes a load that failed. Requests that are running or have succeeded
-     * are kept, so a recreated activity keeps the loaded pages and the selected type.
+     * Starts loading the shared items. Requests that are running or have finished are kept, so a recreated activity
+     * keeps the loaded pages and the selected type. Failed requests are repeated by [retry].
      */
     fun initialize(user: User, roomToken: String) {
         repositoryParameters = SharedItemsRepository.Parameters(
@@ -62,9 +68,22 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
             user.baseUrl!!,
             roomToken
         )
+        if (_viewState.value == InitialState && typesJob?.isActive != true) {
+            loadAvailableTypes()
+        }
+    }
+
+    /**
+     * Repeats the request that failed: the available types, the first page of the selected type or the next page.
+     */
+    fun retry() {
         when (val state = _viewState.value) {
-            InitialState -> if (typesJob?.isActive != true) loadAvailableTypes()
-            is LoadingItemsState -> if (itemsJob?.isActive != true) initialLoadItems(state.selectedType)
+            TypesErrorState -> {
+                _viewState.value = InitialState
+                loadAvailableTypes()
+            }
+            is ItemsErrorState -> initialLoadItems(state.selectedType)
+            is LoadedState -> if (state.nextPageState == NextPageState.FAILED) requestNextPage(state)
             else -> Unit
         }
     }
@@ -78,6 +97,7 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
                 throw e
             } catch (e: Exception) {
                 Log.e(TAG, "An error occurred when loading available types", e)
+                _viewState.value = TypesErrorState
                 return@launch
             }
 
@@ -103,34 +123,54 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
             itemsJob?.cancel()
             _viewState.value = LoadingItemsState(state.types, type)
             itemsJob = viewModelScope.launch {
-                loadItems(type, null)?.let { firstPage -> onFirstPageLoaded(type, firstPage) }
+                val firstPage = loadItems(type, null)
+                if (firstPage != null) {
+                    onFirstPageLoaded(type, firstPage)
+                } else {
+                    onFirstPageFailed(type)
+                }
             }
         }
     }
 
     /**
-     * Requests the page following the currently loaded items. Calls while a request is already running, or when
-     * the server reported no further items, are ignored.
+     * Whether [loadNextItems] would request a page: more items exist, and no request is running or has failed.
+     */
+    fun canLoadNextItems(): Boolean {
+        val state = _viewState.value as? LoadedState ?: return false
+        return state.items.moreItemsExisting &&
+            state.items.lastSeenId != null &&
+            state.nextPageState == NextPageState.IDLE
+    }
+
+    /**
+     * Requests the page following the currently loaded items, if [canLoadNextItems]. After a failure, the next
+     * page is only requested again by [retry].
      */
     fun loadNextItems() {
         val state = _viewState.value as? LoadedState ?: return
-        val cursor = state.items.lastSeenId
-        if (!state.items.moreItemsExisting || cursor == null || itemsJob?.isActive == true) {
-            return
-        }
-        setLoadingMore(true)
-        itemsJob = viewModelScope.launch {
-            loadItems(state.selectedType, cursor)?.let { nextPage ->
-                onNextPageLoaded(state.selectedType, cursor, nextPage)
-            }
-            setLoadingMore(false)
+        if (canLoadNextItems()) {
+            requestNextPage(state)
         }
     }
 
-    private fun setLoadingMore(isLoadingMore: Boolean) {
+    private fun requestNextPage(state: LoadedState) {
+        val cursor = state.items.lastSeenId ?: return
+        setNextPageState(NextPageState.LOADING)
+        itemsJob = viewModelScope.launch {
+            val nextPage = loadItems(state.selectedType, cursor)
+            if (nextPage != null) {
+                onNextPageLoaded(state.selectedType, cursor, nextPage)
+            } else {
+                setNextPageState(NextPageState.FAILED)
+            }
+        }
+    }
+
+    private fun setNextPageState(nextPageState: NextPageState) {
         val state = _viewState.value as? LoadedState ?: return
-        if (state.isLoadingMore != isLoadingMore) {
-            _viewState.value = LoadedState(state.types, state.selectedType, state.items, isLoadingMore)
+        if (state.nextPageState != nextPageState) {
+            _viewState.value = LoadedState(state.types, state.selectedType, state.items, nextPageState)
         }
     }
 
@@ -165,7 +205,7 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
             state.types,
             state.selectedType,
             SharedItems(items.items - item, items.type, items.lastSeenId, items.moreItemsExisting),
-            state.isLoadingMore
+            state.nextPageState
         )
     }
 
@@ -173,6 +213,13 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
         val state = _viewState.value
         if (state is LoadingItemsState && state.selectedType == type) {
             _viewState.value = LoadedState(state.types, type, firstPage)
+        }
+    }
+
+    private fun onFirstPageFailed(type: SharedItemType) {
+        val state = _viewState.value
+        if (state is LoadingItemsState && state.selectedType == type) {
+            _viewState.value = ItemsErrorState(state.types, type)
         }
     }
 

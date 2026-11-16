@@ -33,6 +33,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 
+@Suppress("TooManyFunctions")
 class SharedItemsViewModelTest {
 
     private val repository: SharedItemsRepository = mock()
@@ -113,14 +114,30 @@ class SharedItemsViewModelTest {
     }
 
     @Test
-    fun `initializing again retries a failed first page`() {
+    fun `failed first page is reported and loaded again by retry`() {
         wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), isNull()) }
             .thenThrow(RuntimeException("network"))
             .thenReturn(page(SharedItemType.FILE, 1..3, lastSeenId = 1))
         val viewModel = SharedItemsViewModel(repository)
         viewModel.initialize(user, "roomToken")
+        assertTrue(viewModel.viewState.value is SharedItemsViewModel.ItemsErrorState)
 
+        viewModel.retry()
+
+        val state = viewModel.viewState.value as SharedItemsViewModel.LoadedState
+        assertEquals(listOf("3", "2", "1"), state.items.items.map(SharedItem::id))
+    }
+
+    @Test
+    fun `failed types request is reported and loaded again by retry`() {
+        wheneverBlocking { repository.availableTypes(any()) }
+            .thenThrow(RuntimeException("network"))
+            .thenReturn(setOf(SharedItemType.FILE))
+        val viewModel = SharedItemsViewModel(repository)
         viewModel.initialize(user, "roomToken")
+        assertEquals(SharedItemsViewModel.TypesErrorState, viewModel.viewState.value)
+
+        viewModel.retry()
 
         val state = viewModel.viewState.value as SharedItemsViewModel.LoadedState
         assertEquals(listOf("3", "2", "1"), state.items.items.map(SharedItem::id))
@@ -173,22 +190,33 @@ class SharedItemsViewModelTest {
             .doSuspendableAnswer { nextPage.await() }
 
         viewModel.loadNextItems()
-        assertTrue((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
+        assertEquals(SharedItemsViewModel.NextPageState.LOADING, nextPageState())
 
         nextPage.complete(page(SharedItemType.FILE, 4..4, lastSeenId = 4))
-        assertFalse((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
+        assertEquals(SharedItemsViewModel.NextPageState.IDLE, nextPageState())
     }
 
     @Test
-    fun `loading more is no longer reported after the next page failed`() {
+    fun `failed next page is only requested again by retry`() {
         wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
             .thenThrow(RuntimeException("network"))
+            .thenReturn(page(SharedItemType.FILE, 4..4, lastSeenId = 4))
 
         viewModel.loadNextItems()
+        viewModel.loadNextItems()
 
-        assertFalse((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
-        assertEquals(listOf("3", "2", "1"), loadedItemIds())
+        verifyBlocking(repository, times(1)) { media(any(), eq(SharedItemType.FILE), eq(1)) }
+        assertEquals(SharedItemsViewModel.NextPageState.FAILED, nextPageState())
+        assertFalse(viewModel.canLoadNextItems())
+
+        viewModel.retry()
+
+        assertEquals(listOf("3", "2", "1", "4"), loadedItemIds())
+        assertEquals(SharedItemsViewModel.NextPageState.IDLE, nextPageState())
     }
+
+    private fun nextPageState(): SharedItemsViewModel.NextPageState =
+        (viewModel.viewState.value as SharedItemsViewModel.LoadedState).nextPageState
 
     private fun loadedItemIds(): List<String> =
         (viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.items.map(SharedItem::id)

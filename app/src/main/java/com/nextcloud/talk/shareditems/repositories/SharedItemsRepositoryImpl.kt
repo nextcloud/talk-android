@@ -198,8 +198,7 @@ class SharedItemsRepositoryImpl @Inject constructor(
             1
         )
         if (response.code() != HTTP_OK) {
-            Log.e(TAG, "Failed to getSharedItemsOverview")
-            return emptySet()
+            throw HttpException(response)
         }
 
         return response.body()!!.ocs!!.data!!

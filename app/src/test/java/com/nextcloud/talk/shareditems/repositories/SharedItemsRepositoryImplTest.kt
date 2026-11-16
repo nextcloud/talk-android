@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.chat.ChatShareOverall
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.utils.DateUtils
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -21,6 +22,7 @@ import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import retrofit2.HttpException
 import retrofit2.Response
 
 class SharedItemsRepositoryImplTest {
@@ -49,6 +51,15 @@ class SharedItemsRepositoryImplTest {
             assertTrue(page.moreItemsExisting)
         }
 
+    @Test(expected = HttpException::class)
+    fun `failed overview request throws`() =
+        runTest {
+            wheneverBlocking { ncApiCoroutines.getSharedItemsOverview(anyOrNull(), any(), anyOrNull()) }
+                .thenReturn(Response.error(HTTP_SERVICE_UNAVAILABLE, "".toResponseBody()))
+
+            repository.availableTypes(parameters)
+        }
+
     private fun pollMessage(id: Long) =
         ChatMessageDto(
             id = id,
@@ -60,4 +71,8 @@ class SharedItemsRepositoryImplTest {
         )
 
     private fun unmappableMessage(id: Long) = ChatMessageDto(id = id, message = "text")
+
+    companion object {
+        private const val HTTP_SERVICE_UNAVAILABLE = 503
+    }
 }
