@@ -40,6 +40,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -157,7 +158,8 @@ private fun TopBarIdleContent(state: ConversationListTopBarState, actions: Conve
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+            .height(SEARCH_TOP_BAR_HEIGHT_DP.dp)
+            .padding(start = 16.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IdleSearchBarCard(
@@ -299,6 +301,9 @@ private fun TopBarSearchActiveContent(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
+                // Same total height (incl. divider) as the idle search bar, so that activating the
+                // search doesn't change the height of the top bar and make the content below jump.
+                expandedHeight = SEARCH_TOP_BAR_HEIGHT_DP.dp - DividerDefaults.Thickness,
                 windowInsets = WindowInsets(0)
             )
             HorizontalDivider()
@@ -439,6 +444,7 @@ private fun buildAvatarImageRequest(url: String?, credentials: String): ImageReq
 }
 
 private const val BADGE_OFFSET_DP = 8
+private const val SEARCH_TOP_BAR_HEIGHT_DP = 58
 
 @Preview(name = "Idle - no filter, no threads - Light")
 @Preview(name = "Idle - no filter, no threads - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
