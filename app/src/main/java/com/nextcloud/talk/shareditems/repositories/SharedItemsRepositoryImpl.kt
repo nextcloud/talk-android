@@ -12,6 +12,7 @@ import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
@@ -86,7 +87,11 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                         it.value.id.toString(),
                         name,
                         it.value.actorId!!,
-                        metaData.pinnedActorDisplayName!!,
+                        ChatMessage.withServer(
+                            metaData.pinnedActorDisplayName!!,
+                            metaData.pinnedActorType,
+                            metaData.pinnedActorId
+                        ),
                         dateTime
                     )
                     items[it.value.id.toString()] = sharedItem
@@ -101,7 +106,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                         fileParameters["id"]!!,
                         fileParameters["name"]!!,
                         actorParameters["id"]!!,
-                        actorParameters["name"]!!,
+                        ChatMessage.withServer(actorParameters["name"]!!, it.value.actorType, it.value.actorId),
                         dateTime,
                         fileParameters["size"]!!.toLong(),
                         fileParameters["path"]!!,
@@ -116,7 +121,13 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
                     val actorParameters = it.value.messageParameters!!["actor"]!!
-                    items[it.value.id.toString()] = itemFromObject(objectParameters, actorParameters, dateTime)
+                    val actorName = ChatMessage.withServer(
+                        actorParameters["name"]!!,
+                        it.value.actorType,
+                        it.value.actorId
+                    )
+                    items[it.value.id.toString()] =
+                        itemFromObject(objectParameters, actorParameters["id"]!!, actorName, dateTime)
                 } else {
                     Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
@@ -139,7 +150,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
 
     private fun itemFromObject(
         objectParameters: HashMap<String?, String?>,
-        actorParameters: HashMap<String?, String?>,
+        actorId: String,
+        actorName: String,
         dateTime: String
     ): SharedItem {
         val returnValue: SharedItem
@@ -148,8 +160,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 returnValue = SharedPollItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
-                    actorParameters["id"]!!,
-                    actorParameters["name"]!!,
+                    actorId,
+                    actorName,
                     dateTime
                 )
             }
@@ -158,8 +170,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 returnValue = SharedLocationItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
-                    actorParameters["id"]!!,
-                    actorParameters["name"]!!,
+                    actorId,
+                    actorName,
                     dateTime,
                     objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q=").toUri()
                 )
@@ -169,8 +181,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 returnValue = SharedDeckCardItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
-                    actorParameters["id"]!!,
-                    actorParameters["name"]!!,
+                    actorId,
+                    actorName,
                     dateTime,
                     objectParameters["link"]!!.toUri()
                 )
@@ -180,8 +192,8 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                 returnValue = SharedOtherItem(
                     objectParameters["id"]!!,
                     objectParameters["name"]!!,
-                    actorParameters["id"]!!,
-                    actorParameters["name"]!!,
+                    actorId,
+                    actorName,
                     dateTime
                 )
             }

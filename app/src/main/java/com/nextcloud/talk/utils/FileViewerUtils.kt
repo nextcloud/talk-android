@@ -115,7 +115,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             link = fileParameters.link.orEmpty(),
             fileSize = fileParameters.size ?: 0L,
             previewUrl = previewUrl,
-            actorDisplayName = message.actorDisplayName.orEmpty(),
+            actorDisplayName = message.getNullsafeActorDisplayNameWithServer(),
             timestamp = message.timestamp
         )
         context.startActivity(
