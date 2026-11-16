@@ -596,10 +596,13 @@ class MessageInputFragment : Fragment() {
         var prevDx = 0f
         var voiceRecordStartTime = 0L
         var voiceRecordEndTime: Long
+        // only true when recording was started by the current touch gesture (not when permissions were requested)
+        var isRecordingGesture = false
         binding.fragmentMessageInputView.recordAudioButton.setOnTouchListener { v, event ->
             v?.performClick()
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isRecordingGesture = false
                     if (!chatActivity.isRecordAudioPermissionGranted()) {
                         chatActivity.requestRecordAudioPermissions()
                         return@setOnTouchListener true
@@ -616,11 +619,16 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentMessageInputView.audioRecordDuration.start()
                     chatActivity.chatViewModel.startAudioRecording(requireContext(), chatActivity.currentConversation!!)
                     showRecordAudioUi(true)
+                    isRecordingGesture = true
                     prevDx = event.x
                 }
 
                 MotionEvent.ACTION_CANCEL -> {
                     Log.d(TAG, "ACTION_CANCEL")
+                    if (!isRecordingGesture) {
+                        return@setOnTouchListener true
+                    }
+                    isRecordingGesture = false
                     if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
                         !chatActivity.isRecordAudioPermissionGranted()
                     ) {
@@ -635,6 +643,10 @@ class MessageInputFragment : Fragment() {
 
                 MotionEvent.ACTION_UP -> {
                     Log.d(TAG, "ACTION_UP")
+                    if (!isRecordingGesture) {
+                        return@setOnTouchListener false
+                    }
+                    isRecordingGesture = false
                     if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
                         chatActivity.chatViewModel.getVoiceRecordingLocked.value == true ||
                         !chatActivity.isRecordAudioPermissionGranted()
@@ -664,7 +676,8 @@ class MessageInputFragment : Fragment() {
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    if (chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
+                    if (!isRecordingGesture ||
+                        chatActivity.chatViewModel.getVoiceRecordingInProgress.value == false ||
                         !chatActivity.isRecordAudioPermissionGranted()
                     ) {
                         return@setOnTouchListener false
