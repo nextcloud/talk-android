@@ -2399,6 +2399,12 @@ class ChatViewModel @AssistedInject constructor(
     fun stopAndSendAudioRecording(roomToken: String = "", replyToMessageId: Int? = null, displayName: String) {
         stopAudioRecording()
 
+        val voiceRecordFile = mediaRecorderManager.currentVoiceRecordFile
+        if (voiceRecordFile.isEmpty() || !File(voiceRecordFile).exists()) {
+            Log.w(TAG, "No voice recording file available. Nothing to upload")
+            return
+        }
+
         if (mediaRecorderManager.mediaRecorderState != MediaRecorderManager.MediaRecorderState.ERROR) {
             val uri = Uri.fromFile(File(mediaRecorderManager.currentVoiceRecordFile))
             Log.d(TAG, "File uploaded")
