@@ -40,6 +40,7 @@ data class ChatMessageUi(
     val incoming: Boolean,
     val isDeleted: Boolean,
     val avatarUrl: String?,
+    val authHeader: String? = null,
     val statusIcon: MessageStatusIcon,
     val timestamp: Long,
     val date: LocalDate,
@@ -138,6 +139,7 @@ fun ChatMessage.toUiModel(
         incoming = incoming,
         isDeleted = isDeleted,
         avatarUrl = avatarUrl,
+        authHeader = ApiUtils.getCredentials(user.username, user.token),
         statusIcon = resolveStatusIcon(
             jsonMessageId,
             lastCommonReadMessageId,
@@ -191,6 +193,7 @@ fun ChatMessage.toScheduledMessageUiModel(
         incoming = false,
         isDeleted = isDeleted,
         avatarUrl = null,
+        authHeader = ApiUtils.getCredentials(user.username, user.token),
         statusIcon = MessageStatusIcon.SCHEDULED,
         timestamp = sendAtTimestamp,
         date = Instant.ofEpochSecond(sendAtTimestamp).atZone(ZoneId.systemDefault()).toLocalDate(),

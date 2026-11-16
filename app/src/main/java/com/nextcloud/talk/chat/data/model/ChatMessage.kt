@@ -325,6 +325,7 @@ data class ChatMessage(
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
         private const val ACTOR_TYPE_DELETED_USERS = "deleted_users"
+        const val ACTOR_TYPE_FEDERATED_USERS = "federated_users"
         private val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
         private val MARKDOWN_LINK_REGEX = """\[[^\]]+\]\((https?://[^\s)]+)\)""".toRegex(regexOptions)
 

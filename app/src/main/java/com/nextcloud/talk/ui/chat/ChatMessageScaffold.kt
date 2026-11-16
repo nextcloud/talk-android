@@ -87,6 +87,7 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageReactionUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
@@ -318,8 +319,11 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
         } else {
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val avatarContext = LocalContext.current
-            val loadedImage = remember(uiMessage.avatarUrl) {
-                loadImage(uiMessage.avatarUrl, avatarContext, errorPlaceholderImage)
+            val avatarAuthHeader = uiMessage.authHeader.takeIf {
+                uiMessage.actorType == ChatMessage.ACTOR_TYPE_FEDERATED_USERS
+            }
+            val loadedImage = remember(uiMessage.avatarUrl, avatarAuthHeader) {
+                loadImage(uiMessage.avatarUrl, avatarContext, errorPlaceholderImage, avatarAuthHeader)
             }
             AsyncImage(
                 model = loadedImage,

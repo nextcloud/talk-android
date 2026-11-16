@@ -83,7 +83,8 @@ data class MentionChipModel(
     val isFederated: Boolean,
     val isSelfMention: Boolean,
     val isClickableUserMention: Boolean,
-    val avatarUrl: String?
+    val avatarUrl: String?,
+    val avatarAuthHeader: String? = null
 )
 
 fun parseMentionChipModel(
@@ -92,7 +93,8 @@ fun parseMentionChipModel(
     activeUserId: String?,
     activeUserBaseUrl: String?,
     roomToken: String?,
-    enableMentionClicks: Boolean = true
+    enableMentionClicks: Boolean = true,
+    authHeader: String? = null
 ): MentionChipModel? =
     messageParameters[key]
         ?.takeIf { it["type"] in mentionParameterTypes }
@@ -121,7 +123,8 @@ fun parseMentionChipModel(
                 isFederated = isFederated,
                 isSelfMention = isSelfMention,
                 isClickableUserMention = enableMentionClicks && type == "user" && !isSelfMention && !isFederated,
-                avatarUrl = avatarUrl
+                avatarUrl = avatarUrl,
+                avatarAuthHeader = authHeader.takeIf { isFederated }
             )
         }
 
@@ -314,7 +317,9 @@ fun MentionChipIcon(mention: MentionChipModel, fallbackIcon: Int) {
 
         mention.avatarUrl != null -> {
             val context = LocalContext.current
-            val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
+            val loadedImage = remember(mention.avatarUrl, mention.avatarAuthHeader) {
+                loadImage(mention.avatarUrl, context, fallbackIcon, mention.avatarAuthHeader)
+            }
             AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
         }
 

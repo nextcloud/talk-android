@@ -107,6 +107,7 @@ fun PinnedMessageView(
             incoming = true,
             isDeleted = message.isDeleted,
             avatarUrl = null,
+            authHeader = user.getCredentials(),
             statusIcon = MessageStatusIcon.SENT,
             timestamp = message.timestamp,
             date = Instant.ofEpochSecond(message.timestamp).atZone(ZoneId.systemDefault()).toLocalDate(),

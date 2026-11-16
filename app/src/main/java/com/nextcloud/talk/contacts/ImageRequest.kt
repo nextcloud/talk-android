@@ -13,10 +13,17 @@ import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
+import com.nextcloud.talk.ui.withAuthHeader
 
-fun loadImage(imageUri: String?, context: Context, errorPlaceholderImage: Int): ImageRequest {
+fun loadImage(
+    imageUri: String?,
+    context: Context,
+    errorPlaceholderImage: Int,
+    authHeader: String? = null
+): ImageRequest {
     val imageRequest = ImageRequest.Builder(context)
         .data(imageUri)
+        .withAuthHeader(authHeader)
         .transformations(CircleCropTransformation())
         .error(errorPlaceholderImage)
         .placeholder(errorPlaceholderImage)
