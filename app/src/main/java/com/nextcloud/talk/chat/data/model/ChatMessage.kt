@@ -201,6 +201,17 @@ data class ChatMessage(
             else -> sharedApplication!!.getString(R.string.nc_guest)
         }
 
+    /**
+     * The display name of the actor, followed by the server of a federated user in brackets,
+     * e.g. "Alice (cloud.example.com)".
+     */
+    fun getNullsafeActorDisplayNameWithServer(): String =
+        if (actorType == ACTOR_TYPE_FEDERATED_USERS) {
+            "${getNullsafeActorDisplayName()} (${actorId.orEmpty().substringAfterLast('@')})"
+        } else {
+            getNullsafeActorDisplayName()
+        }
+
     val createdAt: Date = Date(timestamp * MILLIES)
 
     // needed a equals and hashcode function to fix detekt errors
