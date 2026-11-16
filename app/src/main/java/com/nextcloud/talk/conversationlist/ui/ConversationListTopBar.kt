@@ -11,6 +11,12 @@ package com.nextcloud.talk.conversationlist.ui
 
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -53,6 +59,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -152,11 +159,13 @@ private fun TopBarSearchContent(
     focusRequester: FocusRequester
 ) {
     val activeMode = state.mode as? TopBarMode.SearchActive
+    val isActive = activeMode != null
+    val endPadding by animateDpAsState(if (isActive) 16.dp else 4.dp, label = "searchBarEndPadding")
     Box {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = if (activeMode == null) 4.dp else 16.dp, top = 4.dp, bottom = 4.dp),
+                .padding(start = 16.dp, end = endPadding, top = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
@@ -166,29 +175,31 @@ private fun TopBarSearchContent(
                 shape = RoundedCornerShape(25.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                if (activeMode == null) {
-                    IdleSearchBarCardContent(state = state, actions = actions)
-                } else {
-                    ActiveSearchBarCardContent(
-                        query = activeMode.query,
-                        onQueryChange = actions.onSearchQueryChange,
-                        onSearchClose = actions.onSearchClose,
-                        focusRequester = focusRequester
+                SearchBarCardContent(
+                    state = state,
+                    actions = actions,
+                    query = activeMode?.query,
+                    focusRequester = focusRequester
+                )
+            }
+            AnimatedVisibility(
+                visible = !isActive,
+                enter = fadeIn() + expandHorizontally(),
+                exit = fadeOut() + shrinkHorizontally()
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    AvatarButton(
+                        avatarUrl = state.avatarUrl,
+                        credentials = state.credentials,
+                        showBadge = state.showAvatarBadge,
+                        onClick = actions.onAvatarClick
                     )
                 }
             }
-            if (activeMode == null) {
-                Spacer(modifier = Modifier.width(8.dp))
-                AvatarButton(
-                    avatarUrl = state.avatarUrl,
-                    credentials = state.credentials,
-                    showBadge = state.showAvatarBadge,
-                    onClick = actions.onAvatarClick
-                )
-            }
         }
         // Overlays the bottom edge so that it doesn't change the height of the top bar.
-        if (activeMode != null && state.isSearchLoading) {
+        if (isActive && state.isSearchLoading) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,25 +211,101 @@ private fun TopBarSearchContent(
     }
 }
 
+/**
+ * Content of the rounded search card. [query] is null while the search is idle.
+ */
 @Composable
-private fun IdleSearchBarCardContent(state: ConversationListTopBarState, actions: ConversationListTopBarActions) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterStart)
-                .padding(start = 16.dp, end = if (state.showThreadsButton) 80.dp else 48.dp)
-                .clickable { actions.onSearchActivate() },
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+private fun SearchBarCardContent(
+    state: ConversationListTopBarState,
+    actions: ConversationListTopBarActions,
+    query: String?,
+    focusRequester: FocusRequester
+) {
+    val isActive = query != null
+    val showClearButton = !query.isNullOrEmpty()
+    val textStartPadding by animateDpAsState(if (isActive) 0.dp else 16.dp, label = "searchTextStartPadding")
+    val textEndPadding by animateDpAsState(
+        if (isActive && !showClearButton) 16.dp else 0.dp,
+        label = "searchTextEndPadding"
+    )
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AnimatedVisibility(
+            visible = isActive,
+            enter = fadeIn() + expandHorizontally(),
+            exit = fadeOut() + shrinkHorizontally()
+        ) {
+            SearchBackButton(onClick = {
+                actions.onSearchQueryChange("")
+                actions.onSearchClose()
+            })
+        }
+        val textModifier = Modifier
+            .weight(1f)
+            .padding(start = textStartPadding, end = textEndPadding)
+        if (query != null) {
+            SearchTextField(
+                query = query,
+                onQueryChange = actions.onSearchQueryChange,
+                focusRequester = focusRequester,
+                modifier = textModifier
+            )
+            LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        } else {
+            SearchPlaceholder(modifier = textModifier.clickable { actions.onSearchActivate() })
+        }
+        AnimatedVisibility(
+            visible = showClearButton,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            SearchClearButton(onClick = {
+                actions.onSearchQueryChange("")
+                focusRequester.requestFocus()
+            })
+        }
+        AnimatedVisibility(
+            visible = !isActive,
+            enter = fadeIn() + expandHorizontally(),
+            exit = fadeOut() + shrinkHorizontally()
+        ) {
+            IdleSearchBarActions(state = state, actions = actions)
+        }
+    }
+}
+
+@Composable
+private fun SearchPlaceholder(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
+private fun SearchBackButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+            contentDescription = stringResource(R.string.nc_cancel),
+            tint = MaterialTheme.colorScheme.onSurface
         )
-        IdleSearchBarActions(
-            state = state,
-            actions = actions,
-            modifier = Modifier.align(Alignment.CenterEnd)
+    }
+}
+
+@Composable
+private fun SearchClearButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
+            contentDescription = stringResource(R.string.nc_search_clear),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -264,51 +351,6 @@ private fun IdleSearchBarActions(
 }
 
 @Composable
-private fun ActiveSearchBarCardContent(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onSearchClose: () -> Unit,
-    focusRequester: FocusRequester
-) {
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = {
-            onQueryChange("")
-            onSearchClose()
-        }) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                contentDescription = stringResource(R.string.nc_cancel),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        SearchTextField(
-            query = query,
-            onQueryChange = onQueryChange,
-            focusRequester = focusRequester,
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = if (query.isEmpty()) 16.dp else 0.dp)
-        )
-        if (query.isNotEmpty()) {
-            IconButton(onClick = {
-                onQueryChange("")
-                focusRequester.requestFocus()
-            }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
-                    contentDescription = stringResource(R.string.nc_search_clear),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-    LaunchedEffect(Unit) { focusRequester.requestFocus() }
-}
-
-@Composable
 private fun SearchTextField(
     query: String,
     onQueryChange: (String) -> Unit,
@@ -331,14 +373,7 @@ private fun SearchTextField(
         decorationBox = { innerTextField ->
             Box(contentAlignment = Alignment.CenterStart) {
                 if (query.isEmpty()) {
-                    Text(
-                        text = stringResource(
-                            R.string.appbar_search_in,
-                            stringResource(R.string.nc_app_product_name)
-                        ),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    SearchPlaceholder()
                 }
                 innerTextField()
             }
