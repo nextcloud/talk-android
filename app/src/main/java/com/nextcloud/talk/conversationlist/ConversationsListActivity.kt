@@ -232,6 +232,7 @@ class ConversationsListActivity : BaseActivity() {
     private val hasMultipleAccountsState = MutableStateFlow(false)
     private val showShareToScreen get() = showShareToScreenState.value
     private val forwardMessage get() = forwardMessageState.value
+    private val isPickingConversation get() = forwardMessage || isShare(intent)
     private var filesToShare: ArrayList<String>? = null
     private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
@@ -459,7 +460,7 @@ class ConversationsListActivity : BaseActivity() {
         setIntent(intentOfAccount(this, intent, currentUser.id))
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         // a search left open would hide that a conversation is to be picked now
-        if (forwardMessage || isShare(intent)) {
+        if (isPickingConversation) {
             conversationsListViewModel.setIsSearchActive(false)
         }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
@@ -639,7 +640,6 @@ class ConversationsListActivity : BaseActivity() {
     private fun switchToDefaultAccountIfChanged() {
         if (isRelaunching) return
         val defaultUserId = defaultAccountProvider.getDefaultUserBlocking()?.id ?: return
-        val isPickingConversation = forwardMessage || isShare(intent)
         if (defaultUserId != currentUser.id && !isPickingConversation) {
             relaunchForAccount(defaultUserId, createIntent(this))
         }
@@ -927,7 +927,7 @@ class ConversationsListActivity : BaseActivity() {
     }
 
     private fun handleConversationLongClick(model: ConversationModel) {
-        if (!showShareToScreen && networkMonitor.isOnline.value) {
+        if (!isPickingConversation && networkMonitor.isOnline.value) {
             conversationsListViewModel.setSelectedConversationForOps(model)
         }
     }

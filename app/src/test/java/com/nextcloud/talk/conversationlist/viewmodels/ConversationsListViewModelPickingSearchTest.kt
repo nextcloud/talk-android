@@ -115,7 +115,7 @@ class ConversationsListViewModelPickingSearchTest {
     fun `picking a conversation only searches the joined ones that can be picked`() {
         search("team", conversationsOnly = true)
 
-        assertEquals(listOf(TEAM.token), listedTokens())
+        assertEquals(listOf(TEAM.token), awaitListedTokens(listOf(TEAM.token)))
         assertFalse(viewModel.conversationListEntriesFlow.value.any { it is ConversationListEntry.ContactEntry })
         verify(openConversationsRepository, never()).fetchOpenConversationsFlow(any(), any())
         verify(contactsRepository, never()).getContactsFlow(any(), anyOrNull())
@@ -134,10 +134,8 @@ class ConversationsListViewModelPickingSearchTest {
     fun `the normal search also finds contacts`() {
         search("team", conversationsOnly = false)
 
-        assertEquals(
-            listOf(TEAM.token, TEAM_IN_LOBBY.token),
-            listedTokens()
-        )
+        val expected = listOf(TEAM.token, TEAM_IN_LOBBY.token)
+        assertEquals(expected, awaitListedTokens(expected))
         assertEquals(1, viewModel.conversationListEntriesFlow.value.count { it is ConversationListEntry.ContactEntry })
     }
 
@@ -147,7 +145,7 @@ class ConversationsListViewModelPickingSearchTest {
 
         search("team", conversationsOnly = true)
 
-        assertEquals(listOf(TEAM.token), listedTokens())
+        assertEquals(listOf(TEAM.token), awaitListedTokens(listOf(TEAM.token)))
     }
 
     private fun search(query: String, conversationsOnly: Boolean) {
@@ -158,10 +156,18 @@ class ConversationsListViewModelPickingSearchTest {
         runBlocking { withTimeout(TIMEOUT_MS) { viewModel.isSearchLoadingFlow.first { !it } } }
     }
 
-    private fun listedTokens(): List<String> =
-        viewModel.conversationListEntriesFlow.value
-            .filterIsInstance<ConversationListEntry.ConversationEntry>()
-            .map { it.model.token }
+    // the message search answers on another thread, so the list may follow shortly after the search is done
+    private fun awaitListedTokens(expected: List<String>): List<String> {
+        runBlocking {
+            withTimeout(TIMEOUT_MS) { viewModel.conversationListEntriesFlow.first { tokensOf(it) == expected } }
+        }
+        return listedTokens()
+    }
+
+    private fun tokensOf(entries: List<ConversationListEntry>): List<String> =
+        entries.filterIsInstance<ConversationListEntry.ConversationEntry>().map { it.model.token }
+
+    private fun listedTokens(): List<String> = tokensOf(viewModel.conversationListEntriesFlow.value)
 
     companion object {
         private const val TIMEOUT_MS = 5_000L
