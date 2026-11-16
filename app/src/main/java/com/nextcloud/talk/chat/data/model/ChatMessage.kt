@@ -213,13 +213,6 @@ data class ChatMessage(
     fun getPinnedActorDisplayNameWithServer(): String =
         withServer(pinnedActorDisplayName.orEmpty(), pinnedActorType, pinnedActorId)
 
-    private fun withServer(name: String, type: String?, id: String?): String =
-        if (type == ACTOR_TYPE_FEDERATED_USERS) {
-            "$name (${id.orEmpty().substringAfterLast('@')})"
-        } else {
-            name
-        }
-
     val createdAt: Date = Date(timestamp * MILLIES)
 
     // needed a equals and hashcode function to fix detekt errors
@@ -345,6 +338,17 @@ data class ChatMessage(
         private const val MILLIES: Long = 1000L
         private const val ACTOR_TYPE_DELETED_USERS = "deleted_users"
         const val ACTOR_TYPE_FEDERATED_USERS = "federated_users"
+
+        /**
+         * [name], followed by the server of a federated user in brackets, e.g. "Alice (cloud.example.com)",
+         * when [type] and [id] are those of a federated user.
+         */
+        fun withServer(name: String, type: String?, id: String?): String =
+            if (type == ACTOR_TYPE_FEDERATED_USERS) {
+                "$name (${id.orEmpty().substringAfterLast('@')})"
+            } else {
+                name
+            }
         private val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
         private val MARKDOWN_LINK_REGEX = """\[[^\]]+\]\((https?://[^\s)]+)\)""".toRegex(regexOptions)
 
