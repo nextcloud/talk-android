@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
@@ -24,6 +25,8 @@ import javax.inject.Inject
 class SharedItemsViewModel @Inject constructor(private val repository: SharedItemsRepository) : ViewModel() {
 
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
+
+    private var itemsDisposable: Disposable? = null
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -90,72 +93,79 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     fun initialLoadItems(type: SharedItemType) {
         val state = _viewState.value
         if (state is TypesLoadedState) {
+            itemsDisposable?.dispose()
             _viewState.value = LoadingItemsState(state.types, type)
-            repository.media(repositoryParameters, type)?.subscribeOn(Schedulers.io())
+            itemsDisposable = repository.media(repositoryParameters, type)
+                ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(SharedMediaItemsObserver())
+                ?.subscribe(
+                    { firstPage -> onFirstPageLoaded(type, firstPage) },
+                    { e -> onItemsLoadingFailed(e) }
+                )
         }
     }
 
+    /**
+     * Requests the page following the currently loaded items. Calls while a request is already running, or when
+     * the server reported no further items, are ignored.
+     */
     fun loadNextItems() {
-        when (val currentState = _viewState.value) {
-            is LoadedState -> {
-                val currentSharedItems = currentState.items
-                if (currentSharedItems.moreItemsExisting) {
-                    repository.media(repositoryParameters, currentState.selectedType, currentSharedItems.lastSeenId)
-                        ?.subscribeOn(Schedulers.io())
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribe(SharedMediaItemsObserver())
-                }
-            }
-            else -> return
+        val state = _viewState.value as? LoadedState ?: return
+        val cursor = state.items.lastSeenId
+        if (!state.items.moreItemsExisting || cursor == null || itemsDisposable?.isDisposed == false) {
+            return
+        }
+        itemsDisposable = repository.media(repositoryParameters, state.selectedType, cursor)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(
+                { nextPage -> onNextPageLoaded(state.selectedType, cursor, nextPage) },
+                { e -> onItemsLoadingFailed(e) }
+            )
+    }
+
+    fun removeItem(item: SharedItem) {
+        val state = _viewState.value as? LoadedState ?: return
+        val items = state.items
+        _viewState.value = LoadedState(
+            state.types,
+            state.selectedType,
+            SharedItems(items.items - item, items.type, items.lastSeenId, items.moreItemsExisting)
+        )
+    }
+
+    private fun onFirstPageLoaded(type: SharedItemType, firstPage: SharedItems) {
+        val state = _viewState.value
+        if (state is LoadingItemsState && state.selectedType == type) {
+            _viewState.value = LoadedState(state.types, type, firstPage)
         }
     }
 
-    inner class SharedMediaItemsObserver : Observer<SharedItems> {
-
-        var newSharedItems: SharedItems? = null
-
-        override fun onSubscribe(d: Disposable) = Unit
-
-        override fun onNext(response: SharedItems) {
-            newSharedItems = response
+    private fun onNextPageLoaded(type: SharedItemType, cursor: Int, nextPage: SharedItems) {
+        val state = _viewState.value
+        // Only append to the list the page was requested for, so a page can never be added twice
+        // or end up in the list of another type.
+        if (state is LoadedState && state.selectedType == type && state.items.lastSeenId == cursor) {
+            _viewState.value = LoadedState(
+                state.types,
+                type,
+                SharedItems(
+                    state.items.items + nextPage.items,
+                    state.items.type,
+                    nextPage.lastSeenId,
+                    nextPage.moreItemsExisting
+                )
+            )
         }
+    }
 
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "An error occurred: $e")
-        }
+    private fun onItemsLoadingFailed(e: Throwable) {
+        Log.e(TAG, "An error occurred when loading shared items", e)
+    }
 
-        override fun onComplete() {
-            val items = newSharedItems!!
-            val state = this@SharedItemsViewModel._viewState.value
-            if (state is LoadedState) {
-                val oldItems = state.items.items
-                val newItems =
-                    SharedItems(
-                        oldItems + newSharedItems!!.items,
-                        state.items.type,
-                        newSharedItems!!.lastSeenId,
-                        newSharedItems!!.moreItemsExisting
-                    )
-                setCurrentState(newItems)
-            } else {
-                setCurrentState(items)
-            }
-        }
-
-        private fun setCurrentState(items: SharedItems) {
-            when (val state = this@SharedItemsViewModel._viewState.value) {
-                is TypesLoadedState -> {
-                    this@SharedItemsViewModel._viewState.value = LoadedState(
-                        state.types,
-                        state.selectedType,
-                        items
-                    )
-                }
-                else -> return
-            }
-        }
+    override fun onCleared() {
+        itemsDisposable?.dispose()
+        super.onCleared()
     }
 
     companion object {

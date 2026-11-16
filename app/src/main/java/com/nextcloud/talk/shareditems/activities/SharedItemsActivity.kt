@@ -29,6 +29,7 @@ import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
+import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
@@ -74,6 +75,9 @@ class SharedItemsActivity : BaseActivity() {
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
 
+    private var adapter: SharedItemsAdapter? = null
+    private var adapterType: SharedItemType? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -102,9 +106,10 @@ class SharedItemsActivity : BaseActivity() {
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+            // Also called after each layout, so pages keep loading while the list does not fill the screen.
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - LOAD_MORE_THRESHOLD) {
                     viewModel.loadNextItems()
                 }
             }
@@ -129,28 +134,15 @@ class SharedItemsActivity : BaseActivity() {
                 showEmpty()
             }
             is SharedItemsViewModel.LoadedState -> {
-                val sharedMediaItems = state.items
-                Log.d(TAG, "Items received: $sharedMediaItems")
-
-                val showGrid = state.selectedType == SharedItemType.MEDIA
-                val layoutManager = if (showGrid) {
-                    GridLayoutManager(this, SPAN_COUNT)
-                } else {
-                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                }
-
-                val adapter = SharedItemsAdapter(
-                    showGrid,
-                    user,
-                    roomToken,
-                    isUserConversationOwnerOrModerator,
-                    isOne2One,
-                    viewThemeUtils
-                ).apply {
-                    items = sharedMediaItems.items.toMutableList()
-                }
-                binding.imageRecycler.adapter = adapter
-                binding.imageRecycler.layoutManager = layoutManager
+                val currentAdapter = adapter.takeIf { adapterType == state.selectedType }
+                    ?: createAdapter(
+                        state.selectedType,
+                        user,
+                        roomToken,
+                        isUserConversationOwnerOrModerator,
+                        isOne2One
+                    )
+                currentAdapter.submitList(state.items.items)
             }
             is SharedItemsViewModel.TypesLoadedState -> {
                 initTabs(state.types)
@@ -159,6 +151,41 @@ class SharedItemsActivity : BaseActivity() {
         }
 
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
+    }
+
+    /**
+     * Replaces the adapter and layout manager, as both depend on the shown [SharedItemType]. While the type stays
+     * the same, the adapter is kept so that new pages are appended without losing the scroll position.
+     */
+    private fun createAdapter(
+        type: SharedItemType,
+        user: User,
+        roomToken: String,
+        isUserConversationOwnerOrModerator: Boolean,
+        isOne2One: Boolean
+    ): SharedItemsAdapter {
+        val showGrid = type == SharedItemType.MEDIA
+        binding.imageRecycler.layoutManager = if (showGrid) {
+            GridLayoutManager(this, SPAN_COUNT)
+        } else {
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        }
+        return SharedItemsAdapter(
+            showGrid,
+            user,
+            roomToken,
+            isUserConversationOwnerOrModerator,
+            isOne2One,
+            viewThemeUtils
+        ).also {
+            binding.imageRecycler.adapter = it
+            adapter = it
+            adapterType = type
+        }
+    }
+
+    fun onItemUnpinned(item: SharedItem) {
+        viewModel.removeItem(item)
     }
 
     fun startContextChatWindowForMessage(user: User, roomToken: String, messageId: String?, threadId: String?) {
@@ -295,6 +322,7 @@ class SharedItemsActivity : BaseActivity() {
     companion object {
         private val TAG = SharedItemsActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
+        private const val LOAD_MORE_THRESHOLD: Int = SPAN_COUNT * 2
         const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
         const val KEY_IS_ONE_2_ONE = "KEY_IS_ONE_2_ONE"
     }

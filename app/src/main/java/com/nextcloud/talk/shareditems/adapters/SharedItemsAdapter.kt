@@ -10,7 +10,8 @@ package com.nextcloud.talk.shareditems.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.SharedItemGridBinding
@@ -31,7 +32,6 @@ import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import java.util.Collections.emptyList
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
@@ -40,9 +40,7 @@ class SharedItemsAdapter(
     private val isUserConversationOwnerOrModerator: Boolean,
     private val isOne2One: Boolean,
     private val viewThemeUtils: ViewThemeUtils
-) : RecyclerView.Adapter<SharedItemsViewHolder>() {
-
-    var items: MutableList<SharedItem> = emptyList()
+) : ListAdapter<SharedItem, SharedItemsViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder =
         if (showGrid) {
@@ -68,7 +66,7 @@ class SharedItemsAdapter(
         }
 
     override fun onBindViewHolder(holder: SharedItemsViewHolder, position: Int) {
-        when (val item = items[position]) {
+        when (val item = getItem(position)) {
             is SharedPollItem -> holder.onBind(item, ::showPoll)
             is SharedFileItem -> holder.onBind(item, ::openMediaViewer, ::openInChat)
             is SharedLocationItem -> holder.onBind(item)
@@ -77,8 +75,6 @@ class SharedItemsAdapter(
             is SharedPinnedItem -> holder.onBind(item, ::openMessage, ::unpinMessage)
         }
     }
-
-    override fun getItemCount(): Int = items.size
 
     private fun showPoll(item: SharedItem, context: Context) {
         val pollVoteDialog = PollMainDialogFragment.newInstance(
@@ -106,9 +102,7 @@ class SharedItemsAdapter(
                     url,
                     item.id.toLongOrNull() ?: 0L
                 )
-                val index = items.indexOf(item)
-                items.remove(item)
-                this.notifyItemRemoved(index)
+                context.onItemUnpinned(item)
             }
         }
     }
@@ -118,7 +112,7 @@ class SharedItemsAdapter(
     // Items are displayed newest-first (see SharedItemsRepositoryImpl.map()); toMediaViewerGroups()
     // expects oldest-first, so the seed is sorted back before being passed along.
     private fun openMediaViewer(item: SharedFileItem, context: Context) {
-        val seedItems = items
+        val seedItems = currentList
             .filterIsInstance<SharedFileItem>()
             .filter { it.isImageOrVideo() }
             .sortedBy { it.messageId }
@@ -147,5 +141,15 @@ class SharedItemsAdapter(
 
     companion object {
         private val TAG = SharedItemsAdapter::class.simpleName
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SharedItem>() {
+            override fun areItemsTheSame(oldItem: SharedItem, newItem: SharedItem): Boolean =
+                oldItem.javaClass == newItem.javaClass && oldItem.stableKey() == newItem.stableKey()
+
+            override fun areContentsTheSame(oldItem: SharedItem, newItem: SharedItem): Boolean = oldItem == newItem
+
+            // A file shared several times keeps its file id, so its message id identifies the list entry.
+            private fun SharedItem.stableKey(): String = if (this is SharedFileItem) messageId.toString() else id
+        }
     }
 }
