@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">Det här mötet är planerat till %1$s</string>
     <string name="nc_lobby_start_soon">Mötet börjar snart</string>
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
+    <string name="nc_local_network_permission_denied">Tillåt åtkomst till lokalt nätverk för att ansluta till den här servern.</string>
+    <string name="nc_local_network_permission_message">Den här servern finns i ditt lokala nätverk. Den kan endast nås med behörigheten ”Enheter i närheten”. Det går inte att ansluta till servern utan den.</string>
+    <string name="nc_local_network_permission_title">Tillåt åtkomst till lokalt nätverk</string>
     <string name="nc_location_current_position_description">Din nuvarande plats</string>
     <string name="nc_location_unknown">Position okänd</string>
     <string name="nc_locked">Låst</string>
