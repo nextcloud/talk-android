@@ -169,7 +169,8 @@ private fun buildSystemMessageContent(
                 messageParameters = message.messageParameters,
                 activeUserId = message.activeUserId,
                 activeUserBaseUrl = message.activeUserBaseUrl,
-                roomToken = message.roomToken
+                roomToken = message.roomToken,
+                authHeader = message.authHeader
             )
             if (mention != null) {
                 val inlineId = "sysmsg-${message.id}-$mentionCounter"

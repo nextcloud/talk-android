@@ -124,7 +124,8 @@ private fun buildMentionRichText(
                         activeUserId = message.activeUserId,
                         activeUserBaseUrl = message.activeUserBaseUrl,
                         roomToken = message.roomToken,
-                        enableMentionClicks = enableMentionClicks
+                        enableMentionClicks = enableMentionClicks,
+                        authHeader = message.authHeader
                     )
                     if (mention == null) {
                         appendFallbackParameter(token, message.messageParameters)
