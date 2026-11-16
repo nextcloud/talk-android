@@ -390,6 +390,9 @@
     <string name="nc_lobby_start_date">此會議預定於 %1$s 開始</string>
     <string name="nc_lobby_start_soon">會議即將開始</string>
     <string name="nc_lobby_waiting">您目前正於大廳等候。</string>
+    <string name="nc_local_network_permission_denied">允許存取區域網路以連線至此伺服器。</string>
+    <string name="nc_local_network_permission_message">此伺服器在您的區域網路上。其僅能在有「鄰近裝置」權限時連線。若未提供此權限，則會連線失敗。</string>
+    <string name="nc_local_network_permission_title">允許存取區域網路</string>
     <string name="nc_location_current_position_description">您目前的位置</string>
     <string name="nc_location_unknown">位置不明</string>
     <string name="nc_locked">已鎖定</string>
