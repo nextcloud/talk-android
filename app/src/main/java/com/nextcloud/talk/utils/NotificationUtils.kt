@@ -72,6 +72,9 @@ object NotificationUtils {
      */
     private const val CHANNEL_ID_VERSION_SEPARATOR = "__"
 
+    const val CALLS_AUDIO_USAGE = AudioAttributes.USAGE_NOTIFICATION_RINGTONE
+    const val MESSAGES_AUDIO_USAGE = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT
+
     private fun createNotificationChannel(
         context: Context,
         notificationChannel: Channel,
@@ -109,7 +112,7 @@ object NotificationUtils {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                .setUsage(CALLS_AUDIO_USAGE)
                 .build()
 
         createNotificationChannel(
@@ -182,6 +185,7 @@ object NotificationUtils {
      * Creates a new channel with a new id and then deletes the old ones. Other settings the user changed in the
      * system settings for the old channel are not kept.
      */
+    @Suppress("TooGenericExceptionCaught")
     private fun replaceChannel(
         context: Context,
         baseId: String,
@@ -198,8 +202,8 @@ object NotificationUtils {
         val created = try {
             createChannel(newChannelId)
             true
-        } catch (e: SecurityException) {
-            // the system rejects sounds the app is not allowed to read
+        } catch (e: RuntimeException) {
+            // e.g. SecurityException for sounds the app is not allowed to read, or invalid sound uris
             Log.e(TAG, "Failed to create channel $newChannelId with sound $sound", e)
             false
         }
@@ -233,7 +237,7 @@ object NotificationUtils {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                .setUsage(MESSAGES_AUDIO_USAGE)
                 .build()
 
         createNotificationChannel(
