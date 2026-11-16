@@ -268,14 +268,21 @@ class ConversationsListActivity : BaseActivity() {
     // here would leave the app. Instead leave the forward mode and return to the source chat.
     private fun cancelForwarding() {
         val sourceRoomToken = intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
+        endForwarding()
+        if (sourceRoomToken != null) {
+            startActivity(ChatActivity.createIntent(context, currentUser.id!!, sourceRoomToken))
+        }
+    }
+
+    // the extras are removed as well, so that a recreation or the next resume doesn't bring back the forward mode or
+    // keep hiding the source chat
+    private fun endForwarding() {
         intent.removeExtra(KEY_FORWARD_MSG_FLAG)
         intent.removeExtra(KEY_FORWARD_MSG_TEXT)
         intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
         forwardMessageState.value = false
         conversationsListViewModel.setHideRoomToken(null)
-        if (sourceRoomToken != null) {
-            startActivity(ChatActivity.createIntent(context, currentUser.id!!, sourceRoomToken))
-        }
+        conversationsListViewModel.setIsSearchActive(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -451,6 +458,10 @@ class ConversationsListActivity : BaseActivity() {
     private fun showNewIntent(intent: Intent) {
         setIntent(intentOfAccount(this, intent, currentUser.id))
         forwardMessageState.value = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
+        // a search left open would hide that a conversation is to be picked now
+        if (forwardMessage || isShare(intent)) {
+            conversationsListViewModel.setIsSearchActive(false)
+        }
         conversationsListViewModel.setHideRoomToken(intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM))
         handleEcoSystemIntent(intent)
     }
@@ -1167,9 +1178,9 @@ class ConversationsListActivity : BaseActivity() {
                 }
             } else if (forwardMessage) {
                 if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
-                    openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))
-                    forwardMessageState.value = false
-                    conversationsListViewModel.setIsSearchActive(false)
+                    if (openConversation(intent.getStringExtra(KEY_FORWARD_MSG_TEXT))) {
+                        endForwarding()
+                    }
                 } else {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }
@@ -1420,12 +1431,13 @@ class ConversationsListActivity : BaseActivity() {
         }
     }
 
-    private fun openConversation(textToPaste: String? = "") {
+    /** Opens the selected conversation, returning false if it can't be opened during the current call. */
+    private fun openConversation(textToPaste: String? = ""): Boolean {
         if (CallActivity.active &&
             !ApplicationWideCurrentRoomHolder.getInstance().isCurrentRoom(selectedConversation!!.token, currentUser.id)
         ) {
             showSnackbar(context.getString(R.string.restrict_join_other_room_while_call))
-            return
+            return false
         }
 
         val bundle = Bundle()
@@ -1445,6 +1457,7 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         clearIntentAction()
+        return true
     }
 
     /**

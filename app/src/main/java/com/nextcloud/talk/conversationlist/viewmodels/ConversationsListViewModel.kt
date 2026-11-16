@@ -28,6 +28,7 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
@@ -467,7 +468,7 @@ class ConversationsListViewModel @AssistedInject constructor(
      * Searches for [filter]. With [conversationsOnly] only the joined conversations are searched, for picking the
      * conversation to share or forward to.
      */
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
+    @Suppress("LongMethod")
     fun getSearchQuery(context: Context, filter: String, conversationsOnly: Boolean = false) {
         // The LaunchedEffect fires again with the same query when the composition restarts
         // (rotation, display off). The search of that query is still running or done, because
@@ -487,31 +488,14 @@ class ConversationsListViewModel @AssistedInject constructor(
         val messagesTitle = context.resources.getString(R.string.messages)
         val actorTypeConverter = EnumActorTypeConverter()
         val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+        val sources = if (conversationsOnly) SearchSources.NONE else remoteSearchSources(filter)
 
         searchJob = viewModelScope.launch {
             combine(
                 getRoomsStateFlow,
-                if (conversationsOnly) {
-                    flowOf(emptyList())
-                } else {
-                    openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
-                        .afterTypingPause()
-                        .pendingUntilLoaded(emptyList())
-                },
-                if (conversationsOnly) {
-                    flowOf(emptyList())
-                } else {
-                    contactsRepository.getContactsFlow(currentUser, filter)
-                        .afterTypingPause()
-                        .pendingUntilLoaded(emptyList())
-                },
-                if (conversationsOnly) {
-                    flowOf(MessageSearchResults(emptyList(), false))
-                } else {
-                    getMessagesFlow(filter)
-                        .afterTypingPause()
-                        .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
-                },
+                sources.openConversations,
+                sources.contacts,
+                sources.messages,
                 excludedRoomTokens
             ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages, excludedTokens ->
                 val isAnyRemotePending = pendingOpenConvs == null || pendingContacts == null || pendingMessages == null
@@ -520,9 +504,13 @@ class ConversationsListViewModel @AssistedInject constructor(
                 val messages = pendingMessages?.messages.orEmpty()
                 val hasMore = pendingMessages?.hasMore == true
                 areMessagesLoaded = pendingMessages != null
-                val localConvs = rooms
+                val searchableRooms = if (conversationsOnly) {
+                    baseFilterRooms(rooms, emptyMap(), SearchDisplayMode.ALL_CONVERSATIONS, excludedTokens)
+                } else {
+                    rooms.filter { it.token !in excludedTokens }
+                }
+                val localConvs = searchableRooms
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
-                    .filter { it.token !in excludedTokens }
                     .distinctBy { it.token }
                 // Open conversations were fetched once, so a room joined afterwards would otherwise be listed twice
                 val joinedTokens = rooms.mapTo(HashSet()) { it.token }
@@ -640,6 +628,35 @@ class ConversationsListViewModel @AssistedInject constructor(
                     if (pos >= 0) pos else Int.MAX_VALUE
                 }
             )
+        )
+
+    /** The server-side lookups of a search, besides the joined conversations, each emitting null while pending. */
+    private class SearchSources(
+        val openConversations: Flow<List<ConversationDto>?>,
+        val contacts: Flow<List<AutocompleteUserDto>?>,
+        val messages: Flow<MessageSearchResults?>
+    ) {
+        companion object {
+            val NONE =
+                SearchSources(
+                    flowOf(emptyList()),
+                    flowOf(emptyList()),
+                    flowOf(MessageSearchResults(emptyList(), false))
+                )
+        }
+    }
+
+    private fun remoteSearchSources(filter: String) =
+        SearchSources(
+            openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(emptyList()),
+            contactsRepository.getContactsFlow(currentUser, filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(emptyList()),
+            getMessagesFlow(filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
         )
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =
