@@ -22,10 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.ui.ActorAvatarImage
+import com.nextcloud.talk.ui.LocalImageAuthHeader
+import com.nextcloud.talk.ui.withAuthHeader
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.DisplayUtils.isDarkModeOn
@@ -51,8 +54,14 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
         } else {
             val avatarUrl = getUrlForAvatar(participant = participant)
             if (avatarUrl.isNotEmpty()) {
+                val authHeader = LocalImageAuthHeader.current.takeIf {
+                    participant.actorType == ParticipantDto.ActorType.FEDERATED
+                }
                 AsyncImage(
-                    model = avatarUrl,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(avatarUrl)
+                        .withAuthHeader(authHeader)
+                        .build(),
                     contentDescription = stringResource(R.string.avatar),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

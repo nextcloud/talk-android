@@ -49,6 +49,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -118,6 +119,7 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMess
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.LocalParticipantMessageListener
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.OfferMessageListener
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.ui.LocalImageAuthHeader
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.utils.ApiUtils
@@ -494,25 +496,27 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
-                val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
-                val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
+                CompositionLocalProvider(LocalImageAuthHeader provides conversationUser.getCredentials()) {
+                    val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
+                    val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
 
-                LaunchedEffect(participantUiStates) {
-                    participantUiStates.forEach {
-                        Log.d(TAG, "Participant: ${it.nick} (${it.sessionKey})")
-                    }
-                }
-
-                if (screenShareParticipantUiState == null) {
-                    ParticipantGrid(
-                        participantUiStates = participantUiStates,
-                        eglBase = rootEglBase!!,
-                        isVoiceOnlyCall = isVoiceOnlyCall,
-                        onClick = {},
-                        onScreenShareIconClick = {
-                            callViewModel.setActiveScreenShareSession(it)
+                    LaunchedEffect(participantUiStates) {
+                        participantUiStates.forEach {
+                            Log.d(TAG, "Participant: ${it.nick} (${it.sessionKey})")
                         }
-                    )
+                    }
+
+                    if (screenShareParticipantUiState == null) {
+                        ParticipantGrid(
+                            participantUiStates = participantUiStates,
+                            eglBase = rootEglBase!!,
+                            isVoiceOnlyCall = isVoiceOnlyCall,
+                            onClick = {},
+                            onScreenShareIconClick = {
+                                callViewModel.setActiveScreenShareSession(it)
+                            }
+                        )
+                    }
                 }
             }
         }
