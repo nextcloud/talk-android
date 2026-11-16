@@ -20,13 +20,13 @@ class SettingsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
 
     override suspend fun getUserProfile(user: User): UserProfileDataDto? =
         ncApiCoroutines.getUserProfile(
-            user.credentials(),
+            user.getCredentials(),
             ApiUtils.getUrlForUserProfile(user.baseUrl!!)
         ).ocs?.data
 
     override suspend fun setPhoneNumber(user: User, phoneNumber: String): Boolean {
         val response = ncApiCoroutines.setUserData(
-            user.credentials(),
+            user.getCredentials(),
             ApiUtils.getUrlForUserData(user.baseUrl!!, user.userId!!),
             KEY_PHONE,
             phoneNumber
@@ -36,7 +36,7 @@ class SettingsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
 
     override suspend fun setReadStatusShared(user: User, shared: Boolean) {
         ncApiCoroutines.setReadStatusPrivacy(
-            user.credentials(),
+            user.getCredentials(),
             ApiUtils.getUrlForUserSettings(user.baseUrl!!),
             privacySettingBody(KEY_READ_STATUS_PRIVACY, shared)
         )
@@ -44,13 +44,11 @@ class SettingsRepositoryImpl @Inject constructor(private val ncApiCoroutines: Nc
 
     override suspend fun setTypingStatusShared(user: User, shared: Boolean) {
         ncApiCoroutines.setTypingStatusPrivacy(
-            user.credentials(),
+            user.getCredentials(),
             ApiUtils.getUrlForUserSettings(user.baseUrl!!),
             privacySettingBody(KEY_TYPING_PRIVACY, shared)
         )
     }
-
-    private fun User.credentials(): String = ApiUtils.getCredentials(username, token).orEmpty()
 
     /** The server expects 0 for public and 1 for private. */
     private fun privacySettingBody(key: String, shared: Boolean): RequestBody =

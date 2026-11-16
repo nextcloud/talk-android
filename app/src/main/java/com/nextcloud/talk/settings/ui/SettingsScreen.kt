@@ -9,10 +9,12 @@ package com.nextcloud.talk.settings.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -146,9 +148,8 @@ private fun SettingsContent(state: SettingsUiState, callbacks: SettingsScreenCal
             scrolledToNotifications = true
         }
     }
-    LazyColumn(
-        state = listState,
-        contentPadding = PaddingValues(bottom = 48.dp),
+    // outside of the list, so that it is shown and consumed also when the list starts scrolled down
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.bg_default))
@@ -156,22 +157,40 @@ private fun SettingsContent(state: SettingsUiState, callbacks: SettingsScreenCal
             .consumeWindowInsets(paddingValues)
             .imePadding()
     ) {
-        items(SettingsSection.entries, key = { it }) { section ->
-            when (section) {
-                SettingsSection.ACCOUNT -> AccountSection(state, callbacks)
-                SettingsSection.APPEARANCE -> AppearanceSection(state.appearance, callbacks)
-                SettingsSection.NOTIFICATIONS -> NotificationsSection(
-                    state = state.notifications,
-                    baseUrl = state.account.baseUrl,
-                    highlightIssues = state.highlightNotificationIssues,
-                    callbacks = callbacks
-                )
-                SettingsSection.PRIVACY -> PrivacySection(state.privacy, callbacks)
-                SettingsSection.DIAGNOSIS -> DiagnosisSection(state.loggingStatus, callbacks)
-                SettingsSection.ADVANCED -> AdvancedSection(state, callbacks)
-                SettingsSection.ABOUT -> AboutSection(state.isOnline, callbacks)
+        AccountMessageBanner(message = state.accountMessage, onShown = callbacks.onAccountMessageShown)
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(bottom = 48.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            items(SettingsSection.entries, key = { it }) { section ->
+                SettingsSectionContent(section, state, callbacks)
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsSectionContent(
+    section: SettingsSection,
+    state: SettingsUiState,
+    callbacks: SettingsScreenCallbacks
+) {
+    when (section) {
+        SettingsSection.ACCOUNT -> AccountSection(state.account, callbacks)
+        SettingsSection.APPEARANCE -> AppearanceSection(state.appearance, callbacks)
+        SettingsSection.NOTIFICATIONS -> NotificationsSection(
+            state = state.notifications,
+            baseUrl = state.account.baseUrl,
+            highlightIssues = state.highlightNotificationIssues,
+            callbacks = callbacks
+        )
+        SettingsSection.PRIVACY -> PrivacySection(state.privacy, callbacks)
+        SettingsSection.DIAGNOSIS -> DiagnosisSection(state.loggingStatus, callbacks)
+        SettingsSection.ADVANCED -> AdvancedSection(state, callbacks)
+        SettingsSection.ABOUT -> AboutSection(state.isOnline, callbacks)
     }
 }
 

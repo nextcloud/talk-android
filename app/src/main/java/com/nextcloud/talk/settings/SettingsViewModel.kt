@@ -8,7 +8,6 @@ package com.nextcloud.talk.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequest
@@ -16,6 +15,7 @@ import androidx.work.WorkManager
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
 import com.nextcloud.talk.dagger.modules.ApplicationScope
+import com.nextcloud.talk.dagger.modules.IoDispatcher
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
@@ -25,7 +25,6 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.settings.data.SettingsRepository
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
@@ -65,21 +64,18 @@ class SettingsViewModel @AssistedInject constructor(
     private val logger: Logger,
     networkMonitor: NetworkMonitor,
     @ApplicationScope private val appScope: CoroutineScope,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     // Dagger provides the application context, which cannot leak an Activity
     @field:SuppressLint("StaticFieldLeak") private val context: Context,
     @Assisted initialUser: User,
     @Assisted highlightNotificationIssues: Boolean
 ) : ViewModel() {
 
-    @VisibleForTesting
-    internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-
     // preferences are written in the order they were changed, and also after the screen was closed
-    private val preferenceWriter by lazy { ioDispatcher.limitedParallelism(1) }
+    private val preferenceWriter = ioDispatcher.limitedParallelism(1)
 
     private val userId = initialUser.id!!
     private val user = MutableStateFlow(initialUser)
-    private val noProxy = context.getString(R.string.nc_no_proxy)
 
     // The last values in the stored account, which are only updated with the capabilities. A change is shown until
     // they change, so that an update of e.g. the display name doesn't revert it.
@@ -134,9 +130,18 @@ class SettingsViewModel @AssistedInject constructor(
 
     /** Refreshes everything that may have changed while the screen was in the background. */
     fun onResume() {
-        _uiState.update { it.copy(loggingStatus = loggingStatus(), accountMessage = consumeAccountMessage()) }
+        val accountMessage = consumeAccountMessage()
+        val loggingStatus = loggingStatus()
+        _uiState.update {
+            it.copy(loggingStatus = loggingStatus, accountMessage = accountMessage ?: it.accountMessage)
+        }
         refreshDeviceState()
         refreshUserProfile()
+        syncCapabilities()
+    }
+
+    /** Loads the capabilities of the account anew, which updates [user] through the stored account. */
+    private fun syncCapabilities() {
         workManager.enqueue(
             OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java).setExpeditedIfSupported().build()
         )
@@ -331,19 +336,20 @@ class SettingsViewModel @AssistedInject constructor(
         persist { prefs -> prefs.setCompressUploadImages(reduced) }
     }
 
-    /** Stores the alias of the chosen client certificate, or removes it if [alias] is null. */
+    /** Stores the alias of the chosen client certificate. A null [alias] means the choice was cancelled. */
     fun onClientCertificateChosen(alias: String?) {
-        _uiState.update { it.copy(clientCertificateSet = alias != null) }
+        if (alias == null) return
+        _uiState.update { it.copy(clientCertificateSet = true) }
         viewModelScope.launch {
-            userManager.updateClientCertificate(userId, alias.orEmpty())
+            userManager.updateClientCertificate(userId, alias)
         }
     }
 
     fun setProxyType(type: String) {
         if (type == _uiState.value.proxy.type) return
         if (!isProxyEnabled(type)) {
-            _uiState.update { it.copy(proxy = ProxyUiState(type = type)) }
-            persist { prefs -> prefs.proxyType = type }
+            _uiState.update { it.copy(proxy = ProxyUiState(type = ProxyUiState.NO_PROXY)) }
+            persist { prefs -> prefs.proxyType = ProxyUiState.NO_PROXY }
             clearProxySettings()
             return
         }
@@ -406,7 +412,8 @@ class SettingsViewModel @AssistedInject constructor(
     }
 
     private fun initialState(initialUser: User, highlightNotificationIssues: Boolean): SettingsUiState {
-        val proxyType = appPreferences.proxyType.ifEmpty { noProxy }
+        // older versions stored the translated label of "No proxy"
+        val proxyType = appPreferences.proxyType.takeIf(::isProxyEnabled) ?: ProxyUiState.NO_PROXY
         val useCredentials = isProxyEnabled(proxyType) && appPreferences.proxyCredentials
         return SettingsUiState(
             account = accountState(initialUser),
@@ -488,7 +495,7 @@ class SettingsViewModel @AssistedInject constructor(
             displayName = currentUser.displayName.orEmpty(),
             baseUrl = currentUser.baseUrl.orEmpty(),
             avatarId = currentUser.userId?.takeIf { it.isNotEmpty() } ?: currentUser.username.orEmpty(),
-            credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token).orEmpty(),
+            credentials = currentUser.getCredentials(),
             serverAgeWarning = when {
                 CapabilitiesUtil.isServerEOL(serverVersion) -> ServerAgeWarning.END_OF_LIFE
                 CapabilitiesUtil.isServerAlmostEOL(serverVersion) -> ServerAgeWarning.ALMOST_END_OF_LIFE
@@ -543,7 +550,9 @@ class SettingsViewModel @AssistedInject constructor(
 
     /**
      * Shows [shared] right away and sends it to the server. Requests are sent one at a time, a change replaced by a
-     * newer one is skipped, and a failed change shows the value the server confirmed last.
+     * newer one is skipped, and a failed change shows the value the server confirmed last. They run in the application
+     * scope, so that closing the screen doesn't cancel a change it already shows, and on the main thread, which
+     * [setting] is confined to.
      */
     private fun updatePrivacySetting(
         setting: ServerSetting,
@@ -553,12 +562,13 @@ class SettingsViewModel @AssistedInject constructor(
     ) {
         setting.requested = shared
         _uiState.update { it.copy(privacy = apply(it.privacy, shared)) }
-        viewModelScope.launch {
+        appScope.launch(Dispatchers.Main.immediate) {
             setting.mutex.withLock {
                 if (setting.requested != shared || setting.confirmed == shared) return@withLock
                 try {
                     request(shared)
                     setting.confirmed = shared
+                    syncCapabilities()
                 } catch (e: IOException) {
                     logger.e(TAG, "Failed to change a privacy setting", e)
                     revertPrivacySetting(setting, apply, shared)
@@ -603,7 +613,7 @@ class SettingsViewModel @AssistedInject constructor(
             else -> null
         }
         holder.messageType = null
-        return message ?: _uiState.value.accountMessage
+        return message
     }
 
     private fun refreshUserProfile() {
@@ -625,13 +635,13 @@ class SettingsViewModel @AssistedInject constructor(
         }
     }
 
-    private fun isProxyEnabled(type: String): Boolean = type.isNotEmpty() && type != noProxy
+    private fun isProxyEnabled(type: String): Boolean = type in ProxyUiState.PROXY_TYPES
 
     private fun defaultProxyPort(type: String): String? =
         when (type) {
-            PROXY_TYPE_HTTP -> context.getString(R.string.nc_settings_http_value)
-            PROXY_TYPE_DIRECT -> context.getString(R.string.nc_settings_direct_value)
-            PROXY_TYPE_SOCKS -> context.getString(R.string.nc_settings_socks_value)
+            ProxyUiState.TYPE_HTTP -> context.getString(R.string.nc_settings_http_value)
+            ProxyUiState.TYPE_DIRECT -> context.getString(R.string.nc_settings_direct_value)
+            ProxyUiState.TYPE_SOCKS -> context.getString(R.string.nc_settings_socks_value)
             else -> null
         }
 
@@ -667,9 +677,6 @@ class SettingsViewModel @AssistedInject constructor(
 
     companion object {
         private val TAG = SettingsViewModel::class.java.simpleName
-        private const val PROXY_TYPE_HTTP = "HTTP"
-        private const val PROXY_TYPE_DIRECT = "DIRECT"
-        private const val PROXY_TYPE_SOCKS = "SOCKS"
     }
 }
 

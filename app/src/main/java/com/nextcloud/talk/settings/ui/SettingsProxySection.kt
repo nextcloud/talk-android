@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -42,11 +43,14 @@ import com.nextcloud.talk.settings.ProxyUiState
 
 @Composable
 internal fun ProxySettings(state: ProxyUiState, callbacks: ProxyCallbacks) {
-    val proxyTypes = stringArrayResource(R.array.proxy_type_descriptions)
+    val proxyTypeLabels = stringArrayResource(R.array.proxy_type_descriptions)
+    val options = remember(proxyTypeLabels) {
+        (listOf(ProxyUiState.NO_PROXY) + ProxyUiState.PROXY_TYPES).zip(proxyTypeLabels)
+    }
     Column {
         SettingsDropdown(
             label = stringResource(R.string.nc_settings_proxy_type_title),
-            options = proxyTypes.map { it to it },
+            options = options,
             selectedValue = state.type,
             onValueSelected = callbacks.onTypeChange
         )

@@ -203,9 +203,12 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private suspend fun handleEvent(event: SettingsEvent) {
+    private fun handleEvent(event: SettingsEvent) {
         when (event) {
-            is SettingsEvent.ShowMessage -> snackbarHostState.showSnackbar(getString(event.messageRes))
+            // shown in its own coroutine, so that later events don't wait until the snackbar is gone
+            is SettingsEvent.ShowMessage -> lifecycleScope.launch {
+                snackbarHostState.showSnackbar(getString(event.messageRes))
+            }
             SettingsEvent.AccountUnavailable -> finish()
         }
     }

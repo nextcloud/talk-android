@@ -128,8 +128,8 @@ enum class LoggingStatus {
 
 @Immutable
 data class ProxyUiState(
-    /** One of `R.array.proxy_type_descriptions`. */
-    val type: String = "",
+    /** [NO_PROXY] or one of [PROXY_TYPES]. */
+    val type: String = NO_PROXY,
     /** Whether [type] is a proxy, not "No proxy". */
     val enabled: Boolean = false,
     val host: String = "",
@@ -137,7 +137,18 @@ data class ProxyUiState(
     val useCredentials: Boolean = false,
     val username: String = "",
     val password: String = ""
-)
+) {
+    companion object {
+        /** The stored type without a proxy, as `RestModule` expects it. */
+        const val NO_PROXY = "No proxy"
+        const val TYPE_HTTP = "HTTP"
+        const val TYPE_DIRECT = "DIRECT"
+        const val TYPE_SOCKS = "SOCKS"
+
+        /** The names of the `java.net.Proxy.Type` values that can be chosen. */
+        val PROXY_TYPES = listOf(TYPE_HTTP, TYPE_DIRECT, TYPE_SOCKS)
+    }
+}
 
 /** One-off effects of the settings screen that the activity performs. */
 sealed interface SettingsEvent {

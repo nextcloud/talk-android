@@ -31,6 +31,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -43,11 +44,16 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
-import org.mockito.kotlin.timeout
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.whenever
 import org.mockito.kotlin.verify
 import java.io.IOException
 
@@ -56,6 +62,7 @@ import java.io.IOException
 class SettingsViewModelTest {
 
     private val dispatcher = UnconfinedTestDispatcher()
+    private val ioDispatcher = StandardTestDispatcher(dispatcher.scheduler)
     private val viewModelStore = ViewModelStore()
     private val appScope = CoroutineScope(SupervisorJob())
 
@@ -113,7 +120,10 @@ class SettingsViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel(highlightNotificationIssues: Boolean = false): SettingsViewModel {
+    private fun createViewModel(
+        initialUser: User = user,
+        highlightNotificationIssues: Boolean = false
+    ): SettingsViewModel {
         val networkMonitor = mock<NetworkMonitor> { on { isOnline } doReturn MutableStateFlow(true) }
         val logsRepository = mock<LogsRepository> { on { minimumLevel } doReturn Level.INFO }
         return SettingsViewModel(
@@ -127,13 +137,11 @@ class SettingsViewModelTest {
             logger = mock<Logger>(),
             networkMonitor = networkMonitor,
             appScope = appScope,
+            ioDispatcher = ioDispatcher,
             context = context,
-            initialUser = user,
+            initialUser = initialUser,
             highlightNotificationIssues = highlightNotificationIssues
-        ).also {
-            it.ioDispatcher = dispatcher
-            viewModelStore.put("settings", it)
-        }
+        ).also { viewModelStore.put("settings", it) }
     }
 
     @Test
@@ -188,7 +196,8 @@ class SettingsViewModelTest {
         viewModel.setProxyType("HTTP")
 
         assertEquals(ProxyUiState(type = "HTTP", enabled = true, port = "3128"), viewModel.uiState.value.proxy)
-        verify(appPreferences, timeout(TIMEOUT_MS)).proxyPort = "3128"
+        dispatcher.scheduler.advanceUntilIdle()
+        verify(appPreferences).proxyPort = "3128"
     }
 
     @Test
@@ -203,8 +212,9 @@ class SettingsViewModelTest {
 
         assertEquals(ProxyUiState(type = NO_PROXY), viewModel.uiState.value.proxy)
         // also cleared once on creation, as the proxy was off
-        verify(appPreferences, timeout(TIMEOUT_MS).times(2)).removeProxyHost()
-        verify(appPreferences, timeout(TIMEOUT_MS).times(2)).removeProxyUsername()
+        dispatcher.scheduler.advanceUntilIdle()
+        verify(appPreferences, times(2)).removeProxyHost()
+        verify(appPreferences, times(2)).removeProxyUsername()
     }
 
     @Test
@@ -369,11 +379,59 @@ class SettingsViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.onResume()
+        dispatcher.scheduler.advanceUntilIdle()
 
         val privacy = viewModel.uiState.value.privacy
         assertFalse(privacy.screenLockAvailable)
         assertFalse(privacy.screenLock)
         assertEquals("60", privacy.screenLockTimeout)
+    }
+
+    @Test
+    fun `cancelled certificate choice keeps the stored certificate`() {
+        val viewModel = createViewModel(user.copy(clientCertificate = "alias"))
+
+        viewModel.onClientCertificateChosen(null)
+
+        assertTrue(viewModel.uiState.value.clientCertificateSet)
+        verifyBlocking(userManager, never()) { updateClientCertificate(any(), anyOrNull()) }
+    }
+
+    @Test
+    fun `read status change is still sent after the screen was closed`() {
+        val viewModel = createViewModel()
+        val gate = CompletableDeferred<Unit>()
+        repository.gate = gate
+
+        viewModel.setReadStatusShared(false)
+        viewModelStore.clear()
+        gate.complete(Unit)
+
+        assertEquals(listOf(false), repository.completedReadStatusRequests)
+    }
+
+    @Test
+    fun `translated label of no proxy stored by older versions means no proxy`() {
+        whenever(appPreferences.proxyType).thenReturn("Kein Proxy")
+
+        val viewModel = createViewModel()
+        dispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(ProxyUiState(), viewModel.uiState.value.proxy)
+        verify(appPreferences).removeProxyHost()
+    }
+
+    @Test
+    fun `pending account message is kept when the screen is resumed again`() {
+        val viewModel = createViewModel()
+        ApplicationWideMessageHolder.getInstance().messageType =
+            ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
+
+        viewModel.onResume()
+        viewModel.onResume()
+
+        assertEquals(AccountMessage.ACCOUNT_IMPORTED, viewModel.uiState.value.accountMessage)
+        assertNull(ApplicationWideMessageHolder.getInstance().messageType)
     }
 
     private fun capabilities(readStatusPrivate: Boolean) =
@@ -391,6 +449,7 @@ class SettingsViewModelTest {
         var failPrivacyRequests = false
         var gate: CompletableDeferred<Unit>? = null
         val readStatusRequests = mutableListOf<Boolean>()
+        val completedReadStatusRequests = mutableListOf<Boolean>()
 
         override suspend fun getUserProfile(user: User): UserProfileDataDto? = profile
 
@@ -400,6 +459,7 @@ class SettingsViewModelTest {
             readStatusRequests += shared
             gate?.await()
             if (failPrivacyRequests) throw IOException("rejected")
+            completedReadStatusRequests += shared
         }
 
         override suspend fun setTypingStatusShared(user: User, shared: Boolean) {

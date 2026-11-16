@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -52,7 +53,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.settings.AccountMessage
 import com.nextcloud.talk.settings.AccountUiState
 import com.nextcloud.talk.settings.ServerAgeWarning
-import com.nextcloud.talk.settings.SettingsUiState
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.coroutines.delay
 
@@ -60,13 +60,12 @@ private const val ACCOUNT_MESSAGE_DURATION_MS = 5000L
 private const val ACCOUNT_MESSAGE_FADE_OUT_MS = 2500
 
 @Composable
-internal fun AccountSection(state: SettingsUiState, callbacks: SettingsScreenCallbacks) {
+internal fun AccountSection(account: AccountUiState, callbacks: SettingsScreenCallbacks) {
     var showRemoveAccountDialog by rememberSaveable { mutableStateOf(false) }
     Column {
-        AccountMessageBanner(message = state.accountMessage, onShown = callbacks.onAccountMessageShown)
-        AccountHeader(account = state.account, onClick = callbacks.onProfileClick)
-        if (state.account.serverAgeWarning != ServerAgeWarning.NONE) {
-            ServerAgeWarningCard(state.account.serverAgeWarning)
+        AccountHeader(account = account, onClick = callbacks.onProfileClick)
+        if (account.serverAgeWarning != ServerAgeWarning.NONE) {
+            ServerAgeWarningCard(account.serverAgeWarning)
         }
         Text(
             text = stringResource(R.string.nc_settings_remove_account),
@@ -91,7 +90,7 @@ internal fun AccountSection(state: SettingsUiState, callbacks: SettingsScreenCal
 
 /** Shows [message] for a while and fades it out, then reports it as shown. */
 @Composable
-private fun AccountMessageBanner(message: AccountMessage?, onShown: () -> Unit) {
+internal fun AccountMessageBanner(message: AccountMessage?, onShown: () -> Unit) {
     var visible by remember(message) { mutableStateOf(message != null) }
     LaunchedEffect(message) {
         if (message != null) {
@@ -101,7 +100,10 @@ private fun AccountMessageBanner(message: AccountMessage?, onShown: () -> Unit) 
             onShown()
         }
     }
-    AnimatedVisibility(visible = visible, exit = fadeOut(tween(ACCOUNT_MESSAGE_FADE_OUT_MS))) {
+    AnimatedVisibility(
+        visible = visible,
+        exit = fadeOut(tween(ACCOUNT_MESSAGE_FADE_OUT_MS)) + shrinkVertically(tween(ACCOUNT_MESSAGE_FADE_OUT_MS))
+    ) {
         val (text, color) = when (message) {
             AccountMessage.ACCOUNT_UPDATED ->
                 stringResource(R.string.nc_settings_account_updated) to MaterialTheme.colorScheme.primary
@@ -208,10 +210,10 @@ private val avatarSize = 96.dp
 private fun AccountSectionPreview() {
     MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {
         Surface {
-            AccountSection(
-                state = previewSettingsState().copy(accountMessage = AccountMessage.ACCOUNT_IMPORTED),
-                callbacks = SettingsScreenCallbacks()
-            )
+            Column {
+                AccountMessageBanner(message = AccountMessage.ACCOUNT_IMPORTED, onShown = {})
+                AccountSection(account = previewSettingsState().account, callbacks = SettingsScreenCallbacks())
+            }
         }
     }
 }
