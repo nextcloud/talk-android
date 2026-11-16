@@ -167,13 +167,18 @@ private fun TopBarSearchContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = endPadding, top = 4.dp, bottom = 4.dp),
+                .padding(
+                    start = 16.dp,
+                    end = endPadding,
+                    top = SEARCH_BAR_VERTICAL_PADDING_DP.dp,
+                    bottom = SEARCH_BAR_VERTICAL_PADDING_DP.dp
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
                 modifier = Modifier
                     .weight(1f)
-                    .height(50.dp),
+                    .height(SEARCH_CARD_HEIGHT_DP.dp),
                 shape = RoundedCornerShape(25.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -429,6 +434,8 @@ private fun TopBarTitleContent(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
+        // Same height as the search bar, so that opening the search doesn't make the content below jump.
+        expandedHeight = (SEARCH_CARD_HEIGHT_DP + 2 * SEARCH_BAR_VERTICAL_PADDING_DP).dp,
         windowInsets = WindowInsets(0)
     )
 }
@@ -473,6 +480,8 @@ private fun buildAvatarImageRequest(url: String?, credentials: String): ImageReq
 }
 
 private const val BADGE_OFFSET_DP = 8
+private const val SEARCH_CARD_HEIGHT_DP = 50
+private const val SEARCH_BAR_VERTICAL_PADDING_DP = 4
 
 @Preview(name = "Idle - no filter, no threads - Light")
 @Preview(name = "Idle - no filter, no threads - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
