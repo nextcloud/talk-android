@@ -11,8 +11,6 @@ package com.nextcloud.talk.api;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.capabilities.RoomCapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
-import com.nextcloud.talk.models.json.chat.ChatShareOverall;
-import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -374,19 +372,6 @@ public interface NcApi {
                                                @Field("silent") Boolean sendWithoutNotification,
                                                @Field("referenceId") String referenceId
                                                );
-
-    @GET
-    Observable<Response<ChatShareOverall>> getSharedItems(
-        @Header("Authorization") String authorization,
-        @Url String url,
-        @Query("objectType") String objectType,
-        @Nullable @Query("lastKnownMessageId") Integer lastKnownMessageId,
-        @Nullable @Query("limit") Integer limit);
-
-    @GET
-    Observable<Response<ChatShareOverviewOverall>> getSharedItemsOverview(@Header("Authorization") String authorization,
-                                                                          @Url String url,
-                                                                          @Nullable @Query("limit") Integer limit);
 
 
     @GET

@@ -10,7 +10,7 @@ package com.nextcloud.talk.shareditems.repositories
 import android.util.Log
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
-import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
 import com.nextcloud.talk.shareditems.model.SharedDeckCardItem
@@ -25,32 +25,31 @@ import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
-import io.reactivex.Observable
 import retrofit2.HttpException
 import retrofit2.Response
 import java.util.Locale
 import javax.inject.Inject
 
-class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, private val dateUtils: DateUtils) :
-    SharedItemsRepository {
+class SharedItemsRepositoryImpl @Inject constructor(
+    private val ncApiCoroutines: NcApiCoroutines,
+    private val dateUtils: DateUtils
+) : SharedItemsRepository {
 
-    override fun media(parameters: SharedItemsRepository.Parameters, type: SharedItemType): Observable<SharedItems>? =
-        media(parameters, type, null)
-
-    override fun media(
+    override suspend fun media(
         parameters: SharedItemsRepository.Parameters,
         type: SharedItemType,
         lastKnownMessageId: Int?
-    ): Observable<SharedItems>? {
+    ): SharedItems {
         val credentials = ApiUtils.getCredentials(parameters.userName, parameters.userToken)
 
-        return ncApi.getSharedItems(
+        val response = ncApiCoroutines.getSharedItems(
             credentials,
             ApiUtils.getUrlForChatSharedItems(1, parameters.baseUrl, parameters.roomToken),
             type.toString().lowercase(Locale.ROOT),
             lastKnownMessageId,
             BATCH_SIZE
-        ).map { map(it, parameters, type) }
+        )
+        return map(response, parameters, type)
     }
 
     @Suppress("LongMethod")
@@ -189,34 +188,33 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         return returnValue
     }
 
-    override fun availableTypes(parameters: SharedItemsRepository.Parameters): Observable<Set<SharedItemType>> {
+    override suspend fun availableTypes(parameters: SharedItemsRepository.Parameters): Set<SharedItemType> {
         val credentials = ApiUtils.getCredentials(parameters.userName, parameters.userToken)
 
-        return ncApi.getSharedItemsOverview(
+        val response = ncApiCoroutines.getSharedItemsOverview(
             credentials,
             ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl, parameters.roomToken),
             1
-        ).map {
-            val types = mutableSetOf<SharedItemType>()
-
-            if (it.code() == HTTP_OK) {
-                val typeMap = it.body()!!.ocs!!.data!!
-                for (t in typeMap) {
-                    if (t.value.isNotEmpty()) {
-                        try {
-                            types += SharedItemType.typeFor(t.key)
-                        } catch (e: IllegalArgumentException) {
-                            Log.w(TAG, "Server responds an unknown shared item type: ${t.key}")
-                        }
-                    }
-                }
-            } else {
-                Log.e(TAG, "Failed to getSharedItemsOverview")
-            }
-
-            types.toSet()
+        )
+        if (response.code() != HTTP_OK) {
+            Log.e(TAG, "Failed to getSharedItemsOverview")
+            return emptySet()
         }
+
+        return response.body()!!.ocs!!.data!!
+            .filterValues { it.isNotEmpty() }
+            .keys
+            .mapNotNull(::typeOrNull)
+            .toSet()
     }
+
+    private fun typeOrNull(name: String): SharedItemType? =
+        try {
+            SharedItemType.typeFor(name)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Server responds an unknown shared item type: $name")
+            null
+        }
 
     private fun previewLink(fileId: String?, baseUrl: String): String =
         ApiUtils.getUrlForFilePreviewWithFileId(

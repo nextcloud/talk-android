@@ -14,6 +14,8 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.wipe.WipeCheckResponseDto
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall
 import com.nextcloud.talk.models.json.chatpostattachment.ChatPostAttachmentOverall
 import com.nextcloud.talk.models.json.chatpostattachment.PostConversationAttachmentRequestDto
 import com.nextcloud.talk.models.json.chatprobeattachmentfolder.ChatProbeAttachmentFolderOverall
@@ -652,4 +654,20 @@ interface NcApiCoroutines {
         @Field("metaData") metaData: String,
         @Field("referenceId") referenceId: String
     ): GenericOverall
+
+    @GET
+    suspend fun getSharedItems(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("objectType") objectType: String,
+        @Query("lastKnownMessageId") lastKnownMessageId: Int?,
+        @Query("limit") limit: Int?
+    ): Response<ChatShareOverall>
+
+    @GET
+    suspend fun getSharedItemsOverview(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Query("limit") limit: Int?
+    ): Response<ChatShareOverviewOverall>
 }

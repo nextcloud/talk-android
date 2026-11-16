@@ -8,25 +8,26 @@
 package com.nextcloud.talk.shareditems.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SharedItemsViewModel @Inject constructor(private val repository: SharedItemsRepository) : ViewModel() {
 
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
 
-    private var itemsDisposable: Disposable? = null
+    private var itemsJob: Job? = null
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -38,9 +39,8 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     class LoadedState(types: Set<SharedItemType>, selectedType: SharedItemType, val items: SharedItems) :
         TypesLoadedState(types, selectedType)
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
-    val viewState: LiveData<ViewState>
-        get() = _viewState
+    private val _viewState = MutableStateFlow<ViewState>(InitialState)
+    val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
 
     fun initialize(user: User, roomToken: String) {
         repositoryParameters = SharedItemsRepository.Parameters(
@@ -53,35 +53,26 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
         loadAvailableTypes()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun loadAvailableTypes() {
-        repository.availableTypes(repositoryParameters).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<Set<SharedItemType>> {
+        viewModelScope.launch {
+            val types = try {
+                repository.availableTypes(repositoryParameters)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "An error occurred when loading available types", e)
+                return@launch
+            }
 
-                var types: Set<SharedItemType>? = null
-
-                override fun onSubscribe(d: Disposable) = Unit
-
-                override fun onNext(types: Set<SharedItemType>) {
-                    this.types = types
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "An error occurred when loading available types", e)
-                }
-
-                override fun onComplete() {
-                    val newTypes = this.types
-                    if (newTypes.isNullOrEmpty()) {
-                        this@SharedItemsViewModel._viewState.value = NoSharedItemsState
-                    } else {
-                        val selectedType = chooseInitialType(newTypes)
-                        this@SharedItemsViewModel._viewState.value =
-                            TypesLoadedState(newTypes, selectedType)
-                        initialLoadItems(selectedType)
-                    }
-                }
-            })
+            if (types.isEmpty()) {
+                _viewState.value = NoSharedItemsState
+            } else {
+                val selectedType = chooseInitialType(types)
+                _viewState.value = TypesLoadedState(types, selectedType)
+                initialLoadItems(selectedType)
+            }
+        }
     }
 
     private fun chooseInitialType(newTypes: Set<SharedItemType>): SharedItemType =
@@ -93,15 +84,11 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     fun initialLoadItems(type: SharedItemType) {
         val state = _viewState.value
         if (state is TypesLoadedState) {
-            itemsDisposable?.dispose()
+            itemsJob?.cancel()
             _viewState.value = LoadingItemsState(state.types, type)
-            itemsDisposable = repository.media(repositoryParameters, type)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(
-                    { firstPage -> onFirstPageLoaded(type, firstPage) },
-                    { e -> onItemsLoadingFailed(e) }
-                )
+            itemsJob = viewModelScope.launch {
+                loadItems(type, null)?.let { firstPage -> onFirstPageLoaded(type, firstPage) }
+            }
         }
     }
 
@@ -112,17 +99,26 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     fun loadNextItems() {
         val state = _viewState.value as? LoadedState ?: return
         val cursor = state.items.lastSeenId
-        if (!state.items.moreItemsExisting || cursor == null || itemsDisposable?.isDisposed == false) {
+        if (!state.items.moreItemsExisting || cursor == null || itemsJob?.isActive == true) {
             return
         }
-        itemsDisposable = repository.media(repositoryParameters, state.selectedType, cursor)
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(
-                { nextPage -> onNextPageLoaded(state.selectedType, cursor, nextPage) },
-                { e -> onItemsLoadingFailed(e) }
-            )
+        itemsJob = viewModelScope.launch {
+            loadItems(state.selectedType, cursor)?.let { nextPage ->
+                onNextPageLoaded(state.selectedType, cursor, nextPage)
+            }
+        }
     }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun loadItems(type: SharedItemType, cursor: Int?): SharedItems? =
+        try {
+            repository.media(repositoryParameters, type, cursor)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "An error occurred when loading shared items", e)
+            null
+        }
 
     fun removeItem(item: SharedItem) {
         val state = _viewState.value as? LoadedState ?: return
@@ -157,15 +153,6 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
                 )
             )
         }
-    }
-
-    private fun onItemsLoadingFailed(e: Throwable) {
-        Log.e(TAG, "An error occurred when loading shared items", e)
-    }
-
-    override fun onCleared() {
-        itemsDisposable?.dispose()
-        super.onCleared()
     }
 
     companion object {

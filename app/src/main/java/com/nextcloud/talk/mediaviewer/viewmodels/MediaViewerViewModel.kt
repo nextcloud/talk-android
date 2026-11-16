@@ -26,20 +26,15 @@ import com.nextcloud.talk.mediaviewer.model.toMediaViewerGroups
 import com.nextcloud.talk.mediaviewer.model.toMediaViewerItem
 import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
-import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * Backs the swipeable media viewer: a flattened, chronologically ordered (oldest first) sequence
@@ -197,7 +192,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         _uiState.update { it.copy(loadingOlder = true) }
         viewModelScope.launch {
             val sharedItems = try {
-                sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())?.awaitFirst()
+                sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load older shared items", e)
                 null
@@ -227,15 +222,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             }
         }
     }
-
-    private suspend fun Observable<SharedItems>.awaitFirst(): SharedItems =
-        suspendCancellableCoroutine { continuation ->
-            val disposable = subscribe(
-                { continuation.resume(it) },
-                { continuation.resumeWithException(it) }
-            )
-            continuation.invokeOnCancellation { disposable.dispose() }
-        }
 
     companion object {
         private val TAG = MediaViewerViewModel::class.simpleName

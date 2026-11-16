@@ -14,7 +14,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +38,7 @@ import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
@@ -77,6 +81,7 @@ class SharedItemsActivity : BaseActivity() {
 
     private var adapter: SharedItemsAdapter? = null
     private var adapterType: SharedItemType? = null
+    private var shownTypes: Set<SharedItemType>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,8 +106,18 @@ class SharedItemsActivity : BaseActivity() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
-        viewModel.viewState.observe(this) { state ->
-            handleModelChange(state, conversationUser, roomToken, isUserConversationOwnerOrModerator, isOne2One)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewState.collect { state ->
+                    handleModelChange(
+                        state,
+                        conversationUser,
+                        roomToken,
+                        isUserConversationOwnerOrModerator,
+                        isOne2One
+                    )
+                }
+            }
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -119,13 +134,18 @@ class SharedItemsActivity : BaseActivity() {
     }
 
     private fun handleModelChange(
-        state: SharedItemsViewModel.ViewState?,
+        state: SharedItemsViewModel.ViewState,
         user: User,
         roomToken: String,
         isUserConversationOwnerOrModerator: Boolean,
         isOne2One: Boolean
     ) {
         clearEmptyLoading()
+        // A StateFlow can skip intermediate states, so the tabs are set up from whichever state first carries them.
+        if (state is SharedItemsViewModel.TypesLoadedState && state.types != shownTypes) {
+            initTabs(state.types)
+            shownTypes = state.types
+        }
         when (state) {
             is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
                 showLoading()
@@ -143,9 +163,6 @@ class SharedItemsActivity : BaseActivity() {
                         isOne2One
                     )
                 currentAdapter.submitList(state.items.items)
-            }
-            is SharedItemsViewModel.TypesLoadedState -> {
-                initTabs(state.types)
             }
             else -> {}
         }

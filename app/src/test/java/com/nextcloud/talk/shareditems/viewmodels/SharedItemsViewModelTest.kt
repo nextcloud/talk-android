@@ -12,21 +12,26 @@ import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.viewmodels.AbstractViewModelTest
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.wheneverBlocking
 
-class SharedItemsViewModelTest : AbstractViewModelTest() {
+class SharedItemsViewModelTest {
 
     private val repository: SharedItemsRepository = mock()
     private lateinit var viewModel: SharedItemsViewModel
@@ -35,39 +40,45 @@ class SharedItemsViewModelTest : AbstractViewModelTest() {
 
     @Before
     fun setUp() {
-        whenever(repository.availableTypes(any()))
-            .thenReturn(Observable.just(setOf(SharedItemType.FILE, SharedItemType.POLL)))
-        whenever(repository.media(any(), eq(SharedItemType.FILE)))
-            .thenReturn(Observable.just(page(SharedItemType.FILE, 1..3, lastSeenId = 1)))
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+        wheneverBlocking { repository.availableTypes(any()) }
+            .thenReturn(setOf(SharedItemType.FILE, SharedItemType.POLL))
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), isNull()) }
+            .thenReturn(page(SharedItemType.FILE, 1..3, lastSeenId = 1))
         viewModel = SharedItemsViewModel(repository)
         viewModel.initialize(user, "roomToken")
     }
 
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
     @Test
     fun `next page is requested only once while a request is running`() {
-        val nextPage = PublishSubject.create<SharedItems>()
-        whenever(repository.media(any(), eq(SharedItemType.FILE), eq(1))).thenReturn(nextPage)
+        val nextPage = CompletableDeferred<SharedItems>()
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .doSuspendableAnswer { nextPage.await() }
 
         viewModel.loadNextItems()
         viewModel.loadNextItems()
-        nextPage.onNext(page(SharedItemType.FILE, 4..6, lastSeenId = 4))
-        nextPage.onComplete()
+        nextPage.complete(page(SharedItemType.FILE, 4..6, lastSeenId = 4))
 
-        verify(repository, times(1)).media(any(), eq(SharedItemType.FILE), eq(1))
+        verifyBlocking(repository, times(1)) { media(any(), eq(SharedItemType.FILE), eq(1)) }
         assertEquals(listOf("3", "2", "1", "6", "5", "4"), loadedItemIds())
     }
 
     @Test
     fun `page of a previously selected type is discarded`() {
-        val nextPage = PublishSubject.create<SharedItems>()
-        whenever(repository.media(any(), eq(SharedItemType.FILE), eq(1))).thenReturn(nextPage)
-        whenever(repository.media(any(), eq(SharedItemType.POLL)))
-            .thenReturn(Observable.just(page(SharedItemType.POLL, 10..11, lastSeenId = 10)))
+        val nextPage = CompletableDeferred<SharedItems>()
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .doSuspendableAnswer { nextPage.await() }
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.POLL), isNull()) }
+            .thenReturn(page(SharedItemType.POLL, 10..11, lastSeenId = 10))
 
         viewModel.loadNextItems()
         viewModel.initialLoadItems(SharedItemType.POLL)
-        nextPage.onNext(page(SharedItemType.FILE, 4..6, lastSeenId = 4))
-        nextPage.onComplete()
+        nextPage.complete(page(SharedItemType.FILE, 4..6, lastSeenId = 4))
 
         val state = viewModel.viewState.value as SharedItemsViewModel.LoadedState
         assertEquals(SharedItemType.POLL, state.selectedType)
@@ -76,8 +87,8 @@ class SharedItemsViewModelTest : AbstractViewModelTest() {
 
     @Test
     fun `removed item is not shown again after loading the next page`() {
-        whenever(repository.media(any(), eq(SharedItemType.FILE), eq(1)))
-            .thenReturn(Observable.just(page(SharedItemType.FILE, 4..4, lastSeenId = 4, moreItemsExisting = false)))
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .thenReturn(page(SharedItemType.FILE, 4..4, lastSeenId = 4, moreItemsExisting = false))
         val removed = (viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.items.first()
 
         viewModel.removeItem(removed)
