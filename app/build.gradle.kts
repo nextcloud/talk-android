@@ -251,6 +251,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
     implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.browser:browser:1.10.0")
 
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")

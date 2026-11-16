@@ -10,12 +10,17 @@
 package com.nextcloud.talk.account
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.browser.auth.AuthTabColorSchemeParams
+import androidx.browser.auth.AuthTabIntent
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -45,6 +50,10 @@ class BrowserLoginActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: BrowserLoginActivityViewModel by viewModels { viewModelFactory }
+
+    private val authTabLauncher = AuthTabIntent.registerActivityResultLauncher(this) { result ->
+        logger.d(TAG, "Auth Tab closed with result code ${result.resultCode}")
+    }
 
     private var reauthorizeAccount = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -82,12 +91,10 @@ class BrowserLoginActivity : BaseActivity() {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
                         is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
-                            if (viewModel.waitingForBrowserState.value) {
-                                viewModel.setWaitingForBrowser(false)
-                                viewModel.handleWebBrowserLogin()
-                            } else {
-                                viewModel.setWaitingForBrowser(true)
-                                launchDefaultWebBrowser(state.loginUrl)
+                            // The state is collected again each time the activity is started. If no browser could
+                            // open the page, it's tried again then.
+                            if (!viewModel.isLoginPageOpened && openLoginPage(state.loginUrl)) {
+                                viewModel.onLoginPageOpened()
                             }
                         }
                         BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
@@ -172,11 +179,44 @@ class BrowserLoginActivity : BaseActivity() {
         }
     }
 
-    private fun launchDefaultWebBrowser(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+    private fun openLoginPage(url: String): Boolean {
+        val uri = url.toUri()
+        val isOpened = launchAuthTab(uri) || launchDefaultWebBrowser(uri)
+        if (!isOpened) {
+            logger.e(TAG, "No browser available to open the login page")
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+        }
+        return isOpened
     }
+
+    /**
+     * Opens the login page in an Auth Tab, which the browser shows as a Custom Tab if it doesn't support Auth Tabs.
+     */
+    private fun launchAuthTab(uri: Uri): Boolean =
+        try {
+            val colorSchemeParams = AuthTabColorSchemeParams.Builder()
+                .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .build()
+            AuthTabIntent.Builder()
+                .setDefaultColorSchemeParams(colorSchemeParams)
+                .build()
+                .launch(authTabLauncher, uri, LOGIN_REDIRECT_SCHEME)
+            true
+        } catch (e: ActivityNotFoundException) {
+            logger.e(TAG, "Auth Tab launch failed", e)
+            false
+        }
+
+    private fun launchDefaultWebBrowser(uri: Uri): Boolean =
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            true
+        } catch (e: ActivityNotFoundException) {
+            logger.e(TAG, "Browser launch failed", e)
+            false
+        }
 
     private fun startAccountVerification(bundle: Bundle) {
         val intent = Intent(context, AccountVerificationActivity::class.java)
@@ -197,5 +237,9 @@ class BrowserLoginActivity : BaseActivity() {
 
     companion object {
         private val TAG = BrowserLoginActivity::class.java.simpleName
+
+        // An Auth Tab must be given a redirect scheme, and closes itself when the page redirects to it. Login flow v2
+        // never redirects, so the user closes the tab, and the credentials are polled for instead.
+        private const val LOGIN_REDIRECT_SCHEME = "nc"
     }
 }

@@ -15,7 +15,6 @@ import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,13 +46,6 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
     val postLoginState: StateFlow<PostLoginViewState> = _postLoginState
 
-    private val _waitingForBrowserState = MutableStateFlow(false)
-    val waitingForBrowserState = _waitingForBrowserState.asStateFlow()
-
-    fun setWaitingForBrowser(value: Boolean) {
-        _waitingForBrowserState.value = value
-    }
-
     private var savedResponse: LoginResponse? = null
 
     // The view model survives a recreation of the activity, which starts the login again. A started login is
@@ -83,7 +75,20 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         }
     }
 
-    fun handleWebBrowserLogin() {
+    /**
+     * Whether the login page was opened. The activity reads the login URL again each time it is started, and must
+     * not open the page again then.
+     */
+    var isLoginPageOpened = false
+        private set
+
+    /**
+     * Polls for the credentials once the login page was opened. Polling starts only once, because the server hands
+     * the credentials out only once, so a second poller would report an error for a successful login.
+     */
+    fun onLoginPageOpened() {
+        if (isLoginPageOpened) return
+        isLoginPageOpened = true
         savedResponse?.let { response ->
             viewModelScope.launch {
                 _postLoginState.value = postLoginStateFor(repository.pollLogin(response))
