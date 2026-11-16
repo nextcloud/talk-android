@@ -40,9 +40,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -130,15 +128,9 @@ fun ConversationListTopBar(
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
     ) {
         when (val mode = state.mode) {
-            is TopBarMode.SearchBarIdle -> TopBarIdleContent(
+            is TopBarMode.SearchBarIdle, is TopBarMode.SearchActive -> TopBarSearchContent(
                 state = state,
-                actions = actions
-            )
-            is TopBarMode.SearchActive -> TopBarSearchActiveContent(
-                query = mode.query,
-                isLoading = state.isSearchLoading,
-                onQueryChange = actions.onSearchQueryChange,
-                onSearchClose = actions.onSearchClose,
+                actions = actions,
                 focusRequester = focusRequester
             )
             is TopBarMode.TitleBar -> TopBarTitleContent(
@@ -154,61 +146,80 @@ fun ConversationListTopBar(
 }
 
 @Composable
-private fun TopBarIdleContent(state: ConversationListTopBarState, actions: ConversationListTopBarActions) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(SEARCH_TOP_BAR_HEIGHT_DP.dp)
-            .padding(start = 16.dp, end = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IdleSearchBarCard(
-            state = state,
-            actions = actions,
+private fun TopBarSearchContent(
+    state: ConversationListTopBarState,
+    actions: ConversationListTopBarActions,
+    focusRequester: FocusRequester
+) {
+    val activeMode = state.mode as? TopBarMode.SearchActive
+    Box {
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .height(50.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        AvatarButton(
-            avatarUrl = state.avatarUrl,
-            credentials = state.credentials,
-            showBadge = state.showAvatarBadge,
-            onClick = actions.onAvatarClick
-        )
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = if (activeMode == null) 4.dp else 16.dp, top = 4.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Card(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                if (activeMode == null) {
+                    IdleSearchBarCardContent(state = state, actions = actions)
+                } else {
+                    ActiveSearchBarCardContent(
+                        query = activeMode.query,
+                        onQueryChange = actions.onSearchQueryChange,
+                        onSearchClose = actions.onSearchClose,
+                        focusRequester = focusRequester
+                    )
+                }
+            }
+            if (activeMode == null) {
+                Spacer(modifier = Modifier.width(8.dp))
+                AvatarButton(
+                    avatarUrl = state.avatarUrl,
+                    credentials = state.credentials,
+                    showBadge = state.showAvatarBadge,
+                    onClick = actions.onAvatarClick
+                )
+            }
+        }
+        // Overlays the bottom edge so that it doesn't change the height of the top bar.
+        if (activeMode != null && state.isSearchLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surface
+            )
+        }
     }
 }
 
 @Composable
-private fun IdleSearchBarCard(
-    state: ConversationListTopBarState,
-    actions: ConversationListTopBarActions,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(25.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart)
-                    .padding(start = 16.dp, end = if (state.showThreadsButton) 80.dp else 48.dp)
-                    .clickable { actions.onSearchActivate() },
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            IdleSearchBarActions(
-                state = state,
-                actions = actions,
-                modifier = Modifier.align(Alignment.CenterEnd)
-            )
-        }
+private fun IdleSearchBarCardContent(state: ConversationListTopBarState, actions: ConversationListTopBarActions) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterStart)
+                .padding(start = 16.dp, end = if (state.showThreadsButton) 80.dp else 48.dp)
+                .clickable { actions.onSearchActivate() },
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        IdleSearchBarActions(
+            state = state,
+            actions = actions,
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
     }
 }
 
@@ -252,72 +263,46 @@ private fun IdleSearchBarActions(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBarSearchActiveContent(
+private fun ActiveSearchBarCardContent(
     query: String,
-    isLoading: Boolean,
     onQueryChange: (String) -> Unit,
     onSearchClose: () -> Unit,
     focusRequester: FocusRequester
 ) {
-    Box {
-        Column {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onQueryChange("")
-                        onSearchClose()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = stringResource(R.string.nc_cancel),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                title = {
-                    SearchTextField(
-                        query = query,
-                        onQueryChange = onQueryChange,
-                        focusRequester = focusRequester,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                actions = {
-                    if (query.isNotEmpty()) {
-                        IconButton(onClick = {
-                            onQueryChange("")
-                            focusRequester.requestFocus()
-                        }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
-                                contentDescription = stringResource(R.string.nc_search_clear),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                // Same total height (incl. divider) as the idle search bar, so that activating the
-                // search doesn't change the height of the top bar and make the content below jump.
-                expandedHeight = SEARCH_TOP_BAR_HEIGHT_DP.dp - DividerDefaults.Thickness,
-                windowInsets = WindowInsets(0)
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = {
+            onQueryChange("")
+            onSearchClose()
+        }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = stringResource(R.string.nc_cancel),
+                tint = MaterialTheme.colorScheme.onSurface
             )
-            HorizontalDivider()
         }
-        // Drawn on top of the app bar's bottom edge (like in the chat toolbar) so that showing
-        // the indicator doesn't change the height of the top bar and push the content below.
-        if (isLoading) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surface
-            )
+        SearchTextField(
+            query = query,
+            onQueryChange = onQueryChange,
+            focusRequester = focusRequester,
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = if (query.isEmpty()) 16.dp else 0.dp)
+        )
+        if (query.isNotEmpty()) {
+            IconButton(onClick = {
+                onQueryChange("")
+                focusRequester.requestFocus()
+            }) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_close_search),
+                    contentDescription = stringResource(R.string.nc_search_clear),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
@@ -444,7 +429,6 @@ private fun buildAvatarImageRequest(url: String?, credentials: String): ImageReq
 }
 
 private const val BADGE_OFFSET_DP = 8
-private const val SEARCH_TOP_BAR_HEIGHT_DP = 58
 
 @Preview(name = "Idle - no filter, no threads - Light")
 @Preview(name = "Idle - no filter, no threads - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
