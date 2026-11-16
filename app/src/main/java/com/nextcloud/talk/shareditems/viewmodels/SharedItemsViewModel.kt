@@ -37,8 +37,15 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     class LoadingItemsState(types: Set<SharedItemType>, selectedType: SharedItemType) :
         TypesLoadedState(types, selectedType)
 
-    class LoadedState(types: Set<SharedItemType>, selectedType: SharedItemType, val items: SharedItems) :
-        TypesLoadedState(types, selectedType)
+    /**
+     * [isLoadingMore] is true while the page following [items] is being loaded.
+     */
+    class LoadedState(
+        types: Set<SharedItemType>,
+        selectedType: SharedItemType,
+        val items: SharedItems,
+        val isLoadingMore: Boolean = false
+    ) : TypesLoadedState(types, selectedType)
 
     private val _viewState = MutableStateFlow<ViewState>(InitialState)
     val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
@@ -111,10 +118,19 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
         if (!state.items.moreItemsExisting || cursor == null || itemsJob?.isActive == true) {
             return
         }
+        setLoadingMore(true)
         itemsJob = viewModelScope.launch {
             loadItems(state.selectedType, cursor)?.let { nextPage ->
                 onNextPageLoaded(state.selectedType, cursor, nextPage)
             }
+            setLoadingMore(false)
+        }
+    }
+
+    private fun setLoadingMore(isLoadingMore: Boolean) {
+        val state = _viewState.value as? LoadedState ?: return
+        if (state.isLoadingMore != isLoadingMore) {
+            _viewState.value = LoadedState(state.types, state.selectedType, state.items, isLoadingMore)
         }
     }
 
@@ -148,7 +164,8 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
         _viewState.value = LoadedState(
             state.types,
             state.selectedType,
-            SharedItems(items.items - item, items.type, items.lastSeenId, items.moreItemsExisting)
+            SharedItems(items.items - item, items.type, items.lastSeenId, items.moreItemsExisting),
+            state.isLoadingMore
         )
     }
 

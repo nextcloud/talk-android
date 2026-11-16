@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -163,6 +164,30 @@ class SharedItemsViewModelTest {
         viewModel.loadNextItems()
 
         assertEquals(listOf("3", "2", "1", "5", "4"), loadedItemIds())
+    }
+
+    @Test
+    fun `loading more is reported while the next page is loading`() {
+        val nextPage = CompletableDeferred<SharedItems>()
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .doSuspendableAnswer { nextPage.await() }
+
+        viewModel.loadNextItems()
+        assertTrue((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
+
+        nextPage.complete(page(SharedItemType.FILE, 4..4, lastSeenId = 4))
+        assertFalse((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
+    }
+
+    @Test
+    fun `loading more is no longer reported after the next page failed`() {
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .thenThrow(RuntimeException("network"))
+
+        viewModel.loadNextItems()
+
+        assertFalse((viewModel.viewState.value as SharedItemsViewModel.LoadedState).isLoadingMore)
+        assertEquals(listOf("3", "2", "1"), loadedItemIds())
     }
 
     private fun loadedItemIds(): List<String> =
