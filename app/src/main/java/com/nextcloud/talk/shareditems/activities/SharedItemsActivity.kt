@@ -34,6 +34,7 @@ import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -345,7 +346,10 @@ class SharedItemsActivity : BaseActivity() {
     companion object {
         private val TAG = SharedItemsActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
-        private const val LOAD_MORE_THRESHOLD: Int = SPAN_COUNT * 2
+
+        /** One page ahead, so the next page is usually loaded before a fling reaches the end of the list. */
+        private const val LOAD_MORE_THRESHOLD: Int = SharedItemsRepositoryImpl.BATCH_SIZE
+
         const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
         const val KEY_IS_ONE_2_ONE = "KEY_IS_ONE_2_ONE"
     }
