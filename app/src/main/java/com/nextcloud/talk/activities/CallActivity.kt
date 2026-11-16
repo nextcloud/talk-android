@@ -56,6 +56,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -135,6 +136,7 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMess
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.LocalParticipantMessageListener
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.OfferMessageListener
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.ui.LocalImageAuthHeader
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.utils.ApiUtils
@@ -607,37 +609,39 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
-                val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
-                val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
-                val speakers by callViewModel.speakers.collectAsState()
-                val viewMode by callViewModel.viewMode.collectAsState()
-                val speakerViewOrder by callViewModel.speakerViewOrder.collectAsState()
+                CompositionLocalProvider(LocalImageAuthHeader provides conversationUser.getCredentials()) {
+                    val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
+                    val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
+                    val speakers by callViewModel.speakers.collectAsState()
+                    val viewMode by callViewModel.viewMode.collectAsState()
+                    val speakerViewOrder by callViewModel.speakerViewOrder.collectAsState()
 
-                if (screenShareParticipantUiState == null) {
-                    if (viewMode.isSpeakerView) {
-                        ParticipantSpeakerView(
-                            eglBase = rootEglBase!!,
-                            participantUiStates = participantUiStates,
-                            speakerViewOrder = speakerViewOrder,
-                            isParticipantBarVisible = viewMode == CallViewMode.SPEAKER_WITH_PARTICIPANT_BAR,
-                            isVoiceOnlyCall = isVoiceOnlyCall,
-                            onVisibleSessionKeysChanged = callViewModel::setVisibleSessionKeys,
-                            onScreenShareIconClick = {
-                                callViewModel.setActiveScreenShareSession(it)
-                            }
-                        )
-                    } else {
-                        ParticipantGrid(
-                            participantUiStates = participantUiStates,
-                            eglBase = rootEglBase!!,
-                            isVoiceOnlyCall = isVoiceOnlyCall,
-                            speakers = speakers,
-                            onVisibleSessionKeysChanged = callViewModel::setVisibleSessionKeys,
-                            onClick = {},
-                            onScreenShareIconClick = {
-                                callViewModel.setActiveScreenShareSession(it)
-                            }
-                        )
+                    if (screenShareParticipantUiState == null) {
+                        if (viewMode.isSpeakerView) {
+                            ParticipantSpeakerView(
+                                eglBase = rootEglBase!!,
+                                participantUiStates = participantUiStates,
+                                speakerViewOrder = speakerViewOrder,
+                                isParticipantBarVisible = viewMode == CallViewMode.SPEAKER_WITH_PARTICIPANT_BAR,
+                                isVoiceOnlyCall = isVoiceOnlyCall,
+                                onVisibleSessionKeysChanged = callViewModel::setVisibleSessionKeys,
+                                onScreenShareIconClick = {
+                                    callViewModel.setActiveScreenShareSession(it)
+                                }
+                            )
+                        } else {
+                            ParticipantGrid(
+                                participantUiStates = participantUiStates,
+                                eglBase = rootEglBase!!,
+                                isVoiceOnlyCall = isVoiceOnlyCall,
+                                speakers = speakers,
+                                onVisibleSessionKeysChanged = callViewModel::setVisibleSessionKeys,
+                                onClick = {},
+                                onScreenShareIconClick = {
+                                    callViewModel.setActiveScreenShareSession(it)
+                                }
+                            )
+                        }
                     }
                 }
             }
