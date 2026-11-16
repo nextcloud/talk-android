@@ -29,6 +29,7 @@ import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -193,6 +194,8 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         viewModelScope.launch {
             val sharedItems = try {
                 sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load older shared items", e)
                 null

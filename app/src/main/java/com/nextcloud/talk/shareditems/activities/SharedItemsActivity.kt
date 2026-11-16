@@ -143,7 +143,7 @@ class SharedItemsActivity : BaseActivity() {
         clearEmptyLoading()
         // A StateFlow can skip intermediate states, so the tabs are set up from whichever state first carries them.
         if (state is SharedItemsViewModel.TypesLoadedState && state.types != shownTypes) {
-            initTabs(state.types)
+            initTabs(state.types, state.selectedType)
             shownTypes = state.types
         }
         when (state) {
@@ -244,7 +244,8 @@ class SharedItemsActivity : BaseActivity() {
     }
 
     @Suppress("LongMethod")
-    private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
+    private fun initTabs(sharedItemTypes: Set<SharedItemType>, selectedType: SharedItemType) {
+        binding.sharedItemsTabs.clearOnTabSelectedListeners()
         binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
@@ -316,6 +317,11 @@ class SharedItemsActivity : BaseActivity() {
             tabOther.setText(R.string.shared_items_other)
             binding.sharedItemsTabs.addTab(tabOther)
         }
+
+        (0 until binding.sharedItemsTabs.tabCount)
+            .mapNotNull { binding.sharedItemsTabs.getTabAt(it) }
+            .firstOrNull { it.tag == selectedType }
+            ?.select()
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

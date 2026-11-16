@@ -42,7 +42,14 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
     private val _viewState = MutableStateFlow<ViewState>(InitialState)
     val viewState: StateFlow<ViewState> = _viewState.asStateFlow()
 
+    /**
+     * Starts loading the shared items. Does nothing once loading has succeeded, so a recreated activity keeps the
+     * loaded pages and the selected type.
+     */
     fun initialize(user: User, roomToken: String) {
+        if (_viewState.value != InitialState) {
+            return
+        }
         repositoryParameters = SharedItemsRepository.Parameters(
             // The login name, as it authenticates the requests. The user id can differ from it.
             user.username!!,

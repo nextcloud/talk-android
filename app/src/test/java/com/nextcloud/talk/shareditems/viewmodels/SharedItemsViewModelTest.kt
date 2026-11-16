@@ -98,6 +98,18 @@ class SharedItemsViewModelTest {
         assertFalse((viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.moreItemsExisting)
     }
 
+    @Test
+    fun `initializing again keeps the loaded pages`() {
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .thenReturn(page(SharedItemType.FILE, 4..6, lastSeenId = 4))
+        viewModel.loadNextItems()
+
+        viewModel.initialize(user, "roomToken")
+
+        verifyBlocking(repository, times(1)) { availableTypes(any()) }
+        assertEquals(listOf("3", "2", "1", "6", "5", "4"), loadedItemIds())
+    }
+
     private fun loadedItemIds(): List<String> =
         (viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.items.map(SharedItem::id)
 
