@@ -140,6 +140,31 @@ class SharedItemsViewModelTest {
         verifyBlocking(repository, times(1)) { media(any(), eq(SharedItemType.FILE), isNull()) }
     }
 
+    @Test
+    fun `first page without displayable items loads the following page`() {
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.POLL), isNull()) }
+            .thenReturn(page(SharedItemType.POLL, IntRange.EMPTY, lastSeenId = 20))
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.POLL), eq(20)) }
+            .thenReturn(page(SharedItemType.POLL, 10..11, lastSeenId = 10))
+
+        viewModel.initialLoadItems(SharedItemType.POLL)
+
+        assertEquals(listOf("11", "10"), loadedItemIds())
+        assertEquals(10, (viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.lastSeenId)
+    }
+
+    @Test
+    fun `next page without displayable items loads the following page`() {
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(1)) }
+            .thenReturn(page(SharedItemType.FILE, IntRange.EMPTY, lastSeenId = 0))
+        wheneverBlocking { repository.media(any(), eq(SharedItemType.FILE), eq(0)) }
+            .thenReturn(page(SharedItemType.FILE, 4..5, lastSeenId = -1, moreItemsExisting = false))
+
+        viewModel.loadNextItems()
+
+        assertEquals(listOf("3", "2", "1", "5", "4"), loadedItemIds())
+    }
+
     private fun loadedItemIds(): List<String> =
         (viewModel.viewState.value as SharedItemsViewModel.LoadedState).items.items.map(SharedItem::id)
 

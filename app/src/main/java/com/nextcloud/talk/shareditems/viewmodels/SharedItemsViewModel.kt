@@ -118,16 +118,29 @@ class SharedItemsViewModel @Inject constructor(private val repository: SharedIte
         }
     }
 
+    /**
+     * Loads the page after [cursor]. Pages without any displayable item are skipped while the server reports more,
+     * as an unchanged list would not trigger another load from the UI.
+     */
     @Suppress("TooGenericExceptionCaught")
-    private suspend fun loadItems(type: SharedItemType, cursor: Int?): SharedItems? =
-        try {
-            repository.media(repositoryParameters, type, cursor)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "An error occurred when loading shared items", e)
-            null
+    private suspend fun loadItems(type: SharedItemType, cursor: Int?): SharedItems? {
+        var pageCursor = cursor
+        while (true) {
+            val page = try {
+                repository.media(repositoryParameters, type, pageCursor)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "An error occurred when loading shared items", e)
+                return null
+            }
+            val nextCursor = page.lastSeenId
+            if (page.items.isNotEmpty() || !page.moreItemsExisting || nextCursor == null || nextCursor == pageCursor) {
+                return page
+            }
+            pageCursor = nextCursor
         }
+    }
 
     fun removeItem(item: SharedItem) {
         val state = _viewState.value as? LoadedState ?: return

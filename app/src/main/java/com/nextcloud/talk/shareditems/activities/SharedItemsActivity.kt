@@ -84,6 +84,16 @@ class SharedItemsActivity : BaseActivity() {
     private var adapterType: SharedItemType? = null
     private var shownTypes: Set<SharedItemType>? = null
 
+    private val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab) {
+            viewModel.initialLoadItems(tab.tag as SharedItemType)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab) = Unit
+
+        override fun onTabReselected(tab: TabLayout.Tab) = Unit
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -246,7 +256,7 @@ class SharedItemsActivity : BaseActivity() {
 
     @Suppress("LongMethod")
     private fun initTabs(sharedItemTypes: Set<SharedItemType>, selectedType: SharedItemType) {
-        binding.sharedItemsTabs.clearOnTabSelectedListeners()
+        binding.sharedItemsTabs.removeOnTabSelectedListener(tabSelectedListener)
         binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
@@ -324,15 +334,7 @@ class SharedItemsActivity : BaseActivity() {
             .firstOrNull { it.tag == selectedType }
             ?.select()
 
-        binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.initialLoadItems(tab.tag as SharedItemType)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) = Unit
-
-            override fun onTabReselected(tab: TabLayout.Tab) = Unit
-        })
+        binding.sharedItemsTabs.addOnTabSelectedListener(tabSelectedListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =

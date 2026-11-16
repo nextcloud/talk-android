@@ -74,7 +74,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
     private lateinit var user: User
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
-    private var oldestKnownMessageId: Long? = null
+    private var olderPagesCursor: Long? = null
 
     fun initialize(user: User, roomToken: String, seedItems: List<MediaViewerItem>, startMessageId: Long) {
         this.user = user
@@ -87,7 +87,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         )
         val groups = seedItems.toMediaViewerGroups()
         val startIndex = seedItems.indexOfFirst { it.messageId == startMessageId }.coerceAtLeast(0)
-        oldestKnownMessageId = seedItems.minOfOrNull { it.messageId }
+        olderPagesCursor = seedItems.minOfOrNull { it.messageId }
 
         _uiState.value = UiState(groups = groups, currentGlobalIndex = startIndex)
         ensureCachedAround(startIndex)
@@ -181,48 +181,66 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private fun loadOlderGroups() {
         val state = _uiState.value
         if (state.loadingOlder || !state.canLoadOlder) return
-        val cursor = oldestKnownMessageId ?: run {
+        val cursor = olderPagesCursor ?: run {
             _uiState.update { it.copy(canLoadOlder = false) }
             return
         }
 
         _uiState.update { it.copy(loadingOlder = true) }
         viewModelScope.launch {
-            val sharedItems = try {
-                sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to load older shared items", e)
-                null
-            }
-
-            val olderItems = sharedItems?.items.orEmpty()
-                .filterIsInstance<SharedFileItem>()
-                .filter { it.isImageOrVideo() }
-                .map { it.toMediaViewerItem() }
-                .sortedBy { it.messageId }
+            val olderPage = loadOlderPage(cursor)
+            val olderItems = olderPage?.items.orEmpty()
 
             if (olderItems.isEmpty()) {
                 _uiState.update { it.copy(loadingOlder = false, canLoadOlder = false) }
                 return@launch
             }
 
-            oldestKnownMessageId = olderItems.first().messageId
+            olderPagesCursor = olderPage?.cursor
             _uiState.update { current ->
                 val combined = (olderItems + current.flattenedItems).toMediaViewerGroups()
                 current.copy(
                     groups = combined,
                     currentGlobalIndex = current.currentGlobalIndex + olderItems.size,
                     loadingOlder = false,
-                    canLoadOlder = sharedItems?.moreItemsExisting == true,
+                    canLoadOlder = olderPage?.moreItemsExisting == true && olderPage.cursor != null,
                     pendingShift = PendingShift(id = nextShiftId++, amount = olderItems.size)
                 )
             }
+        }
+    }
+
+    private class OlderPage(val items: List<MediaViewerItem>, val cursor: Long?, val moreItemsExisting: Boolean)
+
+    /**
+     * Loads the images and videos shared before [startCursor], oldest first. Pages without any are skipped while
+     * the server reports more. Returns null if a request fails.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun loadOlderPage(startCursor: Long): OlderPage? {
+        var cursor = startCursor
+        while (true) {
+            val sharedItems = try {
+                sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load older shared items", e)
+                return null
+            }
+            val items = sharedItems.items
+                .filterIsInstance<SharedFileItem>()
+                .filter { it.isImageOrVideo() }
+                .map { it.toMediaViewerItem() }
+                .sortedBy { it.messageId }
+            val nextCursor = sharedItems.lastSeenId?.toLong()
+            if (items.isNotEmpty() || !sharedItems.moreItemsExisting || nextCursor == null || nextCursor == cursor) {
+                return OlderPage(items, nextCursor, sharedItems.moreItemsExisting)
+            }
+            cursor = nextCursor
         }
     }
 
