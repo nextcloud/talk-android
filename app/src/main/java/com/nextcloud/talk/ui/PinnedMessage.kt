@@ -77,16 +77,16 @@ fun PinnedMessageView(
 
     val pinnedHeadline = if (message.pinnedActorId != message.actorId) {
         if (message.pinnedActorId == currentConversation?.actorId) {
-            stringResource(R.string.pinned_by_you, message.getNullsafeActorDisplayName())
+            stringResource(R.string.pinned_by_you, message.getNullsafeActorDisplayNameWithServer())
         } else {
             stringResource(
                 R.string.pinned_by_author,
-                message.getNullsafeActorDisplayName(),
-                message.pinnedActorDisplayName.orEmpty()
+                message.getNullsafeActorDisplayNameWithServer(),
+                message.getPinnedActorDisplayNameWithServer()
             )
         }
     } else {
-        message.getNullsafeActorDisplayName()
+        message.getNullsafeActorDisplayNameWithServer()
     }
 
     val context = LocalContext.current
@@ -100,7 +100,7 @@ fun PinnedMessageView(
             message = message.getRichText(),
             plainMessage = message.message.orEmpty(),
             renderMarkdown = message.renderMarkdown == true,
-            actorDisplayName = message.getNullsafeActorDisplayName(),
+            actorDisplayName = message.getNullsafeActorDisplayNameWithServer(),
             isThread = false,
             threadTitle = "",
             threadReplies = 0,
@@ -174,7 +174,7 @@ fun PinnedMessageView(
                     text = pinnedHeadline,
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorScheme.onSurfaceVariant,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 MarkdownText(

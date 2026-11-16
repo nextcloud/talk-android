@@ -205,11 +205,19 @@ data class ChatMessage(
      * The display name of the actor, followed by the server of a federated user in brackets,
      * e.g. "Alice (cloud.example.com)".
      */
-    fun getNullsafeActorDisplayNameWithServer(): String =
-        if (actorType == ACTOR_TYPE_FEDERATED_USERS) {
-            "${getNullsafeActorDisplayName()} (${actorId.orEmpty().substringAfterLast('@')})"
+    fun getNullsafeActorDisplayNameWithServer(): String = withServer(getNullsafeActorDisplayName(), actorType, actorId)
+
+    /**
+     * The display name of the actor who pinned the message, followed by the server of a federated user in brackets.
+     */
+    fun getPinnedActorDisplayNameWithServer(): String =
+        withServer(pinnedActorDisplayName.orEmpty(), pinnedActorType, pinnedActorId)
+
+    private fun withServer(name: String, type: String?, id: String?): String =
+        if (type == ACTOR_TYPE_FEDERATED_USERS) {
+            "$name (${id.orEmpty().substringAfterLast('@')})"
         } else {
-            getNullsafeActorDisplayName()
+            name
         }
 
     val createdAt: Date = Date(timestamp * MILLIES)
