@@ -33,6 +33,17 @@ class ChatMessageDisplayNameTest {
         assertEquals("Alice", message.getNullsafeActorDisplayNameWithServer())
     }
 
+    @Test
+    fun `a federated user who pinned a message is shown with their server`() {
+        val message = authoredBy("users", "alice").apply {
+            pinnedActorType = "federated_users"
+            pinnedActorId = "bob@cloud.example.com"
+            pinnedActorDisplayName = "Bob"
+        }
+
+        assertEquals("Bob (cloud.example.com)", message.getPinnedActorDisplayNameWithServer())
+    }
+
     private fun authoredBy(type: String, id: String): ChatMessage =
         ChatMessage().apply {
             actorType = type
