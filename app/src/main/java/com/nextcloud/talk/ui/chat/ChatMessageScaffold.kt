@@ -300,8 +300,12 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
             .size(48.dp)
             .align(Alignment.Top)
             .padding(end = 8.dp)
-            .combinedClickable(
-                onClick = { onAvatarClick(uiMessage.id) }
+            .then(
+                if (uiMessage.actorType == "users") {
+                    Modifier.combinedClickable(onClick = { onAvatarClick(uiMessage.id) })
+                } else {
+                    Modifier
+                }
             )
         val guestLabel = stringResource(R.string.nc_guest)
         // Guests, email participants and bots have no avatar on the server, so theirs is drawn here
