@@ -121,6 +121,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -839,6 +840,22 @@ class ChatViewModel @AssistedInject constructor(
                         .map { messages -> messages.associateBy { it.jsonMessageId.toLong() } }
                 }
             }
+
+    /**
+     * Reply count of the open thread, read from its cached root message. Every thread message that is stored
+     * carries the thread's current count over to the root, so this follows the chat while it is open. Emits
+     * nothing outside of a thread.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val threadRootReplies: Flow<Int> =
+        conversationThreadId?.let { threadId ->
+            conversationAndUserFlow
+                .flatMapLatest { (conversation, _) ->
+                    chatRepository.observeThreadReplies(conversation.internalId, threadId)
+                }
+                .filterNotNull()
+                .distinctUntilChanged()
+        } ?: emptyFlow()
 
     // ------------------------------
     // Last read message cache
