@@ -18,6 +18,7 @@ import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -66,7 +67,7 @@ class ChatMessagesDaoThreadRepliesTest {
         }
 
     @Test
-    fun `the newest message of a thread decides the reply count`() =
+    fun `the highest count of a thread decides the reply count`() =
         runBlocking {
             store(threadMessage(id = ROOT_ID, threadReplies = 1))
 
@@ -76,6 +77,29 @@ class ChatMessagesDaoThreadRepliesTest {
             )
 
             assertEquals(3, threadRepliesOfRoot())
+        }
+
+    @Test
+    fun `a stale count stored later does not lower the reply count`() =
+        runBlocking {
+            store(threadMessage(id = ROOT_ID, threadReplies = 1))
+            store(threadMessage(id = ROOT_ID + 3, threadReplies = 3))
+
+            store(threadMessage(id = ROOT_ID + 2, threadReplies = 2))
+
+            assertEquals(3, threadRepliesOfRoot())
+        }
+
+    @Test
+    fun `the reply count of a thread follows its messages when the root is not cached`() =
+        runBlocking {
+            store(threadMessage(id = ROOT_ID + 2, threadReplies = 2))
+            store(threadMessage(id = ROOT_ID + 3, threadReplies = 3))
+
+            assertEquals(
+                3,
+                db.chatMessagesDao().observeThreadReplies(INTERNAL_CONVERSATION_ID, ROOT_ID).first()
+            )
         }
 
     @Test

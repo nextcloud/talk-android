@@ -436,13 +436,13 @@ class ChatViewModelRoomJoinTest {
     }
 
     @Test
-    fun `inside a thread the reply count follows the cached thread root`() =
+    fun `inside a thread the reply count follows the cached thread messages`() =
         runBlocking {
             whenever(chatRepository.observeThreadReplies(any(), eq(THREAD_ID.toLong())))
                 .thenReturn(flowOf(null, 3, 3, THREAD_REPLIES))
             owner.send(Lifecycle.Event.ON_CREATE)
 
-            val replies = createViewModel(THREAD_ID.toLong()).threadRootReplies.take(2).toList()
+            val replies = createViewModel(THREAD_ID.toLong()).cachedThreadReplies.take(2).toList()
 
             assertEquals(listOf(3, THREAD_REPLIES), replies)
         }
@@ -452,7 +452,7 @@ class ChatViewModelRoomJoinTest {
         runBlocking {
             owner.send(Lifecycle.Event.ON_CREATE)
 
-            assertEquals(emptyList<Int>(), viewModel.threadRootReplies.toList())
+            assertEquals(emptyList<Int>(), viewModel.cachedThreadReplies.toList())
         }
 
     private fun conversationModel(lastReadMessage: Int, remoteServer: String = ""): ConversationModel =
