@@ -814,12 +814,11 @@ class ChatViewModel @AssistedInject constructor(
             }
 
     /**
-     * Reply count of the open thread, read from its cached root message. Every thread message that is stored
-     * carries the thread's current count over to the root, so this follows the chat while it is open. Emits
-     * nothing outside of a thread.
+     * Reply count of the open thread, read from its cached messages. Every thread message carries the thread's
+     * current count, so this follows the chat while it is open. Emits nothing outside of a thread.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val threadRootReplies: Flow<Int> =
+    val cachedThreadReplies: Flow<Int> =
         conversationThreadId?.let { threadId ->
             conversationAndUserFlow
                 .flatMapLatest { (conversation, _) ->

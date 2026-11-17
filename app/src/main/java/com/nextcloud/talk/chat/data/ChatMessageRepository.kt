@@ -130,7 +130,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun updateThreadReplies(threadReplies: Map<Long, Int>)
 
     /**
-     * Emits the reply count stored on the cached root message of [threadId], or null while the root is not cached.
+     * Emits the highest reply count stored on the cached messages of [threadId], or null while none is cached.
      */
     fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?>
 

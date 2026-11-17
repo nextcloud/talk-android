@@ -489,8 +489,7 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.updateThreadRepliesOfThreads(internalConversationId, threadReplies)
 
     override fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?> =
-        chatDao.observeMessage(internalConversationId, threadId)
-            .map { it?.threadReplies }
+        chatDao.observeThreadReplies(internalConversationId, threadId)
             .distinctUntilChanged()
 
     override fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> =

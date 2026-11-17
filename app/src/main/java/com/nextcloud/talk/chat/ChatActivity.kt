@@ -379,8 +379,8 @@ class ChatActivity :
     var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfoDto? = null
 
-    // Reply count of the open thread from its cached root message, which follows the chat while it is open
-    private var threadRootReplies: Int? = null
+    // Reply count of the open thread from its cached messages, which follows the chat while it is open
+    private var cachedThreadReplies: Int? = null
     val conversationUser: User
         get() = chatViewModel.currentUser
     lateinit var spreedCapabilities: SpreedCapabilityDto
@@ -2001,8 +2001,8 @@ class ChatActivity :
         }
 
         this.lifecycleScope.launch {
-            chatViewModel.threadRootReplies.collect { replies ->
-                threadRootReplies = replies
+            chatViewModel.cachedThreadReplies.collect { replies ->
+                cachedThreadReplies = replies
                 updateToolbarState()
             }
         }
@@ -2326,9 +2326,9 @@ class ChatActivity :
     private fun buildToolbarSubtitle(conversation: ConversationModel?): String =
         when {
             isChatThread() -> {
-                // The thread endpoint is only asked once when the thread is opened, while the cached root follows
-                // the chat. A thread's reply count only grows, so the higher of both is the current one.
-                val count = maxOf(conversationThreadInfo?.thread?.numReplies ?: 0, threadRootReplies ?: 0)
+                // The thread endpoint is only asked once when the thread is opened, while the cached messages
+                // follow the chat. A thread's reply count only grows, so the higher of both is the current one.
+                val count = maxOf(conversationThreadInfo?.thread?.numReplies ?: 0, cachedThreadReplies ?: 0)
                 resources.getQuantityString(R.plurals.thread_replies, count, count)
             }
             conversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
