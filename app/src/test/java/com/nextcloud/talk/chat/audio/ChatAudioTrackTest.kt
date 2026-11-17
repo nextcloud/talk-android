@@ -52,7 +52,6 @@ class ChatAudioTrackTest {
         threadReplies = 0,
         incoming = true,
         isDeleted = false,
-        avatarUrl = null,
         statusIcon = MessageStatusIcon.SENT,
         timestamp = 0L,
         date = LocalDate.of(2026, 1, 1),

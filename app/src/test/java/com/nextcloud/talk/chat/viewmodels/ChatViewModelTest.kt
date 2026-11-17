@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.chat.viewmodels
 
-import android.net.Uri
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
@@ -19,7 +18,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.time.LocalDate
 
 @Suppress("TooManyFunctions")
@@ -543,45 +541,6 @@ class ChatViewModelTest {
         assertEquals(2624, ChatViewModel.newestOwnMessageId(messages))
     }
 
-    @Test
-    fun `a federated author gets the avatar proxied by the own server`() {
-        val message = authoredBy("federated_users", "alice@remote.example.com")
-
-        assertEquals(
-            "https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/proxy/room1/user-avatar/64" +
-                "?cloudId=alice@remote.example.com&darkTheme=0",
-            ChatViewModel.avatarUrl(message, "https://cloud.example.com", "room1")
-        )
-    }
-
-    @Test
-    fun `a local author gets the avatar of the own server`() {
-        val message = authoredBy("users", "bob")
-
-        Mockito.mockStatic(Uri::class.java).use { uri ->
-            uri.`when`<String> { Uri.encode("bob") }.thenReturn("bob")
-
-            assertEquals(
-                "https://cloud.example.com/index.php/avatar/bob/64",
-                ChatViewModel.avatarUrl(message, "https://cloud.example.com", "room1")
-            )
-        }
-    }
-
-    @Test
-    fun `a guest gets no avatar url`() {
-        val message = authoredBy("guests", "guest-id")
-
-        assertEquals("", ChatViewModel.avatarUrl(message, "https://cloud.example.com", "room1"))
-    }
-
-    private fun authoredBy(type: String, id: String): ChatMessage =
-        ChatMessage().apply {
-            actorType = type
-            actorId = id
-            actorDisplayName = "Name"
-        }
-
     private fun incomingMessage(id: Int): ChatMessage =
         ChatMessage().apply {
             jsonMessageId = id
@@ -610,7 +569,6 @@ class ChatViewModelTest {
             threadReplies = 0,
             incoming = true,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.SENT,
             timestamp = id.toLong(),
             date = LocalDate.of(2026, 8, 12),
@@ -654,7 +612,6 @@ class ChatViewModelTest {
             threadReplies = 0,
             incoming = true,
             isDeleted = isDeleted,
-            avatarUrl = null,
             statusIcon = statusIcon,
             timestamp = id.toLong(),
             date = LocalDate.of(2026, 8, 12),

@@ -78,7 +78,6 @@ import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.Mimetype
@@ -792,7 +791,6 @@ class ChatViewModel @AssistedInject constructor(
         map { entities ->
             entities.map { entity ->
                 entity.toDomainModel().apply {
-                    avatarUrl = getAvatarUrl(this)
                     incoming = actorId != userId
                 }
             }
@@ -1699,12 +1697,6 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-
-    /**
-     * Avatar to request from the server for a message, empty for the actors the server has none for
-     * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
-     */
-    fun getAvatarUrl(message: ChatMessage): String = avatarUrl(message, currentUser.baseUrl!!, chatRoomToken)
 
     fun initData() {
         chatRepository.initData(
@@ -2827,29 +2819,6 @@ class ChatViewModel @AssistedInject constructor(
 
         /** Enough of the note to self to cover what a share of ours could have landed behind. */
         private const val SHARE_LOOKUP_LIMIT = 20
-
-        /**
-         * The avatar URL of the author of [message], or an empty string when the avatar is drawn on the client.
-         * Federated authors get the avatar proxied by the own server for the conversation [roomToken].
-         */
-        @VisibleForTesting
-        fun avatarUrl(message: ChatMessage, baseUrl: String, roomToken: String): String =
-            when {
-                CharacterAvatarUtils.avatarFor(
-                    message.actorType,
-                    message.actorId,
-                    message.actorDisplayName,
-                    guestLabel = null
-                ) != null -> ""
-                message.actorType == ChatMessage.ACTOR_TYPE_FEDERATED_USERS -> ApiUtils.getUrlForFederatedAvatar(
-                    baseUrl,
-                    roomToken,
-                    message.actorId.orEmpty(),
-                    0,
-                    false
-                )
-                else -> ApiUtils.getUrlForAvatar(baseUrl, message.actorId, false)
-            }
 
         /**
          * Whether [messages] already hold the share that was sent with [referenceId], or null when the
