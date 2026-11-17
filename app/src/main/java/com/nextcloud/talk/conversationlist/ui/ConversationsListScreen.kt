@@ -80,7 +80,7 @@ data class ConversationsListScreenState(
     val credentials: String,
     val showLogo: Boolean,
     val viewThemeUtils: ViewThemeUtils,
-    val isShowEcosystem: Boolean,
+    val showEcosystemFlow: StateFlow<Boolean>,
     val snackbarHostState: SnackbarHostState,
     val isMaintenanceModeFlow: StateFlow<Boolean>,
     val isOnlineFlow: StateFlow<Boolean>,
@@ -168,6 +168,7 @@ fun ConversationsListScreen(
     val isForward by state.forwardMessageFlow.collectAsStateWithLifecycle()
     val hasMultipleAccounts by state.hasMultipleAccountsFlow.collectAsStateWithLifecycle()
     val showAccountDialog by state.showAccountDialogFlow.collectAsStateWithLifecycle()
+    val showEcosystem by state.showEcosystemFlow.collectAsStateWithLifecycle()
     val selectedConversationForOps by state.selectedConversationForOpsFlow.collectAsStateWithLifecycle()
     val opsSheetState = rememberModalBottomSheetState()
 
@@ -405,7 +406,7 @@ fun ConversationsListScreen(
                 LaunchedEffect(shouldDismiss.value) {
                     if (shouldDismiss.value) callbacks.onAccountDialogDismiss()
                 }
-                dialog.GetChooseAccountDialog(shouldDismiss, activity, state.isShowEcosystem)
+                dialog.GetChooseAccountDialog(shouldDismiss, activity, showEcosystem)
             }
 
             // Conversation-operations bottom sheet
