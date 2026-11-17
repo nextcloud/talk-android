@@ -7,7 +7,11 @@
 
 package com.nextcloud.talk.call.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,17 +26,32 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import org.webrtc.EglBase
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -42,6 +61,8 @@ private val speakerViewSpacing = 8.dp
 private const val PARTICIPANT_BAR_TILE_ASPECT_RATIO = 1.5f
 private val participantBarTileWidth = PARTICIPANT_TILE_MIN_HEIGHT * PARTICIPANT_BAR_TILE_ASPECT_RATIO
 private val participantBarTilePeekLength = 16.dp
+private val scrollToStartButtonSize = 36.dp
+private const val SCROLL_TO_START_BUTTON_ALPHA = 0.6f
 
 enum class ParticipantBarPlacement {
     SIDE,
@@ -221,10 +242,46 @@ private fun ParticipantBar(
         }
     }
 
-    if (isVertical) {
-        LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
-    } else {
-        LazyRow(state = state, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
+    val canScrollToStart by remember(state) { derivedStateOf { state.canScrollBackward } }
+    val coroutineScope = rememberCoroutineScope()
+
+    Box {
+        if (isVertical) {
+            LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
+        } else {
+            LazyRow(state = state, horizontalArrangement = Arrangement.spacedBy(speakerViewSpacing), content = content)
+        }
+
+        AnimatedVisibility(
+            visible = canScrollToStart,
+            modifier = Modifier
+                .align(if (isVertical) Alignment.TopCenter else Alignment.CenterStart)
+                .padding(speakerViewSpacing),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            ScrollToStartButton(
+                isVertical = isVertical,
+                onClick = { coroutineScope.launch { state.animateScrollToItem(0) } }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScrollToStartButton(isVertical: Boolean, onClick: () -> Unit) {
+    FilledIconButton(
+        onClick = onClick,
+        modifier = Modifier.size(scrollToStartButtonSize),
+        colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = Color.Black.copy(alpha = SCROLL_TO_START_BUTTON_ALPHA),
+            contentColor = Color.White
+        )
+    ) {
+        Icon(
+            imageVector = if (isVertical) Icons.Filled.KeyboardArrowUp else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            contentDescription = stringResource(R.string.nc_call_participant_bar_scroll_to_start)
+        )
     }
 }
 
