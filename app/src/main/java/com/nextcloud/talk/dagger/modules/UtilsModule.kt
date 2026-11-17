@@ -8,6 +8,7 @@
 package com.nextcloud.talk.dagger.modules
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.nextcloud.talk.logger.FileLogHandler
 import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.Logger
@@ -22,6 +23,7 @@ import dagger.Provides
 import dagger.Reusable
 import java.io.File
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,6 +41,9 @@ class UtilsModule {
     @Provides
     @Reusable
     fun provideMessageUtils(context: Context): MessageUtils = MessageUtils(context)
+
+    @Provides
+    fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
     @Provides
     @Singleton
@@ -73,4 +78,8 @@ class UtilsModule {
     @Singleton
     @ApplicationScope
     fun provideApplicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    @Provides
+    @IoDispatcher
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }

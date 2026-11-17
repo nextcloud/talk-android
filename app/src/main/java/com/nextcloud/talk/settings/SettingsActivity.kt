@@ -11,134 +11,71 @@
 package com.nextcloud.talk.settings
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.annotation.SuppressLint
-import android.app.KeyguardManager
-import android.app.NotificationManager
-import android.content.Context
-import android.content.DialogInterface
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.PorterDuff
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.security.KeyChain
-import android.text.TextUtils
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toDrawable
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.work.OneTimeWorkRequest
-import com.nextcloud.talk.utils.AppTasks
-import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.setExpeditedIfSupported
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
-import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
-import com.nextcloud.talk.conversationlist.ConversationsListActivity
-import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
-import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.diagnosis.DiagnosisActivity
 import com.nextcloud.talk.diagnosis.buildDiagnosisReportText
 import com.nextcloud.talk.diagnosis.showShareReportDialog
 import com.nextcloud.talk.errorhandling.saveLogsAsZip
-import com.nextcloud.talk.logger.Level
 import com.nextcloud.talk.logger.LogsRepository
 import com.nextcloud.talk.logger.ui.LogsActivity
-import com.nextcloud.talk.jobs.AccountRemovalWorker
-import com.nextcloud.talk.jobs.CapabilitiesSyncWorker
-import com.nextcloud.talk.jobs.ContactAddressBookWorker
-import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
-import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
-import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
-import com.nextcloud.talk.ui.dialog.SetPhoneNumberDialogFragment
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.settings.ui.ProxyCallbacks
+import com.nextcloud.talk.settings.ui.SettingsScreen
+import com.nextcloud.talk.settings.ui.SettingsScreenCallbacks
+import com.nextcloud.talk.settings.ui.SystemSettingsScreen
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
-import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
-import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UnifiedPushUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
-import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
-import com.nextcloud.talk.utils.power.PowerManagerUtils
-import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.unifiedpush.android.connector.UnifiedPush
-import retrofit2.HttpException
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.Locale
 import javax.inject.Inject
 
-@Suppress("LargeClass", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class SettingsActivity :
-    BaseActivity(),
-    SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
-    private lateinit var binding: ActivitySettingsBinding
+class SettingsActivity : BaseActivity() {
 
     @Inject
-    lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
-
-    @Inject
-    lateinit var ncApiCoroutines: NcApiCoroutines
-
-    @Inject
-    lateinit var platformPermissionUtil: PlatformPermissionUtil
+    lateinit var viewModelFactory: SettingsViewModel.Factory
 
     @Inject
     lateinit var logsRepository: LogsRepository
+
+    private lateinit var user: User
+
+    private val viewModel: SettingsViewModel by assistedViewModels {
+        viewModelFactory.build(user, intent.getBooleanExtra(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, false))
+    }
+
+    private val snackbarHostState = SnackbarHostState()
 
     private val saveZipLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
@@ -152,1615 +89,216 @@ class SettingsActivity :
             }
         }
 
-    private var currentUser: User? = null
-    private var credentials: String? = null
-    private lateinit var proxyTypeFlow: Flow<String>
-    private lateinit var proxyCredentialFlow: Flow<Boolean>
-    private lateinit var screenSecurityFlow: Flow<Boolean>
-    private lateinit var screenLockFlow: Flow<Boolean>
-    private lateinit var screenLockTimeoutFlow: Flow<String>
-    private lateinit var themeFlow: Flow<String>
-    private lateinit var readPrivacyFlow: Flow<Boolean>
-    private lateinit var typingStatusFlow: Flow<Boolean>
-    private lateinit var phoneBookIntegrationFlow: Flow<Boolean>
-    private var profileQueryDisposable: Disposable? = null
-    private var dbQueryDisposable: Disposable? = null
-    private var openedByNotificationWarning: Boolean = false
-    private var isOnline: MutableState<Boolean> = mutableStateOf(false)
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                viewModel.refreshDeviceState()
+            } else {
+                openSystemSettings(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                )
+            }
+        }
 
-    @SuppressLint("StringFormatInvalid")
+    private val contactsPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            if (results.isNotEmpty() && results.values.all { it }) {
+                viewModel.enablePhoneBookIntegration()
+            } else {
+                viewModel.onContactsPermissionDenied()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        setCurrentUser(setUpBoundUserOrFinish() ?: return)
-        networkMonitor.isOnlineLiveData.observe(this) { online ->
-            isOnline.value = online
-            handleNetworkChange(isOnline.value)
+        user = setUpBoundUserOrFinish() ?: return
+
+        val colorScheme = viewThemeUtils.getColorScheme(this)
+        val callbacks = createCallbacks()
+        setContent {
+            MaterialTheme(colorScheme = colorScheme) {
+                val state = viewModel.uiState.collectAsStateWithLifecycle().value
+                SettingsScreen(state = state, callbacks = callbacks, snackbarHostState = snackbarHostState)
+            }
         }
 
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setupActionBar()
-        setContentView(binding.root)
-        initSystemBars()
-
-        binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
-
-        handleIntent(intent)
-
-        setupLicenceSetting(isOnline.value)
-
-        binding.settingsScreenLockSummary.text = String.format(
-            Locale.getDefault(),
-            resources!!.getString(R.string.nc_settings_screen_lock_desc),
-            resources!!.getString(R.string.nc_app_product_name)
-        )
-
-        setupDiagnosis()
-
-        setupPrivacyUrl(isOnline.value)
-        setupSourceCodeUrl(isOnline.value)
-
-        binding.settingsVersionSummary.text = String.format("v" + BuildConfig.VERSION_NAME)
-
-        setupPhoneBookIntegration(isOnline.value)
-
-        setupClientCertView()
-        showSetupClientCertView(isOnline.value)
-    }
-
-    private fun handleNetworkChange(isOnline: Boolean) {
-        setupLicenceSetting(isOnline)
-        setupPrivacyUrl(isOnline)
-        setupSourceCodeUrl(isOnline)
-        setupPhoneBookIntegration(isOnline)
-        setupCheckables(isOnline)
-        showSetupClientCertView(isOnline)
-    }
-
-    private fun handleIntent(intent: Intent) {
-        val extras: Bundle? = intent.extras
-        openedByNotificationWarning = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY) ?: false
+        collectEvents()
+        applySecureWindowFlag()
     }
 
     override fun onResume() {
         super.onResume()
-        supportActionBar?.show()
-        dispose(null)
-
-        binding.logsSubtitle.setText(
-            when {
-                logsRepository.minimumLevel == Level.NONE -> R.string.nc_logs_logging_disabled_note
-                logsRepository.minimumLevel <= Level.DEBUG -> R.string.nc_logs_advanced_logging_enabled_warning
-                else -> R.string.nc_logs_logging_enabled
-            }
-        )
-
-        loadCapabilitiesAndUpdateSettings(isOnline.value)
-
-        binding.settingsVersion.setOnClickListener {
-            sendLogs()
-        }
-
-        if (!TextUtils.isEmpty(currentUser!!.clientCertificate)) {
-            binding.settingsClientCertTitle.setText(R.string.nc_client_cert_change)
-        } else {
-            binding.settingsClientCertTitle.setText(R.string.nc_client_cert_setup)
-        }
-
-        setupCheckables(isOnline.value)
-        setupEcosystemSetting()
-        setupScreenLockSetting()
-        setupNotificationSettings()
-        setupProxyTypeSettings()
-        setupProxyCredentialSettings()
-        registerChangeListeners()
-
-        if (currentUser != null) {
-            binding.domainText.text = currentUser!!.baseUrl!!.toUri().host
-            setupServerAgeWarning()
-            if (currentUser!!.displayName != null) {
-                binding.nameText.text = currentUser!!.displayName
-            }
-            DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
-
-            setupProfileQueryDisposable()
-
-            binding.settingsRemoveAccount.setOnClickListener {
-                showRemoveAccountWarning()
-            }
-        }
-        setupMessageView()
-
-        binding.settingsName.visibility = View.VISIBLE
-        binding.settingsName.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
-            startActivity(intent)
-        }
-
-        themeTitles()
-        themeSwitchPreferences()
-
-        if (openedByNotificationWarning) {
-            scrollToNotificationCategory()
-        }
+        viewModel.onResume()
     }
 
-    private fun setupEcosystemSetting() {
-        if (getResources().getBoolean(R.bool.is_branded_client)) {
-            binding.settingsShowEcosystem.visibility = View.GONE
-        } else {
-            binding.settingsShowEcosystem.visibility = View.VISIBLE
-        }
-    }
-
-    @Suppress("MagicNumber")
-    private fun scrollToNotificationCategory() {
-        binding.scrollView.post {
-            val scrollViewLocation = IntArray(2)
-            val targetLocation = IntArray(2)
-            binding.scrollView.getLocationOnScreen(scrollViewLocation)
-            binding.settingsNotificationsCategory.getLocationOnScreen(targetLocation)
-            val offset = targetLocation[1] - scrollViewLocation[1]
-            binding.scrollView.scrollBy(0, offset)
-        }
-    }
-
-    private fun loadCapabilitiesAndUpdateSettings(isOnline: Boolean) {
-        val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesSyncWorker::class.java)
-            .setExpeditedIfSupported()
-            .build()
-        WorkManager.getInstance(context).enqueue(capabilitiesWork)
-
-        WorkManager.getInstance(context).getWorkInfoByIdLiveData(capabilitiesWork.id)
-            .observe(this) { workInfo ->
-                if (workInfo?.state == WorkInfo.State.SUCCEEDED && reloadCurrentUser()) {
-                    setupCheckables(isOnline)
-                }
-            }
-    }
-
-    private fun setupActionBar() {
-        setSupportActionBar(binding.settingsToolbar)
-        binding.settingsToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
-        supportActionBar?.title = context.getString(R.string.nc_settings)
-        viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
-    }
-
-    private fun setCurrentUser(user: User) {
-        currentUser = user
-        credentials = ApiUtils.getCredentials(user.username, user.token)
-    }
-
-    /**
-     * Loads the account of this screen again, e.g. for updated capabilities. Finishes the activity and returns false
-     * if it was removed meanwhile.
-     */
-    private fun reloadCurrentUser(): Boolean {
-        val user = runBlocking { userManager.getUserWithInternalId(resolveUserIdFromIntent()) } ?: run {
-            finish()
-            return false
-        }
-        setCurrentUser(user)
-        return true
-    }
-
-    private fun setupPhoneBookIntegration(isOnline: Boolean) {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser?.capabilities?.spreedCapability,
-                SpreedFeatures.PHONEBOOK_SEARCH
-            ) &&
-            isOnline
-        ) {
-            binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
-        } else {
-            binding.settingsPhoneBookIntegration.visibility = View.GONE
-        }
-    }
-
-    private fun setupNotificationSettings() {
-        setupUnifiedPushSettings()
-        setupNotificationSoundsSettings()
-        setupNotificationPermissionSettings()
-        setupFullScreenIntentPermissionSetting()
-        setupServerNotificationAppCheck()
-    }
-
-    private fun showUnifiedPushToggle(): Boolean =
-        UnifiedPushUtils.getExternalDistributors(this).isNotEmpty() &&
-            runBlocking { userManager.getUsers() }.all { it.hasWebPushCapability }
-
-    private fun setupUnifiedPushSettings() {
-        // If any user doesn't support web push, or there is no UnifiedPush
-        // service (distributor) available: hide the feature.
-        //
-        // We could provide the feature as soon as one user supports web push,
-        // but for simplicity (UX & dev), and at least in a first step:
-        // we require that all the users support webpush
-        if (!showUnifiedPushToggle()) {
-            binding.settingsUnifiedpush.visibility = View.GONE
-            binding.settingsUnifiedpushService.visibility = View.GONE
-        } else {
-            val nDistrib = UnifiedPushUtils.getExternalDistributors(context).size
-            binding.settingsUnifiedpush.visibility = View.VISIBLE
-            binding.settingsUnifiedpushSwitch.isChecked = appPreferences.useUnifiedPush
-            binding.settingsUnifiedpush.setOnClickListener {
-                val checked = !appPreferences.useUnifiedPush
-                appPreferences.useUnifiedPush = checked
-                binding.settingsUnifiedpushSwitch.isChecked = checked
-                setupNotificationPermissionSettings()
-                setupUnifiedPushServiceSelectionVisibility(nDistrib)
-                if (checked) {
-                    UnifiedPushUtils.useDefaultDistributor(this) { distrib ->
-                        Log.d(TAG, "Registered to $distrib")
-                        binding.settingsUnifiedpushServiceSummary.text = distrib
-                    }
-                } else {
-                    UnifiedPushUtils.disableExternalUnifiedPush(this)
-                }
-            }
-            // To use non-default service
-            binding.settingsUnifiedpushService.setOnClickListener {
-                UnifiedPushUtils.pickDistributor(this) { distrib ->
-                    Log.d(TAG, "Registered to $distrib")
-                    binding.settingsUnifiedpushServiceSummary.text = distrib
-                }
-            }
-            // For the init only
-            if (binding.settingsUnifiedpushServiceSummary.text.isBlank()) {
-                binding.settingsUnifiedpushServiceSummary.text = UnifiedPush.getAckDistributor(context) ?: ""
-            }
-            setupUnifiedPushServiceSelectionVisibility(nDistrib)
-        }
-    }
-
-    private fun setupUnifiedPushServiceSelectionVisibility(nDistrib: Int) {
-        // We offer the option to use non-default service, only if UnifiedPush
-        // is enabled and there are more than one service
-        if (binding.settingsUnifiedpushSwitch.isChecked && nDistrib > 1) {
-            binding.settingsUnifiedpushService.visibility = View.VISIBLE
-        } else {
-            binding.settingsUnifiedpushService.visibility = View.GONE
-        }
-    }
-
-    @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
-    private fun setupNotificationPermissionSettings() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable ||
-            appPreferences.useUnifiedPush ||
-            UnifiedPushUtils.hasEmbeddedDistributor(context)
-        ) {
-            binding.settingsPushOnlyWrapper.visibility = View.VISIBLE
-            binding.settingsGplayNotAvailable.visibility = View.GONE
-            binding.settingsPushNotAvailable.visibility = View.GONE
-
-            setTroubleshootingClickListenersIfNecessary()
-
-            if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
-                binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.battery_optimization_ignored)
-                binding.batteryOptimizationIgnored.setTextColor(
-                    resources.getColor(R.color.high_emphasis_text, null)
-                )
-            } else {
-                binding.batteryOptimizationIgnored.text =
-                    resources!!.getString(R.string.battery_optimization_not_ignored)
-                binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
-
-                if (openedByNotificationWarning) {
-                    DrawableUtils.blinkDrawable(binding.settingsBatteryOptimizationWrapper.background)
+    private fun createCallbacks() =
+        SettingsScreenCallbacks(
+            onProfileClick = { startActivity(intentForAccount(ProfileActivity::class.java)) },
+            onAccountMessageShown = viewModel::dismissAccountMessage,
+            onRemoveAccount = viewModel::removeAccount,
+            onThemeChange = { theme ->
+                viewModel.setTheme(theme)
+                setAppTheme(theme)
+            },
+            onShowEcosystemChange = viewModel::setShowEcosystem,
+            onUnifiedPushChange = ::setUseUnifiedPush,
+            onPickDistributor = {
+                UnifiedPushUtils.pickDistributor(this) { distributor ->
+                    distributor?.let { runOnUiThread { viewModel.onDistributorChanged(it) } }
                 }
-
-                binding.settingsBatteryOptimizationWrapper.setOnClickListener {
-                    val dialogText = String.format(
-                        context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
-                        context.resources.getString(R.string.nc_app_name)
-                    )
-
-                    val dialogBuilder = MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.nc_ignore_battery_optimization_dialog_title)
-                        .setMessage(dialogText)
-                        .setPositiveButton(R.string.nc_ok) { _, _ ->
-                            startActivity(
-                                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                            )
-                        }
-                        .setNegativeButton(R.string.nc_common_dismiss, null)
-                    viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-                    val dialog = dialogBuilder.show()
-                    viewThemeUtils.platform.colorTextButtons(
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    )
+            },
+            onRequestNotificationPermission = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
-            }
-
-            // handle notification permission on API level >= 33
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
-                        resources.getString(R.string.nc_settings_notifications_granted)
-                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
-                        resources.getColor(R.color.high_emphasis_text, null)
-                    )
-                    binding.settingsCallSound.isEnabled = true
-                    binding.settingsCallSound.alpha = ENABLED_ALPHA
-                    binding.settingsMessageSound.isEnabled = true
-                    binding.settingsMessageSound.alpha = ENABLED_ALPHA
+            },
+            onOpenSystemSettings = ::openSystemSettings,
+            onOpenDiagnosis = { startActivity(intentForAccount(DiagnosisActivity::class.java)) },
+            onShowNotificationWarningChange = viewModel::setShowNotificationWarning,
+            onScreenLockChange = viewModel::setScreenLock,
+            onScreenLockTimeoutChange = viewModel::setScreenLockTimeout,
+            onScreenSecurityChange = viewModel::setScreenSecurity,
+            onIncognitoKeyboardChange = viewModel::setIncognitoKeyboard,
+            onPhoneBookIntegrationChange = { enabled ->
+                if (enabled) {
+                    contactsPermissionLauncher.launch(CONTACTS_PERMISSIONS)
                 } else {
-                    binding.ncDiagnosisNotificationPermissionSubtitle.text =
-                        resources.getString(R.string.nc_settings_notifications_declined)
-                    binding.ncDiagnosisNotificationPermissionSubtitle.setTextColor(
-                        resources.getColor(R.color.nc_darkRed, null)
-                    )
-
-                    if (openedByNotificationWarning) {
-                        DrawableUtils.blinkDrawable(binding.settingsNotificationsPermissionWrapper.background)
-                    }
-
-                    binding.settingsCallSound.isEnabled = false
-                    binding.settingsCallSound.alpha = DISABLED_ALPHA
-                    binding.settingsMessageSound.isEnabled = false
-                    binding.settingsMessageSound.alpha = DISABLED_ALPHA
-
-                    binding.settingsNotificationsPermissionWrapper.setOnClickListener {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                            ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION
-                        )
-                    }
+                    viewModel.disablePhoneBookIntegration()
                 }
-            } else {
-                binding.settingsNotificationsPermissionWrapper.visibility = View.GONE
-            }
-        } else {
-            binding.settingsPushOnlyWrapper.visibility = View.GONE
-            // Shows "UnifiedPush is disabled and Google Play services are not available." if we offer UnifiedPush
-            // Else "Google Play services are not available" (if any account doesn't support webpush yet, or no
-            // distrib are installed)
-            if (showUnifiedPushToggle()) {
-                binding.settingsGplayNotAvailable.visibility = View.GONE
-                binding.settingsPushNotAvailable.visibility = View.VISIBLE
-            } else {
-                binding.settingsGplayNotAvailable.visibility = View.VISIBLE
-                binding.settingsPushNotAvailable.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun setupFullScreenIntentPermissionSetting() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            if (notificationManager.canUseFullScreenIntent()) {
-                binding.fullScreenIntentPermissionSubtitle.text =
-                    resources.getString(R.string.full_screen_intent_permission_granted)
-                binding.fullScreenIntentPermissionSubtitle.setTextColor(
-                    resources.getColor(R.color.high_emphasis_text, null)
-                )
-            } else {
-                binding.fullScreenIntentPermissionSubtitle.text =
-                    resources.getString(R.string.full_screen_intent_permission_not_granted)
-                binding.fullScreenIntentPermissionSubtitle.setTextColor(
-                    resources.getColor(R.color.nc_darkRed, null)
-                )
-
-                if (openedByNotificationWarning) {
-                    DrawableUtils.blinkDrawable(binding.settingsFullScreenIntentWrapper.background)
+            },
+            onReadStatusChange = viewModel::setReadStatusShared,
+            onTypingStatusChange = viewModel::setTypingStatusShared,
+            onPhoneNumberChange = viewModel::clearPhoneNumberError,
+            onSubmitPhoneNumber = viewModel::submitPhoneNumber,
+            onDismissPhoneNumberDialog = viewModel::dismissPhoneNumberDialog,
+            onOpenLogs = ::openLogs,
+            onShareReport = {
+                showShareReportDialog(this, userManager, appPreferences, logsRepository, saveZipLauncher)
+            },
+            onMediaQualityChange = viewModel::setMediaQualityReduced,
+            onClientCertificateClick = ::chooseClientCertificate,
+            proxy = ProxyCallbacks(
+                onTypeChange = viewModel::setProxyType,
+                onHostChange = viewModel::setProxyHost,
+                onPortChange = viewModel::setProxyPort,
+                onUseCredentialsChange = viewModel::setProxyUseCredentials,
+                onUsernameChange = viewModel::setProxyUsername,
+                onPasswordChange = viewModel::setProxyPassword
+            ),
+            onVersionClick = {
+                if (resources.getBoolean(R.bool.nc_is_debug)) {
+                    sendMailWithAttachment(this)
                 }
             }
-            binding.settingsFullScreenIntentWrapper.setOnClickListener {
-                val intent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
-                    data = "package:$packageName".toUri()
-                }
-                startActivity(intent)
-            }
-        } else {
-            binding.settingsFullScreenIntentWrapper.visibility = View.GONE
-        }
-    }
-
-    private fun setupNotificationSoundsSettings() {
-        if (NotificationUtils.isCallsNotificationChannelEnabled(this)) {
-            val callRingtoneUri = getCallRingtoneUri(context, (appPreferences))
-
-            binding.callsRingtone.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-            binding.callsRingtone.text = getRingtoneName(context, callRingtoneUri)
-        } else {
-            binding.callsRingtone.setTextColor(
-                ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
-            )
-            binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
-
-            if (openedByNotificationWarning) {
-                DrawableUtils.blinkDrawable(binding.settingsCallSound.background)
-            }
-        }
-
-        if (NotificationUtils.isMessagesNotificationChannelEnabled(this)) {
-            val messageRingtoneUri = getMessageRingtoneUri(context, (appPreferences))
-            binding.messagesRingtone.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-            binding.messagesRingtone.text = getRingtoneName(context, messageRingtoneUri)
-        } else {
-            binding.messagesRingtone.setTextColor(
-                ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
-            )
-            binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
-
-            if (openedByNotificationWarning) {
-                DrawableUtils.blinkDrawable(binding.settingsMessageSound.background)
-            }
-        }
-
-        binding.settingsCallSound.setOnClickListener {
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-            intent.putExtra(
-                Settings.EXTRA_CHANNEL_ID,
-                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
-            )
-
-            startActivity(intent)
-        }
-        binding.settingsMessageSound.setOnClickListener {
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-            intent.putExtra(
-                Settings.EXTRA_CHANNEL_ID,
-                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-            )
-            startActivity(intent)
-        }
-    }
-
-    private fun setTroubleshootingClickListenersIfNecessary() {
-        fun click() {
-            val dialogBuilder = MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.nc_notifications_troubleshooting_dialog_title)
-                .setMessage(R.string.nc_notifications_troubleshooting_dialog_text)
-                .setNegativeButton(R.string.nc_diagnosis_dialog_open_checklist) { _, _ ->
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            resources.getString(R.string.notification_checklist_url).toUri()
-                        )
-                    )
-                }
-                .setPositiveButton(R.string.nc_diagnosis_dialog_open_dontkillmyapp_website) { _, _ ->
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            resources.getString(R.string.dontkillmyapp_url).toUri()
-                        )
-                    )
-                }
-                .setNeutralButton(R.string.nc_diagnosis_dialog_open_diagnosis) { _, _ ->
-                    val intent = Intent(context, DiagnosisActivity::class.java)
-                    intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
-                    startActivity(intent)
-                }
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
-            )
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (platformPermissionUtil.isPostNotificationsPermissionGranted() &&
-                PowerManagerUtils().isIgnoringBatteryOptimizations()
-            ) {
-                binding.settingsNotificationsPermissionWrapper.setOnClickListener { click() }
-                binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
-            }
-        } else if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
-            binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
-        }
-    }
-
-    private fun setupServerNotificationAppCheck() {
-        val serverNotificationAppInstalled =
-            currentUser!!
-                .capabilities?.notificationsCapability?.features?.isNotEmpty()
-                ?: false
-        if (!serverNotificationAppInstalled) {
-            binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
-
-            val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                currentUser!!.baseUrl!!
-
-            binding.settingsServerNotificationAppDescription.text = description
-            if (openedByNotificationWarning) {
-                DrawableUtils.blinkDrawable(binding.settingsServerNotificationAppWrapper.background)
-            }
-        } else {
-            binding.settingsServerNotificationAppWrapper.visibility = View.GONE
-        }
-    }
-
-    private fun setupSourceCodeUrl(isOnline: Boolean) {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_source_code_url)) && isOnline) {
-            binding.settingsSourceCode.visibility = View.VISIBLE
-            binding.settingsSourceCode.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        resources!!.getString(R.string.nc_source_code_url).toUri()
-                    )
-                )
-            }
-        } else {
-            binding.settingsSourceCode.visibility = View.GONE
-        }
-    }
-
-    private fun setupDiagnosis() {
-        binding.diagnosisWrapper.setOnClickListener {
-            val intent = Intent(context, DiagnosisActivity::class.java)
-            intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
-            startActivity(intent)
-        }
-        binding.logsWrapper.setOnClickListener {
-            startActivity(Intent(context, LogsActivity::class.java))
-        }
-        binding.shareReportWrapper.setOnClickListener {
-            showShareReportDialog(this, userManager, appPreferences, logsRepository, saveZipLauncher)
-        }
-    }
-
-    private fun setupPrivacyUrl(isOnline: Boolean) {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_privacy_url)) && isOnline) {
-            binding.settingsPrivacy.visibility = View.VISIBLE
-            binding.settingsPrivacy.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        resources!!.getString(R.string.nc_privacy_url).toUri()
-                    )
-                )
-            }
-        } else {
-            binding.settingsPrivacy.visibility = View.GONE
-        }
-    }
-
-    private fun setupLicenceSetting(isOnline: Boolean) {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_gpl3_url)) && isOnline) {
-            binding.settingsLicence.visibility = View.VISIBLE
-            binding.settingsLicence.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        resources!!.getString(R.string.nc_gpl3_url).toUri()
-                    )
-                )
-            }
-        } else {
-            binding.settingsLicence.visibility = View.GONE
-        }
-    }
-
-    private fun showSetupClientCertView(isOnline: Boolean) {
-        if (isOnline) {
-            binding.settingsClientCert.visibility = View.VISIBLE
-            binding.settingsProxyGroup.visibility = View.VISIBLE
-        } else {
-            binding.settingsClientCert.visibility = View.GONE
-            binding.settingsProxyGroup.visibility = View.GONE
-        }
-    }
-
-    private fun setupClientCertView() {
-        var host: String? = null
-        var port = -1
-        val uri: URI
-        try {
-            uri = URI(currentUser!!.baseUrl!!)
-            host = uri.host
-            port = uri.port
-            Log.d(TAG, "uri is $uri")
-        } catch (e: URISyntaxException) {
-            Log.e(TAG, "Failed to create uri")
-        }
-
-        binding.settingsClientCert.setOnClickListener {
-            KeyChain.choosePrivateKeyAlias(
-                this,
-                { alias: String? ->
-                    var finalAlias: String? = alias
-
-                    runOnUiThread {
-                        if (finalAlias != null) {
-                            binding.settingsClientCertTitle.setText(R.string.nc_client_cert_change)
-                        } else {
-                            binding.settingsClientCertTitle.setText(R.string.nc_client_cert_setup)
-                        }
-                    }
-
-                    if (finalAlias == null) {
-                        finalAlias = ""
-                    }
-                    Log.d(TAG, "host: $host and port: $port")
-                    currentUser!!.clientCertificate = finalAlias
-                    val userId = currentUser!!.id!!
-                    lifecycleScope.launch {
-                        userManager.updateClientCertificate(userId, finalAlias)
-                    }
-                },
-                arrayOf("RSA", "EC"),
-                null,
-                host,
-                port,
-                currentUser!!.clientCertificate
-            )
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun registerChangeListeners() {
-        val appPreferences = AppPreferencesImpl(context)
-        proxyTypeFlow = appPreferences.readString(AppPreferencesImpl.PROXY_TYPE)
-        proxyCredentialFlow = appPreferences.readBoolean(AppPreferencesImpl.PROXY_CRED)
-        screenSecurityFlow = appPreferences.readBoolean(AppPreferencesImpl.SCREEN_SECURITY)
-        screenLockFlow = appPreferences.readBoolean(AppPreferencesImpl.SCREEN_LOCK)
-        screenLockTimeoutFlow = appPreferences.readString(AppPreferencesImpl.SCREEN_LOCK_TIMEOUT)
-
-        val themeKey = context.resources.getString(R.string.nc_settings_theme_key)
-        themeFlow = appPreferences.readString(themeKey)
-
-        val privacyKey = context.resources.getString(R.string.nc_settings_read_privacy_key)
-        readPrivacyFlow = appPreferences.readBoolean(privacyKey)
-
-        typingStatusFlow = appPreferences.readBoolean(AppPreferencesImpl.TYPING_STATUS)
-        phoneBookIntegrationFlow = appPreferences.readBoolean(AppPreferencesImpl.PHONE_BOOK_INTEGRATION)
-
-        var pos = resources.getStringArray(R.array.screen_lock_timeout_entry_values).indexOf(
-            appPreferences.screenLockTimeout
-        )
-        binding.settingsScreenLockTimeoutLayoutDropdown.setText(
-            resources.getStringArray(R.array.screen_lock_timeout_descriptions)[pos]
         )
 
-        binding.settingsScreenLockTimeoutLayoutDropdown.setSimpleItems(R.array.screen_lock_timeout_descriptions)
-        binding.settingsScreenLockTimeoutLayoutDropdown.setOnItemClickListener { _, _, position, _ ->
-            val entryVal: String = resources.getStringArray(R.array.screen_lock_timeout_entry_values)[position]
-            appPreferences.screenLockTimeout = entryVal
-            SecurityUtils.createKey(entryVal)
-        }
-        pos = resources.getStringArray(R.array.theme_entry_values).indexOf(appPreferences.theme)
-        binding.settingsTheme.setText(resources.getStringArray(R.array.theme_descriptions)[pos])
-
-        binding.settingsTheme.setSimpleItems(R.array.theme_descriptions)
-        binding.settingsTheme.setOnItemClickListener { _, _, position, _ ->
-            val entryVal: String = resources.getStringArray(R.array.theme_entry_values)[position]
-            appPreferences.theme = entryVal
-        }
-
-        observeProxyType()
-        observeProxyCredential()
-        observeScreenSecurity()
-        observeScreenLock()
-        observeTheme()
-        observeReadPrivacy()
-        observeTypingStatus()
-    }
-
-    fun sendLogs() {
-        if (resources!!.getBoolean(R.bool.nc_is_debug)) {
-            sendMailWithAttachment((context))
-        }
-    }
-
-    private fun showRemoveAccountWarning() {
-        binding.messageText.context?.let {
-            val materialAlertDialogBuilder = MaterialAlertDialogBuilder(it)
-                .setTitle(R.string.nc_settings_remove_account)
-                .setMessage(R.string.nc_settings_remove_confirmation)
-                .setPositiveButton(R.string.nc_settings_remove) { _, _ ->
-                    removeCurrentAccount()
-                }
-                .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    // unused atm
-                }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(
-                it,
-                materialAlertDialogBuilder
-            )
-
-            val dialog = materialAlertDialogBuilder.show()
-
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            )
-        }
-    }
-
-    @SuppressLint("StringFormatInvalid")
-    private fun removeCurrentAccount() {
+    private fun collectEvents() {
         lifecycleScope.launch {
-            userManager.scheduleUserForDeletionWithId(currentUser!!.id!!)
-            val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-                .setExpeditedIfSupported()
-                .build()
-            WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
-
-            WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
-                .observeForever { workInfo: WorkInfo? ->
-
-                    when (workInfo?.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            val text = String.format(
-                                context.resources.getString(R.string.nc_deleted_user),
-                                currentUser!!.displayName
-                            )
-                            Toast.makeText(
-                                context,
-                                text,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            restartApp()
-                        }
-
-                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                            Toast.makeText(
-                                context,
-                                context.resources.getString(R.string.nc_common_error_sorry),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            logger.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
-                            restartApp()
-                        }
-
-                        else -> {}
-                    }
-                }
-        }
-    }
-
-    private fun restartApp() {
-        startActivity(AppTasks.createRestartIntent(context))
-    }
-
-    private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String =
-        if (ringtoneUri == null) {
-            resources!!.getString(R.string.nc_settings_no_ringtone)
-        } else if ((NotificationUtils.DEFAULT_CALL_RINGTONE_URI == ringtoneUri.toString()) ||
-            (NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI == ringtoneUri.toString())
-        ) {
-            resources!!.getString(R.string.nc_settings_default_ringtone)
-        } else {
-            val r = RingtoneManager.getRingtone(context, ringtoneUri)
-            r.getTitle(context)
-        }
-
-    private fun themeSwitchPreferences() {
-        binding.run {
-            listOf(
-                settingsShowEcosystemSwitch,
-                settingsShowNotificationWarningSwitch,
-                settingsUnifiedpushSwitch,
-                settingsScreenLockSwitch,
-                settingsScreenSecuritySwitch,
-                settingsIncognitoKeyboardSwitch,
-                settingsPhoneBookIntegrationSwitch,
-                settingsReadPrivacySwitch,
-                settingsTypingStatusSwitch,
-                settingsProxyUseCredentialsSwitch
-            ).forEach(viewThemeUtils.talk::colorSwitch)
-        }
-    }
-
-    private fun themeTitles() {
-        binding.run {
-            listOf(
-                settingsNotificationsTitle,
-                settingsAboutTitle,
-                settingsDiagnosisTitle,
-                settingsAdvancedTitle,
-                settingsAppearanceTitle,
-                settingsPrivacyTitle
-            ).forEach(viewThemeUtils.platform::colorTextView)
-        }
-    }
-
-    private fun setupProxyTypeSettings() {
-        if (appPreferences.proxyType == null) {
-            appPreferences.proxyType = resources.getString(R.string.nc_no_proxy)
-        }
-        binding.settingsProxyChoice.setText(appPreferences.proxyType)
-        binding.settingsProxyChoice.setSimpleItems(R.array.proxy_type_descriptions)
-        binding.settingsProxyChoice.setOnItemClickListener { _, _, position, _ ->
-            val entryVal = resources.getStringArray(R.array.proxy_type_descriptions)[position]
-            appPreferences.proxyType = entryVal
-        }
-
-        binding.settingsProxyHostEdit.setText(appPreferences.proxyHost)
-        binding.settingsProxyHostEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                appPreferences.proxyHost = binding.settingsProxyHostEdit.text.toString()
-            }
-        }
-
-        binding.settingsProxyPortEdit.setText(appPreferences.proxyPort)
-        binding.settingsProxyPortEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                appPreferences.proxyPort = binding.settingsProxyPortEdit.text.toString()
-            }
-        }
-        binding.settingsProxyUsernameEdit.setText(appPreferences.proxyUsername)
-        binding.settingsProxyUsernameEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                appPreferences.proxyUsername = binding.settingsProxyUsernameEdit.text.toString()
-            }
-        }
-        binding.settingsProxyPasswordEdit.setText(appPreferences.proxyPassword)
-        binding.settingsProxyPasswordEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                appPreferences.proxyPassword = binding.settingsProxyPasswordEdit.text.toString()
-            }
-        }
-
-        if (((context.resources.getString(R.string.nc_no_proxy)) == appPreferences.proxyType) ||
-            appPreferences.proxyType == null
-        ) {
-            hideProxySettings()
-        } else {
-            showProxySettings()
-        }
-    }
-
-    private fun setupProxyCredentialSettings() {
-        if (appPreferences.proxyCredentials) {
-            showProxyCredentials()
-        } else {
-            hideProxyCredentials()
-        }
-    }
-
-    private fun setupMessageView() {
-        if (ApplicationWideMessageHolder.getInstance().messageType != null) {
-            when (ApplicationWideMessageHolder.getInstance().messageType) {
-                ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED -> {
-                    binding.messageText.let {
-                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
-                        it.text = resources!!.getString(R.string.nc_settings_account_updated)
-                        binding.messageText.visibility = View.VISIBLE
-                    }
-                }
-
-                ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK -> {
-                    binding.messageText.let {
-                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
-                        it.text = resources!!.getString(R.string.nc_settings_wrong_account)
-                        binding.messageText.visibility = View.VISIBLE
-                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
-                        it.text = resources!!.getString(R.string.nc_Server_account_imported)
-                        binding.messageText.visibility = View.VISIBLE
-                    }
-                }
-
-                ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
-                    binding.messageText.let {
-                        viewThemeUtils.platform.colorTextView(it, ColorRole.PRIMARY)
-                        it.text = resources!!.getString(R.string.nc_Server_account_imported)
-                        binding.messageText.visibility = View.VISIBLE
-                    }
-                }
-
-                ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT -> {
-                    binding.messageText.let {
-                        it.setTextColor(resources!!.getColor(R.color.nc_darkRed, null))
-                        it.text = resources!!.getString(R.string.nc_server_failed_to_import_account)
-                        binding.messageText.visibility = View.VISIBLE
-                    }
-                }
-
-                else -> binding.messageText.visibility = View.GONE
-            }
-            ApplicationWideMessageHolder.getInstance().messageType = null
-            binding.messageText.animate()
-                ?.translationY(0f)
-                ?.alpha(0.0f)
-                ?.setDuration(DURATION)
-                ?.setStartDelay(START_DELAY)
-                ?.setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        binding.messageText.visibility = View.GONE
-                    }
-                })
-        } else {
-            binding.messageText.visibility = View.GONE
-        }
-    }
-
-    private fun setupProfileQueryDisposable() {
-        profileQueryDisposable = ncApi.getUserProfile(
-            credentials,
-            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!)
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { userProfileOverall: UserProfileOverall ->
-                    var displayName: String? = null
-                    if (!TextUtils.isEmpty(
-                            userProfileOverall.ocs!!.data!!.displayName
-                        )
-                    ) {
-                        displayName = userProfileOverall.ocs!!.data!!.displayName
-                    } else if (!TextUtils.isEmpty(
-                            userProfileOverall.ocs!!.data!!.displayNameAlt
-                        )
-                    ) {
-                        displayName = userProfileOverall.ocs!!.data!!.displayNameAlt
-                    }
-                    if ((!TextUtils.isEmpty(displayName) && !(displayName == currentUser!!.displayName))) {
-                        currentUser!!.displayName = displayName
-                        val userId = currentUser!!.id!!
-                        lifecycleScope.launch {
-                            userManager.updateDisplayName(userId, displayName)
-                        }
-                        binding.nameText.text = currentUser!!.displayName
-                    }
-                },
-                { dispose(profileQueryDisposable) },
-                { dispose(profileQueryDisposable) }
-            )
-    }
-
-    private fun setupServerAgeWarning() {
-        when {
-            CapabilitiesUtil.isServerEOL(currentUser!!.serverVersion?.major) -> {
-                binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context), R.color.nc_darkRed))
-                binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
-                binding.serverAgeWarningIcon.setColorFilter(
-                    ContextCompat.getColor((context), R.color.nc_darkRed),
-                    PorterDuff.Mode.SRC_IN
-                )
-            }
-
-            CapabilitiesUtil.isServerAlmostEOL(currentUser!!.serverVersion?.major) -> {
-                binding.serverAgeWarningText.setTextColor(
-                    ContextCompat.getColor((context), R.color.nc_darkYellow)
-                )
-                binding.serverAgeWarningText.setText(R.string.nc_settings_server_almost_eol)
-                binding.serverAgeWarningIcon.setColorFilter(
-                    ContextCompat.getColor((context), R.color.nc_darkYellow),
-                    PorterDuff.Mode.SRC_IN
-                )
-            }
-
-            else -> {
-                binding.serverAgeWarningTextCard.visibility = View.GONE
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect(::handleEvent)
             }
         }
     }
 
-    private fun setupCheckables(isOnline: Boolean) {
-        setupShowEcosystemCheckable()
-
-        binding.settingsShowNotificationWarningSwitch.isChecked =
-            appPreferences.showRegularNotificationWarning
-
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-            binding.settingsShowNotificationWarning.setOnClickListener {
-                val isChecked = binding.settingsShowNotificationWarningSwitch.isChecked
-                binding.settingsShowNotificationWarningSwitch.isChecked = !isChecked
-                appPreferences.setShowRegularNotificationWarning(!isChecked)
-                if (!isChecked) {
-                    appPreferences.setNotificationWarningLastPostponedDate(NOTIFICATION_WARNING_DATE_NOT_SET)
-                }
+    private fun handleEvent(event: SettingsEvent) {
+        when (event) {
+            // shown in its own coroutine, so that later events don't wait until the snackbar is gone
+            is SettingsEvent.ShowMessage -> lifecycleScope.launch {
+                snackbarHostState.showSnackbar(getString(event.messageRes))
             }
-        } else {
-            binding.settingsShowNotificationWarning.visibility = View.GONE
-        }
-
-        if (CapabilitiesUtil.isReadStatusAvailable(currentUser?.capabilities?.spreedCapability) &&
-            isOnline
-        ) {
-            binding.settingsReadPrivacy.visibility = View.VISIBLE
-            binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)
-        } else {
-            binding.settingsReadPrivacy.visibility = View.GONE
-        }
-
-        setupTypingStatusSetting(isOnline)
-        setupProxyUseSetting()
-
-        binding.settingsScreenLockSwitch.isChecked = appPreferences.isScreenLocked
-        binding.settingsScreenLock.setOnClickListener {
-            val isChecked = binding.settingsScreenLockSwitch.isChecked
-            binding.settingsScreenLockSwitch.isChecked = !isChecked
-            appPreferences.setScreenLock(!isChecked)
-            if (!isChecked) {
-                SecurityUtils.createKey(appPreferences.screenLockTimeout)
-                appPreferences.setLockTimestamp(System.currentTimeMillis())
-            }
-        }
-
-        binding.settingsReadPrivacy.setOnClickListener {
-            val isChecked = binding.settingsReadPrivacySwitch.isChecked
-            binding.settingsReadPrivacySwitch.isChecked = !isChecked
-            appPreferences.setReadPrivacy(!isChecked)
-        }
-
-        binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
-        binding.settingsIncognitoKeyboard.setOnClickListener {
-            val isChecked = binding.settingsIncognitoKeyboardSwitch.isChecked
-            binding.settingsIncognitoKeyboardSwitch.isChecked = !isChecked
-            appPreferences.setIncognitoKeyboard(!isChecked)
-        }
-
-        setupMediaQualitySetting()
-        setupPhoneBookIntegrationSetting()
-
-        binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
-        binding.settingsScreenSecurity.setOnClickListener {
-            val isChecked = binding.settingsScreenSecuritySwitch.isChecked
-            binding.settingsScreenSecuritySwitch.isChecked = !isChecked
-            appPreferences.setScreenSecurity(!isChecked)
-        }
-
-        binding.settingsTypingStatus.setOnClickListener {
-            val isChecked = binding.settingsTypingStatusSwitch.isChecked
-            binding.settingsTypingStatusSwitch.isChecked = !isChecked
-            appPreferences.setTypingStatus(!isChecked)
+            SettingsEvent.AccountUnavailable -> finish()
         }
     }
 
-    private fun setupShowEcosystemCheckable() {
-        binding.settingsShowEcosystemSwitch.isChecked = appPreferences.isShowEcosystem
-        binding.settingsShowEcosystem.setOnClickListener {
-            val isChecked = binding.settingsShowEcosystemSwitch.isChecked
-            binding.settingsShowEcosystemSwitch.isChecked = !isChecked
-            appPreferences.setShowEcosystem(!isChecked)
-        }
-    }
-
-    private fun setupMediaQualitySetting() {
-        updateMediaQualitySummary()
-        binding.settingsMediaQuality.setOnClickListener {
-            showMediaQualityDialog()
-        }
-    }
-
-    private fun updateMediaQualitySummary() {
-        binding.settingsMediaQualityDesc.text = if (appPreferences.compressUploadImages) {
-            getString(R.string.nc_media_quality_reduced)
-        } else {
-            getString(R.string.nc_media_quality_original)
-        }
-    }
-
-    private fun showMediaQualityDialog() {
-        var dialog: AlertDialog? = null
-        val view = buildMediaQualityDialogContentView { reducedQuality ->
-            appPreferences.setCompressUploadImages(reducedQuality)
-            updateMediaQualitySummary()
-            dialog?.dismiss()
-        }
-        val dialogBuilder = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.nc_settings_media_quality_title)
-            .setView(view)
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-        dialog = dialogBuilder.show()
-    }
-
-    // AlertDialog/MaterialAlertDialogBuilder doesn't reliably render both setMessage(...) and
-    // setSingleChoiceItems(...) together (the list ends up empty), so the hint and the two
-    // options are laid out manually here instead, mirroring buildShareDialogContentView's style.
-    private fun buildMediaQualityDialogContentView(
-        onSelect: (reducedQuality: Boolean) -> Unit
-    ): android.widget.LinearLayout {
-        val density = resources.displayMetrics.density
-        fun dp(value: Int) = (value * density).toInt()
-        val selectableBackground = with(android.util.TypedValue()) {
-            theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
-            resourceId
-        }
-
-        fun optionRow(label: String, reducedQuality: Boolean) =
-            android.widget.LinearLayout(this).apply {
-                orientation = android.widget.LinearLayout.HORIZONTAL
-                gravity = android.view.Gravity.CENTER_VERTICAL
-                val h = dp(DIALOG_PADDING_H_DP)
-                val v = dp(DIALOG_PADDING_V_DP)
-                setPadding(h, v, h, v)
-                setBackgroundResource(selectableBackground)
-                isClickable = true
-                isFocusable = true
-                addView(
-                    android.widget.RadioButton(context).apply {
-                        isChecked = appPreferences.compressUploadImages == reducedQuality
-                        isClickable = false
-                    }
-                )
-                addView(
-                    android.widget.TextView(context).apply {
-                        text = label
-                        setPadding(dp(DIALOG_SPACING_DP), 0, 0, 0)
-                        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
-                    }
-                )
-                setOnClickListener { onSelect(reducedQuality) }
-            }
-
-        return android.widget.LinearLayout(this).apply {
-            orientation = android.widget.LinearLayout.VERTICAL
-            addView(
-                android.widget.TextView(context).apply {
-                    text = getString(R.string.nc_media_quality_original_hint)
-                    val h = dp(DIALOG_PADDING_H_DP)
-                    val v = dp(DIALOG_PADDING_V_DP)
-                    setPadding(h, v, h, v)
-                    setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
-                }
-            )
-            addView(optionRow(getString(R.string.nc_media_quality_original), reducedQuality = false))
-            addView(optionRow(getString(R.string.nc_media_quality_reduced), reducedQuality = true))
-        }
-    }
-
-    private fun setupPhoneBookIntegrationSetting() {
-        binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
-        binding.settingsPhoneBookIntegration.setOnClickListener {
-            val isChecked = binding.settingsPhoneBookIntegrationSwitch.isChecked
-            binding.settingsPhoneBookIntegrationSwitch.isChecked = !isChecked
-            appPreferences.setPhoneBookIntegration(!isChecked)
-            if (!isChecked) {
-                if (checkPermission(this@SettingsActivity, (context))) {
-                    checkForPhoneNumber()
-                }
-            } else {
-                deleteAll()
-            }
-        }
-    }
-
-    private fun setupProxyUseSetting() {
-        binding.settingsProxyUseCredentialsSwitch.isChecked = appPreferences.proxyCredentials
-        binding.settingsProxyUseCredentials.setOnClickListener {
-            val isChecked = binding.settingsProxyUseCredentialsSwitch.isChecked
-            binding.settingsProxyUseCredentialsSwitch.isChecked = !isChecked
-            appPreferences.setProxyNeedsCredentials(!isChecked)
-        }
-    }
-
-    private fun setupTypingStatusSetting(isOnline: Boolean) {
-        if (currentUser!!.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
-            binding.settingsTypingStatusOnlyWithHpb.visibility = View.GONE
-            Log.i(TAG, "Typing Status Available: ${CapabilitiesUtil.isTypingStatusAvailable(currentUser!!)}")
-
-            if (CapabilitiesUtil.isTypingStatusAvailable(currentUser!!) && isOnline) {
-                binding.settingsTypingStatus.visibility = View.VISIBLE
-                binding.settingsTypingStatusSwitch.isChecked = !CapabilitiesUtil.isTypingStatusPrivate(currentUser!!)
-            } else {
-                binding.settingsTypingStatus.visibility = View.GONE
-            }
-        } else {
-            Log.i(TAG, "Typing Status not Available")
-            binding.settingsTypingStatusSwitch.isChecked = false
-            binding.settingsTypingStatusOnlyWithHpb.visibility = View.VISIBLE
-            binding.settingsTypingStatus.isEnabled = false
-            binding.settingsTypingStatus.alpha = DISABLED_ALPHA
-        }
-    }
-
-    private fun setupScreenLockSetting() {
-        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        if (keyguardManager.isKeyguardSecure) {
-            binding.settingsScreenLock.isEnabled = true
-            binding.settingsScreenLockTimeout.isEnabled = true
-            binding.settingsScreenLockSwitch.isChecked = appPreferences.isScreenLocked
-            binding.settingsScreenLockTimeoutLayoutDropdown.isEnabled = appPreferences.isScreenLocked
-            if (appPreferences.isScreenLocked) {
-                binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
-            } else {
-                binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
-            }
-            binding.settingsScreenLock.alpha = ENABLED_ALPHA
-        } else {
-            binding.settingsScreenLock.isEnabled = false
-            binding.settingsScreenLockTimeoutLayoutDropdown.isEnabled = false
-            appPreferences.removeScreenLock()
-            appPreferences.removeScreenLockTimeout()
-            binding.settingsScreenLockSwitch.isChecked = false
-            binding.settingsScreenLock.alpha = DISABLED_ALPHA
-            binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
-        }
-    }
-
-    public override fun onDestroy() {
-        // appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener)
-        // appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
-        // appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener)
-        // appPreferences.unregisterScreenLockListener(screenLockChangeListener)
-        // appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
-        // appPreferences.unregisterThemeChangeListener(themeChangeListener)
-        // appPreferences.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
-        // appPreferences.unregisterTypingStatusChangeListener(typingStatusChangeListener)
-        // appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
-
-        super.onDestroy()
-    }
-
-    private fun hideProxySettings() {
-        appPreferences.removeProxyHost()
-        appPreferences.removeProxyPort()
-        appPreferences.removeProxyCredentials()
-        appPreferences.removeProxyUsername()
-        appPreferences.removeProxyPassword()
-        binding.settingsProxyHostLayout.visibility = View.GONE
-        binding.settingsProxyPortLayout.visibility = View.GONE
-        binding.settingsProxyUseCredentials.visibility = View.GONE
-        hideProxyCredentials()
-    }
-
-    private fun showProxySettings() {
-        binding.settingsProxyHostLayout.visibility =
-            View.VISIBLE
-        binding.settingsProxyPortLayout.visibility =
-            View.VISIBLE
-        binding.settingsProxyUseCredentials.visibility =
-            View.VISIBLE
-        if (binding.settingsProxyUseCredentialsSwitch.isChecked) showProxyCredentials()
-    }
-
-    private fun showProxyCredentials() {
-        binding.settingsProxyUsernameLayout.visibility =
-            View.VISIBLE
-        binding.settingsProxyPasswordLayout.visibility =
-            View.VISIBLE
-    }
-
-    private fun hideProxyCredentials() {
-        appPreferences.removeProxyUsername()
-        appPreferences.removeProxyPassword()
-        binding.settingsProxyUsernameLayout.visibility = View.GONE
-        binding.settingsProxyPasswordLayout.visibility = View.GONE
-    }
-
-    private fun dispose(disposable: Disposable?) {
-        if (disposable != null && !disposable.isDisposed) {
-            disposable.dispose()
-        } else if (disposable == null) {
-            disposeProfileQueryDisposable()
-            disposeDbQueryDisposable()
-        }
-    }
-
-    private fun disposeDbQueryDisposable() {
-        if (dbQueryDisposable != null && !dbQueryDisposable!!.isDisposed) {
-            dbQueryDisposable!!.dispose()
-            dbQueryDisposable = null
-        } else if (dbQueryDisposable != null) {
-            dbQueryDisposable = null
-        }
-    }
-
-    private fun disposeProfileQueryDisposable() {
-        if (profileQueryDisposable != null && !profileQueryDisposable!!.isDisposed) {
-            profileQueryDisposable!!.dispose()
-            profileQueryDisposable = null
-        } else if (profileQueryDisposable != null) {
-            profileQueryDisposable = null
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            ContactAddressBookWorker.REQUEST_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    WorkManager
-                        .getInstance(this)
-                        .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java).build())
-                    checkForPhoneNumber()
-                } else {
-                    appPreferences.setPhoneBookIntegration(false)
-                    binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.no_phone_book_integration_due_to_permissions),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            }
-
-            ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    try {
-                        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to open notification settings as fallback", e)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun observeScreenLock() {
-        CoroutineScope(Dispatchers.Main).launch {
-            var state = appPreferences.isScreenLocked
-            screenLockFlow.collect { newBoolean ->
-                if (newBoolean != state) {
-                    state = newBoolean
-                    binding.settingsScreenLockTimeout.isEnabled = newBoolean
-                    binding.settingsScreenLockTimeoutLayoutDropdown.isEnabled = newBoolean
-                    if (newBoolean) {
-                        binding.settingsScreenLockTimeout.alpha = ENABLED_ALPHA
-                    } else {
-                        binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
-                    }
-                }
-            }
-        }
-    }
-
-    private fun observeScreenSecurity() {
-        CoroutineScope(Dispatchers.Main).launch {
-            var state = appPreferences.isScreenSecured
-            screenSecurityFlow.collect { newBoolean ->
-                if (newBoolean != state) {
-                    state = newBoolean
-                    if (newBoolean) {
+    /** Keeps screenshots and the preview in the recent apps off while screen security or the app lock is on. */
+    private fun applySecureWindowFlag() {
+        lifecycleScope.launch {
+            viewModel.uiState
+                .map { it.privacy.screenSecurity || it.privacy.screenLock }
+                .distinctUntilChanged()
+                .collect { secure ->
+                    if (secure) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     } else {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     }
                 }
-            }
         }
     }
 
-    private fun observeProxyCredential() {
-        CoroutineScope(Dispatchers.Main).launch {
-            var state = appPreferences.proxyCredentials
-            proxyCredentialFlow.collect { newBoolean ->
-                if (newBoolean != state) {
-                    state = newBoolean
-                    if (newBoolean) {
-                        showProxyCredentials()
-                    } else {
-                        hideProxyCredentials()
-                    }
-                }
+    private fun setUseUnifiedPush(enabled: Boolean) {
+        viewModel.setUseUnifiedPush(enabled)
+        if (enabled) {
+            UnifiedPushUtils.useDefaultDistributor(this) { distributor ->
+                Log.d(TAG, "Registered to $distributor")
+                distributor?.let { runOnUiThread { viewModel.onDistributorChanged(it) } }
             }
+        } else {
+            UnifiedPushUtils.disableExternalUnifiedPush(this)
         }
     }
 
-    private fun observeProxyType() {
-        CoroutineScope(Dispatchers.Main).launch {
-            var state = appPreferences.proxyType
-            proxyTypeFlow.collect { newString ->
-                if (newString != state) {
-                    state = newString
-                    if (((context.resources.getString(R.string.nc_no_proxy)) == newString) || newString.isEmpty()) {
-                        hideProxySettings()
-                    } else {
-                        when (newString) {
-                            "HTTP" -> {
-                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_http_value))
-                                appPreferences.proxyPort = getString(R.string.nc_settings_http_value)
-                            }
+    private fun chooseClientCertificate() {
+        val uri = try {
+            URI(user.baseUrl!!)
+        } catch (e: URISyntaxException) {
+            Log.e(TAG, "Failed to parse the server address", e)
+            null
+        }
+        KeyChain.choosePrivateKeyAlias(
+            this,
+            { alias -> runOnUiThread { viewModel.onClientCertificateChosen(alias) } },
+            arrayOf("RSA", "EC"),
+            null,
+            uri?.host,
+            uri?.port ?: -1,
+            viewModel.clientCertificateAlias
+        )
+    }
 
-                            "DIRECT" -> {
-                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_direct_value))
-                                appPreferences.proxyPort = getString(R.string.nc_settings_direct_value)
-                            }
-
-                            "SOCKS" -> {
-                                binding.settingsProxyPortEdit.setText(getString(R.string.nc_settings_socks_value))
-                                appPreferences.proxyPort = getString(R.string.nc_settings_socks_value)
-                            }
-
-                            else -> {
-                            }
-                        }
-                        showProxySettings()
-                    }
-                }
+    private fun openSystemSettings(screen: SystemSettingsScreen) {
+        val intent = when (screen) {
+            SystemSettingsScreen.BATTERY_OPTIMIZATION -> Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            SystemSettingsScreen.FULL_SCREEN_INTENT -> {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return
+                Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, "package:$packageName".toUri())
             }
+            SystemSettingsScreen.CALL_NOTIFICATIONS ->
+                notificationChannelSettingsIntent(NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5)
+            SystemSettingsScreen.MESSAGE_NOTIFICATIONS ->
+                notificationChannelSettingsIntent(
+                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4
+                )
+        }
+        openSystemSettings(intent)
+    }
+
+    private fun openSystemSettings(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, "Failed to open the system settings", e)
         }
     }
 
-    private fun observeTheme() {
-        CoroutineScope(Dispatchers.Main).launch {
-            var state = appPreferences.theme
-            themeFlow.collect { newString ->
-                if (newString != state) {
-                    state = newString
-                    setAppTheme(newString)
-                }
-            }
-        }
+    private fun notificationChannelSettingsIntent(channel: NotificationUtils.NotificationChannels): Intent =
+        Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+            .putExtra(Settings.EXTRA_CHANNEL_ID, channel.name)
+
+    private fun openLogs() {
+        startActivity(Intent(this, LogsActivity::class.java))
     }
 
-    private fun checkForPhoneNumber() {
-        ncApi.getUserData(
-            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl!!)
-        ).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<UserProfileOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(userProfileOverall: UserProfileOverall) {
-                    if (userProfileOverall.ocs!!.data!!.phone?.isEmpty() == true) {
-                        askForPhoneNumber()
-                    } else {
-                        Log.d(TAG, "phone number already set")
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    // unused atm
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    private fun askForPhoneNumber() {
-        val dialog = SetPhoneNumberDialogFragment.newInstance()
-        dialog.show(supportFragmentManager, SetPhoneNumberDialogFragment.TAG)
-    }
-
-    override fun onSubmitClick(textInputLayout: TextInputLayout, dialog: DialogInterface) {
-        setPhoneNumber(textInputLayout, dialog)
-    }
-
-    private fun setPhoneNumber(textInputLayout: TextInputLayout, dialog: DialogInterface) {
-        val phoneNumber = textInputLayout.editText!!.text.toString()
-        ncApi.setUserData(
-            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-            ApiUtils.getUrlForUserData(currentUser!!.baseUrl!!, currentUser!!.userId!!),
-            "phone",
-            phoneNumber
-        ).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    when (val statusCode = genericOverall.ocs?.meta?.statusCode) {
-                        HTTP_CODE_OK -> {
-                            dialog.dismiss()
-                            Snackbar.make(
-                                binding.root,
-                                getString(
-                                    R.string.nc_settings_phone_book_integration_phone_number_dialog_success
-                                ),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-
-                        else -> {
-                            textInputLayout.helperText = getString(
-                                R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
-                            )
-                            Log.d(TAG, "failed to set phoneNumber. statusCode=$statusCode")
-                        }
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    textInputLayout.helperText = getString(
-                        R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid
-                    )
-                    Log.e(SetPhoneNumberDialogFragment.TAG, "setPhoneNumber error", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun observeReadPrivacy() {
-        lifecycleScope.launch {
-            var state = appPreferences.readPrivacy
-            readPrivacyFlow.collect { newBoolean ->
-                if (state != newBoolean) {
-                    state = newBoolean
-                    val booleanValue = if (newBoolean) "0" else "1"
-                    val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
-                    withContext(Dispatchers.IO) {
-                        try {
-                            credentials?.let { credentials ->
-                                ncApiCoroutines.setReadStatusPrivacy(
-                                    credentials,
-                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                                    json.toRequestBody("application/json".toMediaTypeOrNull())
-                                )
-                                Log.i(TAG, "reading status set")
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                appPreferences.setReadPrivacy(!newBoolean)
-                                binding.settingsReadPrivacySwitch.isChecked = !newBoolean
-                            }
-                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
-                                Log.e(TAG, "read_status_privacy : Key or value is invalid")
-                            } else {
-                                Log.e(TAG, "Error setting read status", e)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun observeTypingStatus() {
-        lifecycleScope.launch {
-            var state = appPreferences.typingStatus
-            typingStatusFlow.collect { newBoolean ->
-                if (state != newBoolean) {
-                    state = newBoolean
-                    val booleanValue = if (newBoolean) "0" else "1"
-                    val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
-                    withContext(Dispatchers.IO) {
-                        try {
-                            credentials?.let { credentials ->
-                                ncApiCoroutines.setTypingStatusPrivacy(
-                                    credentials,
-                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                                    json.toRequestBody("application/json".toMediaTypeOrNull())
-                                )
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                appPreferences.typingStatus = !newBoolean
-                                binding.settingsTypingStatusSwitch.isChecked = !newBoolean
-                            }
-                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
-                                Log.e(TAG, "typing_privacy : Key or value is invalid")
-                            } else {
-                                Log.e(TAG, "Error setting typing status", e)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    private fun intentForAccount(activity: Class<*>): Intent =
+        Intent(this, activity).putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
 
     companion object {
         private val TAG = SettingsActivity::class.java.simpleName
-        private const val DURATION: Long = 2500
-        private const val START_DELAY: Long = 5000
-        private const val DISABLED_ALPHA: Float = 0.38f
-        private const val ENABLED_ALPHA: Float = 1.0f
-        private const val LINEBREAK = "\n"
-        const val HTTP_CODE_OK: Int = 200
-        const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
-        const val NO_NOTIFICATION_REMINDER_WANTED = 0L
-        private const val DIALOG_PADDING_H_DP = 24
-        private const val DIALOG_PADDING_V_DP = 16
-        private const val DIALOG_SPACING_DP = 8
+        private val CONTACTS_PERMISSIONS =
+            arrayOf(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS)
     }
 }

@@ -168,7 +168,6 @@ How to translate with transifex:
     <string name="nc_file_permission_view_only">View-only</string>
     <string name="nc_file_permission_editable">Editable</string>
     <string name="nc_close_video_playback">Close video playback</string>
-    <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
     <string name="nc_locked">Locked</string>
     <string name="nc_settings_read_privacy_desc">Share my read-status and show the read-status of others</string>
@@ -214,7 +213,6 @@ How to translate with transifex:
     <string name="nc_settings_diagnosis_logs_section_title">Diagnosis &amp; Logs</string>
     <string name="nc_settings_diagnosis_subtitle">Open diagnosis screen to check settings</string>
     <string name="nc_settings_logs_title">Logs</string>
-    <string name="nc_settings_logs_subtitle">View local log files</string>
     <string name="nc_settings_share_report_title">Share diagnosis report</string>
     <string name="nc_settings_share_report_subtitle">Share the logs and diagnosis info</string>
 
@@ -999,7 +997,6 @@ How to translate with transifex:
     <string name="nc_settings_http_value" translatable="false">3128</string>
     <string name="nc_settings_direct_value" translatable="false">8080</string>
     <string name="nc_settings_socks_value" translatable="false">1080</string>
-    <string name="this_is_a_test_message">This is a test message</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="nc_remind">Remind me later</string>
     <string name="next_week">Next week</string>

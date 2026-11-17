@@ -255,9 +255,6 @@ public interface NcApi {
     Observable<UserProfileOverall> getUserProfile(@Header("Authorization") String authorization, @Url String url);
 
 
-    @GET
-    Observable<UserProfileOverall> getUserData(@Header("Authorization") String authorization, @Url String url);
-
     @DELETE
     Observable<GenericOverall> revertStatus(@Header("Authentication") String authorization, @Url String url);
 

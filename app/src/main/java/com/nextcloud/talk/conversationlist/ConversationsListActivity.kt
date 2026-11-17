@@ -216,6 +216,7 @@ class ConversationsListActivity : BaseActivity() {
     private val showUnreadBubbleState = MutableStateFlow(false)
     private val isFabVisibleState = MutableStateFlow(true)
     private val showNotificationWarningState = MutableStateFlow(false)
+    private val showEcosystemState = MutableStateFlow(false)
     private val isRefreshingState = MutableStateFlow(false)
     private val showAccountDialogState = MutableStateFlow(false)
 
@@ -473,7 +474,7 @@ class ConversationsListActivity : BaseActivity() {
             credentials = credentials ?: "",
             showLogo = BrandingUtils.isOriginalNextcloudClient(applicationContext),
             viewThemeUtils = viewThemeUtils,
-            isShowEcosystem = appPreferences.isShowEcosystem && !resources.getBoolean(R.bool.is_branded_client),
+            showEcosystemFlow = showEcosystemState,
             snackbarHostState = snackbarHostState,
             isMaintenanceModeFlow = isMaintenanceModeState,
             isOnlineFlow = networkMonitor.isOnline,
@@ -657,6 +658,9 @@ class ConversationsListActivity : BaseActivity() {
         }
 
         showNotificationWarningState.value = shouldShowNotificationWarning()
+        // may have been changed in the settings meanwhile
+        val isBrandedClient = resources.getBoolean(R.bool.is_branded_client)
+        showEcosystemState.value = appPreferences.isShowEcosystem && !isBrandedClient
         showShareToScreenState.value = isShare(intent)
 
         takeConversationOfShortcut()

@@ -523,31 +523,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return result
     }
 
-    override fun setReadPrivacy(value: Boolean) =
-        runBlocking<Unit> {
-            val key = context.resources.getString(R.string.nc_settings_read_privacy_key)
-            async {
-                writeBoolean(key, value)
-            }
-        }
-
-    override fun getReadPrivacy(): Boolean {
-        val key = context.resources.getString(R.string.nc_settings_read_privacy_key)
-        return runBlocking { async { readBoolean(key).first() } }.getCompleted()
-    }
-
-    override fun setTypingStatus(value: Boolean) =
-        runBlocking<Unit> {
-            async {
-                writeBoolean(TYPING_STATUS, value)
-            }
-        }
-
-    override fun getTypingStatus(): Boolean =
-        runBlocking {
-            async { readBoolean(TYPING_STATUS).first() }
-        }.getCompleted()
-
     override fun setSorting(value: String?) =
         runBlocking<Unit> {
             val key = context.resources.getString(R.string.nc_file_browser_sort_by_key)
@@ -748,7 +723,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_CYPHER_V4_UPGRADE = "db_cypher_v4_upgrade"
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
-        const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
         const val PLAY_BACK = "_playback"
         const val AUDIO_FILE_PLAY_BACK = "_audio_file_playback"
