@@ -16,6 +16,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -57,6 +59,29 @@ class BrowserLoginActivityViewModelTest {
             BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess(URL),
             viewModel.initialLoginRequestState.value
         )
+    }
+
+    @Test
+    fun `polling starts only once, however often the login page is reported as opened`() {
+        wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.thenReturn(loginResponse)
+        wheneverBlocking { repository.pollLogin(any()) }.thenReturn(null)
+
+        viewModel.startWebBrowserLogin(BASE_URL)
+        viewModel.onLoginPageOpened()
+        viewModel.onLoginPageOpened()
+
+        verifyBlocking(repository, times(1)) { pollLogin(loginResponse) }
+        assertTrue(viewModel.isLoginPageOpened)
+    }
+
+    @Test
+    fun `nothing is polled before the login page is opened`() {
+        wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.thenReturn(loginResponse)
+
+        viewModel.startWebBrowserLogin(BASE_URL)
+
+        verifyBlocking(repository, never()) { pollLogin(any()) }
+        assertFalse(viewModel.isLoginPageOpened)
     }
 
     @Test
