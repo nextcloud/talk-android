@@ -11,13 +11,9 @@ import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -64,7 +60,8 @@ data class ChatMessageContext(
     val isOneToOneConversation: Boolean = false,
     val conversationThreadId: Long? = null,
     val hasChatPermission: Boolean = true,
-    val downloadingFileState: List<String> = listOf()
+    val downloadingFileState: List<String> = listOf(),
+    val selectionActive: Boolean = false
 )
 
 @Suppress("Detekt.LongParameterList")
@@ -82,7 +79,8 @@ data class ChatMessageCallbacks(
     val onQuotedMessageClick: (Int) -> Unit = {},
     val onSystemMessageExpandClick: (Int) -> Unit = {},
     val onAvatarClick: (Int) -> Unit = {},
-    val onCancelUpload: (String) -> Unit = {}
+    val onCancelUpload: (String) -> Unit = {},
+    val onSelectionToggle: ((Int) -> Unit)? = null
 )
 
 @Suppress("Detekt.LongParameterList", "Detekt.LongMethod", "Detekt.CyclomaticComplexMethod")
@@ -91,11 +89,11 @@ fun ChatMessageView(
     message: ChatMessageUi,
     highlightTriggerKey: Long? = null,
     isSelected: Boolean = false,
+    isChecked: Boolean = false,
     highlightSearchTerm: String? = null,
     context: ChatMessageContext = ChatMessageContext(),
     callbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val lastHandledHighlightKey = rememberSaveable(message.id) { mutableStateOf<Long?>(null) }
     val highlightAlpha = remember { Animatable(0f) }
 
@@ -124,22 +122,22 @@ fun ChatMessageView(
             replyable = message.replyable && context.hasChatPermission,
             onSwipeReply = { callbacks.onSwipeReply?.invoke(message.id) }
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .combinedClickable(
-                        interactionSource = interactionSource,
-                        indication = ripple(),
-                        onClick = {
-                            if (message.isExpandableParent) {
-                                callbacks.onSystemMessageExpandClick(message.id)
-                            } else {
-                                callbacks.onLongClick?.invoke(message.id)
-                            }
-                        },
-                        onDoubleClick = { callbacks.onLongClick?.invoke(message.id) },
-                        onLongClick = { callbacks.onLongClick?.invoke(message.id) }
-                    )
+            val onSelectionToggle = callbacks.onSelectionToggle
+            MessageRowFrame(
+                selection = MessageRowSelection(
+                    active = context.selectionActive,
+                    checked = isChecked,
+                    selectable = onSelectionToggle != null && message.isSelectable(),
+                    onToggle = { onSelectionToggle?.invoke(message.id) }
+                ),
+                onTap = {
+                    if (message.isExpandableParent) {
+                        callbacks.onSystemMessageExpandClick(message.id)
+                    } else {
+                        callbacks.onLongClick?.invoke(message.id)
+                    }
+                },
+                onOpenMenu = { callbacks.onLongClick?.invoke(message.id) }
             ) {
                 Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                     when (val content = message.content) {
