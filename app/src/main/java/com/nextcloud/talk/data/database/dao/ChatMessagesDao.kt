@@ -104,12 +104,24 @@ interface ChatMessagesDao {
      * reply count of every thread in [chatMessages] over to its cached root message. The server sends the
      * thread's current count with each message of the thread. Stored thread data is kept, see
      * [keepingThreadDataOf].
+     *
+     * The server relays a new thread's root message before it creates the thread, so the root is stored without
+     * thread data. Every thread message in [chatMessages] (e.g. the THREAD_CREATED system message) carries the
+     * thread's title and reply count, so the stored root of its thread is marked with them.
      */
     @Transaction
     suspend fun upsertChatMessagesAndDeleteTemp(internalConversationId: String, chatMessages: List<ChatMessageEntity>) {
-        val storedMessages = getChatMessageEntities(internalConversationId, chatMessages.map { it.id })
+        val storedThreadMessages = getThreadMessageEntities(internalConversationId, chatMessages.map { it.id })
             .associateBy { it.id }
-        upsertChatMessages(chatMessages.map { it.keepingThreadDataOf(storedMessages[it.id]) })
+        upsertChatMessages(chatMessages.map { it.keepingThreadDataOf(storedThreadMessages[it.id]) })
+
+        chatMessages
+            .filter { it.isThread && it.threadId != null }
+            .groupBy { it.threadId!! }
+            .forEach { (threadId, threadMessages) ->
+                val newest = threadMessages.maxBy { it.id }
+                markAsThreadRoot(internalConversationId, threadId, newest.threadTitle, newest.threadReplies ?: 0)
+            }
 
         updateThreadRepliesOfThreads(
             internalConversationId,
@@ -134,32 +146,46 @@ interface ChatMessagesDao {
      */
     @Transaction
     suspend fun upsertChatMessageKeepingThreadData(chatMessage: ChatMessageEntity) {
-        val storedMessage = getChatMessageEntity(chatMessage.internalConversationId, chatMessage.id)
-        upsertChatMessage(chatMessage.keepingThreadDataOf(storedMessage))
+        val storedThreadMessage = getThreadMessageEntities(chatMessage.internalConversationId, listOf(chatMessage.id))
+            .firstOrNull()
+        upsertChatMessage(chatMessage.keepingThreadDataOf(storedThreadMessage))
     }
 
+    /**
+     * Returns the stored messages of [messageIds] that belong to a thread. Only their thread data is needed to keep
+     * it, see [keepingThreadDataOf].
+     */
     @Query(
         """
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
         AND id IN (:messageIds)
+        AND isThread = 1
         """
     )
-    suspend fun getChatMessageEntities(internalConversationId: String, messageIds: List<Long>): List<ChatMessageEntity>
+    suspend fun getThreadMessageEntities(
+        internalConversationId: String,
+        messageIds: List<Long>
+    ): List<ChatMessageEntity>
 
+    /**
+     * Marks the stored message [threadId] as root of its thread. A root that is already marked is left alone, so
+     * its stored thread data is never replaced by older data.
+     */
     @Query(
         """
         UPDATE ChatMessages
-        SET isThread = 1, threadTitle = :threadTitle, threadReplies = :threadReplies
+        SET isThread = 1, threadId = id, threadTitle = :threadTitle, threadReplies = :threadReplies
         WHERE internalConversationId = :internalConversationId
         AND id = :threadId
+        AND isThread = 0
         """
     )
     suspend fun markAsThreadRoot(
         internalConversationId: String,
         threadId: Long,
-        threadTitle: String,
+        threadTitle: String?,
         threadReplies: Int
     )
 

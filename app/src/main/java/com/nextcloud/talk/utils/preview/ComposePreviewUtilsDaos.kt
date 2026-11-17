@@ -72,7 +72,7 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
 
     override fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?> = flowOf()
 
-    override suspend fun getChatMessageEntities(
+    override suspend fun getThreadMessageEntities(
         internalConversationId: String,
         messageIds: List<Long>
     ): List<ChatMessageEntity> = emptyList()
@@ -80,7 +80,7 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override suspend fun markAsThreadRoot(
         internalConversationId: String,
         threadId: Long,
-        threadTitle: String,
+        threadTitle: String?,
         threadReplies: Int
     ) {
         /* */

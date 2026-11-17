@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import com.nextcloud.talk.models.json.opengraph.ReferenceDto
 import com.nextcloud.talk.models.json.reminder.ReminderDto
 import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
@@ -92,7 +91,6 @@ interface ChatNetworkDataSource {
         threadId: Int?
     ): List<ChatMessageDto>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): ReferenceDto?
-    suspend fun getThread(credentials: String, baseUrl: String, token: String, threadId: Long): ThreadInfoDto?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
     suspend fun sendScheduledChatMessage(

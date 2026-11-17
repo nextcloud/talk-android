@@ -22,8 +22,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
-import com.nextcloud.talk.models.json.threads.ThreadDto
-import com.nextcloud.talk.models.json.threads.ThreadInfoDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -32,20 +30,16 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
  * The server omits the thread data on some copies of a thread's root message: the chat relay sends a new
- * thread's root before the thread exists, and sends the parent of an edit or delete without it.
+ * thread's root before the thread exists, and sends the parent of an edit or delete without it. The thread data
+ * is taken from the other messages of the thread, without a request.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -86,27 +80,48 @@ class ThreadRootDataIntegrationTest {
     @Test
     fun `a root relayed before its thread existed is marked as thread root once the thread is created`() =
         runBlocking {
-            wheneverBlocking { network.getThread(any(), any(), any(), any()) }.doReturn(
-                ThreadInfoDto(thread = ThreadDto(id = ROOT_ID.toInt(), title = TITLE, numReplies = 0))
-            )
             persist(root(withThreadData = false))
 
-            persist(threadCreated())
+            persist(threadCreated(replies = REPLIES))
 
-            verifyBlocking(network) { getThread(eq(CREDENTIALS), eq(BASE_URL), eq(ROOM_TOKEN), eq(ROOT_ID)) }
             val root = storedRoot()
             assertTrue(root.isThread)
+            assertEquals(ROOT_ID, root.threadId)
             assertEquals(TITLE, root.threadTitle)
+            assertEquals(REPLIES, root.threadReplies)
+            verifyNoInteractions(network)
         }
 
     @Test
-    fun `a root that is already a thread root is not fetched again`() =
+    fun `a root stored without thread id is marked as root of its own thread`() =
         runBlocking {
-            persist(root(withThreadData = true))
+            persist(root(withThreadData = false).copy(threadId = null))
 
             persist(threadCreated())
 
-            verifyBlocking(network, never()) { getThread(any(), any(), any(), any()) }
+            val root = storedRoot()
+            assertTrue(root.isThread)
+            assertEquals(ROOT_ID, root.threadId)
+        }
+
+    @Test
+    fun `a root and its thread created message in the same batch mark the root`() =
+        runBlocking {
+            persist(root(withThreadData = false), threadCreated())
+
+            assertTrue(storedRoot().isThread)
+        }
+
+    @Test
+    fun `an older thread message does not replace the thread data of a marked root`() =
+        runBlocking {
+            persist(root(withThreadData = true, replies = REPLIES).copy(threadTitle = "Renamed"))
+
+            persist(threadCreated())
+
+            val root = storedRoot()
+            assertEquals("Renamed", root.threadTitle)
+            assertEquals(REPLIES, root.threadReplies)
         }
 
     @Test
@@ -158,7 +173,7 @@ class ThreadRootDataIntegrationTest {
             threadReplies = if (withThreadData) replies else 0
         )
 
-    private fun threadCreated() =
+    private fun threadCreated(replies: Int = 0) =
         ChatMessageDto(
             id = ROOT_ID + 1,
             token = ROOM_TOKEN,
@@ -171,7 +186,7 @@ class ThreadRootDataIntegrationTest {
             threadId = ROOT_ID,
             hasThread = true,
             threadTitle = TITLE,
-            threadReplies = 0
+            threadReplies = replies
         )
 
     private fun editOf(parent: ChatMessageDto) =
