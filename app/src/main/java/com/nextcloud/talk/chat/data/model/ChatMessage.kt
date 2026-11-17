@@ -123,8 +123,6 @@ data class ChatMessage(
 
     var sendAt: Int? = null,
 
-    var avatarUrl: String? = null,
-
     var isUnread: Boolean = false
 
 ) {
@@ -200,6 +198,18 @@ data class ChatMessage(
             !TextUtils.isEmpty(actorDisplayName) -> actorDisplayName!!
             else -> sharedApplication!!.getString(R.string.nc_guest)
         }
+
+    /**
+     * The display name of the actor, followed by the server of a federated user in brackets,
+     * e.g. "Alice (cloud.example.com)".
+     */
+    fun getNullsafeActorDisplayNameWithServer(): String = withServer(getNullsafeActorDisplayName(), actorType, actorId)
+
+    /**
+     * The display name of the actor who pinned the message, followed by the server of a federated user in brackets.
+     */
+    fun getPinnedActorDisplayNameWithServer(): String =
+        withServer(pinnedActorDisplayName.orEmpty(), pinnedActorType, pinnedActorId)
 
     val createdAt: Date = Date(timestamp * MILLIES)
 
@@ -325,6 +335,18 @@ data class ChatMessage(
         private const val TAG = "ChatMessage"
         private const val MILLIES: Long = 1000L
         private const val ACTOR_TYPE_DELETED_USERS = "deleted_users"
+        const val ACTOR_TYPE_FEDERATED_USERS = "federated_users"
+
+        /**
+         * [name], followed by the server of a federated user in brackets, e.g. "Alice (cloud.example.com)",
+         * when [type] and [id] are those of a federated user.
+         */
+        fun withServer(name: String, type: String?, id: String?): String =
+            if (type == ACTOR_TYPE_FEDERATED_USERS) {
+                "$name (${id.orEmpty().substringAfterLast('@')})"
+            } else {
+                name
+            }
         private val regexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
         private val MARKDOWN_LINK_REGEX = """\[[^\]]+\]\((https?://[^\s)]+)\)""".toRegex(regexOptions)
 

@@ -702,7 +702,6 @@ private fun createSampleChatItems(count: Int): List<ChatViewModel.ChatItem> {
                         threadReplies = 0,
                         incoming = isIncoming,
                         isDeleted = false,
-                        avatarUrl = null,
                         statusIcon = if (isIncoming) MessageStatusIcon.SENT else MessageStatusIcon.READ,
                         timestamp = System.currentTimeMillis() / 1000 - (count - i) * 60,
                         date = date,

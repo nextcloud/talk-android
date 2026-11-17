@@ -853,6 +853,24 @@ private fun ParticipantStatusOverlay(status: String?, modifier: Modifier = Modif
     }
 }
 
+/** Takes the place of the user status, which is not available for users of other servers. */
+@Composable
+private fun ParticipantFederationBadge(modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.background(MaterialTheme.colorScheme.surface, CircleShape)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_avatar_federation),
+            contentDescription = stringResource(R.string.nc_federated_user),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxSize()
+        )
+    }
+}
+
 /** Owner and moderator are omitted here, they are shown as an icon instead. */
 @Composable
 private fun participantTypeLabel(participant: ParticipantDto): String =
@@ -998,12 +1016,14 @@ private fun ParticipantItemRow(
                     .size(40.dp)
                     .alpha(contentAlpha)
             )
-            ParticipantStatusOverlay(
-                status = participant.status,
-                modifier = Modifier
-                    .size(PARTICIPANT_STATUS_SIZE_DP.dp)
-                    .align(Alignment.BottomEnd)
-            )
+            val badgeModifier = Modifier
+                .size(PARTICIPANT_STATUS_SIZE_DP.dp)
+                .align(Alignment.BottomEnd)
+            if (participant.calculatedActorType == ParticipantDto.ActorType.FEDERATED) {
+                ParticipantFederationBadge(modifier = badgeModifier)
+            } else {
+                ParticipantStatusOverlay(status = participant.status, modifier = badgeModifier)
+            }
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -1153,6 +1173,15 @@ private fun previewState(): ConversationInfoUiState {
         ),
         isOnline = false
     )
+    val frank = ParticipantModel(
+        participant = ParticipantDto(
+            actorType = ParticipantDto.ActorType.FEDERATED,
+            actorId = "frank@remote.example.com",
+            displayName = "Frank",
+            type = ParticipantDto.ParticipantType.USER
+        ),
+        isOnline = true
+    )
     val erin = ParticipantModel(
         participant = ParticipantDto(
             actorType = ParticipantDto.ActorType.GUESTS,
@@ -1199,7 +1228,7 @@ private fun previewState(): ConversationInfoUiState {
         isConversationLocked = false,
         showLockConversation = true,
         showParticipants = true,
-        participants = listOf(alice, bob, erin, carol, dave),
+        participants = listOf(alice, bob, erin, frank, carol, dave),
         showAddParticipants = true,
         showListBans = true,
         showArchiveConversation = true,

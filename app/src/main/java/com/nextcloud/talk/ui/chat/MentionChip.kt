@@ -83,7 +83,8 @@ data class MentionChipModel(
     val isFederated: Boolean,
     val isSelfMention: Boolean,
     val isClickableUserMention: Boolean,
-    val avatarUrl: String?
+    val avatarUrl: String?,
+    val avatarAuthHeader: String? = null
 )
 
 fun parseMentionChipModel(
@@ -92,7 +93,9 @@ fun parseMentionChipModel(
     activeUserId: String?,
     activeUserBaseUrl: String?,
     roomToken: String?,
-    enableMentionClicks: Boolean = true
+    enableMentionClicks: Boolean = true,
+    authHeader: String? = null,
+    darkTheme: Boolean = false
 ): MentionChipModel? =
     messageParameters[key]
         ?.takeIf { it["type"] in mentionParameterTypes }
@@ -110,7 +113,8 @@ fun parseMentionChipModel(
                 mentionId = mentionId,
                 isFederated = isFederated,
                 activeUserBaseUrl = activeUserBaseUrl,
-                roomToken = roomToken
+                roomToken = roomToken,
+                darkTheme = darkTheme
             )
 
             MentionChipModel(
@@ -121,7 +125,8 @@ fun parseMentionChipModel(
                 isFederated = isFederated,
                 isSelfMention = isSelfMention,
                 isClickableUserMention = enableMentionClicks && type == "user" && !isSelfMention && !isFederated,
-                avatarUrl = avatarUrl
+                avatarUrl = avatarUrl,
+                avatarAuthHeader = authHeader.takeIf { isFederated }
             )
         }
 
@@ -132,7 +137,8 @@ fun resolveMentionAvatarUrl(
     mentionId: String,
     isFederated: Boolean,
     activeUserBaseUrl: String?,
-    roomToken: String?
+    roomToken: String?,
+    darkTheme: Boolean = false
 ): String? {
     val baseUrl = activeUserBaseUrl ?: return null
     return when {
@@ -140,14 +146,14 @@ fun resolveMentionAvatarUrl(
             baseUrl = baseUrl,
             token = roomToken,
             cloudId = mentionId,
-            darkTheme = 0,
+            darkTheme = if (darkTheme) 1 else 0,
             requestBigSize = false
         )
         // Guests and email participants have no avatar on the server, so nothing is requested for
         // them - their chip is drawn from resolveMentionCharacter instead, as on web
         type == "guest" || type == "email" -> null
         type == "call" || type == "user-group" || type == "circle" -> null
-        rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, false)
+        rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, darkTheme)
         else -> null
     }
 }
@@ -314,7 +320,9 @@ fun MentionChipIcon(mention: MentionChipModel, fallbackIcon: Int) {
 
         mention.avatarUrl != null -> {
             val context = LocalContext.current
-            val loadedImage = remember(mention.avatarUrl) { loadImage(mention.avatarUrl, context, fallbackIcon) }
+            val loadedImage = remember(mention.avatarUrl, mention.avatarAuthHeader) {
+                loadImage(mention.avatarUrl, context, fallbackIcon, mention.avatarAuthHeader)
+            }
             AsyncImage(model = loadedImage, contentDescription = null, modifier = Modifier.size(mentionAvatarSize))
         }
 

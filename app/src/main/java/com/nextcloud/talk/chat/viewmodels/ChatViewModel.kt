@@ -78,7 +78,6 @@ import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.CharacterAvatarUtils
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.Mimetype
@@ -792,7 +791,6 @@ class ChatViewModel @AssistedInject constructor(
         map { entities ->
             entities.map { entity ->
                 entity.toDomainModel().apply {
-                    avatarUrl = getAvatarUrl(this)
                     incoming = actorId != userId
                 }
             }
@@ -1296,14 +1294,16 @@ class ChatViewModel @AssistedInject constructor(
                         .distinct()
 
                 val isClassified = conversation != null && ConversationUtils.isClassified(conversation, capabilities)
-                val user = currentUserFlow.value
+                val user = currentUser
+                val authHeader = ApiUtils.getCredentials(user.username, user.token)
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
                 reorderKnownSendSequence(messages)
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
-                        user = user ?: currentUser,
+                        user = user,
+                        authHeader = authHeader,
                         chatMessage = message,
                         lastCommonReadMessageId = lastCommonRead,
                         parentMessage = parent,
@@ -1699,24 +1699,6 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     // val timeString = DateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-
-    /**
-     * Avatar to request from the server for a message, empty for the actors the server has none for
-     * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
-     */
-    fun getAvatarUrl(message: ChatMessage): String =
-        if (!message.hasClientSideAvatar()) {
-            ApiUtils.getUrlForAvatar(
-                currentUser.baseUrl,
-                message.actorId,
-                false
-            )
-        } else {
-            ""
-        }
-
-    private fun ChatMessage.hasClientSideAvatar(): Boolean =
-        CharacterAvatarUtils.avatarFor(actorType, actorId, actorDisplayName, guestLabel = null) != null
 
     fun initData() {
         chatRepository.initData(
