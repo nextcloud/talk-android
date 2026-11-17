@@ -878,6 +878,7 @@ How to translate with transifex:
     <string name="nc_shared_items">Shared items</string>
     <string name="nc_shared_items_description">Images, files, voice messages …</string>
     <string name="nc_shared_items_empty">No shared items</string>
+    <string name="nc_shared_items_error">Shared items could not be loaded</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_file">File</string>
     <string name="shared_items_recording">Call recording</string>

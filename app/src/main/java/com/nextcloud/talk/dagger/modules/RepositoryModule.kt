@@ -89,8 +89,8 @@ class RepositoryModule {
         ConversationsRepositoryImpl(ncApi, ncApiCoroutines)
 
     @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi, dateUtils: DateUtils): SharedItemsRepository =
-        SharedItemsRepositoryImpl(ncApi, dateUtils)
+    fun provideSharedItemsRepository(ncApiCoroutines: NcApiCoroutines, dateUtils: DateUtils): SharedItemsRepository =
+        SharedItemsRepositoryImpl(ncApiCoroutines, dateUtils)
 
     @Provides
     fun provideUnifiedSearchRepository(ncApiCoroutines: NcApiCoroutines): UnifiedSearchRepository =

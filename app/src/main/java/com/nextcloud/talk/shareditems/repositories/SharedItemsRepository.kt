@@ -9,15 +9,18 @@ package com.nextcloud.talk.shareditems.repositories
 
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedItems
-import io.reactivex.Observable
 
 interface SharedItemsRepository {
 
-    fun media(parameters: Parameters, type: SharedItemType): Observable<SharedItems>?
+    /**
+     * Throws a [retrofit2.HttpException] if the server responds with an error.
+     */
+    suspend fun media(parameters: Parameters, type: SharedItemType, lastKnownMessageId: Int? = null): SharedItems
 
-    fun media(parameters: Parameters, type: SharedItemType, lastKnownMessageId: Int?): Observable<SharedItems>?
-
-    fun availableTypes(parameters: Parameters): Observable<Set<SharedItemType>>
+    /**
+     * Throws a [retrofit2.HttpException] if the server responds with an error.
+     */
+    suspend fun availableTypes(parameters: Parameters): Set<SharedItemType>
 
     /**
      * [userName] is the login name of the account, which authenticates the requests together with [userToken].

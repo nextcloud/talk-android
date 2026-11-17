@@ -14,7 +14,11 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,11 +33,15 @@ import com.nextcloud.talk.dagger.modules.assistedViewModels
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
+import com.nextcloud.talk.shareditems.adapters.SharedItemsLoadStateAdapter
+import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
@@ -74,6 +82,21 @@ class SharedItemsActivity : BaseActivity() {
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
 
+    private var adapter: SharedItemsAdapter? = null
+    private var adapterType: SharedItemType? = null
+    private var loadStateAdapter: SharedItemsLoadStateAdapter? = null
+    private var shownTypes: Set<SharedItemType>? = null
+
+    private val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab) {
+            viewModel.initialLoadItems(tab.tag as SharedItemType)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab) = Unit
+
+        override fun onTabReselected(tab: TabLayout.Tab) = Unit
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -91,21 +114,39 @@ class SharedItemsActivity : BaseActivity() {
 
         viewThemeUtils.material.themeToolbar(binding.sharedItemsToolbar)
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
+        viewThemeUtils.material.colorProgressBar(binding.sharedItemsLoadingProgress)
+        viewThemeUtils.material.colorMaterialButtonPrimaryTonal(binding.sharedItemsErrorRetry)
+        binding.sharedItemsErrorRetry.setOnClickListener { viewModel.retry() }
 
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
-        viewModel.viewState.observe(this) { state ->
-            handleModelChange(state, conversationUser, roomToken, isUserConversationOwnerOrModerator, isOne2One)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewState.collect { state ->
+                    handleModelChange(
+                        state,
+                        conversationUser,
+                        roomToken,
+                        isUserConversationOwnerOrModerator,
+                        isOne2One
+                    )
+                }
+            }
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    viewModel.loadNextItems()
+            // Also called after a layout that changes the visible items, so pages keep loading while the list does
+            // not fill the screen. The request is posted, as it shows the loading footer, and the adapter must not
+            // change while the RecyclerView is in a layout or scroll pass.
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                if (viewModel.canLoadNextItems() &&
+                    layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - LOAD_MORE_THRESHOLD
+                ) {
+                    recyclerView.post { viewModel.loadNextItems() }
                 }
             }
         })
@@ -114,51 +155,86 @@ class SharedItemsActivity : BaseActivity() {
     }
 
     private fun handleModelChange(
-        state: SharedItemsViewModel.ViewState?,
+        state: SharedItemsViewModel.ViewState,
         user: User,
         roomToken: String,
         isUserConversationOwnerOrModerator: Boolean,
         isOne2One: Boolean
     ) {
-        clearEmptyLoading()
+        clearEmpty()
+        // A StateFlow can skip intermediate states, so the tabs are set up from whichever state first carries them.
+        if (state is SharedItemsViewModel.TypesLoadedState && state.types != shownTypes) {
+            initTabs(state.types, state.selectedType)
+            shownTypes = state.types
+        }
+        binding.sharedItemsLoading.visibility = if (state.isLoadingFirstPage()) View.VISIBLE else View.GONE
+        binding.sharedItemsError.visibility = if (state.isFailed()) View.VISIBLE else View.GONE
         when (state) {
-            is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
-                showLoading()
-            }
             is SharedItemsViewModel.NoSharedItemsState -> {
                 showEmpty()
             }
-            is SharedItemsViewModel.LoadedState -> {
-                val sharedMediaItems = state.items
-                Log.d(TAG, "Items received: $sharedMediaItems")
-
-                val showGrid = state.selectedType == SharedItemType.MEDIA
-                val layoutManager = if (showGrid) {
-                    GridLayoutManager(this, SPAN_COUNT)
-                } else {
-                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                }
-
-                val adapter = SharedItemsAdapter(
-                    showGrid,
-                    user,
-                    roomToken,
-                    isUserConversationOwnerOrModerator,
-                    isOne2One,
-                    viewThemeUtils
-                ).apply {
-                    items = sharedMediaItems.items.toMutableList()
-                }
-                binding.imageRecycler.adapter = adapter
-                binding.imageRecycler.layoutManager = layoutManager
-            }
             is SharedItemsViewModel.TypesLoadedState -> {
-                initTabs(state.types)
+                // While a newly selected type loads, its empty adapter replaces the items of the previous type.
+                val currentAdapter = adapter.takeIf { adapterType == state.selectedType }
+                    ?: createAdapter(
+                        state.selectedType,
+                        user,
+                        roomToken,
+                        isUserConversationOwnerOrModerator,
+                        isOne2One
+                    )
+                if (state is SharedItemsViewModel.LoadedState) {
+                    currentAdapter.submitList(state.items.items)
+                }
+                loadStateAdapter?.nextPageState = (state as? SharedItemsViewModel.LoadedState)?.nextPageState
+                    ?: SharedItemsViewModel.NextPageState.IDLE
             }
             else -> {}
         }
 
         viewThemeUtils.material.themeTabLayoutOnSurface(binding.sharedItemsTabs)
+    }
+
+    /**
+     * Replaces the adapter and layout manager, as both depend on the shown [SharedItemType]. While the type stays
+     * the same, the adapter is kept so that new pages are appended without losing the scroll position.
+     */
+    private fun createAdapter(
+        type: SharedItemType,
+        user: User,
+        roomToken: String,
+        isUserConversationOwnerOrModerator: Boolean,
+        isOne2One: Boolean
+    ): SharedItemsAdapter {
+        val showGrid = type == SharedItemType.MEDIA
+        val itemsAdapter = SharedItemsAdapter(
+            showGrid,
+            user,
+            roomToken,
+            isUserConversationOwnerOrModerator,
+            isOne2One,
+            viewThemeUtils
+        )
+        val footerAdapter = SharedItemsLoadStateAdapter(viewThemeUtils) { viewModel.retry() }
+        binding.imageRecycler.layoutManager = if (showGrid) {
+            GridLayoutManager(this, SPAN_COUNT).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int =
+                        if (position < itemsAdapter.itemCount) 1 else SPAN_COUNT
+                }
+            }
+        } else {
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        }
+        binding.imageRecycler.adapter = ConcatAdapter(itemsAdapter, footerAdapter)
+        adapter = itemsAdapter
+        adapterType = type
+        loadStateAdapter = footerAdapter
+        return itemsAdapter
+    }
+
+    fun onItemUnpinned(item: SharedItem) {
+        viewModel.removeItem(item)
     }
 
     fun startContextChatWindowForMessage(user: User, roomToken: String, messageId: String?, threadId: String?) {
@@ -183,15 +259,16 @@ class SharedItemsActivity : BaseActivity() {
         Log.d(TAG, "Should open something else")
     }
 
-    private fun clearEmptyLoading() {
+    private fun clearEmpty() {
         binding.sharedItemsTabs.visibility = View.VISIBLE
         binding.emptyContainer.emptyListView.visibility = View.GONE
     }
 
-    private fun showLoading() {
-        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.file_list_loading)
-        binding.emptyContainer.emptyListView.visibility = View.VISIBLE
-    }
+    private fun SharedItemsViewModel.ViewState.isLoadingFirstPage(): Boolean =
+        this == SharedItemsViewModel.InitialState || this is SharedItemsViewModel.LoadingItemsState
+
+    private fun SharedItemsViewModel.ViewState.isFailed(): Boolean =
+        this == SharedItemsViewModel.TypesErrorState || this is SharedItemsViewModel.ItemsErrorState
 
     private fun showEmpty() {
         binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)
@@ -200,7 +277,8 @@ class SharedItemsActivity : BaseActivity() {
     }
 
     @Suppress("LongMethod")
-    private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
+    private fun initTabs(sharedItemTypes: Set<SharedItemType>, selectedType: SharedItemType) {
+        binding.sharedItemsTabs.removeOnTabSelectedListener(tabSelectedListener)
         binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
@@ -273,15 +351,12 @@ class SharedItemsActivity : BaseActivity() {
             binding.sharedItemsTabs.addTab(tabOther)
         }
 
-        binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.initialLoadItems(tab.tag as SharedItemType)
-            }
+        (0 until binding.sharedItemsTabs.tabCount)
+            .mapNotNull { binding.sharedItemsTabs.getTabAt(it) }
+            .firstOrNull { it.tag == selectedType }
+            ?.select()
 
-            override fun onTabUnselected(tab: TabLayout.Tab) = Unit
-
-            override fun onTabReselected(tab: TabLayout.Tab) = Unit
-        })
+        binding.sharedItemsTabs.addOnTabSelectedListener(tabSelectedListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
@@ -295,6 +370,10 @@ class SharedItemsActivity : BaseActivity() {
     companion object {
         private val TAG = SharedItemsActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
+
+        /** One page ahead, so the next page is usually loaded before a fling reaches the end of the list. */
+        private const val LOAD_MORE_THRESHOLD: Int = SharedItemsRepositoryImpl.BATCH_SIZE
+
         const val KEY_USER_IS_OWNER_OR_MODERATOR = "userIsOwnerOrModerator"
         const val KEY_IS_ONE_2_ONE = "KEY_IS_ONE_2_ONE"
     }
