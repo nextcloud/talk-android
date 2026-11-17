@@ -79,7 +79,8 @@ object NotificationUtils {
         context: Context,
         notificationChannel: Channel,
         sound: Uri?,
-        audioAttributes: AudioAttributes?
+        audioAttributes: AudioAttributes?,
+        copySettingsFrom: NotificationChannel? = null
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -103,12 +104,34 @@ object NotificationUtils {
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
             channel.setBypassDnd(false)
+            copySettingsFrom?.let { copyUserSettings(it, channel) }
 
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun createCallsNotificationChannel(context: Context, channelId: String, soundUri: Uri?) {
+    /**
+     * Keeps the settings the user may have changed for [from] in the system settings, except the sound. The system
+     * ignores some of them for new channels, e.g. bypassing Do Not Disturb without policy access.
+     */
+    private fun copyUserSettings(from: NotificationChannel, to: NotificationChannel) {
+        to.importance = from.importance
+        to.enableLights(from.shouldShowLights())
+        to.lightColor = from.lightColor
+        // setting the pattern also changes the vibration flag, so the flag is set afterwards
+        to.vibrationPattern = from.vibrationPattern
+        to.enableVibration(from.shouldVibrate())
+        to.setShowBadge(from.canShowBadge())
+        to.lockscreenVisibility = from.lockscreenVisibility
+        to.setBypassDnd(from.canBypassDnd())
+    }
+
+    private fun createCallsNotificationChannel(
+        context: Context,
+        channelId: String,
+        soundUri: Uri?,
+        copySettingsFrom: NotificationChannel? = null
+    ) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -124,7 +147,8 @@ object NotificationUtils {
                 true
             ),
             soundUri,
-            audioAttributes
+            audioAttributes,
+            copySettingsFrom
         )
     }
 
@@ -157,8 +181,8 @@ object NotificationUtils {
      */
     fun updateCallRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
         val baseId = NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
-        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId ->
-            createCallsNotificationChannel(context, channelId, ringtoneUri)
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId, currentChannel ->
+            createCallsNotificationChannel(context, channelId, ringtoneUri, currentChannel)
         }
         if (replaced) {
             appPreferences.callRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
@@ -172,8 +196,8 @@ object NotificationUtils {
      */
     fun updateMessageRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
         val baseId = NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId ->
-            createMessagesNotificationChannel(context, channelId, ringtoneUri)
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId, currentChannel ->
+            createMessagesNotificationChannel(context, channelId, ringtoneUri, currentChannel)
         }
         if (replaced) {
             appPreferences.messageRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
@@ -182,15 +206,15 @@ object NotificationUtils {
     }
 
     /**
-     * Creates a new channel with a new id and then deletes the old ones. Other settings the user changed in the
-     * system settings for the old channel are not kept.
+     * Creates a new channel with a new id, based on the settings of the current channel, and then deletes the old
+     * ones.
      */
     @Suppress("TooGenericExceptionCaught")
     private fun replaceChannel(
         context: Context,
         baseId: String,
         sound: Uri?,
-        createChannel: (String) -> Unit
+        createChannel: (channelId: String, currentChannel: NotificationChannel?) -> Unit
     ): Boolean {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val oldChannels = notificationManager.notificationChannels.filter { channelVersion(it.id, baseId) != null }
@@ -198,9 +222,10 @@ object NotificationUtils {
             return true
         }
 
+        val currentChannel = oldChannels.maxByOrNull { channelVersion(it.id, baseId) ?: 0L }
         val newChannelId = baseId + CHANNEL_ID_VERSION_SEPARATOR + System.currentTimeMillis()
         val created = try {
-            createChannel(newChannelId)
+            createChannel(newChannelId, currentChannel)
             true
         } catch (e: RuntimeException) {
             // e.g. SecurityException for sounds the app is not allowed to read, or invalid sound uris
@@ -233,7 +258,12 @@ object NotificationUtils {
         )
     }
 
-    private fun createMessagesNotificationChannel(context: Context, channelId: String, soundUri: Uri?) {
+    private fun createMessagesNotificationChannel(
+        context: Context,
+        channelId: String,
+        soundUri: Uri?,
+        copySettingsFrom: NotificationChannel? = null
+    ) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -249,7 +279,8 @@ object NotificationUtils {
                 true
             ),
             soundUri,
-            audioAttributes
+            audioAttributes,
+            copySettingsFrom
         )
     }
 
