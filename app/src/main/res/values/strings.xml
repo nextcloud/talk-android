@@ -361,6 +361,7 @@ How to translate with transifex:
     <string name="renamed_conversation">Conversation %1$s was renamed</string>
 
     <string name="nc_forward_to_three_dots">Forward to …</string>
+    <string name="nc_forward_to">Forward to</string>
 
     <!-- Open conversations -->
     <string name="nc_no_open_conversations_headline">No open conversations</string>

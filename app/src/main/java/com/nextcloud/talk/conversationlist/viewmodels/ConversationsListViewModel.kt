@@ -28,6 +28,7 @@ import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUserDto
 import com.nextcloud.talk.models.json.conversations.ConversationDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
@@ -65,6 +66,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -225,6 +227,7 @@ class ConversationsListViewModel @AssistedInject constructor(
      * that the next explicit search always runs.
      */
     private var lastSearchedFilter: String = ""
+    private var lastSearchedConversationsOnly = false
 
     /**
      * The message entries shown after "load more", which replace the first page of messages
@@ -461,16 +464,23 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Searches for [filter]. With [conversationsOnly] only the joined conversations are searched, for picking the
+     * conversation to share or forward to.
+     */
     @Suppress("LongMethod")
-    fun getSearchQuery(context: Context, filter: String) {
+    fun getSearchQuery(context: Context, filter: String, conversationsOnly: Boolean = false) {
         // The LaunchedEffect fires again with the same query when the composition restarts
         // (rotation, display off). The search of that query is still running or done, because
         // [setSearchQuery] cancels it as soon as the query changes, so it is not started again.
-        if (filter == lastSearchedFilter && searchJob != null) return
+        if (isStartedSearch(filter, conversationsOnly)) {
+            return
+        }
 
         cancelRunningSearch()
         _isSearchLoadingFlow.value = true
         lastSearchedFilter = filter
+        lastSearchedConversationsOnly = conversationsOnly
         _currentSearchQueryFlow.value = filter
         val conversationsTitle = context.resources.getString(R.string.conversations)
         val openConversationsTitle = context.resources.getString(R.string.openConversations)
@@ -478,27 +488,23 @@ class ConversationsListViewModel @AssistedInject constructor(
         val messagesTitle = context.resources.getString(R.string.messages)
         val actorTypeConverter = EnumActorTypeConverter()
         val wordPattern = """\b${Regex.escape(filter)}\b""".toRegex(RegexOption.IGNORE_CASE)
+        val sources = if (conversationsOnly) SearchSources.NONE else remoteSearchSources(filter)
 
         searchJob = viewModelScope.launch {
             combine(
                 getRoomsStateFlow,
-                openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(emptyList()),
-                contactsRepository.getContactsFlow(currentUser, filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(emptyList()),
-                getMessagesFlow(filter)
-                    .afterTypingPause()
-                    .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
-            ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages ->
+                sources.openConversations,
+                sources.contacts,
+                sources.messages,
+                excludedRoomTokens
+            ) { rooms, pendingOpenConvs, pendingContacts, pendingMessages, excludedTokens ->
                 val isAnyRemotePending = pendingOpenConvs == null || pendingContacts == null || pendingMessages == null
                 val fetchedOpenConvs = pendingOpenConvs.orEmpty()
                 val contacts = pendingContacts.orEmpty()
                 val messages = pendingMessages?.messages.orEmpty()
                 val hasMore = pendingMessages?.hasMore == true
                 areMessagesLoaded = pendingMessages != null
-                val localConvs = rooms
+                val localConvs = searchableRooms(rooms, excludedTokens, conversationsOnly)
                     .filter { it.displayName?.contains(filter, ignoreCase = true) == true }
                     .distinctBy { it.token }
                 // Open conversations were fetched once, so a room joined afterwards would otherwise be listed twice
@@ -568,6 +574,24 @@ class ConversationsListViewModel @AssistedInject constructor(
         }
     }
 
+    private fun isStartedSearch(filter: String, conversationsOnly: Boolean): Boolean =
+        filter == lastSearchedFilter && conversationsOnly == lastSearchedConversationsOnly && searchJob != null
+
+    /**
+     * While picking a conversation only the ones that can be shared or forwarded to are searchable, as in the
+     * unfiltered list.
+     */
+    private fun searchableRooms(
+        rooms: List<ConversationModel>,
+        excludedTokens: Set<String>,
+        conversationsOnly: Boolean
+    ): List<ConversationModel> =
+        if (conversationsOnly) {
+            baseFilterRooms(rooms, emptyMap(), SearchDisplayMode.ALL_CONVERSATIONS, excludedTokens)
+        } else {
+            rooms.filter { it.token !in excludedTokens }
+        }
+
     /**
      * Starts the server request only once the query has stayed unchanged for [SEARCH_DEBOUNCE_MS],
      * so that typing does not send a request per keystroke. Changing the query cancels the search
@@ -617,6 +641,35 @@ class ConversationsListViewModel @AssistedInject constructor(
                     if (pos >= 0) pos else Int.MAX_VALUE
                 }
             )
+        )
+
+    /** The server-side lookups of a search, besides the joined conversations, each emitting null while pending. */
+    private class SearchSources(
+        val openConversations: Flow<List<ConversationDto>?>,
+        val contacts: Flow<List<AutocompleteUserDto>?>,
+        val messages: Flow<MessageSearchResults?>
+    ) {
+        companion object {
+            val NONE =
+                SearchSources(
+                    flowOf(emptyList()),
+                    flowOf(emptyList()),
+                    flowOf(MessageSearchResults(emptyList(), false))
+                )
+        }
+    }
+
+    private fun remoteSearchSources(filter: String) =
+        SearchSources(
+            openConversationsRepository.fetchOpenConversationsFlow(currentUser, filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(emptyList()),
+            contactsRepository.getContactsFlow(currentUser, filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(emptyList()),
+            getMessagesFlow(filter)
+                .afterTypingPause()
+                .pendingUntilLoaded(MessageSearchResults(emptyList(), false))
         )
 
     private fun getMessagesFlow(search: String): Flow<MessageSearchResults> =

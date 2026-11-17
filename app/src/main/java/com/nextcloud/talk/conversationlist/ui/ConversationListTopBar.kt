@@ -42,6 +42,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -86,7 +87,8 @@ import com.nextcloud.talk.R
 sealed class TopBarMode {
     data object SearchBarIdle : TopBarMode()
 
-    data class SearchActive(val query: String) : TopBarMode()
+    /** [hint] replaces the default search hint while the query is empty. */
+    data class SearchActive(val query: String, val hint: String? = null) : TopBarMode()
 
     data class TitleBar(val title: String, val showAccountChooser: Boolean = false) : TopBarMode()
 }
@@ -146,6 +148,7 @@ fun ConversationListTopBar(
                 avatarUrl = state.avatarUrl,
                 credentials = state.credentials,
                 onNavigateBack = actions.onNavigateBack,
+                onSearchActivate = actions.onSearchActivate,
                 onAccountChooserClick = actions.onAccountChooserClick
             )
         }
@@ -165,13 +168,18 @@ private fun TopBarSearchContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = endPadding, top = 4.dp, bottom = 4.dp),
+                .padding(
+                    start = 16.dp,
+                    end = endPadding,
+                    top = SEARCH_BAR_VERTICAL_PADDING_DP.dp,
+                    bottom = SEARCH_BAR_VERTICAL_PADDING_DP.dp
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
                 modifier = Modifier
                     .weight(1f)
-                    .height(50.dp),
+                    .height(SEARCH_CARD_HEIGHT_DP.dp),
                 shape = RoundedCornerShape(25.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -179,6 +187,7 @@ private fun TopBarSearchContent(
                     state = state,
                     actions = actions,
                     query = activeMode?.query,
+                    hint = activeMode?.hint,
                     focusRequester = focusRequester
                 )
             }
@@ -219,6 +228,7 @@ private fun SearchBarCardContent(
     state: ConversationListTopBarState,
     actions: ConversationListTopBarActions,
     query: String?,
+    hint: String?,
     focusRequester: FocusRequester
 ) {
     val isActive = query != null
@@ -249,6 +259,7 @@ private fun SearchBarCardContent(
             SearchTextField(
                 query = query,
                 onQueryChange = actions.onSearchQueryChange,
+                hint = hint,
                 focusRequester = focusRequester,
                 modifier = textModifier
             )
@@ -277,9 +288,9 @@ private fun SearchBarCardContent(
 }
 
 @Composable
-private fun SearchPlaceholder(modifier: Modifier = Modifier) {
+private fun SearchPlaceholder(modifier: Modifier = Modifier, text: String? = null) {
     Text(
-        text = stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
+        text = text ?: stringResource(R.string.appbar_search_in, stringResource(R.string.nc_app_product_name)),
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -354,6 +365,7 @@ private fun IdleSearchBarActions(
 private fun SearchTextField(
     query: String,
     onQueryChange: (String) -> Unit,
+    hint: String?,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
@@ -373,7 +385,7 @@ private fun SearchTextField(
         decorationBox = { innerTextField ->
             Box(contentAlignment = Alignment.CenterStart) {
                 if (query.isEmpty()) {
-                    SearchPlaceholder()
+                    SearchPlaceholder(text = hint)
                 }
                 innerTextField()
             }
@@ -390,6 +402,7 @@ private fun TopBarTitleContent(
     avatarUrl: String?,
     credentials: String,
     onNavigateBack: () -> Unit,
+    onSearchActivate: () -> Unit,
     onAccountChooserClick: () -> Unit
 ) {
     TopAppBar(
@@ -403,6 +416,12 @@ private fun TopBarTitleContent(
             }
         },
         actions = {
+            IconButton(onClick = onSearchActivate) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = stringResource(R.string.nc_search)
+                )
+            }
             if (showAccountChooser) {
                 IconButton(onClick = onAccountChooserClick) {
                     AsyncImage(
@@ -420,6 +439,8 @@ private fun TopBarTitleContent(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
+        // Same height as the search bar, so that opening the search doesn't make the content below jump.
+        expandedHeight = (SEARCH_CARD_HEIGHT_DP + 2 * SEARCH_BAR_VERTICAL_PADDING_DP).dp,
         windowInsets = WindowInsets(0)
     )
 }
@@ -464,6 +485,8 @@ private fun buildAvatarImageRequest(url: String?, credentials: String): ImageReq
 }
 
 private const val BADGE_OFFSET_DP = 8
+private const val SEARCH_CARD_HEIGHT_DP = 50
+private const val SEARCH_BAR_VERTICAL_PADDING_DP = 4
 
 @Preview(name = "Idle - no filter, no threads - Light")
 @Preview(name = "Idle - no filter, no threads - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
