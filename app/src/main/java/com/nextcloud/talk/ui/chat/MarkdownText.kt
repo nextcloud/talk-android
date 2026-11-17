@@ -57,6 +57,7 @@ import com.nextcloud.talk.ui.toDrawable
 import com.nextcloud.talk.ui.withAuthHeader
 import com.nextcloud.talk.utils.ActorAvatar
 import com.nextcloud.talk.utils.CharacterAvatarUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.message.MarkdownTables
 import com.nextcloud.talk.utils.message.MessageUtils
 import io.noties.markwon.core.spans.LinkSpan
@@ -312,7 +313,8 @@ private fun applyMentionChips(
             mentionId = mentionId,
             isFederated = isFederated,
             activeUserBaseUrl = message.activeUserBaseUrl,
-            roomToken = message.roomToken
+            roomToken = message.roomToken,
+            darkTheme = DisplayUtils.isDarkModeOn(context)
         )
         val fallbackIconRes = resolveMentionFallbackIcon(
             MentionChipModel(

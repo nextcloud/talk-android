@@ -751,7 +751,6 @@ private fun previewUploadingMessage(statusIcon: MessageStatusIcon = MessageStatu
         threadReplies = 0,
         incoming = false,
         isDeleted = false,
-        avatarUrl = null,
         statusIcon = statusIcon,
         timestamp = System.currentTimeMillis() / 1000,
         date = java.time.LocalDate.now(),

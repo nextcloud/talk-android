@@ -764,7 +764,6 @@ class ChatViewModel @AssistedInject constructor(
         map { entities ->
             entities.map { entity ->
                 entity.toDomainModel().apply {
-                    avatarUrl = getAvatarUrl(this)
                     incoming = actorId != userId
                 }
             }
@@ -1762,7 +1761,19 @@ class ChatViewModel @AssistedInject constructor(
      * Avatar to request from the server for a message, empty for the actors the server has none for
      * - those get their avatar drawn on the client instead, see [CharacterAvatarUtils].
      */
-    fun getAvatarUrl(message: ChatMessage): String = avatarUrl(message, currentUser.baseUrl!!, chatRoomToken)
+    fun getAvatarUrl(message: ChatMessage): String =
+        if (!message.hasClientSideAvatar()) {
+            ApiUtils.getUrlForAvatar(
+                currentUser.baseUrl,
+                message.actorId,
+                false
+            )
+        } else {
+            ""
+        }
+
+    private fun ChatMessage.hasClientSideAvatar(): Boolean =
+        CharacterAvatarUtils.avatarFor(actorType, actorId, actorDisplayName, guestLabel = null) != null
 
     fun initData() {
         chatRepository.initData(
@@ -2818,29 +2829,6 @@ class ChatViewModel @AssistedInject constructor(
 
         /** Enough of the note to self to cover what a share of ours could have landed behind. */
         private const val SHARE_LOOKUP_LIMIT = 20
-
-        /**
-         * The avatar URL of the author of [message], or an empty string when the avatar is drawn on the client.
-         * Federated authors get the avatar proxied by the own server for the conversation [roomToken].
-         */
-        @VisibleForTesting
-        fun avatarUrl(message: ChatMessage, baseUrl: String, roomToken: String): String =
-            when {
-                CharacterAvatarUtils.avatarFor(
-                    message.actorType,
-                    message.actorId,
-                    message.actorDisplayName,
-                    guestLabel = null
-                ) != null -> ""
-                message.actorType == ChatMessage.ACTOR_TYPE_FEDERATED_USERS -> ApiUtils.getUrlForFederatedAvatar(
-                    baseUrl,
-                    roomToken,
-                    message.actorId.orEmpty(),
-                    0,
-                    false
-                )
-                else -> ApiUtils.getUrlForAvatar(baseUrl, message.actorId, false)
-            }
 
         /**
          * Whether [messages] already hold the share that was sent with [referenceId], or null when the

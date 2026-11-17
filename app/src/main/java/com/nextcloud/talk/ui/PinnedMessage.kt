@@ -106,7 +106,6 @@ fun PinnedMessageView(
             threadReplies = 0,
             incoming = true,
             isDeleted = message.isDeleted,
-            avatarUrl = null,
             authHeader = user.getCredentials(),
             statusIcon = MessageStatusIcon.SENT,
             timestamp = message.timestamp,

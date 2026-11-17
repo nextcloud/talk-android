@@ -94,7 +94,8 @@ fun parseMentionChipModel(
     activeUserBaseUrl: String?,
     roomToken: String?,
     enableMentionClicks: Boolean = true,
-    authHeader: String? = null
+    authHeader: String? = null,
+    darkTheme: Boolean = false
 ): MentionChipModel? =
     messageParameters[key]
         ?.takeIf { it["type"] in mentionParameterTypes }
@@ -112,7 +113,8 @@ fun parseMentionChipModel(
                 mentionId = mentionId,
                 isFederated = isFederated,
                 activeUserBaseUrl = activeUserBaseUrl,
-                roomToken = roomToken
+                roomToken = roomToken,
+                darkTheme = darkTheme
             )
 
             MentionChipModel(
@@ -135,7 +137,8 @@ fun resolveMentionAvatarUrl(
     mentionId: String,
     isFederated: Boolean,
     activeUserBaseUrl: String?,
-    roomToken: String?
+    roomToken: String?,
+    darkTheme: Boolean = false
 ): String? {
     val baseUrl = activeUserBaseUrl ?: return null
     return when {
@@ -143,14 +146,14 @@ fun resolveMentionAvatarUrl(
             baseUrl = baseUrl,
             token = roomToken,
             cloudId = mentionId,
-            darkTheme = 0,
+            darkTheme = if (darkTheme) 1 else 0,
             requestBigSize = false
         )
         // Guests and email participants have no avatar on the server, so nothing is requested for
         // them - their chip is drawn from resolveMentionCharacter instead, as on web
         type == "guest" || type == "email" -> null
         type == "call" || type == "user-group" || type == "circle" -> null
-        rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, false)
+        rawId.isNotEmpty() -> ApiUtils.getUrlForAvatar(baseUrl, rawId, false, darkTheme)
         else -> null
     }
 }

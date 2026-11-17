@@ -323,11 +323,21 @@ private fun RowScope.MessageLeadingDecoration(uiMessage: ChatMessageUi, isOneToO
         } else {
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val avatarContext = LocalContext.current
+            val darkTheme = DisplayUtils.isDarkModeOn(avatarContext)
             val avatarAuthHeader = uiMessage.authHeader.takeIf {
                 uiMessage.actorType == ChatMessage.ACTOR_TYPE_FEDERATED_USERS
             }
-            val loadedImage = remember(uiMessage.avatarUrl, avatarAuthHeader) {
-                loadImage(uiMessage.avatarUrl, avatarContext, errorPlaceholderImage, avatarAuthHeader)
+            val avatarUrl = remember(
+                uiMessage.actorType,
+                uiMessage.actorId,
+                uiMessage.activeUserBaseUrl,
+                uiMessage.roomToken,
+                darkTheme
+            ) {
+                uiMessage.avatarUrl(darkTheme)
+            }
+            val loadedImage = remember(avatarUrl, avatarAuthHeader) {
+                loadImage(avatarUrl, avatarContext, errorPlaceholderImage, avatarAuthHeader)
             }
             AsyncImage(
                 model = loadedImage,
@@ -1150,7 +1160,6 @@ private fun MessageScaffoldIncomingPreview() {
             threadReplies = 0,
             incoming = true,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.SENT,
             timestamp = System.currentTimeMillis() / 1000,
             date = LocalDate.now(),
@@ -1184,7 +1193,6 @@ private fun MessageScaffoldIncomingLongPreview() {
             threadReplies = 0,
             incoming = true,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.SENT,
             timestamp = System.currentTimeMillis() / 1000,
             date = LocalDate.now(),
@@ -1218,7 +1226,6 @@ private fun MessageScaffoldOutgoingPreview() {
             threadReplies = 0,
             incoming = false,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.READ,
             timestamp = System.currentTimeMillis() / 1000,
             date = LocalDate.now(),
@@ -1247,7 +1254,6 @@ private fun CommonMessageQuotePreview() {
             threadReplies = 0,
             incoming = true,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.SENT,
             timestamp = System.currentTimeMillis() / 1000,
             date = LocalDate.now(),
