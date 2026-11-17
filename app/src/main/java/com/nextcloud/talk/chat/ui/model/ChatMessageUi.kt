@@ -150,12 +150,15 @@ enum class MessageStatusIcon {
 }
 
 // Domain model (ChatMessage) to UI model (ChatMessageUi)
+// When mapping a list of messages, pass the [authHeader] of [user] in so it is not encoded again for each one
+@Suppress("LongParameterList")
 fun ChatMessage.toUiModel(
     user: User,
     chatMessage: ChatMessage,
     lastCommonReadMessageId: Int,
     parentMessage: ChatMessage?,
-    isClassified: Boolean = false
+    isClassified: Boolean = false,
+    authHeader: String? = ApiUtils.getCredentials(user.username, user.token)
 ): ChatMessageUi =
     ChatMessageUi(
         id = jsonMessageId,
@@ -170,7 +173,7 @@ fun ChatMessage.toUiModel(
         threadReplies = threadReplies ?: 0,
         incoming = incoming,
         isDeleted = isDeleted,
-        authHeader = ApiUtils.getCredentials(user.username, user.token),
+        authHeader = authHeader,
         statusIcon = resolveStatusIcon(
             jsonMessageId,
             lastCommonReadMessageId,
@@ -191,6 +194,7 @@ fun ChatMessage.toUiModel(
         parentMessage = parentMessage?.toUiModel(
             user = user,
             chatMessage = parentMessage,
+            authHeader = authHeader,
             lastCommonReadMessageId = 0,
             parentMessage = null
         ),
@@ -207,7 +211,8 @@ fun ChatMessage.toUiModel(
 fun ChatMessage.toScheduledMessageUiModel(
     user: User,
     roomToken: String,
-    parentMessage: ChatMessage? = null
+    parentMessage: ChatMessage? = null,
+    authHeader: String? = ApiUtils.getCredentials(user.username, user.token)
 ): ChatMessageUi {
     val sendAtTimestamp = sendAt?.toLong() ?: timestamp
     return ChatMessageUi(
@@ -223,7 +228,7 @@ fun ChatMessage.toScheduledMessageUiModel(
         threadReplies = threadReplies ?: 0,
         incoming = false,
         isDeleted = isDeleted,
-        authHeader = ApiUtils.getCredentials(user.username, user.token),
+        authHeader = authHeader,
         statusIcon = MessageStatusIcon.SCHEDULED,
         timestamp = sendAtTimestamp,
         date = Instant.ofEpochSecond(sendAtTimestamp).atZone(ZoneId.systemDefault()).toLocalDate(),
@@ -234,7 +239,7 @@ fun ChatMessage.toScheduledMessageUiModel(
         messageParameters = normalizeMessageParameters(),
         reactions = emptyList(),
         isEdited = lastEditTimestamp != 0L,
-        parentMessage = parentMessage?.toScheduledMessageUiModel(user, roomToken),
+        parentMessage = parentMessage?.toScheduledMessageUiModel(user, roomToken, authHeader = authHeader),
         replyable = false,
         isGrouped = false,
         isGroupedWithNext = false,
