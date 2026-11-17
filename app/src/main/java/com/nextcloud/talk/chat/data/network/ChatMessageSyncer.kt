@@ -26,6 +26,7 @@ import com.nextcloud.talk.utils.SpreedFeatures
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -988,6 +989,8 @@ class ChatMessageSyncer @Inject constructor(
             return emptyList()
         }
 
+        repairThreadRootsWithoutThreadData(target, chatMessageEntities)
+
         if (emitOnIncoming) {
             val hasIncomingFromOther = chatMessages.any { msg ->
                 msg.systemMessageType == ChatMessage.SystemMessageType.DUMMY &&
@@ -999,6 +1002,32 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         return chatMessageEntities
+    }
+
+    /**
+     * The server relays a new thread's root message before it creates the thread, so the root is stored without
+     * thread data and shown as a normal message. For every thread in [chatMessageEntities] whose stored root has
+     * no thread data, fetches the thread and marks the root with its title and reply count.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun repairThreadRootsWithoutThreadData(
+        target: SyncTarget,
+        chatMessageEntities: List<ChatMessageEntity>
+    ) {
+        val threadIds = chatMessageEntities.filter { it.isThread }.mapNotNull { it.threadId }.distinct()
+        for (threadId in threadIds) {
+            val root = chatDao.getChatMessageEntity(target.internalConversationId, threadId)
+            if (root == null || root.isThread) continue
+            try {
+                val thread = network.getThread(target.credentials, target.user.baseUrl!!, target.roomToken, threadId)
+                    ?.thread ?: continue
+                chatDao.markAsThreadRoot(target.internalConversationId, threadId, thread.title, thread.numReplies)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to fetch thread $threadId to repair its root message", e)
+            }
+        }
     }
 
     /**
@@ -1087,7 +1116,7 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         try {
-            chatDao.upsertChatMessage(parentMessageEntity)
+            chatDao.upsertChatMessageKeepingThreadData(parentMessageEntity)
         } catch (e: SQLiteConstraintException) {
             Log.w(TAG, "Skip upserting parent message: conversation not in DB (yet). Swallowed exception: $e")
         }
