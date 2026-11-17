@@ -54,6 +54,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -100,6 +104,7 @@ class ChatViewModelRoomJoinTest {
 
     private lateinit var viewModel: ChatViewModel
     private lateinit var chatRepository: ChatMessageRepository
+    private lateinit var createViewModel: (threadId: Long?) -> ChatViewModel
     private val threadsRepository: ThreadsRepository = mock()
     private var capabilitiesState: ChatViewModel.ViewState? = null
     private var initialLoads = 0
@@ -131,24 +136,27 @@ class ChatViewModelRoomJoinTest {
             GenericOverall(GenericOCS(GenericMetaDto(statusCode = HTTP_OK)))
         }
         chatRepository = mockWithEmptyFlows()
+        createViewModel = { threadId ->
+            ChatViewModel(
+                mock<Logger>(),
+                mock<AppPreferences>(),
+                network,
+                chatRepository,
+                threadsRepository,
+                conversations,
+                mock<ReactionsRepository>(),
+                mock<UnifiedSearchRepository>(),
+                mock<MediaRecorderManager>(),
+                mock<AudioFocusRequestManager>(),
+                userManager,
+                appScope,
+                USER,
+                TOKEN,
+                threadId
+            )
+        }
 
-        val newViewModel = ChatViewModel(
-            mock<Logger>(),
-            mock<AppPreferences>(),
-            network,
-            chatRepository,
-            threadsRepository,
-            conversations,
-            mock<ReactionsRepository>(),
-            mock<UnifiedSearchRepository>(),
-            mock<MediaRecorderManager>(),
-            mock<AudioFocusRequestManager>(),
-            userManager,
-            appScope,
-            USER,
-            TOKEN,
-            null
-        )
+        val newViewModel = createViewModel(null)
         viewModel = ViewModelProvider(
             viewModelStore,
             object : ViewModelProvider.Factory {
@@ -405,6 +413,26 @@ class ChatViewModelRoomJoinTest {
 
         verifyBlocking(threadsRepository, never()) { getThreads(any(), any(), any()) }
     }
+
+    @Test
+    fun `inside a thread the reply count follows the cached thread root`() =
+        runBlocking {
+            whenever(chatRepository.observeThreadReplies(any(), eq(THREAD_ID.toLong())))
+                .thenReturn(flowOf(null, 3, 3, THREAD_REPLIES))
+            owner.send(Lifecycle.Event.ON_CREATE)
+
+            val replies = createViewModel(THREAD_ID.toLong()).threadRootReplies.take(2).toList()
+
+            assertEquals(listOf(3, THREAD_REPLIES), replies)
+        }
+
+    @Test
+    fun `the main chat has no thread reply count`() =
+        runBlocking {
+            owner.send(Lifecycle.Event.ON_CREATE)
+
+            assertEquals(emptyList<Int>(), viewModel.threadRootReplies.toList())
+        }
 
     private fun conversationModel(lastReadMessage: Int, remoteServer: String = ""): ConversationModel =
         ConversationModel.mapToConversationModel(
