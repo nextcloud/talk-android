@@ -83,6 +83,7 @@ class SettingsViewModelTest {
     private lateinit var context: Context
     private val repository = FakeSettingsRepository()
     private val accountRemover = mock<AccountRemover>()
+    private val notificationSoundUpdater = mock<NotificationSoundUpdater>()
     private var deviceState = DEVICE_STATE
 
     @Before
@@ -132,6 +133,7 @@ class SettingsViewModelTest {
             settingsRepository = repository,
             logsRepository = logsRepository,
             deviceStateReader = mock { on { read() } doAnswer { deviceState } },
+            notificationSoundUpdater = notificationSoundUpdater,
             accountRemover = accountRemover,
             workManager = workManager,
             logger = mock<Logger>(),
@@ -388,6 +390,33 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun `changed notification sound is shown`() {
+        whenever(notificationSoundUpdater.update(NotificationSound.CALL, SOUND_URI)) doAnswer {
+            deviceState = DEVICE_STATE.copy(callRingtone = RingtoneState.Custom("Ring", SOUND_URI))
+            true
+        }
+        val viewModel = createViewModel()
+
+        viewModel.setNotificationSound(NotificationSound.CALL, SOUND_URI)
+        dispatcher.scheduler.advanceUntilIdle()
+
+        verify(notificationSoundUpdater).update(NotificationSound.CALL, SOUND_URI)
+        assertEquals(RingtoneState.Custom("Ring", SOUND_URI), viewModel.uiState.value.notifications.callRingtone)
+    }
+
+    @Test
+    fun `failed notification sound change shows an error`() =
+        runTest(dispatcher) {
+            whenever(notificationSoundUpdater.update(NotificationSound.MESSAGE, null)) doReturn false
+            val viewModel = createViewModel()
+
+            viewModel.setNotificationSound(NotificationSound.MESSAGE, null)
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(SettingsEvent.ShowMessage(R.string.nc_common_error_sorry), viewModel.events.first())
+        }
+
+    @Test
     fun `cancelled certificate choice keeps the stored certificate`() {
         val viewModel = createViewModel(user.copy(clientCertificate = "alias"))
 
@@ -471,6 +500,7 @@ class SettingsViewModelTest {
         private const val USER_ID = 1L
         private const val NO_PROXY = "No proxy"
         private const val TIMEOUT_MS = 1000L
+        private const val SOUND_URI = "content://media/internal/audio/media/1"
         private val DEVICE_STATE = DeviceState(
             isGooglePlayServicesAvailable = true,
             hasEmbeddedDistributor = false,

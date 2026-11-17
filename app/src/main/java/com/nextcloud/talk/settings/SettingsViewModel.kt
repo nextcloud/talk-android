@@ -59,6 +59,7 @@ class SettingsViewModel @AssistedInject constructor(
     private val settingsRepository: SettingsRepository,
     private val logsRepository: LogsRepository,
     private val deviceStateReader: DeviceStateReader,
+    private val notificationSoundUpdater: NotificationSoundUpdater,
     private val accountRemover: AccountRemover,
     private val workManager: WorkManager,
     private val logger: Logger,
@@ -204,6 +205,17 @@ class SettingsViewModel @AssistedInject constructor(
             val unifiedPush = it.notifications.unifiedPush ?: return@update it
             val updated = unifiedPush.copy(distributor = distributor.orEmpty())
             it.copy(notifications = it.notifications.copy(unifiedPush = updated))
+        }
+    }
+
+    /** @param uri null for no sound */
+    fun setNotificationSound(sound: NotificationSound, uri: String?) {
+        viewModelScope.launch {
+            val updated = withContext(preferenceWriter) { notificationSoundUpdater.update(sound, uri) }
+            if (!updated) {
+                _events.send(SettingsEvent.ShowMessage(R.string.nc_common_error_sorry))
+            }
+            refreshDeviceState()
         }
     }
 

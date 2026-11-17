@@ -83,8 +83,11 @@ class DeviceStateReader @Inject constructor(
             ringtoneUri == null -> RingtoneState.Silent
             ringtoneUri.toString() == NotificationUtils.DEFAULT_CALL_RINGTONE_URI ||
                 ringtoneUri.toString() == NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI -> RingtoneState.Default
-            else -> RingtoneManager.getRingtone(context, ringtoneUri)?.getTitle(context)
-                ?.let { RingtoneState.Custom(it) }
-                ?: RingtoneState.Default
+            else -> RingtoneState.Custom(
+                title = RingtoneManager.getRingtone(context, ringtoneUri)?.getTitle(context)
+                    ?: ringtoneUri.lastPathSegment
+                    ?: ringtoneUri.toString(),
+                uri = ringtoneUri.toString()
+            )
         }
 }

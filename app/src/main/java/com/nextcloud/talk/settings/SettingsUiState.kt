@@ -7,6 +7,7 @@
 package com.nextcloud.talk.settings
 
 import androidx.compose.runtime.Immutable
+import com.nextcloud.talk.utils.NotificationUtils
 
 @Immutable
 data class SettingsUiState(
@@ -91,8 +92,24 @@ sealed interface RingtoneState {
     /** The notification channel is turned off. */
     data object Disabled : RingtoneState
     data object Silent : RingtoneState
+
+    /** The sound bundled with the app, which the system ringtone picker doesn't list. */
     data object Default : RingtoneState
-    data class Custom(val title: String) : RingtoneState
+    data class Custom(val title: String, val uri: String) : RingtoneState
+}
+
+/** The notification sounds that can be chosen on the settings screen. */
+enum class NotificationSound(private val bundledUri: String, val audioUsage: Int) {
+    CALL(NotificationUtils.DEFAULT_CALL_RINGTONE_URI, NotificationUtils.CALLS_AUDIO_USAGE),
+    MESSAGE(NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI, NotificationUtils.MESSAGES_AUDIO_USAGE);
+
+    /** The uri of the sound that [ringtone] stands for, null for no sound. */
+    fun uriOf(ringtone: RingtoneState): String? =
+        when (ringtone) {
+            RingtoneState.Default -> bundledUri
+            is RingtoneState.Custom -> ringtone.uri
+            RingtoneState.Silent, RingtoneState.Disabled -> null
+        }
 }
 
 @Immutable

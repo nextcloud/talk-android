@@ -44,6 +44,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.IncognitoKeyboard
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.settings.AccountUiState
+import com.nextcloud.talk.settings.NotificationSound
 import com.nextcloud.talk.settings.NotificationsUiState
 import com.nextcloud.talk.settings.PrivacyUiState
 import com.nextcloud.talk.settings.ProxyUiState
@@ -72,6 +73,11 @@ data class SettingsScreenCallbacks(
     val onRequestNotificationPermission: () -> Unit = {},
     val onOpenSystemSettings: (SystemSettingsScreen) -> Unit = {},
     val onOpenDiagnosis: () -> Unit = {},
+    /** Opens the system ringtone picker, with the current sound selected. */
+    val onPickNotificationSound: (NotificationSound, RingtoneState) -> Unit = { _, _ -> },
+
+    /** Sets the sound by its uri, null for no sound. */
+    val onNotificationSoundChange: (NotificationSound, String?) -> Unit = { _, _ -> },
     val onShowNotificationWarningChange: (Boolean) -> Unit = {},
     val onScreenLockChange: (Boolean) -> Unit = {},
     val onScreenLockTimeoutChange: (String) -> Unit = {},

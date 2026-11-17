@@ -114,12 +114,12 @@ internal fun MediaQualityDialog(reducedQuality: Boolean, onSelect: (Boolean) -> 
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                MediaQualityOption(
+                RadioOption(
                     label = stringResource(R.string.nc_media_quality_original),
                     selected = !reducedQuality,
                     onClick = { onSelect(false) }
                 )
-                MediaQualityOption(
+                RadioOption(
                     label = stringResource(R.string.nc_media_quality_reduced),
                     selected = reducedQuality,
                     onClick = { onSelect(true) }
@@ -134,7 +134,7 @@ internal fun MediaQualityDialog(reducedQuality: Boolean, onSelect: (Boolean) -> 
 }
 
 @Composable
-private fun MediaQualityOption(label: String, selected: Boolean, onClick: () -> Unit) {
+internal fun RadioOption(label: String, selected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
