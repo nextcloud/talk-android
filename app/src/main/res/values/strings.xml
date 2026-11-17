@@ -974,6 +974,7 @@ How to translate with transifex:
     <string name="nc_federation_invitation_reject">Reject</string>
     <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
     <string name="nc_federation_no_invitations">No pending invitations</string>
+    <string name="nc_federated_user">Federated user</string>
 
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
