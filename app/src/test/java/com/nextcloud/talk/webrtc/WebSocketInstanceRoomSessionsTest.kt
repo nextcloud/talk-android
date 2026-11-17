@@ -182,6 +182,26 @@ class WebSocketInstanceRoomSessionsTest {
     }
 
     @Test
+    fun resumedSessionRejoinsRoomWhoseJoinWasLostOnADeadSocket() {
+        val instance = createConnectedInstance()
+        // The join is sent, but the socket silently dies before the server answers it (a half-open connection), so
+        // the room is never actually joined even though the signaling session is later resumed. This is the reported
+        // failure where calls stay stuck until the app is restarted.
+        holdAnswerToJoin = true
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("join received but unanswered") { serverLog.contains("c1:joined-unanswered") }
+
+        // The ping detects the dead socket and the client reconnects, resuming the session.
+        holdAnswerToJoin = false
+        instance.restartWebSocket()
+        waitUntil("resumed hello answered") { serverLog.contains("c2:hello-answered") }
+        waitUntil("connected again") { instance.isConnected }
+
+        // The lost join is re-asserted on the resumed session, so the room is joined without an app restart.
+        waitUntil("room A joined on the resumed session") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
+    }
+
+    @Test
     fun newSessionWithoutResumeStartsWithoutSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
