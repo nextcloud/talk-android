@@ -170,6 +170,7 @@
     <string name="nc_expire_message_one_hour">1 tunti</string>
     <string name="nc_expire_message_one_week">1 viikko</string>
     <string name="nc_expire_messages_explanation">Keskusteluviestit on mahdollista vanhentaa tietyn ajan jälkeen. Huomio: Keskustelussa jaetut tiedostot eivät poistu omistajalta, mutta ne eivät ole enää jaettu keskustelussa.</string>
+    <string name="nc_federated_user">Federoitu käyttäjä</string>
     <string name="nc_federation_invitation_accept">Hyväksy</string>
     <string name="nc_federation_invitation_reject">Hylkää</string>
     <string name="nc_federation_no_invitations">Ei odottavia kutsuja</string>

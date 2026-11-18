@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Atur kedaluwarsa pesan obrolan</string>
     <string name="nc_expire_messages_explanation">Pesan obrolan dapat kedaluwarsa setelah jangka waktu tertentu. Catatan: Berkas yang dibagikan dalam obrolan tidak akan dihapus untuk pemiliknya, tetapi tidak lagi dibagikan dalam percakapan.</string>
     <string name="nc_external_server_failed">Gagal mengambil pengaturan signaling</string>
+    <string name="nc_federated_user">Pengguna terfederasi</string>
     <string name="nc_federation_invitation_accept">Terima</string>
     <string name="nc_federation_invitation_reject">Ditolak</string>
     <string name="nc_federation_invited_to_room">dari %1$s pada %2$s</string>

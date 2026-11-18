@@ -270,6 +270,7 @@
     <string name="nc_expire_messages">انقضای پیام‌های چت</string>
     <string name="nc_expire_messages_explanation">پیام‌های چت می‌توانند پس از مدت زمان مشخصی منقضی شوند. توجه: فایل‌های به اشتراک‌گذاشته شده در چت برای مالک حذف نخواهند شد، اما دیگر در مکالمه به اشتراک گذاشته نمی‌شوند.</string>
     <string name="nc_external_server_failed">دریافت تنظیمات سیگنال ناموفق بود</string>
+    <string name="nc_federated_user">کاربر فدرال</string>
     <string name="nc_federation_invitation_accept">تایید</string>
     <string name="nc_federation_invitation_reject">رد کردن</string>
     <string name="nc_federation_invited_to_room">از %1$s در %2$s</string>

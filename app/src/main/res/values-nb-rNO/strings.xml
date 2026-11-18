@@ -231,6 +231,7 @@
     <string name="nc_expire_messages">Utløpe chatmeldinger</string>
     <string name="nc_expire_messages_explanation">Chatmeldinger kan utløpe etter en viss tid. Merk: filer som deles i chat, slettes ikke for eieren, men deles ikke lenger i samtalen.</string>
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
+    <string name="nc_federated_user">Forent bruker</string>
     <string name="nc_federation_invitation_accept">Aksepter</string>
     <string name="nc_federation_invitation_reject">Avvis</string>
     <string name="nc_federation_invited_to_room">fra %1$s på %2$s</string>

@@ -327,6 +327,7 @@
     <string name="nc_expire_messages">Expirarea mesajelor din chat</string>
     <string name="nc_expire_messages_explanation">Mesajele din chat pot fi configurate să expire după un anumit timp. Notă: fișierele partajate în chat nu vor fi șterse pentru proprietar, dar nu vor mai fi partajate în conversație.</string>
     <string name="nc_external_server_failed">Setările de semnalizare nu au putut fi preluate</string>
+    <string name="nc_federated_user">Utilizator federat</string>
     <string name="nc_federation_invitation_accept">Acceptă</string>
     <string name="nc_federation_invitation_reject">Respinge</string>
     <string name="nc_federation_invited_to_room">de la %1$s pe %2$s</string>

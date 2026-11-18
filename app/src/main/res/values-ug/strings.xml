@@ -250,6 +250,7 @@
     <string name="nc_expire_messages">پاراڭلىشىش ۋاقتى توشىدۇ</string>
     <string name="nc_expire_messages_explanation">پاراڭلىشىش ئۇچۇرلىرى مەلۇم ۋاقىتتىن كېيىن توشىدۇ. ئەسكەرتىش: پاراڭدا ھەمبەھىرلەنگەن ھۆججەتلەر ئىگىسى ئۈچۈن ئۆچۈرۈلمەيدۇ ، ئەمما سۆھبەتتە ئەمدى ھەمبەھىرلەنمەيدۇ.</string>
     <string name="nc_external_server_failed">سىگنال تەڭشىكىنى ئالالمىدى</string>
+    <string name="nc_federated_user">فېدېراتسىيە ئىشلەتكۈچى</string>
     <string name="nc_federation_invitation_accept">قوبۇل قىلىڭ</string>
     <string name="nc_federation_invitation_reject">رەت قىلىش</string>
     <string name="nc_federation_invited_to_room">%1$s دىن%2$s</string>

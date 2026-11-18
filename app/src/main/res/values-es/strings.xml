@@ -255,6 +255,7 @@
     <string name="nc_expire_messages">Caducar mensajes de chat</string>
     <string name="nc_expire_messages_explanation">Los mensajes de chat pueden caducarse luego de cierto tiempo. Nota: Los archivos compartidos mediante chat no serán borrados para el propietario, pero no estarán compartidos en la conversación.</string>
     <string name="nc_external_server_failed">Fallo al recuperar la configuración de señalización</string>
+    <string name="nc_federated_user">Usuario federado</string>
     <string name="nc_federation_invitation_accept">Aceptar</string>
     <string name="nc_federation_invitation_reject">Rechazar</string>
     <string name="nc_federation_invited_to_room">de %1$s a las %2$s</string>

@@ -226,6 +226,7 @@
     <string name="nc_expire_messages">チャットメッセージの有効期間</string>
     <string name="nc_expire_messages_explanation">チャットメッセージは、一定時間経過後に期限切れにすることができます。注意: チャットで共有されたファイルは、ファイル所有者は削除されませんが、会話では共有されなくなります。</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
+    <string name="nc_federated_user">フェデレーションユーザー</string>
     <string name="nc_federation_invitation_accept">承諾</string>
     <string name="nc_federation_invitation_reject">拒否</string>
     <string name="nc_federation_invited_to_room">%1$sから%2$s変換</string>

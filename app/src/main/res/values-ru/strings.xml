@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Срок действия сообщений</string>
     <string name="nc_expire_messages_explanation">Сообщения чата могут удаляться через заданное время. Примечание: файлы, отправленные в чат, у владельца не удаляются, но перестают быть доступны в обсуждении.</string>
     <string name="nc_external_server_failed">Не удалось получить настройки сигнального сервера</string>
+    <string name="nc_federated_user">Федеративный пользователь</string>
     <string name="nc_federation_invitation_accept">Принять</string>
     <string name="nc_federation_invitation_reject">Отклонить</string>
     <string name="nc_federation_invited_to_room">от %1$s на сервере %2$s</string>

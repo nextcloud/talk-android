@@ -324,6 +324,7 @@
     <string name="nc_expire_messages">Expiration pour les messages</string>
     <string name="nc_expire_messages_explanation">Les messages instantanés peuvent expirer après un certain temps. Note : les fichiers partagés dans la discussion ne seront pas effacé pour leur propriétaire, mais ils ne seront plus partagés dans la conversation.</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
+    <string name="nc_federated_user">Utilisateur fédéré</string>
     <string name="nc_federation_invitation_accept">Accepter</string>
     <string name="nc_federation_invitation_reject">Rejeter</string>
     <string name="nc_federation_invited_to_room">de %1$s à %2$s</string>

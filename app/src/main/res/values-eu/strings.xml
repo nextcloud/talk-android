@@ -223,6 +223,7 @@
     <string name="nc_expire_messages">Iraungi txat-mezuak</string>
     <string name="nc_expire_messages_explanation">Txat-mezuak denbora jakin baten ondoren iraungi daitezke. Oharra: txatean partekatutako fitxategiak ez dira jabearentzat ezabatuko, baina ez dira gehiago elkarrizketan partekatuko.</string>
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
+    <string name="nc_federated_user">Erabiltzaile federatua</string>
     <string name="nc_federation_invitation_accept">Onartu</string>
     <string name="nc_federation_invitation_reject">Ukatu</string>
     <string name="nc_federation_no_invitations">Ez duzu gonbidapenik zain</string>

@@ -272,6 +272,7 @@
     <string name="nc_expire_messages">Csevegési üzenetek elévülése</string>
     <string name="nc_expire_messages_explanation">A csevegési üzenetek bizonyos idő után elévülhetnek. Megjegyzés: A csevegésben megosztott fájlok nem törlődnek a tulajdonosuk számára, csak többé nem lesznek megosztva a beszélgetéssel.</string>
     <string name="nc_external_server_failed">A jelzőkiszolgáló beállításainak lekérése sikertelen</string>
+    <string name="nc_federated_user">Föderált felhasználó</string>
     <string name="nc_federation_invitation_accept">Elfogadás</string>
     <string name="nc_federation_invitation_reject">Elutasítás</string>
     <string name="nc_federation_invited_to_room">ettől: %1$s, ekkor: %2$s</string>

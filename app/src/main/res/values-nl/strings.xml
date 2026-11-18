@@ -252,6 +252,7 @@
     <string name="nc_expire_messages">Laat chatberichten vervallen</string>
     <string name="nc_expire_messages_explanation">Chatberichten kunnen na een bepaalde tijd verlopen. Noot: Bestanden die gedeeld zijn in een chat worden niet verwijderd door de eieganaar, maar worden niet langer gedeeld in het gesprek.</string>
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
+    <string name="nc_federated_user">Gefedereerde gebruiker</string>
     <string name="nc_federation_invitation_accept">Accepteren</string>
     <string name="nc_federation_invitation_reject">Afkeuren</string>
     <string name="nc_federation_invited_to_room">van %1$s op %2$s</string>

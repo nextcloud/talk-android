@@ -186,6 +186,7 @@
     <string name="nc_expire_message_one_week">1 εβδομάδα</string>
     <string name="nc_expire_messages_explanation">Τα μηνύματα συνομιλίας μπορούν να λήξουν μετά από συγκεκριμένο χρόνο. Σημείωση: Τα αρχεία που κοινοποιούνται στη συνομιλία δεν θα διαγραφούν για τον κάτοχο, αλλά δεν θα κοινοποιούνται πλέον στη συνομιλία.</string>
     <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
+    <string name="nc_federated_user">Federated χρήστης</string>
     <string name="nc_federation_invitation_accept">Αποδοχή</string>
     <string name="nc_federation_invitation_reject">Απόρριψη</string>
     <string name="nc_federation_no_invitations">Δεν υπάρχουν εκκρεμείς προσκλήσεις</string>

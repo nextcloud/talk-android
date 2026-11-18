@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Lad chatbeskeder udløbe</string>
     <string name="nc_expire_messages_explanation">Chatbeskeder kan udløbe efter et vist tidsrum. Bemærk: Filer, der er delt i chatten, bliver ikke slettet for ejeren, men deles ikke længere i samtalen.</string>
     <string name="nc_external_server_failed">Signaleringsindstillingerne kunne ikke hentes</string>
+    <string name="nc_federated_user">Fødereret bruger</string>
     <string name="nc_federation_invitation_accept">Acceptér</string>
     <string name="nc_federation_invitation_reject">Afvis</string>
     <string name="nc_federation_invited_to_room">fra %1$s kl. %2$s</string>

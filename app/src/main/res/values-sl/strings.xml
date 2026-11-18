@@ -199,6 +199,7 @@
     <string name="nc_expire_messages">Preteči prikaz sporočil klepeta</string>
     <string name="nc_expire_messages_explanation">Sporočila klepeta lahko po določenem času potečejo. Opomba: datoteke, ki so v skupni rabi v klepetu, se za lastnika ne izbrišejo, vendar se bodo več zbrane v pogovoru.</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
+    <string name="nc_federated_user">Zvezni uporabnik</string>
     <string name="nc_federation_invitation_accept">Sprejmi</string>
     <string name="nc_federation_invitation_reject">Zavrni</string>
     <string name="nc_file_browser_back">Nazaj</string>

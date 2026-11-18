@@ -249,6 +249,7 @@
     <string name="nc_expire_messages">Muda wa ujumbe wa gumzo</string>
     <string name="nc_expire_messages_explanation">Muda wa ujumbe wa gumzo unaweza kuisha baada ya muda fulani. Kumbuka: Faili zinazoshirikiwa kwenye gumzo hazitafutwa kwa mmiliki, lakini hazitashirikiwa tena kwenye mazungumzo.</string>
     <string name="nc_external_server_failed">Imeshindwa kuleta mipangilio ya kuashiria</string>
+    <string name="nc_federated_user">Mtumiaji aliyeshirikishwa</string>
     <string name="nc_federation_invitation_accept">Kubali</string>
     <string name="nc_federation_invitation_reject">Kataa</string>
     <string name="nc_federation_invited_to_room">tangu%1$skatika
