@@ -79,7 +79,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     // The room the call UI last asked to join, which is not necessarily the one the server has confirmed
     // (currentRoomToken). It is kept so the join can be re-asserted after a session resume: a join sent over a
     // half-open socket can be silently lost (the socket buffers it and reports success), leaving the session
-    // resumed but not actually in the room, which made calls hang until the app was restarted.
+    // resumed but not actually in the room. It is written on the caller thread (joinRoomWithRoomTokenAndSession)
+    // and read on the WebSocket reader thread (maybeResendRequestedRoomJoin), so it is @Volatile.
+    @Volatile
     private var requestedRoomToken: String? = null
     private var currentNormalBackendSession: String? = null
     private var currentFederation: FederationSettingsDto? = null
@@ -305,7 +307,10 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             roomSessions.onRoomResponse(roomWebSocketMessage.roomId)
             currentRoomToken = roomWebSocketMessage.roomId
             if (TextUtils.isEmpty(currentRoomToken)) {
-                // The server took the client out of the room, so the keys of that room go with it, like on iOS
+                // The server took the client out of the room, so the keys of that room go with it, like on iOS.
+                // Clear the requested room too, otherwise a later resume would re-send a join for a room the
+                // server deliberately removed the client from.
+                requestedRoomToken = null
                 callEncryptionLifecycle.close()
             } else if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null) {
                 callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
