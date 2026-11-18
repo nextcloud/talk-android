@@ -808,6 +808,8 @@ class ChatMessageSyncer @Inject constructor(
                         // the server confirmed there is nothing newer than the queried message, so
                         // the queried message is a valid HTTP-synced anchor
                         recordHttpSyncedMessageId(target, queriedMessageId.toLong())
+                    } else {
+                        recordAnchorIfConversationEmpty(target, queriedMessageId, lookIntoFuture)
                     }
                     NOTHING_SYNCED
                 }
@@ -893,8 +895,25 @@ class ChatMessageSyncer @Inject constructor(
                 // an empty response to a lookIntoFuture request confirms the queried message as
                 // the newest one, so it is a valid HTTP-synced anchor
                 recordHttpSyncedMessageId(target, queriedMessageId.toLong())
+            } else {
+                recordAnchorIfConversationEmpty(target, queriedMessageId, lookIntoFuture)
             }
             NOTHING_SYNCED
+        }
+    }
+
+    /**
+     * A newest-messages fetch (no lastKnownMessageId, not looking into the future) that returns
+     * nothing confirms the conversation has no messages at all — e.g. a classified conversation,
+     * which starts without the usual "conversation created" system message. No chat block is
+     * created in that case, so without an anchor the insurance requests would skip forever and a
+     * first message would never become visible (with HPB there is no long polling to fetch it).
+     * Anchoring at 0 lets them fetch from the very beginning, which is cheap for an empty room.
+     */
+    private fun recordAnchorIfConversationEmpty(target: SyncTarget, queriedMessageId: Int?, lookIntoFuture: Boolean) {
+        if (!lookIntoFuture && queriedMessageId == null) {
+            Log.d(TAG, "Conversation ${target.internalConversationId} has no messages, anchoring HTTP sync at 0")
+            recordHttpSyncedMessageId(target, 0L)
         }
     }
 

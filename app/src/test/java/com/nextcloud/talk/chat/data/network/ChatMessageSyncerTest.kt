@@ -668,6 +668,53 @@ class ChatMessageSyncerTest {
         }
 
     @Test
+    fun `an empty newest-messages response anchors the insurance requests at 0`() =
+        runTest {
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall()))
+
+            syncer.initialCatchUp(target())
+
+            assertEquals(0L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+        }
+
+    @Test
+    fun `a not modified newest-messages response anchors the insurance requests at 0`() =
+        runTest {
+            val rawResponse = okhttp3.Response.Builder()
+                .request(Request.Builder().url(CHAT_URL).build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(HTTP_NOT_MODIFIED)
+                .message("Not Modified")
+                .build()
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.error("".toResponseBody(), rawResponse))
+
+            syncer.initialCatchUp(target())
+
+            assertEquals(0L, syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+        }
+
+    @Test
+    fun `an empty response for older history does not anchor the insurance requests`() =
+        runTest {
+            whenever(chatBlocksDao.getChatBlocksContainingMessageId(INTERNAL_CONVERSATION_ID, null, 42L))
+                .thenReturn(flowOf(emptyList()))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall()))
+
+            val fieldMap = syncer.buildFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = false,
+                lastKnown = 42
+            )
+            syncer.pullAndPersistMessages(target(), fieldMap)
+
+            assertNull(syncer.lastHttpSyncedMessageId(INTERNAL_CONVERSATION_ID, null))
+        }
+
+    @Test
     fun `pullUntilVisibleMessage returns after the first round when it already has a visible message`() =
         runTest {
             whenever(chatBlocksDao.getChatBlocksContainingMessageId(eq(INTERNAL_CONVERSATION_ID), eq(null), any()))
