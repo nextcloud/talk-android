@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Dul in éag teachtaireachtaí comhrá</string>
     <string name="nc_expire_messages_explanation">Is féidir teachtaireachtaí comhrá a bheith imithe in éag tar éis am áirithe. Nóta: Ní scriosfar comhaid a roinntear sa chomhrá don úinéir, ach ní roinnfear iad sa chomhrá a thuilleadh.</string>
     <string name="nc_external_server_failed">Theip ar na socruithe comharthaíochta a fháil</string>
+    <string name="nc_federated_user">Úsáideoir cónaidhme</string>
     <string name="nc_federation_invitation_accept">Glac</string>
     <string name="nc_federation_invitation_reject">Diúltaigh</string>
     <string name="nc_federation_invited_to_room">ó %1$s ag %2$s</string>

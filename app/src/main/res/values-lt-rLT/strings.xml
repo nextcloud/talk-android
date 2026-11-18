@@ -288,6 +288,7 @@
     <string name="nc_expire_messages">Pokalbių žinučių galiojimo pabaiga</string>
     <string name="nc_expire_messages_explanation">Pokalbių žinutės gali būti nebegaliojančios po tam tikro laiko. Pastaba: pokalbyje bendrinami failai nebus ištrinti savininkui, bet nebebus bendrinami pokalbyje.</string>
     <string name="nc_external_server_failed">Nepavyko gauti signalinio ryšio nustatymų</string>
+    <string name="nc_federated_user">Federacinis vartotojas</string>
     <string name="nc_federation_invitation_accept">Priimti</string>
     <string name="nc_federation_invitation_reject">Atmesti</string>
     <string name="nc_federation_invited_to_room">nuo %1$s, %2$s</string>

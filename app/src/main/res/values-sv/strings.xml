@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Chattmeddelanden löper ut</string>
     <string name="nc_expire_messages_explanation">Chattmeddelanden kan löpa ut efter en viss tid. Notera: Filer som delas i chatten kommer inte att raderas för ägaren, men kommer inte längre att delas i konversationen.</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
+    <string name="nc_federated_user">Federerad användare</string>
     <string name="nc_federation_invitation_accept">Acceptera</string>
     <string name="nc_federation_invitation_reject">Avvisa</string>
     <string name="nc_federation_invited_to_room">från %1$s på %2$s</string>

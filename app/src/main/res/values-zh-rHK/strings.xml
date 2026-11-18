@@ -332,6 +332,7 @@
     <string name="nc_expire_messages">刪除聊天訊息</string>
     <string name="nc_expire_messages_explanation">聊天訊息可能會在一定時間後過期。注意：在聊天中共享的檔案不會為所有者刪除，但將不再在對話中共享。</string>
     <string name="nc_external_server_failed">擷取網絡設定失敗</string>
+    <string name="nc_federated_user">聯邦用戶</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">不批准</string>
     <string name="nc_federation_invited_to_room">從 %1$s 到 %2$s</string>

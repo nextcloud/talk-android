@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Vypršanie platnosti správ v chate</string>
     <string name="nc_expire_messages_explanation">Platnosť četových správ môže po určitom čase vypršať. Poznámka: Súbory zdieľané v čete sa vlastníkovi neodstránia, ale už sa nebudú zdieľať v konverzácii.</string>
     <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
+    <string name="nc_federated_user">Federovaný používateľ</string>
     <string name="nc_federation_invitation_accept">Prijať</string>
     <string name="nc_federation_invitation_reject">Odmietnuť</string>
     <string name="nc_federation_invited_to_room">od %1$s o %2$s</string>

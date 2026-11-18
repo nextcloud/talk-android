@@ -190,8 +190,10 @@
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
     <string name="nc_call_unknown">%s arama</string>
     <string name="nc_call_video">%s görüntülü arama</string>
+    <string name="nc_call_view_mode">Arama görünümü kipi</string>
     <string name="nc_call_view_mode_grid">Izgara görünümü</string>
     <string name="nc_call_view_mode_speaker">Konuşmacı görünümü</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Katılımcı çubuğu ile konuşmacı görünümü</string>
     <string name="nc_call_voice">%s sesli arama</string>
     <string name="nc_camera_permission_hint">Görüntülü iletişim kurabilmek için \"Kamera\" için erişme izni verin.</string>
     <string name="nc_cancel">İptal</string>
@@ -332,6 +334,7 @@
     <string name="nc_expire_messages">Süreli sohbet iletileri</string>
     <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık görüşmede paylaşılmaz.</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
+    <string name="nc_federated_user">Birleşik kullanıcı</string>
     <string name="nc_federation_invitation_accept">Kabul et</string>
     <string name="nc_federation_invitation_reject">Reddet</string>
     <string name="nc_federation_invited_to_room">%1$s ile %2$s arasında</string>
@@ -388,6 +391,9 @@
     <string name="nc_lobby_start_date">Bu toplantı %1$s zamanına ayarlanmış</string>
     <string name="nc_lobby_start_soon">Toplantı yakında başlayacak</string>
     <string name="nc_lobby_waiting">Şu anda bekleme odasında bekliyorsunuz</string>
+    <string name="nc_local_network_permission_denied">Bu sunucuya bağlanmak için yerel ağ erişimine izin verin.</string>
+    <string name="nc_local_network_permission_message">Bu sunucu yerel ağınızda. Yalnızca \"Yakındaki aygıtlar\" izniyle ulaşılabilir. İzin verilmeden, sunucuya bağlanılamaz.</string>
+    <string name="nc_local_network_permission_title">Yerel ağ erişimine izin ver</string>
     <string name="nc_location_current_position_description">Geçerli konumunuz</string>
     <string name="nc_location_unknown">Konum bilinmiyor</string>
     <string name="nc_locked">Kilitli</string>
@@ -703,6 +709,7 @@
     <string name="nc_voice_message">Sesli ileti</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
+    <string name="nc_voice_message_recording_interrupted">Kayıt durduruldu</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
     <string name="nc_webinar_description">Bekleme odası ile görüşme, herkese açık internet toplantıları için ideal</string>

@@ -252,6 +252,7 @@
     <string name="nc_expire_messages">Scadenza dei messaggi di chat</string>
     <string name="nc_expire_messages_explanation">I messaggi di chat possono scadere dopo un certo periodo di tempo. Nota: I file condivisi in chat non saranno eliminati per il proprietario, ma non saranno più condivisi nella conversazione.</string>
     <string name="nc_external_server_failed">Recupero delle impostazioni di segnalazione non riuscito</string>
+    <string name="nc_federated_user">Utente federato</string>
     <string name="nc_federation_invitation_accept">Accetta</string>
     <string name="nc_federation_invitation_reject">Rifiuta</string>
     <string name="nc_federation_invited_to_room">da %1$s a %2$s</string>

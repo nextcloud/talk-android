@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Lase vestluse sõnumeil aeguda</string>
     <string name="nc_expire_messages_explanation">Vestluse sõnumid saad määrata kustuma etteantud aja järel. Palun arvesta, et sel juhul vestluses jagatud failid jäävad omaniku jaoks nähtavaks, aga pole enam vestluse jaoks jagatud.</string>
     <string name="nc_external_server_failed">Kõnehõlbustuse seadistusi ei õnnestunud laadida</string>
+    <string name="nc_federated_user">Kasutaja liitpilves</string>
     <string name="nc_federation_invitation_accept">Nõustu</string>
     <string name="nc_federation_invitation_reject">Keeldu</string>
     <string name="nc_federation_invited_to_room">kasutajalt %1$s, %2$s</string>

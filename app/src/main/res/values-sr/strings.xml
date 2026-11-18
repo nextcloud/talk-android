@@ -251,6 +251,7 @@
     <string name="nc_expire_messages">Истек чек порука</string>
     <string name="nc_expire_messages_explanation">Чет поруке могу да истекну након одређеног времена. Напомена: фајлови који су подељени у чету се неће обрисати за власника, али више неће бити дељени у разговору.</string>
     <string name="nc_external_server_failed">Грешка приликом дохватања подешавања сигнализирања</string>
+    <string name="nc_federated_user">Федерисани корисник</string>
     <string name="nc_federation_invitation_accept">Прихвати</string>
     <string name="nc_federation_invitation_reject">Одбаци</string>
     <string name="nc_federation_invited_to_room">од %1$s са %2$s</string>

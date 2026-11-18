@@ -334,6 +334,7 @@
     <string name="nc_expire_messages">Deixar as mensagens de bate-papo expirarem</string>
     <string name="nc_expire_messages_explanation">As mensagens de bate-papo podem expirar após um certo tempo. Observação: os arquivos compartilhados no bate-papo não serão excluídos para o proprietário, mas não serão mais compartilhados na conversa.</string>
     <string name="nc_external_server_failed">Falha ao buscar configurações de sinalização</string>
+    <string name="nc_federated_user">Usuário federado</string>
     <string name="nc_federation_invitation_accept">Aceitar</string>
     <string name="nc_federation_invitation_reject">Rejeitar</string>
     <string name="nc_federation_invited_to_room">de %1$s em %2$s</string>

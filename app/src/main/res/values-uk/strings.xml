@@ -249,6 +249,7 @@
     <string name="nc_expire_messages">Термін дії повідомлень чату закінчився</string>
     <string name="nc_expire_messages_explanation">Повідомлення чату може бути вилучено через певний часу. Примітка: Файли, які було передано у чаті, не буде вилучено для власника, проте вони більше не будуть доступні в обговоренні.</string>
     <string name="nc_external_server_failed">Помилка отримання налаштувань сповіщення</string>
+    <string name="nc_federated_user">Обʼєднаний користувач</string>
     <string name="nc_federation_invitation_accept">Прийняти</string>
     <string name="nc_federation_invitation_reject">Відхилити</string>
     <string name="nc_federation_invited_to_room">з %1$s на %2$s</string>

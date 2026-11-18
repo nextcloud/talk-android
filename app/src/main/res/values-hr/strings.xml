@@ -182,6 +182,7 @@
     <string name="nc_expire_message_one_week">1 tjedan</string>
     <string name="nc_expire_messages_explanation">Poruke u chatu mogu isteći nakon određenog vremena. Napomena: datoteke podijeljene u chatu neće biti obrisane vlasniku, ali se više neće dijeliti u razgovoru.</string>
     <string name="nc_external_server_failed">Neuspješno dohvaćanje postavki signaliziranja</string>
+    <string name="nc_federated_user">Udruženi korisnik</string>
     <string name="nc_federation_invitation_accept">Prihvati</string>
     <string name="nc_federation_invitation_reject">Odbij</string>
     <string name="nc_federation_no_invitations">Nema pozivnica na čekanju</string>

@@ -215,6 +215,7 @@
     <string name="nc_expire_messages">聊天内容过期</string>
     <string name="nc_expire_messages_explanation">可指定聊天消息在一定时间后过期。注意：聊天中分享的文件不会被从所有者一方删除，但是会被从对话中取消分享。</string>
     <string name="nc_external_server_failed">获取网络设置失败</string>
+    <string name="nc_federated_user">联合云用户</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">拒绝</string>
     <string name="nc_federation_no_invitations">没有待处理的邀请</string>
