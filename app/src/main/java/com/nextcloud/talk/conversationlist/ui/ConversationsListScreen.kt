@@ -186,23 +186,15 @@ fun ConversationsListScreen(
     val hasConversationTagsCapability = state.currentUser?.capabilities?.spreedCapability?.let {
         CapabilitiesUtil.hasSpreedFeatureCapability(it, SpreedFeatures.CONVERSATION_TAGS)
     } == true
-    val nonEmptyConversationTags = remember(conversationTags, visibleRooms) {
-        conversationTags.filter { tag ->
-            if (tag.type == ConversationTagDto.TYPE_FAVORITES) {
-                visibleRooms.any { it.favorite }
-            } else {
-                visibleRooms.any { it.tagIds.contains(tag.id) }
-            }
-        }
-    }
-    val hasDirectMentionFlag = state.currentUser?.capabilities?.spreedCapability?.let {
-        CapabilitiesUtil.hasSpreedFeatureCapability(it, SpreedFeatures.DIRECT_MENTION_FLAG)
-    } == true
-    val conversationTagChips = remember(nonEmptyConversationTags, visibleRooms, hasDirectMentionFlag) {
-        buildConversationTagChips(nonEmptyConversationTags, visibleRooms, hasDirectMentionFlag)
+    val hasDirectMentionFlag = CapabilitiesUtil.hasSpreedFeatureCapability(
+        state.currentUser?.capabilities?.spreedCapability,
+        SpreedFeatures.DIRECT_MENTION_FLAG
+    )
+    val conversationTagChips = remember(conversationTags, visibleRooms, hasDirectMentionFlag) {
+        buildConversationTagChips(conversationTags, visibleRooms, hasDirectMentionFlag)
     }
     val showConversationTagsRow = hasConversationTagsCapability &&
-        nonEmptyConversationTags.isNotEmpty() &&
+        conversationTagChips.isNotEmpty() &&
         !isSearchActive &&
         !showShareTo &&
         !isForward

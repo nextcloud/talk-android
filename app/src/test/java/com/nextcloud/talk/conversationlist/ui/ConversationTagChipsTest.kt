@@ -44,6 +44,20 @@ class ConversationTagChipsTest {
     }
 
     @Test
+    fun `tags without conversations get no chip`() {
+        val rooms = listOf(conversation("a", tagIds = listOf("work"), unreadMessages = 1))
+
+        assertEquals(listOf(workTag), chips(listOf(workTag, favoritesTag), rooms).map { it.tag })
+    }
+
+    @Test
+    fun `duplicate conversations are counted once`() {
+        val room = conversation("a", tagIds = listOf("work"), unreadMessages = 1)
+
+        assertEquals(1, chips(listOf(workTag), listOf(room, room.copy())).single().unreadInfo!!.conversationCount)
+    }
+
+    @Test
     fun `favorites tag counts unread favorite conversations`() {
         val rooms = listOf(
             conversation("a", favorite = true, unreadMessages = 2),

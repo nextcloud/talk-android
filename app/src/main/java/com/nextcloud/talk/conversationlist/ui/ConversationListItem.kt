@@ -513,6 +513,8 @@ private fun ConversationLastMessageRow(
 
 @Composable
 private fun UnreadBubble(model: ConversationModel, currentUser: User) {
+    if (model.unreadMessages <= 0) return
+
     val hasDmFlag = hasSpreedFeatureCapability(
         currentUser.capabilities?.spreedCapability,
         SpreedFeatures.DIRECT_MENTION_FLAG

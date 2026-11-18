@@ -141,19 +141,23 @@ data class TagUnreadInfo(val conversationCount: Int, val style: UnreadBadgeStyle
 /** A tag filter chip; [unreadInfo] is null when no conversation with this tag has unread messages. */
 data class ConversationTagChip(val tag: ConversationTagDto, val unreadInfo: TagUnreadInfo? = null)
 
+/** Builds the chips for all [tags] that have at least one of the given [rooms]. */
 fun buildConversationTagChips(
     tags: List<ConversationTagDto>,
     rooms: List<ConversationModel>,
     hasDirectMentionFlag: Boolean
-): List<ConversationTagChip> =
-    tags.map { tag ->
+): List<ConversationTagChip> {
+    val distinctRooms = rooms.distinctBy { it.token }
+    return tags.mapNotNull { tag ->
         val isFavorites = tag.type == ConversationTagDto.TYPE_FAVORITES
-        val styles = rooms
-            .filter { if (isFavorites) it.favorite else it.tagIds.contains(tag.id) }
-            .mapNotNull { unreadBadgeStyle(it, hasDirectMentionFlag) }
+        val taggedRooms = distinctRooms.filter { if (isFavorites) it.favorite else it.tagIds.contains(tag.id) }
+        if (taggedRooms.isEmpty()) return@mapNotNull null
+
+        val styles = taggedRooms.mapNotNull { unreadBadgeStyle(it, hasDirectMentionFlag) }
         val unreadInfo = styles.maxOrNull()?.let { TagUnreadInfo(conversationCount = styles.size, style = it) }
         ConversationTagChip(tag, unreadInfo)
     }
+}
 
 private fun previewTags() =
     listOf(
