@@ -260,16 +260,13 @@ fun SelectableCard(
         Text(
             text = content.subtitle,
             fontSize = 13.sp,
-            lineHeight = 18.sp,
-            maxLines = DESCRIPTION_MAX_LINES,
-            overflow = TextOverflow.Ellipsis
+            lineHeight = 18.sp
         )
     }
 }
 
 private const val PRESET_COLUMNS = 2
 private const val TITLE_MAX_LINES = 2
-private const val DESCRIPTION_MAX_LINES = 4
 
 private data class PresetLabel(@StringRes val title: Int, @StringRes val description: Int)
 
