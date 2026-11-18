@@ -218,10 +218,16 @@ class BrowserLoginActivity : BaseActivity() {
             false
         }
 
+    /**
+     * Starts the verification of the new account and closes this screen. The login result stays in the view model,
+     * so this screen would start the verification again whenever it is shown again, e.g. when going back from the
+     * verification, and the account would be stored twice.
+     */
     private fun startAccountVerification(bundle: Bundle) {
         val intent = Intent(context, AccountVerificationActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+        finish()
     }
 
     private fun restartApp() {
