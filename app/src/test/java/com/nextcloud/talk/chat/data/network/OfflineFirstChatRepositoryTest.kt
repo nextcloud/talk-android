@@ -772,6 +772,22 @@ class OfflineFirstChatRepositoryTest {
         }
 
     @Test
+    fun `editChatMessage keeps the edit when the server accepts it for a bot or Matterbridge`() =
+        runTest {
+            val entity = messageEntity(MESSAGE_ID)
+            givenCachedMessage(entity)
+            wheneverBlocking { network.editChatMessage(any(), any(), any()) } doSuspendableAnswer {
+                editedResponse(SERVER_TEXT, statusCode = HTTP_ACCEPTED, lastEditTimestamp = 1234L)
+            }
+
+            val result = repository.editChatMessage(CREDENTIALS, MESSAGE_URL, MESSAGE_ID, EDITED_TEXT)
+
+            assertTrue(result.isSuccess)
+            assertEquals(SERVER_TEXT, entity.message)
+            assertEquals(1234L, entity.lastEditTimestamp)
+        }
+
+    @Test
     fun `editChatMessage never stores the system message that reports the edit`() =
         runTest {
             // the response's own message is "You edited a message" - storing that as the message
@@ -1113,6 +1129,7 @@ class OfflineFirstChatRepositoryTest {
         private const val MESSAGE_URL = "$CHAT_URL/42"
         private const val DELETED_PLACEHOLDER = "Message deleted by you"
         private const val HTTP_OK = 200
+        private const val HTTP_ACCEPTED = 202
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_NOT_FOUND = 404
         private const val HTTP_METHOD_NOT_ALLOWED = 405

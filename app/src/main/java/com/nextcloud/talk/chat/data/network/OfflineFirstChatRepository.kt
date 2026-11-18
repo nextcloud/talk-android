@@ -866,11 +866,12 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     /**
-     * A status code other than 200 means the server refused the edit, for instance because the
-     * message is too old, and the optimistic edit has to be taken back.
+     * The server answers 200, or 202 when a bot or Matterbridge is configured for the conversation. Any
+     * other status code means the server refused the edit, for instance because the message is too old,
+     * and the optimistic edit has to be taken back.
      */
     private fun editAccepted(response: ChatOverallSingleMessage): Boolean =
-        response.ocs?.meta?.statusCode.let { it == null || it == HTTP_OK }
+        response.ocs?.meta?.statusCode.let { it == null || it == HTTP_OK || it == HTTP_ACCEPTED }
 
     /**
      * Writes [text] into the cached message together with the edit metadata the bubble shows, and
@@ -1301,6 +1302,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
         private const val HTTP_OK = 200
+        private const val HTTP_ACCEPTED = 202
         private const val HTTP_NOT_FOUND = 404
     }
 }
