@@ -3042,10 +3042,14 @@ class ChatActivity :
     }
 
     private fun openScheduledMessages() {
+        val isClassified = currentConversation?.let { conversation ->
+            ::spreedCapabilities.isInitialized && ConversationUtils.isClassified(conversation, spreedCapabilities)
+        } == true
         val intent = Intent(this, ScheduledMessagesActivity::class.java).apply {
             putExtra(ScheduledMessagesActivity.ROOM_TOKEN, roomToken)
             putExtra(KEY_INTERNAL_USER_ID, conversationUserId)
             putExtra(ScheduledMessagesActivity.CONVERSATION_NAME, currentConversation?.displayName.orEmpty())
+            putExtra(ScheduledMessagesActivity.IS_CLASSIFIED, isClassified)
             if (conversationThreadId != null && conversationThreadId!! > 0) {
                 putExtra(ScheduledMessagesActivity.THREAD_ID, conversationThreadId)
                 putExtra(ScheduledMessagesActivity.THREAD_TITLE, conversationThreadInfo?.thread?.title.orEmpty())

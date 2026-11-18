@@ -179,7 +179,8 @@ fun ChatMessage.toUiModel(
             chatMessage = parentMessage,
             authHeader = authHeader,
             lastCommonReadMessageId = 0,
-            parentMessage = null
+            parentMessage = null,
+            isClassified = isClassified
         ),
         replyable = replyable,
         isGrouped = isGrouped,
@@ -195,7 +196,8 @@ fun ChatMessage.toScheduledMessageUiModel(
     user: User,
     roomToken: String,
     parentMessage: ChatMessage? = null,
-    authHeader: String? = ApiUtils.getCredentials(user.username, user.token)
+    authHeader: String? = ApiUtils.getCredentials(user.username, user.token),
+    isClassified: Boolean = false
 ): ChatMessageUi {
     val sendAtTimestamp = sendAt?.toLong() ?: timestamp
     return ChatMessageUi(
@@ -215,14 +217,19 @@ fun ChatMessage.toScheduledMessageUiModel(
         statusIcon = MessageStatusIcon.SCHEDULED,
         timestamp = sendAtTimestamp,
         date = Instant.ofEpochSecond(sendAtTimestamp).atZone(ZoneId.systemDefault()).toLocalDate(),
-        content = getMessageTypeContent(user, this),
+        content = getMessageTypeContent(user, this, isClassified),
         roomToken = roomToken,
         activeUserId = user.userId,
         activeUserBaseUrl = user.baseUrl,
         messageParameters = normalizeMessageParameters(),
         reactions = emptyList(),
         isEdited = lastEditTimestamp != 0L,
-        parentMessage = parentMessage?.toScheduledMessageUiModel(user, roomToken, authHeader = authHeader),
+        parentMessage = parentMessage?.toScheduledMessageUiModel(
+            user,
+            roomToken,
+            authHeader = authHeader,
+            isClassified = isClassified
+        ),
         replyable = false,
         isGrouped = false,
         isGroupedWithNext = false,
@@ -299,6 +306,9 @@ fun getMessageTypeContent(user: User, message: ChatMessage, isClassified: Boolea
         getPollContent(message)
     } else if (message.hasDeckCard) {
         getDeckContent(message)
+    } else if (isClassified) {
+        // Reference widgets would send the link of a classified conversation to the reference providers
+        MessageTypeContent.RegularText
     } else {
         message.extractLinkPreviewUrl(user)
             ?.let {
