@@ -11,13 +11,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +64,7 @@ fun UnreadCountBadge(count: Int, style: UnreadBadgeStyle, modifier: Modifier = M
         count.toString()
     }
 
-    val shape = RoundedCornerShape(12.dp)
+    val shape = CircleShape
     val (boxModifier, textColor) = when (style) {
         UnreadBadgeStyle.FILLED ->
             Modifier.background(MaterialTheme.colorScheme.primary, shape) to MaterialTheme.colorScheme.onPrimary
@@ -77,8 +78,17 @@ fun UnreadCountBadge(count: Int, style: UnreadBadgeStyle, modifier: Modifier = M
                 colorResource(R.color.conversation_unread_bubble_text)
     }
 
-    UnreadBadgeBox(text = text, textColor = textColor, modifier = modifier.then(boxModifier))
+    UnreadBadgeBox(text = text, textColor = textColor, modifier = modifier.atLeastAsWideAsTall().then(boxModifier))
 }
+
+/** Makes single digit badges a circle, longer numbers stay a pill. */
+private fun Modifier.atLeastAsWideAsTall(): Modifier =
+    layout { measurable, constraints ->
+        val height = measurable.minIntrinsicHeight(constraints.maxWidth)
+        val minWidth = height.coerceIn(constraints.minWidth, constraints.maxWidth)
+        val placeable = measurable.measure(constraints.copy(minWidth = minWidth))
+        layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
+    }
 
 @Composable
 private fun UnreadBadgeBox(text: String, textColor: Color, modifier: Modifier) {
