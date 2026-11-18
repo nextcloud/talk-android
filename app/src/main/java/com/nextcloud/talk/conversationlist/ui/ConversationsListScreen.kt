@@ -195,6 +195,12 @@ fun ConversationsListScreen(
             }
         }
     }
+    val hasDirectMentionFlag = state.currentUser?.capabilities?.spreedCapability?.let {
+        CapabilitiesUtil.hasSpreedFeatureCapability(it, SpreedFeatures.DIRECT_MENTION_FLAG)
+    } == true
+    val conversationTagChips = remember(nonEmptyConversationTags, visibleRooms, hasDirectMentionFlag) {
+        buildConversationTagChips(nonEmptyConversationTags, visibleRooms, hasDirectMentionFlag)
+    }
     val showConversationTagsRow = hasConversationTagsCapability &&
         nonEmptyConversationTags.isNotEmpty() &&
         !isSearchActive &&
@@ -342,7 +348,7 @@ fun ConversationsListScreen(
                                     tagsRowContent = if (showConversationTagsRow) {
                                         {
                                             ConversationTagsRow(
-                                                tags = nonEmptyConversationTags,
+                                                tags = conversationTagChips,
                                                 selectedTagId = selectedTagFilter,
                                                 onTagSelected = { tagId ->
                                                     val isFavorites = conversationTags.any {
