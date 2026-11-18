@@ -367,4 +367,65 @@ class UserManagerTest {
             assertEquals("New Display Name", existing.displayName)
             assertEquals(existing, result)
         }
+
+    private fun newAccountAttributes() =
+        UserManager.UserAttributes(
+            id = null,
+            serverUrl = "https://example.com",
+            currentUser = false,
+            userId = "userId",
+            token = "newToken",
+            displayName = "New Display Name",
+            pushConfigurationState = null,
+            // see `storeProfile creates a new user when the attributes carry no id`
+            capabilities = "{}",
+            serverVersion = "{}",
+            certificateAlias = null,
+            externalSignalingServer = "{}"
+        )
+
+    @Test
+    fun `storeProfile updates the account with the same username and server instead of adding it again`() =
+        runTest {
+            val existing = user(id = 10, username = "userA", baseUrl = "https://example.com", current = true)
+                .apply { token = "oldToken" }
+            wheneverBlocking {
+                usersRepository.getUserWithUsernameAndServer("userA", "https://example.com")
+            }.thenReturn(existing)
+            wheneverBlocking { usersRepository.insertUser(any()) }.thenReturn(10L)
+            wheneverBlocking { usersRepository.getUserWithId(10L) }.thenReturn(existing)
+
+            val result = userManager.storeProfile("userA", newAccountAttributes())
+
+            assertEquals(existing, result)
+            verify(usersRepository).insertUser(
+                check {
+                    assertEquals(10L, it.id)
+                    assertEquals("newToken", it.token)
+                    assertEquals("New Display Name", it.displayName)
+                    // the active state is only changed by setUserAsActive()
+                    assertTrue(it.current)
+                }
+            )
+        }
+
+    @Test
+    fun `storeProfile adds the account again when the stored one is scheduled for deletion`() =
+        runTest {
+            val scheduled = user(id = 10, username = "userA", baseUrl = "https://example.com")
+                .apply { scheduledForDeletion = true }
+            wheneverBlocking {
+                usersRepository.getUserWithUsernameAndServer("userA", "https://example.com")
+            }.thenReturn(scheduled)
+            wheneverBlocking { usersRepository.insertUser(any()) }.thenReturn(11L)
+
+            userManager.storeProfile("userA", newAccountAttributes())
+
+            verify(usersRepository).insertUser(
+                check {
+                    assertNull(it.id)
+                    assertFalse(it.scheduledForDeletion)
+                }
+            )
+        }
 }
