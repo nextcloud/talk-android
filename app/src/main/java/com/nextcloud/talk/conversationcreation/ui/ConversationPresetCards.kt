@@ -13,8 +13,10 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
@@ -116,7 +117,10 @@ private fun PresetCards(presets: List<ConversationPresetModel>, selected: String
     ) {
         val rows = remember(presets) { presets.chunked(PRESET_COLUMNS) }
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 row.forEach { preset ->
                     val label = presetLabels[preset.identifier]
                     SelectableCard(
@@ -127,7 +131,9 @@ private fun PresetCards(presets: List<ConversationPresetModel>, selected: String
                         ),
                         isSelected = preset.identifier == selected,
                         onClick = { onSelect(preset.identifier) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
                     )
                 }
                 repeat(PRESET_COLUMNS - row.size) {
@@ -249,8 +255,6 @@ fun SelectableCard(
                 text = content.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
-                maxLines = TITLE_MAX_LINES,
-                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f, fill = false)
             )
         }
@@ -260,16 +264,12 @@ fun SelectableCard(
         Text(
             text = content.subtitle,
             fontSize = 13.sp,
-            lineHeight = 18.sp,
-            maxLines = DESCRIPTION_MAX_LINES,
-            overflow = TextOverflow.Ellipsis
+            lineHeight = 18.sp
         )
     }
 }
 
 private const val PRESET_COLUMNS = 2
-private const val TITLE_MAX_LINES = 2
-private const val DESCRIPTION_MAX_LINES = 4
 
 private data class PresetLabel(@StringRes val title: Int, @StringRes val description: Int)
 
