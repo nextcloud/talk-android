@@ -502,6 +502,43 @@ class OfflineFirstChatRepositoryTest {
         }
 
     @Test
+    fun `the first message of an empty conversation is fetched into a chat block when it arrives via signaling`() =
+        runTest {
+            // an empty conversation (e.g. a classified one): the initial load finds no messages, so
+            // no chat block exists that a signaling message could extend
+            givenLatestBlock(null)
+            repository.updateConversation(conversation(lastReadMessage = 0, unreadMessages = 0))
+            wheneverBlocking { network.pullChatMessages(any(), any(), any()) }
+                .thenReturn(Response.success(overall()), Response.success(overall(message(1))))
+            repository.loadInitialMessages(Bundle())
+
+            repository.onSignalingChatMessageReceived(listOf(message(1)))
+
+            val fieldMapCaptor = argumentCaptor<HashMap<String, Int>>()
+            verifyBlocking(network, times(2)) { pullChatMessages(any(), any(), fieldMapCaptor.capture()) }
+            assertEquals(1, fieldMapCaptor.secondValue["lookIntoFuture"])
+            assertEquals(0, fieldMapCaptor.secondValue["lastKnownMessageId"])
+
+            val blockCaptor = argumentCaptor<ChatBlockEntity>()
+            verifyBlocking(chatBlocksDao) { upsertAndMergeConnectedChatBlocks(blockCaptor.capture()) }
+            assertEquals(1L, blockCaptor.firstValue.oldestMessageId)
+            assertEquals(1L, blockCaptor.firstValue.newestMessageId)
+        }
+
+    @Test
+    fun `a signaling message extends the latest chat block without a request`() =
+        runTest {
+            givenLatestBlock(block(oldest = 10, newest = 50))
+
+            repository.onSignalingChatMessageReceived(listOf(message(51)))
+
+            verifyBlocking(network, never()) { pullChatMessages(any(), any(), any()) }
+            val blockCaptor = argumentCaptor<ChatBlockEntity>()
+            verifyBlocking(chatBlocksDao) { upsertChatBlock(blockCaptor.capture()) }
+            assertEquals(51L, blockCaptor.firstValue.newestMessageId)
+        }
+
+    @Test
     fun `fetchNewMessages keeps notifications only while the chat is paused`() =
         runTest {
             givenHttpSyncedAnchor()

@@ -1098,13 +1098,22 @@ class OfflineFirstChatRepository @Inject constructor(
             return
         }
 
+        // Without any chat block (e.g. the first message of an empty conversation) there is nothing
+        // the signaling messages could extend, and messages outside of a chat block are not shown.
+        // Fetch them via HTTP instead, which creates the chat block.
+        val latestChatBlock = chatBlocksDao.getLatestChatBlock(internalConversationId, threadId).first()
+        if (latestChatBlock == null) {
+            Log.d(TAG, "onSignalingChatMessageReceived without chat block, fetching new messages")
+            fetchNewMessages()
+            return
+        }
+
         persistChatMessagesAndHandleSystemMessages(chatMessages, emitOnIncoming = true)
 
         // we assume that the signaling messages are on top of the latest chatblock and include them inside it.
         // If for whatever reason the assumption was not correct and there would be messages in between, the
         // insurance request should fix this by adding the missing messages and updating the chatblocks.
-        val latestChatBlock = chatBlocksDao.getLatestChatBlock(internalConversationId, threadId)
-        latestChatBlock.first()?.apply {
+        latestChatBlock.apply {
             newestMessageId = chatMessages.maxOf { it.id }
             chatBlocksDao.upsertChatBlock(this)
         }
