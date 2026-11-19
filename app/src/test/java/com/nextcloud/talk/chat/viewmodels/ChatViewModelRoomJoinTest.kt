@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
@@ -49,6 +50,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
@@ -57,10 +59,13 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.job
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -117,6 +122,7 @@ class ChatViewModelRoomJoinTest {
     private var screenResumed = false
     private var initialLoadDone = false
     private val viewModelStore = ViewModelStore()
+    private val viewModelJobs = mutableListOf<Job>()
     private val appScope = CoroutineScope(SupervisorJob() + UnconfinedTestDispatcher())
 
     private class TestOwner : LifecycleOwner {
@@ -141,8 +147,13 @@ class ChatViewModelRoomJoinTest {
             GenericOverall(GenericOCS(GenericMetaDto(statusCode = HTTP_OK)))
         }
         chatRepository = mockWithEmptyFlows()
+        // Stubbed before any viewmodel exists: the message pipeline of a viewmodel calls the repository from
+        // Dispatchers.Default, and a call between observeThreadReplies() and thenReturn() would take the stub,
+        // leaving the thread's replies on the default empty flow.
+        whenever(chatRepository.observeThreadReplies(any(), eq(THREAD_ID.toLong())))
+            .thenReturn(flowOf(null, 3, 3, THREAD_REPLIES))
         createViewModel = { threadId ->
-            ChatViewModel(
+            val newViewModel = ChatViewModel(
                 mock<Logger>(),
                 mock<AppPreferences>(),
                 network,
@@ -159,16 +170,18 @@ class ChatViewModelRoomJoinTest {
                 TOKEN,
                 threadId
             )
+            // every viewmodel goes into the store, so that tearDown clears it like the screen would
+            ViewModelProvider(
+                viewModelStore,
+                object : ViewModelProvider.Factory {
+                    @Suppress("UNCHECKED_CAST")
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T = newViewModel as T
+                }
+            )["chat-${viewModelJobs.size}", ChatViewModel::class.java]
+                .also { viewModelJobs += it.viewModelScope.coroutineContext.job }
         }
 
-        val newViewModel = createViewModel(null)
-        viewModel = ViewModelProvider(
-            viewModelStore,
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T = newViewModel as T
-            }
-        )[ChatViewModel::class.java]
+        viewModel = createViewModel(null)
         owner.lifecycle.addObserver(viewModel)
 
         // what ChatActivity does with the state of the capabilities and with a resume of the screen
@@ -199,6 +212,9 @@ class ChatViewModelRoomJoinTest {
     fun tearDown() {
         owner.send(Lifecycle.Event.ON_DESTROY)
         viewModelStore.clear()
+        // The message pipeline of a viewmodel runs on Dispatchers.Default and hands its results to Main. Cancelled,
+        // it may still be finishing there: wait for it, or it uses Main while resetMain() below replaces it.
+        runBlocking { withTimeout(FLOW_TIMEOUT_MS) { viewModelJobs.joinAll() } }
         appScope.cancel()
         RxJavaPlugins.reset()
         RxAndroidPlugins.reset()
@@ -438,11 +454,12 @@ class ChatViewModelRoomJoinTest {
     @Test
     fun `inside a thread the reply count follows the cached thread messages`() =
         runBlocking {
-            whenever(chatRepository.observeThreadReplies(any(), eq(THREAD_ID.toLong())))
-                .thenReturn(flowOf(null, 3, 3, THREAD_REPLIES))
             owner.send(Lifecycle.Event.ON_CREATE)
 
-            val replies = createViewModel(THREAD_ID.toLong()).cachedThreadReplies.take(2).toList()
+            // the flow never completes, so without the timeout too few values would hang the test
+            val replies = withTimeout(FLOW_TIMEOUT_MS) {
+                createViewModel(THREAD_ID.toLong()).cachedThreadReplies.take(2).toList()
+            }
 
             assertEquals(listOf(3, THREAD_REPLIES), replies)
         }
@@ -492,6 +509,7 @@ class ChatViewModelRoomJoinTest {
         private const val THREAD_ID = 100
         private const val THREAD_REPLIES = 23
         private const val MAX_RECENT_THREADS = 50
+        private const val FLOW_TIMEOUT_MS = 5000L
         private val USER = User(
             id = 1,
             userId = "me",
