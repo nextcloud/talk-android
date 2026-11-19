@@ -72,6 +72,20 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
 
     override fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?> = flowOf()
 
+    override suspend fun getThreadMessageEntities(
+        internalConversationId: String,
+        messageIds: List<Long>
+    ): List<ChatMessageEntity> = emptyList()
+
+    override suspend fun markAsThreadRoot(
+        internalConversationId: String,
+        threadId: Long,
+        threadTitle: String?,
+        threadReplies: Int
+    ) {
+        /* */
+    }
+
     override suspend fun hasServerCopyOfReferenceId(internalConversationId: String, referenceId: String): Boolean =
         false
 

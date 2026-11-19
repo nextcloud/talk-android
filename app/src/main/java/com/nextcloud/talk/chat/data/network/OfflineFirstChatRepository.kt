@@ -612,7 +612,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 )
 
                 val message = messages.firstOrNull { it.id == id } ?: continue
-                chatDao.upsertChatMessage(message.asEntity(currentUser.id!!))
+                chatDao.upsertChatMessageKeepingThreadData(message.asEntity(currentUser.id!!))
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to fetch parent message $id", e)
             }

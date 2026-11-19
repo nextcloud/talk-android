@@ -102,11 +102,26 @@ interface ChatMessagesDao {
     /**
      * Stores [chatMessages], drops the temporary messages their server copies replace, and carries the
      * reply count of every thread in [chatMessages] over to its cached root message. The server sends the
-     * thread's current count with each message of the thread.
+     * thread's current count with each message of the thread. Stored thread data is kept, see
+     * [keepingThreadDataOf].
+     *
+     * The server relays a new thread's root message before it creates the thread, so the root is stored without
+     * thread data. Every thread message in [chatMessages] (e.g. the THREAD_CREATED system message) carries the
+     * thread's title and reply count, so the stored root of its thread is marked with them.
      */
     @Transaction
     suspend fun upsertChatMessagesAndDeleteTemp(internalConversationId: String, chatMessages: List<ChatMessageEntity>) {
-        upsertChatMessages(chatMessages)
+        val storedThreadMessages = getThreadMessageEntities(internalConversationId, chatMessages.map { it.id })
+            .associateBy { it.id }
+        upsertChatMessages(chatMessages.map { it.keepingThreadDataOf(storedThreadMessages[it.id]) })
+
+        chatMessages
+            .filter { it.isThread && it.threadId != null }
+            .groupBy { it.threadId!! }
+            .forEach { (threadId, threadMessages) ->
+                val newest = threadMessages.maxBy { it.id }
+                markAsThreadRoot(internalConversationId, threadId, newest.threadTitle, newest.threadReplies ?: 0)
+            }
 
         updateThreadRepliesOfThreads(
             internalConversationId,
@@ -125,6 +140,54 @@ interface ChatMessagesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
+
+    /**
+     * Stores [chatMessage] like [upsertChatMessage], but keeps the stored thread data, see [keepingThreadDataOf].
+     */
+    @Transaction
+    suspend fun upsertChatMessageKeepingThreadData(chatMessage: ChatMessageEntity) {
+        val storedThreadMessage = getThreadMessageEntities(chatMessage.internalConversationId, listOf(chatMessage.id))
+            .firstOrNull()
+        upsertChatMessage(chatMessage.keepingThreadDataOf(storedThreadMessage))
+    }
+
+    /**
+     * Returns the stored messages of [messageIds] that belong to a thread. Only their thread data is needed to keep
+     * it, see [keepingThreadDataOf].
+     */
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND id IN (:messageIds)
+        AND isThread = 1
+        """
+    )
+    suspend fun getThreadMessageEntities(
+        internalConversationId: String,
+        messageIds: List<Long>
+    ): List<ChatMessageEntity>
+
+    /**
+     * Marks the stored message [threadId] as root of its thread. A root that is already marked is left alone, so
+     * its stored thread data is never replaced by older data.
+     */
+    @Query(
+        """
+        UPDATE ChatMessages
+        SET isThread = 1, threadId = id, threadTitle = :threadTitle, threadReplies = :threadReplies
+        WHERE internalConversationId = :internalConversationId
+        AND id = :threadId
+        AND isThread = 0
+        """
+    )
+    suspend fun markAsThreadRoot(
+        internalConversationId: String,
+        threadId: Long,
+        threadTitle: String?,
+        threadReplies: Int
+    )
 
     /**
      * Raises the reply count of the cached root message of [threadId] to [threadReplies]. A thread's reply count
@@ -529,3 +592,21 @@ interface ChatMessagesDao {
     )
     fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long)
 }
+
+/**
+ * Returns this message with the thread data of [stored], the stored copy of the same message, where this copy
+ * has none. The server omits the thread data on some copies of a thread message, e.g. on the parent of an edit
+ * or delete sent over the chat relay, and a message never stops belonging to a thread.
+ */
+internal fun ChatMessageEntity.keepingThreadDataOf(stored: ChatMessageEntity?): ChatMessageEntity =
+    when {
+        stored == null || !stored.isThread -> this
+        !isThread -> copy(
+            isThread = true,
+            threadId = stored.threadId,
+            threadTitle = stored.threadTitle,
+            threadReplies = stored.threadReplies
+        )
+        threadTitle.isNullOrEmpty() -> copy(threadTitle = stored.threadTitle)
+        else -> this
+    }

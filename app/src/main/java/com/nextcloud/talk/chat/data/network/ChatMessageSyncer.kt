@@ -1106,7 +1106,7 @@ class ChatMessageSyncer @Inject constructor(
         }
 
         try {
-            chatDao.upsertChatMessage(parentMessageEntity)
+            chatDao.upsertChatMessageKeepingThreadData(parentMessageEntity)
         } catch (e: SQLiteConstraintException) {
             Log.w(TAG, "Skip upserting parent message: conversation not in DB (yet). Swallowed exception: $e")
         }
