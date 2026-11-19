@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Anruf beenden</string>
     <string name="nc_call_ongoing_notification_return_action">Zurück zum Anruf</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Sie teilen Ihren Bildschirm</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Zum ersten Teilnehmer scrollen</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
     <string name="nc_formatted_message_you">Sie: %1$s</string>
     <string name="nc_forward_message">Weiterleiten</string>
+    <string name="nc_forward_to">Weiterleiten an</string>
     <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
     <string name="nc_gallery">Galerie</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier, um Anbieter zu finden</string>
@@ -669,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Deck-Karte</string>
     <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten …</string>
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
+    <string name="nc_shared_items_error">Geteilte Elemente konnten nicht geladen werden</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_shortcut_conversation_deleted">Diese Unterhaltung existiert nicht mehr</string>

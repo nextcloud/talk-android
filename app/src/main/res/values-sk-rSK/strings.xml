@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Ukončiť hovor</string>
     <string name="nc_call_ongoing_notification_return_action">Návrat k hovoru</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Zdieľate svoju obrazovku</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Posunúť na prvého účastníka</string>
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znovu pripájam …</string>
     <string name="nc_call_ringing">ZVONÍ</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Preposlať</string>
+    <string name="nc_forward_to">Preposlať na</string>
     <string name="nc_forward_to_three_dots">Preposlať na …</string>
     <string name="nc_gallery">Galéria</string>
     <string name="nc_get_from_provider">Ešte nemáte server? \nŤuknite sem a získajte jeden od poskytovateľa</string>
@@ -669,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Karta aplikácie deck</string>
     <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy …</string>
     <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
+    <string name="nc_shared_items_error">Zdieľané položky sa nepodarilo načítať</string>
     <string name="nc_shared_items_location">Umiestnenie</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_shortcut_conversation_deleted">Táto konverzácia už neexistuje</string>
