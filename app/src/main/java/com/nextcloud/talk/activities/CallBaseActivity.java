@@ -10,7 +10,10 @@ import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
 import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +34,21 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
     public Boolean isInPipMode = Boolean.FALSE;
+
+    private boolean screenStateReceiverRegistered = false;
+
+    /**
+     * On API 31+ the system auto-enters picture in picture on any pause, including the display going to sleep,
+     * which would push the call window into PiP behind the keyguard. Auto-enter is gated on the screen being
+     * interactive (see {@link #shouldAutoEnterPip(boolean, boolean)}), so react to the screen turning on/off and
+     * update the auto-enter flag before the next pause is evaluated.
+     */
+    private final BroadcastReceiver screenStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updatePipAutoEnter();
+        }
+    };
 
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
@@ -58,12 +76,34 @@ public abstract class CallBaseActivity extends BaseActivity {
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                mPictureInPictureParamsBuilder.setAutoEnterEnabled(true);
+                mPictureInPictureParamsBuilder.setAutoEnterEnabled(
+                    shouldAutoEnterPip(isAutomaticPipModeSuppressed(), isInteractive()));
+                registerScreenStateReceiver();
             }
             setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
 
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+    }
+
+    private void registerScreenStateReceiver() {
+        if (screenStateReceiverRegistered) {
+            return;
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        registerReceiver(screenStateReceiver, filter);
+        screenStateReceiverRegistered = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (screenStateReceiverRegistered) {
+            unregisterReceiver(screenStateReceiver);
+            screenStateReceiverRegistered = false;
+        }
+        super.onDestroy();
     }
 
     public void hideNavigationIfNoPipAvailable() {
@@ -226,9 +266,20 @@ public abstract class CallBaseActivity extends BaseActivity {
         }
         // The builder is only created if picture in picture was possible when the activity was created.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && mPictureInPictureParamsBuilder != null) {
-            mPictureInPictureParamsBuilder.setAutoEnterEnabled(!isAutomaticPipModeSuppressed());
+            mPictureInPictureParamsBuilder.setAutoEnterEnabled(
+                shouldAutoEnterPip(isAutomaticPipModeSuppressed(), isInteractive()));
             setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
+    }
+
+    /**
+     * Whether the system should automatically enter picture in picture when the activity is paused. Auto-enter
+     * is only wanted when the user actually leaves the call (home/recents) with the screen on; a pause caused by
+     * the display going to sleep is not the user leaving, and auto-entering PiP there would place the call window
+     * behind the keyguard. Kept package-private and pure so the gating is unit tested without a real activity.
+     */
+    static boolean shouldAutoEnterPip(boolean automaticPipModeSuppressed, boolean interactive) {
+        return !automaticPipModeSuppressed && interactive;
     }
 
     boolean isPipModePossible() {
