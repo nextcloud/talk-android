@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Lõpeta kõne</string>
     <string name="nc_call_ongoing_notification_return_action">Tagasi kõne juurde</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Sa oled jagamas ekraanivaadet</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Keri esimese osalejani</string>
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Kasutaja, kes järgnes avalikule lingile</string>
     <string name="nc_formatted_message_you">Sina: %1$s</string>
     <string name="nc_forward_message">Edasta</string>
+    <string name="nc_forward_to">Edasta kasutajale</string>
     <string name="nc_forward_to_three_dots">Edasta saajale…</string>
     <string name="nc_gallery">Galeriist</string>
     <string name="nc_get_from_provider">Kas sul ei ole veel oma serverit?\nVajuta siia, et tutvuda teenusepakkujatega</string>
@@ -669,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Kanbani kaart</string>
     <string name="nc_shared_items_description">Pildid, failid, häälsõnumid…</string>
     <string name="nc_shared_items_empty">Jaosmeediat ei leidu</string>
+    <string name="nc_shared_items_error">Jagatud objektide laadimine ei õnnestunud</string>
     <string name="nc_shared_items_location">Asukoht</string>
     <string name="nc_shared_location">Jagatud asukoht</string>
     <string name="nc_shortcut_conversation_deleted">Seda vestlust pole enam olemas</string>

@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Encerrar chamada</string>
     <string name="nc_call_ongoing_notification_return_action">Voltar à chamada</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Você está compartilhando sua tela</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Role a tela até o primeiro participante</string>
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
     <string name="nc_call_ringing">TOCANDO</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Usuário seguindo um link público</string>
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Encaminhar</string>
+    <string name="nc_forward_to">Encaminhar para</string>
     <string name="nc_forward_to_three_dots">Encaminhar para …</string>
     <string name="nc_gallery">Galeria</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
@@ -669,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
+    <string name="nc_shared_items_error">Não foi possível carregar os itens compartilhados</string>
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_shortcut_conversation_deleted">Esta conversa não existe mais</string>
