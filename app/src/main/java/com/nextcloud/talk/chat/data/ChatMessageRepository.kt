@@ -124,7 +124,15 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     fun observeParentMessages(parentIds: List<Long>): Flow<List<ChatMessage>>
 
-    suspend fun getNumberOfThreadReplies(threadId: Long): Int
+    /**
+     * Writes reply counts, keyed by thread id, into the cached root messages of those threads.
+     */
+    suspend fun updateThreadReplies(threadReplies: Map<Long, Int>)
+
+    /**
+     * Emits the highest reply count stored on the cached messages of [threadId], or null while none is cached.
+     */
+    fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?>
 
     @Suppress("LongParameterList")
     suspend fun sendChatMessage(

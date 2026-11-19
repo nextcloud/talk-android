@@ -99,9 +99,22 @@ interface ChatMessagesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 
+    /**
+     * Stores [chatMessages], drops the temporary messages their server copies replace, and carries the
+     * reply count of every thread in [chatMessages] over to its cached root message. The server sends the
+     * thread's current count with each message of the thread.
+     */
     @Transaction
     suspend fun upsertChatMessagesAndDeleteTemp(internalConversationId: String, chatMessages: List<ChatMessageEntity>) {
         upsertChatMessages(chatMessages)
+
+        updateThreadRepliesOfThreads(
+            internalConversationId,
+            chatMessages
+                .filter { it.isThread && it.threadId != null && it.threadReplies != null }
+                .groupBy { it.threadId!! }
+                .mapValues { (_, messages) -> messages.maxOf { it.threadReplies!! } }
+        )
 
         val referenceIds = chatMessages
             .mapNotNull { it.referenceId }
@@ -112,6 +125,48 @@ interface ChatMessagesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessage(chatMessage: ChatMessageEntity)
+
+    /**
+     * Raises the reply count of the cached root message of [threadId] to [threadReplies]. A thread's reply count
+     * only grows on the server, so a lower count is a stale one, e.g. from a response that took longer than a
+     * relayed reply, and is ignored.
+     */
+    @Query(
+        """
+        UPDATE ChatMessages
+        SET threadReplies = MAX(COALESCE(threadReplies, 0), :threadReplies)
+        WHERE internalConversationId = :internalConversationId
+        AND id = :threadId
+        """
+    )
+    suspend fun updateThreadReplies(internalConversationId: String, threadId: Long, threadReplies: Int)
+
+    /**
+     * Emits the highest reply count stored on the cached messages of [threadId], or null while none is cached.
+     * Every message of a thread carries the thread's count, so this follows the thread even when its root
+     * message is not cached.
+     */
+    @Query(
+        """
+        SELECT MAX(threadReplies)
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND threadId = :threadId
+        AND isThread = 1
+        """
+    )
+    fun observeThreadReplies(internalConversationId: String, threadId: Long): Flow<Int?>
+
+    /**
+     * Raises reply counts, keyed by thread id, on the cached root messages of those threads, all in one
+     * transaction, see [updateThreadReplies].
+     */
+    @Transaction
+    suspend fun updateThreadRepliesOfThreads(internalConversationId: String, threadReplies: Map<Long, Int>) {
+        threadReplies.forEach { (threadId, replies) ->
+            updateThreadReplies(internalConversationId, threadId, replies)
+        }
+    }
 
     @Query(
         """
@@ -473,18 +528,4 @@ interface ChatMessagesDao {
         """
     )
     fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long)
-
-    @Query(
-        """
-        SELECT COUNT(*)
-        FROM ChatMessages AS child
-        INNER JOIN ChatMessages AS parent
-        ON child.parent = parent.id
-        WHERE child.internalConversationId = :internalConversationId
-        AND child.isTemporary = 0
-        AND child.messageType = 'comment'
-        AND parent.threadId = :threadId
-    """
-    )
-    fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int
 }
