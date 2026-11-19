@@ -52,6 +52,7 @@ How to translate with transifex:
     <string name="nc_deep_link_join">Join</string>
     <string name="nc_contact_chat_start_title">Start conversation?</string>
     <string name="nc_contact_chat_start_message">You have no conversation with %1$s yet. Starting one adds it to the conversation list of both of you.</string>
+    <!-- Verb: confirm button of the "Start conversation?" dialog. It starts the conversation with the contact. -->
     <string name="nc_contact_chat_start">Start</string>
 
     <!-- Bottom Navigation -->
@@ -653,6 +654,7 @@ How to translate with transifex:
     <string name="nc_room_retention">Room is retained successfully</string>
 
     <string name="share">Share</string>
+    <!-- Used as search hint when picking the conversation (one-to-one or group) to send shared content to, and as title of the Android share dialog when sharing from Talk to another app. -->
     <string name="send_to">Send to</string>
     <string name="send_to_three_dots">Send to …</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
@@ -952,6 +954,7 @@ How to translate with transifex:
     <string name="nc_classified_conversation_description">Locked down conversation for confidential topics, with public access, guests, SIP and recordings disabled</string>
     <string name="nc_conversation_type_defaults">Default settings of this conversation type:</string>
     <string name="nc_conversation_type_defaults_hint">These settings can be changed once the conversation is created</string>
+    <!-- %1$s is a duration from nc_expire_message_*: "4 weeks", "1 week", "1 day", "8 hours" or "1 hour". These strings are also shown on their own in the message expiration setting. -->
     <string name="nc_conversation_type_message_expiration">Messages expire after %1$s</string>
     <string name="nc_conversation_type_message_expiration_custom">Message expiration is enabled</string>
     <string name="nc_conversation_type_lobby">Lobby enabled, restricting the conversation to moderators</string>
