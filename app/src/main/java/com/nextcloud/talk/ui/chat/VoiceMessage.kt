@@ -72,7 +72,8 @@ fun VoiceMessage(
                     ChatAudioPlayPauseButton(
                         state = audioState,
                         contentDescription = stringResource(R.string.play_pause_voice_message),
-                        onClick = { callbacks.onVoicePlayPauseClick(message.id) }
+                        onClick = { callbacks.onVoicePlayPauseClick(message.id) },
+                        tint = colorScheme.onPrimaryContainer
                     )
 
                     Box(modifier = Modifier.weight(1f)) {

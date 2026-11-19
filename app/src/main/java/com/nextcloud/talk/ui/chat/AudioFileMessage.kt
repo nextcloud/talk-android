@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.ui.theme.mimetypeIconTint
 
 private const val INACTIVE_TRACK_ALPHA = 0.4f
 
@@ -63,6 +64,7 @@ fun AudioFileMessage(
                     Icon(
                         painter = painterResource(R.drawable.ic_mimetype_audio),
                         contentDescription = null,
+                        tint = mimetypeIconTint(R.drawable.ic_mimetype_audio),
                         modifier = Modifier
                             .padding(end = 4.dp)
                             .size(24.dp)
@@ -84,7 +86,8 @@ fun AudioFileMessage(
                     ChatAudioPlayPauseButton(
                         state = audioState,
                         contentDescription = stringResource(R.string.play_pause_audio_file),
-                        onClick = { callbacks.onVoicePlayPauseClick(message.id) }
+                        onClick = { callbacks.onVoicePlayPauseClick(message.id) },
+                        tint = colorScheme.onPrimaryContainer
                     )
 
                     Slider(

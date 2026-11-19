@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
@@ -118,7 +120,8 @@ fun ChatAudioPlayPauseButton(
     state: ChatAudioMessageState,
     contentDescription: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current
 ) {
     Box(contentAlignment = Alignment.Center, modifier = modifier.size(48.dp)) {
         if (state.isBuffering) {
@@ -129,18 +132,21 @@ fun ChatAudioPlayPauseButton(
                 state.error != null -> Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = stringResource(R.string.nc_audio_retry),
+                    tint = tint,
                     modifier = Modifier.size(32.dp)
                 )
 
                 state.isPlaying -> Icon(
                     imageVector = Icons.Filled.Pause,
                     contentDescription = contentDescription,
+                    tint = tint,
                     modifier = Modifier.size(40.dp)
                 )
 
                 else -> Icon(
                     imageVector = Icons.Filled.PlayArrow,
                     contentDescription = contentDescription,
+                    tint = tint,
                     modifier = Modifier.size(40.dp)
                 )
             }
