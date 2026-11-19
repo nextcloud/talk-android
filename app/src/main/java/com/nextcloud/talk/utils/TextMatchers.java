@@ -9,14 +9,25 @@
  */
 package com.nextcloud.talk.utils;
 
+import android.icu.lang.UCharacter;
+import android.icu.lang.UProperty;
+import android.icu.text.BreakIterator;
+import android.os.Build;
 import android.text.Spanned;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.EmojiSpan;
 
 public final class TextMatchers {
 
+    private static final char EMOJI_PRESENTATION_SELECTOR = '\uFE0F';
+
+    /**
+     * Whether {@code text} is a single emoji, e.g. a face, a flag, an emoji with a skin tone or a sequence joined into one
+     * emoji, surrounded by nothing but whitespace.
+     */
     public static boolean isMessageWithSingleEmoticonOnly(@Nullable final String text) {
         if (text == null) {
             return false;
@@ -25,6 +36,10 @@ public final class TextMatchers {
         final String trimmed = text.trim();
         if (trimmed.isEmpty()) {
             return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return isSingleEmoji(trimmed);
         }
 
         final EmojiCompat emojiCompat = EmojiCompat.get();
@@ -42,5 +57,20 @@ public final class TextMatchers {
         return spans.length == 1
             && spanned.getSpanStart(spans[0]) == 0
             && spanned.getSpanEnd(spans[0]) == trimmed.length();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private static boolean isSingleEmoji(final String text) {
+        final BreakIterator graphemes = BreakIterator.getCharacterInstance();
+        graphemes.setText(text);
+        graphemes.first();
+        if (graphemes.next() != text.length()) {
+            return false;
+        }
+
+        final int first = text.codePointAt(0);
+        return UCharacter.hasBinaryProperty(first, UProperty.EMOJI_PRESENTATION)
+            || UCharacter.hasBinaryProperty(first, UProperty.EMOJI)
+            && text.indexOf(EMOJI_PRESENTATION_SELECTOR) >= 0;
     }
 }
