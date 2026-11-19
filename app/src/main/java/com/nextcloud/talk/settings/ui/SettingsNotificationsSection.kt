@@ -7,6 +7,7 @@
 package com.nextcloud.talk.settings.ui
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
+import com.nextcloud.talk.settings.NotificationSound
 import com.nextcloud.talk.settings.NotificationsUiState
 import com.nextcloud.talk.settings.PushAvailability
 import com.nextcloud.talk.settings.RingtoneState
@@ -203,21 +205,52 @@ private fun TroubleshootingDialog(onOpenDiagnosis: () -> Unit, onDismiss: () -> 
 
 @Composable
 private fun RingtoneItems(state: NotificationsUiState, highlightIssues: Boolean, callbacks: SettingsScreenCallbacks) {
-    RingtoneItem(
-        title = stringResource(R.string.nc_settings_call_ringtone),
-        ringtone = state.callRingtone,
-        enabled = state.ringtoneSettingsEnabled,
-        highlight = highlightIssues,
-        onClick = { callbacks.onOpenSystemSettings(SystemSettingsScreen.CALL_NOTIFICATIONS) }
-    )
-    RingtoneItem(
-        title = stringResource(R.string.nc_settings_other_notifications_ringtone),
-        ringtone = state.messageRingtone,
-        enabled = state.ringtoneSettingsEnabled,
-        highlight = highlightIssues,
-        onClick = { callbacks.onOpenSystemSettings(SystemSettingsScreen.MESSAGE_NOTIFICATIONS) }
-    )
+    var soundDialog by rememberSaveable { mutableStateOf<NotificationSound?>(null) }
+
+    NotificationSound.entries.forEach { sound ->
+        val ringtone = state.ringtone(sound)
+        RingtoneItem(
+            title = stringResource(sound.titleRes),
+            ringtone = ringtone,
+            enabled = state.ringtoneSettingsEnabled,
+            highlight = highlightIssues,
+            onClick = {
+                if (ringtone == RingtoneState.Disabled) {
+                    callbacks.onOpenSystemSettings(sound.systemSettingsScreen)
+                } else {
+                    soundDialog = sound
+                }
+            }
+        )
+    }
+
+    soundDialog?.let { sound ->
+        SoundDialog(
+            sound = sound,
+            current = state.ringtone(sound),
+            callbacks = callbacks,
+            onDismiss = { soundDialog = null }
+        )
+    }
 }
+
+private fun NotificationsUiState.ringtone(sound: NotificationSound): RingtoneState =
+    when (sound) {
+        NotificationSound.CALL -> callRingtone
+        NotificationSound.MESSAGE -> messageRingtone
+    }
+
+internal val NotificationSound.systemSettingsScreen: SystemSettingsScreen
+    get() = when (this) {
+        NotificationSound.CALL -> SystemSettingsScreen.CALL_NOTIFICATIONS
+        NotificationSound.MESSAGE -> SystemSettingsScreen.MESSAGE_NOTIFICATIONS
+    }
+
+internal val NotificationSound.titleRes: Int
+    @StringRes get() = when (this) {
+        NotificationSound.CALL -> R.string.nc_settings_call_ringtone
+        NotificationSound.MESSAGE -> R.string.nc_settings_other_notifications_ringtone
+    }
 
 @Composable
 private fun RingtoneItem(

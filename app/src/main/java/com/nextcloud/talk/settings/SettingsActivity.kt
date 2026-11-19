@@ -47,6 +47,8 @@ import com.nextcloud.talk.settings.ui.ProxyCallbacks
 import com.nextcloud.talk.settings.ui.SettingsScreen
 import com.nextcloud.talk.settings.ui.SettingsScreenCallbacks
 import com.nextcloud.talk.settings.ui.SystemSettingsScreen
+import com.nextcloud.talk.settings.ui.systemSettingsScreen
+import com.nextcloud.talk.settings.ui.titleRes
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UnifiedPushUtils
@@ -100,6 +102,10 @@ class SettingsActivity : BaseActivity() {
                 )
             }
         }
+
+    private val callSoundPickerLauncher = registerSoundPicker(NotificationSound.CALL)
+
+    private val messageSoundPickerLauncher = registerSoundPicker(NotificationSound.MESSAGE)
 
     private val contactsPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
@@ -157,6 +163,8 @@ class SettingsActivity : BaseActivity() {
             },
             onOpenSystemSettings = ::openSystemSettings,
             onOpenDiagnosis = { startActivity(intentForAccount(DiagnosisActivity::class.java)) },
+            onPickNotificationSound = ::pickNotificationSound,
+            onNotificationSoundChange = viewModel::setNotificationSound,
             onShowNotificationWarningChange = viewModel::setShowNotificationWarning,
             onScreenLockChange = viewModel::setScreenLock,
             onScreenLockTimeoutChange = viewModel::setScreenLockTimeout,
@@ -267,11 +275,9 @@ class SettingsActivity : BaseActivity() {
                 Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, "package:$packageName".toUri())
             }
             SystemSettingsScreen.CALL_NOTIFICATIONS ->
-                notificationChannelSettingsIntent(NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5)
+                notificationChannelSettingsIntent(NotificationUtils.getCallsNotificationChannelId(this))
             SystemSettingsScreen.MESSAGE_NOTIFICATIONS ->
-                notificationChannelSettingsIntent(
-                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4
-                )
+                notificationChannelSettingsIntent(NotificationUtils.getMessagesNotificationChannelId(this))
         }
         openSystemSettings(intent)
     }
@@ -284,10 +290,28 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private fun notificationChannelSettingsIntent(channel: NotificationUtils.NotificationChannels): Intent =
+    private fun notificationChannelSettingsIntent(channelId: String): Intent =
         Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
             .putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-            .putExtra(Settings.EXTRA_CHANNEL_ID, channel.name)
+            .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+
+    private fun registerSoundPicker(sound: NotificationSound) =
+        registerForActivityResult(PickSoundContract()) { result ->
+            result?.let { viewModel.setNotificationSound(sound, it.uri) }
+        }
+
+    private fun pickNotificationSound(sound: NotificationSound, current: RingtoneState) {
+        val launcher = when (sound) {
+            NotificationSound.CALL -> callSoundPickerLauncher
+            NotificationSound.MESSAGE -> messageSoundPickerLauncher
+        }
+        try {
+            launcher.launch(PickSoundContract.Request(sound, getString(sound.titleRes), sound.uriOf(current)))
+        } catch (e: ActivityNotFoundException) {
+            Log.w(TAG, "No ringtone picker available, opening the notification channel settings instead", e)
+            openSystemSettings(sound.systemSettingsScreen)
+        }
+    }
 
     private fun openLogs() {
         startActivity(Intent(this, LogsActivity::class.java))

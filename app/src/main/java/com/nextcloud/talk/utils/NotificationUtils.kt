@@ -66,11 +66,21 @@ object NotificationUtils {
 
     private const val BITMAP_COMPRESSION_QUALITY = 100
 
+    /**
+     * Separates a channel base id from a timestamp, e.g. "NOTIFICATION_CHANNEL_CALLS_V5__1762950000000". The app
+     * can't change the sound of an existing channel, so the channel is replaced under a new id, see [replaceChannel].
+     */
+    private const val CHANNEL_ID_VERSION_SEPARATOR = "__"
+
+    const val CALLS_AUDIO_USAGE = AudioAttributes.USAGE_NOTIFICATION_RINGTONE
+    const val MESSAGES_AUDIO_USAGE = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT
+
     private fun createNotificationChannel(
         context: Context,
         notificationChannel: Channel,
         sound: Uri?,
-        audioAttributes: AudioAttributes?
+        audioAttributes: AudioAttributes?,
+        copySettingsFrom: NotificationChannel? = null
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -94,30 +104,139 @@ object NotificationUtils {
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
             channel.setBypassDnd(false)
+            copySettingsFrom?.let { copyUserSettings(it, channel) }
 
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun createCallsNotificationChannel(context: Context, appPreferences: AppPreferences) {
+    /**
+     * Keeps the settings the user may have changed for [from] in the system settings, except the sound. The system
+     * ignores some of them for new channels, e.g. bypassing Do Not Disturb without policy access.
+     */
+    private fun copyUserSettings(from: NotificationChannel, to: NotificationChannel) {
+        to.importance = from.importance
+        to.enableLights(from.shouldShowLights())
+        to.lightColor = from.lightColor
+        // setting the pattern also changes the vibration flag, so the flag is set afterwards
+        to.vibrationPattern = from.vibrationPattern
+        to.enableVibration(from.shouldVibrate())
+        to.setShowBadge(from.canShowBadge())
+        to.lockscreenVisibility = from.lockscreenVisibility
+        to.setBypassDnd(from.canBypassDnd())
+    }
+
+    private fun createCallsNotificationChannel(
+        context: Context,
+        channelId: String,
+        soundUri: Uri?,
+        copySettingsFrom: NotificationChannel? = null
+    ) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                .setUsage(CALLS_AUDIO_USAGE)
                 .build()
-        val soundUri = getCallRingtoneUri(context, appPreferences)
 
         createNotificationChannel(
             context,
             Channel(
-                NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name,
+                channelId,
                 context.resources.getString(R.string.nc_notification_channel_calls),
                 context.resources.getString(R.string.nc_notification_channel_calls_description),
                 true
             ),
             soundUri,
-            audioAttributes
+            audioAttributes,
+            copySettingsFrom
         )
+    }
+
+    private fun channelVersion(channelId: String, baseId: String): Long? =
+        when {
+            channelId == baseId -> 0L
+            channelId.startsWith(baseId + CHANNEL_ID_VERSION_SEPARATOR) ->
+                channelId.removePrefix(baseId + CHANNEL_ID_VERSION_SEPARATOR).toLongOrNull()
+            else -> null
+        }
+
+    private fun getVersionedChannelId(context: Context, baseId: String): String {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager.notificationChannels
+            .mapNotNull { channel -> channelVersion(channel.id, baseId)?.let { version -> version to channel.id } }
+            .maxByOrNull { it.first }
+            ?.second
+            ?: baseId
+    }
+
+    fun getCallsNotificationChannelId(context: Context): String =
+        getVersionedChannelId(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name)
+
+    fun getMessagesNotificationChannelId(context: Context): String =
+        getVersionedChannelId(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
+
+    /**
+     * @param ringtoneUri null for silent
+     * @return false if the ringtone could not be set
+     */
+    fun updateCallRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
+        val baseId = NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId, currentChannel ->
+            createCallsNotificationChannel(context, channelId, ringtoneUri, currentChannel)
+        }
+        if (replaced) {
+            appPreferences.callRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
+        }
+        return replaced
+    }
+
+    /**
+     * @param ringtoneUri null for silent
+     * @return false if the sound could not be set
+     */
+    fun updateMessageRingtone(context: Context, appPreferences: AppPreferences, ringtoneUri: Uri?): Boolean {
+        val baseId = NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+        val replaced = replaceChannel(context, baseId, ringtoneUri) { channelId, currentChannel ->
+            createMessagesNotificationChannel(context, channelId, ringtoneUri, currentChannel)
+        }
+        if (replaced) {
+            appPreferences.messageRingtoneUri = LoganSquare.serialize(RingtoneSettings(ringtoneUri, null))
+        }
+        return replaced
+    }
+
+    /**
+     * Creates a new channel with a new id, based on the settings of the current channel, and then deletes the old
+     * ones.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private fun replaceChannel(
+        context: Context,
+        baseId: String,
+        sound: Uri?,
+        createChannel: (channelId: String, currentChannel: NotificationChannel?) -> Unit
+    ): Boolean {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val oldChannels = notificationManager.notificationChannels.filter { channelVersion(it.id, baseId) != null }
+        if (oldChannels.size == 1 && oldChannels.first().sound == sound) {
+            return true
+        }
+
+        val currentChannel = oldChannels.maxByOrNull { channelVersion(it.id, baseId) ?: 0L }
+        val newChannelId = baseId + CHANNEL_ID_VERSION_SEPARATOR + System.currentTimeMillis()
+        val created = try {
+            createChannel(newChannelId, currentChannel)
+            true
+        } catch (e: RuntimeException) {
+            // e.g. SecurityException for sounds the app is not allowed to read, or invalid sound uris
+            Log.e(TAG, "Failed to create channel $newChannelId with sound $sound", e)
+            false
+        }
+        if (created) {
+            oldChannels.forEach { notificationManager.deleteNotificationChannel(it.id) }
+            Log.i(TAG, "Replaced channels ${oldChannels.map { it.id }} with $newChannelId")
+        }
+        return created
     }
 
     /**
@@ -139,24 +258,29 @@ object NotificationUtils {
         )
     }
 
-    private fun createMessagesNotificationChannel(context: Context, appPreferences: AppPreferences) {
+    private fun createMessagesNotificationChannel(
+        context: Context,
+        channelId: String,
+        soundUri: Uri?,
+        copySettingsFrom: NotificationChannel? = null
+    ) {
         val audioAttributes =
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                .setUsage(MESSAGES_AUDIO_USAGE)
                 .build()
-        val soundUri = getMessageRingtoneUri(context, appPreferences)
 
         createNotificationChannel(
             context,
             Channel(
-                NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name,
+                channelId,
                 context.resources.getString(R.string.nc_notification_channel_messages),
                 context.resources.getString(R.string.nc_notification_channel_messages_description),
                 true
             ),
             soundUri,
-            audioAttributes
+            audioAttributes,
+            copySettingsFrom
         )
     }
 
@@ -175,9 +299,17 @@ object NotificationUtils {
     }
 
     fun registerNotificationChannels(context: Context, appPreferences: AppPreferences) {
-        createCallsNotificationChannel(context, appPreferences)
+        createCallsNotificationChannel(
+            context,
+            getCallsNotificationChannelId(context),
+            getCallRingtoneUri(context, appPreferences)
+        )
         createOngoingCallNotificationChannel(context)
-        createMessagesNotificationChannel(context, appPreferences)
+        createMessagesNotificationChannel(
+            context,
+            getMessagesNotificationChannelId(context),
+            getMessageRingtoneUri(context, appPreferences)
+        )
         createUploadsNotificationChannel(context)
     }
 
@@ -193,7 +325,7 @@ object NotificationUtils {
 
         // Delete all notification channels created by previous versions
         for (channel in notificationManager.notificationChannels) {
-            if (!channelsToKeep.contains(channel.id)) {
+            if (channelsToKeep.none { channelVersion(channel.id, it) != null }) {
                 notificationManager.deleteNotificationChannel(channel.id)
             }
         }
@@ -286,7 +418,7 @@ object NotificationUtils {
     }
 
     fun isCallsNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name)
+        val channel = getNotificationChannel(context, getCallsNotificationChannelId(context))
         if (channel != null) {
             return isNotificationChannelEnabled(channel)
         }
@@ -294,7 +426,7 @@ object NotificationUtils {
     }
 
     fun isMessagesNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
+        val channel = getNotificationChannel(context, getMessagesNotificationChannelId(context))
         if (channel != null) {
             return isNotificationChannelEnabled(channel)
         }
@@ -340,7 +472,7 @@ object NotificationUtils {
             context,
             appPreferences.callRingtoneUri,
             DEFAULT_CALL_RINGTONE_URI,
-            NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+            getCallsNotificationChannelId(context)
         )
 
     fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? =
@@ -348,7 +480,7 @@ object NotificationUtils {
             context,
             appPreferences.messageRingtoneUri,
             DEFAULT_MESSAGE_RINGTONE_URI,
-            NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+            getMessagesNotificationChannelId(context)
         )
 
     fun loadAvatarSync(avatarUrl: String, context: Context, credentials: String? = null): IconCompat? {
