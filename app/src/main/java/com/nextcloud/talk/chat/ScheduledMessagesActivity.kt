@@ -147,6 +147,10 @@ class ScheduledMessagesActivity : BaseActivity() {
         intent.getStringExtra(CONVERSATION_NAME).orEmpty()
     }
 
+    private val isClassified: Boolean by lazy {
+        intent.getBooleanExtra(IS_CLASSIFIED, false)
+    }
+
     private val threadId: Long? by lazy {
         if (intent.hasExtra(THREAD_ID)) {
             intent.getLongExtra(THREAD_ID, 0L)
@@ -583,7 +587,8 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                     user,
                                                     roomToken,
                                                     parentMessage,
-                                                    authHeader
+                                                    authHeader,
+                                                    isClassified
                                                 )
                                                 val isThreadReply =
                                                     !isThreadView && (message.threadId ?: 0L) > 0
@@ -1111,6 +1116,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         const val CONVERSATION_NAME = "conversation_name"
         const val THREAD_ID = "thread_id"
         const val THREAD_TITLE = "thread_title"
+        const val IS_CLASSIFIED = "is_classified"
         const val INT_24: Int = 24
         const val INT_20: Int = 20
     }
