@@ -239,20 +239,15 @@ fun ChatView(
         }
         hadUnreadMarker = hasUnreadMarker
 
-        val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
-        val previousNewestId = lastNewestIdRef.value
-
-        if (previousNewestId == null) {
-            lastNewestIdRef.value = newestId
-            return@LaunchedEffect
+        val newestId = state.chatItems.firstNotNullOfOrNull { item ->
+            item.messageOrNull()?.id?.takeIf { it > 0 }
         }
+        val previousNewestId = lastNewestIdRef.value
+        lastNewestIdRef.value = newestId
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage = newestId != previousNewestId &&
-            state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
-
-        if (hasNewMessage) {
-            if (isNearBottom) {
+        if (isNewerMessage(previousNewestId, newestId)) {
+            if (shouldFollowNewMessage(isNearBottom, listState.isScrollInProgress)) {
                 listState.animateScrollToItem(0)
                 unreadCount = 0
             } else {
@@ -260,8 +255,6 @@ fun ChatView(
                 showUnreadPopup.value = true
             }
         }
-
-        lastNewestIdRef.value = newestId
     }
 
     // Hide unread popup when user scrolls to newest
