@@ -28,13 +28,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nextcloud.talk.R
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.tags.ConversationTagDto
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -42,7 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationTagsRow(
-    tags: List<ConversationTagDto>,
+    tags: List<ConversationTagChip>,
     selectedTagId: String?,
     onTagSelected: (String?) -> Unit,
     onManageTagsClick: () -> Unit,
@@ -61,12 +65,13 @@ fun ConversationTagsRow(
                 onLongClick = onManageTagsClick
             )
         }
-        items(tags, key = { it.id }) { tag ->
+        items(tags, key = { it.tag.id }) { (tag, unreadInfo) ->
             val isSelected = tag.id == selectedTagId
             val isFavorites = tag.type == ConversationTagDto.TYPE_FAVORITES
             TagFilterChip(
                 selected = isSelected,
                 label = if (isFavorites) stringResource(R.string.nc_conversation_tags_favorites) else tag.name,
+                unreadInfo = unreadInfo,
                 onClick = { onTagSelected(if (isSelected) null else tag.id) },
                 onLongClick = onManageTagsClick
             )
@@ -77,7 +82,13 @@ fun ConversationTagsRow(
 /** Detects long-press via the chip's own interactionSource so its native ripple stays untouched. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TagFilterChip(selected: Boolean, label: String, onClick: () -> Unit, onLongClick: () -> Unit) {
+private fun TagFilterChip(
+    selected: Boolean,
+    label: String,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    unreadInfo: TagUnreadInfo? = null
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
     val longPressTimeoutMillis = LocalViewConfiguration.current.longPressTimeoutMillis
@@ -102,16 +113,67 @@ private fun TagFilterChip(selected: Boolean, label: String, onClick: () -> Unit,
             suppressClick = false
         },
         label = { Text(label) },
+        trailingIcon = unreadInfo?.let { info ->
+            {
+                val description = pluralStringResource(
+                    R.plurals.nc_conversation_tags_unread_conversations,
+                    info.conversationCount,
+                    info.conversationCount
+                )
+                UnreadCountBadge(
+                    count = info.conversationCount,
+                    style = info.style,
+                    modifier = Modifier.clearAndSetSemantics { contentDescription = description }
+                )
+            }
+        },
         interactionSource = interactionSource
     )
 }
 
+/**
+ * Unread state of a tag filter chip: [conversationCount] is the number of conversations with this tag
+ * that have unread messages (not the number of unread messages), [style] is the most important
+ * badge style among those conversations (direct mention > group mention > plain unread).
+ */
+data class TagUnreadInfo(val conversationCount: Int, val style: UnreadBadgeStyle)
+
+/** A tag filter chip; [unreadInfo] is null when no conversation with this tag has unread messages. */
+data class ConversationTagChip(val tag: ConversationTagDto, val unreadInfo: TagUnreadInfo? = null)
+
+/** Builds the chips for all [tags] that have at least one of the given [rooms]. */
+fun buildConversationTagChips(
+    tags: List<ConversationTagDto>,
+    rooms: List<ConversationModel>,
+    hasDirectMentionFlag: Boolean
+): List<ConversationTagChip> {
+    val distinctRooms = rooms.distinctBy { it.token }
+    return tags.mapNotNull { tag ->
+        val isFavorites = tag.type == ConversationTagDto.TYPE_FAVORITES
+        val taggedRooms = distinctRooms.filter { if (isFavorites) it.favorite else it.tagIds.contains(tag.id) }
+        if (taggedRooms.isEmpty()) return@mapNotNull null
+
+        val styles = taggedRooms.mapNotNull { unreadBadgeStyle(it, hasDirectMentionFlag) }
+        val unreadInfo = styles.maxOrNull()?.let { TagUnreadInfo(conversationCount = styles.size, style = it) }
+        ConversationTagChip(tag, unreadInfo)
+    }
+}
+
 private fun previewTags() =
     listOf(
-        ConversationTagDto(id = "favorites", name = "", type = ConversationTagDto.TYPE_FAVORITES),
-        ConversationTagDto(id = "1", name = "Work", sortOrder = 0),
-        ConversationTagDto(id = "2", name = "Family", sortOrder = 1),
-        ConversationTagDto(id = "3", name = "Projects", sortOrder = 2)
+        ConversationTagChip(
+            ConversationTagDto(id = "favorites", name = "", type = ConversationTagDto.TYPE_FAVORITES),
+            TagUnreadInfo(conversationCount = 1, style = UnreadBadgeStyle.FILLED)
+        ),
+        ConversationTagChip(
+            ConversationTagDto(id = "1", name = "Work", sortOrder = 0),
+            TagUnreadInfo(conversationCount = 3, style = UnreadBadgeStyle.OUTLINED)
+        ),
+        ConversationTagChip(
+            ConversationTagDto(id = "2", name = "Family", sortOrder = 1),
+            TagUnreadInfo(conversationCount = 2, style = UnreadBadgeStyle.GREY)
+        ),
+        ConversationTagChip(ConversationTagDto(id = "3", name = "Projects", sortOrder = 2))
     )
 
 @Preview(showBackground = true, name = "Light")

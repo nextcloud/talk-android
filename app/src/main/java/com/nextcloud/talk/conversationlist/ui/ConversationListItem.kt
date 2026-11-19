@@ -15,7 +15,6 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -30,7 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Icon
@@ -102,8 +100,6 @@ private const val ICON_MSG_SIZE_DP = 14
 private const val ICON_MSG_SPACING_DP = 2
 private const val THREAD_ICON_ID = "threadIcon"
 private const val THREAD_ICON_SIZE_SP = 14
-private const val UNREAD_THRESHOLD = 1000
-private const val UNREAD_BUBBLE_STROKE_DP = 1.5f
 private const val MILLIS_PER_SECOND = 1_000L
 
 /** Groups the tap callbacks for [ConversationListItem] to keep the parameter count low. */
@@ -519,75 +515,12 @@ private fun ConversationLastMessageRow(
 private fun UnreadBubble(model: ConversationModel, currentUser: User) {
     if (model.unreadMessages <= 0) return
 
-    val text = if (model.unreadMessages >= UNREAD_THRESHOLD) {
-        stringResource(R.string.tooManyUnreadMessages)
-    } else {
-        model.unreadMessages.toString()
-    }
-
-    val isOneToOne = model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
     val hasDmFlag = hasSpreedFeatureCapability(
         currentUser.capabilities?.spreedCapability,
         SpreedFeatures.DIRECT_MENTION_FLAG
     )
-    val outlined = model.unreadMention && hasDmFlag && !model.unreadMentionDirect && !isOneToOne
-
-    when {
-        outlined -> OutlinedUnreadChip(text = text)
-        isOneToOne || model.unreadMention -> FilledUnreadChip(text = text)
-        else -> GreyUnreadChip(text = text)
-    }
-}
-
-@Composable
-private fun FilledUnreadChip(text: String) {
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
-            .padding(horizontal = 6.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-private fun OutlinedUnreadChip(text: String) {
-    Box(
-        modifier = Modifier
-            .border(UNREAD_BUBBLE_STROKE_DP.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
-            .padding(horizontal = 6.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-private fun GreyUnreadChip(text: String) {
-    Box(
-        modifier = Modifier
-            .background(colorResource(R.color.conversation_unread_bubble), RoundedCornerShape(12.dp))
-            .padding(horizontal = 6.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = colorResource(R.color.conversation_unread_bubble_text),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold
-        )
-    }
+    val style = unreadBadgeStyle(model, hasDmFlag) ?: return
+    UnreadCountBadge(count = model.unreadMessages, style = style)
 }
 
 @Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
