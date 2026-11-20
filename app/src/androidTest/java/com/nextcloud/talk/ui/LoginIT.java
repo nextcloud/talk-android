@@ -8,6 +8,7 @@
  */
 package com.nextcloud.talk.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.nextcloud.talk.R;
@@ -15,16 +16,25 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity;
 import com.nextcloud.talk.utils.AppTasks;
 
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Objects;
 
+import kotlin.coroutines.EmptyCoroutineContext;
+
+import androidx.compose.ui.test.junit4.ComposeTestRule;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.web.webdriver.DriverAtoms;
 import androidx.test.espresso.web.webdriver.Locator;
 
+import static androidx.compose.ui.test.ActionsKt.performClick;
+import static androidx.compose.ui.test.AssertionsKt.assertIsDisplayed;
+import static androidx.compose.ui.test.FindersKt.onNodeWithContentDescription;
+import static androidx.compose.ui.test.FindersKt.onNodeWithText;
+import static androidx.compose.ui.test.junit4.AndroidComposeTestRule_androidKt.createEmptyComposeRule;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -43,6 +53,9 @@ import static org.junit.Assert.assertEquals;
 @Ignore("This test is ignored because it constantly fails on CI")
 public class LoginIT {
 
+    @Rule
+    public final ComposeTestRule composeRule = createEmptyComposeRule(EmptyCoroutineContext.INSTANCE);
+
     @Test
     public void login() throws InterruptedException {
 
@@ -50,6 +63,7 @@ public class LoginIT {
         ActivityScenario<ConversationsListActivity> activityScenario = ActivityScenario.launch(
             AppTasks.INSTANCE.createLauncherIntent(ApplicationProvider.getApplicationContext()));
 
+        Context context = ApplicationProvider.getApplicationContext();
         Bundle arguments = androidx.test.platform.app.InstrumentationRegistry.getArguments();
 
         String baseUrl = arguments.getString("TEST_SERVER_URL");
@@ -71,14 +85,10 @@ public class LoginIT {
 
             try {
                 // Delete account if exists
-                onView(withContentDescription(R.string.nc_settings)).perform(click());
-                onView(withId(R.id.settings_remove_account)).perform(click());
-                onView(withText(R.string.nc_settings_remove)).perform(click());
-                // The remove button must be clicked two times
-                onView(withId(R.id.settings_remove_account)).perform(click());
-                // And yes: The button must be clicked two times
-                onView(withText(R.string.nc_settings_remove)).perform(click());
-                onView(withText(R.string.nc_settings_remove)).perform(click());
+                clickNodeWithContentDescription(context.getString(R.string.nc_settings));
+                clickNodeWithText(context.getString(R.string.nc_settings));
+                clickNodeWithText(context.getString(R.string.nc_settings_remove_account));
+                clickNodeWithText(context.getString(R.string.nc_settings_remove));
             } catch (Exception ie2) {
                 // ignore
             } finally {
@@ -124,12 +134,20 @@ public class LoginIT {
 
         Thread.sleep(5 * 1000);
 
-        onView(withContentDescription(R.string.nc_settings)).perform(click());
-        onView(withId(R.id.user_name)).check(matches(withText("User One")));
+        clickNodeWithContentDescription(context.getString(R.string.nc_settings));
+        assertIsDisplayed(onNodeWithText(composeRule, "User One", false, false, false));
 
         activityScenario.onActivity(activity -> {
             assertEquals(loginName,
                          Objects.requireNonNull(activity.defaultAccountProvider.getDefaultUserBlocking()).getUserId());
         });
+    }
+
+    private void clickNodeWithText(String text) {
+        performClick(onNodeWithText(composeRule, text, false, false, false));
+    }
+
+    private void clickNodeWithContentDescription(String label) {
+        performClick(onNodeWithContentDescription(composeRule, label, false, false, false));
     }
 }
