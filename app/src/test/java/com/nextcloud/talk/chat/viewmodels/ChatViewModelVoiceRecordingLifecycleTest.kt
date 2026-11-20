@@ -54,7 +54,7 @@ class ChatViewModelVoiceRecordingLifecycleTest {
     @Before
     fun setUp() {
         whenever(mediaRecorderManager.mediaRecorderState).thenReturn(MediaRecorderState.RECORDING)
-        whenever(mediaRecorderManager.currentVoiceRecordFile).thenReturn("recording.mp3")
+        whenever(mediaRecorderManager.currentVoiceRecordFile).thenReturn("recording.m4a")
         doAnswer { (it.arguments[1] as () -> Unit).invoke() }
             .whenever(audioFocusRequestManager).audioFocusRequest(any(), any())
         viewModel = newViewModel()
@@ -70,7 +70,7 @@ class ChatViewModelVoiceRecordingLifecycleTest {
 
     @Test
     fun `leaving the chat discards the recording and gives the audio focus back`() {
-        val file = kotlin.io.path.createTempFile(suffix = ".mp3").toFile()
+        val file = kotlin.io.path.createTempFile(suffix = ".m4a").toFile()
         whenever(mediaRecorderManager.currentVoiceRecordFile).thenReturn(file.absolutePath)
 
         viewModelStore.clear()
@@ -136,7 +136,7 @@ class ChatViewModelVoiceRecordingLifecycleTest {
 
     @Test
     fun `an interruption discards a recording that was still held`() {
-        val file = kotlin.io.path.createTempFile(suffix = ".mp3").toFile()
+        val file = kotlin.io.path.createTempFile(suffix = ".m4a").toFile()
         whenever(mediaRecorderManager.currentVoiceRecordFile).thenReturn(file.absolutePath)
 
         viewModel.interruptAudioRecording()
