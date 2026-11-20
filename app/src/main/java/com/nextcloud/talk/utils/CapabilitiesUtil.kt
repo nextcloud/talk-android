@@ -47,6 +47,8 @@ enum class SpreedFeatures(val value: String) {
     REMIND_ME_LATER("remind-me-later"),
     CHAT_V2("chat-v2"),
     SIP_SUPPORT("sip-support"),
+    SIP_SUPPORT_NOPIN("sip-support-nopin"),
+    MENTION_PERMISSIONS("mention-permissions"),
     SIGNALING_V3("signaling-v3"),
     ROOM_DESCRIPTION("room-description"),
     UNIFIED_SEARCH("unified-search"),

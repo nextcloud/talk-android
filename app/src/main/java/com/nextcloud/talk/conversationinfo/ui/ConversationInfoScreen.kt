@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Card
@@ -85,6 +86,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.LISTABLE_ALL
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.LISTABLE_NONE
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.LISTABLE_USERS
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.SIP_DISABLED
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.SIP_ENABLED
+import com.nextcloud.talk.conversationcreation.CreateConversationParams.Companion.SIP_WITHOUT_PIN
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
 import com.nextcloud.talk.models.json.participants.ParticipantDto
@@ -106,6 +113,9 @@ data class ConversationInfoScreenCallbacks(
     val onSensitiveConversationClick: () -> Unit = {},
     val onLobbyClick: () -> Unit = {},
     val onLobbyTimerClick: () -> Unit = {},
+    val onSipStateChange: (Int) -> Unit = {},
+    val onListableScopeChange: (Int) -> Unit = {},
+    val onMentionPermissionsClick: () -> Unit = {},
     val onAllowGuestsClick: () -> Unit = {},
     val onPasswordProtectionClick: () -> Unit = {},
     val onResendInvitationsClick: () -> Unit = {},
@@ -204,6 +214,8 @@ fun ConversationInfoScreen(
                 if (state.showWebinarSettings) {
                     item { WebinarSettingsSection(state, callbacks) }
                 }
+
+                item { SipDialInSection(state) }
 
                 if (state.showGuestAccess) {
                     item { GuestAccessSection(state, callbacks) }
@@ -547,6 +559,44 @@ private fun WebinarSettingsSection(state: ConversationInfoUiState, callbacks: Co
             onClick = callbacks.onLobbyTimerClick
         )
     }
+    if (state.showSipToggle) {
+        val sipEnabled = state.sipState != SIP_DISABLED
+        SettingsRow(
+            title = stringResource(R.string.nc_sip_dial_in),
+            iconRes = R.drawable.ic_phone,
+            checked = sipEnabled,
+            onClick = { callbacks.onSipStateChange(if (sipEnabled) SIP_DISABLED else SIP_ENABLED) }
+        )
+        if (sipEnabled && state.showSipWithoutPinToggle) {
+            val withoutPin = state.sipState == SIP_WITHOUT_PIN
+            SettingsRow(
+                title = stringResource(R.string.nc_sip_dial_in_without_pin),
+                checked = withoutPin,
+                onClick = { callbacks.onSipStateChange(if (withoutPin) SIP_ENABLED else SIP_WITHOUT_PIN) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SipDialInSection(state: ConversationInfoUiState) {
+    if (!state.showSipDialInInfo || state.sipState == SIP_DISABLED) return
+    SectionHeader(title = stringResource(R.string.nc_sip_dial_in))
+    SelectionContainer {
+        Column {
+            if (state.sipDialInInfo.isNotEmpty()) {
+                Text(
+                    text = state.sipDialInInfo,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                )
+            }
+            SettingsRow(title = stringResource(R.string.nc_sip_meeting_id), subtitle = state.conversationToken)
+            if (state.attendeePin.isNotEmpty()) {
+                SettingsRow(title = stringResource(R.string.nc_sip_your_pin), subtitle = state.attendeePin)
+            }
+        }
+    }
 }
 
 @Composable
@@ -634,6 +684,31 @@ private fun ConversationSettingsSection(state: ConversationInfoUiState, callback
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+    }
+    if (state.showListable) {
+        val listable = state.listableScope != LISTABLE_NONE
+        SettingsRow(
+            title = stringResource(R.string.nc_open_conversation_to_registered_users),
+            checked = listable,
+            onClick = { callbacks.onListableScopeChange(if (listable) LISTABLE_NONE else LISTABLE_USERS) }
+        )
+        if (listable) {
+            val openToGuestAppUsers = state.listableScope == LISTABLE_ALL
+            SettingsRow(
+                title = stringResource(R.string.nc_open_to_guest_app_users),
+                checked = openToGuestAppUsers,
+                onClick = {
+                    callbacks.onListableScopeChange(if (openToGuestAppUsers) LISTABLE_USERS else LISTABLE_ALL)
+                }
+            )
+        }
+    }
+    if (state.showMentionPermissions) {
+        SettingsRow(
+            title = stringResource(R.string.nc_mention_all_allowed),
+            checked = state.mentionAllAllowed,
+            onClick = callbacks.onMentionPermissionsClick
         )
     }
     if (state.showShareConversationButton) {

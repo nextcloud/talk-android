@@ -18,6 +18,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationcreation.CreateConversationParams
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiEvent
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.CreateRoomRequestDto
@@ -411,6 +412,24 @@ class ConversationInfoViewModel @Inject constructor(
             canModerate &&
             !isClassified
 
+        val showSipToggle = showWebinarSettings && conversationModel.canEnableSIP
+        val showSipWithoutPinToggle =
+            showSipToggle && hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SIP_SUPPORT_NOPIN)
+        val showSipDialInInfo = !isClassified &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SIP_SUPPORT)
+        val showListable = isWebinarRoom &&
+            canModerate &&
+            !isClassified &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.LISTABLE_ROOMS)
+        val showMentionPermissions = isWebinarRoom &&
+            canModerate &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_PERMISSIONS)
+        val mentionAllAllowed =
+            conversationModel.mentionPermissions == CreateConversationParams.MENTION_PERMISSIONS_EVERYONE
+        confirmedSetting[SIP] = conversationModel.sipEnabled
+        confirmedSetting[LISTABLE] = conversationModel.listable
+        confirmedSetting[MENTION_PERMISSIONS] = mentionAllAllowed
+
         val showImportantConversation =
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.IMPORTANT_CONVERSATIONS)
         val importantConversation = conversationModel.hasImportant
@@ -480,6 +499,15 @@ class ConversationInfoViewModel @Inject constructor(
                 showWebinarSettings = showWebinarSettings,
                 lobbyTimerLabel = lobbyTimerLabel,
                 showLobbyTimer = isLobbyEnabled,
+                sipState = conversationModel.sipEnabled,
+                showSipToggle = showSipToggle,
+                showSipWithoutPinToggle = showSipWithoutPinToggle,
+                showSipDialInInfo = showSipDialInInfo,
+                attendeePin = conversationModel.attendeePin.orEmpty(),
+                listableScope = conversationModel.listable,
+                showListable = showListable,
+                mentionAllAllowed = mentionAllAllowed,
+                showMentionPermissions = showMentionPermissions,
                 guestsAllowed = guestsAllowed,
                 showGuestAccess = showGuestAccess,
                 hasPassword = hasPassword,
@@ -512,6 +540,99 @@ class ConversationInfoViewModel @Inject constructor(
 
         if (showParticipants) {
             loadParticipants(user, token)
+        }
+        if (showSipDialInInfo && conversationModel.sipEnabled != CreateConversationParams.SIP_DISABLED) {
+            loadSipDialInInfo(user, token)
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun loadSipDialInInfo(user: User, token: String) {
+        viewModelScope.launch {
+            try {
+                val apiVersion = ApiUtils.getSignalingApiVersion(user, intArrayOf(ApiUtils.API_V3, 2, 1))
+                val url = ApiUtils.getUrlForSignalingSettings(apiVersion, user.baseUrl, token)
+                val info = conversationsRepository.getSipDialInInfo(user, url).orEmpty()
+                _uiState.update { it.copy(sipDialInInfo = info) }
+            } catch (e: Exception) {
+                logger.e(TAG, "Failed to load the SIP dial-in info", e)
+            }
+        }
+    }
+
+    fun setSipState(user: User, token: String, state: Int) {
+        val url = ApiUtils.getUrlForRoomSip(conversationApiVersion(user), user.baseUrl, token)
+        changeRoomSetting(
+            setting = SIP,
+            newValue = state,
+            displayed = _uiState.value.sipState,
+            show = { state, value -> state.copy(sipState = value) },
+            failureMessage = R.string.nc_sip_state_failed,
+            request = { conversationsRepository.setSipState(user, url, state) }
+        )
+        if (state != CreateConversationParams.SIP_DISABLED && _uiState.value.sipDialInInfo.isEmpty()) {
+            loadSipDialInInfo(user, token)
+        }
+    }
+
+    fun setListableScope(user: User, token: String, scope: Int) {
+        val url = ApiUtils.getUrlForOpeningConversations(conversationApiVersion(user), user.baseUrl, token)
+        changeRoomSetting(
+            setting = LISTABLE,
+            newValue = scope,
+            displayed = _uiState.value.listableScope,
+            show = { state, value -> state.copy(listableScope = value) },
+            failureMessage = R.string.nc_listable_scope_failed,
+            request = { conversationsRepository.setListableScope(user, url, scope) }
+        )
+    }
+
+    fun toggleMentionPermissions(user: User, token: String) {
+        val allowAll = !_uiState.value.mentionAllAllowed
+        val url = ApiUtils.getUrlForMentionPermissions(conversationApiVersion(user), user.baseUrl, token)
+        val permissions = if (allowAll) {
+            CreateConversationParams.MENTION_PERMISSIONS_EVERYONE
+        } else {
+            CreateConversationParams.MENTION_PERMISSIONS_MODERATORS
+        }
+        changeRoomSetting(
+            setting = MENTION_PERMISSIONS,
+            newValue = allowAll,
+            displayed = _uiState.value.mentionAllAllowed,
+            show = { state, value -> state.copy(mentionAllAllowed = value) },
+            failureMessage = R.string.nc_mention_permissions_failed,
+            request = { conversationsRepository.setMentionPermissions(user, url, permissions) }
+        )
+    }
+
+    private fun conversationApiVersion(user: User) =
+        ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+
+    /**
+     * Shows [newValue] for [setting] at once and sends it to the server, going back to the value the
+     * server last confirmed when the request fails or is refused.
+     */
+    @Suppress("Detekt.LongParameterList")
+    private inline fun <reified T : Any> changeRoomSetting(
+        setting: String,
+        newValue: T,
+        displayed: T,
+        crossinline show: (ConversationInfoUiState, T) -> ConversationInfoUiState,
+        @StringRes failureMessage: Int,
+        noinline request: suspend () -> GenericOverall
+    ) {
+        val confirmedValue = confirmedValueOf(setting, displayed)
+        val change = startSettingChange(setting)
+        viewModelScope.launch {
+            val outcome = optimisticAction(
+                apply = {
+                    _uiState.update { show(it, newValue) }
+                    undoIfNewest(setting, change) { show(it, confirmedValueOf(setting, confirmedValue)) }
+                },
+                isConfirmed = GenericOverall::isAccepted,
+                request = request
+            )
+            reportSettingOutcome(outcome, setting, change, newValue, setting, failureMessage)
         }
     }
 
@@ -1086,7 +1207,7 @@ class ConversationInfoViewModel @Inject constructor(
         outcome: Result<GenericOverall>,
         setting: String,
         change: Long,
-        newValue: Boolean,
+        newValue: Any,
         description: String,
         @StringRes failureMessage: Int = R.string.nc_common_error_sorry
     ) {
@@ -1127,6 +1248,9 @@ class ConversationInfoViewModel @Inject constructor(
         private const val NOTIFICATION_LEVEL = "notification level"
         private const val MESSAGE_EXPIRATION = "message expiration"
         private const val LOCKED = "locked"
+        private const val SIP = "SIP"
+        private const val LISTABLE = "listable"
+        private const val MENTION_PERMISSIONS = "mention permissions"
         private const val GROUP_CONVERSATION_TYPE = "2"
         private const val MAX_ROOM_NAME_LENGTH = 255
         private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
