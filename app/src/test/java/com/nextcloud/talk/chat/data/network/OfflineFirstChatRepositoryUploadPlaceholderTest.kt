@@ -170,9 +170,64 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
             assertEquals(SendStatus.FAILED, tempMessage(REFERENCE_ID)!!.sendStatus)
         }
 
+    @Test
+    fun `getUploadPlaceholders maps a pending file placeholder to its local uri`() =
+        runBlocking {
+            addPlaceholder(REFERENCE_ID)
+
+            val placeholders = repository.getUploadPlaceholders(INTERNAL_CONVERSATION_ID).first()
+
+            assertEquals(mapOf(REFERENCE_ID to LOCAL_FILE_URI), placeholders)
+        }
+
+    @Test
+    fun `getUploadPlaceholders excludes a failed upload placeholder`() =
+        runBlocking {
+            addPlaceholder(REFERENCE_ID)
+            repository.markUploadPlaceholderFailed(REFERENCE_ID)
+
+            val placeholders = repository.getUploadPlaceholders(INTERNAL_CONVERSATION_ID).first()
+
+            assertTrue(placeholders.isEmpty())
+        }
+
+    @Test
+    fun `getUploadPlaceholders excludes a temporary message that is not a file upload`() =
+        runBlocking {
+            // a voice message enqueues an upload but creates no file placeholder; a plain temp message stands in
+            insertNonFileTempMessage(OTHER_REFERENCE_ID)
+            addPlaceholder(REFERENCE_ID)
+
+            val placeholders = repository.getUploadPlaceholders(INTERNAL_CONVERSATION_ID).first()
+
+            assertEquals(mapOf(REFERENCE_ID to LOCAL_FILE_URI), placeholders)
+        }
+
+    private suspend fun insertNonFileTempMessage(referenceId: String) =
+        db.chatMessagesDao().upsertChatMessages(
+            listOf(
+                ChatMessageEntity(
+                    internalId = "$INTERNAL_CONVERSATION_ID@_temp_$referenceId",
+                    accountId = ACCOUNT_ID,
+                    token = ROOM_TOKEN,
+                    internalConversationId = INTERNAL_CONVERSATION_ID,
+                    actorDisplayName = "Me",
+                    message = "hello",
+                    actorId = "me",
+                    actorType = "users",
+                    messageType = "comment",
+                    systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+                    referenceId = referenceId,
+                    isTemporary = true,
+                    sendStatus = SendStatus.PENDING,
+                    messageParameters = null
+                )
+            )
+        )
+
     private suspend fun addPlaceholder(referenceId: String) =
         repository.addUploadPlaceholderMessage(
-            localFileUri = "content://provider/file",
+            localFileUri = LOCAL_FILE_URI,
             fileName = "photo.jpg",
             caption = "",
             mimeType = "image/jpeg",
@@ -226,6 +281,7 @@ class OfflineFirstChatRepositoryUploadPlaceholderTest {
         private const val CHAT_URL = "$BASE_URL/ocs/v2.php/apps/spreed/api/v1/chat/$ROOM_TOKEN"
         private const val REFERENCE_ID = "ref-file-1"
         private const val OTHER_REFERENCE_ID = "ref-file-2"
+        private const val LOCAL_FILE_URI = "content://provider/file"
         private const val SERVER_MESSAGE_ID = 100L
         private const val FILE_SIZE = 1024L
     }

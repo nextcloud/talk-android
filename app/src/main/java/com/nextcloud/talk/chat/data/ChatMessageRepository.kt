@@ -200,6 +200,14 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun markUploadPlaceholderFailed(referenceId: String)
 
     /**
+     * referenceId -> local file uri for every file-upload placeholder that is still in progress (a
+     * temporary file message that has not failed). Lets the chat screen re-attach to uploads whose
+     * worker is still running after it was recreated. Voice messages have no such placeholder and are
+     * therefore excluded.
+     */
+    fun getUploadPlaceholders(internalConversationId: String): Flow<Map<String, String>>
+
+    /**
      * Writes the new text into the local database before the server is asked, so the chat renders the
      * edit right away, and restores the previous text if the request fails or the server rejects the
      * edit (a message that is too old, for instance). The successful response is persisted as the
