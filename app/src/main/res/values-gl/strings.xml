@@ -757,4 +757,4 @@
         <item quantity="one">%d voto</item>
         <item quantity="other">%d votos</item>
     </plurals>
-</resources>
+    </resources>

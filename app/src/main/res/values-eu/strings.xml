@@ -610,4 +610,4 @@
         <item quantity="one">Boto %d</item>
         <item quantity="other">%d boto</item>
     </plurals>
-</resources>
+    </resources>

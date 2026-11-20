@@ -238,6 +238,7 @@
     <string name="nc_expire_messages">إنهاء صلاحية رسائل الدردشة</string>
     <string name="nc_expire_messages_explanation">يمكن أن تنتهي صلاحية رسائل الدردشة بعد وقت معين. ملاحظة: لن يتم حذف الملفات التي تمّت مشاركتها في الدردشة عند المالك، و لكن لن تستمر مشاركتها مع الآخرين في المحادثة.</string>
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
+    <string name="nc_federated_user">مستخدم السحابة الموحدة</string>
     <string name="nc_federation_invitation_accept">قبول</string>
     <string name="nc_federation_invitation_reject">رفض</string>
     <string name="nc_federation_invited_to_room">من %1$s في %2$s</string>
@@ -666,4 +667,4 @@
         <item quantity="many">%d أصوات</item>
         <item quantity="other">%d أصوات</item>
     </plurals>
-</resources>
+    </resources>

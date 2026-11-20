@@ -532,4 +532,4 @@
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 표</item>
     </plurals>
-</resources>
+    </resources>

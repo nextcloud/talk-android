@@ -240,6 +240,7 @@
     <string name="nc_expire_messages">Fes caducar els missatges del xat</string>
     <string name="nc_expire_messages_explanation">Els missatges de xat poden caducar al cap d\'un període de temps determinat. Nota: els fitxers compartits al xat no se suprimiran per al propietari, però ja no es compartiran a la conversa.</string>
     <string name="nc_external_server_failed">No s\'ha pogut obtenir la configuració de senyalització</string>
+    <string name="nc_federated_user">Usuari federat</string>
     <string name="nc_federation_invitation_accept">Accepta</string>
     <string name="nc_federation_invitation_reject">Rebutja</string>
     <string name="nc_federation_no_invitations">No hi ha cap invitació pendent</string>
@@ -651,4 +652,4 @@
         <item quantity="one">%d vot</item>
         <item quantity="other">%d vots</item>
     </plurals>
-</resources>
+    </resources>

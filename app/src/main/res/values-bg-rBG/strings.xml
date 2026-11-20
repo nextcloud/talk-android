@@ -534,4 +534,4 @@
         <item quantity="one">%dгласувания </item>
         <item quantity="other">%d гласувания</item>
     </plurals>
-</resources>
+    </resources>

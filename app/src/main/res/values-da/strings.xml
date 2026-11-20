@@ -925,4 +925,4 @@
         <item quantity="one">%d stemme</item>
         <item quantity="other">%d stemmer</item>
     </plurals>
-</resources>
+    </resources>

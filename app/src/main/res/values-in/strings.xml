@@ -905,4 +905,4 @@
     <plurals name="polls_amount_voters">
         <item quantity="other">%d suara</item>
     </plurals>
-</resources>
+    </resources>

@@ -713,4 +713,4 @@
     <plurals name="polls_amount_voters">
         <item quantity="other">%d vote</item>
     </plurals>
-</resources>
+    </resources>

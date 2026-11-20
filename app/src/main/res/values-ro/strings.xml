@@ -909,4 +909,4 @@
         <item quantity="few">%d voturi</item>
         <item quantity="other">%d de voturi</item>
     </plurals>
-</resources>
+    </resources>

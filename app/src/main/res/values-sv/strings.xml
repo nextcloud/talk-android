@@ -922,4 +922,4 @@
         <item quantity="one">%d röst</item>
         <item quantity="other">%d röster</item>
     </plurals>
-</resources>
+    </resources>

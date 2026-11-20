@@ -807,4 +807,4 @@
         <item quantity="one">%d vote</item>
         <item quantity="other">%d رای</item>
     </plurals>
-</resources>
+    </resources>

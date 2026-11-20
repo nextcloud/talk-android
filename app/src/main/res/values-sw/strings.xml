@@ -740,4 +740,4 @@
         <item quantity="one">%d vote</item>
         <item quantity="other">%d kura</item>
     </plurals>
-</resources>
+    </resources>

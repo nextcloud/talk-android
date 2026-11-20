@@ -738,4 +738,4 @@
         <item quantity="many">%d voti</item>
         <item quantity="other">%d voti</item>
     </plurals>
-</resources>
+    </resources>
