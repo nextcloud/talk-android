@@ -75,6 +75,14 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private var internalWebSocket: WebSocket? = null
     private val connectionUrl: String
     private var currentRoomToken: String? = null
+
+    // The room the call UI last asked to join, which is not necessarily the one the server has confirmed
+    // (currentRoomToken). It is kept so the join can be re-asserted after a session resume: a join sent over a
+    // half-open socket can be silently lost (the socket buffers it and reports success), leaving the session
+    // resumed but not actually in the room. It is written on the caller thread (joinRoomWithRoomTokenAndSession)
+    // and read on the WebSocket reader thread (maybeResendRequestedRoomJoin), so it is @Volatile.
+    @Volatile
+    private var requestedRoomToken: String? = null
     private var currentNormalBackendSession: String? = null
     private var currentFederation: FederationSettingsDto? = null
     private var reconnecting = false
@@ -299,7 +307,10 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             roomSessions.onRoomResponse(roomWebSocketMessage.roomId)
             currentRoomToken = roomWebSocketMessage.roomId
             if (TextUtils.isEmpty(currentRoomToken)) {
-                // The server took the client out of the room, so the keys of that room go with it, like on iOS
+                // The server took the client out of the room, so the keys of that room go with it, like on iOS.
+                // Clear the requested room too, otherwise a later resume would re-send a join for a room the
+                // server deliberately removed the client from.
+                requestedRoomToken = null
                 callEncryptionLifecycle.close()
             } else if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null) {
                 callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
@@ -355,6 +366,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 // The room session is stale (e.g. reaped by the server). Clear the cached join state so a retry
                 // actually sends, and let the call UI fetch a fresh room session via the joinRoom API.
                 Log.d(TAG, "Joining the room was rejected, the room session needs to be refreshed")
+                requestedRoomToken = null
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
                 roomSessions.reset()
@@ -406,6 +418,36 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
         }
         eventBus!!.post(WebSocketCommunicationEvent("hello", helloHashMap))
+        maybeResendRequestedRoomJoin(oldResumeId)
+    }
+
+    /**
+     * Recovers a room join that was lost on a previously half-open socket. On a resumed session the server keeps
+     * the room membership, so a join normally does not need to be repeated. But if the original join was sent over a
+     * dead socket it never reached the server, leaving the resumed session outside the room while the app waits for a
+     * "roomJoined" that never comes (the reported "calls silently fail until the app is restarted"). When the resumed
+     * session is not confirmed to be in the room the UI asked for, the join is sent again so the call recovers on its
+     * own. A fresh session (no resume id) is not handled here: there the room state was cleared and the call UI
+     * rejoins in response to the "hello" event instead, so acting here would send the join twice.
+     */
+    private fun maybeResendRequestedRoomJoin(oldResumeId: String?) {
+        val requested = requestedRoomToken
+        if (TextUtils.isEmpty(oldResumeId) || requested.isNullOrEmpty() || requested == currentRoomToken) {
+            return
+        }
+        Log.d(TAG, "Resumed session is not in requested room '$requested'; re-sending join lost on previous socket")
+        try {
+            val message = LoganSquare.serialize(
+                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(
+                    requested,
+                    currentNormalBackendSession,
+                    currentFederation
+                )
+            )
+            sendMessage(message)
+        } catch (e: IOException) {
+            Log.e(TAG, "Failed to serialize room join message for resend", e)
+        }
     }
 
     private fun sendRoomJoinedEvent() {
@@ -457,21 +499,25 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             )
             if (roomToken == "") {
                 Log.d(TAG, "sending 'leave room' via websocket")
+                requestedRoomToken = null
                 currentNormalBackendSession = ""
                 currentFederation = null
                 roomSessions.reset()
                 callEncryptionLifecycle.close()
                 sendMessage(message)
             } else if (
+                isConnected &&
                 roomToken == currentRoomToken &&
                 normalBackendSession == currentNormalBackendSession &&
                 federation?.roomId == currentFederation?.roomId &&
                 federation?.nextcloudServer == currentFederation?.nextcloudServer
             ) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
+                requestedRoomToken = roomToken
                 sendRoomJoinedEvent()
             } else {
                 Log.d(TAG, "Sending join room message via websocket")
+                requestedRoomToken = roomToken
                 currentNormalBackendSession = normalBackendSession
                 currentFederation = federation
                 sendMessage(message)
