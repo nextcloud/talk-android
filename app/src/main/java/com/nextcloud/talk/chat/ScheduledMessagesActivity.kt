@@ -324,6 +324,7 @@ class ScheduledMessagesActivity : BaseActivity() {
         onCopyScheduledMessage: (ChatMessage) -> Unit
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
+        val authHeader = remember(user) { ApiUtils.getCredentials(user.username, user.token) }
         val scheduledState by scheduledMessagesViewModel.getScheduledMessagesState.collectAsStateWithLifecycle()
         val sendNowState by scheduledMessagesViewModel.sendNowState.collectAsStateWithLifecycle()
         val rescheduleState by scheduledMessagesViewModel.rescheduleState.collectAsStateWithLifecycle()
@@ -575,10 +576,15 @@ class ScheduledMessagesActivity : BaseActivity() {
                                                 message,
                                                 parentMessage,
                                                 delayedThreadLabel,
-                                                replyToThreadLabel
+                                                replyToThreadLabel,
+                                                authHeader
                                             ) {
-                                                val base =
-                                                    message.toScheduledMessageUiModel(user, roomToken, parentMessage)
+                                                val base = message.toScheduledMessageUiModel(
+                                                    user,
+                                                    roomToken,
+                                                    parentMessage,
+                                                    authHeader
+                                                )
                                                 val isThreadReply =
                                                     !isThreadView && (message.threadId ?: 0L) > 0
                                                 when {

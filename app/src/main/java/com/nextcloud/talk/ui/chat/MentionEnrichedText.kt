@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
+import com.nextcloud.talk.utils.DisplayUtils
 
 private val messageTokenRegex =
     Regex("""(\{[^{}]+\}|\*\*.*?\*\*|\*.*?\*|~~.*?~~|`.*?`|\[.*?]\(.*?\)|https?://\S+)""")
@@ -49,13 +51,15 @@ fun MentionEnrichedText(
     }
     val linkColor = MaterialTheme.colorScheme.primary
     val codeBackground = MaterialTheme.colorScheme.surfaceVariant
+    val darkTheme = DisplayUtils.isDarkModeOn(LocalContext.current)
     val richText = remember(
         message,
         isMultilineLayout,
         linkColor,
         codeBackground,
         textStyle,
-        enableLinks
+        enableLinks,
+        darkTheme
     ) {
         buildMentionRichText(
             message = message,
@@ -65,7 +69,8 @@ fun MentionEnrichedText(
             isMultilineLayout = isMultilineLayout,
             enableMentionClicks = enableMentionClicks,
             enableLinks = enableLinks,
-            onDisabledMentionClick = onDisabledMentionClick
+            onDisabledMentionClick = onDisabledMentionClick,
+            darkTheme = darkTheme
         )
     }
     val highlightedText = remember(richText.annotated, highlightSearchTerm) {
@@ -101,7 +106,8 @@ private fun buildMentionRichText(
     isMultilineLayout: Boolean,
     enableMentionClicks: Boolean,
     enableLinks: Boolean,
-    onDisabledMentionClick: (() -> Unit)?
+    onDisabledMentionClick: (() -> Unit)?,
+    darkTheme: Boolean
 ): MentionRichText {
     val inlineContent = linkedMapOf<String, InlineTextContent>()
     var mentionCounter = 0
@@ -124,7 +130,9 @@ private fun buildMentionRichText(
                         activeUserId = message.activeUserId,
                         activeUserBaseUrl = message.activeUserBaseUrl,
                         roomToken = message.roomToken,
-                        enableMentionClicks = enableMentionClicks
+                        enableMentionClicks = enableMentionClicks,
+                        authHeader = message.authHeader,
+                        darkTheme = darkTheme
                     )
                     if (mention == null) {
                         appendFallbackParameter(token, message.messageParameters)

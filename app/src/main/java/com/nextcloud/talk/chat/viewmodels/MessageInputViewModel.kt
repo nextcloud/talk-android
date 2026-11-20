@@ -296,7 +296,7 @@ class MessageInputViewModel :
         _inputState.update {
             it.copy(
                 quotedJsonId = message?.jsonMessageId,
-                quotedDisplayName = message?.actorDisplayName,
+                quotedDisplayName = message?.getNullsafeActorDisplayNameWithServer(),
                 quotedMessageText = message?.getRichText(),
                 quotedImageUrl = "" // TODO
             )

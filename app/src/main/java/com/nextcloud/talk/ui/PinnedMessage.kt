@@ -77,16 +77,16 @@ fun PinnedMessageView(
 
     val pinnedHeadline = if (message.pinnedActorId != message.actorId) {
         if (message.pinnedActorId == currentConversation?.actorId) {
-            stringResource(R.string.pinned_by_you, message.getNullsafeActorDisplayName())
+            stringResource(R.string.pinned_by_you, message.getNullsafeActorDisplayNameWithServer())
         } else {
             stringResource(
                 R.string.pinned_by_author,
-                message.getNullsafeActorDisplayName(),
-                message.pinnedActorDisplayName.orEmpty()
+                message.getNullsafeActorDisplayNameWithServer(),
+                message.getPinnedActorDisplayNameWithServer()
             )
         }
     } else {
-        message.getNullsafeActorDisplayName()
+        message.getNullsafeActorDisplayNameWithServer()
     }
 
     val context = LocalContext.current
@@ -100,13 +100,13 @@ fun PinnedMessageView(
             message = message.getRichText(),
             plainMessage = message.message.orEmpty(),
             renderMarkdown = message.renderMarkdown == true,
-            actorDisplayName = message.getNullsafeActorDisplayName(),
+            actorDisplayName = message.getNullsafeActorDisplayNameWithServer(),
             isThread = false,
             threadTitle = "",
             threadReplies = 0,
             incoming = true,
             isDeleted = message.isDeleted,
-            avatarUrl = null,
+            authHeader = user.getCredentials(),
             statusIcon = MessageStatusIcon.SENT,
             timestamp = message.timestamp,
             date = Instant.ofEpochSecond(message.timestamp).atZone(ZoneId.systemDefault()).toLocalDate(),
@@ -173,7 +173,7 @@ fun PinnedMessageView(
                     text = pinnedHeadline,
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorScheme.onSurfaceVariant,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 MarkdownText(

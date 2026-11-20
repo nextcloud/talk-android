@@ -60,6 +60,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.ui.withAuthHeader
 import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
@@ -212,6 +213,7 @@ object DisplayUtils {
             }
             val imageRequest: ImageRequest = ImageRequest.Builder(context)
                 .data(url)
+                .withAuthHeader(conversationUser.getCredentials().takeIf { isFederated })
                 .crossfade(true)
                 .transformations(CircleCropTransformation())
                 .target(object : Target {
@@ -219,7 +221,7 @@ object DisplayUtils {
                         // unused atm
                     }
                     override fun onError(error: Drawable?) {
-                        chip.chipIcon = error
+                        error?.let { chip.chipIcon = it }
                     }
 
                     override fun onSuccess(result: Drawable) {

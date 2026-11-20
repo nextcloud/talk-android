@@ -116,4 +116,47 @@ class MentionChipModelParsingTest {
         )
         assertFalse(model!!.isSelfMention)
     }
+
+    @Test
+    fun `the avatar of a federated user is requested with credentials`() {
+        val model = parseMentionChipModel(
+            key = "mention1",
+            messageParameters = mentionParams(type = "user", id = "bob", server = "remote.example.com"),
+            activeUserId = activeUserId,
+            activeUserBaseUrl = baseUrl,
+            roomToken = "room1",
+            authHeader = "Basic credentials"
+        )
+        assertEquals("Basic credentials", model!!.avatarAuthHeader)
+    }
+
+    @Test
+    fun `the avatar of a local user is requested without credentials`() {
+        val model = parseMentionChipModel(
+            key = "mention1",
+            messageParameters = mentionParams(type = "user", id = "bob"),
+            activeUserId = activeUserId,
+            activeUserBaseUrl = baseUrl,
+            roomToken = "room1",
+            authHeader = "Basic credentials"
+        )
+        assertNull(model!!.avatarAuthHeader)
+    }
+
+    @Test
+    fun `the avatar of a federated user follows the dark theme`() {
+        val model = parseMentionChipModel(
+            key = "mention1",
+            messageParameters = mentionParams(type = "user", id = "bob", server = "remote.example.com"),
+            activeUserId = activeUserId,
+            activeUserBaseUrl = baseUrl,
+            roomToken = "room1",
+            darkTheme = true
+        )
+        assertEquals(
+            "https://cloud.example.com/ocs/v2.php/apps/spreed/api/v1/proxy/room1/user-avatar/64" +
+                "?cloudId=bob@remote.example.com&darkTheme=1",
+            model!!.avatarUrl
+        )
+    }
 }

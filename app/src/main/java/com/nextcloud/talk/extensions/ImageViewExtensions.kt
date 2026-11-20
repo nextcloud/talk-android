@@ -38,7 +38,6 @@ import coil.result
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationDto
@@ -126,22 +125,6 @@ fun ImageView.loadUserAvatar(
     )
 
     return loadAvatarInternal(user, imageRequestUri, ignoreCache, null)
-}
-
-fun ImageView.loadFederatedUserAvatar(message: ChatMessage): io.reactivex.disposables.Disposable {
-    val cloudId = message.actorId!!
-    val darkTheme = if (DisplayUtils.isDarkModeOn(context)) 1 else 0
-    val ignoreCache = false
-    val requestBigSize = true
-    return loadFederatedUserAvatar(
-        message.activeUser!!,
-        message.activeUser!!.baseUrl!!,
-        message.token!!,
-        cloudId,
-        darkTheme,
-        requestBigSize,
-        ignoreCache
-    )
 }
 
 @Suppress("LongParameterList")

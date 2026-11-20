@@ -27,7 +27,6 @@ class ResolveMarkdownSourceTest {
             threadReplies = 0,
             incoming = true,
             isDeleted = false,
-            avatarUrl = null,
             statusIcon = MessageStatusIcon.SENT,
             timestamp = 0L,
             date = LocalDate.now(),

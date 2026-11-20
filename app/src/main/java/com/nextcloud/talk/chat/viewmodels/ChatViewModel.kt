@@ -765,7 +765,6 @@ class ChatViewModel @AssistedInject constructor(
         map { entities ->
             entities.map { entity ->
                 entity.toDomainModel().apply {
-                    avatarUrl = getAvatarUrl(this)
                     incoming = actorId != userId
                 }
             }
@@ -1372,14 +1371,16 @@ class ChatViewModel @AssistedInject constructor(
                         .distinct()
 
                 val isClassified = conversation != null && ConversationUtils.isClassified(conversation, capabilities)
-                val user = currentUserFlow.value
+                val user = currentUser
+                val authHeader = ApiUtils.getCredentials(user.username, user.token)
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
                 reorderKnownSendSequence(messages)
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
-                        user = user ?: currentUser,
+                        user = user,
+                        authHeader = authHeader,
                         chatMessage = message,
                         lastCommonReadMessageId = lastCommonRead,
                         parentMessage = parent,
