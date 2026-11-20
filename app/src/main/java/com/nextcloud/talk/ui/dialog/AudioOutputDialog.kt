@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.ui.dialog
 
+import android.media.AudioDeviceInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,8 +19,10 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
+import com.nextcloud.talk.databinding.ItemAudioInputDeviceBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.ui.theme.hostViewThemeUtils
+import com.nextcloud.talk.webrtc.AudioInputDeviceManager
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import javax.inject.Inject
 
@@ -42,6 +45,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
         viewThemeUtils.platform.themeDialogDark(dialogAudioOutputBinding.root)
         updateOutputDeviceList()
+        updateInputDeviceList()
         initClickListeners()
     }
 
@@ -78,6 +82,65 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
         highlightActiveOutputChannel()
     }
+
+    fun updateInputDeviceList() {
+        if (!::dialogAudioOutputBinding.isInitialized) {
+            return
+        }
+        val inputDeviceList = dialogAudioOutputBinding.audioInputDeviceList
+        inputDeviceList.removeAllViews()
+
+        val inputDeviceManager = callActivity.audioInputDeviceManager
+        val inputSelectionAvailable = inputDeviceManager != null
+        dialogAudioOutputBinding.audioInputHeadline.visibility =
+            if (inputSelectionAvailable) View.VISIBLE else View.GONE
+        inputDeviceList.visibility = if (inputSelectionAvailable) View.VISIBLE else View.GONE
+        if (inputDeviceManager == null) {
+            return
+        }
+
+        val selectedDevice = inputDeviceManager.selectedDevice
+        addInputDeviceRow(
+            context.getString(R.string.audio_input_automatic),
+            R.drawable.ic_mic_white_24px,
+            selectedDevice == null,
+            null
+        )
+        inputDeviceManager.getAvailableDevices().forEach { device ->
+            addInputDeviceRow(
+                AudioInputDeviceManager.getDisplayName(context, device),
+                getInputDeviceIcon(device),
+                selectedDevice?.id == device.id,
+                device
+            )
+        }
+    }
+
+    private fun addInputDeviceRow(label: String, icon: Int, active: Boolean, device: AudioDeviceInfo?) {
+        val row = ItemAudioInputDeviceBinding.inflate(
+            layoutInflater,
+            dialogAudioOutputBinding.audioInputDeviceList,
+            false
+        )
+        row.audioInputDeviceText.text = label
+        row.audioInputDeviceIcon.setImageResource(icon)
+        if (active) {
+            viewThemeUtils.platform.colorImageView(row.audioInputDeviceIcon, ColorRole.PRIMARY)
+            viewThemeUtils.platform.colorPrimaryTextViewElementDarkMode(row.audioInputDeviceText)
+        }
+        row.root.setOnClickListener {
+            callActivity.setAudioInputDevice(device)
+            dismiss()
+        }
+        dialogAudioOutputBinding.audioInputDeviceList.addView(row.root)
+    }
+
+    private fun getInputDeviceIcon(device: AudioDeviceInfo): Int =
+        if (device.type == AudioDeviceInfo.TYPE_WIRED_HEADSET) {
+            R.drawable.ic_baseline_headset_mic_24
+        } else {
+            R.drawable.ic_mic_white_24px
+        }
 
     private fun highlightActiveOutputChannel() {
         viewThemeUtils.platform.themeDialogDark(dialogAudioOutputBinding.root)
