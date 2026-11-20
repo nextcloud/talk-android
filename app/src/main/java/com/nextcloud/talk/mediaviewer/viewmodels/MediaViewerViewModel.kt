@@ -41,14 +41,11 @@ import javax.inject.Inject
  * Backs the swipeable media viewer: a flattened, chronologically ordered (oldest first) sequence
  * of [MediaViewerGroup]s. Seeded synchronously from whatever the chat screen already had loaded
  * (see ChatViewModel.mediaViewerSeed()) - which alone covers all "newer" navigation, since that
- * direction has no network fallback (see class doc on the pending-index-shift mechanism below for
- * why "older" does). "Older" navigation pages further back through conversation history via
- * [SharedItemsRepository] once the locally seeded items run out.
+ * direction has no network fallback. "Older" navigation pages further back through conversation
+ * history via [SharedItemsRepository] before the locally seeded items run out.
  */
 class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository: SharedItemsRepository) :
     ViewModel() {
-
-    data class PendingShift(val id: Long, val amount: Int)
 
     data class UiState(
         val groups: List<MediaViewerGroup> = emptyList(),
@@ -56,8 +53,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         val loadingOlder: Boolean = false,
         val canLoadOlder: Boolean = true,
         val cachedFilePaths: Map<Long, String> = emptyMap(),
-        val downloadingMessageIds: Set<Long> = emptySet(),
-        val pendingShift: PendingShift? = null
+        val downloadingMessageIds: Set<Long> = emptySet()
     ) {
         val flattenedItems: List<MediaViewerItem> get() = groups.flatMap { it.items }
         val currentItem: MediaViewerItem? get() = flattenedItems.getOrNull(currentGlobalIndex)
@@ -70,13 +66,14 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
-    private var nextShiftId = 0L
 
     private lateinit var user: User
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
     private var olderPagesCursor: Long? = null
 
+    /** Seeds the viewer with [seedItems] showing [startMessageId]; once seeded, later calls keep the current state. */
     fun initialize(user: User, roomToken: String, seedItems: List<MediaViewerItem>, startMessageId: Long) {
+        if (this::user.isInitialized) return
         this.user = user
         repositoryParameters = SharedItemsRepository.Parameters(
             // The login name, as it authenticates the requests. The user id can differ from it.
@@ -85,9 +82,10 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             user.baseUrl!!,
             roomToken
         )
-        val groups = seedItems.toMediaViewerGroups()
-        val startIndex = seedItems.indexOfFirst { it.messageId == startMessageId }.coerceAtLeast(0)
-        olderPagesCursor = seedItems.minOfOrNull { it.messageId }
+        val items = seedItems.distinctBy { it.messageId }
+        val groups = items.toMediaViewerGroups()
+        val startIndex = items.indexOfFirst { it.messageId == startMessageId }.coerceAtLeast(0)
+        olderPagesCursor = items.minOfOrNull { it.messageId }
 
         _uiState.value = UiState(groups = groups, currentGlobalIndex = startIndex)
         ensureCachedAround(startIndex)
@@ -96,17 +94,13 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     fun onPageSettled(globalIndex: Int) {
         _uiState.update { it.copy(currentGlobalIndex = globalIndex) }
         ensureCachedAround(globalIndex)
-        if (globalIndex <= EDGE_LOAD_THRESHOLD) {
+        if (globalIndex < EDGE_LOAD_THRESHOLD) {
             loadOlderGroups()
         }
     }
 
     fun jumpTo(globalIndex: Int) {
         onPageSettled(globalIndex)
-    }
-
-    fun consumePendingShift(id: Long) {
-        _uiState.update { if (it.pendingShift?.id == id) it.copy(pendingShift = null) else it }
     }
 
     private fun ensureCachedAround(globalIndex: Int) {
@@ -191,23 +185,25 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
         _uiState.update { it.copy(loadingOlder = true) }
         viewModelScope.launch {
-            val olderPage = loadOlderPage(cursor)
-            val olderItems = olderPage?.items.orEmpty()
+            val olderPage = loadOlderPage(cursor) ?: run {
+                _uiState.update { it.copy(loadingOlder = false) }
+                return@launch
+            }
+            val olderItems = olderPage.items
 
             if (olderItems.isEmpty()) {
                 _uiState.update { it.copy(loadingOlder = false, canLoadOlder = false) }
                 return@launch
             }
 
-            olderPagesCursor = olderPage?.cursor
+            olderPagesCursor = olderPage.cursor
             _uiState.update { current ->
                 val combined = (olderItems + current.flattenedItems).toMediaViewerGroups()
                 current.copy(
                     groups = combined,
                     currentGlobalIndex = current.currentGlobalIndex + olderItems.size,
                     loadingOlder = false,
-                    canLoadOlder = olderPage?.moreItemsExisting == true && olderPage.cursor != null,
-                    pendingShift = PendingShift(id = nextShiftId++, amount = olderItems.size)
+                    canLoadOlder = olderPage.moreItemsExisting && olderPage.cursor != null
                 )
             }
         }
@@ -247,6 +243,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     companion object {
         private val TAG = MediaViewerViewModel::class.simpleName
         private const val PREFETCH_RADIUS = 1
-        private const val EDGE_LOAD_THRESHOLD = 1
+        private const val EDGE_LOAD_THRESHOLD = 10
     }
 }
