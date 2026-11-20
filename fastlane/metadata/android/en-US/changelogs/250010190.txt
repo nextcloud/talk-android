@@ -1,0 +1,11 @@
+## Fixed
+- Shared files were attached again to the next opened chat
+- Avatars of federated users did not load
+- Search results show up immediately
+- Reply count of threads is kept up to date
+- Messages with a single emoji are shown larger again
+- Theming of the participant selection icon
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/119?closed=1
