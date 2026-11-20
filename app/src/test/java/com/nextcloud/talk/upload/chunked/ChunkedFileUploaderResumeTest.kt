@@ -11,12 +11,12 @@ import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import mockwebserver3.Dispatcher
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
+import mockwebserver3.RecordedRequest
+import mockwebserver3.SocketEffect
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
-import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -70,25 +70,17 @@ class ChunkedFileUploaderResumeTest {
                 requests.add(request)
                 return when (request.method) {
                     "PROPFIND" -> when {
-                        propfindDisconnects -> MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
-                        propfindResponseCode != null -> MockResponse().setResponseCode(propfindResponseCode!!)
-                        else -> propfindResponse(request.path!!)
+                        propfindDisconnects -> disconnect()
+                        propfindResponseCode != null -> MockResponse(code = propfindResponseCode!!)
+                        else -> propfindResponse(request.target)
                     }
-                    "MOVE" -> MockResponse().setResponseCode(
-                        if (moveResponseCodes.isEmpty()) CREATED else moveResponseCodes.removeAt(0)
+                    "MOVE" -> MockResponse(
+                        code = if (moveResponseCodes.isEmpty()) CREATED else moveResponseCodes.removeAt(0)
                     )
-                    "PUT" -> if (putDisconnects) {
-                        MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
-                    } else {
-                        MockResponse().setResponseCode(putResponseCode)
-                    }
-                    "MKCOL" -> MockResponse().setResponseCode(METHOD_NOT_ALLOWED)
-                    "DELETE" -> if (deleteDisconnects) {
-                        MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
-                    } else {
-                        MockResponse().setResponseCode(CREATED)
-                    }
-                    else -> MockResponse().setResponseCode(CREATED)
+                    "PUT" -> if (putDisconnects) disconnect() else MockResponse(code = putResponseCode)
+                    "MKCOL" -> MockResponse(code = METHOD_NOT_ALLOWED)
+                    "DELETE" -> if (deleteDisconnects) disconnect() else MockResponse(code = CREATED)
+                    else -> MockResponse(code = CREATED)
                 }
             }
         }
@@ -111,7 +103,7 @@ class ChunkedFileUploaderResumeTest {
 
     @After
     fun tearDown() {
-        server.shutdown()
+        server.close()
     }
 
     @Test
@@ -172,8 +164,8 @@ class ChunkedFileUploaderResumeTest {
         uploader.upload(file, null, "/Talk/video.mp4")
 
         val move = requests.single { it.method == "MOVE" }
-        assertEquals(FILE_SIZE.toString(), move.getHeader("OC-Total-Length"))
-        assertTrue(move.path!!.endsWith("/.file"))
+        assertEquals(FILE_SIZE.toString(), move.headers["OC-Total-Length"])
+        assertTrue(move.target.endsWith("/.file"))
     }
 
     @Test
@@ -404,6 +396,13 @@ class ChunkedFileUploaderResumeTest {
     }
 
     @Test
+    fun `a file whose size is an exact multiple of the chunk size gets no empty trailing part`() {
+        val missing = uploader.checkMissingChunks(emptyList(), 2L * CHUNK)
+
+        assertEquals(listOf(Chunk(0, CHUNK - 1L), Chunk(CHUNK.toLong(), 2L * CHUNK - 1)), missing)
+    }
+
+    @Test
     fun `only well formed parts of the right size are accepted`() {
         val length = FILE_SIZE.toLong()
         assertEquals(Chunk(0, CHUNK - 1L), uploader.parseUploadedChunk(PART_0, CHUNK.toLong(), length))
@@ -416,7 +415,9 @@ class ChunkedFileUploaderResumeTest {
     }
 
     private fun putPaths(): List<String> =
-        requests.filter { it.method == "PUT" }.map { "/" + it.path!!.substringAfterLast('/') }
+        requests.filter { it.method == "PUT" }.map { "/" + it.target.substringAfterLast('/') }
+
+    private fun disconnect(): MockResponse = MockResponse.Builder().onResponseStart(SocketEffect.CloseSocket()).build()
 
     private fun propfindResponse(path: String): MockResponse {
         val folder = path.trimEnd('/')
@@ -438,10 +439,11 @@ class ChunkedFileUploaderResumeTest {
               </d:response>
               $members
             </d:multistatus>"""
-        return MockResponse()
-            .setResponseCode(MULTI_STATUS)
+        return MockResponse.Builder()
+            .code(MULTI_STATUS)
             .setHeader("Content-Type", "application/xml; charset=utf-8")
-            .setBody(body)
+            .body(body)
+            .build()
     }
 
     companion object {

@@ -28,7 +28,6 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import at.bitfire.dav4jvm.exception.HttpException
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -661,7 +660,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         internal fun isRetryable(e: Throwable): Boolean =
             when (e) {
                 is IOException -> true
-                is HttpException -> isTransientHttpError(e.code)
+                is at.bitfire.dav4jvm.exception.HttpException -> isTransientHttpError(e.code)
                 is retrofit2.HttpException -> isTransientHttpError(e.code())
                 else -> false
             }
@@ -790,6 +789,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .apply { SharedFileCopies.uploadTagOf(fileUri)?.let { addTag(it) } }
                 // keeps the read access to a picked file until its upload is done
                 .apply { UploadSourceGrants.uploadTagOf(fileUri)?.let { addTag(it) } }
+                // finds the work of a placeholder from any state, also before the work first runs
+                .apply { if (referenceId.isNotEmpty()) addTag(uploadReferenceTag(referenceId)) }
                 .build()
             // Chained per conversation (not enqueueUniqueWork(fileUri, ...), which ran every upload
             // fully independently) so multiple files - whether from one multi-file share or several
@@ -808,7 +809,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             return uploadWorker.id
         }
 
-        private fun uploadQueueName(internalConversationId: String) = "upload_queue_$internalConversationId"
+        internal fun uploadQueueName(internalConversationId: String) = "upload_queue_$internalConversationId"
+
+        private const val UPLOAD_REFERENCE_TAG_PREFIX = "upload_reference_"
+
+        internal fun uploadReferenceTag(referenceId: String) = "$UPLOAD_REFERENCE_TAG_PREFIX$referenceId"
+
+        /** The referenceId of the placeholder an upload work belongs to, read from its tags. */
+        internal fun referenceIdOf(tags: Set<String>): String? =
+            tags.firstOrNull { it.startsWith(UPLOAD_REFERENCE_TAG_PREFIX) }?.removePrefix(UPLOAD_REFERENCE_TAG_PREFIX)
 
         private fun workspaceDir(context: Context, workId: UUID) =
             File(File(context.noBackupFilesDir, WORKSPACE_DIR), workId.toString())

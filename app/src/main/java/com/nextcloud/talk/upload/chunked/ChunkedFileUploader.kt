@@ -246,7 +246,7 @@ class ChunkedFileUploader(
         val missingChunks: MutableList<Chunk> = java.util.ArrayList()
         val sortedChunks = chunks.sortedBy { it.start }
         var start: Long = 0
-        while (start <= length) {
+        while (start < length) {
             val nextChunk: Chunk? = findNextFittingChunk(sortedChunks, start)
             if (nextChunk == null) {
                 // create new chunk

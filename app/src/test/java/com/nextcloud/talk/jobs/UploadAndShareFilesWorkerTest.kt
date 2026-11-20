@@ -70,6 +70,20 @@ class UploadAndShareFilesWorkerTest {
     }
 
     @Test
+    fun `an upload work carries the referenceId of its placeholder in its tags`() {
+        val workManager = initWorkManager()
+
+        val tags = workManager.getWorkInfoById(upload("ref-a")).get()!!.tags
+
+        assertEquals("ref-a", UploadAndShareFilesWorker.referenceIdOf(tags))
+    }
+
+    @Test
+    fun `work without a placeholder tag has no referenceId`() {
+        assertNull(UploadAndShareFilesWorker.referenceIdOf(setOf(UploadAndShareFilesWorker::class.java.name)))
+    }
+
+    @Test
     fun `an upload that ended releases the read access to its file`() {
         // on a thread of its own, as in the app: the worker asks WorkManager for the other uploads of its file
         val workManager = initWorkManager(Executors.newSingleThreadExecutor())

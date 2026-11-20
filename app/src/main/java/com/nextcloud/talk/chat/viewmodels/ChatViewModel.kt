@@ -411,6 +411,10 @@ class ChatViewModel @AssistedInject constructor(
     // name, which would otherwise cancel every other queued upload too.
     private val uploadReferenceToWorkId = mutableMapOf<String, UUID>()
 
+    // the work of a cancelled upload is stopped and its placeholder deleted asynchronously; until both are done,
+    // the work must not be attached again
+    private val cancelledUploadReferenceIds = mutableSetOf<String>()
+
     // Maps referenceId -> the order files were sent in during this screen's session, assigned the
     // moment each upload starts. Deliberately session-local and never persisted or sent anywhere:
     // uploads within a conversation are chained sequentially (see UploadAndShareFilesWorker.upload),
@@ -446,6 +450,7 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     fun cancelUpload(referenceId: String) {
+        cancelledUploadReferenceIds.add(referenceId)
         // uploadReferenceToWorkId is session-local (never persisted) - after an app restart it's
         // empty even for an upload that's still stuck showing as "uploading" from a previous
         // session, so a placeholder must still be removable even when there's no known work id to
@@ -875,6 +880,7 @@ class ChatViewModel @AssistedInject constructor(
         observePinnedMessage()
         observeRoomRefresh()
         observeIncomingMessages()
+        reconnectToRunningUploads()
     }
 
     fun enterSearchMode() {
@@ -2593,6 +2599,37 @@ class ChatViewModel @AssistedInject constructor(
             }
         }
         return Triple(uri.lastPathSegment.orEmpty(), mimeType, 0L)
+    }
+
+    /**
+     * Attaches the unfinished uploads of this conversation that this view model did not start to their
+     * placeholders: maps their referenceIds to their work ids, so they can be cancelled, restores their local
+     * previews and observes their progress. The referenceId comes from the tag of each work, which also covers
+     * uploads still waiting in the queue. Only pending file placeholders are matched, so voice messages and
+     * uploads the user cancelled are left alone.
+     */
+    private fun reconnectToRunningUploads() {
+        val internalConversationId = "${currentUser.id}@$chatRoomToken"
+        val runningUploads = WorkManager.getInstance(NextcloudTalkApplication.sharedApplication!!)
+            .getWorkInfosForUniqueWorkLiveData(UploadAndShareFilesWorker.uploadQueueName(internalConversationId))
+            .asFlow()
+        combine(runningUploads, chatRepository.getUploadPlaceholders(internalConversationId)) { infos, placeholders ->
+            infos to placeholders
+        }
+            .onEach { (infos, placeholders) ->
+                infos.forEach { info ->
+                    if (info.state.isFinished) return@forEach
+                    val referenceId = UploadAndShareFilesWorker.referenceIdOf(info.tags) ?: return@forEach
+                    if (referenceId in uploadReferenceToWorkId || referenceId in cancelledUploadReferenceIds) {
+                        return@forEach
+                    }
+                    val localFileUri = placeholders[referenceId] ?: return@forEach
+                    uploadReferenceToWorkId[referenceId] = info.id
+                    _uploadedLocalPreviewMap.update { it + (referenceId to localFileUri) }
+                    observeUploadProgress(info.id, referenceId)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun observeUploadProgress(workerId: UUID, referenceId: String) {
