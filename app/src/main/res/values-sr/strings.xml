@@ -723,4 +723,4 @@
         <item quantity="few">%d гласа</item>
         <item quantity="other">%d гласова</item>
     </plurals>
-</resources>
+    </resources>

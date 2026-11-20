@@ -925,4 +925,4 @@
         <item quantity="one">%d Stimme</item>
         <item quantity="other">%d Stimmen</item>
     </plurals>
-</resources>
+    </resources>

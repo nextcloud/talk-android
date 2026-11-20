@@ -796,4 +796,4 @@
         <item quantity="one">%d szavazat</item>
         <item quantity="other">%d szavazat</item>
     </plurals>
-</resources>
+    </resources>

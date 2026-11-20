@@ -717,4 +717,4 @@
         <item quantity="many">%d голосів</item>
         <item quantity="other">%d голосів</item>
     </plurals>
-</resources>
+    </resources>

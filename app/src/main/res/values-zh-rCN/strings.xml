@@ -620,4 +620,4 @@
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>
     </plurals>
-</resources>
+    </resources>

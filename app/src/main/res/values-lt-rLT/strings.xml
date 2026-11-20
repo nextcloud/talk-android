@@ -853,4 +853,4 @@
         <item quantity="many">%d balsų</item>
         <item quantity="other">%d balsas</item>
     </plurals>
-</resources>
+    </resources>

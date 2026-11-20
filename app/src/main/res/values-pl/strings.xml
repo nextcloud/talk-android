@@ -797,4 +797,4 @@
         <item quantity="many">%d głosów</item>
         <item quantity="other">%d głosów</item>
     </plurals>
-</resources>
+    </resources>

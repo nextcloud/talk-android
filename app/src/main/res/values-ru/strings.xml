@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Завершить вызов</string>
     <string name="nc_call_ongoing_notification_return_action">Вернуться в вызов</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Вы демонстрируете экран</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Прокрутить к первому участнику</string>
     <string name="nc_call_raised_hand">%1$s поднял(а) руку</string>
     <string name="nc_call_reconnecting">Переподключение…</string>
     <string name="nc_call_ringing">Идёт вызов</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Пользователь, вошедший по публичной ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Переслать</string>
+    <string name="nc_forward_to">Переслать в</string>
     <string name="nc_forward_to_three_dots">Переслать в…</string>
     <string name="nc_gallery">Галерея</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь, чтобы заказать у провайдера</string>
@@ -669,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Карточка</string>
     <string name="nc_shared_items_description">Изображения, файлы, голосовые сообщения…</string>
     <string name="nc_shared_items_empty">Нет общих элементов</string>
+    <string name="nc_shared_items_error">Не удалось загрузить общие элементы.</string>
     <string name="nc_shared_items_location">Местоположение</string>
     <string name="nc_shared_location">Общее местоположение</string>
     <string name="nc_shortcut_conversation_deleted">Это обсуждение больше не существует</string>
@@ -932,4 +935,4 @@
         <item quantity="many">%d голосов</item>
         <item quantity="other">%d голоса</item>
     </plurals>
-</resources>
+    </resources>

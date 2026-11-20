@@ -914,4 +914,4 @@
         <item quantity="many">%d votes</item>
         <item quantity="other">%d votes</item>
     </plurals>
-</resources>
+    </resources>

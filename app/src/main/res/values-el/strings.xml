@@ -531,4 +531,4 @@
         <item quantity="one">%d ψήφος</item>
         <item quantity="other">%d ψήφοι</item>
     </plurals>
-</resources>
+    </resources>

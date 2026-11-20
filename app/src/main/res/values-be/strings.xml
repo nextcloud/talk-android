@@ -255,6 +255,7 @@
     <string name="nc_expire_messages">Тэрмін дзеяння паведамленняў</string>
     <string name="nc_expire_messages_explanation">Тэрмін дзеяння паведамленняў у чаце можа скончыцца праз пэўны час. Заўвага: файлы, абагуленыя ў чаце, не будуць выдалены для ўладальніка, але больш не будуць абагулены ў размове.</string>
     <string name="nc_external_server_failed">Не ўдалося атрымаць налады сігналізацыі</string>
+    <string name="nc_federated_user">Федэратыўны карыстальнік</string>
     <string name="nc_federation_invitation_accept">Прыняць</string>
     <string name="nc_federation_invitation_reject">Адхіліць</string>
     <string name="nc_federation_invited_to_room">ад %1$s у %2$s</string>
@@ -758,4 +759,4 @@
         <item quantity="many">%d галасоў</item>
         <item quantity="other">%d галасоў</item>
     </plurals>
-</resources>
+    </resources>

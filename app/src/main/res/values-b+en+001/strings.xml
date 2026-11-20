@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">End call</string>
     <string name="nc_call_ongoing_notification_return_action">Return to call</string>
     <string name="nc_call_ongoing_notification_screen_sharing">You are sharing your screen</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Scroll to first participant</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
@@ -190,8 +191,10 @@
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_video">%s video call</string>
+    <string name="nc_call_view_mode">Call view mode</string>
     <string name="nc_call_view_mode_grid">Grid view</string>
     <string name="nc_call_view_mode_speaker">Speaker view</string>
+    <string name="nc_call_view_mode_speaker_with_participant_bar">Speaker view with participant bar</string>
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_cancel">Cancel</string>
@@ -346,6 +349,7 @@
     <string name="nc_following_link">User following a public link</string>
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_forward_message">Forward</string>
+    <string name="nc_forward_to">Forward to</string>
     <string name="nc_forward_to_three_dots">Forward to …</string>
     <string name="nc_gallery">Gallery</string>
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
@@ -389,6 +393,9 @@
     <string name="nc_lobby_start_date">This meeting is scheduled for %1$s</string>
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
+    <string name="nc_local_network_permission_denied">Allow local network access to connect to this server.</string>
+    <string name="nc_local_network_permission_message">This server is on your local network. It can only be reached with the \"Nearby devices\" permission. Without it, connecting to the server fails.</string>
+    <string name="nc_local_network_permission_title">Allow local network access</string>
     <string name="nc_location_current_position_description">Your current location</string>
     <string name="nc_location_unknown">Position unknown</string>
     <string name="nc_locked">Locked</string>
@@ -664,6 +671,7 @@
     <string name="nc_shared_items_deck_card">Deck card</string>
     <string name="nc_shared_items_description">Images, files, voice messages …</string>
     <string name="nc_shared_items_empty">No shared items</string>
+    <string name="nc_shared_items_error">Shared items could not be loaded</string>
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_location">Shared location</string>
     <string name="nc_shortcut_conversation_deleted">This conversation no longer exists</string>
@@ -704,6 +712,7 @@
     <string name="nc_voice_message">Voice message</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
+    <string name="nc_voice_message_recording_interrupted">Recording stopped</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_webinar_description">Restricted conversation with lobby enabled, ideal for public webinars</string>
@@ -916,4 +925,4 @@
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>
     </plurals>
-</resources>
+    </resources>
