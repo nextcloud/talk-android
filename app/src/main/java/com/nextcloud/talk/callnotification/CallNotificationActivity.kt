@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationManagerCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -82,7 +83,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun handleExtras() {
         val extras = intent.extras!!
         roomToken = extras.getString(KEY_ROOM_TOKEN, "")
-        notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+        notificationTimestamp = notificationIdOrNull(extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP))
         displayName = extras.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, "")
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
         isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
@@ -152,10 +153,17 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun setupNotificationCanceledRoutine() {
+        val notificationId = notificationTimestamp
+        if (notificationId == null) {
+            // No notification backs this window (missing or zero timestamp extra), so there is no call state
+            // to depend on. Close the window instead of tracking notification id 0, which is never a call.
+            finish()
+            return
+        }
         val notificationHandler = Handler(Looper.getMainLooper())
         notificationHandler.post(object : Runnable {
             override fun run() {
-                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
+                if (NotificationUtils.isNotificationVisible(context, notificationId)) {
                     notificationHandler.postDelayed(this, ONE_SECOND)
                 } else {
                     finish()
@@ -200,17 +208,26 @@ class CallNotificationActivity : CallBaseActivity() {
         intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
         startActivity(callIntent)
+        // Accepting the call is a user decision: dismiss the ringing notification here instead of relying on
+        // CallActivity to cancel it from the forwarded extras. setupNotificationCanceledRoutine() then closes
+        // this window once the notification is gone.
+        dismissCallNotification()
+    }
+
+    private fun dismissCallNotification() {
+        notificationTimestamp?.let { NotificationManagerCompat.from(context).cancel(it) }
     }
 
     private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
-    override fun onStop() {
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.cancel(notificationTimestamp!!)
-        super.onStop()
-    }
-
     public override fun onDestroy() {
+        // The call notification is the state of the call. The window may stop and start again on its own (sleeping
+        // screen), so only a decision of the user removes it: accept, decline, closing the window, e2ee refusal.
+        // All of them finish the window. notificationTimestamp is null when no notification backs this window
+        // (the window finished in onCreate, or the extras carried a missing/zero timestamp).
+        if (isFinishing) {
+            dismissCallNotification()
+        }
         leavingScreen = true
         if (handler != null) {
             handler!!.removeCallbacksAndMessages(null)
@@ -246,5 +263,13 @@ class CallNotificationActivity : CallBaseActivity() {
     companion object {
         private val TAG = CallNotificationActivity::class.simpleName
         const val ONE_SECOND: Long = 1000
+
+        /**
+         * The call notification id is the push message timestamp (always a positive value). A missing
+         * KEY_NOTIFICATION_TIMESTAMP extra decodes to 0 via Bundle.getInt(), which is not a real notification,
+         * so treat it as "no notification backs this window" instead of cancelling an unrelated id 0.
+         */
+        @VisibleForTesting
+        fun notificationIdOrNull(rawTimestamp: Int): Int? = rawTimestamp.takeIf { it != 0 }
     }
 }
