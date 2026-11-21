@@ -204,9 +204,17 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
+    private fun dismissCallNotification() {
+        notificationTimestamp?.let { NotificationManagerCompat.from(context).cancel(it) }
+    }
+
+    override fun onUserLeaveHint() {
+        dismissCallNotification()
+        super.onUserLeaveHint()
+    }
+
     override fun onStop() {
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.cancel(notificationTimestamp!!)
+        if (isFinishing) dismissCallNotification()
         super.onStop()
     }
 
