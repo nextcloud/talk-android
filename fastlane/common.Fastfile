@@ -20,6 +20,9 @@ MAJOR_MULTIPLIER = 10000000
 MINOR_MULTIPLIER = 10000
 PATCH_MULTIPLIER = 100
 
+FDROID_ABI_VERSION_CODES = { "armeabi-v7a" => 1, "arm64-v8a" => 2, "x86" => 3, "x86_64" => 4 }.freeze
+FDROID_ABI_MULTIPLIER = 10
+
 TYPE_ALPHA = "alpha"
 TYPE_RC = "rc"
 TYPE_FINAL = "final"
@@ -78,6 +81,15 @@ platform :android do
 		uploadToHuawei(versionCode: versionInfo["versionCode"], isPrerelease: isPrerelease)
 	end
 
+    desc "Build ABI APKs for F-Droid in app/build/fdroid/"
+    lane :buildFdroid do
+        gradle(
+            task: ":app:assembleGenericRelease",
+            flags: "--init-script fastlane/fdroid.init.gradle",
+            properties: { "fdroidAbiSplit" => true }
+        )
+    end
+
     desc "Print version info"
     lane :printVersionInfo do
         versionInfo = getVersionInfo()
@@ -88,6 +100,9 @@ platform :android do
         print "Minor: #{versionComponents["minor"]}\n"
         print "Patch: #{versionComponents["patch"]}\n"
         print "Build: #{versionComponents["build"]}\n"
+        fdroidAbiVersionCodes(versionCode: versionInfo["versionCode"]).each do |abi, versionCode|
+            print "F-Droid #{abi} version code: #{versionCode}\n"
+        end
     end
     
     desc "Upload Alpha version to play store"
@@ -140,6 +155,13 @@ platform :android do
         build = versionComponents["build"]
         test = major * MAJOR_MULTIPLIER + minor * MINOR_MULTIPLIER + patch * PATCH_MULTIPLIER + build
         test
+    end
+
+    desc "Generate F-Droid versionCode per ABI, must match fdroid.init.gradle"
+    private_lane :fdroidAbiVersionCodes do |options|
+        versionCode = options[:versionCode]
+        base = (versionCode / MAJOR_MULTIPLIER) * MAJOR_MULTIPLIER + (versionCode % MAJOR_MULTIPLIER) * FDROID_ABI_MULTIPLIER
+        FDROID_ABI_VERSION_CODES.transform_values { |abiCode| base + abiCode }
     end
 
     desc "Compute version name from version code"
