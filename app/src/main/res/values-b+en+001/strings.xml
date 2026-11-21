@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_other_notifications_ringtone">Messages</string>
+    <string name="nc_settings_other_sound">Other sound…</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so other users will be able to find you</string>
@@ -925,4 +926,8 @@
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d conversation with unread messages</item>
+        <item quantity="other">%d conversations with unread messages</item>
+    </plurals>
+</resources>

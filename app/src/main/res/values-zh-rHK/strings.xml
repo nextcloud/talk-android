@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">通知被婉拒</string>
     <string name="nc_settings_notifications_granted">已授予通知功能</string>
     <string name="nc_settings_other_notifications_ringtone">訊息</string>
+    <string name="nc_settings_other_sound">其他聲音…</string>
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">錯誤 429 太多要求</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">設置您的電話號碼，以便其他用戶可以找到您</string>
@@ -920,4 +921,7 @@
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 選票</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="other">%d 個對話有未讀訊息</item>
+    </plurals>
+</resources>

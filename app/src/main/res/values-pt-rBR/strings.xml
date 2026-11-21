@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">As notificações foram recusadas</string>
     <string name="nc_settings_notifications_granted">As notificações são concedidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensagens</string>
+    <string name="nc_settings_other_sound">Outro som…</string>
     <string name="nc_settings_phone_book_integration_desc">Combinar os contatos com base no número de telefone para integrar o atalho do Talk no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429 Pedidos Em Excesso</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
@@ -930,4 +931,9 @@
         <item quantity="many">%d votos</item>
         <item quantity="other">%d votos</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d conversa com mensagens não lidas</item>
+        <item quantity="many">%d de conversas com mensagens não lidas</item>
+        <item quantity="other">%d conversas com mensagens não lidas</item>
+    </plurals>
+</resources>
