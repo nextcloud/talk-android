@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Notifikationer er afvist</string>
     <string name="nc_settings_notifications_granted">Notifikationer er tilladte</string>
     <string name="nc_settings_other_notifications_ringtone">Beskeder</string>
+    <string name="nc_settings_other_sound">Anden lyd …</string>
     <string name="nc_settings_phone_book_integration_desc">Match kontakter ud fra telefonnummer for at integrere Talk-genvejen i systemets kontaktapp</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Fejl 429 For mange forespørgsler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Du kan angive dit telefonnummer, så andre brugere kan finde dig</string>
@@ -925,4 +926,8 @@
         <item quantity="one">%d stemme</item>
         <item quantity="other">%d stemmer</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d samtale med ulæste beskeder</item>
+        <item quantity="other">%d samtaler med ulæste beskeder</item>
+    </plurals>
+</resources>

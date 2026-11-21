@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Teavitused pole lubatud</string>
     <string name="nc_settings_notifications_granted">Teavitused on lubatud</string>
     <string name="nc_settings_other_notifications_ringtone">Sõnumid</string>
+    <string name="nc_settings_other_sound">Muu heli…</string>
     <string name="nc_settings_phone_book_integration_desc">Otsi telefoni kontaktide andmete ja Nextcloud Talk rakenduse andmete vasteid telefoninumbri alusel</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Viga 429 - liiga palju päringuid</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Võid lisada oma telefoninumbri, mille alusel teised kasutajad saavad sind leida</string>
@@ -925,4 +926,8 @@
         <item quantity="one">%d hääl</item>
         <item quantity="other">%d häält</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d vestlus, kus leidub lugemata sõnumeid</item>
+        <item quantity="other">%d vestlust, kus leidub lugemata sõnumeid</item>
+    </plurals>
+</resources>

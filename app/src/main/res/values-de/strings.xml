@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Benachrichtigungen werden abgelehnt</string>
     <string name="nc_settings_notifications_granted">Benachrichtigungen werden gewährt</string>
     <string name="nc_settings_other_notifications_ringtone">Nachrichten</string>
+    <string name="nc_settings_other_sound">Anderer Klang …</string>
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Fehler 429: Zu viele Anfragen</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so einstellen, dass andere Benutzer Sie finden können.</string>
@@ -925,4 +926,8 @@
         <item quantity="one">%d Stimme</item>
         <item quantity="other">%d Stimmen</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d Unterhaltung mit ungelesenen Nachrichten</item>
+        <item quantity="other">%d Unterhaltungen mit ungelesenen Nachrichten</item>
+    </plurals>
+</resources>
