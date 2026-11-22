@@ -7,20 +7,18 @@
 
 package com.nextcloud.talk.call.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
@@ -57,6 +55,7 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
                 val authHeader = LocalImageAuthHeader.current.takeIf {
                     participant.actorType == ParticipantDto.ActorType.FEDERATED
                 }
+                val fallback = painterResource(R.drawable.account_circle_96dp)
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(avatarUrl)
@@ -64,37 +63,26 @@ fun AvatarWithFallback(participant: ParticipantUiState, displayName: String, mod
                         .build(),
                     contentDescription = stringResource(R.string.avatar),
                     contentScale = ContentScale.Crop,
+                    placeholder = fallback,
+                    error = fallback,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
                 )
             } else {
-                FallbackAvatar(participant = participant)
+                FallbackAvatar()
             }
         }
     }
 }
 
 @Composable
-private fun FallbackAvatar(participant: ParticipantUiState) {
-    val initials = participant.nick!!
-        .split(" ")
-        .mapNotNull { it.firstOrNull()?.uppercase() }
-        .take(2)
-        .joinToString("")
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White, CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = initials.ifEmpty { "?" },
-            color = Color.Black,
-            fontSize = 24.sp
-        )
-    }
-}
+private fun FallbackAvatar() =
+    Image(
+        painter = painterResource(R.drawable.account_circle_96dp),
+        contentDescription = stringResource(R.string.avatar),
+        modifier = Modifier.fillMaxSize()
+    )
 
 @Composable
 fun getUrlForAvatar(participant: ParticipantUiState): String =

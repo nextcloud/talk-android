@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui.chat
 
+import com.nextcloud.talk.mediaviewer.model.VideoAction
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -63,6 +64,7 @@ data class ChatMessageCallbacks(
     val onLongClick: ((Int) -> Unit?)? = null,
     val onSwipeReply: ((Int) -> Unit)? = null,
     val onFileClick: (Int) -> Unit = {},
+    val onVideoAction: ((Int, VideoAction) -> Unit)? = null,
     val onPollClick: (String, String) -> Unit = { _, _ -> },
     val onVoicePlayPauseClick: (Int) -> Unit = {},
     val onVoiceSeek: (Int, Int) -> Unit = { _, _ -> },
@@ -154,7 +156,8 @@ fun ChatMessageView(
                                 isOneToOneConversation = context.isOneToOneConversation,
                                 conversationThreadId = context.conversationThreadId,
                                 chatViewDownloadingFileState = context.downloadingFileState,
-                                onImageClick = callbacks.onFileClick
+                                onImageClick = callbacks.onFileClick,
+                                onVideoAction = callbacks.onVideoAction
                             )
                         }
 

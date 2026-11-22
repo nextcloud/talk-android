@@ -75,13 +75,21 @@ fun ImageView.loadConversationAvatar(
     ignoreCache: Boolean,
     viewThemeUtils: ViewThemeUtils?
 ): io.reactivex.disposables.Disposable {
-    val imageRequestUri = ApiUtils.getUrlForConversationAvatarWithVersion(
-        1,
-        user.baseUrl,
-        conversation.token,
-        DisplayUtils.isDarkModeOn(this.context),
-        conversation.avatarVersion
-    )
+    val isDark = DisplayUtils.isDarkModeOn(this.context)
+    val imageRequestUri = if (
+        conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+        conversation.remoteServer.isNullOrEmpty()
+    ) {
+        ApiUtils.getUrlForAvatar(user.baseUrl, conversation.name, true, isDark)
+    } else {
+        ApiUtils.getUrlForConversationAvatarWithVersion(
+            1,
+            user.baseUrl,
+            conversation.token,
+            isDark,
+            conversation.avatarVersion
+        )
+    }
 
     if (conversation.avatarVersion.isNullOrEmpty() && viewThemeUtils != null) {
         when (conversation.type) {

@@ -17,6 +17,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,7 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
@@ -84,7 +85,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-private const val LONG_1000 = 1000L
 private const val LOAD_MORE_BUFFER_ITEMS = 5
 private const val STICKY_HEADER_HIDE_DELAY_MILLIS = 1200L
 private const val UNREAD_MARKER_LAYOUT_TIMEOUT_MS = 500L
@@ -168,6 +168,12 @@ fun ChatView(
         mutableStateOf(state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE)
     }
     var didScrollToUnreadMarker by remember { mutableStateOf(false) }
+    var hasUserDragged by remember { mutableStateOf(false) }
+    LaunchedEffect(listState) {
+        listState.interactionSource.interactions.collect { interaction ->
+            if (interaction is DragInteraction.Start) hasUserDragged = true
+        }
+    }
     var hadUnreadMarker by remember { mutableStateOf(false) }
 
     val handleQuotedMessageClick: (Int) -> Unit = remember(coroutineScope, listState) {
@@ -200,18 +206,11 @@ fun ChatView(
             it is ChatViewModel.ChatItem.UnreadMessagesMarkerItem
         }
 
-        if (markerIndex < 0) {
-            didScrollToUnreadMarker = false
-            return@LaunchedEffect
-        }
+        if (markerIndex < 0 || didScrollToUnreadMarker) return@LaunchedEffect
 
-        if (didScrollToUnreadMarker) return@LaunchedEffect
-
-        if (state.markedAsUnreadByUser) {
-            // the user placed this marker themselves and is looking at it already
-            didScrollToUnreadMarker = true
-            return@LaunchedEffect
-        }
+        // Consume the initial jump before suspending; new message updates may cancel this effect.
+        didScrollToUnreadMarker = true
+        if (state.markedAsUnreadByUser || hasUserDragged || listState.isScrollInProgress) return@LaunchedEffect
 
         // While marker exists, keep popup hidden and reset unread popup count once.
         showUnreadPopup.value = false
@@ -223,8 +222,9 @@ fun ChatView(
                 listState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == markerIndex }
             }.filterNotNull().first()
         }
-        listState.centerItemInViewportIfVisible(markerIndex)
-        didScrollToUnreadMarker = true
+        if (!hasUserDragged && !listState.isScrollInProgress) {
+            listState.centerItemInViewportIfVisible(markerIndex)
+        }
     }
 
     // Track newest message and show unread popup.
@@ -241,18 +241,11 @@ fun ChatView(
 
         val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
         val previousNewestId = lastNewestIdRef.value
-
-        if (previousNewestId == null) {
-            lastNewestIdRef.value = newestId
-            return@LaunchedEffect
-        }
+        lastNewestIdRef.value = newestId
 
         val isNearBottom = listState.firstVisibleItemIndex <= 2
-        val hasNewMessage = newestId != previousNewestId &&
-            state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
-
-        if (hasNewMessage) {
-            if (isNearBottom) {
+        if (isNewerMessage(previousNewestId, newestId)) {
+            if (shouldFollowNewMessage(isNearBottom, listState.isScrollInProgress)) {
                 listState.animateScrollToItem(0)
                 unreadCount = 0
             } else {
@@ -260,8 +253,6 @@ fun ChatView(
                 showUnreadPopup.value = true
             }
         }
-
-        lastNewestIdRef.value = newestId
     }
 
     // Hide unread popup when user scrolls to newest
@@ -324,7 +315,7 @@ fun ChatView(
     val density = LocalDensity.current
     val overflowPx = with(density) { state.stickyHeaderTopOffset.roundToPx() }
 
-    val stickyDateHeaderText by remember(listState, state.chatItems, overflowPx) {
+    val stickyDateHeaderDate by remember(listState, state.chatItems, overflowPx) {
         derivedStateOf {
             val visibleItems = listState.layoutInfo.visibleItemsInfo
             val viewportEnd = listState.layoutInfo.viewportEndOffset
@@ -332,17 +323,19 @@ fun ChatView(
             // An item's bottom edge is at screen Y = viewportEnd - offset; it is visible when that
             // is >= overflowPx, i.e. offset <= viewportEnd - overflowPx.
             val targetItem = if (overflowPx > 0) {
-                visibleItems.filter { it.offset <= viewportEnd - overflowPx }.lastOrNull()
+                visibleItems.lastOrNull { it.offset <= viewportEnd - overflowPx }
             } else {
                 visibleItems.lastOrNull()
             }
             targetItem?.let { itemInfo ->
                 state.chatItems.getOrNull(itemInfo.index)?.let { item ->
-                    item.dateOrNull()?.let { formatTime(it) }
-                        ?: item.messageOrNull()?.let { formatTime(it.timestamp * LONG_1000) }
-                } ?: ""
-            } ?: ""
+                    item.dateOrNull() ?: item.messageOrNull()?.date
+                }
+            }
         }
+    }
+    val stickyDateHeaderText = remember(stickyDateHeaderDate) {
+        stickyDateHeaderDate?.let { formatTime(it) }.orEmpty()
     }
 
     var stickyDateHeader by remember { mutableStateOf(false) }
@@ -397,13 +390,23 @@ fun ChatView(
         ) {
             items(
                 items = state.chatItems,
-                key = { it.stableKey() }
+                key = { it.stableKey() },
+                contentType = {
+                    when (it) {
+                        is ChatViewModel.ChatItem.MessageItem -> it.uiMessage.content?.javaClass ?: it.javaClass
+                        else -> it.javaClass
+                    }
+                }
             ) { chatItem ->
                 when (chatItem) {
                     is ChatViewModel.ChatItem.MessageItem -> {
                         Box(
                             modifier = Modifier.padding(
-                                top = if (!chatItem.uiMessage.isGrouped) 4.dp else 0.dp
+                                top = when {
+                                    chatItem.uiMessage.content == MessageTypeContent.SystemMessage -> 0.dp
+                                    !chatItem.uiMessage.isGrouped -> 4.dp
+                                    else -> 0.dp
+                                }
                             )
                         ) {
                             ChatMessageView(
@@ -423,6 +426,7 @@ fun ChatView(
                                     onLongClick = callbacks.messageCallbacks.onLongClick,
                                     onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
                                     onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onVideoAction = callbacks.messageCallbacks.onVideoAction,
                                     onPollClick = callbacks.messageCallbacks.onPollClick,
                                     onVoicePlayPauseClick = callbacks.messageCallbacks.onVoicePlayPauseClick,
                                     onVoiceSeek = callbacks.messageCallbacks.onVoiceSeek,
@@ -457,6 +461,7 @@ fun ChatView(
                                     onLongClick = callbacks.messageCallbacks.onLongClick,
                                     onSwipeReply = callbacks.messageCallbacks.onSwipeReply,
                                     onFileClick = callbacks.messageCallbacks.onFileClick,
+                                    onVideoAction = callbacks.messageCallbacks.onVideoAction,
                                     onReactionClick = callbacks.messageCallbacks.onReactionClick,
                                     onReactionLongClick = callbacks.messageCallbacks.onReactionLongClick,
                                     onOpenThreadClick = callbacks.messageCallbacks.onOpenThreadClick,
@@ -495,7 +500,7 @@ fun ChatView(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = state.stickyHeaderTopOffset + 2.dp)
-                .alpha(stickyDateHeaderAlpha)
+                .graphicsLayer { alpha = stickyDateHeaderAlpha }
         )
 
         // Unread messages popup

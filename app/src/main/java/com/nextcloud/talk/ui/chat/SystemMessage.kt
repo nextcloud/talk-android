@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.SpanStyle
@@ -38,26 +38,34 @@ import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 
-private const val TIME_TEXT_SIZE = 12
+private const val TIME_TEXT_SIZE = 11
+private const val TIME_LINE_HEIGHT = 14
 
 private val systemMessageTextStyle
-    @Composable get() = MaterialTheme.typography.bodyMedium
+    @Composable get() = MaterialTheme.typography.bodySmall
+
+private val systemMessageTimeStyle
+    @Composable get() = MaterialTheme.typography.bodySmall.copy(
+        fontSize = TIME_TEXT_SIZE.sp,
+        lineHeight = TIME_LINE_HEIGHT.sp
+    )
 
 @Composable
 fun SystemMessage(message: ChatMessageUi) {
     val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
     val highlightSearchTerm = LocalHighlightSearchTerm.current
+    val logColor = colorResource(R.color.chat_system_log_text)
     if (message.isExpandableParent) {
         Box(modifier = Modifier.fillMaxWidth()) {
             ExpandableSystemMessage(message = message, highlightSearchTerm = highlightSearchTerm)
             Text(
                 timeString,
-                fontSize = TIME_TEXT_SIZE.sp,
-                color = colorScheme.onSurfaceVariant,
+                style = systemMessageTimeStyle,
+                color = logColor,
                 textAlign = TextAlign.End,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(end = 8.dp, bottom = 4.dp)
+                    .padding(end = 8.dp, bottom = 1.dp)
             )
         }
     } else {
@@ -77,12 +85,12 @@ fun SystemMessage(message: ChatMessageUi) {
             Text(
                 highlightedAnnotated,
                 style = resolvedTextStyle,
-                color = colorScheme.onSurface,
+                color = logColor,
                 inlineContent = inlineContent,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 64.dp, vertical = 4.dp)
+                    .padding(horizontal = 64.dp, vertical = 1.dp)
                     .align(Alignment.Center),
                 onTextLayout = { result ->
                     if (!addLineBreaks.value && result.lineCount > 1) {
@@ -92,11 +100,11 @@ fun SystemMessage(message: ChatMessageUi) {
             )
             Text(
                 timeString,
-                fontSize = TIME_TEXT_SIZE.sp,
-                color = colorScheme.onSurfaceVariant,
+                style = systemMessageTimeStyle,
+                color = logColor,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(end = 8.dp, bottom = 4.dp)
+                    .padding(end = 8.dp, bottom = 1.dp)
             )
         }
     }
@@ -107,6 +115,7 @@ private fun ExpandableSystemMessage(message: ChatMessageUi, highlightSearchTerm:
     val chevronRes = if (message.isExpanded) R.drawable.ic_keyboard_arrow_up else R.drawable.ic_keyboard_arrow_down
     val textStyle = systemMessageTextStyle
     val (annotated, inlineContent) = rememberSystemMessageContent(message, textStyle)
+    val logColor = colorResource(R.color.chat_system_log_text)
     val highlightedAnnotated = remember(annotated, highlightSearchTerm) {
         annotated.withSearchHighlight(highlightSearchTerm)
     }
@@ -114,7 +123,7 @@ private fun ExpandableSystemMessage(message: ChatMessageUi, highlightSearchTerm:
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp, end = 56.dp),
+            .padding(start = 8.dp, top = 2.dp, bottom = 2.dp, end = 56.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -124,12 +133,12 @@ private fun ExpandableSystemMessage(message: ChatMessageUi, highlightSearchTerm:
                 modifier = Modifier
                     .padding(end = 4.dp)
                     .size(16.dp),
-                tint = colorScheme.onSurfaceVariant
+                tint = logColor
             )
             Text(
                 highlightedAnnotated,
                 style = textStyle,
-                color = colorScheme.onSurface,
+                color = logColor,
                 inlineContent = inlineContent
             )
         }
@@ -140,8 +149,8 @@ private fun ExpandableSystemMessage(message: ChatMessageUi, highlightSearchTerm:
                     message.expandableChildrenAmount,
                     message.expandableChildrenAmount
                 ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorScheme.onSurfaceVariant
+                style = textStyle,
+                color = logColor
             )
         }
     }

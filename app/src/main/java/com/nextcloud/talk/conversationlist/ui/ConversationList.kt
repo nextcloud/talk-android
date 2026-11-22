@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -102,6 +103,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 private const val MSG_KEY_EXCERPT_LENGTH = 20
+private const val CONVERSATION_DIVIDER_ALPHA = 0.65f
 
 private const val TAGS_REVEAL_PULL_RESISTANCE = 0.5f
 private const val TAGS_REVEAL_SNAP_THRESHOLD_FRACTION = 0.35f
@@ -284,17 +286,13 @@ fun ConversationList(
         coroutineScope = tagsRevealCoroutineScope
     )
 
-    var prevIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
-    var prevOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
+    val currentOnScrollChanged by rememberUpdatedState(onScrollChanged)
+    val currentOnScrollStopped by rememberUpdatedState(onScrollStopped)
     LaunchedEffect(listState) {
+        val directionTracker = ScrollDirectionTracker()
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
             .collect { (index, offset) ->
-                if (index != prevIndex || offset != prevOffset) {
-                    val scrolledDown = index > prevIndex || (index == prevIndex && offset > prevOffset)
-                    onScrollChanged(scrolledDown)
-                    prevIndex = index
-                    prevOffset = offset
-                }
+                directionTracker.onPosition(index, offset)?.let(currentOnScrollChanged)
             }
     }
 
@@ -303,20 +301,20 @@ fun ConversationList(
             .collect { isScrolling ->
                 if (!isScrolling) {
                     val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                    onScrollStopped(lastVisible)
+                    currentOnScrollStopped(lastVisible)
                 }
             }
     }
 
     LaunchedEffect(entries) {
         if (entries.isEmpty()) {
-            onScrollStopped(0)
+            currentOnScrollStopped(0)
             return@LaunchedEffect
         }
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }
             .first { it.isNotEmpty() }
         val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-        onScrollStopped(lastVisible)
+        currentOnScrollStopped(lastVisible)
     }
 
     Column(
@@ -357,6 +355,7 @@ fun ConversationList(
             ) {
                 itemsIndexed(
                     items = entries,
+                    contentType = { _, entry -> entry.javaClass },
                     key = { index, entry ->
                         when (entry) {
                             is ConversationListEntry.Header ->
@@ -380,26 +379,36 @@ fun ConversationList(
                                 "load_more"
                         }
                     }
-                ) { _, entry ->
+                ) { index, entry ->
                     when (entry) {
                         is ConversationListEntry.Header ->
                             ConversationSectionHeader(title = entry.title)
 
                         is ConversationListEntry.ConversationEntry ->
-                            SwipeableConversationItem(
-                                model = entry.model,
-                                onSwipe = { action -> onSwipeConversation(action, entry.model) },
-                                enabled = isOnline
-                            ) {
-                                ConversationListItem(
+                            Column {
+                                SwipeableConversationItem(
                                     model = entry.model,
-                                    currentUser = currentUser,
-                                    callbacks = ConversationListItemCallbacks(
-                                        onClick = { onConversationClick(entry.model) },
-                                        onLongClick = { onConversationLongClick(entry.model) }
-                                    ),
-                                    searchQuery = searchQuery
-                                )
+                                    onSwipe = { action -> onSwipeConversation(action, entry.model) },
+                                    enabled = isOnline
+                                ) {
+                                    ConversationListItem(
+                                        model = entry.model,
+                                        currentUser = currentUser,
+                                        callbacks = ConversationListItemCallbacks(
+                                            onClick = { onConversationClick(entry.model) },
+                                            onLongClick = { onConversationLongClick(entry.model) }
+                                        ),
+                                        searchQuery = searchQuery
+                                    )
+                                }
+                                if (entries.getOrNull(index + 1) is ConversationListEntry.ConversationEntry) {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(start = 80.dp, end = 16.dp),
+                                        thickness = 0.5.dp,
+                                        color = MaterialTheme.colorScheme.outlineVariant
+                                            .copy(alpha = CONVERSATION_DIVIDER_ALPHA)
+                                    )
+                                }
                             }
 
                         is ConversationListEntry.MessageResultEntry ->

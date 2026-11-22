@@ -49,9 +49,11 @@ class BrowserLoginActivity : BaseActivity() {
     private var reauthorizeAccount = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            viewModel.cancelLogin()
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
+            finish()
         }
     }
 
@@ -74,6 +76,11 @@ class BrowserLoginActivity : BaseActivity() {
         sharedApplication!!.componentApplication.inject(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.handleWebBrowserLogin()
+    }
+
     private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -84,13 +91,8 @@ class BrowserLoginActivity : BaseActivity() {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
                         }
                         is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
-                            if (viewModel.waitingForBrowserState.value) {
-                                viewModel.setWaitingForBrowser(false)
-                                viewModel.handleWebBrowserLogin()
-                            } else {
-                                viewModel.setWaitingForBrowser(true)
-                                launchDefaultWebBrowser(state.loginUrl)
-                            }
+                            viewModel.onBrowserOpened()
+                            launchDefaultWebBrowser(state.loginUrl)
                         }
                         BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                     }
@@ -111,7 +113,9 @@ class BrowserLoginActivity : BaseActivity() {
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
                             logger.e(TAG, "Post login step failed")
-                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.nc_retry) { viewModel.handleWebBrowserLogin() }
+                                .show()
                         }
                         BrowserLoginActivityViewModel.PostLoginViewState.PostLoginTooManyLoginAttempts -> {
                             logger.e(TAG, "Login refused because of too many failed logins")
@@ -169,14 +173,12 @@ class BrowserLoginActivity : BaseActivity() {
         viewThemeUtils.material.colorProgressBar(binding.progressBar)
 
         binding.cancelLoginBtn.setOnClickListener {
-            viewModel.cancelLogin()
             onBackPressedDispatcher.onBackPressed()
         }
     }
 
     private fun launchDefaultWebBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 
@@ -184,12 +186,14 @@ class BrowserLoginActivity : BaseActivity() {
         val intent = Intent(context, AccountVerificationActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
+        finish()
     }
 
     private fun restartApp() {
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
+        finish()
     }
 
     public override fun onDestroy() {

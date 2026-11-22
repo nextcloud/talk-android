@@ -8,6 +8,7 @@ package com.nextcloud.talk.mediaviewer.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.SystemBarStyle
@@ -41,6 +42,10 @@ import javax.inject.Inject
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.ui.LocalImageAuthHeader
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.nextcloud.talk.mediaviewer.model.VideoAction
 
 /**
  * Swipeable, group-aware media viewer - the entry point for every image/video tap in chat. See
@@ -54,11 +59,16 @@ class MediaViewerActivity : BaseActivity() {
 
     private lateinit var viewModel: MediaViewerViewModel
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
+    private lateinit var videoPlayback: VideoPlaybackController
+    private lateinit var videoExporter: VideoExporter
+    private var inPictureInPicture by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val user = setUpBoundUserOrFinish() ?: return
+        videoPlayback = VideoPlaybackController(this)
+        videoExporter = VideoExporter(this)
         val imageAuthHeader = ApiUtils.getCredentials(user.username, user.token)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
@@ -81,7 +91,11 @@ class MediaViewerActivity : BaseActivity() {
         windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-        val composeView = ComposeView(this).apply {
+        setContentView(createContentView(imageAuthHeader))
+    }
+
+    private fun createContentView(imageAuthHeader: String?) =
+        ComposeView(this).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val colorScheme = viewThemeUtils.getColorScheme(this@MediaViewerActivity)
@@ -91,6 +105,13 @@ class MediaViewerActivity : BaseActivity() {
                             viewModel = viewModel,
                             onShare = ::shareFile,
                             onSave = ::showSaveDialog,
+                            exoPlayer = videoPlayback.player,
+                            inPictureInPicture = inPictureInPicture,
+                            initialAction = VideoAction.entries.firstOrNull {
+                                it.name == intent.getStringExtra(EXTRA_VIDEO_ACTION)
+                            } ?: VideoAction.PLAY,
+                            onInitialActionConsumed = { intent.removeExtra(EXTRA_VIDEO_ACTION) },
+                            onPictureInPicture = ::openPictureInPicture,
                             onControlsVisibilityChanged = { visible ->
                                 if (visible) exitImmersiveMode() else enterImmersiveMode()
                             }
@@ -100,7 +121,27 @@ class MediaViewerActivity : BaseActivity() {
             }
         }
 
-        setContentView(composeView)
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (::videoPlayback.isInitialized) videoPlayback.player.pause()
+        setIntent(intent)
+        viewModelStore.clear()
+        recreate()
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        inPictureInPicture = isInPictureInPictureMode
+    }
+
+    private fun openPictureInPicture() {
+        if (!videoPlayback.canPlay()) {
+            Snackbar.make(window.decorView, R.string.video_playback_blocked, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (!videoPlayback.enterPictureInPicture()) {
+            Snackbar.make(window.decorView, R.string.video_pip_unavailable, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun enterImmersiveMode() {
@@ -125,6 +166,10 @@ class MediaViewerActivity : BaseActivity() {
     }
 
     private fun showSaveDialog(item: MediaViewerItem, localPath: String) {
+        if (item.mimeType.startsWith("video/")) {
+            videoExporter.save(item)
+            return
+        }
         val safeFile = FileUtils.resolveSharedAttachmentFile(cacheDir, item.fileId, File(localPath).name)
         if (safeFile == null) {
             logger.e(TAG, "Refused to save file with unsafe name: ${File(localPath).name}")
@@ -139,19 +184,23 @@ class MediaViewerActivity : BaseActivity() {
         private val TAG = MediaViewerActivity::class.java.simpleName
         private const val EXTRA_SEED_ITEMS = "MEDIA_VIEWER_SEED_ITEMS"
         private const val EXTRA_START_MESSAGE_ID = "MEDIA_VIEWER_START_MESSAGE_ID"
+        private const val EXTRA_VIDEO_ACTION = "MEDIA_VIEWER_VIDEO_ACTION"
 
+        @Suppress("LongParameterList")
         fun newIntent(
             context: Context,
             userId: Long,
             roomToken: String,
             seedItems: List<MediaViewerItem>,
-            startMessageId: Long
+            startMessageId: Long,
+            videoAction: VideoAction = VideoAction.PLAY
         ): Intent =
             Intent(context, MediaViewerActivity::class.java).apply {
                 putExtra(BundleKeys.KEY_INTERNAL_USER_ID, userId)
                 putExtra(KEY_ROOM_TOKEN, roomToken)
                 putParcelableArrayListExtra(EXTRA_SEED_ITEMS, ArrayList(seedItems))
                 putExtra(EXTRA_START_MESSAGE_ID, startMessageId)
+                putExtra(EXTRA_VIDEO_ACTION, videoAction.name)
             }
     }
 }

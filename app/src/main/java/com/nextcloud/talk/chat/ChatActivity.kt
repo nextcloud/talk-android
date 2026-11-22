@@ -14,17 +14,16 @@
 
 package com.nextcloud.talk.chat
 
+import com.nextcloud.talk.mediaviewer.model.VideoAction
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -53,13 +52,11 @@ import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +65,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -82,11 +78,6 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -97,10 +88,15 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.common.util.concurrent.ListenableFuture
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.data.io.MessageAudioController
+import com.nextcloud.talk.chat.data.io.MessageAudioKey
+import com.nextcloud.talk.chat.data.io.MessageAudioTrack
+import com.nextcloud.talk.chat.ui.model.withMessageAudio
+import com.nextcloud.talk.ui.MessageAudioBar
+import com.nextcloud.talk.ui.openMessageAudioConversation
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
@@ -108,9 +104,8 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.attachmentpreview.FileAttachmentPreviewFragment
-import com.nextcloud.talk.chat.data.io.VoiceMessageMediaService
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.data.model.FileParameters
+import com.nextcloud.talk.ui.chat.downloadingMessageKeys
 import com.nextcloud.talk.chat.ui.ChatEmptyState
 import com.nextcloud.talk.chat.ui.ChatEmptyStateType
 import com.nextcloud.talk.chat.ui.ChatToolbar
@@ -238,7 +233,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -253,7 +247,6 @@ import java.time.ZonedDateTime
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.CancellationException
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.abs
@@ -318,8 +311,8 @@ class ChatActivity :
         mutableStateOf<ChatViewModel.UpcomingEventUIState>(ChatViewModel.UpcomingEventUIState.None)
     private val overflowContainerHeightPx = mutableIntStateOf(0)
 
-    private var mediaControllerFuture: ListenableFuture<MediaController>? = null
-    private var mediaController: MediaController? = null
+    @Inject
+    lateinit var messageAudioController: MessageAudioController
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -433,76 +426,6 @@ class ChatActivity :
     private var pendingTargetSearchQuery: String? = null
 
     private lateinit var pickMultipleMedia: ActivityResultLauncher<PickVisualMediaRequest>
-
-    private var progressJob: Job? = null
-
-    private fun updateSeekbarUi() {
-        mediaController?.let { controller ->
-            val currentPosition = controller.currentPosition
-            val duration = controller.duration.takeIf { it > 0 } ?: 1
-
-            val progress = (currentPosition.toFloat() / duration) * FLOAT_100
-            val secondsPlayed = (currentPosition / MILLIS_1000)
-
-            val msg = chatViewModel.currentVoiceMessage?.apply {
-                voiceMessageSeekbarProgress = kotlin.math.ceil(progress).toInt()
-                voiceMessagePlayedSeconds = secondsPlayed.toInt()
-                if (controller.duration > 0) {
-                    voiceMessageDuration = (controller.duration / MILLIS_1000).toInt()
-                }
-            }
-
-            val currentMediaId = controller.currentMediaItem?.mediaId
-            if (currentMediaId != null && msg != null) {
-                chatViewModel.syncVoiceMessageUiState(msg)
-            }
-        }
-    }
-
-    private fun startProgressPolling() {
-        progressJob?.cancel()
-        progressJob = lifecycleScope.launch {
-            while (isActive) {
-                updateSeekbarUi()
-                // Poll every 150ms for smooth seekbar updates
-                delay(MILLIS_150)
-            }
-        }
-    }
-
-    private fun stopProgressPolling() {
-        progressJob?.cancel()
-        progressJob = null
-    }
-
-    private val playerListener = object : Player.Listener {
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            if (isPlaying) {
-                startProgressPolling()
-            } else {
-                stopProgressPolling()
-                updateSeekbarUi()
-            }
-
-            chatViewModel.currentVoiceMessage?.apply {
-                isPlayingVoiceMessage = isPlaying
-            }?.let { chatViewModel.syncVoiceMessageUiState(it) }
-        }
-
-        // Catches instant changes (e.g., manual seeks, skipping to the next track)
-        override fun onPositionDiscontinuity(
-            oldPosition: Player.PositionInfo,
-            newPosition: Player.PositionInfo,
-            reason: Int
-        ) {
-            updateSeekbarUi()
-        }
-
-        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            // Ensures the UI resets immediately when transitioning to the next voice message
-            updateSeekbarUi()
-        }
-    }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -632,6 +555,11 @@ class ChatActivity :
         keepContentOutOfDisplayCutout()
 
         setupChatToolbarView()
+        binding.messageAudioBar.setContent {
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
+                MessageAudioBar(messageAudioController) { openMessageAudioConversation(it) }
+            }
+        }
         setupChatEmptyStateView()
         setupTypingIndicatorView()
 
@@ -889,6 +817,7 @@ class ChatActivity :
         binding.messagesListViewCompose.setContent {
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
                 val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+                val audioState by messageAudioController.state.collectAsStateWithLifecycle()
                 val chatMode by chatViewModel.chatMode.collectAsStateWithLifecycle()
                 val participantPermissions by participantPermissionsFlow.collectAsStateWithLifecycle()
                 currentConversation = uiState.conversation
@@ -939,9 +868,18 @@ class ChatActivity :
                     // that if any of the messages that are present contain a fileId that is within downloadingFileState
                     val openWhenDownloadState = remember { mutableStateOf(false) }
 
-                    val visibleIds = listState.visibleItemsWithThreshold()
-                    LaunchedEffect(visibleIds, downloadingFileState.value) {
-                        openWhenDownloadState.value = (downloadingFileState.value.intersect(visibleIds).isNotEmpty())
+                    LaunchedEffect(listState, uiState.items, downloadingFileState.value) {
+                        val downloadKeys = downloadingMessageKeys(uiState.items, downloadingFileState.value)
+                        if (downloadKeys.isEmpty()) {
+                            openWhenDownloadState.value = false
+                            return@LaunchedEffect
+                        }
+                        snapshotFlow {
+                            listState.layoutInfo.visibleItemsInfo.any { it.key in downloadKeys }
+                        }.collect { openWhenDownloadState.value = it }
+                    }
+                    val audioItems = remember(uiState.items, audioState, conversationUserId, roomToken) {
+                        uiState.items.withMessageAudio(audioState, conversationUserId, roomToken)
                     }
 
                     val overflowHeightDp = with(LocalDensity.current) {
@@ -949,7 +887,7 @@ class ChatActivity :
                     }
                     ChatView(
                         state = ChatViewState(
-                            chatItems = uiState.items,
+                            chatItems = audioItems,
                             isOneToOneConversation = isOneToOneConversation,
                             conversationThreadId = conversationThreadId,
                             chatMode = chatMode,
@@ -970,15 +908,13 @@ class ChatActivity :
                                 onLongClick = { openMessageActionsDialog(it) },
                                 onSwipeReply = { handleSwipeToReply(it) },
                                 onFileClick = { downloadAndOpenFile(it, openWhenDownloadState, downloadingFileState) },
+                                onVideoAction = { id, action ->
+                                    downloadAndOpenFile(id, openWhenDownloadState, downloadingFileState, action)
+                                },
                                 onPollClick = { pollId, pollName -> openPollDialog(pollId, pollName) },
                                 onVoicePlayPauseClick = { onVoiceClick(it) },
                                 onVoiceSeek = { id, progress ->
-                                    mediaController?.let { controller ->
-                                        if (id.toString() == controller.currentMediaItem?.mediaId) {
-                                            val pos = controller.duration * progress / 100f
-                                            controller.seekTo(pos.toLong())
-                                        }
-                                    }
+                                    messageAudioController.playback.seek(audioKey(id), progress)
                                 },
                                 onVoiceSpeedClick = { onVoiceSpeedClickCompose(it) },
                                 onReactionClick = { messageId, emoji -> handleReactionClick(messageId, emoji) },
@@ -1107,168 +1043,53 @@ class ChatActivity :
         }
     }
 
-    @Suppress("ReturnCount", "CyclomaticComplexMethod")
+    private fun audioKey(messageId: Int) = MessageAudioKey(conversationUserId, roomToken, messageId)
+
     private fun onVoiceClick(messageId: Int) {
-        fun getAudioDuration(audioFilePath: String): Long {
-            val retriever = MediaMetadataRetriever()
-
-            return try {
-                retriever.setDataSource(audioFilePath)
-                val durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                val durationLong = durationString?.toLong() ?: 0L
-
-                durationLong / ONE_SECOND_IN_MILLIS
-            } catch (e: IllegalArgumentException) {
-                logger.e(TAG, "Failed to read audio duration for $audioFilePath", e)
-                0L
-            } finally {
-                retriever.release()
-            }
-        }
-
-        fun setupAndPlay(controller: MediaController, message: ChatMessage, file: String) {
-            val avatarUrl = chatViewModel.getAvatarUrl(message)
-
-            val artist = if (message.isVoiceMessage) {
-                "Voice Message"
-            } else {
-                message.fileParameters.name
-            }
-            val metadata = MediaMetadata.Builder()
-                .setTitle(message.actorDisplayName)
-                .setArtist(artist)
-                .setArtworkUri(avatarUrl.toUri())
-                .build()
-
-            val mediaItem = MediaItem.Builder()
-                .setMediaId(message.jsonMessageId.toString())
-                .setMediaMetadata(metadata)
-                .setUri(file)
-                .build()
-
-            controller.setMediaItem(mediaItem)
-
-            controller.prepare()
-            controller.play()
-        }
-
-        fun setUpWaveform(message: ChatMessage, file: File) {
-            if (message.voiceMessageFloatArray != null) return
-
-            val filename = message.fileParameters.name
-            message.isDownloadingVoiceMessage = true
-
-            chatViewModel.syncVoiceMessageUiState(message)
-
-            CoroutineScope(Dispatchers.Default).launch {
-                val waveform = AudioUtils.audioFileToFloatArray(file)
-                appPreferences.saveWaveFormForFile(filename, waveform.toTypedArray())
-                message.voiceMessageFloatArray = waveform
-
-                withContext(Dispatchers.Main) {
-                    message.isDownloadingVoiceMessage = false
-                    chatViewModel.syncVoiceMessageUiState(message)
-                }
-            }
-        }
-
-        fun prepareVoiceMessage(controller: MediaController, message: ChatMessage): Boolean {
-            val currentMessageId = message.jsonMessageId.toString()
-            val filename = message.fileParameters.name
-            if (filename.isEmpty()) {
-                return true
-            }
-
-            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, filename) ?: return true
-            val fileURI = file.toUri()
-            val filePath = fileURI.toString()
-
-            chatViewModel.syncVoiceMessageUiState(
-                message.apply {
-                    voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
-                }
-            )
-
-            fun finishPreparing() {
-                setupAndPlay(controller, message, filePath)
-                if (message.isVoiceMessage) {
-                    setUpWaveform(message, file)
-                } else {
-                    message.isDownloadingVoiceMessage = false
-                    chatViewModel.syncVoiceMessageUiState(message)
-                }
-            }
-
-            val alreadyLoaded = controller.currentMediaItem?.mediaId == currentMessageId
-            if (!alreadyLoaded || !file.exists()) {
-                if (!file.exists()) {
-                    downloadFileToCache(message, true) {
-                        chatViewModel.syncVoiceMessageUiState(
-                            message.apply {
-                                voiceMessageDuration = getAudioDuration(file.absolutePath).toInt()
-                            }
-                        )
-                        finishPreparing()
-                    }
-                } else {
-                    finishPreparing()
-                }
-
-                return true
-            }
-            return false
-        }
-
+        val playback = messageAudioController.playback
+        val key = audioKey(messageId)
+        if (playback.toggle(key)) return
+        val request = playback.beginRequest(key)
         lifecycleScope.launch {
+            if (!messageAudioController.connect()) {
+                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                return@launch
+            }
             val message = chatViewModel.getMessageById(messageId.toLong()).first()
-
-            mediaController?.let { controller ->
-                // If a message is still playing, it must be paused first before another can be loaded
-                val currentMessageId = message.jsonMessageId.toString()
-                if (controller.isPlaying && controller.currentMediaItem?.mediaId != currentMessageId) return@launch
-
-                chatViewModel.currentVoiceMessage = message
-
-                // If the controller is playing a new voice message, initialize
-                if (prepareVoiceMessage(controller, message)) return@launch
-
-                // If the controller is playing the same voice message, pause/resume
-                if (controller.isPlaying) {
-                    controller.pause()
-                } else {
-                    controller.play()
+            val file = FileUtils.resolveSharedAttachmentFile(context.cacheDir, message.fileParameters.name)
+                ?: return@launch
+            val track = MessageAudioTrack(
+                key = key,
+                uri = file.toUri().toString(),
+                title = message.actorDisplayName.orEmpty().ifEmpty { message.fileParameters.name },
+                conversation = currentConversation?.displayName.orEmpty(),
+                isVoice = message.isVoiceMessage,
+                threadId = conversationThreadId
+            )
+            fun playDownloaded() {
+                message.isDownloadingVoiceMessage = false
+                chatViewModel.syncVoiceMessageUiState(message)
+                if (playback.completeRequest(request, track, voiceMessagePlaybackSpeed(messageId).value)) {
+                    prepareAudioWaveform(message, file)
                 }
+            }
+            if (file.exists()) {
+                playDownloaded()
+            } else {
+                downloadFileToCache(message, true, reuseRunningDownload = true, ::playDownloaded)
             }
         }
     }
 
-    @Composable
-    private fun LazyListState.visibleItemsWithThreshold(): List<String> =
-        remember(this) {
-            derivedStateOf {
-                val visibleItemsInfo = layoutInfo.visibleItemsInfo
-                if (layoutInfo.totalItemsCount == 0) {
-                    emptyList()
-                } else {
-                    visibleItemsInfo.mapNotNull { it.key as? String }
-                }
-            }
-        }.value.mapNotNull { key ->
-            val messageItem = chatViewModel.uiState.collectAsState().value.items.firstOrNull { it.stableKey() == key }
-            val message = messageItem?.messageOrNull()
-            var result: String? = null
-            message?.let {
-                if (message.messageParameters.isNotEmpty()) {
-                    val normalizedParameters = HashMap<String?, HashMap<String?, String?>>(
-                        message.messageParameters.mapValues { (_, params) -> HashMap(params) }
-                    )
-                    val fileParameters = FileParameters(normalizedParameters)
-                    result = fileParameters.id
-                }
-            }
-
-            result
+    private fun prepareAudioWaveform(message: ChatMessage, file: File) {
+        if (!message.isVoiceMessage || message.voiceMessageFloatArray != null) return
+        lifecycleScope.launch {
+            val waveform = withContext(Dispatchers.Default) { AudioUtils.audioFileToFloatArray(file) }
+            appPreferences.saveWaveFormForFile(message.fileParameters.name, waveform.toTypedArray())
+            message.voiceMessageFloatArray = waveform
+            chatViewModel.syncVoiceMessageUiState(message)
         }
+    }
 
     private fun onLoadQuotedMessage(messageId: Int) {
         chatViewModel.jumpToQuotedMessage(messageId.toLong())
@@ -1301,15 +1122,23 @@ class ChatActivity :
         }
     }
 
-    private fun onVoiceSpeedClickCompose(messageId: Int) {
-        val currentSpeed = chatViewModel.uiState.value.items
+    private fun voiceMessagePlaybackSpeed(messageId: Int): PlaybackSpeed =
+        chatViewModel.uiState.value.items
             .mapNotNull { (it as? ChatViewModel.ChatItem.MessageItem)?.uiMessage }
             .firstOrNull { it.id == messageId }
             ?.content
             ?.let { it as? MessageTypeContent.Voice }
             ?.playbackSpeed ?: PlaybackSpeed.NORMAL
-        val nextSpeed = currentSpeed.next()
-        chatViewModel.setPlayBack(nextSpeed)
+
+    private fun onVoiceSpeedClickCompose(messageId: Int) {
+        val current = messageAudioController.state.value
+        val speed = if (current.belongsTo(audioKey(messageId))) {
+            PlaybackSpeed.entries.firstOrNull { it.value == current.speed } ?: PlaybackSpeed.NORMAL
+        } else {
+            voiceMessagePlaybackSpeed(messageId)
+        }
+        val nextSpeed = speed.next()
+        messageAudioController.playback.setSpeed(audioKey(messageId), nextSpeed.value)
         appPreferences.savePreferredPlayback(conversationUser!!.userId, nextSpeed)
         chatViewModel.setVoiceMessageSpeed(messageId, nextSpeed)
     }
@@ -1317,7 +1146,8 @@ class ChatActivity :
     fun downloadAndOpenFile(
         messageId: Int,
         openWhenDownloadState: MutableState<Boolean>,
-        downloadState: MutableState<List<String>>
+        downloadState: MutableState<List<String>>,
+        videoAction: VideoAction = VideoAction.PLAY
     ) {
         lifecycleScope.launch {
             val chatMessage = chatViewModel.getMessageById(messageId.toLong()).first()
@@ -1339,11 +1169,12 @@ class ChatActivity :
                         conversationUserId,
                         roomToken,
                         seedItems,
-                        messageId.toLong()
+                        messageId.toLong(),
+                        videoAction
                     )
                 )
             } else {
-                fileViewerUtils.openFile(chatMessage, openWhenDownloadState, downloadState)
+                fileViewerUtils.openFile(chatMessage, openWhenDownloadState, downloadState, videoAction)
             }
         }
     }
@@ -1444,36 +1275,6 @@ class ChatActivity :
         active = true
         this.lifecycle.addObserver(AudioUtils)
         this.lifecycle.addObserver(chatViewModel)
-
-        val sessionToken = SessionToken(this, ComponentName(this, VoiceMessageMediaService::class.java))
-        val future = MediaController.Builder(this, sessionToken)
-            .setListener(object : MediaController.Listener {
-                override fun onDisconnected(controller: MediaController) {
-                    mediaController?.removeListener(playerListener)
-                    stopProgressPolling()
-                    mediaController = null
-                }
-            })
-            .buildAsync()
-        mediaControllerFuture = future
-
-        future.addListener({
-            if (future !== mediaControllerFuture) {
-                return@addListener
-            }
-
-            mediaController = try {
-                future.get()
-            } catch (_: CancellationException) {
-                null
-            }
-
-            mediaController?.addListener(playerListener)
-
-            if (mediaController?.isPlaying == true) {
-                startProgressPolling()
-            }
-        }, ContextCompat.getMainExecutor(this))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1488,12 +1289,6 @@ class ChatActivity :
         active = false
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
-
-        mediaController?.removeListener(playerListener)
-        stopProgressPolling()
-
-        mediaControllerFuture?.let { MediaController.releaseFuture(it) }
-        mediaController = null
     }
 
     @OptIn(FlowPreview::class)
@@ -2459,6 +2254,7 @@ class ChatActivity :
     private fun downloadFileToCache(
         message: ChatMessage,
         openWhenDownloaded: Boolean,
+        reuseRunningDownload: Boolean = false,
         funToCallWhenDownloadSuccessful: (() -> Unit)
     ) {
         message.isDownloadingVoiceMessage = true
@@ -2480,11 +2276,15 @@ class ChatActivity :
             context
         ).getWorkInfosByTag(fileId!!)
         try {
-            for (workInfo in workers.get()) {
-                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(TAG, "Download worker for $fileId is already running or scheduled")
-                    return
+            val runningWork = workers.get().firstOrNull {
+                it.state == WorkInfo.State.RUNNING || it.state == WorkInfo.State.ENQUEUED
+            }
+            if (runningWork != null) {
+                Log.d(TAG, "Download worker for $fileId is already running or scheduled")
+                if (reuseRunningDownload) {
+                    observeAudioDownload(runningWork.id, message, funToCallWhenDownloadSuccessful)
                 }
+                return
             }
         } catch (e: ExecutionException) {
             Log.e(TAG, "Error when checking if worker already exists", e)
@@ -2508,12 +2308,30 @@ class ChatActivity :
 
         WorkManager.getInstance().enqueue(downloadWorker)
 
+        if (reuseRunningDownload) {
+            observeAudioDownload(downloadWorker.id, message, funToCallWhenDownloadSuccessful)
+            return
+        }
+
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo? ->
                 if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
                     funToCallWhenDownloadSuccessful()
                 }
             }
+    }
+
+    private fun observeAudioDownload(id: UUID, message: ChatMessage, onSuccess: () -> Unit) {
+        val work = WorkManager.getInstance(context).getWorkInfoByIdLiveData(id)
+        work.observeForever(object : androidx.lifecycle.Observer<WorkInfo?> {
+            override fun onChanged(value: WorkInfo?) {
+                if (value?.state?.isFinished != true) return
+                work.removeObserver(this)
+                message.isDownloadingVoiceMessage = false
+                chatViewModel.syncVoiceMessageUiState(message)
+                if (value.state == WorkInfo.State.SUCCEEDED) onSuccess()
+            }
+        })
     }
 
     fun isRecordAudioPermissionGranted(): Boolean =
@@ -4328,9 +4146,6 @@ class ChatActivity :
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val MILLIS_250 = 250L
-        private const val MILLIS_150 = 150L
-        private const val MILLIS_1000 = 1000L
-        private const val FLOAT_100 = 100f
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222

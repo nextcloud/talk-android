@@ -27,6 +27,9 @@ import autodagger.AutoComponent
 import autodagger.AutoInjector
 import coil.Coil
 import coil.ImageLoader
+import com.nextcloud.talk.utils.DefaultUserAvatarImage
+import com.nextcloud.talk.utils.UserAvatarRequestInterceptor
+import com.nextcloud.talk.utils.UserAvatarResponseInterceptor
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
@@ -301,6 +304,7 @@ class NextcloudTalkApplication :
             }
             .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
             .components {
+                add(UserAvatarRequestInterceptor())
                 if (SDK_INT >= P) {
                     add(ImageDecoderDecoder.Factory())
                 } else {
@@ -313,7 +317,12 @@ class NextcloudTalkApplication :
             imageLoaderBuilder.logger(DebugLogger())
         }
 
-        imageLoaderBuilder.okHttpClient(okHttpClient)
+        val defaultAvatar = DefaultUserAvatarImage(applicationContext)
+        imageLoaderBuilder.okHttpClient(
+            okHttpClient.newBuilder()
+                .addInterceptor(UserAvatarResponseInterceptor(defaultAvatar::bytes))
+                .build()
+        )
 
         return imageLoaderBuilder.build()
     }

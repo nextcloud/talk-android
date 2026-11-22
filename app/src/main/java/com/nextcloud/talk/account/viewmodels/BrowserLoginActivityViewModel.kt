@@ -13,16 +13,18 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.data.model.LoginCompletion
 import com.nextcloud.talk.account.data.model.LoginResponse
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRepository) : ViewModel() {
 
     companion object {
         private val TAG = BrowserLoginActivityViewModel::class.java.simpleName
+        private const val LOGIN_TIMEOUT_MS = 20 * 60 * 1000L
     }
 
     sealed class InitialLoginViewState {
@@ -47,14 +49,14 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
     val postLoginState: StateFlow<PostLoginViewState> = _postLoginState
 
-    private val _waitingForBrowserState = MutableStateFlow(false)
-    val waitingForBrowserState = _waitingForBrowserState.asStateFlow()
-
-    fun setWaitingForBrowser(value: Boolean) {
-        _waitingForBrowserState.value = value
+    fun onBrowserOpened() {
+        _initialLoginRequestState.value = InitialLoginViewState.None
     }
 
     private var savedResponse: LoginResponse? = null
+    private var pollingStarted = false
+    private var initialLoginJob: Job? = null
+    private var loginJob: Job? = null
 
     // The view model survives a recreation of the activity, which starts the login again. A started login is
     // continued instead of starting a second one, whose session the browser would not authorize. After process
@@ -69,7 +71,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
     fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         if (!startLoginOnce()) return
-        viewModelScope.launch {
+        initialLoginJob = viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth, accountToReauthorize)
             savedResponse = response
 
@@ -80,20 +82,25 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
             _initialLoginRequestState.value =
                 InitialLoginViewState.InitialLoginRequestSuccess(response.loginUrl)
+            handleWebBrowserLogin()
         }
     }
 
     fun handleWebBrowserLogin() {
+        if (pollingStarted && _postLoginState.value != PostLoginViewState.PostLoginError) return
         savedResponse?.let { response ->
-            viewModelScope.launch {
-                _postLoginState.value = postLoginStateFor(repository.pollLogin(response))
+            pollingStarted = true
+            _postLoginState.value = PostLoginViewState.None
+            loginJob = viewModelScope.launch {
+                val completion = withTimeoutOrNull(LOGIN_TIMEOUT_MS) { repository.pollLogin(response) }
+                _postLoginState.value = postLoginStateFor(completion)
             }
         }
     }
 
     fun loginWithQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         if (!startLoginOnce()) return
-        viewModelScope.launch {
+        loginJob = viewModelScope.launch {
             _postLoginState.value =
                 postLoginStateFor(repository.startLoginFlowFromQR(dataString, reAuth, accountToReauthorize))
         }
@@ -101,7 +108,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
     fun loginWithOTPQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         if (!startLoginOnce()) return
-        viewModelScope.launch {
+        loginJob = viewModelScope.launch {
             _postLoginState.value =
                 postLoginStateFor(repository.startOTPLoginFlow(dataString, reAuth, accountToReauthorize))
         }
@@ -125,5 +132,10 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
             LoginRepository.LoginResult.RemovalPending -> PostLoginViewState.PostLoginRemovalPending
         }
 
-    fun cancelLogin() = repository.cancelLoginFlow()
+    fun cancelLogin() {
+        initialLoginJob?.cancel()
+        loginJob?.cancel()
+        repository.cancelLoginFlow()
+        savedResponse = null
+    }
 }

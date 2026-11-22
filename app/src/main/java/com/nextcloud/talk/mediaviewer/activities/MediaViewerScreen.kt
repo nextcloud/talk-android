@@ -49,6 +49,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.media3.common.PlaybackException
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,7 +74,14 @@ import androidx.core.net.toUri
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.AudioAttributes
+import androidx.media3.common.Player
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import com.nextcloud.talk.chat.data.io.MessageAudioPolicy
+import com.nextcloud.talk.mediaviewer.model.VideoAction
+import com.nextcloud.talk.ui.chat.VideoActions
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -105,13 +116,18 @@ private val thumbnailSpacing = 4.dp
 private val thumbnailStripVerticalPadding = 12.dp
 private val controlsSlideDistance = 24.dp
 
-@Suppress("Detekt.LongMethod", "CyclomaticComplexMethod")
-@OptIn(ExperimentalMaterial3Api::class)
+@Suppress("Detekt.LongMethod", "CyclomaticComplexMethod", "LongParameterList")
+@OptIn(ExperimentalMaterial3Api::class, UnstableApi::class)
 @Composable
 fun MediaViewerScreen(
     viewModel: MediaViewerViewModel,
     onShare: (MediaViewerItem, String) -> Unit,
     onSave: (MediaViewerItem, String) -> Unit,
+    exoPlayer: ExoPlayer,
+    inPictureInPicture: Boolean,
+    initialAction: VideoAction,
+    onInitialActionConsumed: () -> Unit,
+    onPictureInPicture: () -> Unit,
     onControlsVisibilityChanged: (Boolean) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -142,20 +158,78 @@ fun MediaViewerScreen(
         }
     }
 
-    val exoPlayer = rememberViewerExoPlayer()
     val currentItem = uiState.currentItem
     val currentLocalPath = currentItem?.let { uiState.cachedFilePaths[it.messageId] }
+
+    val currentStream = currentItem?.let { uiState.videoStreams[it.messageId] }
+    val currentPlaybackSource = currentStream ?: currentLocalPath
 
     // Autoplay only the item the viewer was directly opened on from chat - once the user has
     // swiped to any other item, nothing autoplays again, even swiping back to this one.
     val initialMessageId = remember { items.getOrNull(uiState.currentGlobalIndex)?.messageId }
     var hasAutoPlayed by remember { mutableStateOf(false) }
+    val openingAction = remember { initialAction }
+    var pendingAction by remember { mutableStateOf(initialAction) }
+    var playerReady by remember { mutableStateOf(false) }
+    var hasVideoFrame by remember(currentItem?.messageId) { mutableStateOf(false) }
+    var playbackFailed by remember(currentItem?.messageId) { mutableStateOf(false) }
+
+    DisposableEffect(exoPlayer, currentItem?.messageId) {
+        val listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                playerReady = playbackState == Player.STATE_READY
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                playbackFailed = true
+            }
+
+            override fun onRenderedFirstFrame() {
+                hasVideoFrame = true
+                if (pendingAction == VideoAction.PICTURE_IN_PICTURE &&
+                    currentItem?.messageId == initialMessageId &&
+                    MessageAudioPolicy.canPlay(context)
+                ) {
+                    pendingAction = VideoAction.PLAY
+                    onInitialActionConsumed()
+                    onPictureInPicture()
+                }
+            }
+        }
+        exoPlayer.addListener(listener)
+        onDispose { exoPlayer.removeListener(listener) }
+    }
 
     LaunchedEffect(currentItem?.messageId, currentLocalPath) {
+        if (currentItem?.messageId != initialMessageId) {
+            pendingAction = VideoAction.PLAY
+            onInitialActionConsumed()
+        } else if (pendingAction == VideoAction.DOWNLOAD && currentLocalPath != null && currentItem != null) {
+            pendingAction = VideoAction.PLAY
+            onInitialActionConsumed()
+            onSave(currentItem, currentLocalPath)
+        }
+    }
+
+    LaunchedEffect(currentItem?.messageId, currentPlaybackSource) {
+        playerReady = false
+        playbackFailed = false
         val isVideo = currentItem?.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
-        if (isVideo && currentLocalPath != null) {
-            exoPlayer.setMediaItem(MediaItem.fromUri(currentLocalPath.toUri()))
-            val shouldAutoPlay = !hasAutoPlayed && currentItem.messageId == initialMessageId
+        if (isVideo && currentItem != null && currentPlaybackSource != null) {
+            val media = MediaItem.Builder()
+                .setUri(currentLocalPath?.toUri() ?: "video://${currentItem.messageId}".toUri())
+                .setMediaId(currentItem.messageId.toString())
+                .setMimeType(currentItem.mimeType)
+                .build()
+            if (currentStream != null) {
+                exoPlayer.setMediaSource(currentStream.mediaSource(media))
+            } else {
+                exoPlayer.setMediaItem(media)
+            }
+            val shouldAutoPlay = !hasAutoPlayed &&
+                currentItem.messageId == initialMessageId &&
+                openingAction != VideoAction.DOWNLOAD &&
+                MessageAudioPolicy.canPlay(context)
             exoPlayer.playWhenReady = shouldAutoPlay
             if (shouldAutoPlay) hasAutoPlayed = true
             exoPlayer.prepare()
@@ -172,8 +246,8 @@ fun MediaViewerScreen(
 
     // The status/nav bars toggle together with the top bar and thumbnail strip - one tap hides all
     // of it.
-    LaunchedEffect(showControls) {
-        onControlsVisibilityChanged(showControls)
+    LaunchedEffect(showControls, inPictureInPicture) {
+        onControlsVisibilityChanged(showControls && !inPictureInPicture)
     }
 
     // Hoisted here (rather than inside ThumbnailStrip) so its scroll position survives showControls
@@ -193,10 +267,20 @@ fun MediaViewerScreen(
     val thumbnailStripHeightPx = with(density) {
         (thumbnailSize + thumbnailStripVerticalPadding * 2).roundToPx()
     }
-    val controllerExtraBottomInsetPx = if (hasThumbnailStrip) thumbnailStripHeightPx else 0
+    val isCurrentVideo = currentItem?.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
+    var videoActionsHeightPx by remember { mutableIntStateOf(0) }
+    val controllerExtraBottomInsetPx = if (inPictureInPicture) {
+        0
+    } else {
+        (if (hasThumbnailStrip) thumbnailStripHeightPx else 0) + (if (isCurrentVideo) videoActionsHeightPx else 0)
+    }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = !inPictureInPicture,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
             val item = items.getOrNull(page) ?: return@HorizontalPager
             MediaPage(
                 item = item,
@@ -206,15 +290,17 @@ fun MediaViewerScreen(
                 // on currentItem below), so mounting VideoPlayerView any earlier would attach it
                 // to a page whose video hasn't been loaded into the player yet.
                 isCurrentPage = page == pagerState.settledPage,
+                canStream = item.messageId in uiState.videoStreams,
                 exoPlayer = exoPlayer,
                 onToggleControls = { showControls = !showControls },
                 onControlsVisibilityChanged = { showControls = it },
-                controllerExtraBottomInsetPx = controllerExtraBottomInsetPx
+                controllerExtraBottomInsetPx = controllerExtraBottomInsetPx,
+                inPictureInPicture = inPictureInPicture
             )
         }
 
         AnimatedVisibility(
-            visible = showControls,
+            visible = showControls && !inPictureInPicture,
             enter = fadeIn() + slideInVertically(initialOffsetY = { -slideOffsetPx }),
             exit = fadeOut() + slideOutVertically(targetOffsetY = { -slideOffsetPx }),
             modifier = Modifier.align(Alignment.TopCenter)
@@ -247,50 +333,90 @@ fun MediaViewerScreen(
         // spinner for the page the user had already left rather than the one on screen.
         val livePageItem = items.getOrNull(pagerState.currentPage)
         val livePageLocalPath = livePageItem?.let { uiState.cachedFilePaths[it.messageId] }
-        if (livePageItem != null && livePageLocalPath == null) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center).size(48.dp),
-                color = Color.White
-            )
+        if (livePageItem != null && livePageLocalPath == null && !inPictureInPicture) {
+            val playing = livePageItem.messageId == currentItem?.messageId && hasVideoFrame && !playbackFailed
+            val placement = if (playing) {
+                Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(top = 64.dp, end = 16.dp)
+                    .background(Color.Black.copy(alpha = TOOLBAR_ALPHA), RoundedCornerShape(8.dp)).padding(8.dp)
+            } else {
+                Modifier.align(Alignment.Center)
+            }
+            Column(modifier = placement, horizontalAlignment = Alignment.CenterHorizontally) {
+                if (livePageItem.messageId in uiState.failedMessageIds) {
+                    Text(stringResource(R.string.video_download_failed), color = Color.White)
+                    TextButton(onClick = { viewModel.retryDownload(livePageItem.messageId) }) {
+                        Text(stringResource(R.string.nc_retry), color = Color.White)
+                    }
+                } else {
+                    val percent = uiState.downloadProgress[livePageItem.messageId]?.takeIf { it >= 0 }
+                    val indicator = Modifier.size(if (playing) 24.dp else 48.dp)
+                    if (percent != null) {
+                        CircularProgressIndicator(
+                            progress = { percent / 100f },
+                            modifier = indicator,
+                            color = Color.White
+                        )
+                        Text("$percent%", color = Color.White)
+                    } else {
+                        CircularProgressIndicator(modifier = indicator, color = Color.White)
+                    }
+                }
+            }
+        }
+
+        if (playbackFailed && !inPictureInPicture) {
+            Column(
+                modifier = Modifier.align(Alignment.Center).padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(stringResource(R.string.video_playback_failed), color = Color.White, textAlign = TextAlign.Center)
+                TextButton(onClick = {
+                    playbackFailed = false
+                    exoPlayer.prepare()
+                    if (MessageAudioPolicy.canPlay(context)) exoPlayer.play()
+                }) {
+                    Text(stringResource(R.string.nc_retry), color = Color.White)
+                }
+            }
         }
 
         AnimatedVisibility(
-            visible = showControls && hasThumbnailStrip,
+            visible = showControls && !inPictureInPicture && (hasThumbnailStrip || isCurrentVideo),
             enter = fadeIn() + slideInVertically(initialOffsetY = { slideOffsetPx }),
             exit = fadeOut() + slideOutVertically(targetOffsetY = { slideOffsetPx }),
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
-            if (group != null) {
-                ThumbnailStrip(
-                    group = group,
-                    currentItem = currentItem,
-                    listState = thumbnailListState,
-                    onThumbnailClick = { clickedItem ->
-                        val globalIndex = items.indexOfFirst { it.messageId == clickedItem.messageId }
-                        if (globalIndex >= 0) {
-                            coroutineScope.launch { pagerState.animateScrollToPage(globalIndex) }
+            Column(modifier = Modifier.background(Color.Black.copy(alpha = TOOLBAR_ALPHA)).navigationBarsPadding()) {
+                if (isCurrentVideo && currentItem != null) {
+                    VideoActions(
+                        onAction = { action ->
+                            when (action) {
+                                VideoAction.DOWNLOAD -> currentLocalPath?.let { onSave(currentItem, it) }
+                                VideoAction.PICTURE_IN_PICTURE -> if (playerReady) onPictureInPicture()
+                                VideoAction.PLAY -> Unit
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().onSizeChanged { videoActionsHeightPx = it.height },
+                        enabled = currentLocalPath != null,
+                        pipEnabled = playerReady && !playbackFailed
+                    )
+                }
+                if (hasThumbnailStrip && group != null) {
+                    ThumbnailStrip(
+                        group = group,
+                        currentItem = currentItem,
+                        listState = thumbnailListState,
+                        onThumbnailClick = { clickedItem ->
+                            val globalIndex = items.indexOfFirst { it.messageId == clickedItem.messageId }
+                            if (globalIndex >= 0) {
+                                coroutineScope.launch { pagerState.animateScrollToPage(globalIndex) }
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
-}
-
-@OptIn(UnstableApi::class)
-@Composable
-private fun rememberViewerExoPlayer(): ExoPlayer {
-    val context = LocalContext.current
-    val player = remember {
-        ExoPlayer.Builder(context)
-            .setAudioAttributes(AudioAttributes.DEFAULT, true)
-            .setHandleAudioBecomingNoisy(true)
-            .build()
-    }
-    DisposableEffect(Unit) {
-        onDispose { player.release() }
-    }
-    return player
 }
 
 @Suppress("LongParameterList")
@@ -300,26 +426,29 @@ private fun MediaPage(
     item: MediaViewerItem,
     localPath: String?,
     isCurrentPage: Boolean,
+    canStream: Boolean,
     exoPlayer: ExoPlayer,
     onToggleControls: () -> Unit,
     onControlsVisibilityChanged: (Boolean) -> Unit,
-    controllerExtraBottomInsetPx: Int
+    controllerExtraBottomInsetPx: Int,
+    inPictureInPicture: Boolean
 ) {
     val isVideo = item.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when {
-            localPath == null -> PreviewPlaceholder(item, onToggleControls = onToggleControls)
+            localPath == null && !canStream -> PreviewPlaceholder(item, onToggleControls = onToggleControls)
             isVideo -> if (isCurrentPage) {
                 VideoPlayerView(
                     exoPlayer = exoPlayer,
                     onControlsVisibilityChanged = onControlsVisibilityChanged,
-                    extraBottomInsetPx = controllerExtraBottomInsetPx
+                    extraBottomInsetPx = controllerExtraBottomInsetPx,
+                    inPictureInPicture = inPictureInPicture
                 )
             } else {
                 PreviewPlaceholder(item, onToggleControls = onToggleControls)
             }
-            else -> ImagePage(localPath = localPath, onToggleControls = onToggleControls)
+            else -> localPath?.let { ImagePage(localPath = it, onToggleControls = onToggleControls) }
         }
     }
 }
@@ -389,7 +518,8 @@ private fun ImagePage(localPath: String, onToggleControls: () -> Unit) {
 private fun VideoPlayerView(
     exoPlayer: ExoPlayer,
     onControlsVisibilityChanged: (Boolean) -> Unit,
-    extraBottomInsetPx: Int
+    extraBottomInsetPx: Int,
+    inPictureInPicture: Boolean
 ) {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
@@ -407,7 +537,7 @@ private fun VideoPlayerView(
         factory = { ctx ->
             PlayerView(ctx).apply {
                 player = exoPlayer
-                useController = true
+                useController = !inPictureInPicture
                 controllerShowTimeoutMs = CONTROLLER_SHOW_TIMEOUT_MS
                 showController()
                 setControllerVisibilityListener(
@@ -418,6 +548,8 @@ private fun VideoPlayerView(
             }
         },
         update = { playerView ->
+            playerView.useController = !inPictureInPicture
+            if (inPictureInPicture) playerView.hideController()
             val exoControls = playerView.findViewById<FrameLayout>(R.id.exo_bottom_bar)
             val exoProgress = playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
             exoControls?.apply {
@@ -457,7 +589,6 @@ private fun ThumbnailStrip(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Black.copy(alpha = TOOLBAR_ALPHA))
-            .navigationBarsPadding()
             .padding(vertical = thumbnailStripVerticalPadding)
     ) {
         // Side padding equal to half the leftover viewport width, so the row can scroll any item -

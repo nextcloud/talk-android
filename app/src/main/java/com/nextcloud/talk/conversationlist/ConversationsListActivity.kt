@@ -52,6 +52,9 @@ import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.io.MessageAudioController
+import com.nextcloud.talk.ui.MessageAudioBar
+import com.nextcloud.talk.ui.openMessageAudioConversation
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
@@ -139,6 +142,9 @@ import retrofit2.HttpException
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("LargeClass", "TooManyFunctions", "NestedBlockDepth")
 class ConversationsListActivity : BaseActivity() {
+
+    @Inject
+    lateinit var messageAudioController: MessageAudioController
 
     // Started without an account on app start, when sharing from other apps and after login.
     override val allowsDefaultAccount = true
@@ -264,7 +270,10 @@ class ConversationsListActivity : BaseActivity() {
                 viewModel = conversationsListViewModel,
                 tagsViewModel = conversationTagsViewModel,
                 state = buildScreenState(),
-                callbacks = buildScreenCallbacks()
+                callbacks = buildScreenCallbacks(),
+                audioBar = {
+                    MessageAudioBar(messageAudioController) { openMessageAudioConversation(it) }
+                }
             )
         }
 

@@ -8,7 +8,6 @@ package com.nextcloud.talk.utils
 
 import androidx.annotation.ColorRes
 import com.nextcloud.talk.R
-import java.util.Locale
 
 /**
  * The avatar of an actor the server has no avatar for, drawn by the client instead of being
@@ -19,8 +18,7 @@ import java.util.Locale
 sealed interface ActorAvatar {
 
     /**
-     * A character on a coloured circle: the first character of a guest's name, or the shell prompt
-     * of a bot. Both colours are theme-aware resources, as the web client's are.
+     * A bot's shell prompt on a coloured circle. Both colours are theme-aware resources.
      */
     data class Character(val character: String, @ColorRes val backgroundColor: Int, @ColorRes val textColor: Int) :
         ActorAvatar
@@ -31,7 +29,7 @@ sealed interface ActorAvatar {
     object AppIcon : ActorAvatar
 
     /**
-     * The generic person icon, for guests who did not tell us their name.
+     * The generic person icon for people without a server-provided avatar.
      */
     object PersonIcon : ActorAvatar
 }
@@ -39,14 +37,8 @@ sealed interface ActorAvatar {
 /**
  * Decides what to draw for actors the server has no avatar for.
  *
- * Guests, email participants and bots have no avatar on the server, so theirs is rendered on the
- * client instead of being requested: a guest who told us their name gets the first character of it,
- * a bot gets a shell prompt. This mirrors the web client's AvatarWrapper, so both clients show the
- * same avatar for the same actor.
- *
- * A guest without a name is not represented by a character at all - they get the generic person
- * icon, because the placeholder name ("Guest") is the same for everyone in the conversation and its
- * initial would tell the reader nothing.
+ * Guests and email participants use the generic person icon. Bots retain their shell prompt or
+ * bundled app icon. Registered and federated users are left to the server's avatar response.
  */
 object CharacterAvatarUtils {
 
@@ -80,8 +72,8 @@ object CharacterAvatarUtils {
      *
      * @param actorType the actor type as the API reports it, e.g. "guests" or "bots"
      * @param actorId the actor's id, only used to spot the bots shipping their own avatar
-     * @param displayName the actor's display name, a guest's character is derived from it
-     * @param guestLabel the localized placeholder name for unnamed guests, null to accept any name
+     * @param displayName the actor's display name; does not affect a guest's person icon
+     * @param guestLabel the localized placeholder name; does not affect a guest's person icon
      */
     fun avatarFor(actorType: String?, actorId: String?, displayName: String?, guestLabel: String?): ActorAvatar? =
         when (actorType) {
@@ -92,19 +84,10 @@ object CharacterAvatarUtils {
         }
 
     /**
-     * The avatar of a guest or email participant, for callers whose actor type is already narrowed
-     * down to those - the name is all that is left to decide.
+     * The avatar of a guest or email participant, independent of their display name.
      */
-    fun guestAvatar(displayName: String?, guestLabel: String?): ActorAvatar =
-        guestCharacter(displayName, guestLabel)
-            ?.let {
-                ActorAvatar.Character(
-                    character = it,
-                    backgroundColor = R.color.character_avatar_background_guest,
-                    textColor = R.color.character_avatar_text_guest
-                )
-            }
-            ?: ActorAvatar.PersonIcon
+    @Suppress("UNUSED_PARAMETER")
+    fun guestAvatar(displayName: String?, guestLabel: String?): ActorAvatar = ActorAvatar.PersonIcon
 
     /**
      * The avatar of a bot: the shell prompt, or the app's icon for the bots shipping their own.
@@ -131,21 +114,4 @@ object CharacterAvatarUtils {
         val name = displayName?.trim()
         return !name.isNullOrEmpty() && name != guestLabel?.trim()
     }
-
-    /**
-     * The character to draw for a guest or email actor, or null when there is no name to derive it
-     * from and the generic person icon should be used instead.
-     */
-    private fun guestCharacter(displayName: String?, guestLabel: String?): String? {
-        if (!hasCustomName(displayName, guestLabel)) {
-            return null
-        }
-        return firstCharacterOf(displayName!!.trim().uppercase(Locale.getDefault()))
-    }
-
-    /**
-     * First character as a whole code point, so names starting with an emoji or any other
-     * character outside the basic plane do not get cut in half into an unrenderable fragment.
-     */
-    private fun firstCharacterOf(name: String): String = String(Character.toChars(name.codePointAt(0)))
 }

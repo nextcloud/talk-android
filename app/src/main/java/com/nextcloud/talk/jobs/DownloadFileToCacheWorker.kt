@@ -17,17 +17,16 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.mediaviewer.stream.ProgressiveVideoFile
+import com.nextcloud.talk.mediaviewer.stream.VideoDownloadRegistry
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import retrofit2.Call
+import java.io.IOException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -35,6 +34,15 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     Worker(context, workerParameters) {
 
     private var totalFileSize: Long = -1
+    private var stream: ProgressiveVideoFile? = null
+
+    @Volatile
+    private var activeCall: Call<ResponseBody>? = null
+
+    override fun onStopped() {
+        activeCall?.cancel()
+        super.onStopped()
+    }
 
     @Inject
     lateinit var ncApi: NcApi
@@ -48,11 +56,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        if (totalFileSize > -1) {
-            setProgressAsync(Data.Builder().putInt(PROGRESS, 0).build())
-        }
-
-        try {
+        return try {
             val currentUser = runBlocking { userManager.getUserWithId(inputData.getLong(KEY_INTERNAL_USER_ID, 0L)) }
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
             val fileId = inputData.getString(KEY_FILE_ID)
@@ -69,10 +73,19 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
 
             val url = ApiUtils.getUrlForFileDownload(baseUrl, userId, remotePath)
 
-            return downloadFile(currentUser, url, fileId, fileName)
+            downloadFile(currentUser, url, fileId, fileName)
         } catch (e: IllegalStateException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to download file", e)
-            return Result.failure()
+            Result.failure()
+        } catch (e: IOException) {
+            Log.e(TAG, "File download failed", e)
+            Result.failure()
+        } finally {
+            activeCall = null
+            stream?.let { download ->
+                download.fail()
+                inputData.getString(KEY_STREAM_KEY)?.let { VideoDownloadRegistry.remove(it, download) }
+            }
         }
     }
 
@@ -82,60 +95,61 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
             url
         )
 
-        return executeDownload(downloadCall.execute().body(), fileId, fileName)
-    }
-
-    private fun executeDownload(body: ResponseBody?, fileId: String?, fileName: String): Result {
-        val targetFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileId, fileName)
-        if (body == null || targetFile == null) {
-            if (body == null) {
-                Log.e(TAG, "Response body when downloading $fileName is null!")
-            }
-            if (targetFile == null) {
-                Log.e(TAG, "Refused to download file with unsafe name: $fileName")
-            }
+        activeCall = downloadCall
+        if (isStopped) downloadCall.cancel()
+        val response = downloadCall.execute()
+        if (!response.isSuccessful) {
+            response.errorBody()?.close()
             return Result.failure()
         }
-
-        var count: Int
-        val data = ByteArray(BYTE_UNIT_DIVIDER * DATA_BYTES)
-        val bis: InputStream = BufferedInputStream(body.byteStream(), BYTE_UNIT_DIVIDER * DOWNLOAD_STREAM_SIZE)
-        val outputFile = File(targetFile.parentFile, targetFile.name + "_")
-        val output: OutputStream = FileOutputStream(outputFile)
-        var total: Long = 0
-        val startTime = System.currentTimeMillis()
-        var timeCount = 1
-
-        count = bis.read(data)
-
-        while (count != -1) {
-            if (totalFileSize > 0) {
-                total += count.toLong()
-                val progress = (total * COMPLETE_PERCENTAGE / totalFileSize).toInt()
-                val currentTime = System.currentTimeMillis() - startTime
-                if (currentTime > PROGRESS_THRESHOLD * timeCount) {
-                    setProgressAsync(Data.Builder().putInt(PROGRESS, progress).build())
-                    timeCount++
-                }
-            }
-            output.write(data, 0, count)
-            count = bis.read(data)
-        }
-
-        output.flush()
-        output.close()
-        bis.close()
-
-        return onDownloadComplete(outputFile, targetFile)
+        val validator = response.headers()["ETag"]?.takeUnless { it.startsWith("W/") }
+            ?: response.headers()["Last-Modified"]
+        return response.body()?.use { executeDownload(it, fileId, fileName, validator) } ?: Result.failure()
     }
 
-    private fun onDownloadComplete(tempFile: File, targetFile: File): Result =
-        if (tempFile.renameTo(targetFile)) {
-            setProgressAsync(Data.Builder().putBoolean(SUCCESS, true).build())
-            Result.success()
-        } else {
-            Result.failure()
+    private fun executeDownload(body: ResponseBody, fileId: String?, fileName: String, validator: String?): Result {
+        val targetFile = FileUtils.resolveSharedAttachmentFile(context.cacheDir, fileId, fileName)
+        if (targetFile == null) {
+            Log.e(TAG, "Refused to download file with unsafe name: $fileName")
+            return Result.failure()
         }
+        val expectedLength = body.contentLength().takeIf { it >= 0 } ?: totalFileSize.takeIf { it > 0 } ?: -1L
+        val key = inputData.getString(KEY_STREAM_KEY)
+        val download = key?.let { ProgressiveVideoFile(expectedLength, validator) }
+        stream = download
+        var lastProgressTime = 0L
+        CacheFileWriter.write(
+            body.byteStream(),
+            targetFile,
+            expectedLength,
+            { isStopped },
+            onTemporaryFile = { temporary ->
+                download?.attach(temporary)
+                if (key != null && download != null) VideoDownloadRegistry.register(key, download)
+                reportProgress(0L, expectedLength)
+            },
+            publish = { temporary, target ->
+                download?.publish(temporary, target) ?: temporary.renameTo(target)
+            }
+        ) { total ->
+            download?.advance(total)
+            val now = android.os.SystemClock.elapsedRealtime()
+            if (now - lastProgressTime >= PROGRESS_THRESHOLD) {
+                reportProgress(total, expectedLength)
+                lastProgressTime = now
+            }
+        }
+        return Result.success(Data.Builder().putBoolean(SUCCESS, true).putInt(PROGRESS, COMPLETE_PERCENTAGE).build())
+    }
+
+    private fun reportProgress(bytes: Long, total: Long) {
+        setProgressAsync(
+            Data.Builder()
+                .putInt(PROGRESS, DownloadProgress.percent(bytes, total))
+                .putBoolean(STREAM_READY, stream != null)
+                .build()
+        )
+    }
 
     companion object {
         const val TAG = "DownloadFileToCache"
@@ -144,12 +158,11 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_FILE_NAME = "KEY_FILE_NAME"
         const val KEY_FILE_PATH = "KEY_FILE_PATH"
         const val KEY_FILE_SIZE = "KEY_FILE_SIZE"
+        const val KEY_STREAM_KEY = "VIDEO_STREAM_KEY"
+        const val STREAM_READY = "VIDEO_STREAM_READY"
         const val PROGRESS = "PROGRESS"
         const val SUCCESS = "SUCCESS"
-        const val BYTE_UNIT_DIVIDER = 1024
-        const val DATA_BYTES = 4
-        const val DOWNLOAD_STREAM_SIZE = 8
         const val COMPLETE_PERCENTAGE = 100
-        const val PROGRESS_THRESHOLD = 50
+        const val PROGRESS_THRESHOLD = 250
     }
 }

@@ -222,7 +222,11 @@
 
         <activity
             android:name=".mediaviewer.activities.MediaViewerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
+            android:taskAffinity=".mediaViewer"
             android:theme="@style/FullScreenImageTheme" />
 
         <activity

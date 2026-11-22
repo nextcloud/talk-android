@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui.chat
 
+import com.nextcloud.talk.mediaviewer.model.VideoAction
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
@@ -173,10 +174,18 @@ fun MediaMessage(
     isOneToOneConversation: Boolean = false,
     conversationThreadId: Long? = null,
     chatViewDownloadingFileState: List<String>,
-    onImageClick: (Int) -> Unit
+    onImageClick: (Int) -> Unit,
+    onVideoAction: ((Int, VideoAction) -> Unit)?
 ) {
+    if (!isPreviewableMimeType(typeContent.mimeType)) {
+        CompactFileMessage(message, isOneToOneConversation, conversationThreadId) {
+            SyncedFileRow(message, chatViewDownloadingFileState) { onImageClick(message.id) }
+        }
+        return
+    }
+
     val fileParameters =
-        remember {
+        remember(message.messageParameters) {
             FileParameters(
                 HashMap(
                     message.messageParameters.mapValues { (_, params) -> HashMap(params) }
@@ -224,16 +233,8 @@ fun MediaMessage(
         null
     }
 
-    // A video shown via its local first frame counts as "has a preview" too, so the filename caption
-    // stays suppressed just like it would once the server's own preview becomes available.
-    val hasPreview = hasServerPreview || localVideoFramePainter != null
     val hasExplicitCaption = message.plainMessage != FILE_PLACEHOLDER_MESSAGE
-    val captionText = when {
-        hasExplicitCaption -> message.message
-        !hasPreview -> message.message
-        else -> null
-    }
-    val hasCaption = captionText != null
+    val captionText = message.message.takeIf { hasExplicitCaption }
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
         shape(message.incoming, message.isGrouped, message.isGroupedWithNext)
@@ -316,7 +317,7 @@ fun MediaMessage(
         conversationThreadId = conversationThreadId,
         includePadding = false,
         captionText = captionText,
-        forceTimeOverlay = !hasCaption,
+        forceTimeBelow = true,
         contentWidthFraction = { availableWidth ->
             mediaContentWidthFraction(availableWidth, aspectRatio, mediaMaxHeight)
         },
@@ -478,6 +479,10 @@ fun MediaMessage(
                         )
                     }
                 }
+                AttachmentDetails(message, Modifier.padding(horizontal = 8.dp, vertical = 6.dp))
+                if (isVideo && onVideoAction != null) {
+                    VideoActions(onAction = { onVideoAction(message.id, it) }, modifier = Modifier.fillMaxWidth())
+                }
             }
         }
     )
@@ -496,10 +501,15 @@ fun UploadingMediaMessage(
     val getProgress = LocalUploadProgressProvider.current
     val progress = getProgress(message.referenceId.orEmpty())
     val isFailed = message.statusIcon == MessageStatusIcon.FAILED
-    val isSent = message.statusIcon == MessageStatusIcon.SENT
-    val hasCaption = typeContent.caption != null
+    val isUploading = message.isUploadingFile()
     val isImage = typeContent.mimeType?.startsWith(Mimetype.IMAGE_PREFIX) == true
     val isVideo = typeContent.mimeType?.startsWith(Mimetype.VIDEO_PREFIX) == true
+    if (!isPreviewableMimeType(typeContent.mimeType)) {
+        CompactFileMessage(message, isOneToOneConversation, conversationThreadId, typeContent.caption) {
+            UploadingFileRow(message, typeContent, onCancelUpload)
+        }
+        return
+    }
 
     val mediaInset = 4.dp
     val mediaShape = remember(message.incoming, message.isGrouped, message.isGroupedWithNext) {
@@ -526,7 +536,7 @@ fun UploadingMediaMessage(
         conversationThreadId = conversationThreadId,
         includePadding = false,
         captionText = typeContent.caption,
-        forceTimeOverlay = !hasCaption,
+        forceTimeBelow = true,
         contentWidthFraction = { availableWidth ->
             mediaContentWidthFraction(availableWidth, imageAspectRatio, mediaMaxHeight)
         },
@@ -587,7 +597,7 @@ fun UploadingMediaMessage(
                         )
                     }
 
-                    if (!isSent && !isFailed) {
+                    if (isUploading) {
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
@@ -628,6 +638,11 @@ fun UploadingMediaMessage(
                     }
                 }
 
+                AttachmentDetails(
+                    message,
+                    Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                    fallbackFileName = typeContent.fileName
+                )
                 if (isFailed) {
                     Text(
                         text = stringResource(R.string.nc_upload_failed_notification_title),

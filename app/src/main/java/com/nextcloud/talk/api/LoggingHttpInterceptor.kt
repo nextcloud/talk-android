@@ -12,6 +12,8 @@ import com.nextcloud.talk.logger.LogsRepository
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Invocation
+import retrofit2.http.Streaming
 import javax.inject.Inject
 
 class LoggingHttpInterceptor @Inject constructor(
@@ -34,7 +36,10 @@ class LoggingHttpInterceptor @Inject constructor(
                 sb.clear()
             }
         }.apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            val streaming = chain.request().tag(
+                Invocation::class.java
+            )?.method()?.isAnnotationPresent(Streaming::class.java)
+            level = if (streaming == true) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY
             redactHeader("Authorization")
             redactHeader("Proxy-Authorization")
         }.intercept(chain)

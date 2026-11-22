@@ -4,6 +4,8 @@
  * SPDX-FileCopyrightText: 2017-2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+import com.android.build.api.variant.HasHostTestsBuilder
+import com.android.build.api.variant.HostTestBuilder
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
@@ -94,12 +96,19 @@ android {
             dimension = "default"
             versionCode = 250010052
             versionName = "25.1.0 RC2"
+            providers.gradleProperty("voiceTestAbi").orNull?.let { abi ->
+                require(abi in setOf("arm64-v8a", "armeabi-v7a")) { "Unsupported voice test ABI: $abi" }
+                ndk.abiFilters.add(abi)
+            }
         }
     }
 
     sourceSets {
         // Adds exported schema location as test app assets.
         getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        listOf("gplay", "qa").forEach { flavor ->
+            getByName(flavor).kotlin.directories.add("src/googlePush/java")
+        }
     }
 
     testOptions {
@@ -114,7 +123,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            val plusOptimize = providers.gradleProperty("plusOptimize").orNull == "true"
+            isMinifyEnabled = plusOptimize
+            isDebuggable = false
+            if (plusOptimize) {
+                proguardFiles("proguard-plus-optimized.pro")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -162,6 +176,12 @@ android {
         )
         htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
         htmlReport = true
+    }
+}
+
+androidComponents {
+    beforeVariants(selector().withName("qaRelease")) {
+        (it as HasHostTestsBuilder).hostTests[HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
     }
 }
 
@@ -332,8 +352,10 @@ dependencies {
     implementation("com.github.nextcloud.android-common:core:0.34.0")
     implementation("com.github.nextcloud-deps:android-talk-webrtc:155.8059.1")
 
-    "gplayImplementation"("com.google.android.gms:play-services-base:18.11.1")
-    "gplayImplementation"("com.google.firebase:firebase-messaging:26.0.0")
+    listOf("gplay", "qa").forEach { flavor ->
+        add("${flavor}Implementation", "com.google.android.gms:play-services-base:18.11.1")
+        add("${flavor}Implementation", "com.google.firebase:firebase-messaging:26.0.0")
+    }
 
     implementation("org.unifiedpush.android:connector:3.3.5")
     "genericImplementation"("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")

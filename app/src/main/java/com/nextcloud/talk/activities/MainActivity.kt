@@ -23,7 +23,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -79,10 +78,6 @@ class MainActivity :
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
         super.onCreate(savedInstanceState)
-
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(this, "Build flavor: " + BuildConfig.FLAVOR, Toast.LENGTH_LONG).show()
-        }
 
         // Set the default theme to replace the launch screen theme.
         setTheme(R.style.AppTheme)

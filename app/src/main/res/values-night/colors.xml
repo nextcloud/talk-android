@@ -59,4 +59,6 @@
 
     <color name="icon_on_bg_default">#99FFFFFF</color>
 
+    <color name="bg_message_list_outgoing_bubble">#202B33</color>
+    <color name="bg_message_input">#32363B</color>
 </resources>

@@ -1201,16 +1201,20 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun themeMessageInputView() {
-        binding.messageInputContainer.apply {
-            viewThemeUtils.talk.themeCardView(this)
-        }
+        binding.messageInputContainer.setCardBackgroundColor(
+            resources.getColor(R.color.bg_message_input, null)
+        )
 
         binding.fragmentMessageInputView.findViewById<ImageView>(R.id.microphoneEnabledInfoBackground)?.let {
-            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+            it.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                resources.getColor(R.color.bg_message_input, null)
+            )
         }
 
         binding.fragmentMessageInputView.findViewById<Chronometer>(R.id.audioRecordDuration)?.let {
-            viewThemeUtils.platform.themeViewBackground(it, ColorRole.SURFACE_VARIANT)
+            it.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                resources.getColor(R.color.bg_message_input, null)
+            )
         }
 
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }

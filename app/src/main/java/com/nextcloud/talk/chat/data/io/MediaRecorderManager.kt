@@ -32,6 +32,10 @@ class MediaRecorderManager : LifecycleAwareManager {
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
         private const val VOICE_MESSAGE_PREFIX_MAX_LENGTH = 146
+
+        @Volatile
+        var isRecording = false
+            private set
     }
 
     var currentVoiceRecordFile: String = ""
@@ -97,6 +101,7 @@ class MediaRecorderManager : LifecycleAwareManager {
                 prepare()
                 _mediaRecorderState = MediaRecorderState.PREPARED
             } catch (e: IOException) {
+                isRecording = false
                 _mediaRecorderState = MediaRecorderState.ERROR
                 Log.e(TAG, "prepare for audio recording failed")
             }
@@ -106,10 +111,12 @@ class MediaRecorderManager : LifecycleAwareManager {
                 _mediaRecorderState = MediaRecorderState.RECORDING
                 Log.d(TAG, "recording started")
             } catch (e: IllegalStateException) {
+                isRecording = false
                 _mediaRecorderState = MediaRecorderState.ERROR
                 Log.e(TAG, "start for audio recording failed")
             }
         }
+        isRecording = _mediaRecorderState == MediaRecorderState.RECORDING
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -135,6 +142,7 @@ class MediaRecorderManager : LifecycleAwareManager {
             }
         }
         recorder = null
+        isRecording = false
     }
 
     @SuppressLint("SimpleDateFormat")

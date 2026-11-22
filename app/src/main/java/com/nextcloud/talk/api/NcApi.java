@@ -63,6 +63,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 public interface NcApi {
@@ -445,8 +446,16 @@ public interface NcApi {
                                                  @Url String url);
 
     @GET
+    @Streaming
     Call<ResponseBody> downloadFile(@Header("Authorization") String authorization,
                                     @Url String url);
+
+    @GET
+    @Streaming
+    Call<ResponseBody> downloadVideoRange(@Header("Authorization") String authorization,
+                                          @Url String url,
+                                          @Header("Range") String range,
+                                          @Header("If-Range") String validator);
 
     @DELETE
     Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization,

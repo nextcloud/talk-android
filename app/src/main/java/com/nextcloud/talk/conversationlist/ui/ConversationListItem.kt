@@ -47,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -85,11 +84,9 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.ParticipantDto
-import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AvatarImageLoader
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 
 private const val AVATAR_SIZE_DP = 48
@@ -97,7 +94,6 @@ private const val FAVORITE_OVERLAY_SIZE_DP = 16
 private const val STATUS_OVERLAY_SIZE_DP = 18
 private const val BADGE_OVERLAY_SIZE_DP = 18
 private const val CALL_OVERLAY_SIZE_DP = 16
-private const val STATUS_INTERNAL_SIZE_DP = 9f
 private const val ICON_MSG_SIZE_DP = 14
 private const val ICON_MSG_SPACING_DP = 2
 private const val THREAD_ICON_ID = "threadIcon"
@@ -372,52 +368,27 @@ private fun ActiveCallOverlay(modifier: Modifier = Modifier) {
 
 @Composable
 private fun StatusOverlay(model: ConversationModel, modifier: Modifier = Modifier) {
-    val isInPreview = LocalInspectionMode.current
-
-    if (isInPreview) {
-        if (model.statusIcon != null) {
-            Text(
-                text = model.statusIcon!!,
-                modifier = modifier,
-                style = MaterialTheme.typography.labelSmall
-            )
-        } else {
-            val drawableRes = when (model.status) {
-                "online" -> R.drawable.online_status
-                "away" -> R.drawable.ic_user_status_away
-                "busy" -> R.drawable.ic_user_status_busy
-                "dnd" -> R.drawable.ic_user_status_dnd
-                else -> null
-            }
-            if (drawableRes != null) {
-                Icon(
-                    painter = painterResource(drawableRes),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = modifier
-                )
-            }
+    val emoji = model.statusIcon?.takeIf { it.isNotEmpty() && model.status != "dnd" }
+    if (emoji != null) {
+        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            Text(text = emoji, fontSize = 14.sp, lineHeight = 18.sp)
         }
     } else {
-        val context = LocalContext.current
-        val surfaceArgb = MaterialTheme.colorScheme.surface.toArgb()
-        AndroidView(
-            factory = { ctx ->
-                ImageView(ctx).apply {
-                    val sizePx = DisplayUtils.convertDpToPixel(STATUS_INTERNAL_SIZE_DP, ctx)
-                    setImageDrawable(
-                        StatusDrawable(model.status, model.statusIcon, sizePx, surfaceArgb, ctx)
-                    )
-                }
-            },
-            update = { imageView ->
-                val sizePx = DisplayUtils.convertDpToPixel(STATUS_INTERNAL_SIZE_DP, context)
-                imageView.setImageDrawable(
-                    StatusDrawable(model.status, model.statusIcon, sizePx, surfaceArgb, context)
-                )
-            },
-            modifier = modifier
-        )
+        val drawableRes = when (model.status) {
+            "online" -> R.drawable.online_status
+            "away" -> R.drawable.ic_user_status_away
+            "busy" -> R.drawable.ic_user_status_busy
+            "dnd" -> R.drawable.ic_user_status_dnd
+            else -> null
+        }
+        if (drawableRes != null) {
+            Icon(
+                painter = painterResource(drawableRes),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = modifier.background(MaterialTheme.colorScheme.surface, CircleShape)
+            )
+        }
     }
 }
 
@@ -637,7 +608,9 @@ private fun LastMessageContent(
 
     // Deleted comment
     if (chatMessage.isDeletedCommentMessage) {
-        val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
+        val parsedText = remember(chatMessage.message, chatMessage.messageParameters) {
+            ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters).orEmpty()
+        }
         val youPrefix = stringResource(R.string.nc_formatted_message_you, parsedText)
         val groupFormat = stringResource(R.string.nc_formatted_message)
         val guestLabel = stringResource(R.string.nc_guest)
@@ -672,7 +645,9 @@ private fun LastMessageContent(
     if (msgType == ChatMessage.MessageType.SYSTEM_MESSAGE ||
         model.type == ConversationEnums.ConversationType.ROOM_SYSTEM
     ) {
-        val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
+        val parsedText = remember(chatMessage.message, chatMessage.messageParameters) {
+            ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters).orEmpty()
+        }
         Text(
             text = buildLastMessageText(parsedText, parsedText, chatMessage.isThread, searchQuery, primaryColor),
             modifier = modifier,
@@ -799,7 +774,9 @@ private fun LastMessageContent(
     }
 
     // Regular text message
-    val parsedText = ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters) ?: ""
+    val parsedText = remember(chatMessage.message, chatMessage.messageParameters) {
+        ChatUtils.getParsedMessage(chatMessage.message, chatMessage.messageParameters).orEmpty()
+    }
     val youPrefix = stringResource(R.string.nc_formatted_message_you, parsedText)
     val groupFormat = stringResource(R.string.nc_formatted_message)
     val guestLabel = stringResource(R.string.nc_guest)

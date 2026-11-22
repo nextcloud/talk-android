@@ -9,7 +9,6 @@ package com.nextcloud.talk.utils
 import com.nextcloud.talk.R
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
@@ -24,13 +23,16 @@ class CharacterAvatarUtilsTest {
             ?.character
 
     @Test
-    fun `named guest is drawn from the first character of their name`() {
-        assertEquals("A", characterOf("guests", "guest-hash", "alice"))
+    fun `named guest gets the person icon instead of initials`() {
+        assertSame(
+            ActorAvatar.PersonIcon,
+            CharacterAvatarUtils.avatarFor("guests", "guest-hash", "Alice Smith", guestLabel)
+        )
     }
 
     @Test
     fun `surrounding whitespace is ignored`() {
-        assertEquals("B", characterOf("guests", "guest-hash", "  bob "))
+        assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.guestAvatar("  bob ", guestLabel))
     }
 
     @Test
@@ -47,23 +49,21 @@ class CharacterAvatarUtilsTest {
     }
 
     @Test
-    fun `any name counts as custom when no placeholder name is given`() {
-        val avatar = CharacterAvatarUtils.guestAvatar("Guest", null)
-        assertEquals("G", (avatar as ActorAvatar.Character).character)
+    fun `a missing placeholder label cannot bring back guest initials`() {
+        assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.guestAvatar("Guest", null))
     }
 
     @Test
-    fun `first character outside the basic plane stays whole`() {
-        val name = "😀 party"
-        assertEquals(name.substring(0, 2), characterOf("guests", "guest-hash", name))
+    fun `Persian and emoji guest names use the same person icon`() {
+        assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.guestAvatar("مریم احمدی", guestLabel))
+        assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.guestAvatar("😀 party", guestLabel))
     }
 
     @Test
     fun `both the plural and the singular spelling of an actor type are understood`() {
-        assertEquals("T", characterOf("guests", "guest-hash", "Test"))
-        assertEquals("T", characterOf("guest", "guest-hash", "Test"))
-        assertEquals("T", characterOf("emails", "email-hash", "Test"))
-        assertEquals("T", characterOf("email", "email-hash", "Test"))
+        for (type in listOf("guests", "guest", "emails", "email")) {
+            assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.avatarFor(type, "guest-hash", "Test", guestLabel))
+        }
         assertEquals(">_", characterOf("bots", "weather-bot", "Weather"))
         assertEquals(">_", characterOf("bot", "weather-bot", "Weather"))
     }
@@ -77,18 +77,17 @@ class CharacterAvatarUtilsTest {
     }
 
     @Test
-    fun `guests are drawn in the guest colours`() {
-        val avatar = CharacterAvatarUtils.guestAvatar("alice", guestLabel) as ActorAvatar.Character
-        assertEquals(R.color.character_avatar_background_guest, avatar.backgroundColor)
-        assertEquals(R.color.character_avatar_text_guest, avatar.textColor)
+    fun `deleted users keep the generic person icon`() {
+        assertSame(
+            ActorAvatar.PersonIcon,
+            CharacterAvatarUtils.avatarFor("deleted_users", "deleted_users", "Alice", guestLabel)
+        )
     }
 
     @Test
-    fun `bots and guests do not share a colour pair`() {
-        val bot = CharacterAvatarUtils.botAvatar("weather-bot") as ActorAvatar.Character
-        val guest = CharacterAvatarUtils.guestAvatar("alice", guestLabel) as ActorAvatar.Character
-        assertNotEquals(bot.backgroundColor, guest.backgroundColor)
-        assertNotEquals(bot.textColor, guest.textColor)
+    fun `the new person icon does not replace bot characters`() {
+        assertTrue(CharacterAvatarUtils.botAvatar("weather-bot") is ActorAvatar.Character)
+        assertSame(ActorAvatar.PersonIcon, CharacterAvatarUtils.guestAvatar("alice", guestLabel))
     }
 
     @Test

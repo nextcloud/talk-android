@@ -199,8 +199,8 @@ fun MessageScaffold(
     val context = LocalContext.current
     val viewThemeUtils = LocalViewThemeUtils.current
     val isInspectionMode = LocalInspectionMode.current
-    val primaryContainer = colorScheme.primaryContainer
-    val resolvedBubbleColor = remember(bubbleColor, incoming, uiMessage.isDeleted, isInspectionMode, primaryContainer) {
+    val outgoingColor = colorResource(R.color.bg_message_list_outgoing_bubble)
+    val resolvedBubbleColor = remember(bubbleColor, incoming, uiMessage.isDeleted, isInspectionMode, outgoingColor) {
         bubbleColor ?: if (incoming) {
             val colorRes = if (uiMessage.isDeleted) {
                 R.color.bg_message_list_incoming_bubble_deleted
@@ -210,7 +210,7 @@ fun MessageScaffold(
             Color(getColorFromTheme(context, colorRes))
         } else {
             if (isInspectionMode) {
-                primaryContainer
+                outgoingColor
             } else {
                 val colorInt = viewThemeUtils.talk
                     .getOutgoingMessageBubbleColor(context, uiMessage.isDeleted, false)
@@ -898,6 +898,7 @@ private fun QuoteTextContent(message: ChatMessageUi, onClick: () -> Unit) {
             message = message,
             modifier = Modifier.padding(end = 4.dp),
             textStyle = TextStyle(
+                fontFamily = ChatFontFamily,
                 fontSize = fontSize,
                 color = colorScheme.onSurface,
                 lineHeight = fontSize * LINE_SPACING
@@ -1128,6 +1129,7 @@ fun EnrichedText(
             message = message,
             modifier = modifier,
             textStyle = TextStyle(
+                fontFamily = ChatFontFamily,
                 fontSize = fontSize,
                 color = colorScheme.onSurface,
                 lineHeight = fontSize * LINE_SPACING

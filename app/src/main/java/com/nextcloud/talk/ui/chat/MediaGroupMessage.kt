@@ -18,14 +18,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,7 +51,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -68,7 +65,6 @@ import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.ui.theme.mimetypeIconTint
-import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.MimetypeUtils
 import com.nextcloud.talk.utils.VideoThumbnailCache
@@ -105,7 +101,7 @@ private val gridPlayIconSize = 20.dp
 /**
  * Renders a run of file-share messages uploaded together in one batch (see
  * ChatViewModel.MediaGroupItem) as a single WhatsApp-style "album" bubble: image/video attachments
- * as an adaptive thumbnail grid, any other file types as a stacked list of rows below it. The
+ * as an adaptive thumbnail grid, with each attachment's details in a stacked list below it. The
  * bubble itself is anchored on the group's last (newest) message, same as a single MediaMessage -
  * its timestamp, reactions, read status, reply target and long-press/swipe-reply all target that
  * representative message, same as web bases its combined message on the group's last real message.
@@ -119,7 +115,6 @@ fun MediaGroupMessage(
 ) {
     val representative = messages.last()
     val mediaItems = messages.filter { it.isPreviewableMedia() }
-    val fileItems = messages.filterNot { it.isPreviewableMedia() }
 
     val hasExplicitCaption = representative.plainMessage != FILE_PLACEHOLDER_MESSAGE
     val captionText = if (hasExplicitCaption) representative.message else null
@@ -161,7 +156,7 @@ fun MediaGroupMessage(
                         conversationThreadId = context.conversationThreadId,
                         includePadding = mediaItems.isEmpty(),
                         captionText = captionText,
-                        forceTimeOverlay = captionText == null && fileItems.isEmpty(),
+                        forceTimeBelow = true,
                         content = {
                             Column {
                                 if (mediaItems.isNotEmpty()) {
@@ -178,18 +173,26 @@ fun MediaGroupMessage(
                                         )
                                     }
                                 }
-                                if (fileItems.isNotEmpty()) {
-                                    Column(
-                                        modifier = Modifier.padding(
-                                            horizontal = 8.dp,
-                                            vertical = if (mediaItems.isNotEmpty()) 4.dp else 0.dp
+                                Column(
+                                    modifier = Modifier.padding(
+                                        horizontal = 8.dp,
+                                        vertical = if (mediaItems.isNotEmpty()) 4.dp else 0.dp
+                                    )
+                                ) {
+                                    messages.forEach { message ->
+                                        GroupedFileRow(
+                                            message = message,
+                                            downloadingFiles = context.downloadingFileState,
+                                            onClick = { callbacks.onFileClick(message.id) },
+                                            onCancelUpload = callbacks.onCancelUpload
                                         )
-                                    ) {
-                                        fileItems.forEach { message ->
-                                            GroupedFileRow(
-                                                message = message,
-                                                onClick = { callbacks.onFileClick(message.id) },
-                                                onCancelUpload = callbacks.onCancelUpload
+                                        val media = message.content as? MessageTypeContent.Media
+                                        if (media?.mimeType?.startsWith("video/") == true &&
+                                            callbacks.onVideoAction != null
+                                        ) {
+                                            VideoActions(
+                                                onAction = { callbacks.onVideoAction(message.id, it) },
+                                                modifier = Modifier.fillMaxWidth()
                                             )
                                         }
                                     }
@@ -209,7 +212,7 @@ private fun ChatMessageUi.isPreviewableMedia(): Boolean {
         is MessageTypeContent.UploadingMedia -> currentContent.mimeType.orEmpty()
         else -> ""
     }
-    return mimeType.startsWith(Mimetype.IMAGE_PREFIX) || mimeType.startsWith(Mimetype.VIDEO_PREFIX)
+    return isPreviewableMimeType(mimeType)
 }
 
 @Suppress("Detekt.LongMethod", "LongParameterList")
@@ -377,7 +380,7 @@ private fun SyncedMediaTileContent(
     chatViewDownloadingFileState: List<String>
 ) {
     val context = LocalContext.current
-    val fileParameters = remember(message.id) {
+    val fileParameters = remember(message.messageParameters) {
         FileParameters(HashMap(message.messageParameters.mapValues { (_, params) -> HashMap(params) }))
     }
     val isVideo = typeContent.mimeType.startsWith(Mimetype.VIDEO_PREFIX)
@@ -579,85 +582,15 @@ private fun UploadingMediaTileContent(
 }
 
 @Composable
-private fun GroupedFileRow(message: ChatMessageUi, onClick: () -> Unit, onCancelUpload: (String) -> Unit) {
-    when (val content = message.content) {
-        is MessageTypeContent.Media -> SyncedFileRow(message, onClick)
-        is MessageTypeContent.UploadingMedia -> UploadingFileRow(message, content, onCancelUpload)
-        else -> Unit
-    }
-}
-
-@Composable
-private fun SyncedFileRow(message: ChatMessageUi, onClick: () -> Unit) {
-    val fileParameters = remember(message.id) {
-        FileParameters(HashMap(message.messageParameters.mapValues { (_, params) -> HashMap(params) }))
-    }
-    val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(fileParameters.mimetype)
-    val messageLongClickHandler = LocalMessageLongClickHandler.current
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = { messageLongClickHandler(message.id) }
-            )
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(drawableResourceId),
-            contentDescription = null,
-            modifier = Modifier.size(32.dp),
-            tint = mimetypeIconTint(drawableResourceId)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = fileParameters.name.orEmpty(),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
-
-@Composable
-private fun UploadingFileRow(
+private fun GroupedFileRow(
     message: ChatMessageUi,
-    typeContent: MessageTypeContent.UploadingMedia,
+    downloadingFiles: List<String>,
+    onClick: () -> Unit,
     onCancelUpload: (String) -> Unit
 ) {
-    val messageLongClickHandler = LocalMessageLongClickHandler.current
-    val isSent = message.statusIcon == MessageStatusIcon.SENT
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = {},
-                onLongClick = { messageLongClickHandler(message.id) }
-            )
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(typeContent.drawableResourceId),
-            contentDescription = null,
-            modifier = Modifier.size(32.dp),
-            tint = mimetypeIconTint(typeContent.drawableResourceId)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = typeContent.fileName,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f)
-        )
-        if (!isSent) {
-            IconButton(onClick = { onCancelUpload(message.referenceId.orEmpty()) }) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.nc_cancel))
-            }
-        }
+    when (val content = message.content) {
+        is MessageTypeContent.Media -> SyncedFileRow(message, downloadingFiles, onClick)
+        is MessageTypeContent.UploadingMedia -> UploadingFileRow(message, content, onCancelUpload)
+        else -> Unit
     }
 }

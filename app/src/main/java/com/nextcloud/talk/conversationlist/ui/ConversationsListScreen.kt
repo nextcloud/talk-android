@@ -129,7 +129,8 @@ fun ConversationsListScreen(
     viewModel: ConversationsListViewModel,
     tagsViewModel: ConversationTagsViewModel,
     state: ConversationsListScreenState,
-    callbacks: ConversationsListScreenCallbacks
+    callbacks: ConversationsListScreenCallbacks,
+    audioBar: @Composable () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context as Activity
@@ -268,6 +269,7 @@ fun ConversationsListScreen(
                             onAccountChooserClick = callbacks.onAccountChooserClick
                         )
                     )
+                    audioBar()
                 }
             }
         ) { paddingValues ->

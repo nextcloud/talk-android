@@ -101,4 +101,6 @@
     <color name="badge_color">#EF3B02</color>
     <color name="secondary_button_background">#DBE2E9</color>
 
+    <color name="bg_message_list_outgoing_bubble">#DCE1E5</color>
+    <color name="bg_message_input">#F5F5F5</color>
 </resources>

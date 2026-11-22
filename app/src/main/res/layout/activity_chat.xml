@@ -22,6 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/messageAudioBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

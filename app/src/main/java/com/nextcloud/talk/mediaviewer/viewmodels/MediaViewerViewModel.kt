@@ -7,6 +7,9 @@
 package com.nextcloud.talk.mediaviewer.viewmodels
 
 import android.util.Log
+import android.content.Context
+import androidx.work.ExistingWorkPolicy
+import androidx.work.await
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
@@ -17,6 +20,10 @@ import com.nextcloud.talk.utils.setExpeditedIfSupported
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.mediaviewer.stream.VideoDownloadRegistry
+import com.nextcloud.talk.mediaviewer.stream.VideoStreamSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.mediaviewer.model.MediaViewerGroup
@@ -33,7 +40,9 @@ import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -49,8 +58,10 @@ import kotlin.coroutines.resumeWithException
  * why "older" does). "Older" navigation pages further back through conversation history via
  * [SharedItemsRepository] once the locally seeded items run out.
  */
-class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository: SharedItemsRepository) :
-    ViewModel() {
+class MediaViewerViewModel @Inject constructor(
+    private val sharedItemsRepository: SharedItemsRepository,
+    private val ncApi: NcApi
+) : ViewModel() {
 
     data class PendingShift(val id: Long, val amount: Int)
 
@@ -61,6 +72,9 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         val canLoadOlder: Boolean = true,
         val cachedFilePaths: Map<Long, String> = emptyMap(),
         val downloadingMessageIds: Set<Long> = emptySet(),
+        val failedMessageIds: Set<Long> = emptySet(),
+        val downloadProgress: Map<Long, Int> = emptyMap(),
+        val videoStreams: Map<Long, VideoStreamSource> = emptyMap(),
         val pendingShift: PendingShift? = null
     ) {
         val flattenedItems: List<MediaViewerItem> get() = groups.flatMap { it.items }
@@ -81,6 +95,7 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
     private var oldestKnownMessageId: Long? = null
 
     fun initialize(user: User, roomToken: String, seedItems: List<MediaViewerItem>, startMessageId: Long) {
+        viewModelScope.coroutineContext.cancelChildren()
         this.user = user
         repositoryParameters = SharedItemsRepository.Parameters(
             // The login name, as it authenticates the requests. The user id can differ from it.
@@ -94,12 +109,12 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         oldestKnownMessageId = seedItems.minOfOrNull { it.messageId }
 
         _uiState.value = UiState(groups = groups, currentGlobalIndex = startIndex)
-        ensureCachedAround(startIndex)
+        ensureCurrentCached(startIndex)
     }
 
     fun onPageSettled(globalIndex: Int) {
         _uiState.update { it.copy(currentGlobalIndex = globalIndex) }
-        ensureCachedAround(globalIndex)
+        ensureCurrentCached(globalIndex)
         if (globalIndex <= EDGE_LOAD_THRESHOLD) {
             loadOlderGroups()
         }
@@ -113,11 +128,12 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         _uiState.update { if (it.pendingShift?.id == id) it.copy(pendingShift = null) else it }
     }
 
-    private fun ensureCachedAround(globalIndex: Int) {
-        val items = _uiState.value.flattenedItems
-        for (index in (globalIndex - PREFETCH_RADIUS)..(globalIndex + PREFETCH_RADIUS)) {
-            items.getOrNull(index)?.let(::ensureCached)
-        }
+    private fun ensureCurrentCached(globalIndex: Int) {
+        _uiState.value.flattenedItems.getOrNull(globalIndex)?.let(::ensureCached)
+    }
+
+    fun retryDownload(messageId: Long) {
+        _uiState.value.flattenedItems.firstOrNull { it.messageId == messageId }?.let(::ensureCached)
     }
 
     private fun ensureCached(item: MediaViewerItem) {
@@ -136,9 +152,17 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             return
         }
 
-        _uiState.update { it.copy(downloadingMessageIds = it.downloadingMessageIds + item.messageId) }
+        _uiState.update {
+            it.copy(
+                downloadingMessageIds = it.downloadingMessageIds + item.messageId,
+                failedMessageIds = it.failedMessageIds - item.messageId,
+                downloadProgress = it.downloadProgress - item.messageId
+            )
+        }
 
+        val workName = "media-download-${user.id}-${item.fileId}-${item.fileName}"
         val data = Data.Builder()
+            .putString(DownloadFileToCacheWorker.KEY_STREAM_KEY, workName.takeIf { item.mimeType.startsWith("video/") })
             .putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
@@ -155,33 +179,88 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
             .addTag(item.fileId)
             .setExpeditedIfSupported()
             .build()
-        WorkManager.getInstance(context).enqueue(request)
+        observeDownload(context, workName, request, item)
+    }
 
+    @Suppress("TooGenericExceptionCaught")
+    private fun observeDownload(
+        context: Context,
+        workName: String,
+        request: OneTimeWorkRequest,
+        item: MediaViewerItem
+    ) {
         viewModelScope.launch {
-            WorkManager.getInstance(context).getWorkInfoByIdLiveData(request.id).asFlow().collect { workInfo ->
-                if (workInfo == null) return@collect
-                when (workInfo.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val downloaded = FileUtils.resolveSharedAttachmentFile(
-                            context.cacheDir,
-                            item.fileId,
-                            item.fileName
-                        )
-                        _uiState.update {
-                            it.copy(
-                                downloadingMessageIds = it.downloadingMessageIds - item.messageId,
-                                cachedFilePaths = downloaded?.let { file ->
-                                    it.cachedFilePaths + (item.messageId to file.absolutePath)
-                                } ?: it.cachedFilePaths
-                            )
-                        }
-                    }
-                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        _uiState.update { it.copy(downloadingMessageIds = it.downloadingMessageIds - item.messageId) }
-                    }
-                    else -> Unit
+            try {
+                val manager = WorkManager.getInstance(context)
+                manager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, request).await()
+                manager.getWorkInfosForUniqueWorkLiveData(workName).asFlow().first { workInfos ->
+                    val workInfo = workInfos.firstOrNull { it.id == request.id } ?: workInfos.singleOrNull()
+                    if (workInfo == null) return@first false
+                    updateDownload(context, item, workInfo, workName)
+                    workInfo.state.isFinished
+                }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (exception: Exception) {
+                Log.e(TAG, "Unable to observe media download", exception)
+                markDownloadFailed(item.messageId)
+            }
+        }
+    }
+
+    private fun updateDownload(context: Context, item: MediaViewerItem, workInfo: WorkInfo, workName: String) {
+        when (workInfo.state) {
+            WorkInfo.State.SUCCEEDED -> {
+                val downloaded = FileUtils.resolveSharedAttachmentFile(context.cacheDir, item.fileId, item.fileName)
+                    ?.takeIf { it.isFile }
+                _uiState.update {
+                    it.copy(
+                        downloadingMessageIds = it.downloadingMessageIds - item.messageId,
+                        downloadProgress = it.downloadProgress + (item.messageId to 100),
+                        failedMessageIds = if (downloaded != null) {
+                            it.failedMessageIds - item.messageId
+                        } else {
+                            it.failedMessageIds + item.messageId
+                        },
+                        cachedFilePaths = downloaded?.let { file ->
+                            it.cachedFilePaths + (item.messageId to file.absolutePath)
+                        } ?: it.cachedFilePaths
+                    )
                 }
             }
+            WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> markDownloadFailed(item.messageId)
+            WorkInfo.State.RUNNING -> updateRunningDownload(item, workInfo, workName)
+            else -> Unit
+        }
+    }
+
+    private fun updateRunningDownload(item: MediaViewerItem, workInfo: WorkInfo, workName: String) {
+        val source = if (item.messageId !in _uiState.value.videoStreams) createVideoStream(item, workName) else null
+        _uiState.update {
+            it.copy(
+                downloadProgress = it.downloadProgress +
+                    (item.messageId to workInfo.progress.getInt(DownloadFileToCacheWorker.PROGRESS, -1)),
+                videoStreams = source?.let { stream -> it.videoStreams + (item.messageId to stream) } ?: it.videoStreams
+            )
+        }
+    }
+
+    private fun createVideoStream(item: MediaViewerItem, workName: String): VideoStreamSource? {
+        val download = VideoDownloadRegistry.find(workName) ?: return null
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
+        val url = ApiUtils.getUrlForFileDownload(user.baseUrl!!, user.userId!!, item.path)
+        return VideoStreamSource(download) { position, validator ->
+            ncApi.downloadVideoRange(credentials, url, "bytes=$position-", validator)
+        }
+    }
+
+    private fun markDownloadFailed(messageId: Long) {
+        _uiState.update {
+            it.copy(
+                downloadingMessageIds = it.downloadingMessageIds - messageId,
+                failedMessageIds = it.failedMessageIds + messageId,
+                videoStreams = it.videoStreams - messageId
+            )
         }
     }
 
@@ -198,6 +277,8 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         viewModelScope.launch {
             val sharedItems = try {
                 sharedItemsRepository.media(repositoryParameters, SharedItemType.MEDIA, cursor.toInt())?.awaitFirst()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load older shared items", e)
                 null
@@ -239,7 +320,6 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
 
     companion object {
         private val TAG = MediaViewerViewModel::class.simpleName
-        private const val PREFETCH_RADIUS = 1
         private const val EDGE_LOAD_THRESHOLD = 1
     }
 }

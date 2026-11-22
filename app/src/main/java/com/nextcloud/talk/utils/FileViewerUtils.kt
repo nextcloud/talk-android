@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.utils
 
+import com.nextcloud.talk.mediaviewer.model.VideoAction
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -64,13 +65,14 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     fun openFile(
         message: ChatMessage,
         openWhenDownloadState: MutableState<Boolean>,
-        downloadState: MutableState<List<String>>
+        downloadState: MutableState<List<String>>,
+        videoAction: VideoAction = VideoAction.PLAY
     ) {
         val mimetype = message.fileParameters.mimetype
 
         val isViewableMedia = mimetype.startsWith(IMAGE_PREFIX) || mimetype.startsWith(VIDEO_PREFIX)
         if (isViewableMedia) {
-            openInMediaViewer(message)
+            openInMediaViewer(message, videoAction)
             return
         }
 
@@ -89,7 +91,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         )
     }
 
-    private fun openInMediaViewer(message: ChatMessage) {
+    private fun openInMediaViewer(message: ChatMessage, videoAction: VideoAction) {
         val fileParameters = message.fileParameters
         val fileId = fileParameters.id
         val roomToken = message.token
@@ -119,7 +121,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             timestamp = message.timestamp
         )
         context.startActivity(
-            MediaViewerActivity.newIntent(context, user.id!!, roomToken, listOf(item), item.messageId)
+            MediaViewerActivity.newIntent(context, user.id!!, roomToken, listOf(item), item.messageId, videoAction)
         )
     }
 

@@ -102,41 +102,23 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     }
 
     fun themeOutgoingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
-        withScheme(bubble) { scheme ->
-            val bgBubbleColor = if (deleted) {
-                ColorUtils.setAlphaComponent(dynamicColor.surfaceVariant().getArgb(scheme), HALF_ALPHA_INT)
-            } else if (isPlayed) {
-                ContextCompat.getColor(bubble.context, R.color.bg_message_list_outgoing_bubble_audio_played)
-            } else {
-                dynamicColor.surfaceVariant().getArgb(scheme)
-            }
-
-            val layout = if (grouped) {
-                R.drawable.shape_grouped_outcoming_message
-            } else {
-                R.drawable.shape_outcoming_message
-            }
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(bubble.resources, R.color.transparent, null),
-                bgBubbleColor,
-                layout
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        val bgBubbleColor = getOutgoingMessageBubbleColor(bubble.context, deleted, isPlayed)
+        val layout = if (grouped) R.drawable.shape_grouped_outcoming_message else R.drawable.shape_outcoming_message
+        val bubbleDrawable = DisplayUtils.getMessageSelector(
+            bgBubbleColor,
+            ResourcesCompat.getColor(bubble.resources, R.color.transparent, null),
+            bgBubbleColor,
+            layout
+        )
+        ViewCompat.setBackground(bubble, bubbleDrawable)
     }
 
     fun getOutgoingMessageBubbleColor(context: Context, deleted: Boolean, isPlayed: Boolean): Int {
-        return withScheme(context) { scheme ->
-            val bgBubbleColor = if (deleted) {
-                ColorUtils.setAlphaComponent(dynamicColor.surfaceVariant().getArgb(scheme), HALF_ALPHA_INT)
-            } else if (isPlayed) {
-                ContextCompat.getColor(context, R.color.bg_message_list_outgoing_bubble_audio_played)
-            } else {
-                dynamicColor.surfaceVariant().getArgb(scheme)
-            }
-
-            return@withScheme bgBubbleColor
+        val bubbleColor = ContextCompat.getColor(context, R.color.bg_message_list_outgoing_bubble)
+        return when {
+            deleted -> ColorUtils.setAlphaComponent(bubbleColor, HALF_ALPHA_INT)
+            isPlayed -> ContextCompat.getColor(context, R.color.bg_message_list_outgoing_bubble_audio_played)
+            else -> bubbleColor
         }
     }
 
