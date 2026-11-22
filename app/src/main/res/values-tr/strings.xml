@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Bildirimler reddediliyor</string>
     <string name="nc_settings_notifications_granted">Bildirimlere izin veriliyor</string>
     <string name="nc_settings_other_notifications_ringtone">İletiler</string>
+    <string name="nc_settings_other_sound">Diğer ses…</string>
     <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Konuş kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Hata 429 çok fazla sayıda istek yapıldı</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Telefon numaranızı ayarlayarak diğer kullanıcıların sizi bulmasını sağlayabilirsiniz</string>
@@ -925,4 +926,8 @@
         <item quantity="one">%d oy</item>
         <item quantity="other">%d oy</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">Okunmamış iletisi bulunan %d görüşme var</item>
+        <item quantity="other">Okunmamış iletisi bulunan %d görüşme var</item>
+    </plurals>
+</resources>
