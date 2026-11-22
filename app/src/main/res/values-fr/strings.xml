@@ -144,8 +144,10 @@
     <string name="nc_audio_error_unsupported">Le format audio n\'est pas pris en charge</string>
     <string name="nc_audio_player_close">Arrêter la lecture</string>
     <string name="nc_audio_player_next">Suivant</string>
+    <string name="nc_audio_player_play_pause">Lecture/pause</string>
     <string name="nc_audio_player_previous">Précédent</string>
     <string name="nc_audio_player_queue">Liste de lecture</string>
+    <string name="nc_audio_player_repeat_all">Tout répéter</string>
     <string name="nc_audio_player_repeat_off">Désactiver la répétition</string>
     <string name="nc_audio_player_show_message">Afficher le message</string>
     <string name="nc_audio_seek">Position de lecture</string>
@@ -173,6 +175,7 @@
     <string name="nc_call_ongoing_notification_end_action">Terminer l\'appel</string>
     <string name="nc_call_ongoing_notification_return_action">Revenir à l\'appel</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Vous partagez votre écran</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Défiler jusqu\'au premier participant</string>
     <string name="nc_call_raised_hand">%1$s a levé la main</string>
     <string name="nc_call_reconnecting">Reconnexion…</string>
     <string name="nc_call_ringing">APPEL EN COURS</string>
@@ -190,6 +193,7 @@
     <string name="nc_cancel">Annuler</string>
     <string name="nc_capabilities_failed">Échec de la récupération des capacités, abandon</string>
     <string name="nc_caption">Légende</string>
+    <string name="nc_certificate_dialog_text_for_host">Faites-vous confiance au certificat SSL jusque-là inconnu, de %1$s, émis par %2$s pour %3$s, et valide du %4$s au %5$s ? Il sera approuvé uniquement pour %1$s.</string>
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
@@ -381,6 +385,9 @@
     <string name="nc_lobby_start_date">La réunion est planifiée pour %1$s</string>
     <string name="nc_lobby_start_soon">La réunion va bientôt commencer</string>
     <string name="nc_lobby_waiting">Vous patientez actuellement dans la salle d\'attente</string>
+    <string name="nc_local_network_permission_denied">Autoriser les accès du réseau local à se connecter à ce serveur.</string>
+    <string name="nc_local_network_permission_message">Ce serveur est sur votre réseau local. Il ne peut être atteint qu\'avec la permission « Appareils à proximité ». Sans celle-ci, la connexion au serveur échoue.</string>
+    <string name="nc_local_network_permission_title">Autoriser l\'accès au réseau local</string>
     <string name="nc_location_current_position_description">Votre position actuelle</string>
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
@@ -599,6 +606,7 @@
     <string name="nc_settings_notifications_declined">Les notifications sont désactivées</string>
     <string name="nc_settings_notifications_granted">Les notifications sont acceptées</string>
     <string name="nc_settings_other_notifications_ringtone">Messages</string>
+    <string name="nc_settings_other_sound">Autre son…</string>
     <string name="nc_settings_phone_book_integration_desc">Mettre en correspondance les contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis Talk dans le carnet d\'adresses</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erreur 429 Trop de requêtes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Vous pouvez ajouter votre numéro de téléphone pour que les autres utilisateurs puissent vous trouver</string>
@@ -656,6 +664,7 @@
     <string name="nc_shared_items_deck_card">Carte de l\'application Deck</string>
     <string name="nc_shared_items_description">Images, fichiers, messages vocaux…</string>
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
+    <string name="nc_shared_items_error">Les éléments partagés n\'ont pas pu être chargés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_shortcut_conversation_deleted">Cette conversation n\'existe plus</string>

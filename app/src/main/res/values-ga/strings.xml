@@ -179,6 +179,7 @@
     <string name="nc_call_ongoing_notification_end_action">Cuir deireadh leis an nglao</string>
     <string name="nc_call_ongoing_notification_return_action">Fill ar an nglao</string>
     <string name="nc_call_ongoing_notification_screen_sharing">Tá tú ag roinnt do scáileáin</string>
+    <string name="nc_call_participant_bar_scroll_to_start">Scrollaigh go dtí an chéad rannpháirtí</string>
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
     <string name="nc_call_ringing">AG FUAIMNIÚ</string>
@@ -348,6 +349,7 @@
     <string name="nc_following_link">Úsáideoir ag leanúint nasc poiblí</string>
     <string name="nc_formatted_message_you">Tusa: %1$s</string>
     <string name="nc_forward_message">Ar aghaidh</string>
+    <string name="nc_forward_to">Ar aghaidh chuig</string>
     <string name="nc_forward_to_three_dots">Ar aghaidh chuig…</string>
     <string name="nc_gallery">Gailearaí</string>
     <string name="nc_get_from_provider">Nach bhfuil freastalaí agat fós?\nCliceáil anseo chun ceann a fháil ó sholáthraí</string>
@@ -392,6 +394,7 @@
     <string name="nc_lobby_start_soon">Cuirfear tús leis an gcruinniú go luath</string>
     <string name="nc_lobby_waiting">Tá tú ag fanacht sa stocaireacht faoi láthair.</string>
     <string name="nc_local_network_permission_denied">Ceadaigh rochtain ón líonra áitiúil chun ceangal leis an bhfreastalaí seo.</string>
+    <string name="nc_local_network_permission_message">Tá an freastalaí seo ar do líonra áitiúil. Ní féidir teacht air ach amháin má tá an cead \"Gléasanna in aice láimhe\" agat. Mura bhfuil an cead sin agat, teipfidh ar an nasc leis an bhfreastalaí.</string>
     <string name="nc_local_network_permission_title">Ceadaigh rochtain ar an líonra áitiúil</string>
     <string name="nc_location_current_position_description">Do shuíomh reatha</string>
     <string name="nc_location_unknown">Post anaithnid</string>
@@ -611,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Diúltaítear d’fhógraí</string>
     <string name="nc_settings_notifications_granted">Deonaítear fógraí</string>
     <string name="nc_settings_other_notifications_ringtone">Teachtaireachtaí</string>
+    <string name="nc_settings_other_sound">Fuaim eile…</string>
     <string name="nc_settings_phone_book_integration_desc">Meaitseáil teagmhálaithe bunaithe ar uimhir theileafóin chun aicearra Talk a chomhtháthú san aip teagmhálacha córais</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Earráid 429 An Iomarca Iarratas</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Is féidir leat d’uimhir theileafóin a shocrú ionas go mbeidh úsáideoirí eile in ann teacht ort</string>
@@ -668,6 +672,7 @@
     <string name="nc_shared_items_deck_card">Cárta deic</string>
     <string name="nc_shared_items_description">Íomhánna, comhaid, teachtaireachtaí gutha…</string>
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
+    <string name="nc_shared_items_error">Níorbh fhéidir míreanna comhroinnte a luchtú</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
     <string name="nc_shortcut_conversation_deleted">Níl an comhrá seo ann a thuilleadh</string>
@@ -936,4 +941,11 @@
         <item quantity="many">%d vótaí</item>
         <item quantity="other">%d vótaí</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d comhrá le teachtaireachtaí nár léadh</item>
+        <item quantity="two">%d comhrá ina bhfuil teachtaireachtaí nár léadh</item>
+        <item quantity="few">%d comhrá ina bhfuil teachtaireachtaí nár léadh</item>
+        <item quantity="many">%d comhrá ina bhfuil teachtaireachtaí nár léadh</item>
+        <item quantity="other">%d comhrá ina bhfuil teachtaireachtaí nár léadh</item>
+    </plurals>
+</resources>
