@@ -279,7 +279,7 @@ internal fun buildMessageActionsState(
     )
 }
 
-/** Opens fully expanded: the half-height peek left the last entries (Delete) off-screen. */
+/** Opens fully expanded, so all entries down to the last one (Delete) are reachable without dragging the sheet. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun rememberMessageActionsSheetState() = rememberModalBottomSheetState(skipPartiallyExpanded = true)

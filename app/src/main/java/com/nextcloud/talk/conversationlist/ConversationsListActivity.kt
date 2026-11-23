@@ -282,6 +282,7 @@ class ConversationsListActivity : BaseActivity() {
     private fun endForwarding() {
         intent.removeExtra(KEY_FORWARD_MSG_FLAG)
         intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+        intent.removeExtra(KEY_FORWARD_MSG_TEXTS)
         intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
         forwardMessageState.value = false
         conversationsListViewModel.setHideRoomToken(null)
@@ -2026,6 +2027,7 @@ class ConversationsListActivity : BaseActivity() {
                 intent.removeExtra(KEY_ROOM_TOKEN)
                 intent.removeExtra(KEY_FORWARD_MSG_FLAG)
                 intent.removeExtra(KEY_FORWARD_MSG_TEXT)
+                intent.removeExtra(KEY_FORWARD_MSG_TEXTS)
                 intent.removeExtra(KEY_FORWARD_HIDE_SOURCE_ROOM)
             }
         }

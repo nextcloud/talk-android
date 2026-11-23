@@ -88,6 +88,22 @@ class OfflineFirstChatRepository @Inject constructor(
             timestamp
         }
 
+    // Temporary text messages are keyed in the UI by their id, so messages added within the same millisecond, as in
+    // a forward of several messages, need distinct ids. The value counts up so the ids keep the order of the calls.
+    private var lastTemporaryTimeOfDayMillis = 0
+
+    private fun nextTemporaryTimeOfDayMillis(timeOfDayMillis: Int): Int =
+        synchronized(this) {
+            val last = lastTemporaryTimeOfDayMillis
+            val next = if (timeOfDayMillis <= last && last - timeOfDayMillis < TEMPORARY_ID_CLASH_WINDOW_MILLIS) {
+                last + 1
+            } else {
+                timeOfDayMillis
+            }
+            lastTemporaryTimeOfDayMillis = next
+            next
+        }
+
     override val messageFlow:
         Flow<
             Triple<
@@ -1260,7 +1276,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val currentTimeMillis = System.currentTimeMillis()
 
         // only use the time of a day so it can fit into an integer
-        val timeOfDayMillis = SendMessageUtils().timeOfDayMillis(currentTimeMillis)
+        val timeOfDayMillis = nextTemporaryTimeOfDayMillis(SendMessageUtils().timeOfDayMillis(currentTimeMillis))
 
         // make it negative -> sending the lastReadMessage to server checks "-1 < messageId" to avoid temporary messages
         val negativeTimeOfDayMillis = timeOfDayMillis * MINUS_ONE
@@ -1308,6 +1324,7 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
 
         private const val MINUS_ONE = -1L
+        private const val TEMPORARY_ID_CLASH_WINDOW_MILLIS = 60_000
 
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
         private const val HTTP_OK = 200

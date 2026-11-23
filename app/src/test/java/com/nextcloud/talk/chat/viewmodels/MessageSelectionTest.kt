@@ -177,6 +177,17 @@ class ForwardPlanTest {
     }
 
     @Test
+    fun `mentions are forwarded with the name instead of the placeholder`() {
+        val mentioned = message(1, "Hi {mention-user1}").apply {
+            messageParameters = hashMapOf(
+                "mention-user1" to hashMapOf<String?, String?>("type" to "user", "id" to "alice", "name" to "Alice")
+            )
+        }
+
+        assertEquals(listOf("Hi @Alice"), planForward(listOf(mentioned)) { true }.texts)
+    }
+
+    @Test
     fun `everything forwardable is sent without a notice`() {
         assertEquals(ForwardOutcome.ALL, planForward(listOf(message(1, "a"), message(2, "b"))) { true }.outcome)
     }

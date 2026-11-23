@@ -601,8 +601,8 @@ class OfflineFirstChatRepositoryTest {
     @Test
     fun `temporary messages added in a burst keep their own rows`() =
         runTest {
-            // a forward of several messages adds them one after the other, often within one millisecond; a row key
-            // made of the clock made the later message overwrite the earlier one, which was then never sent
+            // a forward of several messages adds them one after the other, often within one millisecond; each needs
+            // its own row and its own id, which the chat list uses as key
 
             repeat(BURST_SIZE) { index ->
                 repository.addTemporaryMessage(
@@ -617,6 +617,7 @@ class OfflineFirstChatRepositoryTest {
             val entityCaptor = argumentCaptor<ChatMessageEntity>()
             verifyBlocking(chatDao, times(BURST_SIZE)) { upsertChatMessage(entityCaptor.capture()) }
             assertEquals(BURST_SIZE, entityCaptor.allValues.map { it.internalId }.toSet().size)
+            assertEquals(BURST_SIZE, entityCaptor.allValues.map { it.id }.toSet().size)
         }
 
     @Test

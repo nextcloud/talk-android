@@ -120,7 +120,8 @@ fun ChatMessageView(
     ) {
         SwipeToReplyContainer(
             replyable = message.replyable && context.hasChatPermission,
-            onSwipeReply = { callbacks.onSwipeReply?.invoke(message.id) }
+            onSwipeReply = { callbacks.onSwipeReply?.invoke(message.id) },
+            swipeEnabled = !context.selectionActive
         ) {
             val onSelectionToggle = callbacks.onSelectionToggle
             MessageRowFrame(

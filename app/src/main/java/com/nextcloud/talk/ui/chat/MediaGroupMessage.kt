@@ -140,7 +140,8 @@ fun MediaGroupMessage(
     ) {
         SwipeToReplyContainer(
             replyable = representative.replyable && context.hasChatPermission,
-            onSwipeReply = { callbacks.onSwipeReply?.invoke(representative.id) }
+            onSwipeReply = { callbacks.onSwipeReply?.invoke(representative.id) },
+            swipeEnabled = !context.selectionActive
         ) {
             val onSelectionToggle = callbacks.onSelectionToggle
             MessageRowFrame(

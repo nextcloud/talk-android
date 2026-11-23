@@ -1456,6 +1456,12 @@ class ChatActivity :
         }
 
         lifecycleScope.launch {
+            messageInputViewModel.sendFailures.collect {
+                Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        lifecycleScope.launch {
             chatViewModel.actionFailures.collect { message ->
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
@@ -1632,10 +1638,6 @@ class ChatActivity :
                 is MessageInputViewModel.SendChatMessageSuccessState -> {
                     myFirstMessage = state.message
                     removeUnreadMessagesMarker()
-                }
-
-                is MessageInputViewModel.SendChatMessageErrorState -> {
-                    Toast.makeText(this, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -2070,9 +2072,10 @@ class ChatActivity :
             MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this@ChatActivity)) {
                 CompositionLocalProvider(LocalViewThemeUtils provides viewThemeUtils) {
                     val selectedMessageIds by chatViewModel.messageSelection.ids.collectAsStateWithLifecycle()
-                    val canForwardSelection by produceState(false, selectedMessageIds) {
+                    val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
+                    val canForwardSelection by produceState(false, selectedMessageIds, isOnline) {
                         value = loadSelectedMessages(selectedMessageIds).any {
-                            actionsStateFor(it, networkMonitor.isOnline.value).showForward
+                            actionsStateFor(it, isOnline).showForward
                         }
                     }
                     ChatToolbar(
@@ -3598,7 +3601,9 @@ class ChatActivity :
 
     private fun copySelectedMessages() {
         lifecycleScope.launch {
-            val messages = loadSelectedMessages(chatViewModel.messageSelection.ids.value).filterNot { it.isDeleted }
+            val messages = loadSelectedMessages(
+                chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
+            ).filterNot { it.isDeleted }
             if (messages.isEmpty()) {
                 return@launch
             }
