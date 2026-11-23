@@ -923,4 +923,9 @@
         <item quantity="many">%d votes</item>
         <item quantity="other">%d votes</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d conversation avec des messages non lus</item>
+        <item quantity="many">%d conversations avec des messages non lus</item>
+        <item quantity="other">%d conversations avec des messages non lus</item>
+    </plurals>
+</resources>
