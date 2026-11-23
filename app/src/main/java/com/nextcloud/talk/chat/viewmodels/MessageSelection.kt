@@ -77,30 +77,20 @@ class MessageSelection {
     }
 }
 
-/** What a forward of selected messages sends: one text per message in chat order, and how many were left out. */
-data class ForwardPlan(val texts: List<String>, val skipped: Int) {
-    /** What the user is told: nothing to forward stops the forward, left out messages are named, all sent is silent. */
-    val outcome: ForwardOutcome
-        get() = when {
-            texts.isEmpty() -> ForwardOutcome.NOTHING_TO_FORWARD
-            skipped > 0 -> ForwardOutcome.SOME_SKIPPED
-            else -> ForwardOutcome.ALL
-        }
-}
-
-enum class ForwardOutcome { ALL, SOME_SKIPPED, NOTHING_TO_FORWARD }
-
-/** Plans the forward of [messages] (any order): each forwardable message becomes its own text, ordered by id. */
-fun planForward(messages: List<ChatMessage>, canForward: (ChatMessage) -> Boolean): ForwardPlan {
-    val texts = messages.sortedBy { it.jsonMessageId }
-        .mapNotNull { forwardedTextOrNull(it, canForward(it)) }
-    return ForwardPlan(texts, messages.size - texts.size)
-}
+/**
+ * The texts a forward of [messages] (any order) sends, one per message ordered by id, or null when any of them cannot
+ * be forwarded: a forward sends the whole selection or nothing, so no message is left out silently.
+ */
+fun forwardTextsOrNull(messages: List<ChatMessage>, canForward: (ChatMessage) -> Boolean): List<String>? =
+    messages.sortedBy { it.jsonMessageId }
+        .map { forwardedTextOrNull(it, canForward(it)) }
+        .takeIf { texts -> texts.isNotEmpty() && texts.all { it != null } }
+        ?.filterNotNull()
 
 /**
  * The text as shown in the chat, with mentions and other parameters resolved to their names, so no placeholder such
  * as "{mention-user1}" reaches the target conversation. The same text is counted at selection time and sent by
- * [planForward].
+ * [forwardTextsOrNull].
  */
 fun forwardedTextOrNull(message: ChatMessage, canForward: Boolean): String? =
     message.getRichText().takeIf { canForward && it.isNotBlank() }

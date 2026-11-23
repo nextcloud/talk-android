@@ -121,11 +121,10 @@ import com.nextcloud.talk.chat.ui.TypingIndicatorBanner
 import com.nextcloud.talk.chat.ui.buildMessageActionsState
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
-import com.nextcloud.talk.chat.viewmodels.ForwardOutcome
 import com.nextcloud.talk.chat.viewmodels.SelectionLimit
+import com.nextcloud.talk.chat.viewmodels.forwardTextsOrNull
 import com.nextcloud.talk.chat.viewmodels.forwardedTextOrNull
 import com.nextcloud.talk.chat.viewmodels.loadSelected
-import com.nextcloud.talk.chat.viewmodels.planForward
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -2074,9 +2073,9 @@ class ChatActivity :
                     val selectedMessageIds by chatViewModel.messageSelection.ids.collectAsStateWithLifecycle()
                     val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
                     val canForwardSelection by produceState(false, selectedMessageIds, isOnline) {
-                        value = loadSelectedMessages(selectedMessageIds).any {
-                            actionsStateFor(it, isOnline).showForward
-                        }
+                        value = forwardTextsOrNull(
+                            loadSelectedMessages(chatViewModel.messageIdsToForward(selectedMessageIds))
+                        ) { actionsStateFor(it, isOnline).showForward } != null
                     }
                     ChatToolbar(
                         state = chatToolbarState.copy(
@@ -3585,17 +3584,11 @@ class ChatActivity :
             val messages = loadSelectedMessages(
                 chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
             )
-            val plan = planForward(messages) {
+            val texts = forwardTextsOrNull(messages) {
                 actionsStateFor(it, networkMonitor.isOnline.value).showForward
-            }
-            if (plan.outcome != ForwardOutcome.ALL) {
-                Toast.makeText(this@ChatActivity, R.string.nc_chat_forward_text_only, Toast.LENGTH_LONG).show()
-            }
-            if (plan.outcome == ForwardOutcome.NOTHING_TO_FORWARD) {
-                return@launch
-            }
+            } ?: return@launch
             chatViewModel.messageSelection.clear()
-            forwardTexts(plan.texts)
+            forwardTexts(texts)
         }
     }
 

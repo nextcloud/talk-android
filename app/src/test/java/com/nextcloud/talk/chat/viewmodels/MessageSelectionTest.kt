@@ -12,6 +12,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
@@ -144,7 +145,7 @@ class MessageSelectionTest {
     }
 }
 
-class ForwardPlanTest {
+class ForwardTextsTest {
 
     private fun message(id: Int, text: String?): ChatMessage =
         ChatMessage().apply {
@@ -153,27 +154,25 @@ class ForwardPlanTest {
         }
 
     @Test
-    fun `each forwardable message is its own text in chat order`() {
-        val plan = planForward(listOf(message(30, "c"), message(10, "a"), message(20, "b"))) { true }
+    fun `each message is its own text in chat order`() {
+        val texts = forwardTextsOrNull(listOf(message(30, "c"), message(10, "a"), message(20, "b"))) { true }
 
-        assertEquals(listOf("a", "b", "c"), plan.texts)
-        assertEquals(0, plan.skipped)
+        assertEquals(listOf("a", "b", "c"), texts)
     }
 
     @Test
-    fun `messages that cannot be forwarded are counted as skipped`() {
-        val plan = planForward(listOf(message(1, "a"), message(2, "{file}"), message(3, "c"))) { it.jsonMessageId != 2 }
-
-        assertEquals(listOf("a", "c"), plan.texts)
-        assertEquals(1, plan.skipped)
+    fun `one message that cannot be forwarded stops the whole forward`() {
+        assertNull(forwardTextsOrNull(listOf(message(1, "a"), message(2, "{file}"))) { it.jsonMessageId != 2 })
     }
 
     @Test
-    fun `nothing forwardable gives no texts`() {
-        val plan = planForward(listOf(message(1, "{file}"))) { false }
+    fun `a blank message stops the whole forward`() {
+        assertNull(forwardTextsOrNull(listOf(message(1, "a"), message(2, "  "))) { true })
+    }
 
-        assertTrue(plan.texts.isEmpty())
-        assertEquals(1, plan.skipped)
+    @Test
+    fun `an empty selection has nothing to forward`() {
+        assertNull(forwardTextsOrNull(emptyList()) { true })
     }
 
     @Test
@@ -184,26 +183,6 @@ class ForwardPlanTest {
             )
         }
 
-        assertEquals(listOf("Hi @Alice"), planForward(listOf(mentioned)) { true }.texts)
-    }
-
-    @Test
-    fun `everything forwardable is sent without a notice`() {
-        assertEquals(ForwardOutcome.ALL, planForward(listOf(message(1, "a"), message(2, "b"))) { true }.outcome)
-    }
-
-    @Test
-    fun `left out messages give the skipped notice and the rest is sent`() {
-        val plan = planForward(listOf(message(1, "a"), message(2, "{file}"))) { it.jsonMessageId == 1 }
-
-        assertEquals(ForwardOutcome.SOME_SKIPPED, plan.outcome)
-        assertEquals(listOf("a"), plan.texts)
-    }
-
-    @Test
-    fun `an empty plan is reported and not silent`() {
-        assertEquals(ForwardOutcome.NOTHING_TO_FORWARD, planForward(listOf(message(1, "a"))) { false }.outcome)
-        assertEquals(ForwardOutcome.NOTHING_TO_FORWARD, planForward(emptyList()) { true }.outcome)
-        assertEquals(ForwardOutcome.NOTHING_TO_FORWARD, planForward(listOf(message(1, "  "))) { true }.outcome)
+        assertEquals(listOf("Hi @Alice"), forwardTextsOrNull(listOf(mentioned)) { true })
     }
 }
