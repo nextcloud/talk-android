@@ -863,9 +863,10 @@ private fun mediaMessageLabels(msgType: ChatMessage.MessageType): Pair<Int, Int>
         else -> R.string.nc_sent_a_gif_you to R.string.nc_sent_a_gif
     }
 
+@Composable
 private fun authorPrefix(chatMessage: ChatMessage, currentUser: User): String =
     if (chatMessage.actorId == currentUser.userId) {
-        "You:"
+        stringResource(R.string.nc_formatted_message_you_prefix)
     } else {
         val name = chatMessage.actorDisplayName
         if (!name.isNullOrBlank()) "$name:" else ""
