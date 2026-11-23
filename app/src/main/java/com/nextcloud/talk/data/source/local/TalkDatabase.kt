@@ -125,27 +125,68 @@ abstract class TalkDatabase : RoomDatabase() {
 
         @VisibleForTesting
         @JvmStatic
-        fun build(context: Context, dbName: String = databaseName(context)): TalkDatabase {
+        fun build(
+            context: Context,
+            dbName: String = databaseName(context),
+            prefsName: String = DatabaseKeyManager.PREFS_NAME,
+            keyAlias: String = DatabaseKeyManager.WRAPPING_KEY_ALIAS
+        ): TalkDatabase {
             System.loadLibrary(SQL_CIPHER_LIBRARY)
 
             return try {
-                buildDatabase(context, dbName)
+                buildDatabase(context, dbName, prefsName, keyAlias)
             } catch (e: SQLiteException) {
-                // the database file is corrupted or cannot be decrypted (e.g. a broken backup
-                // restore or leftover file from an incompatible format). Recreate it from
-                // scratch rather than crashing the app on every launch.
-                Log.e(TAG, "Failed to open database '$dbName', recreating it", e)
-                context.applicationContext.deleteDatabase(dbName)
-                buildDatabase(context, dbName)
+                migrateLegacyAndBuild(context, dbName, prefsName, keyAlias)
+                    ?: run {
+                        // the database file is corrupted or cannot be decrypted (e.g. a broken backup
+                        // restore or leftover file from an incompatible format). Recreate it from
+                        // scratch rather than crashing the app on every launch.
+                        Log.e(TAG, "Failed to open database '$dbName', recreating it", e)
+                        context.applicationContext.deleteDatabase(dbName)
+                        buildDatabase(context, dbName, prefsName, keyAlias)
+                    }
+            }
+        }
+
+        /**
+         * Re-keys a file that the stored passphrase cannot open but that is still on the legacy key,
+         * for example a database restored into an install that already has a passphrase. Returns
+         * null if the file is not on the legacy key or still cannot be opened afterwards.
+         */
+        private fun migrateLegacyAndBuild(
+            context: Context,
+            dbName: String,
+            prefsName: String,
+            keyAlias: String
+        ): TalkDatabase? {
+            val path = context.applicationContext.getDatabasePath(dbName).absolutePath
+            if (!DatabaseKeyManager.migrateLegacyDatabase(context, path, prefsName, keyAlias)) {
+                return null
+            }
+            Log.w(TAG, "Database '$dbName' was still on the legacy key; migrated it")
+            return try {
+                buildDatabase(context, dbName, prefsName, keyAlias)
+            } catch (e: SQLiteException) {
+                Log.e(TAG, "Database '$dbName' cannot be opened after migrating it", e)
+                null
             }
         }
 
         @VisibleForTesting
         @JvmStatic
         @Suppress("SpreadOperator")
-        fun buildDatabase(context: Context, dbName: String): TalkDatabase {
-            val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
-            val passphrase: ByteArray = getBytesFromChars(passCharArray)
+        fun buildDatabase(
+            context: Context,
+            dbName: String,
+            prefsName: String = DatabaseKeyManager.PREFS_NAME,
+            keyAlias: String = DatabaseKeyManager.WRAPPING_KEY_ALIAS
+        ): TalkDatabase {
+            val passphrase: ByteArray = DatabaseKeyManager.getPassphrase(
+                context,
+                context.applicationContext.getDatabasePath(dbName).absolutePath,
+                prefsName,
+                keyAlias
+            )
             val factory = SupportOpenHelperFactory(passphrase)
 
             val database = Room
@@ -172,7 +213,5 @@ abstract class TalkDatabase : RoomDatabase() {
 
             return database
         }
-
-        private fun getBytesFromChars(chars: CharArray): ByteArray = String(chars).toByteArray(Charsets.UTF_8)
     }
 }
