@@ -176,13 +176,18 @@ class ForwardTextsTest {
     }
 
     @Test
-    fun `mentions are forwarded with the name instead of the placeholder`() {
+    fun `mentions are forwarded in the syntax the server resolves to a mention`() {
         val mentioned = message(1, "Hi {mention-user1}").apply {
             messageParameters = hashMapOf(
-                "mention-user1" to hashMapOf<String?, String?>("type" to "user", "id" to "alice", "name" to "Alice")
+                "mention-user1" to hashMapOf<String?, String?>(
+                    "type" to "user",
+                    "id" to "marcel",
+                    "mention-id" to "marcel",
+                    "name" to "Marcel Hibbe (Sermo)"
+                )
             )
         }
 
-        assertEquals(listOf("Hi @Alice"), forwardTextsOrNull(listOf(mentioned)) { true })
+        assertEquals(listOf("Hi @marcel"), forwardTextsOrNull(listOf(mentioned)) { true })
     }
 }

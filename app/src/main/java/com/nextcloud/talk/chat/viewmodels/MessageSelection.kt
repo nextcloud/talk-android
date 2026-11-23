@@ -88,12 +88,12 @@ fun forwardTextsOrNull(messages: List<ChatMessage>, canForward: (ChatMessage) ->
         ?.filterNotNull()
 
 /**
- * The text as shown in the chat, with mentions and other parameters resolved to their names, so no placeholder such
- * as "{mention-user1}" reaches the target conversation. The same text is counted at selection time and sent by
- * [forwardTextsOrNull].
+ * The text as it is typed to send it, with mentions in the "@" syntax and other parameters resolved to their names, so
+ * no placeholder such as "{mention-user1}" reaches the target conversation. The same text is counted at selection time
+ * and sent by [forwardTextsOrNull].
  */
 fun forwardedTextOrNull(message: ChatMessage, canForward: Boolean): String? =
-    message.getRichText().takeIf { canForward && it.isNotBlank() }
+    message.getTextToResend().takeIf { canForward && it.isNotBlank() }
 
 /** Whether a message with [messageId] can be selected. Pending messages have a negative id until the server answers. */
 fun isSelectableMessageId(messageId: Int): Boolean = messageId > 0
