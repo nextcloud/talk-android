@@ -21,7 +21,11 @@ import com.nextcloud.talk.users.UserManager
 import io.reactivex.Observable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
+import okhttp3.Headers
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,16 +34,21 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import retrofit2.Response
 
 /**
  * Marking read or unread in the conversation list goes through the same work slot as this worker, so
  * the list replaces the chat's read marker. Releasing a guard on the way out of work that was replaced
  * would hand back the guard its replacement has just set, and the next room list sync would then undo
  * what the user did last.
+ *
+ * The answer to a read marker also carries the last message read by all participants. It has to reach
+ * the database, otherwise the check marks of the own messages stay behind until the next sync.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class, sdk = [33])
@@ -78,7 +87,7 @@ class ReadMarkerSyncWorkerTest {
     fun `a read marker that was sent keeps its guard for the next sync to clear`() {
         val worker = worker()
         whenever(chatNetworkDataSource.setChatReadMarker(any(), any(), any()))
-            .thenReturn(Observable.just(GenericOverall()))
+            .thenReturn(Observable.just(responseWithHeader(null)))
 
         val result = runBlocking { worker.sendReadMarker(USER_ID, ROOM_TOKEN, LAST_READ_MESSAGE) }
 
@@ -95,6 +104,77 @@ class ReadMarkerSyncWorkerTest {
         assertEquals(ListenableWorker.Result.failure(), result)
         verify(conversationListUpdater).clearPendingReadMarker(eq(INTERNAL_ID), eq(LAST_READ_MESSAGE))
         verify(conversationListUpdater).clearPendingUnread(eq(INTERNAL_ID))
+    }
+
+    @Test
+    fun `last common read is taken from the header of the read marker response`() {
+        val response = responseWithHeader("2624")
+
+        assertEquals(2624, ReadMarkerSyncWorker.lastCommonReadOf(response))
+    }
+
+    @Test
+    fun `missing or broken header gives no last common read`() {
+        assertNull(ReadMarkerSyncWorker.lastCommonReadOf(responseWithHeader(null)))
+        assertNull(ReadMarkerSyncWorker.lastCommonReadOf(responseWithHeader("abc")))
+    }
+
+    @Test
+    fun `a delivered read marker stores the last common read of its response`() {
+        givenMarkerAnswer(responseWithHeader("2624"))
+
+        val result = runBlocking { worker().sendReadMarker(USER_ID, ROOM_TOKEN, LAST_READ_MESSAGE) }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(conversationListUpdater) { updateLastCommonRead(INTERNAL_ID, 2624) }
+    }
+
+    @Test
+    fun `a response without the header stores nothing but still counts as delivered`() {
+        givenMarkerAnswer(responseWithHeader(null))
+
+        val result = runBlocking { worker().sendReadMarker(USER_ID, ROOM_TOKEN, LAST_READ_MESSAGE) }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+        verifyBlocking(conversationListUpdater, never()) { updateLastCommonRead(any(), any()) }
+    }
+
+    @Test
+    fun `a failed answer stores nothing and asks for another attempt`() {
+        givenMarkerAnswer(responseWithHeader("2624", code = 500))
+
+        val result = runBlocking { worker().sendReadMarker(USER_ID, ROOM_TOKEN, LAST_READ_MESSAGE) }
+
+        assertEquals(ListenableWorker.Result.retry(), result)
+        verifyBlocking(conversationListUpdater, never()) { updateLastCommonRead(any(), any()) }
+    }
+
+    @Test
+    fun `a failing database write does not send the delivered marker again`() {
+        givenMarkerAnswer(responseWithHeader("2624"))
+        wheneverBlocking { conversationListUpdater.updateLastCommonRead(any(), any()) }
+            .thenThrow(IllegalStateException("database closed"))
+
+        val result = runBlocking { worker().sendReadMarker(USER_ID, ROOM_TOKEN, LAST_READ_MESSAGE) }
+
+        assertEquals(ListenableWorker.Result.success(), result)
+    }
+
+    private fun givenMarkerAnswer(response: Response<GenericOverall>) {
+        whenever(chatNetworkDataSource.setChatReadMarker(any(), any(), any())).thenReturn(Observable.just(response))
+    }
+
+    private fun responseWithHeader(value: String?, code: Int = 200): Response<GenericOverall> {
+        val headers = Headers.Builder().apply { value?.let { add("X-Chat-Last-Common-Read", it) } }.build()
+        val raw = okhttp3.Response.Builder()
+            .request(okhttp3.Request.Builder().url("https://cloud.example/").build())
+            .protocol(okhttp3.Protocol.HTTP_1_1)
+            .code(code)
+            .message("message")
+            .headers(headers)
+            .body("".toResponseBody("application/json".toMediaType()))
+            .build()
+        return if (code in 200..299) Response.success(null, raw) else Response.error(raw.body!!, raw)
     }
 
     private fun worker(user: User? = USER): ReadMarkerSyncWorker {
