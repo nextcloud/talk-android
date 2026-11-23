@@ -95,6 +95,12 @@ object ApiUtils {
     @JvmStatic
     fun getUrlForCapabilities(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/cloud/capabilities"
 
+    /**
+     * Nextcloud answers it with 204 and nothing else, to check that the server itself can be reached. Not documented,
+     * defined by WalledGardenController in nextcloud/server since Nextcloud 13.
+     */
+    fun getUrlForConnectionCheck(baseUrl: String): String = "$baseUrl/index.php/204"
+
     @Throws(NoSupportedApiException::class)
     fun getCallApiVersion(capabilities: User, versions: IntArray): Int =
         getConversationApiVersion(capabilities, versions)

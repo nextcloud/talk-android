@@ -63,6 +63,9 @@ import javax.net.ssl.SSLPeerUnverifiedException
 @AutoInjector(NextcloudTalkApplication::class)
 class ServerSelectionActivity : BaseActivity() {
 
+    override val showsStatusBanner: Boolean
+        get() = false
+
     private lateinit var binding: ActivityServerSelectionBinding
 
     @Inject
