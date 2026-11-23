@@ -75,9 +75,10 @@ public abstract class CallBaseActivity extends BaseActivity {
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // registered first, so a screen turning on right after the check is not missed
+                registerScreenStateReceiver();
                 mPictureInPictureParamsBuilder.setAutoEnterEnabled(
                     shouldAutoEnterPip(isAutomaticPipModeSuppressed(), isInteractive()));
-                registerScreenStateReceiver();
             }
             setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
         }
