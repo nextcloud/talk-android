@@ -8,6 +8,8 @@
 package com.nextcloud.talk.callnotification
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -60,6 +62,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private var conversationName: String? = null
     private lateinit var userBeingCalled: User
     private var isCacheEvicted = false
+    private var wasLastShownInPip = false
     private val handler = Handler(Looper.getMainLooper())
     private var binding: CallNotificationActivityBinding? = null
 
@@ -82,6 +85,7 @@ class CallNotificationActivity : CallBaseActivity() {
         // a window recreated for another call while in picture in picture gets no mode change
         if (isInPictureInPictureMode) {
             isInPipMode = true
+            wasLastShownInPip = true
             updateUiForPipMode()
         }
     }
@@ -190,6 +194,13 @@ class CallNotificationActivity : CallBaseActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!isInPictureInPictureMode) {
+            wasLastShownInPip = false
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         if (!isCacheEvicted) {
@@ -239,7 +250,7 @@ class CallNotificationActivity : CallBaseActivity() {
     public override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         // closing the picture in picture window finishes the window on older Android versions
-        if (isFinishing && isInPipMode) {
+        if (isFinishing && wasLastShownInPip) {
             dismissCallNotification()
         }
         super.onDestroy()
@@ -249,12 +260,27 @@ class CallNotificationActivity : CallBaseActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
+            wasLastShownInPip = true
             updateUiForPipMode()
-        } else if (lifecycle.currentState == Lifecycle.State.CREATED) {
-            // the picture in picture window was closed, which only stops the window
-            hangup()
         } else {
             updateUiForNormalMode()
+            handler.postDelayed({ hangupIfPipWindowWasClosed() }, ONE_SECOND)
+        }
+    }
+
+    /**
+     * Closing the picture in picture window only stops the window, while expanding it starts the window again. The
+     * start may come after the mode change, so it is checked later. While the device is locked the window can not
+     * have been closed, it waits behind the lock screen to be shown.
+     */
+    private fun hangupIfPipWindowWasClosed() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!isInPictureInPictureMode &&
+            !lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) &&
+            !keyguardManager.isKeyguardLocked
+        ) {
+            Log.d(TAG, "picture in picture window was closed")
+            hangup()
         }
     }
 
