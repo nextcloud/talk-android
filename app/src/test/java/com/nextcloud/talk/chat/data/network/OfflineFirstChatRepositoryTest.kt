@@ -602,7 +602,7 @@ class OfflineFirstChatRepositoryTest {
     fun `temporary messages added in a burst keep their own rows`() =
         runTest {
             // a forward of several messages adds them one after the other, often within one millisecond; each needs
-            // its own row and its own id, which the chat list uses as key
+            // its own row and its own id, which the chat list uses as key and sorts by within the same second
 
             repeat(BURST_SIZE) { index ->
                 repository.addTemporaryMessage(
@@ -617,7 +617,10 @@ class OfflineFirstChatRepositoryTest {
             val entityCaptor = argumentCaptor<ChatMessageEntity>()
             verifyBlocking(chatDao, times(BURST_SIZE)) { upsertChatMessage(entityCaptor.capture()) }
             assertEquals(BURST_SIZE, entityCaptor.allValues.map { it.internalId }.toSet().size)
-            assertEquals(BURST_SIZE, entityCaptor.allValues.map { it.id }.toSet().size)
+            val ids = entityCaptor.allValues.map { it.id }
+            assertEquals(BURST_SIZE, ids.toSet().size)
+            assertEquals("later messages sort after earlier ones", ids.sorted(), ids)
+            assertTrue("temporary ids stay negative", ids.all { it < 0 })
         }
 
     @Test

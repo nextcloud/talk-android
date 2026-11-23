@@ -20,7 +20,7 @@ import java.time.LocalDate
 /** The checkmark of a row is shown for the item of a selected message, whatever kind of row it is. */
 class ChatItemCheckedTest {
 
-    private fun ui(id: Int) =
+    private fun ui(id: Int, isDeleted: Boolean = false) =
         ChatMessageUi(
             id = id,
             message = "message $id",
@@ -31,12 +31,25 @@ class ChatItemCheckedTest {
             threadTitle = "",
             threadReplies = 0,
             incoming = false,
-            isDeleted = false,
+            isDeleted = isDeleted,
             statusIcon = MessageStatusIcon.READ,
             timestamp = id.toLong(),
             date = LocalDate.of(2026, 10, 1),
             content = MessageTypeContent.RegularText
         )
+
+    @Test
+    fun `a deleted message is not selectable any more`() {
+        assertEquals(listOf(5), ChatViewModel.ChatItem.MessageItem(ui(5)).selectableMessageIds())
+        assertEquals(
+            emptyList<Int>(),
+            ChatViewModel.ChatItem.MessageItem(ui(5, isDeleted = true)).selectableMessageIds()
+        )
+        assertEquals(
+            listOf(1, 3),
+            ChatViewModel.ChatItem.MediaGroupItem(listOf(ui(1), ui(2, isDeleted = true), ui(3))).selectableMessageIds()
+        )
+    }
 
     @Test
     fun `a text message is checked when its id is selected`() {

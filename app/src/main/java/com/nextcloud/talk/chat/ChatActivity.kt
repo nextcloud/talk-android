@@ -2073,9 +2073,7 @@ class ChatActivity :
                     val selectedMessageIds by chatViewModel.messageSelection.ids.collectAsStateWithLifecycle()
                     val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
                     val canForwardSelection by produceState(false, selectedMessageIds, isOnline) {
-                        value = forwardTextsOrNull(
-                            loadSelectedMessages(chatViewModel.messageIdsToForward(selectedMessageIds))
-                        ) { actionsStateFor(it, isOnline).showForward } != null
+                        value = selectionForwardTextsOrNull(selectedMessageIds, isOnline) != null
                     }
                     ChatToolbar(
                         state = chatToolbarState.copy(
@@ -3537,7 +3535,7 @@ class ChatActivity :
     }
 
     fun forwardMessage(message: ChatMessage?) {
-        forwardText(message?.message)
+        forwardText(message?.getTextToResend())
     }
 
     private suspend fun loadSelectedMessages(ids: Collection<Int>): List<ChatMessage> =
@@ -3581,15 +3579,25 @@ class ChatActivity :
 
     private fun forwardSelectedMessages() {
         lifecycleScope.launch {
-            val messages = loadSelectedMessages(
-                chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
+            val texts = selectionForwardTextsOrNull(
+                chatViewModel.messageSelection.ids.value,
+                networkMonitor.isOnline.value
             )
-            val texts = forwardTextsOrNull(messages) {
-                actionsStateFor(it, networkMonitor.isOnline.value).showForward
-            } ?: return@launch
+            if (texts == null) {
+                Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                return@launch
+            }
             chatViewModel.messageSelection.clear()
             forwardTexts(texts)
         }
+    }
+
+    /** The texts to forward for [selectedIds], or null when any of the messages cannot be loaded or forwarded. */
+    private suspend fun selectionForwardTextsOrNull(selectedIds: Set<Int>, isOnline: Boolean): List<String>? {
+        val ids = chatViewModel.messageIdsToForward(selectedIds)
+        val messages = loadSelectedMessages(ids)
+        return forwardTextsOrNull(messages) { actionsStateFor(it, isOnline).showForward }
+            ?.takeIf { messages.size == ids.size }
     }
 
     private fun copySelectedMessages() {

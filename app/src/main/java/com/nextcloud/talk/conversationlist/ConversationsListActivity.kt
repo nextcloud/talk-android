@@ -1182,7 +1182,10 @@ class ConversationsListActivity : BaseActivity() {
                     showSnackbar(getString(R.string.send_to_forbidden))
                 }
             } else if (forwardMessage) {
-                if (hasChatPermission && !isReadOnlyConversation(selectedConversation!!)) {
+                if (hasChatPermission &&
+                    !isReadOnlyConversation(selectedConversation!!) &&
+                    !shouldShowLobby(selectedConversation!!)
+                ) {
                     if (openConversation(
                             intent.getStringExtra(KEY_FORWARD_MSG_TEXT),
                             intent.getStringArrayListExtra(KEY_FORWARD_MSG_TEXTS)

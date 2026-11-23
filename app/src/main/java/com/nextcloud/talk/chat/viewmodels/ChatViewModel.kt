@@ -1357,7 +1357,7 @@ class ChatViewModel @AssistedInject constructor(
                 _uiState.update { current ->
                     current.copy(items = items)
                 }
-                messageSelection.retainOnly(items.flatMapTo(HashSet()) { it.messageIds() })
+                messageSelection.retainOnly(items.flatMapTo(HashSet()) { it.selectableMessageIds() })
             }
             .launchIn(viewModelScope)
     }
@@ -3077,6 +3077,14 @@ class ChatViewModel @AssistedInject constructor(
             }
 
         fun containsMessage(messageId: Int): Boolean = messageId in messageIds()
+
+        /** Ids of the messages of this item that can be selected, see [isSelectable]. */
+        fun selectableMessageIds(): List<Int> =
+            when (this) {
+                is MessageItem -> listOf(uiMessage.id).filter { uiMessage.isSelectable() }
+                is MediaGroupItem -> messages.filter { it.isSelectable() }.map { it.id }
+                else -> emptyList()
+            }
 
         /** Whether the row shows the checkmark of a selection. A media group shows it for any selected file of it. */
         fun isChecked(selectedMessageIds: Set<Int>): Boolean =

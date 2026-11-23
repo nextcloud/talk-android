@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui.chat
 
+import com.nextcloud.talk.chat.viewmodels.isSelectable
 import android.graphics.Bitmap
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
