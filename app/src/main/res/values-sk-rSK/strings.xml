@@ -614,6 +614,7 @@
     <string name="nc_settings_notifications_declined">Upozornenia sú odmietnuté</string>
     <string name="nc_settings_notifications_granted">Upozornenia sú povolené</string>
     <string name="nc_settings_other_notifications_ringtone">Správy</string>
+    <string name="nc_settings_other_sound">Iný zvuk …</string>
     <string name="nc_settings_phone_book_integration_desc">Priradiť kontakty podľa telefónneho čísla a integrovať odkaz na Rozhovor do aplikácie systémových kontaktov</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Chyba 429 Príliš veľa požiadaviek</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Môžete nastaviť svoje telefónne číslo, aby vás ostatní používatelia mohli nájsť</string>
@@ -935,4 +936,10 @@
         <item quantity="many">%d hlasov</item>
         <item quantity="other">%d hlasov</item>
     </plurals>
-    </resources>
+    <plurals name="nc_conversation_tags_unread_conversations">
+        <item quantity="one">%d konverzácia s neprečítanými správami</item>
+        <item quantity="few">%d konverzácie s neprečítanými správami</item>
+        <item quantity="many">%d konverzácie s neprečítanými správami</item>
+        <item quantity="other">%d konverzácií s neprečítanými správami</item>
+    </plurals>
+</resources>
