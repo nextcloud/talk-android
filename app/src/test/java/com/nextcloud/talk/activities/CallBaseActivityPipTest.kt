@@ -192,14 +192,7 @@ class CallBaseActivityPipTest {
         assertEquals("No enableKeyguard side effects", 0, enableKeyguardCallCount)
     }
 
-    // ==========================================
-    // Screen-off gating of auto-enter (API 31+)
-    //
-    // On API 31+ the system auto-enters PiP on any pause, including the display going to sleep. A sleeping
-    // screen is not the user leaving the call, and auto-entering PiP there would place the window behind the
-    // keyguard. shouldAutoEnterPip() gates the setAutoEnterEnabled flag on the screen being interactive, and
-    // the ACTION_SCREEN_ON/OFF receiver re-evaluates it so auto-enter is off before the next pause.
-    // ==========================================
+    // Auto-enter on API 31+ is only enabled while the screen is on, a sleeping screen is not the user leaving.
 
     @Test
     fun `auto-enter enabled when screen is interactive and pip not suppressed`() {

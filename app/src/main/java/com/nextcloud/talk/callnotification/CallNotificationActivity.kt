@@ -92,11 +92,9 @@ class CallNotificationActivity : CallBaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val extras = intent.extras ?: return
+        val newNotificationId = intent.extras?.let { notificationIdOrNull(it) } ?: return
         // a window still open for an earlier call is set up again for the new one
-        if (extras.containsKey(BundleKeys.KEY_NOTIFICATION_TIMESTAMP) &&
-            extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP) != notificationTimestamp
-        ) {
+        if (newNotificationId != notificationTimestamp) {
             Log.d(TAG, "onNewIntent: another incoming call, recreating the window")
             handler.removeCallbacksAndMessages(null)
             setIntent(intent)
@@ -107,7 +105,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun handleExtras() {
         val extras = intent.extras!!
         roomToken = extras.getString(KEY_ROOM_TOKEN, "")
-        notificationTimestamp = notificationIdOrNull(extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP))
+        notificationTimestamp = notificationIdOrNull(extras)
         displayName = extras.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, "")
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
         isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
@@ -303,11 +301,15 @@ class CallNotificationActivity : CallBaseActivity() {
         const val ONE_SECOND: Long = 1000
 
         /**
-         * The call notification id is the push message timestamp (always a positive value). A missing
-         * KEY_NOTIFICATION_TIMESTAMP extra decodes to 0 via Bundle.getInt(), which is not a real notification,
-         * so treat it as "no notification backs this window" instead of cancelling an unrelated id 0.
+         * The call notification id is the push message timestamp cut to an Int, so 0 and negative values are valid
+         * ids. Only a missing extra means that no notification backs the window.
          */
         @VisibleForTesting
-        fun notificationIdOrNull(rawTimestamp: Int): Int? = rawTimestamp.takeIf { it != 0 }
+        fun notificationIdOrNull(extras: Bundle): Int? =
+            if (extras.containsKey(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)) {
+                extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+            } else {
+                null
+            }
     }
 }
