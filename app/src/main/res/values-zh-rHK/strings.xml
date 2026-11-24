@@ -348,6 +348,7 @@
     <string name="nc_filter">篩選對話</string>
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
+    <string name="nc_formatted_message_you_prefix">您：</string>
     <string name="nc_forward_message">轉寄</string>
     <string name="nc_forward_to">轉寄至</string>
     <string name="nc_forward_to_three_dots">轉寄給 …</string>

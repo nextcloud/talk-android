@@ -261,6 +261,7 @@
     <string name="nc_filter">Фільтрувати розмови</string>
     <string name="nc_following_link">Користувач, який увійшов за посиланням</string>
     <string name="nc_formatted_message_you">Ви: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Ти:</string>
     <string name="nc_forward_message">Переслати</string>
     <string name="nc_forward_to_three_dots">Переслати …</string>
     <string name="nc_gallery">Галерея</string>

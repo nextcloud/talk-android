@@ -348,6 +348,7 @@
     <string name="nc_filter">Filtreeri vestlusi</string>
     <string name="nc_following_link">Kasutaja, kes järgnes avalikule lingile</string>
     <string name="nc_formatted_message_you">Sina: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Sina:</string>
     <string name="nc_forward_message">Edasta</string>
     <string name="nc_forward_to">Edasta kasutajale</string>
     <string name="nc_forward_to_three_dots">Edasta saajale…</string>

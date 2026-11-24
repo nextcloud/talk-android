@@ -271,6 +271,7 @@
     <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Utilizador a seguir uma hiperligação pública</string>
     <string name="nc_formatted_message_you">Eu: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Você:</string>
     <string name="nc_forward_message">Encaminhar</string>
     <string name="nc_forward_to_three_dots">Encaminhar para …</string>
     <string name="nc_gallery">Galeria</string>

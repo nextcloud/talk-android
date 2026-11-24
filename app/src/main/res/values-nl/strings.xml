@@ -263,6 +263,7 @@
     <string name="nc_filter">Filter gesprekken</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Jij:</string>
     <string name="nc_forward_message">Doorsturen</string>
     <string name="nc_forward_to_three_dots">Doorsturen aan …</string>
     <string name="nc_gallery">Galerij</string>
