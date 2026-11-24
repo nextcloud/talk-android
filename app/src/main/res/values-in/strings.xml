@@ -347,6 +347,7 @@
     <string name="nc_filter">Filter percakapan</string>
     <string name="nc_following_link">Pengguna yang mengakses melalui tautan publik</string>
     <string name="nc_formatted_message_you">Anda: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Anda:</string>
     <string name="nc_forward_message">Teruskan</string>
     <string name="nc_forward_to_three_dots">Teruskan ke …</string>
     <string name="nc_gallery">Galeri</string>

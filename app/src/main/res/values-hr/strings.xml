@@ -189,6 +189,7 @@
     <string name="nc_file_browser_back">Natrag</string>
     <string name="nc_following_link">Korisnik slijedi javnu poveznicu</string>
     <string name="nc_formatted_message_you">Vi: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Vi:</string>
     <string name="nc_forward_message">Proslijedi</string>
     <string name="nc_forward_to_three_dots">Proslijedi…</string>
     <string name="nc_gallery">Galerija</string>

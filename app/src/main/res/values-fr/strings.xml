@@ -341,6 +341,7 @@
     <string name="nc_filter">Filtrer les conversations</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Vous :</string>
     <string name="nc_forward_message">Transférer</string>
     <string name="nc_forward_to_three_dots">Transférer à...</string>
     <string name="nc_gallery">Galerie</string>

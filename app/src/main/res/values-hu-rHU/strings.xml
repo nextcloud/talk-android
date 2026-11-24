@@ -284,6 +284,7 @@
     <string name="nc_filter">Beszélgetések szűrése</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
+    <string name="nc_formatted_message_you_prefix">Ön:</string>
     <string name="nc_forward_message">Továbbítás</string>
     <string name="nc_forward_to_three_dots">Továbbítás…</string>
     <string name="nc_gallery">Galéria</string>
