@@ -8,26 +8,12 @@ package com.nextcloud.talk.data.source.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyPermanentlyInvalidatedException
-import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import com.nextcloud.talk.R
-import net.zetetic.database.sqlcipher.SQLiteDatabase
 import java.io.File
-import java.security.InvalidAlgorithmParameterException
-import java.security.KeyStore
-import java.security.SecureRandom
-import java.security.UnrecoverableKeyException
-import javax.crypto.BadPaddingException
-import javax.crypto.Cipher
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
 
 /**
  * Thrown when the stored database passphrase exists but cannot be unwrapped right now, for example
@@ -72,18 +58,8 @@ object DatabaseKeyManager {
 
     const val MAX_TRANSIENT_UNWRAP_FAILURES = 3
 
-    private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
-
     @VisibleForTesting
     const val WRAPPING_KEY_ALIAS = "talk_db_passphrase_wrapping_key"
-    private const val WRAPPING_KEY_SIZE = 256
-    private const val GCM_TAG_LENGTH_BITS = 128
-    private val TRANSFORMATION =
-        KeyProperties.KEY_ALGORITHM_AES + "/" +
-            KeyProperties.BLOCK_MODE_GCM + "/" +
-            KeyProperties.ENCRYPTION_PADDING_NONE
-
-    private const val PASSPHRASE_BYTES = 32
 
     private val lock = Any()
 
@@ -138,7 +114,7 @@ object DatabaseKeyManager {
             val stored = readWrapped(prefs, keyAlias, Slot.ACTIVE)
             stored is StoredPassphrase.Present &&
                 dbFile.exists() &&
-                rekey(dbFile, legacyPassphrase(appContext), stored.value)
+                SqlCipherRekeyer.rekey(dbFile, legacyPassphrase(appContext), stored.value)
         }
 
     /**
@@ -166,49 +142,15 @@ object DatabaseKeyManager {
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private fun readWrapped(prefs: SharedPreferences, keyAlias: String, slot: Slot): StoredPassphrase {
-        val ciphertext = prefs.getString(slot.passphraseKey, null) ?: return StoredPassphrase.NotProvisioned
-        val iv = prefs.getString(slot.ivKey, null) ?: return StoredPassphrase.NotProvisioned
-
-        val key = try {
-            loadWrappingKey(keyAlias)
-        } catch (e: UnrecoverableKeyException) {
-            Log.w(TAG, "Wrapping key is unrecoverable; stored passphrase is lost", e)
-            return StoredPassphrase.PermanentlyLost
-        } catch (e: Exception) {
-            Log.w(TAG, "Keystore unavailable while loading the wrapping key", e)
-            return StoredPassphrase.TemporarilyUnavailable
-        } ?: return StoredPassphrase.PermanentlyLost
-
-        return try {
-            val decoded = decrypt(
-                key,
-                Base64.decode(iv, Base64.NO_WRAP),
-                Base64.decode(ciphertext, Base64.NO_WRAP)
-            )
-            StoredPassphrase.Present(decoded)
-        } catch (e: Exception) {
-            if (isPermanentUnwrapFailure(e)) {
-                Log.w(TAG, "Stored passphrase is unrecoverable", e)
-                StoredPassphrase.PermanentlyLost
-            } else {
-                Log.w(TAG, "Could not unwrap stored passphrase; keeping it for a later attempt", e)
-                StoredPassphrase.TemporarilyUnavailable
-            }
+        val ciphertext = prefs.getString(slot.passphraseKey, null)
+        val iv = prefs.getString(slot.ivKey, null)
+        return if (ciphertext == null || iv == null) {
+            StoredPassphrase.NotProvisioned
+        } else {
+            PassphraseCipher.unwrap(keyAlias, iv, ciphertext)
         }
     }
-
-    /**
-     * Whether [e] means the stored passphrase can never be unwrapped: malformed Base64 or IV,
-     * truncated or tampered ciphertext (including a failed GCM tag), or an invalidated key.
-     */
-    private fun isPermanentUnwrapFailure(e: Exception): Boolean =
-        e is IllegalArgumentException ||
-            e is KeyPermanentlyInvalidatedException ||
-            e is InvalidAlgorithmParameterException ||
-            e is IllegalBlockSizeException ||
-            e is BadPaddingException
 
     /**
      * Provisions the passphrase when none is stored. A legacy database is re-keyed to a pending
@@ -226,16 +168,18 @@ object DatabaseKeyManager {
         val pending = pendingPassphrase(prefs, keyAlias)
 
         // only a pending passphrase from an earlier, interrupted attempt can already be on the file
-        return if (
-            pending != null &&
-            ((pending.resumed && canOpen(dbFile, pending.value)) || rekey(dbFile, legacy, pending.value))
-        ) {
+        return if (pending != null && isOnPending(dbFile, legacy, pending)) {
             promotePending(prefs)
             pending.value
         } else {
             legacy
         }
     }
+
+    /** Whether [dbFile] is on [pending], re-keying it from [legacy] if it is not yet. */
+    private fun isOnPending(dbFile: File, legacy: ByteArray, pending: PendingPassphrase): Boolean =
+        (pending.resumed && SqlCipherRekeyer.canOpen(dbFile, pending.value)) ||
+            SqlCipherRekeyer.rekey(dbFile, legacy, pending.value)
 
     /**
      * Returns the passphrase a legacy database is being migrated to, creating and persisting one if
@@ -253,8 +197,8 @@ object DatabaseKeyManager {
         }
 
     private fun createPending(prefs: SharedPreferences, keyAlias: String): ByteArray? {
-        val passphrase = randomPassphrase()
-        val wrapped = tryWrap(keyAlias, passphrase)
+        val passphrase = PassphraseCipher.randomPassphrase()
+        val wrapped = PassphraseCipher.tryWrap(keyAlias, passphrase)
         return if (wrapped != null && writeWrapped(prefs, Slot.PENDING, wrapped)) passphrase else null
     }
 
@@ -276,8 +220,8 @@ object DatabaseKeyManager {
      * later launch.
      */
     private fun provisionFresh(context: Context, prefs: SharedPreferences, keyAlias: String): ByteArray {
-        val passphrase = randomPassphrase()
-        val wrapped = tryWrap(keyAlias, passphrase)
+        val passphrase = PassphraseCipher.randomPassphrase()
+        val wrapped = PassphraseCipher.tryWrap(keyAlias, passphrase)
         return if (wrapped != null && writeWrapped(prefs, Slot.ACTIVE, wrapped)) {
             passphrase
         } else {
@@ -292,53 +236,8 @@ object DatabaseKeyManager {
      */
     private fun recoverFromLostKey(context: Context, prefs: SharedPreferences, keyAlias: String): ByteArray {
         clearSlot(prefs, Slot.ACTIVE)
-        deleteWrappingKey(keyAlias)
+        PassphraseCipher.deleteWrappingKey(keyAlias)
         return provisionFresh(context, prefs, keyAlias)
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun canOpen(dbFile: File, passphrase: ByteArray): Boolean {
-        var db: SQLiteDatabase? = null
-        return try {
-            db = SQLiteDatabase.openDatabase(
-                dbFile.absolutePath,
-                passphrase,
-                null,
-                SQLiteDatabase.OPEN_READONLY,
-                null
-            )
-            db.query("SELECT count(*) FROM sqlite_master").use { it.moveToFirst() }
-            true
-        } catch (e: Exception) {
-            false
-        } finally {
-            db?.close()
-        }
-    }
-
-    /**
-     * Re-keys [dbFile] from [oldPassphrase] to [newPassphrase], returning whether it succeeded. The
-     * database is left on its existing key on any failure.
-     */
-    @Suppress("TooGenericExceptionCaught")
-    private fun rekey(dbFile: File, oldPassphrase: ByteArray, newPassphrase: ByteArray): Boolean {
-        var db: SQLiteDatabase? = null
-        return try {
-            db = SQLiteDatabase.openDatabase(
-                dbFile.absolutePath,
-                oldPassphrase,
-                null,
-                SQLiteDatabase.OPEN_READWRITE,
-                null
-            )
-            db.changePassword(newPassphrase)
-            true
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not re-key database; keeping the existing key", e)
-            false
-        } finally {
-            db?.close()
-        }
     }
 
     /**
@@ -364,93 +263,8 @@ object DatabaseKeyManager {
         }
     }
 
-    /**
-     * Wraps [passphrase] with the AndroidKeyStore key. If the existing key is unusable it is deleted
-     * and regenerated once so a single broken key cannot wedge startup permanently.
-     */
-    @Suppress("TooGenericExceptionCaught")
-    private fun wrap(keyAlias: String, passphrase: ByteArray): WrappedPassphrase =
-        try {
-            encrypt(getOrCreateWrappingKey(keyAlias), passphrase)
-        } catch (e: Exception) {
-            Log.w(TAG, "Wrapping key unusable; regenerating it", e)
-            deleteWrappingKey(keyAlias)
-            encrypt(createWrappingKey(keyAlias), passphrase)
-        }
-
-    /** Like [wrap], but returns null instead of throwing when the AndroidKeyStore is unusable. */
-    @Suppress("TooGenericExceptionCaught")
-    private fun tryWrap(keyAlias: String, passphrase: ByteArray): WrappedPassphrase? =
-        try {
-            wrap(keyAlias, passphrase)
-        } catch (e: Exception) {
-            Log.w(TAG, "Keystore unavailable; using the legacy key until a later launch", e)
-            null
-        }
-
-    private fun encrypt(key: SecretKey, passphrase: ByteArray): WrappedPassphrase {
-        val cipher = Cipher.getInstance(TRANSFORMATION)
-        cipher.init(Cipher.ENCRYPT_MODE, key)
-        return WrappedPassphrase(cipher.doFinal(passphrase), cipher.iv)
-    }
-
-    private fun decrypt(key: SecretKey, iv: ByteArray, ciphertext: ByteArray): ByteArray {
-        val cipher = Cipher.getInstance(TRANSFORMATION)
-        cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv))
-        return cipher.doFinal(ciphertext)
-    }
-
-    private fun randomPassphrase(): ByteArray {
-        val raw = ByteArray(PASSPHRASE_BYTES)
-        SecureRandom().nextBytes(raw)
-        // encode so the passphrase is printable ASCII with no embedded NUL bytes
-        return Base64.encode(raw, Base64.NO_WRAP)
-    }
-
     private fun legacyPassphrase(context: Context): ByteArray =
         context.getString(R.string.nc_talk_database_encryption_key).toByteArray(Charsets.UTF_8)
-
-    private fun getOrCreateWrappingKey(keyAlias: String): SecretKey =
-        loadWrappingKey(keyAlias) ?: createWrappingKey(keyAlias)
-
-    private fun loadWrappingKey(keyAlias: String): SecretKey? {
-        val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER).apply { load(null) }
-        return keyStore.getKey(keyAlias, null) as? SecretKey
-    }
-
-    private fun createWrappingKey(keyAlias: String): SecretKey {
-        val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE_PROVIDER)
-        generator.init(
-            KeyGenParameterSpec.Builder(
-                keyAlias,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-            )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                .setKeySize(WRAPPING_KEY_SIZE)
-                .build()
-        )
-        return generator.generateKey()
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun deleteWrappingKey(keyAlias: String) {
-        try {
-            val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER).apply { load(null) }
-            if (keyStore.containsAlias(keyAlias)) {
-                keyStore.deleteEntry(keyAlias)
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not delete the wrapping key", e)
-        }
-    }
-
-    private sealed interface StoredPassphrase {
-        class Present(val value: ByteArray) : StoredPassphrase
-        object NotProvisioned : StoredPassphrase
-        object TemporarilyUnavailable : StoredPassphrase
-        object PermanentlyLost : StoredPassphrase
-    }
 
     private enum class Slot(val passphraseKey: String, val ivKey: String) {
         ACTIVE(PREF_PASSPHRASE, PREF_IV),
@@ -459,6 +273,4 @@ object DatabaseKeyManager {
 
     /** A pending passphrase; [resumed] is true if it was stored by an earlier launch. */
     private class PendingPassphrase(val value: ByteArray, val resumed: Boolean)
-
-    private class WrappedPassphrase(val ciphertext: ByteArray, val iv: ByteArray)
 }

@@ -28,6 +28,7 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.security.KeyStore
 
+@Suppress("TooManyFunctions")
 @RunWith(AndroidJUnit4::class)
 class DatabaseKeyManagerTest {
 
