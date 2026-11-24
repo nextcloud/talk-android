@@ -248,26 +248,50 @@ class WebSocketInstanceRoomSessionsTest {
     }
 
     @Test
-    fun joinOfTheCurrentRoomWhileReconnectingIsConfirmedOnTheResumedSession() {
+    fun joinOfTheCurrentRoomWhileReconnectingIsConfirmedWithoutAskingTheServer() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
         waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
         roomJoinedEvents.clear()
 
-        // The call joins the room the chat is already in, while the connection is being resumed: the join is queued,
-        // and the server answers it with "already_joined" because the resumed session is still in the room.
+        // The call joins the room the chat is already in, while the connection is being resumed. The resumed
+        // session stays in the room, so the join is confirmed right away and not sent again.
         holdAnswerToHello = true
         instance.restartWebSocket()
         waitUntil("resumed hello received") { serverLog.contains("c2:hello-held") }
         assertFalse(instance.isConnected)
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("room A joined for the call") { roomJoinedEvents == listOf(ROOM_A) }
+
         holdAnswerToHello = false
         heldHelloAnswers.forEach { it() }
-
-        waitUntil("queued join answered") { serverLog.contains("c2:already_joined") }
-        waitUntil("room A joined for the call") { roomJoinedEvents == listOf(ROOM_A) }
+        waitUntil("connected again") { instance.isConnected }
         sendBarrierJoin(instance)
-        assertEquals("the queued join is not repeated", 1, serverLog.count { it == "c2:already_joined" })
+        assertEquals(listOf(ROOM_A), roomJoinedEvents)
+        assertFalse("no join is sent on the resumed session", serverLog.contains("c2:already_joined"))
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
+    }
+
+    @Test
+    fun repeatedJoinAfterTheQueuedJoinWasAnsweredDoesNotJoinTwice() {
+        val instance = createConnectedInstance()
+        // A join queued while a new session is set up is sent once the session is there and answered with "room".
+        holdAnswerToHello = true
+        instance.clearResumeId()
+        instance.restartWebSocket()
+        waitUntil("new hello received") { serverLog.contains("c2:hello-held") }
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        holdAnswerToHello = false
+        heldHelloAnswers.forEach { it() }
+        waitUntil("queued join answered") { roomJoinedEvents == listOf(ROOM_A) }
+
+        // The call UI joins again in response to the new session; the server answers with "already_joined", which
+        // must not count as a second join, otherwise the call would be started twice.
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("repeated join answered") { serverLog.contains("c2:already_joined") }
+        sendBarrierJoin(instance)
+
+        assertEquals(listOf(ROOM_A), roomJoinedEvents)
         assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
     }
 

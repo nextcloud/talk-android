@@ -379,9 +379,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     /**
      * The server answers a join of the room the session is already in (with the same room session) with
-     * "already_joined" instead of a "room" message. The caller of the join still waits for "roomJoined", so the
-     * error is a confirmation of the join. This happens when a join is repeated after a resume: either the join was
-     * queued while reconnecting, or the answer to the original join was lost with the previous socket.
+     * "already_joined" instead of a "room" message. When the room was not confirmed yet, the answer to the original
+     * join was lost with the previous socket and the join was repeated on the resumed session, so the error is the
+     * confirmation the caller still waits for. When the room is already confirmed, "roomJoined" was sent for it
+     * already: the repeated join is a duplicate request (e.g. the call joining again after a new session), and
+     * sending "roomJoined" again would start the call twice.
      */
     private fun processAlreadyJoined(confirmedRoomToken: String?) {
         val roomToken = confirmedRoomToken ?: requestedRoomToken
@@ -389,10 +391,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             Log.d(TAG, "Ignoring already_joined for room '$roomToken' which is not the requested one")
             return
         }
-        val alreadyInRoom = roomToken == currentRoomToken
+        if (roomToken == currentRoomToken) {
+            Log.d(TAG, "Ignoring already_joined for room '$roomToken' which is confirmed already")
+            return
+        }
         roomSessions.onRoomResponse(roomToken)
         currentRoomToken = roomToken
-        callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
+        callEncryptionLifecycle.roomJoined(sessionId, hasMCU, false, ::sendEncryptionMessage)
         sendRoomJoinedEvent()
     }
 
@@ -531,7 +536,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 roomSessions.reset()
                 callEncryptionLifecycle.close()
                 sendMessage(message)
-            } else if (isConnected && isCurrentJoin(roomToken, normalBackendSession, federation)) {
+            } else if (isCurrentJoin(roomToken, normalBackendSession, federation)) {
+                // Also while reconnecting: a resumed session stays in the room, and when the session cannot be
+                // resumed, the room is cleared and the call UI joins again in response to the "hello" event
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 requestedRoomToken = roomToken
                 sendRoomJoinedEvent()
