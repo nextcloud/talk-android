@@ -14,6 +14,7 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.edit
 import com.nextcloud.talk.R
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import java.io.File
@@ -150,16 +151,16 @@ object DatabaseKeyManager {
         val failures = prefs.getInt(PREF_UNWRAP_FAILURES, 0)
         return when {
             state != StoredPassphrase.TemporarilyUnavailable -> {
-                if (failures > 0) prefs.edit().remove(PREF_UNWRAP_FAILURES).commit()
+                if (failures > 0) prefs.edit(commit = true) { remove(PREF_UNWRAP_FAILURES) }
                 state
             }
             failures + 1 >= MAX_TRANSIENT_UNWRAP_FAILURES -> {
                 Log.w(TAG, "Passphrase could not be unwrapped on ${failures + 1} attempts; treating it as lost")
-                prefs.edit().remove(PREF_UNWRAP_FAILURES).commit()
+                prefs.edit(commit = true) { remove(PREF_UNWRAP_FAILURES) }
                 StoredPassphrase.PermanentlyLost
             }
             else -> {
-                prefs.edit().putInt(PREF_UNWRAP_FAILURES, failures + 1).commit()
+                prefs.edit(commit = true) { putInt(PREF_UNWRAP_FAILURES, failures + 1) }
                 state
             }
         }
@@ -357,7 +358,10 @@ object DatabaseKeyManager {
     }
 
     private fun clearSlot(prefs: SharedPreferences, slot: Slot) {
-        prefs.edit().remove(slot.passphraseKey).remove(slot.ivKey).commit()
+        prefs.edit(commit = true) {
+            remove(slot.passphraseKey)
+            remove(slot.ivKey)
+        }
     }
 
     /**
