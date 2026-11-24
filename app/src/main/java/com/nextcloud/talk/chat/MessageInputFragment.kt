@@ -28,7 +28,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.animation.Animation.AnimationListener
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.Chronometer
@@ -66,6 +65,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.network.ServerConnectionMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
@@ -109,6 +109,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var serverConnectionMonitor: ServerConnectionMonitor
 
     @Inject
     lateinit var messageUtils: MessageUtils
@@ -307,24 +310,21 @@ class MessageInputFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            var wasOnline: Boolean
             networkMonitor.isOnline
                 .onEach { isOnline ->
-                    wasOnline = !binding.fragmentConnectionLost.isShown
-                    val connectionGained = (!wasOnline && isOnline)
-                    Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                    if (connectionGained) {
-                        messageInputViewModel.sendUnsentMessages(
-                            chatActivity.conversationUser!!.getCredentials(),
-                            ApiUtils.getUrlForChat(
-                                chatActivity.chatApiVersion,
-                                chatActivity.conversationUser!!.baseUrl!!,
-                                chatActivity.roomToken
-                            )
-                        )
-                    }
-                    handleUI(isOnline, connectionGained)
+                    Log.d(TAG, "isOnline: $isOnline")
+                    handleUI(isOnline)
                 }.collect()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            serverConnectionMonitor.reconnectionFlow(chatActivity.conversationUser.baseUrl).collect {
+                Log.d(TAG, "Server reachable again, resending failed messages")
+                messageInputViewModel.resendFailedMessages(
+                    chatActivity.conversationUser.id!!,
+                    chatActivity.roomToken
+                )
+            }
         }
 
         binding.fragmentCallStarted.setContent {
@@ -355,33 +355,8 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun handleUI(isOnline: Boolean, connectionGained: Boolean) {
+    private fun handleUI(isOnline: Boolean) {
         if (isOnline) {
-            if (connectionGained) {
-                val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
-                animation.duration = CONNECTION_ESTABLISHED_ANIM_DURATION
-                animation.interpolator = LinearInterpolator()
-                binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityGreen))
-                binding.fragmentConnectionLost.text = getString(R.string.connection_established)
-                binding.fragmentConnectionLost.startAnimation(animation)
-                binding.fragmentConnectionLost.animation.setAnimationListener(object : AnimationListener {
-                    override fun onAnimationStart(animation: Animation?) {
-                        // unused atm
-                    }
-
-                    override fun onAnimationEnd(animation: Animation?) {
-                        binding.fragmentConnectionLost.visibility = View.GONE
-                        binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
-                        binding.fragmentConnectionLost.text =
-                            getString(R.string.connection_lost_sent_messages_are_queued)
-                    }
-
-                    override fun onAnimationRepeat(animation: Animation?) {
-                        // unused atm
-                    }
-                })
-            }
-
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
@@ -393,10 +368,6 @@ class MessageInputFragment : Fragment() {
         } else {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
-            binding.fragmentConnectionLost.clearAnimation()
-            binding.fragmentConnectionLost.visibility = View.GONE
-            binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
-            binding.fragmentConnectionLost.visibility = View.VISIBLE
             binding.fragmentMessageInputView.scheduledMessagesButton.visibility = View.GONE
         }
     }
@@ -1347,7 +1318,6 @@ class MessageInputFragment : Fragment() {
         private const val VOICE_RECORD_LOCK_THRESHOLD: Float = 100f
         private const val INCREMENT = 8f
         private const val CURSOR_KEY = "_cursor"
-        private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
         private const val OPACITY_DISABLED = 0.7f

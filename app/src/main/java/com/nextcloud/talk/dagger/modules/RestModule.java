@@ -15,6 +15,7 @@ import com.nextcloud.talk.api.LoggingHttpInterceptor;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.network.ServerConnectionInterceptor;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.AccountCookieInterceptor;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -183,7 +184,8 @@ public class RestModule {
                                    CookieManager cookieManager,
                                    Dispatcher dispatcher,
                                    LoggingHttpInterceptor loggingHttpInterceptor,
-                                   AccountCookieInterceptor accountCookieInterceptor) {
+                                   AccountCookieInterceptor accountCookieInterceptor,
+                                   ServerConnectionInterceptor serverConnectionInterceptor) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.retryOnConnectionFailure(true);
@@ -218,9 +220,12 @@ public class RestModule {
 
         httpClient.addInterceptor(new HeadersInterceptor());
         httpClient.addInterceptor(new RejectedCredentialsInterceptor());
+        // After RejectedCredentialsInterceptor, so its answers to requests it doesn't send are not reported.
+        httpClient.addInterceptor(serverConnectionInterceptor);
         httpClient.addInterceptor(loggingHttpInterceptor);
         // Each account keeps its own cookies, so its server session is kept but never used by another account.
         httpClient.addNetworkInterceptor(accountCookieInterceptor);
+        httpClient.addNetworkInterceptor(serverConnectionInterceptor.getConnectionMarker());
 
         return httpClient.build();
     }

@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface NetworkMonitor {
     /**
-     * Returns the device's current connectivity status.
+     * Whether the device has a network that can reach other hosts. It doesn't tell whether the internet or the
+     * Nextcloud server can be reached, see [ServerConnectionMonitor] for the latter.
      */
     val isOnline: StateFlow<Boolean>
 

@@ -29,6 +29,11 @@ import javax.inject.Singleton
 /**
  * Tracks connectivity for the whole process.
  *
+ * The device counts as online while its default network provides [NetworkCapabilities.NET_CAPABILITY_INTERNET].
+ * [NetworkCapabilities.NET_CAPABILITY_VALIDATED] is not required: Android only sets it once its own probe of e.g.
+ * Google's servers succeeded, which fails on networks where the Nextcloud server is still reachable, such as a local
+ * network without internet. Whether the server answers is tracked by [ServerConnectionMonitor].
+ *
  * The upstream callback is shared eagerly rather than while subscribed, because [isOnline] is read
  * synchronously via its value from contexts that never collect it — background workers handling a
  * push notification, for instance, run without any UI collector. A while-subscribed flow would
@@ -49,9 +54,7 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
-                val connected = networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_VALIDATED
-                )
+                val connected = isUsable(networkCapabilities)
                 trySend(connected)
                 Log.d(TAG, "Network status changed: $connected")
             }
@@ -89,8 +92,11 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
     private fun isCurrentlyConnected(): Boolean {
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        return isUsable(capabilities)
     }
+
+    private fun isUsable(capabilities: NetworkCapabilities): Boolean =
+        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 
     companion object {
         private val TAG = NetworkMonitorImpl::class.java.simpleName

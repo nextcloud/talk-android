@@ -10,9 +10,7 @@ package com.nextcloud.talk.jobs
 import android.content.Context
 import android.util.Log
 import androidx.work.BackoffPolicy
-import androidx.work.Constraints
 import androidx.work.Data
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkRequest
 import androidx.work.Worker
@@ -79,7 +77,7 @@ class RemoteWipeSuccessWorker(context: Context, workerParams: WorkerParameters) 
          */
         fun workRequest(baseUrl: String, token: String): OneTimeWorkRequest =
             OneTimeWorkRequest.Builder(RemoteWipeSuccessWorker::class.java)
-                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .setConstraints(usableNetworkConstraints())
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 .setInputData(
                     Data.Builder()

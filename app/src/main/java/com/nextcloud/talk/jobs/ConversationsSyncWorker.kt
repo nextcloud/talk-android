@@ -11,10 +11,8 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -41,7 +39,7 @@ import javax.inject.Inject
  * room list from being synced. The run is skipped in battery saver mode and while the app is in
  * the foreground, stops syncing room lists once the app comes to the foreground, and a run in which
  * any account failed is retried up to [MAX_RUN_ATTEMPTS] times. Network availability is enforced by the
- * [NetworkType.CONNECTED] constraint on the request rather than checked here.
+ * [usableNetworkConstraints] of the request rather than checked here.
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) :
@@ -223,9 +221,7 @@ class ConversationsSyncWorker(context: Context, workerParams: WorkerParameters) 
                 ConversationsSyncWorker::class.java,
                 REPEAT_INTERVAL_MINUTES,
                 TimeUnit.MINUTES
-            ).setConstraints(
-                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-            ).build()
+            ).setConstraints(usableNetworkConstraints()).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,

@@ -42,6 +42,9 @@ import javax.inject.Inject
  */
 @AutoInjector(NextcloudTalkApplication::class)
 class SwitchAccountActivity : BaseActivity() {
+
+    override val showsStatusBanner: Boolean
+        get() = false
     private lateinit var binding: ActivitySwitchAccountBinding
 
     @Inject

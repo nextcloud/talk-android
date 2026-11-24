@@ -218,12 +218,21 @@ class MessageInputViewModel :
         }
     }
 
-    fun sendUnsentMessages(credentials: String, url: String) {
+    /** Queues the messages of the conversation whose send failed for another attempt. */
+    fun resendFailedMessages(userId: Long, roomToken: String) {
         viewModelScope.launch {
-            chatRepository.sendUnsentChatMessages(
-                credentials,
-                url
-            )
+            sendMessageMutex.withLock {
+                // A PENDING row without send work is never sent: the pair is not cancelled half way.
+                withContext(NonCancellable) {
+                    chatRepository.markFailedMessagesForResend().forEach { referenceId ->
+                        SendMessageWorker.enqueue(
+                            internalConversationId = "$userId@$roomToken",
+                            referenceId = referenceId,
+                            threadTitle = null
+                        )
+                    }
+                }
+            }
         }
     }
 
