@@ -20,7 +20,9 @@ import mockwebserver3.RecordedRequest
 import okhttp3.OkHttpClient
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -35,6 +37,7 @@ import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 private fun sessionOf(room: String) = "session-in-$room"
@@ -44,6 +47,10 @@ private fun joinFrame(session: String, user: String) =
         "[{\"sessionid\":\"$session\",\"userid\":\"$user\",\"user\":{\"displayname\":\"$user\"}}]}}"
 
 private fun errorFrame(code: String) = "{\"type\":\"error\",\"error\":{\"code\":\"$code\",\"message\":\"t\"}}"
+
+private fun alreadyJoinedFrame(room: String) =
+    "{\"type\":\"error\",\"error\":{\"code\":\"already_joined\",\"message\":\"t\"," +
+        "\"details\":{\"room\":{\"roomid\":\"$room\",\"properties\":{\"name\":\"n\"}}}}}"
 
 /**
  * The sessions of the room the signaling connection is in, fed by the frames the signaling server sends. A frame
@@ -75,10 +82,32 @@ class WebSocketInstanceRoomSessionsTest {
     @Volatile
     private var holdAnswerToJoin = false
 
+    // The server joins the room, but the answer is lost (e.g. with a socket that dies right after the join)
+    @Volatile
+    private var dropAnswerToJoin = false
+
+    @Volatile
+    private var holdAnswerToHello = false
+    private val heldHelloAnswers = CopyOnWriteArrayList<() -> Unit>()
+
+    // The room of a signaling session by its resume id: like on the real server, a resumed session stays in its room
+    private val roomByResumeId = ConcurrentHashMap<String, String>()
+
+    private val roomJoinedEvents = CopyOnWriteArrayList<String?>()
+    private val eventCollector = object {
+        @Subscribe
+        fun onEvent(event: WebSocketCommunicationEvent) {
+            if (event.type == "roomJoined") {
+                roomJoinedEvents.add(event.hashMap?.get("roomToken"))
+            }
+        }
+    }
+
     @Before
     fun setUp() {
         previousApplication = sharedApplicationField.get(null) as NextcloudTalkApplication?
         sharedApplicationField.set(null, applicationInjecting(okHttpClient, eventBus))
+        eventBus.register(eventCollector)
         server.dispatcher = object : Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse =
                 if (request.url.encodedPath == path) {
@@ -93,6 +122,7 @@ class WebSocketInstanceRoomSessionsTest {
     @After
     fun tearDown() {
         instances.forEach { eventBus.unregister(it) }
+        eventBus.unregister(eventCollector)
         // close() of the server waits for open sockets
         serverSockets.forEach { it.close() }
         server.close()
@@ -199,6 +229,46 @@ class WebSocketInstanceRoomSessionsTest {
 
         // The lost join is re-asserted on the resumed session, so the room is joined without an app restart.
         waitUntil("room A joined on the resumed session") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
+    }
+
+    @Test
+    fun resumedSessionRejoinsRoomWhoseAnswerWasLostOnADeadSocket() {
+        val instance = createConnectedInstance()
+        // The server joins the room, but its answer is lost with the dying socket. The repeated join on the resumed
+        // session is answered with "already_joined", which has to count as joined, otherwise the call hangs.
+        dropAnswerToJoin = true
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("join received, answer lost") { serverLog.contains("c1:joined-answer-lost") }
+
+        dropAnswerToJoin = false
+        instance.restartWebSocket()
+        waitUntil("repeated join answered") { serverLog.contains("c2:already_joined") }
+
+        waitUntil("room A joined on the resumed session") { roomJoinedEvents == listOf(ROOM_A) }
+    }
+
+    @Test
+    fun joinOfTheCurrentRoomWhileReconnectingIsConfirmedOnTheResumedSession() {
+        val instance = createConnectedInstance()
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
+        roomJoinedEvents.clear()
+
+        // The call joins the room the chat is already in, while the connection is being resumed: the join is queued,
+        // and the server answers it with "already_joined" because the resumed session is still in the room.
+        holdAnswerToHello = true
+        instance.restartWebSocket()
+        waitUntil("resumed hello received") { serverLog.contains("c2:hello-held") }
+        assertFalse(instance.isConnected)
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        holdAnswerToHello = false
+        heldHelloAnswers.forEach { it() }
+
+        waitUntil("queued join answered") { serverLog.contains("c2:already_joined") }
+        waitUntil("room A joined for the call") { roomJoinedEvents == listOf(ROOM_A) }
+        sendBarrierJoin(instance)
+        assertEquals("the queued join is not repeated", 1, serverLog.count { it == "c2:already_joined" })
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
     }
 
     @Test
@@ -356,7 +426,12 @@ class WebSocketInstanceRoomSessionsTest {
      */
     private inner class ServerListener(private val name: String) : WebSocketListener() {
         private var webSocket: WebSocket? = null
-        private var joinedRoom: String? = null
+        private var resumeId = "resume-$name"
+        private var joinedRoom: String?
+            get() = roomByResumeId[resumeId]
+            set(value) {
+                if (value == null) roomByResumeId.remove(resumeId) else roomByResumeId[resumeId] = value
+            }
 
         init {
             serverSockets.add(this)
@@ -375,10 +450,19 @@ class WebSocketInstanceRoomSessionsTest {
             when {
                 text.contains("\"type\":\"hello\"") -> {
                     serverLog.add("$name:hello $text")
-                    webSocket.send(
-                        "{\"type\":\"hello\",\"hello\":{\"resumeid\":\"resume-$name\",\"sessionid\":\"own-$name\"}}"
-                    )
-                    serverLog.add("$name:hello-answered")
+                    Regex("\"resumeid\":\"([^\"]*)\"").find(text)?.let { resumeId = it.groupValues[1] }
+                    val answer: () -> Unit = {
+                        webSocket.send(
+                            "{\"type\":\"hello\",\"hello\":{\"resumeid\":\"$resumeId\",\"sessionid\":\"own-$name\"}}"
+                        )
+                        serverLog.add("$name:hello-answered")
+                    }
+                    if (holdAnswerToHello) {
+                        heldHelloAnswers.add(answer)
+                        serverLog.add("$name:hello-held")
+                    } else {
+                        answer()
+                    }
                 }
 
                 text.contains("\"type\":\"room\"") -> {
@@ -397,8 +481,13 @@ class WebSocketInstanceRoomSessionsTest {
 
                         holdAnswerToJoin -> serverLog.add("$name:joined-unanswered")
 
+                        dropAnswerToJoin -> {
+                            joinedRoom = room
+                            serverLog.add("$name:joined-answer-lost")
+                        }
+
                         room == joinedRoom -> {
-                            webSocket.send(errorFrame("already_joined"))
+                            webSocket.send(alreadyJoinedFrame(room))
                             serverLog.add("$name:already_joined")
                         }
 

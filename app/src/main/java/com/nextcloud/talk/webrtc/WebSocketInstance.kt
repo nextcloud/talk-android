@@ -371,8 +371,29 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 currentNormalBackendSession = ""
                 roomSessions.reset()
                 eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", HashMap()))
+            } else if ("already_joined" == message.code) {
+                processAlreadyJoined(message.details?.room?.roomId)
             }
         }
+    }
+
+    /**
+     * The server answers a join of the room the session is already in (with the same room session) with
+     * "already_joined" instead of a "room" message. The caller of the join still waits for "roomJoined", so the
+     * error is a confirmation of the join. This happens when a join is repeated after a resume: either the join was
+     * queued while reconnecting, or the answer to the original join was lost with the previous socket.
+     */
+    private fun processAlreadyJoined(confirmedRoomToken: String?) {
+        val roomToken = confirmedRoomToken ?: requestedRoomToken
+        if (roomToken.isNullOrEmpty() || roomToken != requestedRoomToken) {
+            Log.d(TAG, "Ignoring already_joined for room '$roomToken' which is not the requested one")
+            return
+        }
+        val alreadyInRoom = roomToken == currentRoomToken
+        roomSessions.onRoomResponse(roomToken)
+        currentRoomToken = roomToken
+        callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
+        sendRoomJoinedEvent()
     }
 
     @Throws(IOException::class)
@@ -402,6 +423,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "chat-relay is NOT supported")
             }
         }
+        queueRequestedRoomJoinIfLost(oldResumeId)
         for (i in messagesQueue.indices) {
             webSocket.send(messagesQueue[i])
         }
@@ -418,7 +440,6 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             helloHashMap[Globals.ROOM_TOKEN] = currentRoomToken
         }
         eventBus!!.post(WebSocketCommunicationEvent("hello", helloHashMap))
-        maybeResendRequestedRoomJoin(oldResumeId)
     }
 
     /**
@@ -429,13 +450,15 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
      * session is not confirmed to be in the room the UI asked for, the join is sent again so the call recovers on its
      * own. A fresh session (no resume id) is not handled here: there the room state was cleared and the call UI
      * rejoins in response to the "hello" event instead, so acting here would send the join twice.
+     *
+     * It is called before the queue is flushed and adds the join to the queue, unless the very same join is already
+     * queued (it was sent while reconnecting), so the join is not sent twice.
      */
-    private fun maybeResendRequestedRoomJoin(oldResumeId: String?) {
+    private fun queueRequestedRoomJoinIfLost(oldResumeId: String?) {
         val requested = requestedRoomToken
         if (TextUtils.isEmpty(oldResumeId) || requested.isNullOrEmpty() || requested == currentRoomToken) {
             return
         }
-        Log.d(TAG, "Resumed session is not in requested room '$requested'; re-sending join lost on previous socket")
         try {
             val message = LoganSquare.serialize(
                 webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(
@@ -444,7 +467,10 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                     currentFederation
                 )
             )
-            sendMessage(message)
+            if (!messagesQueue.contains(message)) {
+                Log.d(TAG, "Resumed session is not in requested room '$requested'; re-sending join lost on old socket")
+                messagesQueue.add(message)
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize room join message for resend", e)
         }
@@ -505,13 +531,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 roomSessions.reset()
                 callEncryptionLifecycle.close()
                 sendMessage(message)
-            } else if (
-                isConnected &&
-                roomToken == currentRoomToken &&
-                normalBackendSession == currentNormalBackendSession &&
-                federation?.roomId == currentFederation?.roomId &&
-                federation?.nextcloudServer == currentFederation?.nextcloudServer
-            ) {
+            } else if (isConnected && isCurrentJoin(roomToken, normalBackendSession, federation)) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 requestedRoomToken = roomToken
                 sendRoomJoinedEvent()
@@ -526,6 +546,17 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             Log.e(TAG, "Failed to serialize signaling message", e)
         }
     }
+
+    // Whether the server already confirmed this very join: same room, room session and federation
+    private fun isCurrentJoin(
+        roomToken: String,
+        normalBackendSession: String?,
+        federation: FederationSettingsDto?
+    ): Boolean =
+        roomToken == currentRoomToken &&
+            normalBackendSession == currentNormalBackendSession &&
+            federation?.roomId == currentFederation?.roomId &&
+            federation?.nextcloudServer == currentFederation?.nextcloudServer
 
     private fun sendCallMessage(ncSignalingMessage: NCSignalingMessageDto) {
         try {
