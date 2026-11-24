@@ -161,6 +161,13 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun markMessageForResend(referenceId: String): Flow<Result<ChatMessage?>>
 
     /**
+     * Resets the FAILED text messages of this chat to PENDING, so they can be handed to SendMessageWorker for another
+     * send attempt, and returns their reference ids, oldest first. Failed file uploads are left out, as they need a new
+     * upload. Does not itself send anything.
+     */
+    suspend fun markFailedMessagesForResend(): List<String>
+
+    /**
      * Marks the PENDING text messages of this conversation created before [createdBefore] (epoch
      * seconds) as FAILED, so the user can resend or delete them. Call only when no SendMessageWorker
      * work is left for the conversation: such a message would otherwise stay PENDING forever.
@@ -228,8 +235,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
     ): Result<ChatOverallSingleMessage?>
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
-
-    suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 

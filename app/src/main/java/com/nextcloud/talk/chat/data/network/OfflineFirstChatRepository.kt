@@ -22,7 +22,6 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
@@ -730,6 +729,21 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    override suspend fun markFailedMessagesForResend(): List<String> {
+        val failedTextMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
+            .filter { it.sendStatus == SendStatus.FAILED && it.messageParameters?.containsKey("file") != true }
+            .sortedBy { it.timestamp }
+        return failedTextMessages.mapNotNull { message ->
+            val referenceId = message.referenceId ?: return@mapNotNull null
+            // only the status is written, so a concurrent edit of the text is kept
+            withContext(Dispatchers.IO) {
+                chatDao.updateTempMessageSendStatus(internalConversationId, referenceId, SendStatus.PENDING)
+            }
+            _updateMessageFlow.emit(message.copy(sendStatus = SendStatus.PENDING).toDomainModel())
+            referenceId
+        }
+    }
+
     override suspend fun failPendingMessagesWithoutSendWork(createdBefore: Long): Int =
         chatDao.failPendingTempTextMessages(internalConversationId, createdBefore)
 
@@ -1002,32 +1016,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 emit(false)
             }
         }
-
-    override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
-        val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
-        // File-upload placeholders are also temporary messages, but they must never be resent as plain
-        // text here: their "message" field is just the "{file}" sentinel, and a failed/interrupted upload
-        // needs a real re-upload, not a bogus text message reusing its referenceId.
-        val unsentTextMessages = tempMessages.filterNot { it.messageParameters?.containsKey("file") == true }
-        unsentTextMessages.sortedBy { it.internalId }.onEach {
-            sendChatMessage(
-                credentials,
-                url,
-                it.message,
-                it.actorDisplayName,
-                it.parentMessageId?.toIntOrZero() ?: 0,
-                it.silent,
-                it.referenceId.orEmpty(),
-                null
-            ).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "Sent temp message")
-                } else {
-                    Log.e(TAG, "Failed to send temp message")
-                }
-            }
-        }
-    }
 
     override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
         chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))

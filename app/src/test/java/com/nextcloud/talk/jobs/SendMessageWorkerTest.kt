@@ -8,6 +8,7 @@ package com.nextcloud.talk.jobs
 
 import android.app.Application
 import android.content.Context
+import android.net.NetworkCapabilities
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
 import androidx.work.Data
@@ -154,6 +155,19 @@ class SendMessageWorkerTest {
 
         awaitFinished(workManager, id)
         assertFalse(hasActiveSend(workManager))
+    }
+
+    @Test
+    fun `a queued message is sent on a network that Android has not validated`() {
+        val workManager = initWorkManager()
+        addRow("ref-a", "A")
+
+        SendMessageWorker.enqueue(CONVERSATION_ID, "ref-a", null)
+
+        val networkRequest = workManager.getWorkInfosForUniqueWork("send_message_queue_$CONVERSATION_ID").get()
+            .single().constraints.requiredNetworkRequest!!
+        assertTrue(networkRequest.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+        assertFalse(networkRequest.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
     }
 
     private fun hasActiveSend(workManager: WorkManager): Boolean =

@@ -627,6 +627,30 @@ class OfflineFirstChatRepositoryTest {
             verify(chatDao, never()).updateChatMessage(any())
         }
 
+    @Test
+    fun `markFailedMessagesForResend queues failed text messages oldest first and leaves the others alone`() =
+        runTest {
+            val newerFailed = tempMessageEntity("ref-newer", SendStatus.FAILED).copy(timestamp = 20)
+            val pending = tempMessageEntity("ref-pending", SendStatus.PENDING).copy(timestamp = 15)
+            val olderFailed = tempMessageEntity("ref-older", SendStatus.FAILED).copy(timestamp = 10)
+            val fileParameters = hashMapOf<String?, HashMap<String?, String?>>("file" to hashMapOf("type" to "file"))
+            val failedUpload = tempMessageEntity("ref-upload", SendStatus.FAILED)
+                .copy(timestamp = 5, messageParameters = fileParameters)
+            // the DAO orders newest first
+            whenever(chatDao.getTempUnsentMessagesForConversation(INTERNAL_CONVERSATION_ID, null))
+                .thenReturn(flowOf(listOf(newerFailed, pending, olderFailed, failedUpload)))
+
+            val referenceIds = repository.markFailedMessagesForResend()
+
+            assertEquals(listOf("ref-older", "ref-newer"), referenceIds)
+            verify(chatDao).updateTempMessageSendStatus(INTERNAL_CONVERSATION_ID, "ref-older", SendStatus.PENDING)
+            verify(chatDao).updateTempMessageSendStatus(INTERNAL_CONVERSATION_ID, "ref-newer", SendStatus.PENDING)
+            // a pending message is still sent by its own SendMessageWorker, an upload needs a new upload
+            verify(chatDao, never()).updateTempMessageSendStatus(any(), eq("ref-pending"), any())
+            verify(chatDao, never()).updateTempMessageSendStatus(any(), eq("ref-upload"), any())
+            verifyBlocking(network, never()) { sendChatMessage(any(), any(), any(), any(), any(), any(), any(), any()) }
+        }
+
     private fun tempMessageEntity(referenceId: String, sendStatus: SendStatus): ChatMessageEntity =
         ChatMessageEntity(
             internalId = "$INTERNAL_CONVERSATION_ID@_temp_$referenceId",

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
@@ -51,8 +52,8 @@ enum class ServerConnectionStatus {
  * [ServerConnectionInterceptor]). Servers are told apart by scheme, host and port, so all accounts on one server
  * share its status.
  *
- * While [NetworkMonitor] considers the device offline, the server counts as unreachable as well, as the app doesn't
- * send requests then, even if the server could be reached, e.g. on a local network without internet.
+ * While [NetworkMonitor] considers the device offline, i.e. it has no usable network, the server counts as unreachable
+ * as well.
  */
 @Singleton
 class ServerConnectionMonitor @Inject constructor(
@@ -92,6 +93,21 @@ class ServerConnectionMonitor @Inject constructor(
                 .collect { send(it) }
         }
     }
+
+    /**
+     * Emits each time the server at [baseUrl] can be used again after it couldn't, which includes the device getting a
+     * usable network back, e.g. to send what failed meanwhile.
+     */
+    fun reconnectionFlow(baseUrl: String?): Flow<Unit> =
+        flow {
+            var previous: ServerConnectionStatus? = null
+            statusFlow(baseUrl).collect { status ->
+                if (status == ServerConnectionStatus.CONNECTED && previous != null) {
+                    emit(Unit)
+                }
+                previous = status
+            }
+        }
 
     fun report(url: HttpUrl, status: ServerConnectionStatus) {
         val serverKey = serverKeyOf(url)

@@ -236,8 +236,8 @@ class ChatMessageSyncer @Inject constructor(
      * entirely (same guard as on iOS). It is also skipped when the server turns preloading off
      * for mobile clients.
      *
-     * Reachability is deliberately not pre-checked. Callers are gated by a WorkManager
-     * `NetworkType.CONNECTED` constraint, and a request that fails because the device is offline
+     * Reachability is deliberately not pre-checked. Callers are gated by
+     * [com.nextcloud.talk.jobs.usableNetworkConstraints], and a request that fails because the device is offline
      * is reported as a failed sync and retried, which is strictly better than skipping a fetch
      * that would have succeeded on a connected-but-unvalidated network.
      *

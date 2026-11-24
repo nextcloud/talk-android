@@ -65,6 +65,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.network.ServerConnectionMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
@@ -108,6 +109,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var serverConnectionMonitor: ServerConnectionMonitor
 
     @Inject
     lateinit var messageUtils: MessageUtils
@@ -306,24 +310,21 @@ class MessageInputFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            var wasOnline: Boolean? = null
             networkMonitor.isOnline
                 .onEach { isOnline ->
-                    val connectionGained = (wasOnline == false && isOnline)
-                    wasOnline = isOnline
-                    Log.d(TAG, "isOnline: $isOnline\nconnectionGained: $connectionGained")
-                    if (connectionGained) {
-                        messageInputViewModel.sendUnsentMessages(
-                            chatActivity.conversationUser!!.getCredentials(),
-                            ApiUtils.getUrlForChat(
-                                chatActivity.chatApiVersion,
-                                chatActivity.conversationUser!!.baseUrl!!,
-                                chatActivity.roomToken
-                            )
-                        )
-                    }
+                    Log.d(TAG, "isOnline: $isOnline")
                     handleUI(isOnline)
                 }.collect()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            serverConnectionMonitor.reconnectionFlow(chatActivity.conversationUser.baseUrl).collect {
+                Log.d(TAG, "Server reachable again, resending failed messages")
+                messageInputViewModel.resendFailedMessages(
+                    chatActivity.conversationUser.id!!,
+                    chatActivity.roomToken
+                )
+            }
         }
 
         binding.fragmentCallStarted.setContent {
