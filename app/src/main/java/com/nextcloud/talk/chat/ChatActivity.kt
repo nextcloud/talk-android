@@ -3945,6 +3945,9 @@ class ChatActivity :
                     photoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
+                        takePictureIntent.addFlags(
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        )
                         startPickCameraIntentForResult.launch(takePictureIntent)
                     }
                 }
@@ -3977,6 +3980,9 @@ class ChatActivity :
                     videoFile?.also {
                         pendingCameraUri = FileProvider.getUriForFile(context, context.packageName, it)
                         takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, pendingCameraUri)
+                        takeVideoIntent.addFlags(
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        )
                         startPickCameraIntentForResult.launch(takeVideoIntent)
                     }
                 }
