@@ -20,6 +20,11 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.currentTime
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -56,6 +61,15 @@ class LoginRepositoryTest {
 
     lateinit var repo: LoginRepository
 
+    private companion object {
+        /** How long the server keeps a login flow. */
+        const val LOGIN_FLOW_LIFETIME = 20 * 60 * 1000L
+
+        /** The delay between two polls. */
+        const val POLL_INTERVAL = 1000L
+        const val SHORTER_THAN_POLL_INTERVAL = 100L
+    }
+
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
@@ -86,18 +100,72 @@ class LoginRepositoryTest {
         }
 
     @Test
-    fun `pollLogin returns null when network returns null`() =
+    fun `pollLogin keeps polling after a failed request and returns the credentials`() =
         runTest {
-            // Arrange
+            // The network of an app in the background is blocked, so poll requests fail until it is shown again
+            val repo = LoginRepository(
+                networkLoginDataSource,
+                localLoginDataSource,
+                StandardTestDispatcher(testScheduler)
+            )
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val pendingLoginData = LoginCompletion(404, "", "", "")
+            val successfulLoginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+
+            whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
+                .thenReturn(pendingLoginData)
+                .thenReturn(null)
+                .thenReturn(null)
+                .thenReturn(successfulLoginData)
+
+            val result = repo.pollLogin(mockResponse)
+
+            assertEquals(successfulLoginData, result)
+            verify(networkLoginDataSource, times(4)).performLoginFlowV2(mockResponse)
+        }
+
+    @Test
+    fun `pollNow polls right away instead of after the delay between two polls`() =
+        runTest {
+            val repo = LoginRepository(
+                networkLoginDataSource,
+                localLoginDataSource,
+                StandardTestDispatcher(testScheduler)
+            )
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val pendingLoginData = LoginCompletion(404, "", "", "")
+            val successfulLoginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
+                .thenReturn(pendingLoginData)
+                .thenReturn(successfulLoginData)
+
+            val result = async { repo.pollLogin(mockResponse) }
+            runCurrent()
+            verify(networkLoginDataSource, times(1)).performLoginFlowV2(mockResponse)
+
+            advanceTimeBy(SHORTER_THAN_POLL_INTERVAL)
+            repo.pollNow()
+
+            assertEquals(successfulLoginData, result.await())
+            assertTrue(currentTime < POLL_INTERVAL)
+        }
+
+    @Test
+    fun `pollLogin returns null once the login flow expired on the server`() =
+        runTest {
+            val repo = LoginRepository(
+                networkLoginDataSource,
+                localLoginDataSource,
+                StandardTestDispatcher(testScheduler)
+            )
             val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(null)
 
-            // Act
             val result = repo.pollLogin(mockResponse)
 
-            // Assert
             assertNull(result)
+            assertTrue(currentTime >= LOGIN_FLOW_LIFETIME)
         }
 
     @Test

@@ -96,6 +96,16 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         }
     }
 
+    /**
+     * Polls for the credentials right away if they are being polled for, as the user may have granted access in the
+     * browser.
+     */
+    fun pollNow() {
+        if (isLoginPageOpened) {
+            repository.pollNow()
+        }
+    }
+
     fun loginWithQR(dataString: String, reAuth: Boolean = false, accountToReauthorize: Long? = null) {
         if (!startLoginOnce()) return
         viewModelScope.launch {

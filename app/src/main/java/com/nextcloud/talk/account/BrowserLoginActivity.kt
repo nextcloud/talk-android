@@ -81,6 +81,13 @@ class BrowserLoginActivity : BaseActivity() {
         sharedApplication!!.componentApplication.inject(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // The user may come back from the browser after granting access, and the network may have been blocked
+        // while the app was in the background.
+        viewModel.pollNow()
+    }
+
     private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
