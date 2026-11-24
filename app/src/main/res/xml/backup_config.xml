@@ -11,4 +11,17 @@
     <exclude
         domain="file"
         path="shared_file_copies/" />
+    <!--
+      The database is encrypted with a per-install key held in the AndroidKeyStore, which is
+      device-bound and never backed up. A database or wrapped-key prefs restored onto another
+      device cannot be decrypted, so they are excluded from backup; the cache is rebuilt from the
+      server after sign-in. QA ships under a separate applicationId with its own product name.
+    -->
+    <exclude domain="database" path="nextcloud_talk.sqlite"/>
+    <exclude domain="database" path="nextcloud_talk.sqlite-wal"/>
+    <exclude domain="database" path="nextcloud_talk.sqlite-shm"/>
+    <exclude domain="database" path="nextcloud_talk_qa.sqlite"/>
+    <exclude domain="database" path="nextcloud_talk_qa.sqlite-wal"/>
+    <exclude domain="database" path="nextcloud_talk_qa.sqlite-shm"/>
+    <exclude domain="sharedpref" path="talk_db_key.xml"/>
 </full-backup-content>

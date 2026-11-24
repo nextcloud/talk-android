@@ -8,14 +8,35 @@
 <!-- From Android 12 on, instead of backup_config: the copies of the files other apps shared, which are only kept until
      they are uploaded -->
 <data-extraction-rules>
+    <!--
+      The database is encrypted with a per-install key held in the AndroidKeyStore, which is
+      device-bound and transfers to neither a cloud backup nor another device. A database or
+      wrapped-key prefs restored elsewhere cannot be decrypted, so they are excluded from both;
+      the cache is rebuilt from the server after sign-in. QA ships under a separate applicationId
+      with its own product name.
+    -->
     <cloud-backup>
         <exclude
             domain="file"
             path="shared_file_copies/" />
+        <exclude domain="database" path="nextcloud_talk.sqlite"/>
+        <exclude domain="database" path="nextcloud_talk.sqlite-wal"/>
+        <exclude domain="database" path="nextcloud_talk.sqlite-shm"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite-wal"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite-shm"/>
+        <exclude domain="sharedpref" path="talk_db_key.xml"/>
     </cloud-backup>
     <device-transfer>
         <exclude
             domain="file"
             path="shared_file_copies/" />
+        <exclude domain="database" path="nextcloud_talk.sqlite"/>
+        <exclude domain="database" path="nextcloud_talk.sqlite-wal"/>
+        <exclude domain="database" path="nextcloud_talk.sqlite-shm"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite-wal"/>
+        <exclude domain="database" path="nextcloud_talk_qa.sqlite-shm"/>
+        <exclude domain="sharedpref" path="talk_db_key.xml"/>
     </device-transfer>
 </data-extraction-rules>
