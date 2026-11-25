@@ -189,7 +189,10 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
                 _uiState.update { it.copy(loadingOlder = false) }
                 return@launch
             }
+            val knownMessageIds = _uiState.value.flattenedItems.mapTo(HashSet()) { it.messageId }
             val olderItems = olderPage.items
+                .distinctBy { it.messageId }
+                .filterNot { it.messageId in knownMessageIds }
 
             if (olderItems.isEmpty()) {
                 _uiState.update { it.copy(loadingOlder = false, canLoadOlder = false) }
