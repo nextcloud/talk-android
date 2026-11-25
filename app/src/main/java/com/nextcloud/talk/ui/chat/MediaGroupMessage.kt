@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.ui.chat
 
-import com.nextcloud.talk.chat.viewmodels.isSelectable
 import android.graphics.Bitmap
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -65,6 +64,7 @@ import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.chat.viewmodels.isSelectable
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.ui.theme.mimetypeIconTint
 import com.nextcloud.talk.utils.DrawableUtils

@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.ui.chat
 
-import com.nextcloud.talk.chat.viewmodels.isSelectable
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -29,6 +28,7 @@ import com.nextcloud.talk.chat.audio.ChatAudioMetadata
 import com.nextcloud.talk.chat.audio.ChatAudioPlaybackState
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.chat.viewmodels.isSelectable
 import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

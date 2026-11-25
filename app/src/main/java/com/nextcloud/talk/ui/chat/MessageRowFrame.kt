@@ -100,6 +100,7 @@ internal fun MessageRowFrame(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = toggle,
+                                onDoubleClick = toggle,
                                 onLongClick = toggle
                             )
                     )

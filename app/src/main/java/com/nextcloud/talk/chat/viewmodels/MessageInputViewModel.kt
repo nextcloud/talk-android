@@ -156,6 +156,9 @@ class MessageInputViewModel :
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
 
+    /** Called with the reference id of each message stored for sending, in the order they are sent. */
+    var onTemporaryMessageAdded: ((String) -> Unit)? = null
+
     // Shown once per failed send; the view state above is replayed to a new observer, e.g. after a rotation.
     private val _sendFailures = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val sendFailures: SharedFlow<Unit> = _sendFailures
@@ -209,6 +212,7 @@ class MessageInputViewModel :
                         referenceId
                     ).collect { result ->
                         if (result.isSuccess) {
+                            onTemporaryMessageAdded?.invoke(referenceId)
                             _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                             SendMessageWorker.enqueue(
                                 internalConversationId = "$userId@$roomToken",

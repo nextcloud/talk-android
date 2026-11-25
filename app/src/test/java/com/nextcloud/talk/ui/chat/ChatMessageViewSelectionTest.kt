@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.doubleClick
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
@@ -143,6 +144,16 @@ class ChatMessageViewSelectionTest {
     }
 
     @Test
+    fun `a double tap on the bubble toggles the message once while a selection is active`() {
+        show(selectionActive = true)
+
+        composeRule.onNodeWithTag(TAG_BUBBLE).performTouchInput { doubleClick() }
+        composeRule.mainClock.advanceTimeBy(DOUBLE_TAP_WAIT_MILLIS)
+
+        assertEquals(listOf(MESSAGE_ID), toggled)
+    }
+
+    @Test
     fun `tap outside of the bubble toggles the message while a selection is active`() {
         show(selectionActive = true, checked = true)
 
@@ -157,6 +168,8 @@ class ChatMessageViewSelectionTest {
         show(selectionActive = true)
 
         composeRule.onNodeWithTag(TAG_BUBBLE).performTouchInput { click() }
+        // like the rest of the row, the bubble waits for a possible double tap during a selection
+        composeRule.mainClock.advanceTimeBy(DOUBLE_TAP_WAIT_MILLIS)
 
         assertEquals(listOf(MESSAGE_ID), toggled)
         assertEquals(emptyList<Int>(), menuOpened)

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-// Telegram permits at most 100 messages in one forward request.
+/** The most messages one selection can hold. */
 const val MAX_SELECTED_MESSAGES = 100
 
 // Talk limits one message to 32,000 characters; also cap the combined forwarded text.

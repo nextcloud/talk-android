@@ -442,6 +442,7 @@ class ChatActivity :
     private val filesToUpload: MutableList<String> = ArrayList()
     lateinit var sharedText: String
     private var forwardedTexts: List<String> = emptyList()
+    private var forwardSelectionJob: Job? = null
     private var sharedFilePaths: List<String> = emptyList()
 
     // Whether the shared text and files of the intent were taken. A chat recreated after its process was killed gets
@@ -671,6 +672,7 @@ class ChatActivity :
 
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel.setData(chatViewModel.getChatRepository())
+        messageInputViewModel.onTemporaryMessageAdded = chatViewModel::registerSendSequence
         if (savedInstanceState == null) {
             sendForwardedMessages()
         }
@@ -2076,7 +2078,14 @@ class ChatActivity :
                 CompositionLocalProvider(LocalViewThemeUtils provides viewThemeUtils) {
                     val selectedMessageIds by chatViewModel.messageSelection.ids.collectAsStateWithLifecycle()
                     val isOnline by networkMonitor.isOnline.collectAsStateWithLifecycle()
-                    val canForwardSelection by produceState(false, selectedMessageIds, isOnline) {
+                    // set together with the capabilities, which decide on the forward as well
+                    val participantPermissions by participantPermissionsFlow.collectAsStateWithLifecycle()
+                    val canForwardSelection by produceState(
+                        false,
+                        selectedMessageIds,
+                        isOnline,
+                        participantPermissions
+                    ) {
                         value = selectionForwardTextsOrNull(selectedMessageIds, isOnline) != null
                     }
                     ChatToolbar(
@@ -3475,6 +3484,10 @@ class ChatActivity :
         }
     }
 
+    /** Whether [message] can be forwarded, or null while the capabilities of the server are not loaded yet. */
+    private fun canForwardOrNull(message: ChatMessage, isOnline: Boolean): Boolean? =
+        if (::spreedCapabilities.isInitialized) actionsStateFor(message, isOnline).showForward else null
+
     private fun actionsStateFor(message: ChatMessage, isOnline: Boolean): MessageActionsState =
         buildMessageActionsState(
             message = message,
@@ -3569,10 +3582,8 @@ class ChatActivity :
     }
 
     private fun addMessageToSelection(message: ChatMessage) {
-        val text = forwardedTextOrNull(
-            message,
-            actionsStateFor(message, true).showForward
-        )
+        // counted while the capabilities are not loaded yet, the forward checks the messages again
+        val text = forwardedTextOrNull(message, canForwardOrNull(message, true) ?: true)
         val notice = when (chatViewModel.messageSelection.toggle(message.jsonMessageId, text)) {
             SelectionLimit.MESSAGE_COUNT -> R.string.nc_chat_selection_message_limit
             SelectionLimit.TEXT_LENGTH -> R.string.nc_chat_selection_text_limit
@@ -3582,7 +3593,11 @@ class ChatActivity :
     }
 
     private fun forwardSelectedMessages() {
-        lifecycleScope.launch {
+        // a second tap while the messages load must not open the conversation list twice
+        if (forwardSelectionJob?.isActive == true) {
+            return
+        }
+        forwardSelectionJob = lifecycleScope.launch {
             val texts = selectionForwardTextsOrNull(
                 chatViewModel.messageSelection.ids.value,
                 networkMonitor.isOnline.value
@@ -3600,15 +3615,20 @@ class ChatActivity :
     private suspend fun selectionForwardTextsOrNull(selectedIds: Set<Int>, isOnline: Boolean): List<String>? {
         val ids = chatViewModel.messageIdsToForward(selectedIds)
         val messages = loadSelectedMessages(ids)
-        return forwardTextsOrNull(messages) { actionsStateFor(it, isOnline).showForward }
+        return forwardTextsOrNull(messages) { canForwardOrNull(it, isOnline) == true }
             ?.takeIf { messages.size == ids.size }
     }
 
     private fun copySelectedMessages() {
         lifecycleScope.launch {
-            val messages = loadSelectedMessages(
-                chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
-            ).filterNot { it.isDeleted }
+            val ids = chatViewModel.messageIdsToForward(chatViewModel.messageSelection.ids.value)
+            val loaded = loadSelectedMessages(ids)
+            if (loaded.size != ids.size) {
+                // like a forward: a copy without some of the selected messages is not done silently
+                Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            val messages = loaded.filterNot { it.isDeleted }
             if (messages.isEmpty()) {
                 return@launch
             }
