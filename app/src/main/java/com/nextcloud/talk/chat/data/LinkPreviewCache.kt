@@ -12,6 +12,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 /**
  * Resolves link previews and keeps the results of the [maxSize] most recently used URLs. Calls for the same URL share
@@ -35,8 +37,10 @@ class LinkPreviewCache(
         }
         return try {
             request.await()
-        } catch (e: CancellationException) {
-            throw e
+        } catch (_: CancellationException) {
+            // Only the caller's own cancellation ends it; a cancelled request is made again by the next call.
+            currentCoroutineContext().ensureActive()
+            null
         } catch (_: Exception) {
             null
         }

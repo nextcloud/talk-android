@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.data
 
 import com.nextcloud.talk.models.json.opengraph.OpenGraphObjectDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,6 +24,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -98,6 +100,40 @@ class LinkPreviewCacheTest {
 
             assertSame(PREVIEW, cache.get(URL))
             assertEquals(listOf(URL, URL), requestedUrls)
+        }
+
+    @Test
+    fun `a request that is cancelled on its own returns no preview and is made again by the next call`() =
+        runTest(dispatcher) {
+            var attempts = 0
+            val cache = cache {
+                if (attempts++ == 0) {
+                    throw CancellationException("request timed out")
+                }
+                PREVIEW
+            }
+
+            assertNull(cache.get(URL))
+            assertSame(PREVIEW, cache.get(URL))
+            assertEquals(listOf(URL, URL), requestedUrls)
+        }
+
+    @Test
+    fun `a cancelled caller is cancelled while the shared request goes on`() =
+        runTest(dispatcher) {
+            val response = CompletableDeferred<OpenGraphObjectDto?>()
+            val cache = cache { response.await() }
+
+            var result: Result<OpenGraphObjectDto?>? = null
+            val caller = launch { result = runCatching { cache.get(URL) } }
+            runCurrent()
+            caller.cancel()
+            runCurrent()
+            response.complete(PREVIEW)
+
+            assertTrue(result!!.exceptionOrNull() is CancellationException)
+            assertSame(PREVIEW, cache.get(URL))
+            assertEquals(listOf(URL), requestedUrls)
         }
 
     @Test
