@@ -82,7 +82,6 @@ data class ConversationsListScreenState(
     val viewThemeUtils: ViewThemeUtils,
     val showEcosystemFlow: StateFlow<Boolean>,
     val snackbarHostState: SnackbarHostState,
-    val isMaintenanceModeFlow: StateFlow<Boolean>,
     val isOnlineFlow: StateFlow<Boolean>,
     val showUnreadBubbleFlow: StateFlow<Boolean>,
     val isFabVisibleFlow: StateFlow<Boolean>,
@@ -158,7 +157,6 @@ fun ConversationsListScreen(
     val manageTagsSheetState = rememberModalBottomSheetState()
 
     // Activity-level state
-    val isMaintenanceMode by state.isMaintenanceModeFlow.collectAsStateWithLifecycle()
     val isOnline by state.isOnlineFlow.collectAsStateWithLifecycle()
     val showUnreadBubble by state.showUnreadBubbleFlow.collectAsStateWithLifecycle()
     val isFabVisible by state.isFabVisibleFlow.collectAsStateWithLifecycle()
@@ -253,7 +251,6 @@ fun ConversationsListScreen(
             contentWindowInsets = WindowInsets.safeDrawing,
             topBar = {
                 Column(modifier = Modifier.fillMaxWidth().statusBarsPadding()) {
-                    StatusBannerRow(isOffline = !isOnline, isMaintenanceMode = isMaintenanceMode)
                     ConversationListTopBar(
                         state = ConversationListTopBarState(
                             mode = mode,

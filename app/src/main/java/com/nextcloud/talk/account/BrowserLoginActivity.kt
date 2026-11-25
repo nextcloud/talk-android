@@ -44,6 +44,9 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class BrowserLoginActivity : BaseActivity() {
 
+    override val showsStatusBanner: Boolean
+        get() = false
+
     private lateinit var binding: ActivityWebViewLoginBinding
 
     @Inject

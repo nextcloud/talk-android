@@ -26,6 +26,7 @@ import android.webkit.SslErrorHandler
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
@@ -41,6 +42,9 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.components.StatusBanner
+import com.nextcloud.talk.components.StatusBannerLayout
+import com.nextcloud.talk.data.network.ServerConnectionMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.lock.LockedActivity
@@ -63,14 +67,17 @@ import java.security.cert.CertificateParsingException
 import java.security.cert.X509Certificate
 import java.text.DateFormat
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 open class BaseActivity : AppCompatActivity() {
 
@@ -106,6 +113,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var logger: Logger
+
+    @Inject
+    lateinit var serverConnectionMonitor: ServerConnectionMonitor
 
     /**
      * Whether this activity may be started without [BundleKeys.KEY_INTERNAL_USER_ID] and then uses the default
@@ -181,6 +191,58 @@ open class BaseActivity : AppCompatActivity() {
      * exist. Must be called right after injection, before anything else is set up.
      */
     protected fun setUpBoundUserOrFinish(): User? = requireBoundUserOrFinish()?.also { applyUserTheme() }
+
+    /**
+     * Whether this activity shows the [StatusBanner] above its content while the server of its account can't be used.
+     * Off for screens without an account and fullscreen screens.
+     */
+    protected open val showsStatusBanner: Boolean = true
+
+    private var statusBannerLayout: StatusBannerLayout? = null
+
+    override fun setContentView(layoutResID: Int) {
+        val contentFrame = statusBannerContentFrame() ?: return super.setContentView(layoutResID)
+        layoutInflater.inflate(layoutResID, contentFrame, true)
+        onContentChanged()
+    }
+
+    override fun setContentView(view: View?) {
+        val contentFrame = statusBannerContentFrame() ?: return super.setContentView(view)
+        contentFrame.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        onContentChanged()
+    }
+
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        val contentFrame = statusBannerContentFrame() ?: return super.setContentView(view, params)
+        contentFrame.addView(view, params)
+        onContentChanged()
+    }
+
+    /**
+     * The empty frame below the status banner to add the content of the activity to, or null if the activity shows no
+     * status banner. The banner and its frame are set as content view once, and kept on later calls.
+     */
+    private fun statusBannerContentFrame(): ViewGroup? {
+        if (!showsStatusBanner) return null
+        val layout = statusBannerLayout ?: StatusBannerLayout(this) { status ->
+            MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(this)) {
+                StatusBanner(status)
+            }
+        }.also { layout ->
+            statusBannerLayout = layout
+            super.setContentView(layout)
+            layout.showStatusWhileStarted(this) {
+                serverConnectionMonitor.statusFlow(withContext(Dispatchers.IO) { userOfScreen?.baseUrl })
+            }
+        }
+        layout.contentFrame.removeAllViews()
+        return layout.contentFrame
+    }
+
+    /** The account of this screen, or the default account for screens that didn't resolve one. */
+    private val userOfScreen: User?
+        get() = (if (boundUserLazy.isInitialized()) boundUser else null)
+            ?: defaultAccountProvider.getDefaultUserBlocking()
 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
@@ -447,8 +509,7 @@ open class BaseActivity : AppCompatActivity() {
             super.startActivity(intent)
             return
         }
-        val user = (if (boundUserLazy.isInitialized()) boundUser else null)
-            ?: defaultAccountProvider.getDefaultUserBlocking()
+        val user = userOfScreen
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
             if (user?.baseUrl != null && uri.startsWith(user.baseUrl!!)) {

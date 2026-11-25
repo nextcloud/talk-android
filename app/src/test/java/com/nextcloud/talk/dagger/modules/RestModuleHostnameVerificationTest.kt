@@ -11,6 +11,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.nextcloud.talk.api.LoggingHttpInterceptor
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.network.ServerConnectionInterceptor
+import com.nextcloud.talk.data.network.ServerConnectionMonitor
 import com.nextcloud.talk.utils.AccountCookieInterceptor
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
@@ -75,7 +77,8 @@ class RestModuleHostnameVerificationTest {
             CookieManager(),
             Dispatcher(),
             mock<LoggingHttpInterceptor>(),
-            AccountCookieInterceptor()
+            AccountCookieInterceptor(),
+            ServerConnectionInterceptor(mock<ServerConnectionMonitor>())
         )
         hostnameVerifier = client.hostnameVerifier
     }

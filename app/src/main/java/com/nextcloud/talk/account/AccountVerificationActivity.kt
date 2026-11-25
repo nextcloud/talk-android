@@ -74,6 +74,9 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class AccountVerificationActivity : BaseActivity() {
 
+    override val showsStatusBanner: Boolean
+        get() = false
+
     private lateinit var binding: ActivityAccountVerificationBinding
 
     @Inject
