@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -130,6 +131,39 @@ class ChatViewModelReadMarkerTest {
 
         assertEquals("marker is sent", 1, queuedMarkers())
         assertEquals("never below the own message", OWN_MESSAGE_ID, storedMarkerValue)
+    }
+
+    @Test
+    fun `the ui state reports an own message on its way until it failed`() {
+        deliverNewestMessages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
+        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
+
+        deliverNewestMessages(ownMessage(-77, SendStatus.FAILED), incomingMessage(LOCAL_MARKER))
+        assertFalse(viewModel.uiState.value.hasUnconfirmedOwnMessage)
+    }
+
+    @Test
+    fun `the ui state reports an own message on its way until its server copy arrived`() {
+        deliverNewestMessages(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(LOCAL_MARKER))
+        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
+
+        deliverNewestMessages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
+        assertFalse(viewModel.uiState.value.hasUnconfirmedOwnMessage)
+    }
+
+    @Test
+    fun `a window around an old message does not clear the own message on its way from the ui state`() {
+        deliverNewestMessages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
+        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
+
+        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
+    }
+
+    // the database delivers the newest messages to the view model, as observeMessages does
+    private fun deliverNewestMessages(vararg messages: ChatMessage) {
+        ChatViewModel::class.java.getDeclaredMethod("onMessagesChanged", List::class.java)
+            .apply { isAccessible = true }
+            .invoke(viewModel, messages.toList())
     }
 
     // the chat shows a window around a quoted or searched message that is far from the newest messages;
