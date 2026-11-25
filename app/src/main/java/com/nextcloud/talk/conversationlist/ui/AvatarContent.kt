@@ -52,7 +52,12 @@ internal sealed class AvatarContent {
  * the capability fall back to themed default icons for group and public rooms, whose endpoint
  * does not exist there.
  */
-internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isDark: Boolean): AvatarContent {
+internal fun buildAvatarContent(
+    model: ConversationModel,
+    currentUser: User,
+    isDark: Boolean,
+    requestBigSize: Boolean = false
+): AvatarContent {
     val hasConversationAvatars = currentUser.hasSpreedFeatureCapability(SpreedFeatures.AVATAR.value)
     val avatarVersion = model.avatarVersion.takeIf { it.isNotEmpty() }
 
@@ -71,7 +76,7 @@ internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isD
 
         model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
             AvatarContent.Url(
-                ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, false, isDark),
+                ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, requestBigSize, isDark),
                 versioned = false
             )
 
@@ -89,7 +94,7 @@ internal fun buildAvatarContent(model: ConversationModel, currentUser: User, isD
 
         model.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE ->
             AvatarContent.Url(
-                ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, false, isDark),
+                ApiUtils.getUrlForAvatar(currentUser.baseUrl, model.name, requestBigSize, isDark),
                 versioned = false
             )
 
