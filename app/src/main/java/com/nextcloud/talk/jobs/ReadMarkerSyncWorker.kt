@@ -169,7 +169,8 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
         fun enqueue(context: Context, userId: Long, roomToken: String, lastReadMessage: Int) {
             Log.d(
                 TAG,
-                "Enqueuing read marker sync work for userId=$userId, roomToken=$roomToken, lastReadMessage=$lastReadMessage"
+                "Enqueuing read marker sync work for userId=$userId, roomToken=$roomToken, " +
+                    "lastReadMessage=$lastReadMessage"
             )
             val data = Data.Builder()
                 .putLong(KEY_INTERNAL_USER_ID, userId)

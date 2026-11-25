@@ -66,6 +66,27 @@ class ChatViewModelTest {
         assertNull(ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
     }
 
+    @Test
+    fun `marker skips system messages and is placed at the first unread regular message`() {
+        val messages = listOf(uiMessage(40), systemMessage(41), uiMessage(42), systemMessage(43))
+
+        assertEquals(42, ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
+    @Test
+    fun `no marker is placed when only system messages follow the boundary`() {
+        val messages = listOf(uiMessage(39), uiMessage(40), systemMessage(41), systemMessage(42))
+
+        assertNull(ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
+    @Test
+    fun `a read system message proves the boundary is visible`() {
+        val messages = listOf(systemMessage(40), uiMessage(41))
+
+        assertEquals(41, ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
     // holdsShare(): whether a share to the note to self that failed transiently already arrived.
     // The server stores a reference id without ever looking at it again, so it deduplicates nothing
     // and a second attempt that is not needed posts the message twice.
@@ -588,7 +609,9 @@ class ChatViewModelTest {
     }
 
     private fun systemMessageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
-        ChatViewModel.ChatItem.MessageItem(uiMessage(id).copy(content = MessageTypeContent.SystemMessage))
+        ChatViewModel.ChatItem.MessageItem(systemMessage(id))
+
+    private fun systemMessage(id: Int): ChatMessageUi = uiMessage(id).copy(content = MessageTypeContent.SystemMessage)
 
     private fun incomingMessage(id: Int): ChatMessage =
         ChatMessage().apply {

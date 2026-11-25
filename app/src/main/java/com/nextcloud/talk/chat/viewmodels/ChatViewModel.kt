@@ -2931,13 +2931,18 @@ class ChatViewModel @AssistedInject constructor(
          * (e.g. after a capped fetch of only the newest messages) and a marker latched onto it
          * would sit in the middle of the unread messages. Temporary messages carry negative ids
          * and don't count as proof.
+         *
+         * System messages are never unread: the server does not count them and the read marker is not moved past
+         * them, see [newestReportableMessageId]. When only system messages follow the boundary there is no marker.
          */
         internal fun findFirstUnreadMessageId(uiMessages: List<ChatMessageUi>, lastReadMessage: Int): Int? {
             val unreadBoundaryIsVisible = uiMessages.any { it.id in 1..lastReadMessage }
             if (!unreadBoundaryIsVisible) {
                 return null
             }
-            return uiMessages.firstOrNull { it.id > lastReadMessage }?.id
+            return uiMessages.firstOrNull {
+                it.id > lastReadMessage && it.content !is MessageTypeContent.SystemMessage
+            }?.id
         }
 
         /**
