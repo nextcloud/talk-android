@@ -17,7 +17,9 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -176,6 +178,10 @@ class ChatViewModelReadMarkerTest {
         if (name == "updateLocalReadState") {
             storedMarker(invocation.arguments[0] as Int)
             return Unit
+        }
+        // a null flow would make the collectors of the view model fail after the test, in viewModelScope
+        if (Flow::class.java.isAssignableFrom(invocation.method.returnType)) {
+            return emptyFlow<Any>()
         }
         return Mockito.RETURNS_DEFAULTS.answer(invocation)
     }

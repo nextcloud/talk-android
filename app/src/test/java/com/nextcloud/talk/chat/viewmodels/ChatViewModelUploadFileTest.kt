@@ -26,6 +26,8 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -58,7 +60,16 @@ import java.util.concurrent.atomic.AtomicInteger
 @Config(sdk = [33])
 class ChatViewModelUploadFileTest {
 
-    private val chatRepository: ChatMessageRepository = mock()
+    // a null flow would make the collectors of the view model fail after the test, in viewModelScope
+    private val chatRepository: ChatMessageRepository = mock(
+        defaultAnswer = { invocation ->
+            if (Flow::class.java.isAssignableFrom(invocation.method.returnType)) {
+                emptyFlow<Any>()
+            } else {
+                Mockito.RETURNS_DEFAULTS.answer(invocation)
+            }
+        }
+    )
     private val placeholderAdded = CountDownLatch(1)
     private val placeholderMarkedFailed = CountDownLatch(1)
     private var previousApplication: NextcloudTalkApplication? = null
