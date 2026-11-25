@@ -29,6 +29,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -70,6 +71,7 @@ class ChatViewModelUploadFileTest {
             }
         }
     )
+    private val viewModels = mutableListOf<ChatViewModel>()
     private val placeholderAdded = CountDownLatch(1)
     private val placeholderMarkedFailed = CountDownLatch(1)
     private var previousApplication: NextcloudTalkApplication? = null
@@ -105,8 +107,22 @@ class ChatViewModelUploadFileTest {
 
     @After
     fun tearDown() {
+        // the lookups of the file info outlive tests that don't wait for the placeholder; without the application
+        // they would fail after the test, which kotlinx-coroutines-test reports in the next runTest of any class
+        val deadline = System.currentTimeMillis() + TIMEOUT_MS
+        while (lookupsRunning() && System.currentTimeMillis() < deadline) {
+            Thread.sleep(POLL_MS)
+        }
         sharedApplicationField.set(null, previousApplication)
     }
+
+    // a cancelled view model may skip the lookup: it is over once its scope has finished
+    private fun lookupsRunning() =
+        SlowProvider.pendingLookups.get() > 0 &&
+            viewModels.any {
+                val job = it.viewModelScope.coroutineContext.job
+                !job.isCancelled || !job.isCompleted
+            }
 
     @Test
     fun `sending a file does not ask its provider on the main thread`() {
@@ -198,6 +214,7 @@ class ChatViewModelUploadFileTest {
             .get(this) as Map<String, UUID>
 
     private fun ChatViewModel.send(name: String, order: Int) {
+        SlowProvider.pendingLookups.incrementAndGet()
         uploadFile(
             fileUri = "content://" + AUTHORITY + "/" + name,
             isVoiceMessage = false,
@@ -229,6 +246,7 @@ class ChatViewModelUploadFileTest {
         viewModel.participantPermissions = Mockito.mock(ParticipantPermissions::class.java).also {
             whenever(it.hasChatPermission()).thenReturn(true)
         }
+        viewModels.add(viewModel)
         return viewModel
     }
 
@@ -247,7 +265,11 @@ class ChatViewModelUploadFileTest {
 
         override fun getType(uri: Uri): String {
             count(uri)
-            require(uri.lastPathSegment != "rejected.pdf") { "Unknown URL " + uri }
+            if (uri.lastPathSegment == "rejected.pdf") {
+                // the lookup ends here, without query()
+                pendingLookups.decrementAndGet()
+                throw IllegalArgumentException("Unknown URL $uri")
+            }
             return "application/pdf"
         }
 
@@ -259,6 +281,8 @@ class ChatViewModelUploadFileTest {
             sortOrder: String?
         ): Cursor {
             count(uri)
+            // the last call of a lookup that needs the application
+            pendingLookups.decrementAndGet()
             return MatrixCursor(arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)).apply {
                 addRow(arrayOf<Any?>(uri.lastPathSegment, FILE_BYTES))
             }
@@ -280,9 +304,13 @@ class ChatViewModelUploadFileTest {
             val mainThreadCalls = AtomicInteger()
             val otherCalls = AtomicInteger()
 
+            /** Files sent whose info the view model is still looking up. */
+            val pendingLookups = AtomicInteger()
+
             fun reset() {
                 mainThreadCalls.set(0)
                 otherCalls.set(0)
+                pendingLookups.set(0)
             }
         }
     }
