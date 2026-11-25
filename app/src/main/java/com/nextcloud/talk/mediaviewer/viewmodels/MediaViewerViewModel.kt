@@ -91,16 +91,31 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
         ensureCachedAround(startIndex)
     }
 
-    fun onPageSettled(globalIndex: Int) {
-        _uiState.update { it.copy(currentGlobalIndex = globalIndex) }
-        ensureCachedAround(globalIndex)
-        if (globalIndex < EDGE_LOAD_THRESHOLD) {
-            loadOlderGroups()
+    /**
+     * Makes the item of [messageId] the current one. Identifies the item by its message id, as the index of the
+     * page the pager settled on can be outdated by older items that were added in the meantime.
+     */
+    fun onPageSettled(messageId: Long) {
+        val globalIndex = _uiState.value.flattenedItems.indexOfFirst { it.messageId == messageId }
+        if (globalIndex >= 0) {
+            show(globalIndex)
         }
     }
 
     fun jumpTo(globalIndex: Int) {
-        onPageSettled(globalIndex)
+        show(globalIndex)
+    }
+
+    private fun show(globalIndex: Int) {
+        _uiState.update { it.copy(currentGlobalIndex = globalIndex) }
+        ensureCachedAround(globalIndex)
+        loadOlderGroupsIfNearOldest()
+    }
+
+    private fun loadOlderGroupsIfNearOldest() {
+        if (_uiState.value.currentGlobalIndex < EDGE_LOAD_THRESHOLD) {
+            loadOlderGroups()
+        }
     }
 
     private fun ensureCachedAround(globalIndex: Int) {
@@ -209,6 +224,8 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
                     canLoadOlder = olderPage.moreItemsExisting && olderPage.cursor != null
                 )
             }
+            // Items shown while this page loaded did not start a request, and the page may not have added enough.
+            loadOlderGroupsIfNearOldest()
         }
     }
 

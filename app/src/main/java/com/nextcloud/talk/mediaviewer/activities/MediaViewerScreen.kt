@@ -94,7 +94,7 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.ui.LocalImageAuthHeader
 import com.nextcloud.talk.ui.withAuthHeader
 import java.io.File
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
 private const val TOOLBAR_ALPHA = 0.6f
@@ -129,9 +129,17 @@ fun MediaViewerScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.isScrollInProgress to pagerState.settledPage }
-            .filter { (isScrolling, _) -> !isScrolling }
-            .collect { (_, page) -> viewModel.onPageSettled(page) }
+        // The key comes from the same layout pass as settledPage. An index alone can point to another item for a
+        // moment, when older items were added to the list but not yet laid out by the pager.
+        snapshotFlow {
+            if (pagerState.isScrollInProgress) {
+                null
+            } else {
+                pagerState.layoutInfo.visiblePagesInfo.firstOrNull { it.index == pagerState.settledPage }?.key
+            }
+        }
+            .filterIsInstance<Long>()
+            .collect { messageId -> viewModel.onPageSettled(messageId) }
     }
 
     val exoPlayer = rememberViewerExoPlayer()
