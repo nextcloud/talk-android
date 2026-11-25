@@ -240,7 +240,8 @@ fun ChatView(
         }
         hadUnreadMarker = hasUnreadMarker
 
-        val newestId = state.chatItems.firstNotNullOfOrNull { it.messageOrNull()?.id }
+        val newestMessage = state.chatItems.firstNotNullOfOrNull { it.messageOrNull() }
+        val newestId = newestMessage?.id
         val previousNewestId = lastNewestIdRef.value
 
         if (previousNewestId == null) {
@@ -251,9 +252,13 @@ fun ChatView(
         val isNearBottom = listState.firstVisibleItemIndex <= 2
         val hasNewMessage = newestId != previousNewestId &&
             state.chatMode == ChatViewModel.ChatMode.DEFAULT_MODE
+        // Messages being sent from here, e.g. a forward of several, are added below the visible ones while the
+        // chat opens, so the list is not near the bottom any more; it follows them anyway.
+        val isOwnMessageBeingSent = newestMessage?.incoming == false &&
+            newestMessage.statusIcon == MessageStatusIcon.SENDING
 
         if (hasNewMessage) {
-            if (isNearBottom) {
+            if (isNearBottom || isOwnMessageBeingSent) {
                 listState.animateScrollToItem(0)
                 unreadCount = 0
             } else {

@@ -1319,6 +1319,10 @@ class ChatActivity :
     /** Sends every forwarded message on its own, in chat order; the send queue keeps that order. */
     private fun sendForwardedMessages() {
         val user = conversationUser ?: return
+        if (forwardedTexts.isNotEmpty()) {
+            // like a typed message: the own messages don't get the unread marker
+            chatViewModel.onMessageSent()
+        }
         forwardedTexts.forEach { text ->
             messageInputViewModel.sendChatMessage(
                 userId = user.id!!,

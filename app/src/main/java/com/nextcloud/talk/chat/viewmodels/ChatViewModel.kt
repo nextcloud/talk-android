@@ -425,27 +425,6 @@ class ChatViewModel @AssistedInject constructor(
     private val referenceIdSendSequence = mutableMapOf<String, Long>()
     private var nextSendSequenceValue = 0L
 
-    // Corrects the relative order of messages we know the local send sequence for (see
-    // referenceIdSendSequence above), leaving every other message's position untouched - so this
-    // never reorders anything relative to messages with no known hint (other users' messages,
-    // messages sent before this screen session, older history, ...), only fixes the relative order
-    // among messages from the SAME batch while some are still catching up on syncing. Applied the
-    // same way as applyMessageGrouping()/applySystemMessageGrouping() above it: in place, on the raw
-    // ChatMessage list, before it's mapped to ChatMessageUi.
-    @Suppress("Detekt.ReturnCount")
-    private fun reorderKnownSendSequence(messages: MutableList<ChatMessage>) {
-        if (referenceIdSendSequence.isEmpty()) return
-
-        val hintedIndices = messages.indices.filter { referenceIdSendSequence.containsKey(messages[it].referenceId) }
-        if (hintedIndices.size < 2) return
-
-        val hintedItems = hintedIndices.map { messages[it] }
-        val sortedItems = hintedItems.sortedBy { referenceIdSendSequence[it.referenceId] }
-        if (sortedItems == hintedItems) return
-
-        hintedIndices.forEachIndexed { position, index -> messages[index] = sortedItems[position] }
-    }
-
     fun cancelUpload(referenceId: String) {
         // uploadReferenceToWorkId is session-local (never persisted) - after an app restart it's
         // empty even for an upload that's still stuck showing as "uploading" from a previous
@@ -1325,7 +1304,11 @@ class ChatViewModel @AssistedInject constructor(
                 val authHeader = ApiUtils.getCredentials(user.username, user.token)
                 applyMessageGrouping(messages)
                 applySystemMessageGrouping(messages)
-                reorderKnownSendSequence(messages)
+                synchronized(referenceIdSendSequence) {
+                    nextSendSequenceValue =
+                        registerPendingSendSequence(messages, referenceIdSendSequence, nextSendSequenceValue)
+                    reorderKnownSendSequence(messages, referenceIdSendSequence)
+                }
                 val uiMessages = messages.map { message ->
                     val parent: ChatMessage? = combinedMap[message.parentMessageId]
                     message.toUiModel(
@@ -2531,7 +2514,9 @@ class ChatViewModel @AssistedInject constructor(
 
         val referenceId = SendMessageUtils().generateGroupedReferenceId(uploadId ?: UUID.randomUUID().toString(), order)
         metaDataMap["referenceId"] = referenceId
-        referenceIdSendSequence[referenceId] = nextSendSequenceValue++
+        synchronized(referenceIdSendSequence) {
+            referenceIdSendSequence[referenceId] = nextSendSequenceValue++
+        }
 
         val metaData = Gson().toJson(metaDataMap)
 
@@ -2866,6 +2851,48 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     companion object {
+        /**
+         * Gives the temporary messages of [messages] not in [sequence] yet the send sequence values from [next] on,
+         * in the order they were added (their ids grow in send order, see OfflineFirstChatRepository), and returns
+         * the next free value. The server copy of a message sent earlier has the server timestamp and a positive id,
+         * which sort it below the messages of the same batch still pending until those are sent as well; with the
+         * sequence it keeps its place, as with uploads.
+         */
+        internal fun registerPendingSendSequence(
+            messages: List<ChatMessage>,
+            sequence: MutableMap<String, Long>,
+            next: Long
+        ): Long {
+            var value = next
+            messages
+                .filter { it.isTemporary && !it.referenceId.isNullOrEmpty() }
+                .filterNot { sequence.containsKey(it.referenceId) }
+                .sortedWith(compareBy({ it.timestamp }, { it.jsonMessageId }))
+                .forEach { sequence[it.referenceId!!] = value++ }
+            return value
+        }
+
+        // Corrects the relative order of messages we know the local send sequence for (see
+        // referenceIdSendSequence), leaving every other message's position untouched - so this
+        // never reorders anything relative to messages with no known hint (other users' messages,
+        // messages sent before this screen session, older history, ...), only fixes the relative order
+        // among messages from the SAME batch while some are still catching up on syncing. Applied the
+        // same way as applyMessageGrouping()/applySystemMessageGrouping(): in place, on the raw
+        // ChatMessage list, before it's mapped to ChatMessageUi.
+        @Suppress("Detekt.ReturnCount")
+        internal fun reorderKnownSendSequence(messages: MutableList<ChatMessage>, sequence: Map<String, Long>) {
+            if (sequence.isEmpty()) return
+
+            val hintedIndices = messages.indices.filter { sequence.containsKey(messages[it].referenceId) }
+            if (hintedIndices.size < 2) return
+
+            val hintedItems = hintedIndices.map { messages[it] }
+            val sortedItems = hintedItems.sortedBy { sequence[it.referenceId] }
+            if (sortedItems == hintedItems) return
+
+            hintedIndices.forEachIndexed { position, index -> messages[index] = sortedItems[position] }
+        }
+
         private val TAG = ChatViewModel::class.java.simpleName
         private const val MILLIS_PER_SECOND = 1000L
 
