@@ -464,7 +464,7 @@ class ConversationListUpdater @Inject constructor(
      *
      * Unlike [preservePendingLocalState], this path doesn't merge against a server response, so a
      * pending read marker can't be guarded the same way — but the marker is still consulted as the
-     * unread count's baseline: a read marker registered here (e.g. from leaving the chat) may not
+     * unread count's baseline: a read marker registered here (e.g. from the open chat) may not
      * have committed its own [ConversationsDao.updateReadState] write to this row yet by the time a
      * concurrently running catch-up reads [ConversationEntity.lastReadMessage], which would
      * otherwise derive the count from a stale, not-yet-advanced marker and regress an

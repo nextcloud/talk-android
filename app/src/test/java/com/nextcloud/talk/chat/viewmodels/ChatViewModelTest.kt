@@ -441,7 +441,7 @@ class ChatViewModelTest {
 
     private fun readMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
         ChatViewModel.readMarkerToSend(
-            localLastReadMessage = local,
+            messageId = local,
             conversationLastReadMessage = conversation,
             newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages),
             hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(messages)
@@ -465,7 +465,7 @@ class ChatViewModelTest {
 
     private fun localReadMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
         ChatViewModel.localReadMarker(
-            localLastReadMessage = local,
+            messageId = local,
             conversationLastReadMessage = conversation,
             newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages)
         )
@@ -540,6 +540,68 @@ class ChatViewModelTest {
 
         assertEquals(2624, ChatViewModel.newestOwnMessageId(messages))
     }
+
+    // newestReportableMessageId(): the message the read marker is moved to while the newest messages are
+    // on screen. Items run newest first, like the chat list.
+
+    @Test
+    fun `newest reportable message is the newest message`() {
+        val items = listOf(messageItem(42), messageItem(41))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `system messages at the end are not reportable`() {
+        val items = listOf(systemMessageItem(44), systemMessageItem(43), messageItem(42), messageItem(41))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `temporary messages are not reportable`() {
+        val items = listOf(messageItem(-77), messageItem(0), messageItem(42))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `uploading files of a media group are not reportable`() {
+        val group = ChatViewModel.ChatItem.MediaGroupItem(
+            listOf(
+                mediaMessage(42, referenceId = "batch"),
+                mediaMessage(-5, referenceId = "batch", isTemporary = true)
+            )
+        )
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(listOf(group, messageItem(41))))
+    }
+
+    @Test
+    fun `items without messages are skipped`() {
+        val items = listOf(
+            ChatViewModel.ChatItem.UnreadMessagesMarkerItem(LocalDate.of(2026, 8, 12)),
+            ChatViewModel.ChatItem.DateHeaderItem(LocalDate.of(2026, 8, 12)),
+            messageItem(42)
+        )
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `empty list has no reportable message`() {
+        assertNull(ChatViewModel.newestReportableMessageId(emptyList()))
+    }
+
+    @Test
+    fun `only system messages have no reportable message`() {
+        val items = listOf(systemMessageItem(44), systemMessageItem(43))
+
+        assertNull(ChatViewModel.newestReportableMessageId(items))
+    }
+
+    private fun systemMessageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(uiMessage(id).copy(content = MessageTypeContent.SystemMessage))
 
     private fun incomingMessage(id: Int): ChatMessage =
         ChatMessage().apply {

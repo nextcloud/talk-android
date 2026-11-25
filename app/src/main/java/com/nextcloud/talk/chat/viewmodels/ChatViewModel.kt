@@ -363,11 +363,9 @@ class ChatViewModel @AssistedInject constructor(
     private val _noMoreSearchResults = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val noMoreSearchResults: MutableSharedFlow<Unit> = _noMoreSearchResults
 
-    private var localLastReadMessage: Int = 0
-
     // Newest message list from the database, updated before the throttled rebuild of the UI items. It is the
     // source of truth for the user's own sends (temporary copy with its send status, then the accepted
-    // message) when the read marker is decided, see updateRemoteLastReadMessageIfNeeded.
+    // message) when the read marker is decided, see reportReadMarker.
     @Volatile
     private var latestMessages: List<ChatMessage> = emptyList()
 
@@ -1586,10 +1584,6 @@ class ChatViewModel @AssistedInject constructor(
                 chatRepository.updateConversation(conversation)
 
                 getCapabilities(user, chatRoomToken, conversation)
-
-                advanceLocalLastReadMessageIfNeeded(
-                    conversation.lastReadMessage
-                )
             }
             .launchIn(viewModelScope)
     }
@@ -2083,49 +2077,35 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     // Runs on the background dispatcher of the rebuild pipeline (flowOn in observeMessages): it only
-    // publishes the immutable list through a volatile field. localLastReadMessage is written on the main
-    // thread only, so the own message is combined with it when the marker is decided (readMarkerToSend).
+    // publishes the immutable list through a volatile field. The own message is combined with the reported
+    // message on the main thread when the marker is decided (readMarkerToSend).
     //
     // Only the list of the newest messages counts. A window around a quoted or searched message (search and
     // old chat block mode) can lie far from them and miss the own message just sent, which must still be
-    // known when the chat is left from there.
+    // known when the read marker is decided.
     private fun onMessagesChanged(messages: List<ChatMessage>) {
         if (chatMode.value == ChatMode.DEFAULT_MODE || contextAnchorMessageId.value == null) {
             latestMessages = messages
         }
     }
 
-    fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
-        Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, messageId: $messageId")
-        Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
-
-        if (keepMarkedAsUnread) {
-            Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, skipped: the chat was marked as unread")
-            return
-        }
-
-        if (localLastReadMessage < messageId && -1 < messageId) {
-            Log.d(TAG, "advanceLocalLastReadMessageIfNeeded, setting localLastReadMessage to $messageId")
-            localLastReadMessage = messageId
-        }
-    }
-
     /**
-     * Please use with caution to not spam the server
+     * Marks the chat as read up to [messageId], the newest message the user has seen. Nothing happens when the
+     * chat was marked as unread, or when the conversation is already read that far.
      */
-    fun updateRemoteLastReadMessageIfNeeded() {
-        Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, localLastReadMessage: $localLastReadMessage")
+    fun reportReadMarker(messageId: Int) {
+        Log.d(TAG, "reportReadMarker, messageId: $messageId")
         if (keepMarkedAsUnread) {
-            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, skipped: the chat was marked as unread")
+            Log.d(TAG, "reportReadMarker, skipped: the chat was marked as unread")
             return
         }
         val conversationLastReadMessage = _uiState.value.conversation?.lastReadMessage ?: return
-        Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, conversation.lastReadMessage: $conversationLastReadMessage")
+        Log.d(TAG, "reportReadMarker, conversation.lastReadMessage: $conversationLastReadMessage")
 
         val messages = latestMessages
         val newestOwnMessageId = newestOwnMessageId(messages)
         val marker = localReadMarker(
-            localLastReadMessage = localLastReadMessage,
+            messageId = messageId,
             conversationLastReadMessage = conversationLastReadMessage,
             newestOwnMessageId = newestOwnMessageId
         )
@@ -2133,12 +2113,12 @@ class ChatViewModel @AssistedInject constructor(
             // The local read state is always written; only the server request waits for an own message
             // that is still on its way (offline queue included), see readMarkerToSend.
             val sendToServer = readMarkerToSend(
-                localLastReadMessage = localLastReadMessage,
+                messageId = messageId,
                 conversationLastReadMessage = conversationLastReadMessage,
                 newestOwnMessageId = newestOwnMessageId,
                 hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(messages)
             ) != null
-            Log.d(TAG, "updateRemoteLastReadMessageIfNeeded, setChatReadMessage, sendToServer: $sendToServer")
+            Log.d(TAG, "reportReadMarker, setChatReadMessage, sendToServer: $sendToServer")
 
             setChatReadMessage(marker, sendToServer)
         }
@@ -2153,8 +2133,8 @@ class ChatViewModel @AssistedInject constructor(
      * instead of leaving the client diverged.
      *
      * [markPendingReadMarker] runs synchronously, before anything is launched, so the marker is
-     * armed the instant this returns: leaving the chat commonly races the conversation list's own
-     * resume-triggered sync, and that race is only guarded correctly if the pending marker already
+     * armed the instant this returns: the marker commonly races a room list sync, e.g. the conversation
+     * list's own resume-triggered sync, and that race is only guarded correctly if the pending marker already
      * exists by the time the sync's response is merged. [updateLocalReadState] itself does two
      * suspending database reads before writing - registering the marker only there, inside a
      * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
@@ -2163,12 +2143,11 @@ class ChatViewModel @AssistedInject constructor(
     /**
      * Marks the chat as unread from [firstUnreadMessage] on: the read marker moves back to the message
      * before it, the conversation entry is left unread until the server reports its own state, and the
-     * chat stops advancing the marker on its own for the rest of this visit - otherwise scrolling, or
-     * simply leaving the chat, would immediately mark everything read again.
+     * chat stops advancing the marker on its own for the rest of this visit - otherwise staying at the
+     * newest messages would immediately mark everything read again.
      */
     fun markChatAsUnread(lastReadMessage: Int) {
         keepMarkedAsUnread = true
-        localLastReadMessage = lastReadMessage
         resetUnreadMarkerCache()
         _uiState.update { it.copy(markedAsUnreadByUser = true) }
 
@@ -2904,12 +2883,12 @@ class ChatViewModel @AssistedInject constructor(
          * single check mark for the other participants.
          */
         internal fun readMarkerToSend(
-            localLastReadMessage: Int,
+            messageId: Int,
             conversationLastReadMessage: Int,
             newestOwnMessageId: Int?,
             hasUnconfirmedOwnMessage: Boolean
         ): Int? =
-            localReadMarker(localLastReadMessage, conversationLastReadMessage, newestOwnMessageId)
+            localReadMarker(messageId, conversationLastReadMessage, newestOwnMessageId)
                 .takeUnless { hasUnconfirmedOwnMessage }
 
         /**
@@ -2917,11 +2896,8 @@ class ChatViewModel @AssistedInject constructor(
          * Unlike [readMarkerToSend] it does not wait for an own message that is on its way: the local state
          * is not sent anywhere, so the conversation list loses its unread count right away, also offline.
          */
-        internal fun localReadMarker(
-            localLastReadMessage: Int,
-            conversationLastReadMessage: Int,
-            newestOwnMessageId: Int?
-        ): Int? = maxOf(localLastReadMessage, newestOwnMessageId ?: 0).takeIf { it > conversationLastReadMessage }
+        internal fun localReadMarker(messageId: Int, conversationLastReadMessage: Int, newestOwnMessageId: Int?): Int? =
+            maxOf(messageId, newestOwnMessageId ?: 0).takeIf { it > conversationLastReadMessage }
 
         /**
          * Ids of the messages a delete of [messageId] applies to: every already-uploaded message of the
@@ -2973,6 +2949,23 @@ class ChatViewModel @AssistedInject constructor(
             }
             return uiMessages.firstOrNull { it.id > lastReadMessage }?.id
         }
+
+        /**
+         * Returns the id of the newest message in [items] that can be reported as read, or null when there is
+         * none. [items] run newest first. System messages are skipped, the server does not count them as unread.
+         * Temporary messages are skipped, they have no server id yet.
+         */
+        internal fun newestReportableMessageId(items: List<ChatItem>): Int? =
+            items.asSequence()
+                .flatMap { item ->
+                    when (item) {
+                        is ChatItem.MessageItem -> sequenceOf(item.uiMessage)
+                        is ChatItem.MediaGroupItem -> item.messages.asReversed().asSequence()
+                        else -> emptySequence()
+                    }
+                }
+                .firstOrNull { it.id > 0 && it.content !is MessageTypeContent.SystemMessage }
+                ?.id
 
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
         const val HTTP_CODE_OK: Int = 200

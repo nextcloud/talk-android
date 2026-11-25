@@ -93,6 +93,7 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
                 user.baseUrl!!,
                 roomToken
             )
+            Log.d(TAG, "Sending read marker $lastReadMessage for room $roomToken")
             val httpResponse = chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
                 .blockingSingle()
             check(httpResponse.isSuccessful) { "HTTP ${httpResponse.code()}" }
@@ -166,6 +167,10 @@ class ReadMarkerSyncWorker(context: Context, workerParams: WorkerParameters) :
             response.headers()[LAST_COMMON_READ_HEADER]?.toIntOrNull()
 
         fun enqueue(context: Context, userId: Long, roomToken: String, lastReadMessage: Int) {
+            Log.d(
+                TAG,
+                "Enqueuing read marker sync work for userId=$userId, roomToken=$roomToken, lastReadMessage=$lastReadMessage"
+            )
             val data = Data.Builder()
                 .putLong(KEY_INTERNAL_USER_ID, userId)
                 .putString(KEY_ROOM_TOKEN, roomToken)
