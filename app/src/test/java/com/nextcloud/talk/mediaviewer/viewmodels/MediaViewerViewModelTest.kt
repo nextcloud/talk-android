@@ -67,6 +67,18 @@ class MediaViewerViewModelTest {
     }
 
     @Test
+    fun `a page with only shown items moves on to the next page`() {
+        olderPage(cursor = 10, messageIds = listOf(10, 11), lastSeenId = 9, moreItemsExisting = true)
+        olderPage(cursor = 9, messageIds = listOf(5, 6), lastSeenId = 5, moreItemsExisting = false)
+        viewModel.initialize(USER, ROOM_TOKEN, items(10L..12L), startMessageId = 12)
+
+        viewModel.onPageSettled(12)
+
+        assertEquals(listOf(5L, 6L, 10L, 11L, 12L), shownMessageIds())
+        assertEquals(12L, viewModel.uiState.value.currentItem?.messageId)
+    }
+
+    @Test
     fun `an item that settled while older items were added stays the current one`() {
         val page = CompletableDeferred<SharedItems>()
         wheneverBlocking { repository.media(any(), eq(SharedItemType.MEDIA), eq(10)) }

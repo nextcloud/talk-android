@@ -209,19 +209,22 @@ class MediaViewerViewModel @Inject constructor(private val sharedItemsRepository
                 .distinctBy { it.messageId }
                 .filterNot { it.messageId in knownMessageIds }
 
-            if (olderItems.isEmpty()) {
-                _uiState.update { it.copy(loadingOlder = false, canLoadOlder = false) }
-                return@launch
-            }
-
+            // A page whose items are all shown already still moves the cursor on; only the server ends the paging.
             olderPagesCursor = olderPage.cursor
             _uiState.update { current ->
-                val combined = (olderItems + current.flattenedItems).toMediaViewerGroups()
+                val groups = if (olderItems.isEmpty()) {
+                    current.groups
+                } else {
+                    (olderItems + current.flattenedItems).toMediaViewerGroups()
+                }
                 current.copy(
-                    groups = combined,
+                    groups = groups,
                     currentGlobalIndex = current.currentGlobalIndex + olderItems.size,
                     loadingOlder = false,
-                    canLoadOlder = olderPage.moreItemsExisting && olderPage.cursor != null
+                    canLoadOlder = olderPage.items.isNotEmpty() &&
+                        olderPage.moreItemsExisting &&
+                        olderPage.cursor != null &&
+                        olderPage.cursor != cursor
                 )
             }
             // Items shown while this page loaded did not start a request, and the page may not have added enough.
