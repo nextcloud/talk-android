@@ -84,6 +84,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     @Volatile
     private var requestedRoomToken: String? = null
     private var currentNormalBackendSession: String? = null
+
+    // The room session of the confirmed room (the "room" message or an accepted "already_joined"), empty when it is
+    // unknown (e.g. a fresh session cleared it before the join was answered). The repeated join of the confirmed
+    // room is a duplicate only when it carries the same room session: the server replaces the room session of the
+    // room with the one of the join it answers "already_joined" to, so a join with a new room session is a real
+    // join (e.g. the call entering the room the chat is in) and still needs its confirmation.
+    private var confirmedRoomSession: String? = null
     private var currentFederation: FederationSettingsDto? = null
     private var reconnecting = false
     private val roomSessions = RoomSessionRegistry()
@@ -306,11 +313,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             val alreadyInRoom = roomWebSocketMessage.roomId == currentRoomToken
             roomSessions.onRoomResponse(roomWebSocketMessage.roomId)
             currentRoomToken = roomWebSocketMessage.roomId
+            confirmedRoomSession = currentNormalBackendSession
             if (TextUtils.isEmpty(currentRoomToken)) {
                 // The server took the client out of the room, so the keys of that room go with it, like on iOS.
                 // Clear the requested room too, otherwise a later resume would re-send a join for a room the
                 // server deliberately removed the client from.
                 requestedRoomToken = null
+                confirmedRoomSession = null
                 callEncryptionLifecycle.close()
             } else if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null) {
                 callEncryptionLifecycle.roomJoined(sessionId, hasMCU, alreadyInRoom, ::sendEncryptionMessage)
@@ -340,6 +349,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         resumeId = ""
         currentRoomToken = ""
         currentNormalBackendSession = ""
+        confirmedRoomSession = null
         roomSessions.reset()
         restartWebSocket()
     }
@@ -369,6 +379,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 requestedRoomToken = null
                 currentRoomToken = ""
                 currentNormalBackendSession = ""
+                confirmedRoomSession = null
                 roomSessions.reset()
                 eventBus!!.post(WebSocketCommunicationEvent("roomJoinFailed", HashMap()))
             } else if ("already_joined" == message.code) {
@@ -378,12 +389,14 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     }
 
     /**
-     * The server answers a join of the room the session is already in (with the same room session) with
-     * "already_joined" instead of a "room" message. When the room was not confirmed yet, the answer to the original
-     * join was lost with the previous socket and the join was repeated on the resumed session, so the error is the
-     * confirmation the caller still waits for. When the room is already confirmed, "roomJoined" was sent for it
-     * already: the repeated join is a duplicate request (e.g. the call joining again after a new session), and
-     * sending "roomJoined" again would start the call twice.
+     * The server answers a join of the room the session is already in with "already_joined" instead of a "room"
+     * message, and takes the room session of the request over for the room. When the room was not confirmed yet,
+     * the answer to the original join was lost with the previous socket and the join was repeated on the resumed
+     * session, so the error is the confirmation the caller still waits for. When the room is already confirmed, the
+     * repeated join is a duplicate only when it carries the room session of the confirmation: then "roomJoined" was
+     * sent for it already and sending it again would start the call twice. A join with a new room session (e.g. the
+     * call entering the room the chat is in, with the room session the call got itself) is not a duplicate: the
+     * server has replaced the room session, so the confirmation of that join is sent to the waiting caller.
      */
     private fun processAlreadyJoined(confirmedRoomToken: String?) {
         val roomToken = confirmedRoomToken ?: requestedRoomToken
@@ -391,12 +404,15 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             Log.d(TAG, "Ignoring already_joined for room '$roomToken' which is not the requested one")
             return
         }
-        if (roomToken == currentRoomToken) {
+        if (roomToken == currentRoomToken &&
+            (confirmedRoomSession.isNullOrEmpty() || confirmedRoomSession == currentNormalBackendSession)
+        ) {
             Log.d(TAG, "Ignoring already_joined for room '$roomToken' which is confirmed already")
             return
         }
         roomSessions.onRoomResponse(roomToken)
         currentRoomToken = roomToken
+        confirmedRoomSession = currentNormalBackendSession
         callEncryptionLifecycle.roomJoined(sessionId, hasMCU, false, ::sendEncryptionMessage)
         sendRoomJoinedEvent()
     }
@@ -439,6 +455,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         } else {
             currentRoomToken = ""
             currentNormalBackendSession = ""
+            confirmedRoomSession = null
             roomSessions.reset()
         }
         if (!TextUtils.isEmpty(currentRoomToken)) {
@@ -532,6 +549,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "sending 'leave room' via websocket")
                 requestedRoomToken = null
                 currentNormalBackendSession = ""
+                confirmedRoomSession = null
                 currentFederation = null
                 roomSessions.reset()
                 callEncryptionLifecycle.close()

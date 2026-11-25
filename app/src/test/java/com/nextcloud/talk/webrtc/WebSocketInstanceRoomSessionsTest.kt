@@ -312,6 +312,23 @@ class WebSocketInstanceRoomSessionsTest {
     }
 
     @Test
+    fun alreadyJoinedAnswerForAJoinWithANewRoomSessionConfirmsTheJoinForTheWaitingCall() {
+        val instance = createConnectedInstance()
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
+        waitUntil("sessions of room A") { instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A) }
+        roomJoinedEvents.clear()
+
+        // The chat is in the room and confirmed, then the call joins it with the room session of the call. The
+        // server has taken that room session over for the room, so this join is not a duplicate of the confirmed
+        // one: the waiting call must be told that the room is joined, otherwise it stays stuck.
+        instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-call")
+        waitUntil("second join answered") { serverLog.count { it == "c1:already_joined" } == 1 }
+        waitUntil("room A joined for the call") { roomJoinedEvents == listOf(ROOM_A) }
+
+        assertTrue(instance.isSessionInRoom(sessionOf(ROOM_A), ROOM_A))
+    }
+
+    @Test
     fun alreadyJoinedAnswerKeepsTheSessions() {
         val instance = createConnectedInstance()
         instance.joinRoomWithRoomTokenAndSession(ROOM_A, "room-session-a")
