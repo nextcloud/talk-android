@@ -25,6 +25,7 @@ import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 
@@ -82,6 +83,20 @@ class BrowserLoginActivityViewModelTest {
 
         verifyBlocking(repository, never()) { pollLogin(any()) }
         assertFalse(viewModel.isLoginPageOpened)
+    }
+
+    @Test
+    fun `returning to the app polls right away once the login page is opened`() {
+        wheneverBlocking { repository.startLoginFlow(any(), any(), anyOrNull()) }.thenReturn(loginResponse)
+        wheneverBlocking { repository.pollLogin(any()) }.thenReturn(null)
+
+        viewModel.startWebBrowserLogin(BASE_URL)
+        viewModel.pollNow()
+        verify(repository, never()).pollNow()
+
+        viewModel.onLoginPageOpened()
+        viewModel.pollNow()
+        verify(repository, times(1)).pollNow()
     }
 
     @Test
