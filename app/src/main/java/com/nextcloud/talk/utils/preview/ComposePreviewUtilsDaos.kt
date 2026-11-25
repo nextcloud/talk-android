@@ -124,6 +124,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         sendStatus: SendStatus
     ): Int = 0
 
+    override suspend fun resetFailedTempMessageToPending(internalConversationId: String, referenceId: String): Int = 0
+
     override fun updateMessageText(internalConversationId: String, messageId: Long, message: String): Int = 0
 
     override fun updateChatMessage(message: ChatMessageEntity) {

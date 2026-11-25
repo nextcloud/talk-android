@@ -229,7 +229,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 
-    suspend fun sendUnsentChatMessages(credentials: String, url: String)
+    /**
+     * Prepares the unsent temporary text messages of this conversation to be handed to
+     * SendMessageWorker again: FAILED messages are set back to PENDING. Does not itself send anything.
+     * Returns the reference ids of the PENDING messages, oldest first.
+     */
+    suspend fun markUnsentMessagesForResend(): List<String>
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 

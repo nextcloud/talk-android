@@ -22,7 +22,6 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.logger.Logger
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
@@ -1021,30 +1020,33 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
+    override suspend fun markUnsentMessagesForResend(): List<String> {
         val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
         // File-upload placeholders are also temporary messages, but they must never be resent as plain
         // text here: their "message" field is just the "{file}" sentinel, and a failed/interrupted upload
         // needs a real re-upload, not a bogus text message reusing its referenceId.
-        val unsentTextMessages = tempMessages.filterNot { it.messageParameters?.containsKey("file") == true }
-        unsentTextMessages.sortedWith(compareBy({ it.timestamp }, { it.id })).onEach {
-            sendChatMessage(
-                credentials,
-                url,
-                it.message,
-                it.actorDisplayName,
-                it.parentMessageId?.toIntOrZero() ?: 0,
-                it.silent,
-                it.referenceId.orEmpty(),
-                null
-            ).collect { result ->
-                if (result.isSuccess) {
-                    Log.d(TAG, "Sent temp message")
-                } else {
-                    Log.e(TAG, "Failed to send temp message")
+        val unsentTextMessages = tempMessages
+            .filterNot { it.messageParameters?.containsKey("file") == true }
+            .filterNot { it.referenceId.isNullOrEmpty() }
+            // A later temporary message gets a larger id, so messages of the same second keep their order.
+            .sortedWith(compareBy({ it.timestamp }, { it.id }))
+
+        return unsentTextMessages.filter { message ->
+            when (message.sendStatus) {
+                SendStatus.PENDING -> true
+                SendStatus.FAILED -> {
+                    val reset = chatDao.resetFailedTempMessageToPending(
+                        internalConversationId,
+                        message.referenceId!!
+                    ) > 0
+                    if (reset) {
+                        _updateMessageFlow.emit(message.copy(sendStatus = SendStatus.PENDING).toDomainModel())
+                    }
+                    reset
                 }
+                else -> false
             }
-        }
+        }.map { it.referenceId!! }
     }
 
     override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
