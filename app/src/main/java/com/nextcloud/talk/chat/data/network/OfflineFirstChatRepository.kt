@@ -848,6 +848,16 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
+    override fun getUploadPlaceholders(internalConversationId: String): Flow<Map<String, String>> =
+        chatDao.getTempMessagesForConversation(internalConversationId).map { entities ->
+            entities.mapNotNull { entity ->
+                if (entity.sendStatus == SendStatus.FAILED) return@mapNotNull null
+                val referenceId = entity.referenceId ?: return@mapNotNull null
+                val localFileUri = entity.messageParameters?.get("file")?.get("path") ?: return@mapNotNull null
+                referenceId to localFileUri
+            }.toMap()
+        }
+
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
