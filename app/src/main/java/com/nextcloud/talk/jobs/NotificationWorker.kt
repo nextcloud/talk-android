@@ -338,22 +338,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 pendingIntentFlags
             )
 
-            telecomManager.addIncomingCall(
-                displayName = conversation.displayName.ifEmpty {
-                    applicationContext.getString(R.string.nc_app_product_name)
-                },
-                roomToken = pushMessage.id ?: "",
-                isVideo = isVideoCall,
-                onAnswerCall = { openCallAnsweredViaTelecom(primaryAnswerIntent, callNotificationId, callTitle) },
-                onRejectCall = {
-                    try {
-                        declinePendingIntent.send()
-                    } catch (e: PendingIntent.CanceledException) {
-                        Log.e(TAG, "Decline pending intent canceled", e)
-                    }
-                }
-            )
-
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
             val notificationChannelId = NotificationUtils.getCallsNotificationChannelId(applicationContext)
             val uri = user.baseUrl!!.toUri()
@@ -398,6 +382,24 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             notification.flags = notification.flags or Notification.FLAG_INSISTENT
 
             sendNotification(pushMessage.timestamp.toInt(), notification)
+
+            // Only after the ringing notification is posted: an answer or rejection via Telecom (headset, watch, car)
+            // replaces or cancels it, which must not be overtaken by posting it, e.g. while the avatar was loading
+            telecomManager.addIncomingCall(
+                displayName = conversation.displayName.ifEmpty {
+                    applicationContext.getString(R.string.nc_app_product_name)
+                },
+                roomToken = pushMessage.id ?: "",
+                isVideo = isVideoCall,
+                onAnswerCall = { openCallAnsweredViaTelecom(primaryAnswerIntent, callNotificationId, callTitle) },
+                onRejectCall = {
+                    try {
+                        declinePendingIntent.send()
+                    } catch (e: PendingIntent.CanceledException) {
+                        Log.e(TAG, "Decline pending intent canceled", e)
+                    }
+                }
+            )
 
             checkIfCallIsActive(conversation)
         }
