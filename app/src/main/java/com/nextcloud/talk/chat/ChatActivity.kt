@@ -3869,6 +3869,9 @@ class ChatActivity :
             ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
+        if (!::spreedCapabilities.isInitialized) {
+            return false
+        }
         val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
 
         val isOlderThanSixHours = message
