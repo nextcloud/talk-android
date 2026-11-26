@@ -177,25 +177,6 @@ class ConversationListUpdater @Inject constructor(
     }
 
     /**
-     * Lowers only the unread count of the conversation entry to what lies above [lastReadMessage]. The stored
-     * read marker stays and no pending marker is registered: the marker has not been sent, so the server
-     * state remains the authority and a room list sync may restore it. Used while an own message is on
-     * its way and the marker has to wait for it.
-     */
-    suspend fun updateLocalUnreadCountOnly(target: ChatMessageSyncer.SyncTarget, lastReadMessage: Int) {
-        val conversation =
-            conversationsDao.getConversationForUser(target.accountId, target.roomToken).first() ?: return
-        val unreadMessages = chatDao.countMessagesNewerThan(
-            internalConversationId = target.internalConversationId,
-            messageId = lastReadMessage.toLong(),
-            excludedActorId = target.user.userId!!
-        )
-        // only the count: the marker read above must not be written back over one stored while counting
-        conversationsDao.updateUnreadMessages(conversation.internalId, unreadMessages)
-        Log.d(TAG, "Local unread count for room ${target.roomToken}: unread=$unreadMessages (marker not sent yet)")
-    }
-
-    /**
      * Stores the last message read by all participants, which the server reports in the response to a
      * read marker, so that the read check marks of the user's own messages are up to date without a
      * further request.

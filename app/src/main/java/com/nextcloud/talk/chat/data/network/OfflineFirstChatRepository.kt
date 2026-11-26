@@ -438,10 +438,6 @@ class OfflineFirstChatRepository @Inject constructor(
         conversationListUpdater.updateLocalReadState(syncTarget, lastReadMessage)
     }
 
-    override suspend fun updateLocalUnreadCountOnly(lastReadMessage: Int) {
-        conversationListUpdater.updateLocalUnreadCountOnly(syncTarget, lastReadMessage)
-    }
-
     override suspend fun updateLocalUnreadState(lastReadMessage: Int) {
         conversationListUpdater.updateLocalUnreadState(syncTarget, lastReadMessage)
     }

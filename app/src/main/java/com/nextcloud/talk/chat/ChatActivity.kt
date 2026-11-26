@@ -928,7 +928,6 @@ class ChatActivity :
                             highlightedMessageId = uiState.highlightedMessageId,
                             highlightedSearchTerm = uiState.highlightedSearchTerm,
                             markedAsUnreadByUser = uiState.markedAsUnreadByUser,
-                            hasUnconfirmedOwnMessage = uiState.hasUnconfirmedOwnMessage,
                             hasChatPermission = participantPermissions?.hasChatPermission() == true,
                             downloadingFileState = downloadingFileState.value,
                             stickyHeaderTopOffset = overflowHeightDp

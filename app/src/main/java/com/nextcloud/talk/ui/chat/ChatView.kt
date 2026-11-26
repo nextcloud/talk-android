@@ -111,7 +111,6 @@ data class ChatViewState(
     val highlightedMessageId: Int? = null,
     val highlightedSearchTerm: String? = null,
     val markedAsUnreadByUser: Boolean = false,
-    val hasUnconfirmedOwnMessage: Boolean = false,
     val downloadingFileState: List<String> = listOf(),
     val stickyHeaderTopOffset: Dp = 0.dp
 )
@@ -374,7 +373,6 @@ fun ChatView(
     ReportReadMarkerWhenSeen(
         isAtNewest = isAtNewest,
         newestReportableMessageId = newestReportableMessageId,
-        isOwnMessageSending = state.hasUnconfirmedOwnMessage,
         onReport = { callbacks.reportReadMarker?.invoke(it) }
     )
 
@@ -552,20 +550,14 @@ fun ChatView(
 
 /**
  * Reports [newestReportableMessageId] as read once it stayed on screen for [READ_MARKER_DEBOUNCE_MILLIS] while
- * the chat is resumed. A wait that has not finished when the chat is left or scrolled away is dropped. An own
- * message on its way holds the marker back, so the wait starts again once [isOwnMessageSending] changes.
+ * the chat is resumed. A wait that has not finished when the chat is left or scrolled away is dropped.
  */
 @Composable
-private fun ReportReadMarkerWhenSeen(
-    isAtNewest: Boolean,
-    newestReportableMessageId: Int?,
-    isOwnMessageSending: Boolean,
-    onReport: (Int) -> Unit
-) {
+private fun ReportReadMarkerWhenSeen(isAtNewest: Boolean, newestReportableMessageId: Int?, onReport: (Int) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val latestOnReport by rememberUpdatedState(onReport)
 
-    LaunchedEffect(isAtNewest, newestReportableMessageId, isOwnMessageSending, lifecycleOwner) {
+    LaunchedEffect(isAtNewest, newestReportableMessageId, lifecycleOwner) {
         if (!isAtNewest || newestReportableMessageId == null) return@LaunchedEffect
 
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {

@@ -49,7 +49,6 @@ import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.dagger.modules.ApplicationScope
 import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
-import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ReadMarkerSyncWorker
 import com.nextcloud.talk.jobs.SendMessageWorker
@@ -732,12 +731,7 @@ class ChatViewModel @AssistedInject constructor(
          * Set while the unread marker comes from the user marking a message as unread, so the chat does
          * not scroll to a place they are already looking at.
          */
-        val markedAsUnreadByUser: Boolean = false,
-        /**
-         * Set while a message of the user is on its way to the server, see [hasUnconfirmedOwnMessage]. The
-         * read marker is held back meanwhile, so it has to be decided again once this is cleared.
-         */
-        val hasUnconfirmedOwnMessage: Boolean = false
+        val markedAsUnreadByUser: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -2082,9 +2076,8 @@ class ChatViewModel @AssistedInject constructor(
     }
 
     // Runs on the background dispatcher of the rebuild pipeline (flowOn in observeMessages): it only
-    // publishes the immutable list through a volatile field and whether an own message is on its way. The
-    // own message is combined with the reported message on the main thread when the marker is decided
-    // (reportReadMarker).
+    // publishes the immutable list through a volatile field. The own message is combined with the reported
+    // message on the main thread when the marker is decided (reportReadMarker).
     //
     // Only the list of the newest messages counts. A window around a quoted or searched message (search and
     // old chat block mode) can lie far from them and miss the own message just sent, which must still be
@@ -2092,7 +2085,6 @@ class ChatViewModel @AssistedInject constructor(
     private fun onMessagesChanged(messages: List<ChatMessage>) {
         if (chatMode.value == ChatMode.DEFAULT_MODE || contextAnchorMessageId.value == null) {
             latestMessages = messages
-            _uiState.update { it.copy(hasUnconfirmedOwnMessage = hasUnconfirmedOwnMessage(messages)) }
         }
     }
 
@@ -2106,35 +2098,15 @@ class ChatViewModel @AssistedInject constructor(
             Log.d(TAG, "reportReadMarker, skipped: the chat was marked as unread")
             return
         }
-        val messages = latestMessages
         val marker = _uiState.value.conversation?.lastReadMessage?.let { conversationLastReadMessage ->
             localReadMarker(
                 messageId = messageId,
                 conversationLastReadMessage = conversationLastReadMessage,
-                newestOwnMessageId = newestOwnMessageId(messages)
+                newestOwnMessageId = newestOwnMessageId(latestMessages)
             )
         } ?: return
-
-        if (hasUnconfirmedOwnMessage(messages)) {
-            // The server may have moved the marker to that message already: sending an older one would move it
-            // back and leave the message with a single check mark for the other participants.
-            Log.d(TAG, "reportReadMarker, waiting for an own message on its way, marker: $marker")
-            showUnreadCountUpTo(marker)
-        } else {
-            Log.d(TAG, "reportReadMarker, setChatReadMessage: $marker")
-            setChatReadMessage(marker)
-        }
-    }
-
-    /**
-     * Lowers the unread count of the conversation entry to what lies above [lastReadMessage], also offline, while
-     * the marker itself waits for an own message on its way. The stored marker stays and nothing is registered
-     * as pending, so the marker is decided again once the message is sent or failed.
-     */
-    private fun showUnreadCountUpTo(lastReadMessage: Int) {
-        viewModelScope.launch {
-            chatRepository.updateLocalUnreadCountOnly(lastReadMessage)
-        }
+        Log.d(TAG, "reportReadMarker, setChatReadMessage: $marker")
+        setChatReadMessage(marker)
     }
 
     /**
@@ -2862,23 +2834,6 @@ class ChatViewModel @AssistedInject constructor(
         internal fun newestOwnMessageId(messages: List<ChatMessage>): Int? =
             messages.filter { !it.incoming && it.jsonMessageId > 0 }
                 .maxOfOrNull { it.jsonMessageId }
-
-        /**
-         * True while a text message of the user is on its way to the server: its temporary copy is stored
-         * and not failed, so the server may have accepted it (and moved the user's read marker to it)
-         * already, while its server copy is not in [messages] yet. This client must not send an older
-         * marker over it. A file placeholder is not counted before its upload is finished: the server has
-         * no message for it until then.
-         */
-        internal fun hasUnconfirmedOwnMessage(messages: List<ChatMessage>): Boolean =
-            messages.any { message ->
-                val isFileUploading = message.sendStatus != SendStatus.SENT_PENDING_ACK &&
-                    message.messageParameters.orEmpty().containsKey("file")
-                !message.incoming &&
-                    message.isTemporary &&
-                    message.sendStatus != SendStatus.FAILED &&
-                    !isFileUploading
-            }
 
         /**
          * The new read marker for [messageId], or null when the conversation is already read that far. The server

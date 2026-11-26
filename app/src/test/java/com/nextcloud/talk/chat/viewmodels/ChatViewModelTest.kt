@@ -15,7 +15,6 @@ import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.models.json.chat.ChatMessageDto
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -461,9 +460,6 @@ class ChatViewModelTest {
     // message 2624 while the client's local marker still was 2623. The decision is made on the message
     // list from the database, not on the rendered items, which lag behind it.
 
-    private fun waitsForOwnMessage(messages: List<ChatMessage>): Boolean =
-        ChatViewModel.hasUnconfirmedOwnMessage(messages)
-
     private fun localReadMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
         ChatViewModel.localReadMarker(
             messageId = local,
@@ -475,28 +471,14 @@ class ChatViewModelTest {
     fun `read marker is not below the own message just sent`() {
         val messages = listOf(ownMessage(2624), incomingMessage(2623))
 
-        assertFalse(waitsForOwnMessage(messages))
         assertEquals(2624, localReadMarker(messages))
     }
 
     @Test
-    fun `read marker waits while the own message is on its way to the server`() {
-        // the request is in flight: the server may have accepted the message, the answer is not processed yet
-        assertTrue(waitsForOwnMessage(listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker waits while the own message waits for its server copy`() {
-        assertTrue(waitsForOwnMessage(listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))))
-    }
-
-    @Test
-    fun `unread count is still lowered while the own message waits to be sent offline`() {
-        // 5 unread messages read offline, then a reply that is only queued (PENDING): the server request
-        // has to wait, the conversation list must not keep showing the messages as unread
+    fun `read marker ignores an own message that is still on its way`() {
+        // the server copy of the message is reported on its own once it arrives
         val messages = listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))
 
-        assertTrue(waitsForOwnMessage(messages))
         assertEquals(2623, localReadMarker(messages))
     }
 
@@ -506,34 +488,9 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `read marker is sent when the own message failed to send`() {
-        val messages = listOf(ownMessage(-77, SendStatus.FAILED), incomingMessage(2623))
-
-        assertFalse(waitsForOwnMessage(messages))
-        assertEquals(2623, localReadMarker(messages))
-    }
-
-    @Test
-    fun `read marker does not wait for a file of the user that is still uploading`() {
-        val upload = ownMessage(-5, SendStatus.PENDING).apply {
-            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
-        }
-        assertFalse(waitsForOwnMessage(listOf(upload, incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker waits for a file of the user that was shared`() {
-        val shared = ownMessage(-5, SendStatus.SENT_PENDING_ACK).apply {
-            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
-        }
-        assertTrue(waitsForOwnMessage(listOf(shared, incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker of the incoming messages is sent when the user sent nothing`() {
+    fun `read marker of the incoming messages is used when the user sent nothing`() {
         val messages = listOf(incomingMessage(2623), incomingMessage(2622))
 
-        assertFalse(waitsForOwnMessage(messages))
         assertEquals(2623, localReadMarker(messages))
     }
 

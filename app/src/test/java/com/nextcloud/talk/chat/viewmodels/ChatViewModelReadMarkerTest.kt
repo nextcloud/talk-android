@@ -22,8 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +45,6 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class ChatViewModelReadMarkerTest {
 
-    private val calls = mutableListOf<Pair<String, Any?>>()
     private lateinit var viewModel: ChatViewModel
 
     // the setter of the singleton is protected: only the real application sets it
@@ -75,28 +72,14 @@ class ChatViewModelReadMarkerTest {
     }
 
     @Test
-    fun `reporting the read marker with an own message queued still updates the local read state`() {
+    fun `an own message on its way does not hold the marker back`() {
         messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
 
         viewModel.reportReadMarker(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
-        assertTrue("local read state written: $calls", calls.any { it.first.startsWith("updateLocal") })
-        assertEquals("no marker is sent to the server", 0, queuedMarkers())
-    }
-
-    @Test
-    fun `a marker held back by a queued own message is sent once that message failed`() {
-        messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        viewModel.reportReadMarker(LOCAL_MARKER)
-        shadowOf(Looper.getMainLooper()).idle()
-        assertEquals(0, queuedMarkers())
-
-        messages(ownMessage(-77, SendStatus.FAILED), incomingMessage(LOCAL_MARKER))
-        viewModel.reportReadMarker(LOCAL_MARKER)
-        shadowOf(Looper.getMainLooper()).idle()
-
-        assertEquals("the marker reaches the server after the failure", 1, queuedMarkers())
+        assertEquals("marker is sent", 1, queuedMarkers())
+        assertEquals(LOCAL_MARKER, storedMarkerValue)
     }
 
     @Test
@@ -111,17 +94,6 @@ class ChatViewModelReadMarkerTest {
     }
 
     @Test
-    fun `a window around an old message does not make the view model forget a queued own message`() {
-        messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
-
-        viewModel.reportReadMarker(LOCAL_MARKER)
-        shadowOf(Looper.getMainLooper()).idle()
-
-        assertEquals("nothing is sent below the queued own message", 0, queuedMarkers())
-    }
-
-    @Test
     fun `a window around an old message does not make the view model forget the own message just sent`() {
         messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
         openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
@@ -131,39 +103,6 @@ class ChatViewModelReadMarkerTest {
 
         assertEquals("marker is sent", 1, queuedMarkers())
         assertEquals("never below the own message", OWN_MESSAGE_ID, storedMarkerValue)
-    }
-
-    @Test
-    fun `the ui state reports an own message on its way until it failed`() {
-        deliverNewestMessages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
-
-        deliverNewestMessages(ownMessage(-77, SendStatus.FAILED), incomingMessage(LOCAL_MARKER))
-        assertFalse(viewModel.uiState.value.hasUnconfirmedOwnMessage)
-    }
-
-    @Test
-    fun `the ui state reports an own message on its way until its server copy arrived`() {
-        deliverNewestMessages(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(LOCAL_MARKER))
-        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
-
-        deliverNewestMessages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
-        assertFalse(viewModel.uiState.value.hasUnconfirmedOwnMessage)
-    }
-
-    @Test
-    fun `a window around an old message does not clear the own message on its way from the ui state`() {
-        deliverNewestMessages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
-
-        assertTrue(viewModel.uiState.value.hasUnconfirmedOwnMessage)
-    }
-
-    // the database delivers the newest messages to the view model, as observeMessages does
-    private fun deliverNewestMessages(vararg messages: ChatMessage) {
-        ChatViewModel::class.java.getDeclaredMethod("onMessagesChanged", List::class.java)
-            .apply { isAccessible = true }
-            .invoke(viewModel, messages.toList())
     }
 
     // the chat shows a window around a quoted or searched message that is far from the newest messages;
@@ -207,7 +146,6 @@ class ChatViewModelReadMarkerTest {
 
     private fun repositoryAnswer(invocation: InvocationOnMock): Any? {
         val name = invocation.method.name
-        calls.add(name to invocation.arguments.firstOrNull())
         if (name == "updateLocalReadState") {
             storedMarker(invocation.arguments[0] as Int)
             return Unit

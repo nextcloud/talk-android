@@ -104,15 +104,6 @@ interface ConversationsDao {
     )
     suspend fun updateReadState(internalId: String, lastReadMessage: Int, unreadMessages: Int)
 
-    @Query(
-        """
-        UPDATE Conversations
-        SET unreadMessages = :unreadMessages
-        WHERE internalId = :internalId
-        """
-    )
-    suspend fun updateUnreadMessages(internalId: String, unreadMessages: Int)
-
     /**
      * Writes the last message read by all participants, as reported by the server in the
      * X-Chat-Last-Common-Read header of the response to a read marker. An unchanged value updates no
