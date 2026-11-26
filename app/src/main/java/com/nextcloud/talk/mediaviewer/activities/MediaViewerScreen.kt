@@ -94,6 +94,7 @@ import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.ui.LocalImageAuthHeader
 import com.nextcloud.talk.ui.withAuthHeader
 import java.io.File
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
 private const val TOOLBAR_ALPHA = 0.6f
@@ -127,20 +128,18 @@ fun MediaViewerScreen(
     }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(uiState.pendingShift?.id) {
-        val shift = uiState.pendingShift
-        if (shift != null) {
-            if (shift.amount != 0) {
-                pagerState.scrollToPage((pagerState.currentPage + shift.amount).coerceIn(0, items.size - 1))
-            }
-            viewModel.consumePendingShift(shift.id)
-        }
-    }
-
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }.collect { page ->
-            viewModel.onPageSettled(page)
+        // The key comes from the same layout pass as settledPage. An index alone can point to another item for a
+        // moment, when older items were added to the list but not yet laid out by the pager.
+        snapshotFlow {
+            if (pagerState.isScrollInProgress) {
+                null
+            } else {
+                pagerState.layoutInfo.visiblePagesInfo.firstOrNull { it.index == pagerState.settledPage }?.key
+            }
         }
+            .filterIsInstance<Long>()
+            .collect { messageId -> viewModel.onPageSettled(messageId) }
     }
 
     val exoPlayer = rememberViewerExoPlayer()
@@ -197,7 +196,11 @@ fun MediaViewerScreen(
     val controllerExtraBottomInsetPx = if (hasThumbnailStrip) thumbnailStripHeightPx else 0
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            key = { page -> items[page].messageId }
+        ) { page ->
             val item = items.getOrNull(page) ?: return@HorizontalPager
             MediaPage(
                 item = item,

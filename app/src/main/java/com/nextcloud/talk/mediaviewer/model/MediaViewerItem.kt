@@ -82,7 +82,7 @@ fun List<MediaViewerItem>.toMediaViewerGroups(): List<MediaViewerGroup> {
  * Parcelled at once and risks a TransactionTooLargeException crash.
  *
  * Trimming is safe in the "older" direction - MediaViewerViewModel.loadOlderGroups() pages further
- * back via the network once the seed's oldest item is reached. There's no equivalent for "newer":
+ * back via the network before the seed's oldest item is reached. There's no equivalent for "newer":
  * the shared-items endpoint only supports paging backwards, so items newer than the window are
  * simply unreachable by swiping - an existing, accepted limitation (see MediaViewerViewModel's
  * class doc), just with a lower ceiling than "everything currently loaded".
