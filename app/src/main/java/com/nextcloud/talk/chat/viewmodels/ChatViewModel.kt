@@ -364,7 +364,7 @@ class ChatViewModel @AssistedInject constructor(
 
     // Newest message list from the database, updated before the throttled rebuild of the UI items. It is the
     // source of truth for the user's own sends (temporary copy with its send status, then the accepted
-    // message) when the read marker is decided, see reportReadMarker.
+    // message) when the read marker is decided, see onNewestMessageSeen.
     @Volatile
     private var latestMessages: List<ChatMessage> = emptyList()
 
@@ -2077,7 +2077,7 @@ class ChatViewModel @AssistedInject constructor(
 
     // Runs on the background dispatcher of the rebuild pipeline (flowOn in observeMessages): it only
     // publishes the immutable list through a volatile field. The own message is combined with the reported
-    // message on the main thread when the marker is decided (reportReadMarker).
+    // message on the main thread when the marker is decided (onNewestMessageSeen).
     //
     // Only the list of the newest messages counts. A window around a quoted or searched message (search and
     // old chat block mode) can lie far from them and miss the own message just sent, which must still be
@@ -2092,10 +2092,10 @@ class ChatViewModel @AssistedInject constructor(
      * Marks the chat as read up to [messageId], the newest message the user has seen. Nothing happens when the
      * chat was marked as unread, or when the conversation is already read that far.
      */
-    fun reportReadMarker(messageId: Int) {
-        Log.d(TAG, "reportReadMarker, messageId: $messageId")
+    fun onNewestMessageSeen(messageId: Int) {
+        Log.d(TAG, "onNewestMessageSeen, messageId: $messageId")
         if (keepMarkedAsUnread) {
-            Log.d(TAG, "reportReadMarker, skipped: the chat was marked as unread")
+            Log.d(TAG, "onNewestMessageSeen, skipped: the chat was marked as unread")
             return
         }
         val marker = _uiState.value.conversation?.lastReadMessage?.let { conversationLastReadMessage ->
@@ -2105,8 +2105,8 @@ class ChatViewModel @AssistedInject constructor(
                 newestOwnMessageId = newestOwnMessageId(latestMessages)
             )
         } ?: return
-        Log.d(TAG, "reportReadMarker, setChatReadMessage: $marker")
-        setChatReadMessage(marker)
+        Log.d(TAG, "onNewestMessageSeen, markChatAsRead: $marker")
+        markChatAsRead(marker)
     }
 
     /**
@@ -2147,7 +2147,7 @@ class ChatViewModel @AssistedInject constructor(
      * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
      * contention) during which such a sync could see no pending marker yet and apply unguarded.
      */
-    fun setChatReadMessage(lastReadMessage: Int) {
+    fun markChatAsRead(lastReadMessage: Int) {
         // marking as read is the explicit counterpart of marking as unread and hands the read marker
         // back to the automatic handling
         keepMarkedAsUnread = false

@@ -36,7 +36,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * The read marker path of the real [ChatViewModel] when it is reported: reportReadMarker ->
+ * The read marker path of the real [ChatViewModel] once the newest message was seen: onNewestMessageSeen ->
  * local read state in the repository -> ReadMarkerSyncWorker. The repository is a fake that keeps the stored
  * read marker like Room does: the view model sees it as conversation.lastReadMessage afterwards.
  */
@@ -75,7 +75,7 @@ class ChatViewModelReadMarkerTest {
     fun `an own message on its way does not hold the marker back`() {
         messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
 
-        viewModel.reportReadMarker(LOCAL_MARKER)
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
         assertEquals("marker is sent", 1, queuedMarkers())
@@ -86,7 +86,7 @@ class ChatViewModelReadMarkerTest {
     fun `a confirmed own message moves the marker to the message and sends it`() {
         messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
 
-        viewModel.reportReadMarker(LOCAL_MARKER)
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
         assertEquals("marker is sent", 1, queuedMarkers())
@@ -98,7 +98,7 @@ class ChatViewModelReadMarkerTest {
         messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
         openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
 
-        viewModel.reportReadMarker(LOCAL_MARKER)
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
         assertEquals("marker is sent", 1, queuedMarkers())

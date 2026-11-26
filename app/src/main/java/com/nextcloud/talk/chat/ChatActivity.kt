@@ -935,7 +935,7 @@ class ChatActivity :
                         callbacks = ChatViewCallbacks(
                             onLoadMore = { messageId, direction -> loadMoreMessages(messageId, direction) },
                             onJumpToBottom = { chatViewModel.switchToDefaultMode() },
-                            reportReadMarker = { chatViewModel.reportReadMarker(it) },
+                            onNewestMessageSeen = { chatViewModel.onNewestMessageSeen(it) },
                             onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
                             messageCallbacks = ChatMessageCallbacks(
                                 onLongClick = { openMessageActionsDialog(it) },
@@ -3545,7 +3545,7 @@ class ChatActivity :
     }
 
     private fun markAsRead(messageId: Int) {
-        chatViewModel.setChatReadMessage(messageId)
+        chatViewModel.markChatAsRead(messageId)
     }
 
     /**

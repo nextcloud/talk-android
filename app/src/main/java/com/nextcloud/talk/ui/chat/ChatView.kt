@@ -117,7 +117,7 @@ data class ChatViewState(
 
 data class ChatViewCallbacks(
     val onLoadMore: ((Int, ChatViewModel.LoadMoreDirection) -> Unit?)? = null,
-    val reportReadMarker: ((Int) -> Unit)? = null,
+    val onNewestMessageSeen: ((Int) -> Unit)? = null,
     val onJumpToBottom: (() -> Unit)? = null,
     val onLoadQuotedMessageClick: (Int) -> Unit = {},
     val messageCallbacks: ChatMessageCallbacks = ChatMessageCallbacks()
@@ -370,10 +370,10 @@ fun ChatView(
     val newestReportableMessageId = remember(state.chatItems) {
         ChatViewModel.newestReportableMessageId(state.chatItems)
     }
-    ReportReadMarkerWhenSeen(
+    ReportNewestMessageSeen(
         isAtNewest = isAtNewest,
         newestReportableMessageId = newestReportableMessageId,
-        onReport = { callbacks.reportReadMarker?.invoke(it) }
+        onSeen = { callbacks.onNewestMessageSeen?.invoke(it) }
     )
 
     val stickyDateHeaderAlpha by animateFloatAsState(
@@ -549,20 +549,20 @@ fun ChatView(
 }
 
 /**
- * Reports [newestReportableMessageId] as read once it stayed on screen for [READ_MARKER_DEBOUNCE_MILLIS] while
- * the chat is resumed. A wait that has not finished when the chat is left or scrolled away is dropped.
+ * Calls [onSeen] with [newestReportableMessageId] once it stayed on screen for [READ_MARKER_DEBOUNCE_MILLIS]
+ * while the chat is resumed. A wait that has not finished when the chat is left or scrolled away is dropped.
  */
 @Composable
-private fun ReportReadMarkerWhenSeen(isAtNewest: Boolean, newestReportableMessageId: Int?, onReport: (Int) -> Unit) {
+private fun ReportNewestMessageSeen(isAtNewest: Boolean, newestReportableMessageId: Int?, onSeen: (Int) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val latestOnReport by rememberUpdatedState(onReport)
+    val latestOnSeen by rememberUpdatedState(onSeen)
 
     LaunchedEffect(isAtNewest, newestReportableMessageId, lifecycleOwner) {
         if (!isAtNewest || newestReportableMessageId == null) return@LaunchedEffect
 
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             delay(READ_MARKER_DEBOUNCE_MILLIS.milliseconds)
-            latestOnReport(newestReportableMessageId)
+            latestOnSeen(newestReportableMessageId)
         }
     }
 }
