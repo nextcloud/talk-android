@@ -39,6 +39,7 @@ class ConversationsListEntryPointTest {
             .putExtra(BundleKeys.KEY_ROOM_TOKEN, "abcd1234")
             .putExtra(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
             .putExtra(BundleKeys.KEY_FORWARD_MSG_TEXT, "forwarded")
+            .putStringArrayListExtra(BundleKeys.KEY_FORWARD_MSG_TEXTS, arrayListOf("first", "second"))
             .putExtra(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, "efgh5678")
 
     @Test
@@ -61,6 +62,7 @@ class ConversationsListEntryPointTest {
         assertEquals("abcd1234", intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN))
         assertTrue(intent.getBooleanExtra(BundleKeys.KEY_FORWARD_MSG_FLAG, false))
         assertEquals("forwarded", intent.getStringExtra(BundleKeys.KEY_FORWARD_MSG_TEXT))
+        assertEquals(listOf("first", "second"), intent.getStringArrayListExtra(BundleKeys.KEY_FORWARD_MSG_TEXTS))
         assertEquals("efgh5678", intent.getStringExtra(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM))
     }
 

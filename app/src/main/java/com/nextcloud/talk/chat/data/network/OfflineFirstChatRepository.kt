@@ -88,6 +88,23 @@ class OfflineFirstChatRepository @Inject constructor(
             timestamp
         }
 
+    // Temporary text messages are keyed in the UI by their id and sorted by "timestamp ASC, id ASC" (ChatMessagesDao),
+    // so messages added within the same second, as in a forward of several messages, need distinct ids that grow in
+    // the order of the calls. The time of day counts up for that and becomes the id in createChatMessageEntity.
+    private var lastTemporaryTimeOfDayMillis = 0
+
+    private fun nextTemporaryTimeOfDayMillis(timeOfDayMillis: Int): Int =
+        synchronized(this) {
+            val last = lastTemporaryTimeOfDayMillis
+            val next = if (timeOfDayMillis <= last && last - timeOfDayMillis < TEMPORARY_ID_CLASH_WINDOW_MILLIS) {
+                last + 1
+            } else {
+                timeOfDayMillis
+            }
+            lastTemporaryTimeOfDayMillis = next
+            next
+        }
+
     override val messageFlow:
         Flow<
             Triple<
@@ -808,7 +825,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     // "{file}" is the sentinel the server (and rest of this app) uses for "no caption"
                     message = caption.ifEmpty { "{file}" },
                     deleted = false,
-                    token = conversationModel.token,
+                    token = roomToken,
                     actorId = currentUser.userId!!,
                     actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
                     accountId = currentUser.id!!,
@@ -1010,7 +1027,7 @@ class OfflineFirstChatRepository @Inject constructor(
         // text here: their "message" field is just the "{file}" sentinel, and a failed/interrupted upload
         // needs a real re-upload, not a bogus text message reusing its referenceId.
         val unsentTextMessages = tempMessages.filterNot { it.messageParameters?.containsKey("file") == true }
-        unsentTextMessages.sortedBy { it.internalId }.onEach {
+        unsentTextMessages.sortedWith(compareBy({ it.timestamp }, { it.id })).onEach {
             sendChatMessage(
                 credentials,
                 url,
@@ -1260,10 +1277,11 @@ class OfflineFirstChatRepository @Inject constructor(
         val currentTimeMillis = System.currentTimeMillis()
 
         // only use the time of a day so it can fit into an integer
-        val timeOfDayMillis = SendMessageUtils().timeOfDayMillis(currentTimeMillis)
+        val timeOfDayMillis = nextTemporaryTimeOfDayMillis(SendMessageUtils().timeOfDayMillis(currentTimeMillis))
 
-        // make it negative -> sending the lastReadMessage to server checks "-1 < messageId" to avoid temporary messages
-        val negativeTimeOfDayMillis = timeOfDayMillis * MINUS_ONE
+        // negative -> sending the lastReadMessage to server checks "-1 < messageId" to avoid temporary messages; a
+        // later message gets a larger id, so messages of the same second keep their order
+        val temporaryId = timeOfDayMillis - TEMPORARY_ID_OFFSET
 
         val parentMessageId = if (replyTo != 0) {
             replyTo.toLong()
@@ -1272,13 +1290,13 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         val entity = ChatMessageEntity(
-            internalId = "$internalConversationId@_temp_$currentTimeMillis",
+            internalId = "$internalConversationId@_temp_$referenceId",
             internalConversationId = internalConversationId,
-            id = negativeTimeOfDayMillis,
+            id = temporaryId,
             threadId = threadId,
             message = message,
             deleted = false,
-            token = conversationModel.token,
+            token = roomToken,
             actorId = currentUser.userId!!,
             actorType = EnumActorTypeConverter().convertToString(ParticipantDto.ActorType.USERS),
             accountId = currentUser.id!!,
@@ -1307,7 +1325,9 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val MILLIES = 1000L
         private const val INSURANCE_REQUEST_DELAY = 2 * 60 * MILLIES
 
-        private const val MINUS_ONE = -1L
+        // two days, so the id stays negative also for a time of day counted up past midnight
+        private const val TEMPORARY_ID_OFFSET = 2 * 24 * 60 * 60 * MILLIES
+        private const val TEMPORARY_ID_CLASH_WINDOW_MILLIS = 60_000
 
         private const val MESSAGE_TYPE_DELETED = "comment_deleted"
         private const val HTTP_OK = 200

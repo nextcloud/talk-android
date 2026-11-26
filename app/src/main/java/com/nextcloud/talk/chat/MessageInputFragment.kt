@@ -1080,20 +1080,10 @@ class MessageInputFragment : Fragment() {
             Spans.MentionChipSpan::class.java
         )
         for (mentionSpan in mentionSpans) {
-            var mentionId = mentionSpan.id
-            val shouldQuote = mentionId.contains(" ") ||
-                mentionId.contains("@") ||
-                mentionId.startsWith("guest/") ||
-                mentionId.startsWith("group/") ||
-                mentionId.startsWith("email/") ||
-                mentionId.startsWith("team/")
-            if (shouldQuote) {
-                mentionId = "\"$mentionId\""
-            }
             editable.replace(
                 editable.getSpanStart(mentionSpan),
                 editable.getSpanEnd(mentionSpan),
-                "@$mentionId"
+                ChatUtils.mentionSyntax(mentionSpan.id)
             )
         }
     }

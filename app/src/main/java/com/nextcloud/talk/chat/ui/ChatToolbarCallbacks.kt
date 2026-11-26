@@ -20,5 +20,10 @@ data class ChatToolbarCallbacks(
     val onSearchPrevious: () -> Unit = {},
     val onSearchNext: () -> Unit = {},
     val onThreadNotificationLevelChange: (Int) -> Unit = {},
-    val onEventMenu: () -> Unit = {}
+    val onEventMenu: () -> Unit = {},
+    val onSelectionClose: () -> Unit = {},
+    val onSelectionForward: () -> Unit = {},
+    val onSelectionCopy: () -> Unit = {},
+    /** Called once the delete of the selected messages is confirmed. */
+    val onSelectionDelete: () -> Unit = {}
 )

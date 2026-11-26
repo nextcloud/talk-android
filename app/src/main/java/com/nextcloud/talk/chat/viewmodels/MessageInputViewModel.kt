@@ -31,7 +31,9 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -154,6 +156,13 @@ class MessageInputViewModel :
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
 
+    /** Called with the reference id of each message stored for sending, in the order they are sent. */
+    var onTemporaryMessageAdded: ((String) -> Unit)? = null
+
+    // Shown once per failed send; the view state above is replayed to a new observer, e.g. after a rotation.
+    private val _sendFailures = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val sendFailures: SharedFlow<Unit> = _sendFailures
+
     object EditMessageErrorState : ViewState
     class EditMessageSuccessState(val messageEdited: ChatOverallSingleMessage) : ViewState
 
@@ -203,6 +212,7 @@ class MessageInputViewModel :
                         referenceId
                     ).collect { result ->
                         if (result.isSuccess) {
+                            onTemporaryMessageAdded?.invoke(referenceId)
                             _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                             SendMessageWorker.enqueue(
                                 internalConversationId = "$userId@$roomToken",
@@ -211,6 +221,7 @@ class MessageInputViewModel :
                             )
                         } else {
                             _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                            _sendFailures.tryEmit(Unit)
                         }
                     }
                 }

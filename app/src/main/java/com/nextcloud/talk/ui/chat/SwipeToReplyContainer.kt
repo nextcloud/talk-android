@@ -50,9 +50,18 @@ private val swipeLimitDp = 130.dp
 private val showIconThresholdDp = 30.dp
 private const val HORIZONTAL_DRAG_ANGLE_MULTIPLIER = 1.5f
 
+/**
+ * [swipeEnabled] switches the swipe off while keeping the row's composition, e.g. during a selection, so the state
+ * remembered by [content] survives; [replyable] decides whether the row can ever be swiped.
+ */
 @Suppress("Detekt.LongMethod")
 @Composable
-fun SwipeToReplyContainer(replyable: Boolean, onSwipeReply: () -> Unit, content: @Composable () -> Unit) {
+fun SwipeToReplyContainer(
+    replyable: Boolean,
+    onSwipeReply: () -> Unit,
+    swipeEnabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
     if (!replyable) {
         content()
         return
@@ -75,7 +84,10 @@ fun SwipeToReplyContainer(replyable: Boolean, onSwipeReply: () -> Unit, content:
     val iconColor = MaterialTheme.colorScheme.onSurface
 
     Box(
-        modifier = Modifier.pointerInput(Unit) {
+        modifier = Modifier.pointerInput(swipeEnabled) {
+            if (!swipeEnabled) {
+                return@pointerInput
+            }
             awaitEachGesture {
                 val down = awaitFirstDown(requireUnconsumed = false)
                 var horizontalDragStarted = false

@@ -13,7 +13,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -66,6 +64,7 @@ import com.nextcloud.talk.chat.data.model.decodeBlurhashPlaceholder
 import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.chat.ui.model.MessageStatusIcon
 import com.nextcloud.talk.chat.ui.model.MessageTypeContent
+import com.nextcloud.talk.chat.viewmodels.isSelectable
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.ui.theme.mimetypeIconTint
 import com.nextcloud.talk.utils.DrawableUtils
@@ -114,6 +113,7 @@ private val gridPlayIconSize = 20.dp
 @Composable
 fun MediaGroupMessage(
     messages: List<ChatMessageUi>,
+    isChecked: Boolean = false,
     context: ChatMessageContext = ChatMessageContext(),
     callbacks: ChatMessageCallbacks = ChatMessageCallbacks()
 ) {
@@ -141,18 +141,19 @@ fun MediaGroupMessage(
     ) {
         SwipeToReplyContainer(
             replyable = representative.replyable && context.hasChatPermission,
-            onSwipeReply = { callbacks.onSwipeReply?.invoke(representative.id) }
+            onSwipeReply = { callbacks.onSwipeReply?.invoke(representative.id) },
+            swipeEnabled = !context.selectionActive
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .combinedClickable(
-                        indication = ripple(),
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = { callbacks.onLongClick?.invoke(representative.id) },
-                        onDoubleClick = { callbacks.onLongClick?.invoke(representative.id) },
-                        onLongClick = { callbacks.onLongClick?.invoke(representative.id) }
-                    )
+            val onSelectionToggle = callbacks.onSelectionToggle
+            MessageRowFrame(
+                selection = MessageRowSelection(
+                    active = context.selectionActive,
+                    checked = isChecked,
+                    selectable = onSelectionToggle != null && representative.isSelectable(),
+                    onToggle = { onSelectionToggle?.invoke(representative.id) }
+                ),
+                onTap = { callbacks.onLongClick?.invoke(representative.id) },
+                onOpenMenu = { callbacks.onLongClick?.invoke(representative.id) }
             ) {
                 Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                     MessageScaffold(

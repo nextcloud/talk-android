@@ -40,5 +40,11 @@ data class ChatToolbarState(
     val titleClickable: Boolean = false,
     /** Whether the server capability SILENT_CALL is available (enables long-press on call buttons). */
     val supportsSilentCall: Boolean = false,
-    val isClassified: Boolean = false
+    val isClassified: Boolean = false,
+    /** Number of selected messages; the toolbar shows the selection actions instead of the conversation while > 0. */
+    val selectedCount: Int = 0,
+    /** Whether every selected message can be forwarded. */
+    val canForwardSelection: Boolean = false,
+    /** Whether every selected message can be deleted. */
+    val canDeleteSelection: Boolean = false
 )

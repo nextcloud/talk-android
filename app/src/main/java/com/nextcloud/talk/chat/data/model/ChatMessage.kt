@@ -14,6 +14,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getMessageToResend
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import java.time.Instant
@@ -181,6 +182,9 @@ data class ChatMessage(
             ?.value
             ?.trim()
     }
+
+    /** The text as it is typed to send it again, see [getMessageToResend]. */
+    fun getTextToResend(): String = getMessageToResend(message, messageParameters).orEmpty()
 
     fun getRichText(): String =
         if (message != null) {
