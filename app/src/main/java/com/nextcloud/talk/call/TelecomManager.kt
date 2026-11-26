@@ -288,9 +288,10 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             isCallAnsweredOrActive = true
 
             val scope = currentCallControlScope
-            if (scope != null) {
+            val registrationId = currentRegistrationId
+            if (scope != null && registrationId != null) {
                 telecomScope.launch {
-                    activateScope(scope)
+                    activateScope(scope, registrationId)
                 }
             } else if (currentRoomToken != null) {
                 isPendingSetActive = true
@@ -298,14 +299,24 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             }
         }
 
-    private suspend fun activateScope(scope: CallControlScope) {
+    /**
+     * Answers or activates the call of [registrationId]. answer() and setActive() suspend, so the call may have ended
+     * and a newer one been registered meanwhile; the call state is then left to the newer call.
+     */
+    private suspend fun activateScope(scope: CallControlScope, registrationId: String) {
         // Exceptions propagate to telecomScope's handler (setCallActive) or addCall's catch (onScopeAssigned)
-        val result = if (isIncomingCall) {
-            val res = scope.answer(currentCallType)
+        if (currentRegistrationId != registrationId) {
+            Log.d(TAG, "activateScope ignored: registration $registrationId is not current anymore")
+            return
+        }
+        val wasIncoming = isIncomingCall
+        val result = if (wasIncoming) scope.answer(currentCallType) else scope.setActive()
+        if (currentRegistrationId != registrationId) {
+            Log.d(TAG, "Call activation finished after registration $registrationId was replaced: $result")
+            return
+        }
+        if (wasIncoming) {
             isIncomingCall = false
-            res
-        } else {
-            scope.setActive()
         }
         if (result is CallControlResult.Error) {
             Log.e(TAG, "Failed to activate call in Core-Telecom: $result")
@@ -365,7 +376,7 @@ class TelecomManager @Inject constructor(private val context: Context, private v
             Log.d(TAG, "Call registered in CallControlScope for room $roomToken (id=$registrationId)")
             observeCallState(registrationId, roomToken)
             if (autoActivate || isPendingSetActive) {
-                launch { activateScope(this@onScopeAssigned) }
+                launch { activateScope(this@onScopeAssigned, registrationId) }
                 isPendingSetActive = false
                 Log.d(TAG, "Call set active for room $roomToken (id=$registrationId)")
             }
