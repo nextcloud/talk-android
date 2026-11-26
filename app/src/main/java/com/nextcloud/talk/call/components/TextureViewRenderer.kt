@@ -36,6 +36,7 @@ class TextureViewRenderer(context: Context) :
     VideoSink {
 
     private val eglRenderer = EglRenderer(TAG)
+    private val frameValidator = VideoFrameValidator(TAG)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val isFirstFrameRendered = AtomicBoolean(false)
     private var onFirstFrameRendered: (() -> Unit)? = null
@@ -114,6 +115,9 @@ class TextureViewRenderer(context: Context) :
     }
 
     override fun onFrame(frame: VideoFrame) {
+        if (!frameValidator.isRenderable(frame)) {
+            return
+        }
         if (frame.rotatedHeight > 0) {
             val aspectRatio = frame.rotatedWidth / frame.rotatedHeight.toFloat()
             if (aspectRatio != frameAspectRatio) {
