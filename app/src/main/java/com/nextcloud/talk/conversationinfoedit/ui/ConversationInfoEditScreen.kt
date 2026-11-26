@@ -10,7 +10,6 @@
 package com.nextcloud.talk.conversationinfoedit.ui
 
 import android.content.res.Configuration
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -44,18 +43,13 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -65,15 +59,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.nextcloud.talk.R
+import com.nextcloud.talk.conversationlist.ui.ConversationAvatarImage
 import com.nextcloud.talk.components.AvatarEditPanel
 import com.nextcloud.talk.components.AvatarEditPanelCallbacks
 import com.nextcloud.talk.components.AvatarEditPanelState
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditUiState
-import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.ParticipantDto
@@ -182,7 +173,7 @@ private fun ConversationInfoEditContent(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            ConversationAvatarImage(
+            EditScreenAvatar(
                 uiState = uiState,
                 modifier = Modifier.size(AVATAR_SIZE_DP.dp).clip(CircleShape)
             )
@@ -214,7 +205,7 @@ private fun AvatarPane(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ConversationAvatarImage(
+        EditScreenAvatar(
             uiState = uiState,
             modifier = Modifier.size(AVATAR_SIZE_DP.dp).clip(CircleShape)
         )
@@ -312,114 +303,21 @@ private fun AvatarButtonsRow(uiState: ConversationInfoEditUiState, callbacks: Co
     )
 }
 
-@Suppress("CyclomaticComplexMethod")
 @Composable
-private fun ConversationAvatarImage(uiState: ConversationInfoEditUiState, modifier: Modifier = Modifier) {
+private fun EditScreenAvatar(uiState: ConversationInfoEditUiState, modifier: Modifier = Modifier) {
     val conversation = uiState.conversation
-
-    if (conversation == null || uiState.conversationUser == null) {
+    val user = uiState.conversationUser
+    if (conversation != null && user != null) {
+        ConversationAvatarImage(
+            model = conversation,
+            currentUser = user,
+            modifier = modifier,
+            requestBigSize = true
+        )
+    } else {
         Image(
             painter = painterResource(R.drawable.account_circle_96dp),
             contentDescription = stringResource(R.string.avatar),
-            modifier = modifier
-        )
-        return
-    }
-
-    val isInPreview = LocalInspectionMode.current
-    val isDark = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-        Configuration.UI_MODE_NIGHT_YES
-    val params = AvatarImageParams(
-        isDark = isDark,
-        credentials = uiState.avatarCredentials,
-        avatarUrl = uiState.avatarUrl,
-        avatarUrlDark = uiState.avatarUrlDark
-    )
-
-    when (conversation.type) {
-        ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
-            OneToOneAvatarImage(params, modifier)
-
-        ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-        ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-            GroupAvatarImage(params, modifier)
-
-        ConversationEnums.ConversationType.ROOM_SYSTEM ->
-            SystemAvatarImage(isInPreview = isInPreview, modifier = modifier)
-
-        else ->
-            Image(
-                painter = painterResource(R.drawable.account_circle_96dp),
-                contentDescription = stringResource(R.string.avatar),
-                modifier = modifier
-            )
-    }
-}
-
-private data class AvatarImageParams(
-    val isDark: Boolean,
-    val credentials: String,
-    val avatarUrl: String,
-    val avatarUrlDark: String
-)
-
-@Composable
-private fun OneToOneAvatarImage(params: AvatarImageParams, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val url = if (params.isDark) params.avatarUrlDark else params.avatarUrl
-    val request = remember(url, params.credentials) {
-        ImageRequest.Builder(context)
-            .data(url)
-            .addHeader("Authorization", params.credentials)
-            .crossfade(true)
-            .build()
-    }
-    var lastPainter by remember { mutableStateOf<Painter?>(null) }
-    AsyncImage(
-        model = request,
-        contentDescription = stringResource(R.string.avatar),
-        contentScale = ContentScale.Crop,
-        placeholder = lastPainter ?: painterResource(R.drawable.account_circle_96dp),
-        error = painterResource(R.drawable.account_circle_96dp),
-        onSuccess = { lastPainter = it.painter },
-        modifier = modifier
-    )
-}
-
-@Composable
-private fun GroupAvatarImage(params: AvatarImageParams, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val url = if (params.isDark) params.avatarUrlDark else params.avatarUrl
-    val request = remember(url, params.credentials) {
-        ImageRequest.Builder(context)
-            .data(url)
-            .addHeader("Authorization", params.credentials)
-            .crossfade(true)
-            .build()
-    }
-    var lastPainter by remember { mutableStateOf<Painter?>(null) }
-    AsyncImage(
-        model = request,
-        contentDescription = stringResource(R.string.avatar),
-        contentScale = ContentScale.Crop,
-        placeholder = lastPainter ?: painterResource(R.drawable.ic_circular_group),
-        error = painterResource(R.drawable.ic_circular_group),
-        onSuccess = { lastPainter = it.painter },
-        modifier = modifier
-    )
-}
-
-@Composable
-private fun SystemAvatarImage(isInPreview: Boolean, modifier: Modifier = Modifier) {
-    if (isInPreview) {
-        Icon(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = stringResource(R.string.avatar),
-            modifier = modifier
-        )
-    } else {
-        AndroidView(
-            factory = { ctx -> ImageView(ctx).apply { loadSystemAvatar() } },
             modifier = modifier
         )
     }

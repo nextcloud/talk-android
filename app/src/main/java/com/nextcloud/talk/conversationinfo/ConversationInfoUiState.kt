@@ -8,6 +8,7 @@
 package com.nextcloud.talk.conversationinfo
 
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapabilityDto
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -21,7 +22,7 @@ data class ConversationInfoUiState(
     val conversation: ConversationModel? = null,
     val displayName: String = "",
     val description: String = "",
-    val avatarUrl: String? = null,
+    val conversationUser: User? = null,
     val conversationType: ConversationEnums.ConversationType? = null,
     val serverBaseUrl: String = "",
     val credentials: String = "",

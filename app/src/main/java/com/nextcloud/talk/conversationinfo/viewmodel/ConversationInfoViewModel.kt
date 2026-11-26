@@ -306,25 +306,6 @@ class ConversationInfoViewModel @Inject constructor(
         val canModerate = ConversationUtils.canModerate(conversationModel, spreedCapabilities)
         val isModerator = ConversationUtils.isParticipantOwnerOrModerator(conversationModel)
 
-        val avatarUrl: String? = when (conversationModel.type) {
-            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ->
-                if (conversationModel.name.isNotEmpty()) {
-                    ApiUtils.getUrlForAvatar(user.baseUrl, conversationModel.name, true)
-                } else {
-                    null
-                }
-            ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-                ApiUtils.getUrlForConversationAvatarWithVersion(
-                    version = 1,
-                    baseUrl = user.baseUrl,
-                    token = token,
-                    isDark = false,
-                    avatarVersion = conversationModel.avatarVersion.takeIf { it.isNotEmpty() }
-                )
-            else -> null
-        }
-
         val notifLevel = conversationModel.notificationLevel
         val notificationLevelStr = when {
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS) &&
@@ -463,7 +444,7 @@ class ConversationInfoViewModel @Inject constructor(
                 capabilitiesVersion = state.capabilitiesVersion + 1,
                 displayName = conversationModel.displayName,
                 description = conversationModel.description,
-                avatarUrl = avatarUrl,
+                conversationUser = user,
                 conversationType = conversationModel.type,
                 serverBaseUrl = user.baseUrl ?: "",
                 credentials = credentials,

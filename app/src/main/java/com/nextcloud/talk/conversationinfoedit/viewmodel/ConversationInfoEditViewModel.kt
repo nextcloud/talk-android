@@ -13,9 +13,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.logger.Logger
-import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -69,8 +67,6 @@ class ConversationInfoEditViewModel @Inject constructor(
                 val roomData = conversationInfoEditRepository.getRoom(user, roomToken)
                 val conversationModel = roomData.conversation
                 val isEvent = conversationModel.objectType == ConversationEnums.ObjectType.EVENT
-                val userCredentials = ApiUtils.getCredentials(user.username, user.token) ?: ""
-                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -79,9 +75,6 @@ class ConversationInfoEditViewModel @Inject constructor(
                             .takeIf { desc -> desc.isNotEmpty() }.orEmpty(),
                         conversation = conversationModel,
                         conversationUser = user,
-                        avatarCredentials = userCredentials,
-                        avatarUrl = avatarUrlLight,
-                        avatarUrlDark = avatarUrlDark,
                         nameEnabled = !isEvent,
                         descriptionEnabled = roomData.descriptionEndpointAvailable && !isEvent,
                         showSaveButton = !isEvent,
@@ -103,12 +96,9 @@ class ConversationInfoEditViewModel @Inject constructor(
             try {
                 val user = currentUser ?: return@launch
                 val conversationModel = conversationInfoEditRepository.uploadConversationAvatar(user, roomToken, file)
-                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
                     it.copy(
                         conversation = conversationModel,
-                        avatarUrl = avatarUrlLight,
-                        avatarUrlDark = avatarUrlDark,
                         avatarRefreshKey = it.avatarRefreshKey + 1,
                         selectedEmoji = null,
                         selectedEmojiColor = null
@@ -127,12 +117,9 @@ class ConversationInfoEditViewModel @Inject constructor(
             try {
                 val user = currentUser ?: return@launch
                 val conversationModel = conversationInfoEditRepository.deleteConversationAvatar(user, roomToken)
-                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
                     it.copy(
                         conversation = conversationModel,
-                        avatarUrl = avatarUrlLight,
-                        avatarUrlDark = avatarUrlDark,
                         avatarRefreshKey = it.avatarRefreshKey + 1,
                         selectedEmoji = null,
                         selectedEmojiColor = null
@@ -157,12 +144,9 @@ class ConversationInfoEditViewModel @Inject constructor(
                     emoji,
                     colorHex
                 )
-                val (avatarUrlLight, avatarUrlDark) = buildAvatarUrls(user, conversationModel)
                 _uiState.update {
                     it.copy(
                         conversation = conversationModel,
-                        avatarUrl = avatarUrlLight,
-                        avatarUrlDark = avatarUrlDark,
                         avatarRefreshKey = it.avatarRefreshKey + 1,
                         selectedEmoji = emoji,
                         selectedEmojiColor = color
@@ -214,33 +198,5 @@ class ConversationInfoEditViewModel @Inject constructor(
     companion object {
         private val TAG = ConversationInfoEditViewModel::class.java.simpleName
         private const val COLOR_HEX_MASK = 0xFFFFFF
-    }
-
-    private fun buildAvatarUrls(user: User, conversationModel: ConversationModel): Pair<String, String> {
-        val avatarVersion = conversationModel.avatarVersion.takeIf { it.isNotEmpty() }
-        return when (conversationModel.type) {
-            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> Pair(
-                ApiUtils.getUrlForAvatar(user.baseUrl, conversationModel.displayName, true, false),
-                ApiUtils.getUrlForAvatar(user.baseUrl, conversationModel.displayName, true, true)
-            )
-            ConversationEnums.ConversationType.ROOM_GROUP_CALL,
-            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> Pair(
-                ApiUtils.getUrlForConversationAvatarWithVersion(
-                    version = 1,
-                    baseUrl = user.baseUrl,
-                    token = conversationModel.token,
-                    isDark = false,
-                    avatarVersion = avatarVersion
-                ),
-                ApiUtils.getUrlForConversationAvatarWithVersion(
-                    version = 1,
-                    baseUrl = user.baseUrl,
-                    token = conversationModel.token,
-                    isDark = true,
-                    avatarVersion = avatarVersion
-                )
-            )
-            else -> Pair("", "")
-        }
     }
 }
