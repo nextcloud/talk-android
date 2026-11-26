@@ -506,6 +506,17 @@ class ChatViewModelTest {
         assertEquals(2624, ChatViewModel.newestOwnMessageId(messages))
     }
 
+    @Test
+    fun `newest own message ignores system messages of the user`() {
+        // starting a call adds a system message with the user as actor; the server does not move the marker
+        val callStarted = ChatMessage(systemMessageType = ChatMessage.SystemMessageType.CALL_STARTED).apply {
+            jsonMessageId = 2630
+            incoming = false
+        }
+
+        assertEquals(2624, ChatViewModel.newestOwnMessageId(listOf(callStarted, ownMessage(2624))))
+    }
+
     // newestReportableMessageId(): the message the read marker is moved to while the newest messages are
     // on screen. Items run newest first, like the chat list.
 

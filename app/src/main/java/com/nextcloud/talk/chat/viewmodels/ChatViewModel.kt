@@ -2828,10 +2828,11 @@ class ChatViewModel @AssistedInject constructor(
         /**
          * Id of the newest message sent by the user that the server has already accepted, or null; the
          * server marks everything up to it as read. Temporary messages (negative ids) are not accepted yet
-         * and are ignored.
+         * and are ignored. System messages with the user as actor (e.g. a call the user started) do not move
+         * the marker on the server and are ignored too.
          */
         internal fun newestOwnMessageId(messages: List<ChatMessage>): Int? =
-            messages.filter { !it.incoming && it.jsonMessageId > 0 }
+            messages.filter { !it.incoming && it.jsonMessageId > 0 && !it.isSystemMessage }
                 .maxOfOrNull { it.jsonMessageId }
 
         /**
