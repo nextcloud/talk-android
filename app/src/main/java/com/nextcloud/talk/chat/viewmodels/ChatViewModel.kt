@@ -2142,10 +2142,9 @@ class ChatViewModel @AssistedInject constructor(
      * [markPendingReadMarker] runs synchronously, before anything is launched, so the marker is
      * armed the instant this returns: the marker commonly races a room list sync, e.g. the conversation
      * list's own resume-triggered sync, and that race is only guarded correctly if the pending marker already
-     * exists by the time the sync's response is merged. [updateLocalReadState] itself does two
-     * suspending database reads before writing - registering the marker only there, inside a
-     * launched coroutine, previously left a real gap (observed at ~250ms, more under main-thread
-     * contention) during which such a sync could see no pending marker yet and apply unguarded.
+     * exists by the time the sync's response is merged. [updateLocalReadState] does suspending
+     * database reads before it writes, so a sync merged meanwhile would find no pending marker yet
+     * and apply unguarded.
      */
     fun markChatAsRead(lastReadMessage: Int) {
         // marking as read is the explicit counterpart of marking as unread and hands the read marker
@@ -2838,8 +2837,9 @@ class ChatViewModel @AssistedInject constructor(
         /**
          * The new read marker for [messageId], or null when the conversation is already read that far. The server
          * sets the marker to a message at the moment the user sends it, so the marker is never below the newest
-         * own message: that would move the marker back and leave the message with a single check mark for the
-         * other participants.
+         * confirmed own message: that would move the marker back and leave the message with a single check mark
+         * for the other participants. A message still on its way is not known here yet; once it is confirmed it
+         * becomes the newest message on screen and is reported on its own.
          */
         internal fun localReadMarker(messageId: Int, conversationLastReadMessage: Int, newestOwnMessageId: Int?): Int? =
             maxOf(messageId, newestOwnMessageId ?: 0).takeIf { it > conversationLastReadMessage }
