@@ -10,6 +10,7 @@ package com.nextcloud.talk.call
 import android.app.Application
 import android.content.Context
 import android.os.Looper
+import android.telecom.DisconnectCause
 import androidx.core.telecom.CallAttributesCompat
 import com.nextcloud.talk.logger.Logger
 import kotlinx.coroutines.Dispatchers
@@ -467,5 +468,105 @@ class TelecomManagerTest {
 
         shadowOf(Looper.getMainLooper()).idle()
         assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    private fun addIncomingCall(roomToken: String = "roomA"): String =
+        telecomManager.addIncomingCall(
+            displayName = "User 1",
+            roomToken = roomToken,
+            isVideo = false,
+            onAnswerCall = {},
+            onRejectCall = {}
+        )
+
+    @Test
+    fun testRingingIncomingCallIsWaitingForUserAndCanBeEndedByItsRegistration() {
+        val registrationId = addIncomingCall()
+        assertTrue(telecomManager.isWaitingForUser(registrationId))
+
+        telecomManager.endUnattendedIncomingCall(registrationId, DisconnectCause.MISSED)
+
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+        assertFalse(telecomManager.isWaitingForUser(registrationId))
+    }
+
+    @Test
+    fun testUnattendedIncomingCallOfAnotherRegistrationIsNotEnded() {
+        // e.g. the ring check of an older call for the same room
+        val olderRegistrationId = addIncomingCall()
+        telecomManager.endCurrentCall("roomA")
+        val registrationId = addIncomingCall()
+
+        telecomManager.endUnattendedIncomingCall(olderRegistrationId, DisconnectCause.MISSED)
+
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+        assertTrue(telecomManager.isWaitingForUser(registrationId))
+    }
+
+    @Test
+    fun testIgnoredIncomingCallRegistrationIsNeverWaitingForUser() {
+        telecomManager.addOutgoingCall(displayName = "User 1", roomToken = "roomA", isVideo = false)
+        val registrationId = addIncomingCall("roomB")
+
+        assertFalse(telecomManager.isWaitingForUser(registrationId))
+        telecomManager.endUnattendedIncomingCall(registrationId, DisconnectCause.MISSED)
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testCallAnsweredViaTelecomStaysUnattendedUntilTheAppTakesItOver() {
+        val registrationId = addIncomingCall()
+        var answered = false
+
+        telecomManager.onAnsweredViaTelecom(registrationId) { answered = true }
+
+        assertTrue(answered)
+        assertTrue(telecomManager.isWaitingForUser(registrationId))
+        assertTrue(telecomManager.isAnsweredNotTakenOver(registrationId))
+        // the ring check of the notification doesn't apply anymore
+        telecomManager.endRingingCall("roomA")
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+
+        telecomManager.endUnattendedIncomingCall(registrationId, DisconnectCause.MISSED)
+        assertFalse(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testCallAnsweredViaTelecomIsTakenOverWhenTheCallScreenOpens() {
+        val registrationId = addIncomingCall()
+        telecomManager.onAnsweredViaTelecom(registrationId) {}
+
+        telecomManager.markIncomingCallAnswered("roomA")
+
+        assertFalse(telecomManager.isWaitingForUser(registrationId))
+        assertFalse(telecomManager.isAnsweredNotTakenOver(registrationId))
+        telecomManager.endUnattendedIncomingCall(registrationId, DisconnectCause.MISSED)
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testCallAnsweredViaTelecomIsTakenOverWhenJoined() {
+        val registrationId = addIncomingCall()
+        telecomManager.onAnsweredViaTelecom(registrationId) {}
+
+        telecomManager.setCallActive("roomA", onDisconnectCall = {})
+
+        assertFalse(telecomManager.isWaitingForUser(registrationId))
+        telecomManager.endUnattendedIncomingCall(registrationId, DisconnectCause.MISSED)
+        assertTrue(telecomManager.hasActiveCall("roomA"))
+    }
+
+    @Test
+    fun testAnswerOfAnEndedRegistrationIsIgnored() {
+        val olderRegistrationId = addIncomingCall()
+        telecomManager.endCurrentCall("roomA")
+        val registrationId = addIncomingCall()
+        var answered = false
+
+        telecomManager.onAnsweredViaTelecom(olderRegistrationId) { answered = true }
+
+        assertFalse(answered)
+        assertFalse(telecomManager.isAnsweredNotTakenOver(registrationId))
+        assertTrue(telecomManager.isWaitingForUser(registrationId))
     }
 }
