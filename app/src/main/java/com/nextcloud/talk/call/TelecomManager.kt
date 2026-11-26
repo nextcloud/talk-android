@@ -189,9 +189,11 @@ class TelecomManager @Inject constructor(private val context: Context, private v
                 registrationJob?.join()
                 callsManager.addCall(
                     callAttributes = callAttributes,
-                    onAnswer = { _ -> onAnswer?.invoke() },
+                    // A callback of a call that was already ended locally must not act on a newer registration
+                    onAnswer = { _ -> if (currentRegistrationId == registrationId) onAnswer?.invoke() },
                     onDisconnect = { _ ->
-                        val handlerToInvoke = currentDisconnectHandler
+                        val isCurrentRegistration = currentRegistrationId == registrationId
+                        val handlerToInvoke = currentDisconnectHandler.takeIf { isCurrentRegistration }
                         handleCallDisconnected(registrationId)
                         handlerToInvoke?.invoke()
                     },
