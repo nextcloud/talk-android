@@ -1013,7 +1013,10 @@ class ChatActivity :
                             onCopy = { copyMessage(msg) },
                             onDismiss = { chatViewModel.dismissMessageActions() }
                         )
-                    } else {
+                    } else if (participantPermissions != null && ::spreedCapabilities.isInitialized) {
+                        // The selected message id survives activity recreation in the ViewModel, so the sheet
+                        // can be composed before capabilities are loaded. participantPermissions is set together
+                        // with spreedCapabilities and triggers recomposition once they are available.
                         MessageActionsBottomSheet(
                             actionsState = buildMessageActionsState(
                                 message = msg,
