@@ -114,6 +114,8 @@ class ExternalAudioRouteController {
         pendingDevice = AudioDevice.NONE
         if (!accepted) {
             userSelectedDevice = currentDevice
+            // a later switch to the rejected device is not the app's doing anymore
+            lastRequestedDevice = AudioDevice.NONE
         }
     }
 

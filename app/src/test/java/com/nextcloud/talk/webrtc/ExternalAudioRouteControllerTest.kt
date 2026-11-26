@@ -78,6 +78,18 @@ class ExternalAudioRouteControllerTest {
     }
 
     @Test
+    fun `owner switching to a device whose request was rejected becomes the selection`() {
+        val controller = controllerOnEarpiece()
+        controller.select(AudioDevice.SPEAKER_PHONE, proximityNear = false)
+        controller.onRequestStarted(AudioDevice.SPEAKER_PHONE)
+        controller.onRequestFinished(AudioDevice.SPEAKER_PHONE, accepted = false)
+
+        assertNull(controller.onRouteReported(AudioDevice.SPEAKER_PHONE, phoneDevices, proximityNear = false))
+
+        assertEquals(AudioDevice.SPEAKER_PHONE, controller.userSelectedDevice)
+    }
+
+    @Test
     fun `selecting an unavailable device is refused`() {
         val controller = controllerOnEarpiece()
         assertEquals(AudioDevice.NONE, controller.select(AudioDevice.BLUETOOTH, proximityNear = false))
