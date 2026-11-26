@@ -2728,7 +2728,8 @@ class ChatActivity :
         val newFragment = FileAttachmentPreviewFragment.newInstance(
             files,
             currentConversation?.displayName ?: "",
-            CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
+            ::spreedCapabilities.isInitialized &&
+                CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
         )
         newFragment.setListener { selectedFiles, caption, compressImages, allowUpdate ->
             uploadFiles(selectedFiles, caption, compressImages, allowUpdate)
