@@ -22,7 +22,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Suppress("TooManyFunctions")
-class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
+class UsersRepositoryImpl(usersDaoProvider: () -> UsersDao) : UsersRepository {
+
+    constructor(usersDao: UsersDao) : this({ usersDao })
+
+    /** Resolved on first use, so that creating the repository does not open the database. */
+    private val usersDao by lazy(usersDaoProvider)
 
     override suspend fun getActiveUser(): User? = UserMapper.toModel(usersDao.getActiveUser())
 

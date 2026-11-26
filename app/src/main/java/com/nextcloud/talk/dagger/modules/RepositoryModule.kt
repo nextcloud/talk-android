@@ -106,7 +106,8 @@ class RepositoryModule {
         RemoteFileBrowserItemsRepositoryImpl(okHttpClient)
 
     @Provides
-    fun provideUsersRepository(database: TalkDatabase): UsersRepository = UsersRepositoryImpl(database.usersDao())
+    fun provideUsersRepository(database: dagger.Lazy<TalkDatabase>): UsersRepository =
+        UsersRepositoryImpl { database.get().usersDao() }
 
     @Provides
     fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository =
