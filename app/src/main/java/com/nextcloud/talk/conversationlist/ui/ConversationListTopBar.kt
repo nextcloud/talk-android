@@ -265,7 +265,13 @@ private fun SearchBarCardContent(
             )
             LaunchedEffect(Unit) { focusRequester.requestFocus() }
         } else {
-            SearchPlaceholder(modifier = textModifier.clickable { actions.onSearchActivate() })
+            SearchPlaceholder(
+                modifier = textModifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = actions.onSearchActivate
+                )
+            )
         }
         AnimatedVisibility(
             visible = showClearButton,
