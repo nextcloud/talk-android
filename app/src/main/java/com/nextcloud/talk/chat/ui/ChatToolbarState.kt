@@ -43,6 +43,8 @@ data class ChatToolbarState(
     val isClassified: Boolean = false,
     /** Number of selected messages; the toolbar shows the selection actions instead of the conversation while > 0. */
     val selectedCount: Int = 0,
-    /** Whether at least one selected message can be forwarded. */
-    val canForwardSelection: Boolean = false
+    /** Whether every selected message can be forwarded. */
+    val canForwardSelection: Boolean = false,
+    /** Whether every selected message can be deleted. */
+    val canDeleteSelection: Boolean = false
 )

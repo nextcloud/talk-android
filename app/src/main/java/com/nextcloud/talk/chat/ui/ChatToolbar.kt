@@ -143,6 +143,9 @@ private fun ToolbarActions(state: ChatToolbarState, callbacks: ChatToolbarCallba
         IconButton(onClick = callbacks.onSelectionCopy) {
             Icon(painterResource(R.drawable.ic_content_copy), stringResource(R.string.nc_copy_message))
         }
+        if (state.canDeleteSelection) {
+            SelectionDeleteAction(selectedCount = state.selectedCount, onDelete = callbacks.onSelectionDelete)
+        }
     } else if (state.isSearchMode) {
         IconButton(onClick = callbacks.onSearchPrevious) {
             Icon(

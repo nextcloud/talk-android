@@ -443,6 +443,7 @@ class ChatActivity :
     lateinit var sharedText: String
     private var forwardedTexts: List<String> = emptyList()
     private var forwardSelectionJob: Job? = null
+    private var deleteSelectionJob: Job? = null
     private var sharedFilePaths: List<String> = emptyList()
 
     // Whether the shared text and files of the intent were taken. A chat recreated after its process was killed gets
@@ -2088,15 +2089,25 @@ class ChatActivity :
                     ) {
                         value = selectionForwardTextsOrNull(selectedMessageIds, isOnline) != null
                     }
+                    val canDeleteSelection by produceState(
+                        false,
+                        selectedMessageIds,
+                        isOnline,
+                        participantPermissions
+                    ) {
+                        value = selectionDeleteIdsOrNull(selectedMessageIds, isOnline) != null
+                    }
                     ChatToolbar(
                         state = chatToolbarState.copy(
                             selectedCount = selectedMessageIds.size,
-                            canForwardSelection = canForwardSelection
+                            canForwardSelection = canForwardSelection,
+                            canDeleteSelection = canDeleteSelection
                         ),
                         callbacks = ChatToolbarCallbacks(
                             onSelectionClose = { chatViewModel.messageSelection.clear() },
                             onSelectionForward = { forwardSelectedMessages() },
                             onSelectionCopy = { copySelectedMessages() },
+                            onSelectionDelete = { deleteSelectedMessages() },
                             onNavigateUp = { onBackPressedDispatcher.onBackPressed() },
                             onTitleClick = { showConversationInfoScreen() },
                             onVoiceCall = { startACall(true, false) },
@@ -3511,6 +3522,10 @@ class ChatActivity :
         ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
 
     fun deleteMessage(message: ChatMessage) {
+        deleteMessages(chatViewModel.messageIdsToDelete(message.jsonMessageId))
+    }
+
+    private fun deleteMessages(messageIds: List<Int>) {
         if (participantPermissionsFlow.value?.hasChatPermission() != true) {
             logger.e(
                 TAG,
@@ -3522,7 +3537,7 @@ class ChatActivity :
             // FIXME Fix API checking with guests?
             val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
-            val urlsByMessageId = chatViewModel.messageIdsToDelete(message.jsonMessageId).associateWith { id ->
+            val urlsByMessageId = messageIds.associateWith { id ->
                 ApiUtils.getUrlForChatMessage(
                     apiVersion,
                     conversationUser.baseUrl!!,
@@ -3617,6 +3632,42 @@ class ChatActivity :
         val messages = loadSelectedMessages(ids)
         return forwardTextsOrNull(messages) { canForwardOrNull(it, isOnline) == true }
             ?.takeIf { messages.size == ids.size }
+    }
+
+    /**
+     * The ids to delete for [selectedIds] (a selected media group file stands for its whole group), or null when any
+     * of the messages cannot be loaded or deleted.
+     */
+    private suspend fun selectionDeleteIdsOrNull(selectedIds: Set<Int>, isOnline: Boolean): List<Int>? {
+        if (!::spreedCapabilities.isInitialized) {
+            return null
+        }
+        val ids = chatViewModel.messageIdsToForward(selectedIds)
+        val messages = loadSelectedMessages(ids)
+        return ids.takeIf {
+            ids.isNotEmpty() &&
+                messages.size == ids.size &&
+                messages.all { actionsStateFor(it, isOnline).showDelete }
+        }
+    }
+
+    private fun deleteSelectedMessages() {
+        // a second confirmation while the messages load must not send the deletes twice
+        if (deleteSelectionJob?.isActive == true) {
+            return
+        }
+        deleteSelectionJob = lifecycleScope.launch {
+            val ids = selectionDeleteIdsOrNull(
+                chatViewModel.messageSelection.ids.value,
+                networkMonitor.isOnline.value
+            )
+            if (ids == null) {
+                Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            chatViewModel.messageSelection.clear()
+            deleteMessages(ids)
+        }
     }
 
     private fun copySelectedMessages() {
