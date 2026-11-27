@@ -953,8 +953,7 @@ class ChatActivity :
                         callbacks = ChatViewCallbacks(
                             onLoadMore = { messageId, direction -> loadMoreMessages(messageId, direction) },
                             onJumpToBottom = { chatViewModel.switchToDefaultMode() },
-                            advanceLocalLastReadMessageIfNeeded = { advanceLocalLastReadMessageIfNeeded(it) },
-                            updateRemoteLastReadMessageIfNeeded = { updateRemoteLastReadMessageIfNeeded() },
+                            onNewestMessageSeen = { chatViewModel.onNewestMessageSeen(it) },
                             onLoadQuotedMessageClick = { messageId -> onLoadQuotedMessage(messageId) },
                             messageCallbacks = ChatMessageCallbacks(
                                 onLongClick = { openMessageActionsDialog(it) },
@@ -2915,20 +2914,6 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
-
-        // Updating remote last-read in onPause has a race condition with conversation loading.
-        // for conversation list. It may or may not include info about the sent last read message...
-        // -> save this field offline in conversation. when getting new conversations, do not overwrite
-        // lastReadMessage if offline has higher value
-        updateRemoteLastReadMessageIfNeeded()
-    }
-
-    private fun advanceLocalLastReadMessageIfNeeded(messageId: Int) {
-        chatViewModel.advanceLocalLastReadMessageIfNeeded(messageId)
-    }
-
-    private fun updateRemoteLastReadMessageIfNeeded() {
-        chatViewModel.updateRemoteLastReadMessageIfNeeded()
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
@@ -3781,7 +3766,7 @@ class ChatActivity :
     }
 
     private fun markAsRead(messageId: Int) {
-        chatViewModel.setChatReadMessage(messageId)
+        chatViewModel.markChatAsRead(messageId)
     }
 
     /**

@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +36,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * The read marker path of the real [ChatViewModel] when the chat is left: updateRemoteLastReadMessageIfNeeded ->
+ * The read marker path of the real [ChatViewModel] once the newest message was seen: onNewestMessageSeen ->
  * local read state in the repository -> ReadMarkerSyncWorker. The repository is a fake that keeps the stored
  * read marker like Room does: the view model sees it as conversation.lastReadMessage afterwards.
  */
@@ -46,7 +45,6 @@ import org.robolectric.annotation.Config
 @Config(sdk = [33])
 class ChatViewModelReadMarkerTest {
 
-    private val calls = mutableListOf<Pair<String, Any?>>()
     private lateinit var viewModel: ChatViewModel
 
     // the setter of the singleton is protected: only the real application sets it
@@ -65,7 +63,6 @@ class ChatViewModelReadMarkerTest {
         sharedApplicationField.set(null, application)
 
         viewModel = newViewModel()
-        viewModel.advanceLocalLastReadMessageIfNeeded(LOCAL_MARKER)
         storedMarker(STORED_MARKER)
     }
 
@@ -75,35 +72,21 @@ class ChatViewModelReadMarkerTest {
     }
 
     @Test
-    fun `leaving the chat with an own message queued still updates the local read state`() {
+    fun `an own message on its way does not hold the marker back`() {
         messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
 
-        viewModel.updateRemoteLastReadMessageIfNeeded()
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
-        assertTrue("local read state written: $calls", calls.any { it.first.startsWith("updateLocal") })
-        assertEquals("no marker is sent to the server", 0, queuedMarkers())
-    }
-
-    @Test
-    fun `a marker held back by a queued own message is sent once that message failed`() {
-        messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        viewModel.updateRemoteLastReadMessageIfNeeded()
-        shadowOf(Looper.getMainLooper()).idle()
-        assertEquals(0, queuedMarkers())
-
-        messages(ownMessage(-77, SendStatus.FAILED), incomingMessage(LOCAL_MARKER))
-        viewModel.updateRemoteLastReadMessageIfNeeded()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        assertEquals("the marker reaches the server after the failure", 1, queuedMarkers())
+        assertEquals("marker is sent", 1, queuedMarkers())
+        assertEquals(LOCAL_MARKER, storedMarkerValue)
     }
 
     @Test
     fun `a confirmed own message moves the marker to the message and sends it`() {
         messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
 
-        viewModel.updateRemoteLastReadMessageIfNeeded()
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
         assertEquals("marker is sent", 1, queuedMarkers())
@@ -111,22 +94,11 @@ class ChatViewModelReadMarkerTest {
     }
 
     @Test
-    fun `a window around an old message does not make the view model forget a queued own message`() {
-        messages(ownMessage(-77, SendStatus.PENDING), incomingMessage(LOCAL_MARKER))
-        openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
-
-        viewModel.updateRemoteLastReadMessageIfNeeded()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        assertEquals("nothing is sent below the queued own message", 0, queuedMarkers())
-    }
-
-    @Test
     fun `a window around an old message does not make the view model forget the own message just sent`() {
         messages(ownMessage(OWN_MESSAGE_ID, null), incomingMessage(LOCAL_MARKER))
         openOldMessageWindow(incomingMessage(OLD_MESSAGE_ID))
 
-        viewModel.updateRemoteLastReadMessageIfNeeded()
+        viewModel.onNewestMessageSeen(LOCAL_MARKER)
         shadowOf(Looper.getMainLooper()).idle()
 
         assertEquals("marker is sent", 1, queuedMarkers())
@@ -174,7 +146,6 @@ class ChatViewModelReadMarkerTest {
 
     private fun repositoryAnswer(invocation: InvocationOnMock): Any? {
         val name = invocation.method.name
-        calls.add(name to invocation.arguments.firstOrNull())
         if (name == "updateLocalReadState") {
             storedMarker(invocation.arguments[0] as Int)
             return Unit

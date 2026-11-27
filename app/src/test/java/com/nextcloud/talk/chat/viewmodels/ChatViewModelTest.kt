@@ -65,6 +65,27 @@ class ChatViewModelTest {
         assertNull(ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
     }
 
+    @Test
+    fun `marker skips system messages and is placed at the first unread regular message`() {
+        val messages = listOf(uiMessage(40), systemMessage(41), uiMessage(42), systemMessage(43))
+
+        assertEquals(42, ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
+    @Test
+    fun `no marker is placed when only system messages follow the boundary`() {
+        val messages = listOf(uiMessage(39), uiMessage(40), systemMessage(41), systemMessage(42))
+
+        assertNull(ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
+    @Test
+    fun `a read system message proves the boundary is visible`() {
+        val messages = listOf(systemMessage(40), uiMessage(41))
+
+        assertEquals(41, ChatViewModel.findFirstUnreadMessageId(messages, lastReadMessage = 40))
+    }
+
     // holdsShare(): whether a share to the note to self that failed transiently already arrived.
     // The server stores a reference id without ever looking at it again, so it deduplicates nothing
     // and a second attempt that is not needed posts the message twice.
@@ -469,94 +490,38 @@ class ChatViewModelTest {
     // message 2624 while the client's local marker still was 2623. The decision is made on the message
     // list from the database, not on the rendered items, which lag behind it.
 
-    private fun readMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
-        ChatViewModel.readMarkerToSend(
-            localLastReadMessage = local,
-            conversationLastReadMessage = conversation,
-            newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages),
-            hasUnconfirmedOwnMessage = ChatViewModel.hasUnconfirmedOwnMessage(messages)
-        )
-
-    @Test
-    fun `read marker is not sent below the own message just sent`() {
-        assertEquals(2624, readMarker(listOf(ownMessage(2624), incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker is not sent while the own message is on its way to the server`() {
-        // the request is in flight: the server may have accepted the message, the answer is not processed yet
-        assertNull(readMarker(listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker is not sent while the own message waits for its server copy`() {
-        assertNull(readMarker(listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))))
-    }
-
     private fun localReadMarker(messages: List<ChatMessage>, local: Int = 2623, conversation: Int = 2620): Int? =
         ChatViewModel.localReadMarker(
-            localLastReadMessage = local,
+            messageId = local,
             conversationLastReadMessage = conversation,
             newestOwnMessageId = ChatViewModel.newestOwnMessageId(messages)
         )
 
     @Test
-    fun `local read state is still written while the own message waits to be sent offline`() {
-        // 5 unread messages read offline, then a reply that is only queued (PENDING): the server request
-        // has to wait, the conversation list must not keep showing the messages as unread
+    fun `read marker is not below the own message just sent`() {
+        val messages = listOf(ownMessage(2624), incomingMessage(2623))
+
+        assertEquals(2624, localReadMarker(messages))
+    }
+
+    @Test
+    fun `read marker ignores an own message that is still on its way`() {
+        // the server copy of the message is reported on its own once it arrives
         val messages = listOf(ownMessage(-77, SendStatus.PENDING), incomingMessage(2623))
 
-        assertNull(readMarker(messages))
         assertEquals(2623, localReadMarker(messages))
     }
 
     @Test
-    fun `local read state is still written while the own message waits for its server copy`() {
-        val messages = listOf(ownMessage(-77, SendStatus.SENT_PENDING_ACK), incomingMessage(2623))
-
-        assertNull(readMarker(messages))
-        assertEquals(2623, localReadMarker(messages))
-    }
-
-    @Test
-    fun `local read state is not written below the own message just sent`() {
-        assertEquals(2624, localReadMarker(listOf(ownMessage(2624), incomingMessage(2623))))
-    }
-
-    @Test
-    fun `local read state is not written when the conversation already has it`() {
+    fun `read marker is not changed when the conversation already has it`() {
         assertNull(localReadMarker(listOf(incomingMessage(2623)), local = 2620, conversation = 2620))
     }
 
     @Test
-    fun `read marker is sent when the own message failed to send`() {
-        assertEquals(2623, readMarker(listOf(ownMessage(-77, SendStatus.FAILED), incomingMessage(2623))))
-    }
+    fun `read marker of the incoming messages is used when the user sent nothing`() {
+        val messages = listOf(incomingMessage(2623), incomingMessage(2622))
 
-    @Test
-    fun `read marker is sent while a file of the user is still uploading`() {
-        val upload = ownMessage(-5, SendStatus.PENDING).apply {
-            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
-        }
-        assertEquals(2623, readMarker(listOf(upload, incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker waits for a file of the user that was shared`() {
-        val shared = ownMessage(-5, SendStatus.SENT_PENDING_ACK).apply {
-            messageParameters = hashMapOf("file" to hashMapOf("type" to "file"))
-        }
-        assertNull(readMarker(listOf(shared, incomingMessage(2623))))
-    }
-
-    @Test
-    fun `read marker of the incoming messages is sent when the user sent nothing`() {
-        assertEquals(2623, readMarker(listOf(incomingMessage(2623), incomingMessage(2622))))
-    }
-
-    @Test
-    fun `read marker is not sent when the server already has it`() {
-        assertNull(ChatViewModel.readMarkerToSend(2624, 2624, newestOwnMessageId = 2624, false))
+        assertEquals(2623, localReadMarker(messages))
     }
 
     @Test
@@ -570,6 +535,81 @@ class ChatViewModelTest {
 
         assertEquals(2624, ChatViewModel.newestOwnMessageId(messages))
     }
+
+    @Test
+    fun `newest own message ignores system messages of the user`() {
+        // starting a call adds a system message with the user as actor; the server does not move the marker
+        val callStarted = ChatMessage(systemMessageType = ChatMessage.SystemMessageType.CALL_STARTED).apply {
+            jsonMessageId = 2630
+            incoming = false
+        }
+
+        assertEquals(2624, ChatViewModel.newestOwnMessageId(listOf(callStarted, ownMessage(2624))))
+    }
+
+    // newestReportableMessageId(): the message the read marker is moved to while the newest messages are
+    // on screen. Items run newest first, like the chat list.
+
+    @Test
+    fun `newest reportable message is the newest message`() {
+        val items = listOf(messageItem(42), messageItem(41))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `system messages at the end are not reportable`() {
+        val items = listOf(systemMessageItem(44), systemMessageItem(43), messageItem(42), messageItem(41))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `temporary messages are not reportable`() {
+        val items = listOf(messageItem(-77), messageItem(0), messageItem(42))
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `uploading files of a media group are not reportable`() {
+        val group = ChatViewModel.ChatItem.MediaGroupItem(
+            listOf(
+                mediaMessage(42, referenceId = "batch"),
+                mediaMessage(-5, referenceId = "batch", isTemporary = true)
+            )
+        )
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(listOf(group, messageItem(41))))
+    }
+
+    @Test
+    fun `items without messages are skipped`() {
+        val items = listOf(
+            ChatViewModel.ChatItem.UnreadMessagesMarkerItem(LocalDate.of(2026, 8, 12)),
+            ChatViewModel.ChatItem.DateHeaderItem(LocalDate.of(2026, 8, 12)),
+            messageItem(42)
+        )
+
+        assertEquals(42, ChatViewModel.newestReportableMessageId(items))
+    }
+
+    @Test
+    fun `empty list has no reportable message`() {
+        assertNull(ChatViewModel.newestReportableMessageId(emptyList()))
+    }
+
+    @Test
+    fun `only system messages have no reportable message`() {
+        val items = listOf(systemMessageItem(44), systemMessageItem(43))
+
+        assertNull(ChatViewModel.newestReportableMessageId(items))
+    }
+
+    private fun systemMessageItem(id: Int): ChatViewModel.ChatItem.MessageItem =
+        ChatViewModel.ChatItem.MessageItem(systemMessage(id))
+
+    private fun systemMessage(id: Int): ChatMessageUi = uiMessage(id).copy(content = MessageTypeContent.SystemMessage)
 
     private fun incomingMessage(id: Int): ChatMessage =
         ChatMessage().apply {

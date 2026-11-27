@@ -338,10 +338,6 @@ class DummyConversationDaoImpl : ConversationsDao {
         /* */
     }
 
-    override suspend fun updateUnreadMessages(internalId: String, unreadMessages: Int) {
-        /* */
-    }
-
     override suspend fun updateLastCommonRead(internalId: String, lastCommonReadMessage: Int) {
         /* */
     }
