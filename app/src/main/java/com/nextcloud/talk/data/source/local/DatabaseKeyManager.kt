@@ -24,16 +24,19 @@ import java.io.File
 class PassphraseUnavailableException(message: String) : Exception(message)
 
 /**
- * Supplies the SQLCipher passphrase for [TalkDatabase].
+ * Supplies the SQLCipher key for [TalkDatabase].
  *
  * The passphrase is a 256-bit random value generated once per installation and never stored in
  * plaintext. It is wrapped with an AES-GCM key held in the AndroidKeyStore, which is device-bound
- * and non-exportable, and only the wrapped form is kept in [SharedPreferences].
+ * and non-exportable, and only the wrapped form is kept in [SharedPreferences]. The database is
+ * opened with its raw key ([PassphraseCipher.rawKeyOf]), and a database still on the passphrase is
+ * re-keyed to it once.
  *
  * A database created under the earlier static key ([R.string.nc_talk_database_encryption_key]) is
- * re-keyed to the per-install passphrase on first launch under this scheme. The static key is read
+ * re-keyed to the raw key of the per-install passphrase on first launch under this scheme. The static key is read
  * only for that one-time migration.
  */
+@Suppress("TooManyFunctions")
 object DatabaseKeyManager {
 
     private const val TAG = "DatabaseKeyManager"
@@ -64,8 +67,8 @@ object DatabaseKeyManager {
     private val lock = Any()
 
     /**
-     * Returns the SQLCipher passphrase for the database at [databasePath], provisioning it on first
-     * use and migrating a legacy database to it. Must be called before Room opens the file.
+     * Returns the SQLCipher key for the database at [databasePath], provisioning it on first use and
+     * migrating a legacy database to it. Must be called before Room opens the file.
      *
      * [prefsName] and [keyAlias] identify the storage and the AndroidKeyStore entry used; the
      * defaults are the production values and are only overridden by tests so they cannot touch the
@@ -74,7 +77,7 @@ object DatabaseKeyManager {
      * @throws PassphraseUnavailableException if a passphrase is stored but cannot be unwrapped right
      * now; the stored value is left intact for a later attempt.
      */
-    fun getPassphrase(
+    fun getDatabaseKey(
         context: Context,
         databasePath: String,
         prefsName: String = PREFS_NAME,
@@ -86,9 +89,9 @@ object DatabaseKeyManager {
             val dbFile = File(databasePath)
 
             when (val stored = readTracked(prefs, keyAlias, Slot.ACTIVE)) {
-                is StoredPassphrase.Present -> stored.value
+                is StoredPassphrase.Present -> keyFor(dbFile, stored.value)
                 StoredPassphrase.NotProvisioned -> provision(appContext, prefs, keyAlias, dbFile)
-                StoredPassphrase.PermanentlyLost -> recoverFromLostKey(appContext, prefs, keyAlias)
+                StoredPassphrase.PermanentlyLost -> recoverFromLostKey(appContext, prefs, keyAlias, dbFile)
                 StoredPassphrase.TemporarilyUnavailable ->
                     throw PassphraseUnavailableException(
                         "Stored database passphrase could not be unwrapped; refusing to replace it"
@@ -97,9 +100,9 @@ object DatabaseKeyManager {
         }
 
     /**
-     * Re-keys the database at [databasePath] from the legacy key to the stored passphrase, for a file
-     * that the stored passphrase cannot open. Returns whether the file is now on the stored
-     * passphrase; false if none is stored or the file is not on the legacy key.
+     * Re-keys the database at [databasePath] from the legacy key to the raw key of the stored
+     * passphrase, for a file that the stored key cannot open. Returns whether the file is now on it;
+     * false if none is stored or the file is not on the legacy key.
      */
     fun migrateLegacyDatabase(
         context: Context,
@@ -114,8 +117,26 @@ object DatabaseKeyManager {
             val stored = readWrapped(prefs, keyAlias, Slot.ACTIVE)
             stored is StoredPassphrase.Present &&
                 dbFile.exists() &&
-                SqlCipherRekeyer.rekey(dbFile, legacyPassphrase(appContext), stored.value)
+                SqlCipherRekeyer.rekey(dbFile, legacyPassphrase(appContext), PassphraseCipher.rawKeyOf(stored.value))
         }
+
+    /**
+     * Returns the raw key of [passphrase] for [dbFile], re-keying a file that is still on the
+     * passphrase itself. If that fails, e.g. as the file is on neither, the passphrase is returned and
+     * a later launch retries.
+     */
+    private fun keyFor(dbFile: File, passphrase: ByteArray): ByteArray {
+        val rawKey = PassphraseCipher.rawKeyOf(passphrase)
+        return if (
+            !dbFile.exists() ||
+            SqlCipherRekeyer.canOpen(dbFile, rawKey) ||
+            SqlCipherRekeyer.rekey(dbFile, passphrase, rawKey)
+        ) {
+            rawKey
+        } else {
+            passphrase
+        }
+    }
 
     /**
      * Reads [slot] and counts consecutive transient unwrap failures across launches, so a failure
@@ -153,15 +174,16 @@ object DatabaseKeyManager {
     }
 
     /**
-     * Provisions the passphrase when none is stored. A legacy database is re-keyed to a pending
-     * passphrase that is persisted before the re-key, so an interrupted migration never leaves the
-     * file on a key that is not stored; the pending passphrase becomes active once the file is on it.
+     * Provisions the passphrase when none is stored. A legacy database is re-keyed to the raw key of a
+     * pending passphrase that is persisted before the re-key, so an interrupted migration never leaves
+     * the file on a key that is not stored; the pending passphrase becomes active once the file is on
+     * its raw key.
      * Until then the legacy key is returned and a later launch retries.
      */
     private fun provision(context: Context, prefs: SharedPreferences, keyAlias: String, dbFile: File): ByteArray {
         if (!dbFile.exists()) {
             clearSlot(prefs, Slot.PENDING)
-            return provisionFresh(context, prefs, keyAlias)
+            return provisionFresh(context, prefs, keyAlias, dbFile)
         }
 
         val legacy = legacyPassphrase(context)
@@ -170,16 +192,24 @@ object DatabaseKeyManager {
         // only a pending passphrase from an earlier, interrupted attempt can already be on the file
         return if (pending != null && isOnPending(dbFile, legacy, pending)) {
             promotePending(prefs)
-            pending.value
+            keyFor(dbFile, pending.value)
         } else {
             legacy
         }
     }
 
-    /** Whether [dbFile] is on [pending], re-keying it from [legacy] if it is not yet. */
-    private fun isOnPending(dbFile: File, legacy: ByteArray, pending: PendingPassphrase): Boolean =
-        (pending.resumed && SqlCipherRekeyer.canOpen(dbFile, pending.value)) ||
-            SqlCipherRekeyer.rekey(dbFile, legacy, pending.value)
+    /**
+     * Whether [dbFile] is on [pending] or its raw key, re-keying it from [legacy] to the raw key if it
+     * is on neither yet.
+     */
+    private fun isOnPending(dbFile: File, legacy: ByteArray, pending: PendingPassphrase): Boolean {
+        val rawKey = PassphraseCipher.rawKeyOf(pending.value)
+        return (
+            pending.resumed &&
+                (SqlCipherRekeyer.canOpen(dbFile, rawKey) || SqlCipherRekeyer.canOpen(dbFile, pending.value))
+            ) ||
+            SqlCipherRekeyer.rekey(dbFile, legacy, rawKey)
+    }
 
     /**
      * Returns the passphrase a legacy database is being migrated to, creating and persisting one if
@@ -219,11 +249,11 @@ object DatabaseKeyManager {
      * persisted the legacy key is returned instead, and the database created with it is migrated on a
      * later launch.
      */
-    private fun provisionFresh(context: Context, prefs: SharedPreferences, keyAlias: String): ByteArray {
+    private fun provisionFresh(context: Context, prefs: SharedPreferences, keyAlias: String, dbFile: File): ByteArray {
         val passphrase = PassphraseCipher.randomPassphrase()
         val wrapped = PassphraseCipher.tryWrap(keyAlias, passphrase)
         return if (wrapped != null && writeWrapped(prefs, Slot.ACTIVE, wrapped)) {
-            passphrase
+            keyFor(dbFile, passphrase)
         } else {
             legacyPassphrase(context)
         }
@@ -234,10 +264,15 @@ object DatabaseKeyManager {
      * can never be unwrapped again, so it and the dead key are discarded and a fresh passphrase is
      * provisioned. The now-undecryptable database file is recreated by [TalkDatabase.build].
      */
-    private fun recoverFromLostKey(context: Context, prefs: SharedPreferences, keyAlias: String): ByteArray {
+    private fun recoverFromLostKey(
+        context: Context,
+        prefs: SharedPreferences,
+        keyAlias: String,
+        dbFile: File
+    ): ByteArray {
         clearSlot(prefs, Slot.ACTIVE)
         PassphraseCipher.deleteWrappingKey(keyAlias)
-        return provisionFresh(context, prefs, keyAlias)
+        return provisionFresh(context, prefs, keyAlias, dbFile)
     }
 
     /**

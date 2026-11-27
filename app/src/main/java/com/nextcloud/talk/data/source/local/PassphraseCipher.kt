@@ -58,6 +58,15 @@ internal object PassphraseCipher {
     }
 
     /**
+     * Returns the SQLCipher raw key data for a passphrase of [randomPassphrase]: its random bytes in the form
+     * `x'<hex>'`, which SQLCipher uses as the key directly instead of deriving one with PBKDF2.
+     */
+    fun rawKeyOf(passphrase: ByteArray): ByteArray {
+        val hex = Base64.decode(passphrase, Base64.NO_WRAP).joinToString("") { "%02x".format(it) }
+        return "x'$hex'".toByteArray(Charsets.US_ASCII)
+    }
+
+    /**
      * Unwraps the Base64-encoded [ciphertext] and [iv] with the key under [keyAlias], classifying
      * a failure as temporary (keystore unavailable) or permanent (key or data unrecoverable).
      */

@@ -21,6 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -159,6 +160,55 @@ class DatabaseKeyManagerTest {
     }
 
     @Test
+    fun freshDatabaseIsOnTheRawKey() {
+        buildTestDatabase().close()
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(unwrappedPassphrase()))
+        assertFileNotReadableWith(unwrappedPassphrase())
+    }
+
+    @Test
+    fun databaseOnThePassphraseIsRekeyedToTheRawKey() {
+        // a database of an earlier version, which used the stored passphrase itself as key
+        buildTestDatabase().close()
+        context.deleteDatabase(TEST_DB_NAME)
+        seedDatabase("heidi", unwrappedPassphrase())
+
+        val rekeyed = buildTestDatabase()
+        try {
+            val user = rekeyed.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive the re-key to the raw key", user)
+            assertEquals("heidi", user?.userId)
+        } finally {
+            rekeyed.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(unwrappedPassphrase()))
+        assertFileNotReadableWith(unwrappedPassphrase())
+    }
+
+    @Test
+    fun migrationOfAnEarlierVersionInterruptedBeforeActivationResumes() {
+        // an earlier version re-keyed the legacy file to the pending passphrase itself, then was interrupted
+        buildTestDatabase().close()
+        val passphrase = unwrappedPassphrase()
+        context.deleteDatabase(TEST_DB_NAME)
+        moveActiveToPending()
+        seedDatabase("ivan", passphrase)
+
+        val resumed = buildTestDatabase()
+        try {
+            val user = resumed.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive a migration of an earlier version interrupted before activation", user)
+            assertEquals("ivan", user?.userId)
+        } finally {
+            resumed.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(passphrase))
+    }
+
+    @Test
     fun corruptStoredPassphraseRecreatesDatabase() {
         val db = buildTestDatabase()
         runBlocking { db.usersDao().saveUser(activeUser("dave")) }
@@ -184,21 +234,41 @@ class DatabaseKeyManagerTest {
         TalkDatabase.build(context, TEST_DB_NAME, TEST_PREFS, TEST_KEY_ALIAS)
 
     private fun seedLegacyDatabase(userId: String, resetKeyState: Boolean = true) {
-        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
-        val legacyDb = Room
-            .databaseBuilder(context.applicationContext, TalkDatabase::class.java, TEST_DB_NAME)
-            .openHelperFactory(SupportOpenHelperFactory(legacyKey()))
-            .allowMainThreadQueries()
-            .build()
-        try {
-            runBlocking { legacyDb.usersDao().saveUser(activeUser(userId)) }
-        } finally {
-            legacyDb.close()
-        }
+        seedDatabase(userId, legacyKey())
         if (resetKeyState) {
             // the key manager must believe this is the first launch under the new scheme
             resetKeyManagerState()
         }
+    }
+
+    private fun seedDatabase(userId: String, key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        val db = Room
+            .databaseBuilder(context.applicationContext, TalkDatabase::class.java, TEST_DB_NAME)
+            .openHelperFactory(SupportOpenHelperFactory(key))
+            .allowMainThreadQueries()
+            .build()
+        try {
+            runBlocking { db.usersDao().saveUser(activeUser(userId)) }
+        } finally {
+            db.close()
+        }
+    }
+
+    private fun assertFileReadableWith(key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        assertTrue("Database must be readable with the key", SqlCipherRekeyer.canOpen(dbFile, key))
+    }
+
+    /** The stored passphrase, from the active slot or, if it was moved there, the pending one. */
+    private fun unwrappedPassphrase(): ByteArray {
+        val prefs = testPrefs()
+        val ciphertext = prefs.getString(DatabaseKeyManager.PREF_PASSPHRASE, null)
+            ?: prefs.getString(DatabaseKeyManager.PREF_PENDING_PASSPHRASE, null)
+        val iv = prefs.getString(DatabaseKeyManager.PREF_IV, null)
+            ?: prefs.getString(DatabaseKeyManager.PREF_PENDING_IV, null)
+        val stored = PassphraseCipher.unwrap(TEST_KEY_ALIAS, iv!!, ciphertext!!)
+        return (stored as StoredPassphrase.Present).value
     }
 
     private fun assertFileNotReadableWith(passphrase: ByteArray) {
