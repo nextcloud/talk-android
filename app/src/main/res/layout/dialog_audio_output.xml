@@ -162,4 +162,23 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/audio_input_headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_dialog_padding"
+        android:paddingTop="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_dialog_padding"
+        android:paddingBottom="@dimen/standard_padding"
+        android:text="@string/audio_input_dialog_headline"
+        android:textColor="@color/high_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_title_size" />
+
+    <LinearLayout
+        android:id="@+id/audio_input_device_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
 </LinearLayout>
