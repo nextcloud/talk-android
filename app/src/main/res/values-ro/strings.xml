@@ -544,6 +544,7 @@
     <string name="nc_search_clear">Golește căutarea</string>
     <string name="nc_search_location">Caută o locație</string>
     <string name="nc_select_an_account">Selectează un cont</string>
+    <string name="nc_select_message">Selecție</string>
     <string name="nc_send_edit_message">Actualizează mesajul</string>
     <string name="nc_send_later">Trimite mai târziu</string>
     <string name="nc_send_now">Trimite acum</string>
