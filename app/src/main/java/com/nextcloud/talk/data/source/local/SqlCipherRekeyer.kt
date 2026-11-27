@@ -17,8 +17,11 @@ internal object SqlCipherRekeyer {
 
     private const val JOURNAL_SUFFIX = "-journal"
 
-    /** Tables that only cache data of the server, which is loaded again when it is needed. */
-    private val CACHE_TABLES = listOf("ChatMessages", "ChatBlocks")
+    /**
+     * Tables of the chat message cache, which is loaded again from the server when it is needed. They also hold the
+     * messages that are not sent yet.
+     */
+    private val CACHE_TABLES = listOf("ChatBlocks", "ChatMessages")
 
     /**
      * Whether [passphrase] opens [dbFile]. A rollback journal left by an interrupted write makes a read-only open fail
@@ -72,18 +75,32 @@ internal object SqlCipherRekeyer {
         }
     }
 
-    /** Empties the [CACHE_TABLES] that exist, a database of an older version may not have all yet. */
+    /**
+     * Empties the [CACHE_TABLES] that exist, a database of an older version may not have all yet. A failure is only
+     * logged: the re-key works without it, it just takes longer.
+     */
+    @Suppress("TooGenericExceptionCaught")
     private fun clearCache(db: SQLiteDatabase) {
-        // SQLCipher overwrites deleted rows by default, which takes as long as rewriting the whole file. Not needed
-        // here: VACUUM removes the freed pages from the file.
-        db.rawQuery("PRAGMA secure_delete = OFF", emptyArray()).use { it.moveToFirst() }
-        CACHE_TABLES
-            .filter { table ->
-                db.rawQuery("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", arrayOf(table))
-                    .use { it.moveToFirst() }
+        try {
+            // SQLCipher overwrites deleted rows by default, which takes as long as rewriting the whole file. Not
+            // needed here: VACUUM removes the freed pages from the file.
+            db.rawQuery("PRAGMA secure_delete = OFF", emptyArray()).use { it.moveToFirst() }
+            db.beginTransaction()
+            try {
+                CACHE_TABLES
+                    .filter { table ->
+                        db.rawQuery("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", arrayOf(table))
+                            .use { it.moveToFirst() }
+                    }
+                    .forEach { table -> db.execSQL("DELETE FROM $table") }
+                db.setTransactionSuccessful()
+            } finally {
+                db.endTransaction()
             }
-            .forEach { table -> db.execSQL("DELETE FROM $table") }
-        // the rekey rewrites all pages of the file, also the ones the deleted rows leave empty
-        db.execSQL("VACUUM")
+            // the rekey rewrites all pages of the file, also the ones the deleted rows leave empty
+            db.execSQL("VACUUM")
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not clear the chat message cache before re-keying", e)
+        }
     }
 }
