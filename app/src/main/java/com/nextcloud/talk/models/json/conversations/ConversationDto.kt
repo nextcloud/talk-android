@@ -128,6 +128,21 @@ data class ConversationDto(
     @JsonField(name = ["messageExpiration"])
     var messageExpiration: Int = 0,
 
+    @JsonField(name = ["listable"])
+    var listable: Int = 0,
+
+    @JsonField(name = ["mentionPermissions"])
+    var mentionPermissions: Int = 0,
+
+    @JsonField(name = ["sipEnabled"])
+    var sipEnabled: Int = 0,
+
+    @JsonField(name = ["canEnableSIP"])
+    var canEnableSIP: Boolean = false,
+
+    @JsonField(name = ["attendeePin"])
+    var attendeePin: String? = null,
+
     @JsonField(name = ["status"])
     var status: String? = "",
 

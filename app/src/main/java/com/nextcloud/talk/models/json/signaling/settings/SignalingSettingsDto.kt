@@ -26,7 +26,9 @@ data class SignalingSettingsDto(
     @JsonField(name = ["ticket"])
     var externalSignalingTicket: String? = null,
     @JsonField(name = ["federation"])
-    var federation: FederationSettingsDto? = null
+    var federation: FederationSettingsDto? = null,
+    @JsonField(name = ["sipDialinInfo"])
+    var sipDialinInfo: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null, null)
