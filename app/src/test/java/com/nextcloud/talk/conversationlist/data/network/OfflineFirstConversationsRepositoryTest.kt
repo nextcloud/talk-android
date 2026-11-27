@@ -35,6 +35,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -55,7 +56,6 @@ import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
-import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
@@ -109,10 +109,15 @@ class OfflineFirstConversationsRepositoryTest {
         // every sync reads the stored ids before its request, for whichever account it syncs
         wheneverBlocking { dao.getConversationIdsForUser(any()) }.thenReturn(emptyList())
         stubStoredConversations()
+        // a sync that held a room back requests it again, in the background
+        whenever(dao.getConversationForUser(any(), any())).thenReturn(flowOf(null))
+        wheneverBlocking { chatNetworkDataSource.getRoom(any(), any()) }.thenThrow(IllegalStateException("offline"))
         whenever(arbitraryStorageManager.getStorageSetting(any(), any(), any()))
             .thenReturn(Maybe.empty())
-        whenever(conversationListUpdater.preservePendingLocalState(any(), any()))
+        wheneverBlocking { conversationListUpdater.preservePendingLocalState(any(), any(), any(), any()) }
             .thenAnswer { invocation -> invocation.getArgument<List<ConversationEntity>>(1) }
+        wheneverBlocking { conversationListUpdater.withServerWriteLock<Any?>(any(), any()) }
+            .doSuspendableAnswer { invocation -> invocation.getArgument<suspend () -> Any?>(1).invoke() }
 
         repository = OfflineFirstConversationsRepository(
             dao,
@@ -231,9 +236,8 @@ class OfflineFirstConversationsRepositoryTest {
         runTest {
             val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 2)
             whenever(network.getRooms(any(), any(), any(), anyOrNull())).thenReturn(roomList(listOf(room)))
-            dao.stub {
-                onBlocking { syncConversationsForUser(any(), any(), any()) } doSuspendableAnswer { awaitCancellation() }
-            }
+            // a write already under way is not interrupted by the budget, so the sync is held before it
+            whenever(dao.getConversationsForUser(ACCOUNT_ID)).thenReturn(flow { awaitCancellation() })
 
             assertNull(repository.syncRooms(user(), roomListTimeoutMillis = ROOM_LIST_TIMEOUT_MILLIS))
             verifyBlocking(chatMessageSyncer, never()) { catchUpRoom(any(), any(), anyOrNull(), any()) }
@@ -374,7 +378,9 @@ class OfflineFirstConversationsRepositoryTest {
 
             val previousCaptor = argumentCaptor<Map<String, ConversationEntity>>()
             val serverCaptor = argumentCaptor<List<ConversationEntity>>()
-            verify(conversationListUpdater).preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture())
+            verifyBlocking(conversationListUpdater) {
+                preservePendingLocalState(previousCaptor.capture(), serverCaptor.capture(), any(), any())
+            }
             assertEquals(mapOf(previous.internalId to previous), previousCaptor.firstValue)
             assertEquals(6L, serverCaptor.firstValue.first().lastActivity)
         }
@@ -628,6 +634,79 @@ class OfflineFirstConversationsRepositoryTest {
             delay(POLL_INTERVAL_MILLIS)
         }
     }
+
+    @Test
+    fun `a delta that drops a room does not advance the modified-since watermark`() =
+        runBlocking {
+            val room = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            // a room refresh wrote the entry after the delta was requested, so the merge drops the room
+            wheneverBlocking { conversationListUpdater.preservePendingLocalState(any(), any(), any(), any()) }
+                .thenReturn(emptyList())
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(Observable.just(RoomListResult(listOf(room), modifiedBefore = 5000, wasDelta = true)))
+
+            repository.syncRooms(user())
+
+            // the dropped room was never written, so the next delta must still cover it
+            verify(arbitraryStorageManager, never()).storeStorageSetting(
+                eq(ACCOUNT_ID),
+                eq("conversation_list_modified_since"),
+                any(),
+                any()
+            )
+        }
+
+    @Test
+    fun `a full sync whose deletion of a room was suppressed forces the next sync to be full`() =
+        runBlocking {
+            val stored = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0).asEntity(ACCOUNT_ID)
+            stubStoredConversations(stored)
+            // the room was refreshed after the sync was requested, so the sync must not delete it
+            wheneverBlocking { conversationListUpdater.hasNewerWrite(any(), any()) }.thenReturn(true)
+            val otherRoom = conversation(token = "roomB", lastActivity = 5, unreadMessages = 0)
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(Observable.just(RoomListResult(listOf(otherRoom), modifiedBefore = 5000, wasDelta = false)))
+
+            repository.syncRooms(user())
+
+            // the response did not fully land, so the next sync must fetch the whole list again
+            verify(arbitraryStorageManager).storeStorageSetting(
+                ACCOUNT_ID,
+                "conversation_list_modified_since",
+                null,
+                ""
+            )
+        }
+
+    @Test
+    fun `a room whose response kept the stored preview is requested again`() =
+        runBlocking<Unit> {
+            val response = conversation(token = ROOM_TOKEN, lastActivity = 9, unreadMessages = 0)
+            // the stored preview came from a later write, so the merge keeps it instead of the response's
+            wheneverBlocking { conversationListUpdater.preservePendingLocalState(any(), any(), any(), any()) }
+                .thenReturn(listOf(response.asEntity(ACCOUNT_ID).copy(lastActivity = 5)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(Observable.just(RoomListResult(listOf(response), modifiedBefore = 5000, wasDelta = false)))
+
+            repository.syncRooms(user())
+
+            verify(chatNetworkDataSource, timeout(2000)).getRoom(any(), eq(ROOM_TOKEN))
+        }
+
+    @Test
+    fun `a response with a lower activity that was applied is not requested again`() =
+        runBlocking<Unit> {
+            // the last message was deleted: the server's lower activity is legitimate
+            val response = conversation(token = ROOM_TOKEN, lastActivity = 5, unreadMessages = 0)
+            wheneverBlocking { conversationListUpdater.preservePendingLocalState(any(), any(), any(), any()) }
+                .thenReturn(listOf(response.asEntity(ACCOUNT_ID)))
+            whenever(network.getRooms(any(), any(), any(), anyOrNull()))
+                .thenReturn(Observable.just(RoomListResult(listOf(response), modifiedBefore = 5000, wasDelta = false)))
+
+            repository.syncRooms(user())
+
+            verify(chatNetworkDataSource, after(500).never()).getRoom(any(), any())
+        }
 
     @Test
     fun `a conversation that arrives while the request is in flight is not treated as left`() =

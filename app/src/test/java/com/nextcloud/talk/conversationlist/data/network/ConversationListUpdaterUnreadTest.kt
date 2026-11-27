@@ -120,42 +120,45 @@ class ConversationListUpdaterUnreadTest {
         }
 
     @Test
-    fun `marking read releases a pending unread, so the server's read state applies`() {
-        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
-        updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
+    fun `marking read releases a pending unread, so the server's read state applies`() =
+        runTest {
+            stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+            updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
 
-        updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+            updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
 
-        assertEquals(READ_UP_TO_NEWEST, updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
-        val read = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
-        assertEquals(READ_UP_TO_NEWEST, read.lastReadMessage)
-        assertEquals(0, read.unreadMessages)
-    }
-
-    @Test
-    fun `marking read without a marker, as in a federated conversation, still releases a pending unread`() {
-        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
-        updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
-
-        updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, lastReadMessage = null)
-
-        assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
-        assertEquals(0, preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0).unreadMessages)
-    }
+            assertEquals(READ_UP_TO_NEWEST, updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+            val read = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
+            assertEquals(READ_UP_TO_NEWEST, read.lastReadMessage)
+            assertEquals(0, read.unreadMessages)
+        }
 
     @Test
-    fun `marking unread drops a pending read marker and guards the unread state instead`() {
-        stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
-        updater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+    fun `marking read without a marker, as in a federated conversation, still releases a pending unread`() =
+        runTest {
+            stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+            updater.markPendingUnread(INTERNAL_CONVERSATION_ID)
 
-        updater.switchToPendingMarkAsUnread(INTERNAL_CONVERSATION_ID)
+            updater.switchToPendingMarkAsRead(INTERNAL_CONVERSATION_ID, lastReadMessage = null)
 
-        assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
-        // a response that still reports the conversation read does not overwrite the local unread state
-        val unread = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
-        assertEquals(MARKER, unread.lastReadMessage)
-        assertEquals(3, unread.unreadMessages)
-    }
+            assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+            assertEquals(0, preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0).unreadMessages)
+        }
+
+    @Test
+    fun `marking unread drops a pending read marker and guards the unread state instead`() =
+        runTest {
+            stored = stored.copy(lastReadMessage = MARKER, unreadMessages = 3)
+            updater.markPendingReadMarker(INTERNAL_CONVERSATION_ID, READ_UP_TO_NEWEST)
+
+            updater.switchToPendingMarkAsUnread(INTERNAL_CONVERSATION_ID)
+
+            assertNull(updater.pendingReadMarker(INTERNAL_CONVERSATION_ID))
+            // a response that still reports the conversation read does not overwrite the local unread state
+            val unread = preserve(serverLastRead = READ_UP_TO_NEWEST, serverUnread = 0)
+            assertEquals(MARKER, unread.lastReadMessage)
+            assertEquals(3, unread.unreadMessages)
+        }
 
     @Test
     fun `reading in the chat releases a mark as unread from the list`() =
@@ -183,12 +186,14 @@ class ConversationListUpdaterUnreadTest {
             assertEquals(4, preserve(serverLastRead = MARKER, serverUnread = 4).unreadMessages)
         }
 
-    private fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
+    private suspend fun preserve(serverLastRead: Int, serverUnread: Int): ConversationEntity =
         updater.preservePendingLocalState(
             previousConversations = mapOf(stored.internalId to stored),
             conversationsFromServer = listOf(
                 stored.copy(lastReadMessage = serverLastRead, unreadMessages = serverUnread)
-            )
+            ),
+            requestedAtNanos = System.nanoTime(),
+            ownUserId = "me"
         ).single()
 
     private fun givenCachedMessagesNewerThanMarker(count: Int) {

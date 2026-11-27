@@ -99,7 +99,8 @@ class ChatMessageSyncer @Inject constructor(
      *
      * [newestPersistedMessage] is the newest persisted message that qualifies as a conversation's
      * last message (system messages that never change a conversation's preview are skipped). It
-     * feeds the conversation list update after a background catch-up.
+     * feeds the conversation list update after a background catch-up. [newestMessageRequestedAtNanos]
+     * is the [System.nanoTime] at which the request that fetched it was started.
      *
      * [visibleMessageIds] are the ids of all persisted messages of this round that render as their
      * own bubble in an open chat (see [CHAT_HIDDEN_SYSTEM_MESSAGE_TYPES] — a different, broader
@@ -117,7 +118,8 @@ class ChatMessageSyncer @Inject constructor(
         val persistedMessageCount: Int = 0,
         val syncFailed: Boolean = false,
         val newestPersistedMessage: ChatMessageDto? = null,
-        val visibleMessageIds: List<Long> = emptyList()
+        val visibleMessageIds: List<Long> = emptyList(),
+        val newestMessageRequestedAtNanos: Long? = null
     )
 
     /**
@@ -509,7 +511,12 @@ class ChatMessageSyncer @Inject constructor(
             oldestPersistedMessageId = anchorOutcome.oldestPersistedMessageId,
             persistedMessageCount = anchorOutcome.persistedMessageCount + backlogOutcome.persistedMessageCount,
             syncFailed = backlogOutcome.syncFailed,
-            newestPersistedMessage = backlogOutcome.newestPersistedMessage ?: anchorOutcome.newestPersistedMessage
+            newestPersistedMessage = backlogOutcome.newestPersistedMessage ?: anchorOutcome.newestPersistedMessage,
+            newestMessageRequestedAtNanos = if (backlogOutcome.newestPersistedMessage != null) {
+                backlogOutcome.newestMessageRequestedAtNanos
+            } else {
+                anchorOutcome.newestMessageRequestedAtNanos
+            }
         )
     }
 
@@ -541,6 +548,7 @@ class ChatMessageSyncer @Inject constructor(
         var oldestPersisted: Long? = null
         var newestPersisted: Long? = null
         var newestPersistedMessage: ChatMessageDto? = null
+        var newestMessageRequestedAtNanos: Long? = null
 
         repeat(MAX_BACKLOG_ROUNDS) {
             val fieldMap = buildFieldMap(
@@ -560,7 +568,10 @@ class ChatMessageSyncer @Inject constructor(
                 totalCount += roundOutcome.persistedMessageCount
                 oldestPersisted = oldestPersisted ?: roundOutcome.oldestPersistedMessageId
                 newestPersisted = roundOutcome.newestPersistedMessageId ?: newestPersisted
-                newestPersistedMessage = roundOutcome.newestPersistedMessage ?: newestPersistedMessage
+                if (roundOutcome.newestPersistedMessage != null) {
+                    newestPersistedMessage = roundOutcome.newestPersistedMessage
+                    newestMessageRequestedAtNanos = roundOutcome.newestMessageRequestedAtNanos
+                }
             }
 
             val caughtUp = !roundOutcome.persistedNewMessages || roundOutcome.persistedMessageCount < limit
@@ -572,7 +583,8 @@ class ChatMessageSyncer @Inject constructor(
                     oldestPersistedMessageId = oldestPersisted,
                     persistedMessageCount = totalCount,
                     syncFailed = roundOutcome.syncFailed,
-                    newestPersistedMessage = newestPersistedMessage
+                    newestPersistedMessage = newestPersistedMessage,
+                    newestMessageRequestedAtNanos = newestMessageRequestedAtNanos
                 )
             }
             anchor = nextAnchor
@@ -605,7 +617,12 @@ class ChatMessageSyncer @Inject constructor(
             oldestPersistedMessageId = fallbackOutcome.oldestPersistedMessageId,
             persistedMessageCount = fallbackOutcome.persistedMessageCount,
             syncFailed = fallbackOutcome.syncFailed,
-            newestPersistedMessage = fallbackOutcome.newestPersistedMessage ?: newestPersistedMessage
+            newestPersistedMessage = fallbackOutcome.newestPersistedMessage ?: newestPersistedMessage,
+            newestMessageRequestedAtNanos = if (fallbackOutcome.newestPersistedMessage != null) {
+                fallbackOutcome.newestMessageRequestedAtNanos
+            } else {
+                newestMessageRequestedAtNanos
+            }
         )
     }
 
@@ -638,7 +655,7 @@ class ChatMessageSyncer @Inject constructor(
         var totalCount = 0
         var oldestPersisted: Long? = null
         var newestPersisted: Long? = null
-        var newestPersistedMessage: ChatMessageDto? = null
+        var newestMessageOutcome: SyncOutcome? = null
 
         repeat(MAX_VISIBLE_MESSAGE_ROUNDS) {
             val roundOutcome = pullAndPersistMessages(target, fieldMap, events)
@@ -655,7 +672,7 @@ class ChatMessageSyncer @Inject constructor(
             }
             val foundNewVisibleMessage = roundOutcome.visibleMessageIds.any { it != knownAnchorId }
             if (foundNewVisibleMessage) {
-                newestPersistedMessage = roundOutcome.newestPersistedMessage
+                newestMessageOutcome = roundOutcome
             }
 
             val nextAnchor = if (lookIntoFuture) {
@@ -672,7 +689,8 @@ class ChatMessageSyncer @Inject constructor(
                     oldestPersistedMessageId = oldestPersisted,
                     persistedMessageCount = totalCount,
                     syncFailed = roundOutcome.syncFailed,
-                    newestPersistedMessage = newestPersistedMessage
+                    newestPersistedMessage = newestMessageOutcome?.newestPersistedMessage,
+                    newestMessageRequestedAtNanos = newestMessageOutcome?.newestMessageRequestedAtNanos
                 )
             }
 
@@ -691,7 +709,8 @@ class ChatMessageSyncer @Inject constructor(
             newestPersistedMessageId = newestPersisted,
             oldestPersistedMessageId = oldestPersisted,
             persistedMessageCount = totalCount,
-            newestPersistedMessage = newestPersistedMessage
+            newestPersistedMessage = newestMessageOutcome?.newestPersistedMessage,
+            newestMessageRequestedAtNanos = newestMessageOutcome?.newestMessageRequestedAtNanos
         )
     }
 
@@ -738,6 +757,7 @@ class ChatMessageSyncer @Inject constructor(
                     return@flow
                 }
 
+                val requestedAtNanos = System.nanoTime()
                 runCatching {
                     network.pullChatMessages(target.credentials, target.urlForChatting, fieldMap)
                 }.fold(
@@ -745,7 +765,8 @@ class ChatMessageSyncer @Inject constructor(
                         val result = when (response.code()) {
                             HTTP_CODE_OK -> ChatPullResult.Success(
                                 messages = response.body()?.ocs?.data.orEmpty(),
-                                lastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.toInt()
+                                lastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.toInt(),
+                                requestedAtNanos = requestedAtNanos
                             )
                             HTTP_CODE_NOT_MODIFIED -> ChatPullResult.NotModified
                             HTTP_CODE_PRECONDITION_FAILED -> ChatPullResult.PreconditionFailed
@@ -887,7 +908,8 @@ class ChatMessageSyncer @Inject constructor(
                 oldestPersistedMessageId = persistedMessages.minOfOrNull { it.id },
                 persistedMessageCount = persistedMessages.size,
                 newestPersistedMessage = previewEligibleMessages.maxByOrNull { it.id },
-                visibleMessageIds = chatVisibleMessages.map { it.id }
+                visibleMessageIds = chatVisibleMessages.map { it.id },
+                newestMessageRequestedAtNanos = result.requestedAtNanos
             )
         } else {
             Log.d(TAG, "No new messages to update")

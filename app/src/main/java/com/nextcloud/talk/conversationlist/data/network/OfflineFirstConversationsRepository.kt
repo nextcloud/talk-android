@@ -36,6 +36,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -142,19 +143,33 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override fun getRoom(user: User, roomToken: String): Job =
         scope.launch {
             try {
+                val requestedAtNanos = System.nanoTime()
                 val model = chatNetworkDataSource.getRoom(user, roomToken)
                 val existingEntity = dao.getConversationForUser(user.id!!, model.token).first()
                 model.hiddenUpcomingEvent = existingEntity?.hiddenUpcomingEvent
                 _conversationFlow.emit(model)
-                val previous = existingEntity?.let { mapOf(it.internalId to it) }.orEmpty()
-                val entityList = conversationListUpdater.preservePendingLocalState(
-                    previous,
-                    listOf(model.asEntity())
-                )
-                try {
-                    dao.upsertConversations(user.id!!, entityList)
-                } catch (e: SQLiteConstraintException) {
-                    Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
+                // the entry is read again under the lock: a sync may have written it since
+                conversationListUpdater.withServerWriteLock(user.id!!) {
+                    val previous = dao.getConversationForUser(user.id!!, model.token).first()
+                        ?.let { mapOf(it.internalId to it) }.orEmpty()
+                    val entityList = conversationListUpdater.preservePendingLocalState(
+                        previous,
+                        listOf(model.asEntity()),
+                        requestedAtNanos,
+                        user.userId
+                    )
+                    try {
+                        // the write and its mark are one step even if the caller gives up meanwhile
+                        withContext(NonCancellable) {
+                            dao.upsertConversations(user.id!!, entityList)
+                            conversationListUpdater.recordServerWrite(
+                                entityList.map { it.internalId },
+                                requestedAtNanos
+                            )
+                        }
+                    } catch (e: SQLiteConstraintException) {
+                        Log.w(TAG, "Skipping conversation upsert for removed account ${user.id}", e)
+                    }
                 }
             } catch (e: Exception) {
                 // In case network is offline, the call fails, or getRoom can't resolve a supported
@@ -254,12 +269,14 @@ class OfflineFirstConversationsRepository @Inject constructor(
         // not something the response can be read as having left out
         val knownBeforeRequest = dao.getConversationIdsForUser(accountId).toSet()
 
+        var requestedAtNanos = 0L
         val roomList = withRetry(
             retries = NETWORK_FETCH_RETRIES,
             initialDelayMillis = NETWORK_FETCH_RETRY_INITIAL_DELAY_MS,
             maxDelayMillis = NETWORK_FETCH_RETRY_MAX_DELAY_MS,
             retryOn = { !it.isUnauthorized() }
         ) {
+            requestedAtNanos = System.nanoTime()
             network.getRooms(user, user.baseUrl!!, includeStatus, modifiedSince)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -270,33 +287,64 @@ class OfflineFirstConversationsRepository @Inject constructor(
             it.asEntity(accountId)
         }
 
-        val previousConversations = dao.getConversationsForUser(accountId).first()
-            .associateBy { it.internalId }
+        var heldBackTokens = emptyList<String>()
+        var landedFully = true
+        val previousConversations = conversationListUpdater.withServerWriteLock(accountId) {
+            val stored = dao.getConversationsForUser(accountId).first()
+                .associateBy { it.internalId }
 
-        val serverItems = if (includeStatus) {
-            conversationsFromSync
-        } else {
-            keepCachedStatus(conversationsFromSync, previousConversations)
-        }
+            val serverItems = if (includeStatus) {
+                conversationsFromSync
+            } else {
+                keepCachedStatus(conversationsFromSync, stored)
+            }
 
-        dao.syncConversationsForUser(
-            accountId = accountId,
-            serverItems = conversationListUpdater.preservePendingLocalState(
-                previousConversations,
-                serverItems
-            ),
-            conversationIdsToDelete = if (roomList.wasDelta) {
+            val leftConversationIds = if (roomList.wasDelta) {
                 emptyList()
             } else {
-                determineLeftConversationIds(previousConversations, conversationsFromSync)
-                    .filter { it in knownBeforeRequest }
+                determineLeftConversationIds(stored, conversationsFromSync).filter { it in knownBeforeRequest }
             }
-        )
+            val conversationIdsToDelete = deletableAt(leftConversationIds, requestedAtNanos)
+            val mergedItems =
+                conversationListUpdater.preservePendingLocalState(stored, serverItems, requestedAtNanos, user.userId)
+            heldBackTokens = tokensHeldBack(serverItems, mergedItems)
+            landedFully = heldBackTokens.isEmpty() && conversationIdsToDelete.size == leftConversationIds.size
+            // the write and its mark are one step even if the worker's time budget runs out meanwhile
+            withContext(NonCancellable) {
+                dao.syncConversationsForUser(
+                    accountId = accountId,
+                    serverItems = mergedItems,
+                    conversationIdsToDelete = conversationIdsToDelete
+                )
+                conversationListUpdater.recordServerWrite(
+                    mergedItems.map { it.internalId } + conversationIdsToDelete,
+                    requestedAtNanos
+                )
+            }
+            stored
+        }
 
-        rememberSyncedState(accountId, roomList)
+        rememberSyncedState(accountId, roomList, landedFully)
+        // a fresh request is newer than every write that held the response back, so it applies, and
+        // the server's value stands whatever its activity is, e.g. after the last message was deleted
+        heldBackTokens.forEach { getRoom(user, it) }
 
         return getRoomsWithNewMessages(conversationsFromSync, previousConversations)
     }
+
+    /** A conversation that holds state from a later request is not one this response can delete. */
+    private fun deletableAt(leftConversationIds: List<String>, requestedAtNanos: Long) =
+        leftConversationIds.filterNot { conversationListUpdater.hasNewerWrite(it, requestedAtNanos) }
+
+    /**
+     * The rooms of the response that the merge did not take: dropped, or kept with the stored
+     * preview. The response is not fully reflected in the database for them.
+     */
+    private fun tokensHeldBack(serverItems: List<ConversationEntity>, mergedItems: List<ConversationEntity>) =
+        serverItems.filter { item ->
+            val merged = mergedItems.firstOrNull { it.internalId == item.internalId }
+            merged == null || merged.lastMessage != item.lastMessage || merged.lastActivity != item.lastActivity
+        }.map { it.token }
 
     override fun requireFullSync(accountId: Long) {
         storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, null)
@@ -337,10 +385,17 @@ class OfflineFirstConversationsRepository @Inject constructor(
     /**
      * Stores the timestamp [roomList] reported for the next request, and, when it was a full
      * response, the time of this full sync. Called after the response has been written to the
-     * database.
+     * database. When the response did not [landedFully] — a room was held back by a newer write, or
+     * a deletion was suppressed — the timestamp is not advanced, as the next delta would start past
+     * the change of that room; a full response clears it, so the next sync is a full one.
      */
-    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult) {
-        storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+    private fun rememberSyncedState(accountId: Long, roomList: RoomListResult, landedFully: Boolean) {
+        if (landedFully) {
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, roomList.modifiedBefore)
+        } else if (!roomList.wasDelta) {
+            // a response that did not land in full has no timestamp the next delta could start from
+            storeTimestamp(accountId, KEY_MODIFIED_SINCE, null)
+        }
         if (!roomList.wasDelta) {
             storeTimestamp(accountId, KEY_LAST_FULL_SYNC_AT, System.currentTimeMillis())
         }
