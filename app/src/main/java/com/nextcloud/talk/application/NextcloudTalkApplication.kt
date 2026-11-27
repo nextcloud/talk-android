@@ -40,6 +40,7 @@ import com.nextcloud.talk.errorhandling.ExceptionHandler
 import com.nextcloud.talk.logger.LoggerImpl
 import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.dagger.modules.ApplicationScope
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule
@@ -129,6 +130,9 @@ class NextcloudTalkApplication :
     @Inject
     lateinit var logger: LoggerImpl
     //endregion
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     //region private methods
     private fun installExceptionHandler() {
@@ -224,9 +228,11 @@ class NextcloudTalkApplication :
         buildComponent()
         DavUtils.registerCustomFactories()
 
+        // Must run before inject(): injected singletons (e.g. OkHttpClient) create their SSLContext on construction
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         componentApplication.inject(this)
+        telecomManager.registerAppWithTelecom()
         installExceptionHandler()
 
         observeAppInBackground()

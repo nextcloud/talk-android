@@ -27,6 +27,7 @@ import com.nextcloud.talk.activities.CallBaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -39,6 +40,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.receivers.DeclineCallReceiver
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -54,6 +56,8 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     var cache: Cache? = null
 
+    @Inject
+    lateinit var telecomManager: TelecomManager
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
     private var displayName: String? = null
@@ -62,6 +66,7 @@ class CallNotificationActivity : CallBaseActivity() {
     private var conversationName: String? = null
     private lateinit var userBeingCalled: User
     private var isCacheEvicted = false
+    private var leavingScreen = false
     private var wasLastShownInPip = false
     private val handler = Handler(Looper.getMainLooper())
     private var binding: CallNotificationActivityBinding? = null
@@ -186,6 +191,9 @@ class CallNotificationActivity : CallBaseActivity() {
                 if (NotificationUtils.isNotificationVisible(context, notificationId)) {
                     handler.postDelayed(this, ONE_SECOND)
                 } else {
+                    if (!leavingScreen) {
+                        telecomManager.endRingingCall(roomToken)
+                    }
                     finish()
                 }
             }
@@ -226,11 +234,18 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun hangup() {
-        dismissCallNotification()
+        leavingScreen = true
+        val declineIntent = Intent(this, DeclineCallReceiver::class.java).apply {
+            putExtra(BundleKeys.KEY_NOTIFICATION_TIMESTAMP, notificationTimestamp)
+            putExtra(KEY_ROOM_TOKEN, roomToken)
+        }
+        sendBroadcast(declineIntent)
         finish()
     }
 
     private fun proceedToCall() {
+        // onStop() cancels the notification; the canceled-routine must not read that as the ring being withdrawn
+        leavingScreen = true
         val callIntent = Intent(this, CallActivity::class.java)
         intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)

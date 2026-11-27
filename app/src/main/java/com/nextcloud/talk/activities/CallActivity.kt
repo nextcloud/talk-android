@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import android.os.SystemClock
 import android.provider.Settings
 import android.text.TextUtils
 import android.text.format.DateUtils
@@ -94,6 +95,10 @@ import com.nextcloud.talk.call.e2ee.FrameKeyRing
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.ScreenCapture
+import com.nextcloud.talk.call.TelecomAudioDevices
+import com.nextcloud.talk.call.TelecomAudioRoute
+import com.nextcloud.talk.call.TelecomManager
+import com.nextcloud.talk.call.TelecomMuteSync
 import com.nextcloud.talk.call.components.CALL_VIEW_MODE_BUTTON_SIZE
 import com.nextcloud.talk.call.components.CallViewMode
 import com.nextcloud.talk.call.components.CallViewModeButton
@@ -251,6 +256,9 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var permissionUtil: PlatformPermissionUtil? = null
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -684,6 +692,7 @@ class CallActivity : CallBaseActivity() {
         )
 
         isCallSetUp = true
+        observeTelecomAudioRoute()
 
         if (!conversationUser.current) {
             // Taking part in a call uses its account, so it becomes the last used one.
@@ -893,6 +902,10 @@ class CallActivity : CallBaseActivity() {
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
+            if (isIncomingCallFromNotification) {
+                // before cancelling the notification below, which would otherwise read as the ring being withdrawn
+                telecomManager.markIncomingCallAnswered(extras.getString(KEY_ROOM_TOKEN, ""))
+            }
             val notificationId = extras.getInt(KEY_NOTIFICATION_TIMESTAMP, 0)
             if (notificationId != 0) {
                 // cancel the notification to stop the call ringing
@@ -1256,6 +1269,7 @@ class CallActivity : CallBaseActivity() {
         } else {
             setDefaultAudioOutputChannel(AudioDevice.SPEAKER_PHONE)
         }
+        applyTelecomAudioRoute(telecomManager.audioRoute.value)
         iceServers = ArrayList()
 
         // create sdpConstraints
@@ -1279,6 +1293,67 @@ class CallActivity : CallBaseActivity() {
             cameraInitialization()
         }
         microphoneInitialization()
+    }
+
+    private val telecomAudioRouter = WebRtcAudioManager.ExternalAudioRouter { device ->
+        val endpointType = TelecomAudioDevices.toEndpointType(device)
+        if (endpointType == null) {
+            audioManager?.onExternalAudioDeviceRequestFinished(device, false)
+        } else {
+            telecomManager.requestAudioEndpoint(endpointType) { accepted ->
+                runOnUiThread { audioManager?.onExternalAudioDeviceRequestFinished(device, accepted) }
+            }
+        }
+    }
+
+    private val telecomMuteSync = TelecomMuteSync()
+
+    // While a Telecom call exists, Telecom owns the audio route; WebRtcAudioManager then switches through it.
+    // Mute changes made via Telecom (headset, car, watch) are applied to the microphone.
+    private fun observeTelecomAudioRoute() {
+        lifecycleScope.launch {
+            telecomManager.audioRoute.collect { route -> applyTelecomAudioRoute(route) }
+        }
+        lifecycleScope.launch {
+            telecomManager.isMuted.collect { muted ->
+                val muteToApply = telecomMuteSync.onTelecomMuteReported(muted, SystemClock.elapsedRealtime())
+                muteToApply?.let { applyTelecomMute(it) }
+            }
+        }
+    }
+
+    // A mute change from Telecom during push to talk, applied once push to talk ends
+    private var pendingTelecomMute: Boolean? = null
+
+    private fun applyTelecomMute(muted: Boolean) {
+        if (isPushToTalkActive) {
+            pendingTelecomMute = muted
+            return
+        }
+        val canApply = canPublishAudioStream && permissionUtil?.isMicrophonePermissionGranted() == true
+        // microphoneOn == muted means the microphone state differs from Telecom's
+        if (canApply && microphoneOn == muted) {
+            Log.d(TAG, "Applying mute state from Telecom: muted=$muted")
+            // not saved as default for later calls: the user didn't mute in the app
+            onMicrophoneClick(saveAsDefault = false)
+        }
+    }
+
+    private fun applyTelecomAudioRoute(route: TelecomAudioRoute?) {
+        val activeAudioManager = audioManager ?: return
+        // Only the route of this call's Telecom call counts
+        val callRoute = route?.takeIf { it.roomToken == roomToken }
+        val currentDevice = callRoute?.currentEndpoint?.let { TelecomAudioDevices.toAudioDevice(it.type) }
+            ?: AudioDevice.NONE
+        if (callRoute == null || currentDevice == AudioDevice.NONE) {
+            activeAudioManager.setExternalAudioRoute(null, AudioDevice.NONE, emptySet())
+            return
+        }
+        activeAudioManager.setExternalAudioRoute(
+            telecomAudioRouter,
+            currentDevice,
+            TelecomAudioDevices.availableDevices(callRoute)
+        )
     }
 
     fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
@@ -1684,7 +1759,8 @@ class CallActivity : CallBaseActivity() {
         return null
     }
 
-    fun onMicrophoneClick() {
+    /** @param saveAsDefault whether the new state becomes the microphone default for later calls */
+    fun onMicrophoneClick(saveAsDefault: Boolean = true) {
         if (!canPublishAudioStream) {
             microphoneOn = false
             binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
@@ -1698,7 +1774,9 @@ class CallActivity : CallBaseActivity() {
             if (!isPushToTalkActive) {
                 phoneCallMediaPause.onMicrophoneChangedByUser()
                 setMicrophoneOn(!microphoneOn)
-                appPreferences.callMicrophoneMuted = !microphoneOn
+                if (saveAsDefault) {
+                    appPreferences.callMicrophoneMuted = !microphoneOn
+                }
             } else {
                 binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_white_24px)
                 pulseAnimation!!.start()
@@ -1859,6 +1937,11 @@ class CallActivity : CallBaseActivity() {
         } else {
             if (enable) {
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
+                if (telecomManager.isMuted.value == true) {
+                    // muted via Telecom (e.g. headset button): the microphone would stay silent otherwise
+                    telecomMuteSync.onSystemMicrophoneUnmutedByApp(SystemClock.elapsedRealtime())
+                    audioManager?.unmuteSystemMicrophone()
+                }
             } else {
                 binding!!.microphoneButton.alpha = OPACITY_DISABLED
             }
@@ -1917,6 +2000,7 @@ class CallActivity : CallBaseActivity() {
             // The screen that started the call marked it as dialing, which hangup() would reset. Without resetting
             // it here, chats would keep treating the app as being in a call.
             ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
+            telecomManager.endCurrentCall(roomToken)
         }
 
         super.onDestroy()
@@ -2535,6 +2619,7 @@ class CallActivity : CallBaseActivity() {
     private fun hangup(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView, endCallForAll=$endCallForAll")
         stopOrSuspendScreenSharing(shutDownView)
+
         joinRoomInitiated = false
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2577,6 +2662,9 @@ class CallActivity : CallBaseActivity() {
         }
 
         hangupNetworkCalls(shutDownView, endCallForAll)
+        if (shutDownView) {
+            telecomManager.endCurrentCall(roomToken)
+        }
     }
 
     private fun terminateAudioVideo() {
@@ -2670,7 +2758,7 @@ class CallActivity : CallBaseActivity() {
             startActivity(intent)
             finish()
         } else if (shutDownView) {
-            finish()
+            finishAndRemoveTask()
         } else if (currentCallStatus === CallStatus.RECONNECTING ||
             currentCallStatus === CallStatus.PUBLISHER_FAILED
         ) {
@@ -3309,7 +3397,35 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
+    private fun activateTelecomCall() {
+        val disconnectHandler: () -> Unit = {
+            runOnUiThread {
+                if (!isFinishing && !isDestroyed && currentCallStatus != CallStatus.LEAVING) {
+                    hangup(shutDownView = true, endCallForAll = false)
+                }
+            }
+        }
+
+        if (!telecomManager.hasActiveCall(roomToken)) {
+            telecomManager.addOutgoingCall(
+                displayName = conversationName.takeIf {
+                    !it.isNullOrBlank()
+                } ?: getString(R.string.nc_app_product_name),
+                roomToken = roomToken ?: "",
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = disconnectHandler
+            )
+        } else {
+            telecomManager.setCallActive(
+                roomToken,
+                isVideo = !isVoiceOnlyCall,
+                onDisconnectCall = disconnectHandler
+            )
+        }
+    }
+
     private fun handleCallStateInConversation() {
+        activateTelecomCall()
         stopCallingSound()
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
@@ -3326,6 +3442,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
+        activateTelecomCall()
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {
@@ -3382,6 +3499,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun handleCallStateCallingTimeout() {
         hangup(shutDownView = false, endCallForAll = false)
+        // Nobody answered: the call is over for Telecom, also while the timeout screen stays open. Retrying
+        // registers a new Telecom call once the call is joined again.
+        telecomManager.endCurrentCall(roomToken)
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
@@ -3754,6 +3874,10 @@ class CallActivity : CallBaseActivity() {
         binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
         pulseAnimation!!.stop()
         toggleMedia(false, false)
+        pendingTelecomMute?.let {
+            pendingTelecomMute = null
+            applyTelecomMute(it)
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

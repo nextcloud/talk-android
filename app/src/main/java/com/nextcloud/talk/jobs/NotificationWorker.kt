@@ -9,6 +9,7 @@
 package com.nextcloud.talk.jobs
 
 import android.Manifest
+import android.app.ActivityOptions
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -23,6 +24,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.service.notification.StatusBarNotification
+import android.telecom.DisconnectCause
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
@@ -55,6 +57,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.call.TelecomManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -131,10 +134,14 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
-    @Inject lateinit var logger: Logger
+    @Inject
+    lateinit var logger: Logger
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var telecomManager: TelecomManager
 
     @JvmField
     @Inject
@@ -255,6 +262,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
             bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
             bundle.putLong(KEY_INTERNAL_USER_ID, user.id!!)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, user.baseUrl)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
             val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -301,6 +309,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             )
 
             val pendingIntentFlags = pendingIntentFlags()
+            // captured for the Telecom answer callback, which runs after this worker is done
+            val callNotificationId = pushMessage.timestamp.toInt()
+            val callTitle = pushMessage.subject
 
             val isVideoCall = (conversation.callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
@@ -322,6 +333,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 requestCode + DECLINE_CALL_REQUEST_OFFSET,
                 Intent(applicationContext, DeclineCallReceiver::class.java).apply {
                     putExtra(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
+                    putExtra(KEY_ROOM_TOKEN, pushMessage.id)
                 },
                 pendingIntentFlags
             )
@@ -371,7 +383,25 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             sendNotification(pushMessage.timestamp.toInt(), notification)
 
-            checkIfCallIsActive(conversation)
+            // Only after the ringing notification is posted: an answer or rejection via Telecom (headset, watch, car)
+            // replaces or cancels it, which must not be overtaken by posting it, e.g. while the avatar was loading
+            val telecomRegistrationId = telecomManager.addIncomingCall(
+                displayName = conversation.displayName.ifEmpty {
+                    applicationContext.getString(R.string.nc_app_product_name)
+                },
+                roomToken = pushMessage.id ?: "",
+                isVideo = isVideoCall,
+                onAnswerCall = { openCallAnsweredViaTelecom(primaryAnswerIntent, callNotificationId, callTitle) },
+                onRejectCall = {
+                    try {
+                        declinePendingIntent.send()
+                    } catch (e: PendingIntent.CanceledException) {
+                        Log.e(TAG, "Decline pending intent canceled", e)
+                    }
+                }
+            )
+
+            checkIfCallIsActive(conversation, telecomRegistrationId)
         }
 
         val conversation = try {
@@ -1120,6 +1150,59 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun parseThreadId(objectId: String?): Long? = objectId?.split("/")?.getOrNull(2)?.toLongOrNull()
 
+    /**
+     * Telecom answered the call, e.g. from a Bluetooth headset, car or watch. The app is usually in the background
+     * then, and Android 14+ only lets it start an activity with an explicit opt-in, and only while it is allowed to
+     * at all (e.g. while the full-screen call screen is visible). As a fallback, the ringing call notification is
+     * replaced by a silent one whose full-screen intent opens the call: Android starts it directly while the device
+     * is locked, otherwise it can be tapped. CallActivity cancels that notification once it starts, and is
+     * singleTask, so being started by both paths is fine.
+     */
+    private fun openCallAnsweredViaTelecom(answerIntent: PendingIntent, notificationId: Int, title: String?) {
+        try {
+            answerIntent.send(applicationContext, 0, null, null, null, null, backgroundActivityStartOptions())
+        } catch (e: PendingIntent.CanceledException) {
+            logger.e(TAG, "Answer pending intent canceled", e)
+        }
+
+        val notification = NotificationCompat.Builder(
+            applicationContext,
+            NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V5.name
+        )
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setSmallIcon(R.drawable.ic_call_black_24dp)
+            .setContentTitle(title?.let { EmojiCompat.get().process(it) })
+            .setContentText(applicationContext.getString(R.string.nc_call_ongoing_notification_content))
+            .setContentIntent(answerIntent)
+            .setFullScreenIntent(answerIntent, true)
+            .setSilent(true)
+            .setOngoing(true)
+            .setAutoCancel(true)
+            .build()
+        sendNotification(notificationId, notification)
+    }
+
+    private fun backgroundActivityStartOptions(): Bundle? =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA ->
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+                    )
+                    .toBundle()
+
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+                @Suppress("DEPRECATION")
+                ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                    .toBundle()
+
+            else -> null
+        }
+
     private fun sendNotification(notificationId: Int, notification: Notification) {
         logger.d(TAG, "show notification with id $notificationId")
         if (ActivityCompat.checkSelfPermission(
@@ -1144,7 +1227,16 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationManager.cancel(notificationId)
     }
 
-    private fun checkIfCallIsActive(conversation: ConversationModel) {
+    /**
+     * Polls whether the call still rings for the user, and withdraws it once the caller hung up, the user joined on
+     * another device or the ring timed out.
+     *
+     * The call waits for the user while its notification is shown or Telecom still has it unattended
+     * ([TelecomManager.isWaitingForUser]). The latter also covers a missing notification (no notification permission)
+     * and a call answered via Telecom whose call screen was never opened.
+     */
+    @Suppress("LongMethod")
+    private fun checkIfCallIsActive(conversation: ConversationModel, telecomRegistrationId: String) {
         Log.d(TAG, "checkIfCallIsActive")
         var hasParticipantsInCall = true
         var inCallOnDifferentDevice = false
@@ -1154,7 +1246,28 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             intArrayOf(ApiUtils.API_V4, 1)
         )
 
-        var isCallNotificationVisible = true
+        val notificationId = pushMessage.timestamp.toInt()
+        val isWaitingForUser = {
+            NotificationUtils.isNotificationVisible(context, notificationId) ||
+                telecomManager.isWaitingForUser(telecomRegistrationId)
+        }
+        var isCallWaitingForUser = true
+        var isWithdrawn = false
+
+        // TelecomManager applies the withdrawal on the main thread, so its state may still lag behind here
+        fun withdrawCall(disconnectCause: Int, reportMissed: Boolean) {
+            if (isWithdrawn) {
+                return
+            }
+            isWithdrawn = true
+            isCallWaitingForUser = false
+            // the user picked up via Telecom, so the call was not missed
+            if (reportMissed && !telecomManager.isAnsweredNotTakenOver(telecomRegistrationId)) {
+                showMissedCallNotification(conversation)
+            }
+            telecomManager.endUnattendedIncomingCall(telecomRegistrationId, disconnectCause)
+            removeNotification(notificationId)
+        }
 
         ncApi.getPeersForCall(
             credentials,
@@ -1167,7 +1280,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .repeatWhen { completed ->
                 completed.zipWith(Observable.range(TIMER_START, TIMER_COUNT)) { _, i -> i }
                     .flatMap { Observable.timer(TIMER_DELAY, TimeUnit.SECONDS) }
-                    .takeWhile { isCallNotificationVisible && hasParticipantsInCall && !inCallOnDifferentDevice }
+                    .takeWhile { isCallWaitingForUser && hasParticipantsInCall && !inCallOnDifferentDevice }
             }
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<ParticipantsOverall> {
@@ -1188,36 +1301,27 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
                     if (inCallOnDifferentDevice) {
                         Log.d(TAG, "inCallOnDifferentDevice is true")
-                        removeNotification(pushMessage.timestamp.toInt())
+                        withdrawCall(DisconnectCause.REMOTE, reportMissed = false)
                     }
 
                     if (!hasParticipantsInCall) {
-                        showMissedCallNotification(conversation)
                         Log.d(TAG, "no participants in call")
-                        removeNotification(pushMessage.timestamp.toInt())
+                        withdrawCall(DisconnectCause.MISSED, reportMissed = true)
                     }
 
-                    isCallNotificationVisible = NotificationUtils.isNotificationVisible(
-                        context,
-                        pushMessage.timestamp.toInt()
-                    )
+                    if (!isWithdrawn) {
+                        isCallWaitingForUser = isWaitingForUser()
+                    }
                 }
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error in getPeersForCall", e)
-                    if (isCallNotificationVisible) {
-                        showMissedCallNotification(conversation)
-                    }
-                    removeNotification(pushMessage.timestamp.toInt())
+                    withdrawCall(DisconnectCause.MISSED, reportMissed = isCallWaitingForUser)
                 }
 
                 override fun onComplete() {
-                    if (isCallNotificationVisible) {
-                        // this state can be reached when call timeout is reached.
-                        showMissedCallNotification(conversation)
-                    }
-
-                    removeNotification(pushMessage.timestamp.toInt())
+                    // this state can be reached when call timeout is reached.
+                    withdrawCall(DisconnectCause.MISSED, reportMissed = isCallWaitingForUser)
                 }
             })
     }
