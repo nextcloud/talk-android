@@ -104,6 +104,14 @@ class SendMessageWorker(context: Context, workerParams: WorkerParameters) : Coro
         return if (tempMessage == null) {
             Log.d(TAG, "Temporary message $referenceId no longer exists, skipping send")
             Result.success()
+        } else if (tempMessage.sendStatus != SendStatus.PENDING) {
+            // The same message may be queued more than once: on reconnect, MessageInputViewModel.sendUnsentMessages
+            // queues every PENDING message again, because it cannot tell a message whose request is still waiting
+            // from one whose request was lost (e.g. cancelled), which would otherwise never be sent. Requests of a
+            // conversation run one after the other, so only the first one still sees PENDING; it posts the message
+            // and marks it SENT_PENDING_ACK, and every later copy ends here without posting it again.
+            Log.d(TAG, "Temporary message $referenceId is ${tempMessage.sendStatus}, skipping send")
+            Result.success()
         } else {
             post(tempMessage, referenceId, threadTitle)
         }

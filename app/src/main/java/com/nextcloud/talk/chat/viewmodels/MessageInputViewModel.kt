@@ -229,12 +229,25 @@ class MessageInputViewModel :
         }
     }
 
-    fun sendUnsentMessages(credentials: String, url: String) {
+    /**
+     * Hands the unsent messages of the conversation to SendMessageWorker again, e.g. FAILED ones or
+     * PENDING ones whose send work was lost. A message whose send is still queued gets a second request
+     * in the same chain, which skips it once the first one has sent it.
+     */
+    fun sendUnsentMessages(userId: Long, roomToken: String) {
         viewModelScope.launch {
-            chatRepository.sendUnsentChatMessages(
-                credentials,
-                url
-            )
+            sendMessageMutex.withLock {
+                // A PENDING row without send work is never sent: the pair is not cancelled half way.
+                withContext(NonCancellable) {
+                    chatRepository.markUnsentMessagesForResend().forEach { referenceId ->
+                        SendMessageWorker.enqueue(
+                            internalConversationId = "$userId@$roomToken",
+                            referenceId = referenceId,
+                            threadTitle = null
+                        )
+                    }
+                }
+            }
         }
     }
 

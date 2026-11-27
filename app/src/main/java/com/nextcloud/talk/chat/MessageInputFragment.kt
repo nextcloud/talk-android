@@ -314,12 +314,8 @@ class MessageInputFragment : Fragment() {
                     Log.d(TAG, "isOnline: $isOnline\nconnectionGained: $connectionGained")
                     if (connectionGained) {
                         messageInputViewModel.sendUnsentMessages(
-                            chatActivity.conversationUser!!.getCredentials(),
-                            ApiUtils.getUrlForChat(
-                                chatActivity.chatApiVersion,
-                                chatActivity.conversationUser!!.baseUrl!!,
-                                chatActivity.roomToken
-                            )
+                            userId = chatActivity.conversationUser!!.id!!,
+                            roomToken = chatActivity.roomToken
                         )
                     }
                     handleUI(isOnline)

@@ -378,6 +378,22 @@ interface ChatMessagesDao {
     fun updateTempMessageSendStatus(internalConversationId: String, referenceId: String, sendStatus: SendStatus): Int
 
     /*
+     * Sets a FAILED temporary message back to PENDING. A message in any other state is left alone, so
+     * a message that was resent and sent in the meantime is not made pending again.
+     */
+    @Query(
+        value = """
+            UPDATE ChatMessages
+            SET sendStatus = 'PENDING'
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId = :referenceId
+            AND isTemporary = 1
+            AND sendStatus = 'FAILED'
+        """
+    )
+    suspend fun resetFailedTempMessageToPending(internalConversationId: String, referenceId: String): Int
+
+    /*
      * Writes only the text of a message, so a concurrent change of its send status is kept.
      */
     @Query(

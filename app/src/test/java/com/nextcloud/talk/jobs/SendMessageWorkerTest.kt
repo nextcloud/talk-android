@@ -44,6 +44,9 @@ import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import org.robolectric.RobolectricTestRunner
@@ -130,6 +133,38 @@ class SendMessageWorkerTest {
         assertThrows(CancellationException::class.java) { runBlocking { worker("ref-a").doWork() } }
 
         assertEquals(SendStatus.PENDING, row.sendStatus)
+    }
+
+    @Test
+    fun `a message queued twice is posted once`() {
+        val workManager = initWorkManager()
+        val row = addRow("ref-a", "A")
+        wheneverBlocking { network.sendChatMessage(any(), any(), any(), any(), any(), any(), any(), anyOrNull()) }
+            .thenReturn(ChatOverallSingleMessage())
+
+        SendMessageWorker.enqueue(CONVERSATION_ID, "ref-a", null)
+        SendMessageWorker.enqueue(CONVERSATION_ID, "ref-a", null)
+        val (firstId, secondId) = queuedIds(workManager)
+        awaitFinished(workManager, firstId)
+        awaitFinished(workManager, secondId)
+
+        verifyBlocking(network, times(1)) {
+            sendChatMessage(any(), any(), any(), any(), any(), any(), eq("ref-a"), anyOrNull())
+        }
+        assertEquals(SendStatus.SENT_PENDING_ACK, row.sendStatus)
+    }
+
+    @Test
+    fun `a message that is no longer pending is not posted`() {
+        addRow("ref-sent", "sent").sendStatus = SendStatus.SENT_PENDING_ACK
+        addRow("ref-failed", "failed").sendStatus = SendStatus.FAILED
+
+        val results = runBlocking { listOf(worker("ref-sent").doWork(), worker("ref-failed").doWork()) }
+
+        assertEquals(listOf(ListenableWorker.Result.success(), ListenableWorker.Result.success()), results)
+        verifyBlocking(network, never()) {
+            sendChatMessage(any(), any(), any(), any(), any(), any(), any(), anyOrNull())
+        }
     }
 
     @Test
