@@ -55,6 +55,9 @@ android {
         testInstrumentationRunnerArguments["TEST_SERVER_PASSWORD"] =
             providers.gradleProperty("NC_TEST_SERVER_PASSWORD").getOrElse("")
 
+        // Lowest version the generic runtime classpath supports. android-common
+        // (ui, core) and talk-clients-vodozemac declare minSdk 26; every other
+        // dependency declares 24 or lower.
         minSdk = 26
         targetSdk = 37
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
