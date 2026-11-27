@@ -1048,7 +1048,10 @@ class ChatActivity :
                             onCopy = { copyMessage(msg) },
                             onDismiss = { chatViewModel.dismissMessageActions() }
                         )
-                    } else {
+                    } else if (participantPermissions != null && ::spreedCapabilities.isInitialized) {
+                        // The selected message id survives activity recreation in the ViewModel, so the sheet
+                        // can be composed before capabilities are loaded. participantPermissions is set together
+                        // with spreedCapabilities and triggers recomposition once they are available.
                         MessageActionsBottomSheet(
                             actionsState = buildMessageActionsState(
                                 message = msg,
@@ -2725,7 +2728,8 @@ class ChatActivity :
         val newFragment = FileAttachmentPreviewFragment.newInstance(
             files,
             currentConversation?.displayName ?: "",
-            CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
+            ::spreedCapabilities.isInitialized &&
+                CapabilitiesUtil.hasConversationSubfoldersForAttachments(spreedCapabilities)
         )
         newFragment.setListener { selectedFiles, caption, compressImages, allowUpdate ->
             uploadFiles(selectedFiles, caption, compressImages, allowUpdate)
@@ -4069,6 +4073,9 @@ class ChatActivity :
             ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
+        if (!::spreedCapabilities.isInitialized) {
+            return false
+        }
         val isUserAllowedByPrivileges = userAllowedByPrivilages(message)
 
         val isOlderThanSixHours = message
