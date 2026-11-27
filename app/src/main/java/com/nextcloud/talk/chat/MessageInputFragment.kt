@@ -476,6 +476,10 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentMessageInputView.setAttachmentsListener {
+            // A fragment restored after process death exists before the capabilities are loaded again
+            if (!::spreedCapabilities.isInitialized) {
+                return@setAttachmentsListener
+            }
             AttachmentDialog(requireActivity(), requireActivity() as ChatActivity).show()
         }
 
@@ -547,6 +551,9 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentMessageInputView.button?.setOnLongClickListener {
+            if (!::spreedCapabilities.isInitialized) {
+                return@setOnLongClickListener false
+            }
             showSendButtonMenu()
             true
         }
