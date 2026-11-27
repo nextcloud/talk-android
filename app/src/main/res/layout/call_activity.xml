@@ -331,7 +331,7 @@
             app:srcCompat="@drawable/ic_circular_group"
             tools:ignore="ContentDescription" />
 
-        <org.webrtc.SurfaceViewRenderer
+        <com.nextcloud.talk.call.components.SafeSurfaceViewRenderer
             android:id="@+id/pipSelfVideoRenderer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
