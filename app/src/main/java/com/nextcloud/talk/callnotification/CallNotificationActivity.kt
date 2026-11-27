@@ -8,6 +8,8 @@
 package com.nextcloud.talk.callnotification
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -15,7 +17,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
@@ -57,8 +61,9 @@ class CallNotificationActivity : CallBaseActivity() {
     private var isOneToOneCall: Boolean = true
     private var conversationName: String? = null
     private lateinit var userBeingCalled: User
-    private var leavingScreen = false
-    private var handler: Handler? = null
+    private var isCacheEvicted = false
+    private var wasLastShownInPip = false
+    private val handler = Handler(Looper.getMainLooper())
     private var binding: CallNotificationActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,12 +82,30 @@ class CallNotificationActivity : CallBaseActivity() {
         setupAvatar(isOneToOneCall, conversationName)
         initClickListeners()
         setupNotificationCanceledRoutine()
+        // a window recreated for another call while in picture in picture gets no mode change
+        if (isInPictureInPictureMode) {
+            isInPipMode = true
+            wasLastShownInPip = true
+            updateUiForPipMode()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val newNotificationId = intent.extras?.let { notificationIdOrNull(it) } ?: return
+        // a window still open for an earlier call is set up again for the new one
+        if (newNotificationId != notificationTimestamp) {
+            Log.d(TAG, "onNewIntent: another incoming call, recreating the window")
+            handler.removeCallbacksAndMessages(null)
+            setIntent(intent)
+            recreate()
+        }
     }
 
     private fun handleExtras() {
         val extras = intent.extras!!
         roomToken = extras.getString(KEY_ROOM_TOKEN, "")
-        notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+        notificationTimestamp = notificationIdOrNull(extras)
         displayName = extras.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, "")
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
         isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
@@ -152,11 +175,16 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun setupNotificationCanceledRoutine() {
-        val notificationHandler = Handler(Looper.getMainLooper())
-        notificationHandler.post(object : Runnable {
+        val notificationId = notificationTimestamp
+        if (notificationId == null) {
+            // no notification backs this window, so there is no call to show
+            finish()
+            return
+        }
+        handler.post(object : Runnable {
             override fun run() {
-                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                    notificationHandler.postDelayed(this, ONE_SECOND)
+                if (NotificationUtils.isNotificationVisible(context, notificationId)) {
+                    handler.postDelayed(this, ONE_SECOND)
                 } else {
                     finish()
                 }
@@ -164,10 +192,17 @@ class CallNotificationActivity : CallBaseActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!isInPictureInPictureMode) {
+            wasLastShownInPip = false
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-        if (handler == null) {
-            handler = Handler()
+        if (!isCacheEvicted) {
+            isCacheEvicted = true
             try {
                 cache!!.evictAll()
             } catch (e: IOException) {
@@ -191,7 +226,7 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     private fun hangup() {
-        leavingScreen = true
+        dismissCallNotification()
         finish()
     }
 
@@ -200,21 +235,21 @@ class CallNotificationActivity : CallBaseActivity() {
         intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
         startActivity(callIntent)
+        // stops the ringing, the notification check then closes this window
+        dismissCallNotification()
+    }
+
+    private fun dismissCallNotification() {
+        notificationTimestamp?.let { NotificationManagerCompat.from(context).cancel(it) }
     }
 
     private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and ParticipantDto.InCallFlags.WITH_VIDEO) > 0
 
-    override fun onStop() {
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.cancel(notificationTimestamp!!)
-        super.onStop()
-    }
-
     public override fun onDestroy() {
-        leavingScreen = true
-        if (handler != null) {
-            handler!!.removeCallbacksAndMessages(null)
-            handler = null
+        handler.removeCallbacksAndMessages(null)
+        // closing the picture in picture window finishes the window on older Android versions
+        if (isFinishing && wasLastShownInPip) {
+            dismissCallNotification()
         }
         super.onDestroy()
     }
@@ -223,9 +258,27 @@ class CallNotificationActivity : CallBaseActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
+            wasLastShownInPip = true
             updateUiForPipMode()
         } else {
             updateUiForNormalMode()
+            handler.postDelayed({ hangupIfPipWindowWasClosed() }, ONE_SECOND)
+        }
+    }
+
+    /**
+     * Closing the picture in picture window only stops the window, while expanding it starts the window again. The
+     * start may come after the mode change, so it is checked later. While the device is locked the window can not
+     * have been closed, it waits behind the lock screen to be shown.
+     */
+    private fun hangupIfPipWindowWasClosed() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!isInPictureInPictureMode &&
+            !lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) &&
+            !keyguardManager.isKeyguardLocked
+        ) {
+            Log.d(TAG, "picture in picture window was closed")
+            hangup()
         }
     }
 
@@ -246,5 +299,17 @@ class CallNotificationActivity : CallBaseActivity() {
     companion object {
         private val TAG = CallNotificationActivity::class.simpleName
         const val ONE_SECOND: Long = 1000
+
+        /**
+         * The call notification id is the push message timestamp cut to an Int, so 0 and negative values are valid
+         * ids. Only a missing extra means that no notification backs the window.
+         */
+        @VisibleForTesting
+        fun notificationIdOrNull(extras: Bundle): Int? =
+            if (extras.containsKey(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)) {
+                extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+            } else {
+                null
+            }
     }
 }

@@ -7,6 +7,7 @@
 package com.nextcloud.talk.activities
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -189,6 +190,37 @@ class CallBaseActivityPipTest {
         // Only OnBackPressedCallback would call enterPipMode, and only once.
         assertEquals("No spurious PIP entry calls", 0, enterPipModeCallCount)
         assertEquals("No enableKeyguard side effects", 0, enableKeyguardCallCount)
+    }
+
+    // Auto-enter on API 31+ is only enabled while the screen is on, a sleeping screen is not the user leaving.
+
+    @Test
+    fun `auto-enter enabled when screen is interactive and pip not suppressed`() {
+        assertTrue(
+            "Home/recents with the screen on should auto-enter PiP",
+            CallBaseActivity.shouldAutoEnterPip(false, true)
+        )
+    }
+
+    @Test
+    fun `auto-enter disabled when the screen is off`() {
+        assertFalse(
+            "A sleeping screen is not the user leaving: do not auto-enter PiP behind the keyguard",
+            CallBaseActivity.shouldAutoEnterPip(false, false)
+        )
+    }
+
+    @Test
+    fun `auto-enter disabled when pip is suppressed even with the screen on`() {
+        assertFalse(
+            "Suppression (e.g. screen sharing) wins regardless of screen state",
+            CallBaseActivity.shouldAutoEnterPip(true, true)
+        )
+    }
+
+    @Test
+    fun `auto-enter disabled when both suppressed and screen off`() {
+        assertFalse(CallBaseActivity.shouldAutoEnterPip(true, false))
     }
 
     @Test
