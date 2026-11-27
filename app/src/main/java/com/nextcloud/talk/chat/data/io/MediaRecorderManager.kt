@@ -35,7 +35,7 @@ class MediaRecorderManager : LifecycleAwareManager {
         private const val VOICE_MESSAGE_ENCODING_BIT_RATE = 32000
         private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
-        private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+        private const val VOICE_MESSAGE_FILE_SUFFIX = ".m4a"
         private const val VOICE_MESSAGE_PREFIX_MAX_LENGTH = 146
     }
 
