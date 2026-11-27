@@ -56,7 +56,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,7 +64,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -87,6 +85,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.conversationinfo.ConversationInfoUiState
 import com.nextcloud.talk.conversationinfo.model.ParticipantModel
+import com.nextcloud.talk.conversationlist.ui.ConversationAvatarImage
 import com.nextcloud.talk.models.json.participants.ParticipantDto
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
@@ -282,47 +281,32 @@ private fun ConversationInfoHeader(state: ConversationInfoUiState) {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderAvatar(avatarUrl = state.avatarUrl)
+        HeaderAvatar(state = state)
         Spacer(modifier = Modifier.height(8.dp))
         HeaderUserInfo(state = state)
     }
 }
 
 @Composable
-private fun HeaderAvatar(avatarUrl: String?) {
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.account_circle_48dp),
-                contentDescription = stringResource(R.string.avatar),
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+private fun HeaderAvatar(state: ConversationInfoUiState) {
+    val modifier = Modifier
+        .size(HEADER_AVATAR_SIZE_DP.dp)
+        .clip(CircleShape)
+    val conversation = state.conversation
+    val user = state.conversationUser
+    if (conversation != null && user != null) {
+        ConversationAvatarImage(
+            model = conversation,
+            currentUser = user,
+            modifier = modifier,
+            requestBigSize = true
+        )
     } else {
-        val context = LocalContext.current
-        val request = remember(avatarUrl) {
-            ImageRequest.Builder(context)
-                .data(avatarUrl)
-                .crossfade(true)
-                .build()
-        }
-        var lastPainter by remember { mutableStateOf<Painter?>(null) }
-        AsyncImage(
-            model = request,
+        Icon(
+            painter = painterResource(R.drawable.account_circle_48dp),
             contentDescription = stringResource(R.string.avatar),
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            error = painterResource(R.drawable.account_circle_48dp),
-            placeholder = lastPainter ?: painterResource(R.drawable.account_circle_48dp),
-            onSuccess = { lastPainter = it.painter }
+            modifier = modifier,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -811,6 +795,7 @@ private fun ParticipantAvatarImage(
     }
 }
 
+private const val HEADER_AVATAR_SIZE_DP = 80
 private const val PARTICIPANT_STATUS_SIZE_DP = 18f
 private const val PARTICIPANT_OFFLINE_ALPHA = 0.38f
 private const val PARTICIPANT_ROLE_ICON_SIZE_DP = 16f

@@ -57,6 +57,24 @@ class ConversationAvatarContentTest {
     }
 
     @Test
+    fun `one-to-one rooms request the big user avatar only when asked for`() {
+        val small = buildAvatarContent(
+            conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL),
+            user(withAvatarCapability = true),
+            isDark = false
+        ) as AvatarContent.Url
+        val big = buildAvatarContent(
+            conversation(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL),
+            user(withAvatarCapability = true),
+            isDark = false,
+            requestBigSize = true
+        ) as AvatarContent.Url
+
+        assertTrue(small.url.endsWith("/64"))
+        assertTrue(big.url.endsWith("/512"))
+    }
+
+    @Test
     fun `group rooms fall back to the themed default icon without the capability`() {
         val content = buildAvatarContent(
             conversation(ConversationEnums.ConversationType.ROOM_GROUP_CALL),
