@@ -1,0 +1,11 @@
+## Fixed
+- Crashes when the chat was used before the server capabilities were loaded
+- Crash in calls caused by broken video frames
+- Message edits were sometimes lost
+- Conversation info shows the same avatar as the conversation list
+- Translation of the "You:" prefix in the conversation list
+- Minor bugs
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/120?closed=1

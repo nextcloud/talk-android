@@ -61,8 +61,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode = 250010190
-        versionName = "25.1.1"
+        versionCode = 250010290
+        versionName = "25.1.2"
 
         vectorDrawables.useSupportLibrary = true
 
