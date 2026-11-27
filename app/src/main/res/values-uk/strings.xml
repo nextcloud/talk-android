@@ -407,6 +407,7 @@
     <string name="nc_search">Пошук</string>
     <string name="nc_search_clear">Очистити пошук</string>
     <string name="nc_select_an_account">Оберіть обліковий запис</string>
+    <string name="nc_select_message">Вибрати</string>
     <string name="nc_send_edit_message">Повідомлення про оновлення</string>
     <string name="nc_send_later">Надішліть пізніше</string>
     <string name="nc_send_now">Надіслати зараз</string>
