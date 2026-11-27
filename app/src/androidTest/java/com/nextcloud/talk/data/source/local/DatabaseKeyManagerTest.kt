@@ -39,6 +39,8 @@ class DatabaseKeyManagerTest {
         // a dedicated prefs file and keystore alias so the test never touches the app's real key
         private const val TEST_PREFS = "talk_db_key_test"
         private const val TEST_KEY_ALIAS = "talk_db_passphrase_wrapping_key_test"
+
+        private const val FILLER_ROWS = 5000
     }
 
     private lateinit var context: Context
@@ -212,6 +214,27 @@ class DatabaseKeyManagerTest {
     }
 
     @Test
+    fun databaseWithAnInterruptedRekeyIsNotRecreated() {
+        // a database of an earlier version on the passphrase itself, whose re-key was interrupted
+        buildTestDatabase().close()
+        val passphrase = unwrappedPassphrase()
+        context.deleteDatabase(TEST_DB_NAME)
+        seedDatabase("judy", passphrase)
+        leaveRollbackJournal(passphrase)
+
+        val reopened = buildTestDatabase()
+        try {
+            val user = reopened.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive an interrupted re-key", user)
+            assertEquals("judy", user?.userId)
+        } finally {
+            reopened.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(passphrase))
+    }
+
+    @Test
     fun corruptStoredPassphraseRecreatesDatabase() {
         val db = buildTestDatabase()
         runBlocking { db.usersDao().saveUser(activeUser("dave")) }
@@ -256,6 +279,33 @@ class DatabaseKeyManagerTest {
         } finally {
             db.close()
         }
+    }
+
+    /**
+     * Leaves the database file as a process killed during a write does: changed pages in the file and
+     * a rollback journal with the original pages next to it.
+     */
+    private fun leaveRollbackJournal(key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        val journal = File(dbFile.path + "-journal")
+        val dbCopy = File(dbFile.path + ".copy")
+        val journalCopy = File(journal.path + ".copy")
+        SQLiteDatabase.openDatabase(dbFile.absolutePath, key, null, SQLiteDatabase.OPEN_READWRITE, null).use { db ->
+            db.beginTransaction()
+            try {
+                // more data than fits into the page cache, so that changed pages are written to the file
+                db.execSQL("CREATE TABLE Filler (value BLOB)")
+                repeat(FILLER_ROWS) { db.execSQL("INSERT INTO Filler (value) VALUES (randomblob(1024))") }
+                dbFile.copyTo(dbCopy, overwrite = true)
+                journal.copyTo(journalCopy, overwrite = true)
+            } finally {
+                db.endTransaction()
+            }
+        }
+        context.deleteDatabase(TEST_DB_NAME)
+        dbCopy.renameTo(dbFile)
+        journalCopy.renameTo(journal)
+        assertTrue("A rollback journal must be left", journal.length() > 0)
     }
 
     private fun assertFileReadableWith(key: ByteArray) {

@@ -15,20 +15,24 @@ internal object SqlCipherRekeyer {
 
     private const val TAG = "SqlCipherRekeyer"
 
+    private const val JOURNAL_SUFFIX = "-journal"
+
     /** Tables that only cache data of the server, which is loaded again when it is needed. */
     private val CACHE_TABLES = listOf("ChatMessages", "ChatBlocks")
 
+    /**
+     * Whether [passphrase] opens [dbFile]. A rollback journal left by an interrupted write makes a read-only open fail
+     * whatever the key is, so the file is then opened writable, which rolls the journal back.
+     */
+    fun canOpen(dbFile: File, passphrase: ByteArray): Boolean =
+        canOpen(dbFile, passphrase, SQLiteDatabase.OPEN_READONLY) ||
+            (File(dbFile.path + JOURNAL_SUFFIX).exists() && canOpen(dbFile, passphrase, SQLiteDatabase.OPEN_READWRITE))
+
     @Suppress("TooGenericExceptionCaught")
-    fun canOpen(dbFile: File, passphrase: ByteArray): Boolean {
+    private fun canOpen(dbFile: File, passphrase: ByteArray, flags: Int): Boolean {
         var db: SQLiteDatabase? = null
         return try {
-            db = SQLiteDatabase.openDatabase(
-                dbFile.absolutePath,
-                passphrase,
-                null,
-                SQLiteDatabase.OPEN_READONLY,
-                null
-            )
+            db = SQLiteDatabase.openDatabase(dbFile.absolutePath, passphrase, null, flags, null)
             db.query("SELECT count(*) FROM sqlite_master").use { it.moveToFirst() }
             true
         } catch (e: Exception) {
