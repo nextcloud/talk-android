@@ -75,6 +75,7 @@ class CallForegroundService : Service() {
     private var conversationAvatarBitmap: Bitmap? = null
     private var isScreenSharing = false
     private var isCallStarted = false
+    private var isCallStyleAllowed = true
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -105,6 +106,7 @@ class CallForegroundService : Service() {
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
+        notifyOngoingCall(conversationName)
 
         loadConversationAvatarAsync()
         startTimeBasedNotificationUpdates()
@@ -164,6 +166,7 @@ class CallForegroundService : Service() {
             } else {
                 startForeground(NOTIFICATION_ID, notification)
             }
+            notifyOngoingCall(currentConversationName)
         } catch (e: SecurityException) {
             resultCode = handleScreenSharingTypeUpdateFailure(e)
         } catch (e: IllegalStateException) {
@@ -180,8 +183,7 @@ class CallForegroundService : Service() {
         isScreenSharing = false
         // The type may not be changed while in background, but the notification must not keep stating that the
         // screen is shared.
-        getSystemService(NotificationManager::class.java)
-            .notify(NOTIFICATION_ID, buildNotification(currentConversationName, currentCallExtras))
+        notifyOngoingCall(currentConversationName)
         return RESULT_SCREEN_SHARING_FAILED
     }
 
@@ -193,12 +195,42 @@ class CallForegroundService : Service() {
         super.onDestroy()
     }
 
+    /**
+     * Posts the ongoing call notification, preferring the CallStyle notification on API 31+.
+     *
+     * The system only accepts CallStyle notifications that belong to a running foreground service (or have a full
+     * screen intent), and some devices reject them even right after startForeground(). If such a notification is
+     * passed to startForeground(), the rejection crashes the app asynchronously with a
+     * CannotPostForegroundServiceNotificationException that can not be caught. Therefore, startForeground() always
+     * uses the standard notification built by [buildNotification], and CallStyle is only applied afterwards with
+     * notify(), which throws synchronously. If rejected, the standard notification is kept for this service.
+     */
+    private fun notifyOngoingCall(conversationName: String?) {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isCallStyleAllowed) {
+            try {
+                val callStyleNotification = buildCallStyleNotification(
+                    getOngoingCallTitle(conversationName),
+                    createContentIntent(currentCallExtras)
+                )
+                notificationManager.notify(NOTIFICATION_ID, callStyleNotification)
+                return
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "CallStyle notification was rejected, using standard notification instead", e)
+                isCallStyleAllowed = false
+            }
+        }
+        notificationManager.notify(NOTIFICATION_ID, buildNotification(conversationName, currentCallExtras))
+    }
+
+    /**
+     * Builds the standard notification. It is used for startForeground(), see [notifyOngoingCall].
+     */
     private fun buildNotification(conversationName: String?, callExtras: Bundle?): Notification {
         val channelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_ONGOING_V1.name
         ensureNotificationChannel()
 
-        val contentTitle = conversationName?.takeIf { it.isNotBlank() }
-            ?: getString(R.string.nc_call_ongoing_notification_default_title)
+        val contentTitle = getOngoingCallTitle(conversationName)
         val pendingIntent = createContentIntent(callExtras)
 
         // Create action to return to call
@@ -216,10 +248,6 @@ class CallForegroundService : Service() {
             getString(R.string.nc_call_ongoing_notification_end_action),
             endCallPendingIntent
         ).build()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return buildCallStyleNotification(contentTitle, pendingIntent)
-        }
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
@@ -325,18 +353,13 @@ class CallForegroundService : Service() {
             Log.d(TAG, "loadConversationAvatarAsync: avatar bitmap loaded=${bitmap != null}")
             if (bitmap != null) {
                 conversationAvatarBitmap = bitmap
-                withContext(Dispatchers.Main) { refreshCallStyleNotification() }
+                withContext(Dispatchers.Main) {
+                    if (isCallStyleAllowed) {
+                        notifyOngoingCall(currentConversationName)
+                    }
+                }
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun refreshCallStyleNotification() {
-        val contentTitle = currentConversationName?.takeIf { it.isNotBlank() }
-            ?: getString(R.string.nc_call_ongoing_notification_default_title)
-        val pendingIntent = createContentIntent(currentCallExtras)
-        val notification = buildCallStyleNotification(contentTitle, pendingIntent)
-        getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
     private fun startTimeBasedNotificationUpdates() {
@@ -345,14 +368,10 @@ class CallForegroundService : Service() {
         val updateRunnable = object : Runnable {
             override fun run() {
                 val callStartTime = ApplicationWideCurrentRoomHolder.getInstance().callStartTime
-                if (callStartTime != null && callStartTime > 0) {
+                if (callStartTime != null && callStartTime > 0 && isCallStyleAllowed) {
                     val conversationName = ApplicationWideCurrentRoomHolder.getInstance()
                         .userInRoom?.displayName
-                        ?: getString(R.string.nc_call_ongoing_notification_default_title)
-                    val pendingIntent = createContentIntent(currentCallExtras)
-                    val notification = buildCallStyleNotification(conversationName, pendingIntent)
-
-                    getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
+                    notifyOngoingCall(conversationName)
                 }
                 handler.postDelayed(this, CALL_DURATION_UPDATE_INTERVAL)
             }
@@ -480,3 +499,7 @@ class CallForegroundService : Service() {
         }
     }
 }
+
+private fun Context.getOngoingCallTitle(conversationName: String?): String =
+    conversationName?.takeIf { it.isNotBlank() }
+        ?: getString(R.string.nc_call_ongoing_notification_default_title)
