@@ -102,7 +102,7 @@ class DatabaseKeyManagerTest {
         seedLegacyDatabase("erin")
         buildTestDatabase().close()
 
-        // the file is on the new passphrase, but only the pending slot reached disk
+        // the file is on the raw key of the new passphrase, but only the pending slot reached disk
         moveActiveToPending()
 
         val resumed = buildTestDatabase()
@@ -206,6 +206,9 @@ class DatabaseKeyManagerTest {
         }
 
         assertFileReadableWith(PassphraseCipher.rawKeyOf(passphrase))
+        assertFileNotReadableWith(passphrase)
+        assertNotNull("The pending passphrase must be activated", storedPassphrase())
+        assertNull(testPrefs().getString(DatabaseKeyManager.PREF_PENDING_PASSPHRASE, null))
     }
 
     @Test
@@ -283,9 +286,9 @@ class DatabaseKeyManagerTest {
             ).use { db ->
                 db.query("SELECT count(*) FROM sqlite_master").use { it.moveToFirst() }
             }
-            fail("Database must not be readable with the static key")
+            fail("Database must not be readable with this key")
         } catch (e: SQLiteException) {
-            // expected: the file is encrypted with the per-install, device-bound passphrase
+            // expected: the file is on another key
         }
     }
 

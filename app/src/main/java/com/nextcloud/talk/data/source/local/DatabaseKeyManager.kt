@@ -122,20 +122,16 @@ object DatabaseKeyManager {
 
     /**
      * Returns the raw key of [passphrase] for [dbFile], re-keying a file that is still on the
-     * passphrase itself. If that fails, e.g. as the file is on neither, the passphrase is returned and
-     * a later launch retries.
+     * passphrase itself. The passphrase is only returned for a file it opens and whose re-key failed,
+     * which a later launch retries: a check that fails for another reason must not make the database
+     * fail to open with the returned key, which recreates it.
      */
     private fun keyFor(dbFile: File, passphrase: ByteArray): ByteArray {
         val rawKey = PassphraseCipher.rawKeyOf(passphrase)
-        return if (
-            !dbFile.exists() ||
-            SqlCipherRekeyer.canOpen(dbFile, rawKey) ||
-            SqlCipherRekeyer.rekey(dbFile, passphrase, rawKey)
-        ) {
-            rawKey
-        } else {
-            passphrase
-        }
+        val isOnPassphrase = dbFile.exists() &&
+            !SqlCipherRekeyer.canOpen(dbFile, rawKey) &&
+            SqlCipherRekeyer.canOpen(dbFile, passphrase)
+        return if (isOnPassphrase && !SqlCipherRekeyer.rekey(dbFile, passphrase, rawKey)) passphrase else rawKey
     }
 
     /**

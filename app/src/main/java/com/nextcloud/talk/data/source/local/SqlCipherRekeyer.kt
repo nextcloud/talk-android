@@ -43,7 +43,8 @@ internal object SqlCipherRekeyer {
      * database is left on its existing key on any failure.
      *
      * A re-key rewrites every page of the file, so the cached chat messages are removed before, which
-     * keeps this one-time migration short also for a large database.
+     * keeps this one-time migration short also for a large database. They stay removed if the re-key
+     * fails afterwards.
      */
     @Suppress("TooGenericExceptionCaught")
     fun rekey(dbFile: File, oldPassphrase: ByteArray, newPassphrase: ByteArray): Boolean {
