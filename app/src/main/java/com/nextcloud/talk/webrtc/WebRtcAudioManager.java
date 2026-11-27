@@ -30,6 +30,8 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.nextcloud.talk.events.ProximitySensorEvent;
@@ -50,6 +52,7 @@ import androidx.annotation.RequiresApi;
 
 public class WebRtcAudioManager {
     private static final String TAG = WebRtcAudioManager.class.getSimpleName();
+    private static final long PHONE_CALL_POLL_INTERVAL_MS = 1000;
     private final Context context;
     private final WebRtcBluetoothManager bluetoothManager;
     private final boolean useProximitySensor;
@@ -80,6 +83,11 @@ public class WebRtcAudioManager {
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
     private AudioFocusRequest audioFocusRequest;
     private final AudioFocusState audioFocusState = new AudioFocusState();
+    private PhoneCallListener phoneCallListener;
+    private boolean phoneCallActive = false;
+    private AudioManager.OnModeChangedListener modeChangedListener;
+    private final Handler phoneCallPollHandler = new Handler(Looper.getMainLooper());
+    private final Runnable phoneCallPollRunnable = this::pollPhoneCallState;
 
     private final PowerManagerUtils powerManagerUtils;
 
@@ -208,6 +216,7 @@ public class WebRtcAudioManager {
         defaultAudioDevice = AudioDevice.NONE;
         bluetoothPreferredForCall = false;
         audioFocusState.reset();
+        phoneCallActive = false;
         lastReportedAudioDeviceForUi = AudioDevice.NONE;
         lastReportedAudioRouteReady = false;
         audioDevices.clear();
@@ -227,6 +236,13 @@ public class WebRtcAudioManager {
         // Register receiver for broadcast intents related to adding/removing a
         // wired headset.
         registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            registerModeChangedListener();
+        }
+        // A phone call that is already active ends with the delayed focus gain, or from API 31 with a mode change.
+        if (isPhoneCallMode(savedAudioMode)) {
+            setPhoneCallActive(true);
+        }
         Log.d(TAG, "AudioManager started");
     }
 
@@ -246,6 +262,78 @@ public class WebRtcAudioManager {
             updateAudioDeviceState();
         }
         Log.d(TAG, "onAudioFocusChange: " + focusChange);
+        if (amState == AudioManagerState.RUNNING) {
+            updatePhoneCallDetection(focusChange);
+        }
+    }
+
+    /**
+     * Sets the listener that is told when a cellular phone call becomes active or ends during the call. A ringing
+     * phone call is not active yet.
+     */
+    public void setPhoneCallListener(@Nullable PhoneCallListener phoneCallListener) {
+        this.phoneCallListener = phoneCallListener;
+    }
+
+    /**
+     * Telecom switches the audio mode to MODE_IN_CALL once a cellular call is answered or dialed, while it only
+     * uses MODE_RINGTONE when the call rings. From API 31 mode changes are reported by a listener. Below, the mode
+     * is polled while Telecom holds the transient call audio focus, as answering a ringing call does not cause
+     * another focus change.
+     */
+    private void updatePhoneCallDetection(int focusChange) {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                    phoneCallPollHandler.removeCallbacks(phoneCallPollRunnable);
+                    pollPhoneCallState();
+                }
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN:
+                phoneCallPollHandler.removeCallbacks(phoneCallPollRunnable);
+                setPhoneCallActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void pollPhoneCallState() {
+        setPhoneCallActive(isPhoneCallMode(audioManager.getMode()));
+        phoneCallPollHandler.postDelayed(phoneCallPollRunnable, PHONE_CALL_POLL_INTERVAL_MS);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void registerModeChangedListener() {
+        modeChangedListener = mode -> {
+            if (amState == AudioManagerState.RUNNING) {
+                setPhoneCallActive(isPhoneCallMode(mode));
+            }
+        };
+        audioManager.addOnModeChangedListener(context.getMainExecutor(), modeChangedListener);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void unregisterModeChangedListener() {
+        if (modeChangedListener != null) {
+            audioManager.removeOnModeChangedListener(modeChangedListener);
+            modeChangedListener = null;
+        }
+    }
+
+    static boolean isPhoneCallMode(int mode) {
+        return mode == AudioManager.MODE_IN_CALL;
+    }
+
+    private void setPhoneCallActive(boolean active) {
+        if (phoneCallActive == active) {
+            return;
+        }
+        phoneCallActive = active;
+        Log.d(TAG, "Phone call " + (active ? "active" : "ended"));
+        if (phoneCallListener != null) {
+            phoneCallListener.onPhoneCallStateChanged(active);
+        }
     }
 
     static AudioFocusRequest buildCallAudioFocusRequest(AudioManager.OnAudioFocusChangeListener listener) {
@@ -308,6 +396,11 @@ public class WebRtcAudioManager {
 
         unregisterReceiver(wiredHeadsetReceiver);
         audioManager.unregisterAudioDeviceCallback(wiredAudioDeviceCallback);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            unregisterModeChangedListener();
+        }
+        phoneCallPollHandler.removeCallbacks(phoneCallPollRunnable);
+        phoneCallActive = false;
 
         if(bluetoothManager.started()) {
             bluetoothManager.stop();
@@ -926,6 +1019,13 @@ public class WebRtcAudioManager {
         // Callback fired once audio device is changed or list of available audio devices changed.
         void onAudioDeviceChanged(
             AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);
+    }
+
+    /**
+     * Cellular phone call state change event, delivered on the main thread.
+     */
+    public interface PhoneCallListener {
+        void onPhoneCallStateChanged(boolean isActive);
     }
 
     /* Receiver which handles changes in wired headset availability. */

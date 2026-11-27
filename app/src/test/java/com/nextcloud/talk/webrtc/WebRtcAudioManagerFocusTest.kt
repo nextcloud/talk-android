@@ -84,6 +84,15 @@ class WebRtcAudioManagerFocusTest {
     }
 
     @Test
+    fun `only the in call mode counts as an active phone call`() {
+        assertTrue(WebRtcAudioManager.isPhoneCallMode(AudioManager.MODE_IN_CALL))
+        assertFalse(WebRtcAudioManager.isPhoneCallMode(AudioManager.MODE_RINGTONE))
+        assertFalse(WebRtcAudioManager.isPhoneCallMode(AudioManager.MODE_CALL_SCREENING))
+        assertFalse(WebRtcAudioManager.isPhoneCallMode(AudioManager.MODE_IN_COMMUNICATION))
+        assertFalse(WebRtcAudioManager.isPhoneCallMode(AudioManager.MODE_NORMAL))
+    }
+
+    @Test
     fun `new call clears a transient loss left by the previous call`() {
         val state = WebRtcAudioManager.AudioFocusState()
 
