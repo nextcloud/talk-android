@@ -66,6 +66,9 @@ object DatabaseKeyManager {
 
     private val lock = Any()
 
+    /** Whether this process already counted a transient unwrap failure towards [PREF_UNWRAP_FAILURES]. */
+    private var countedUnwrapFailure = false
+
     /**
      * Returns the SQLCipher key for the database at [databasePath], provisioning it on first use and
      * migrating a legacy database to it. Must be called before Room opens the file.
@@ -137,7 +140,8 @@ object DatabaseKeyManager {
     /**
      * Reads [slot] and counts consecutive transient unwrap failures across launches, so a failure
      * that never clears is eventually treated as a permanently lost passphrase instead of blocking
-     * every launch.
+     * every launch. Only the first failure of a process is counted, as several callers may each try
+     * to open the database.
      */
     private fun readTracked(prefs: SharedPreferences, keyAlias: String, slot: Slot): StoredPassphrase {
         val state = readWrapped(prefs, keyAlias, slot)
@@ -147,6 +151,7 @@ object DatabaseKeyManager {
                 if (failures > 0) prefs.edit(commit = true) { remove(PREF_UNWRAP_FAILURES) }
                 state
             }
+            countedUnwrapFailure -> state
             failures + 1 >= MAX_TRANSIENT_UNWRAP_FAILURES -> {
                 Log.w(TAG, "Passphrase could not be unwrapped on ${failures + 1} attempts; treating it as lost")
                 prefs.edit(commit = true) { remove(PREF_UNWRAP_FAILURES) }
@@ -154,6 +159,7 @@ object DatabaseKeyManager {
             }
             else -> {
                 prefs.edit(commit = true) { putInt(PREF_UNWRAP_FAILURES, failures + 1) }
+                countedUnwrapFailure = true
                 state
             }
         }
