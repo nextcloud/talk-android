@@ -19,15 +19,22 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesDto
 import com.nextcloud.talk.models.json.capabilities.ServerVersionDto
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 @Suppress("TooManyFunctions")
-class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
+class UsersRepositoryImpl(usersDaoProvider: () -> UsersDao) : UsersRepository {
+
+    constructor(usersDao: UsersDao) : this({ usersDao })
+
+    /** Resolved on first use, so that creating the repository does not open the database. */
+    private val usersDao by lazy(usersDaoProvider)
 
     override suspend fun getActiveUser(): User? = UserMapper.toModel(usersDao.getActiveUser())
 
     override fun getActiveUserFlow(): Flow<User?> =
-        usersDao.getActiveUserFlow().map {
+        flow { emitAll(usersDao.getActiveUserFlow()) }.map {
             UserMapper.toModel(it)
         }
 
@@ -36,7 +43,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override suspend fun getUserWithId(id: Long): User? = UserMapper.toModel(usersDao.getUserWithId(id))
 
     override fun getUserWithIdFlow(id: Long): Flow<User?> =
-        usersDao.getUserWithIdFlow(id).map {
+        flow { emitAll(usersDao.getUserWithIdFlow(id)) }.map {
             UserMapper.toModel(it)
         }
 

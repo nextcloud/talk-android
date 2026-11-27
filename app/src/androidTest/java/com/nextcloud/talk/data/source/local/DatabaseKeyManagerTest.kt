@@ -21,6 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -38,6 +39,8 @@ class DatabaseKeyManagerTest {
         // a dedicated prefs file and keystore alias so the test never touches the app's real key
         private const val TEST_PREFS = "talk_db_key_test"
         private const val TEST_KEY_ALIAS = "talk_db_passphrase_wrapping_key_test"
+
+        private const val FILLER_ROWS = 5000
     }
 
     private lateinit var context: Context
@@ -101,7 +104,7 @@ class DatabaseKeyManagerTest {
         seedLegacyDatabase("erin")
         buildTestDatabase().close()
 
-        // the file is on the new passphrase, but only the pending slot reached disk
+        // the file is on the raw key of the new passphrase, but only the pending slot reached disk
         moveActiveToPending()
 
         val resumed = buildTestDatabase()
@@ -159,6 +162,79 @@ class DatabaseKeyManagerTest {
     }
 
     @Test
+    fun freshDatabaseIsOnTheRawKey() {
+        buildTestDatabase().close()
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(unwrappedPassphrase()))
+        assertFileNotReadableWith(unwrappedPassphrase())
+    }
+
+    @Test
+    fun databaseOnThePassphraseIsRekeyedToTheRawKey() {
+        // a database of an earlier version, which used the stored passphrase itself as key
+        buildTestDatabase().close()
+        context.deleteDatabase(TEST_DB_NAME)
+        seedDatabase("heidi", unwrappedPassphrase())
+
+        val rekeyed = buildTestDatabase()
+        try {
+            val user = rekeyed.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive the re-key to the raw key", user)
+            assertEquals("heidi", user?.userId)
+        } finally {
+            rekeyed.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(unwrappedPassphrase()))
+        assertFileNotReadableWith(unwrappedPassphrase())
+    }
+
+    @Test
+    fun migrationOfAnEarlierVersionInterruptedBeforeActivationResumes() {
+        // an earlier version re-keyed the legacy file to the pending passphrase itself, then was interrupted
+        buildTestDatabase().close()
+        val passphrase = unwrappedPassphrase()
+        context.deleteDatabase(TEST_DB_NAME)
+        moveActiveToPending()
+        seedDatabase("ivan", passphrase)
+
+        val resumed = buildTestDatabase()
+        try {
+            val user = resumed.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive a migration of an earlier version interrupted before activation", user)
+            assertEquals("ivan", user?.userId)
+        } finally {
+            resumed.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(passphrase))
+        assertFileNotReadableWith(passphrase)
+        assertNotNull("The pending passphrase must be activated", storedPassphrase())
+        assertNull(testPrefs().getString(DatabaseKeyManager.PREF_PENDING_PASSPHRASE, null))
+    }
+
+    @Test
+    fun databaseWithAnInterruptedRekeyIsNotRecreated() {
+        // a database of an earlier version on the passphrase itself, whose re-key was interrupted
+        buildTestDatabase().close()
+        val passphrase = unwrappedPassphrase()
+        context.deleteDatabase(TEST_DB_NAME)
+        seedDatabase("judy", passphrase)
+        leaveRollbackJournal(passphrase)
+
+        val reopened = buildTestDatabase()
+        try {
+            val user = reopened.usersDao().getActiveUserSynchronously()
+            assertNotNull("Data must survive an interrupted re-key", user)
+            assertEquals("judy", user?.userId)
+        } finally {
+            reopened.close()
+        }
+
+        assertFileReadableWith(PassphraseCipher.rawKeyOf(passphrase))
+    }
+
+    @Test
     fun corruptStoredPassphraseRecreatesDatabase() {
         val db = buildTestDatabase()
         runBlocking { db.usersDao().saveUser(activeUser("dave")) }
@@ -184,21 +260,68 @@ class DatabaseKeyManagerTest {
         TalkDatabase.build(context, TEST_DB_NAME, TEST_PREFS, TEST_KEY_ALIAS)
 
     private fun seedLegacyDatabase(userId: String, resetKeyState: Boolean = true) {
-        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
-        val legacyDb = Room
-            .databaseBuilder(context.applicationContext, TalkDatabase::class.java, TEST_DB_NAME)
-            .openHelperFactory(SupportOpenHelperFactory(legacyKey()))
-            .allowMainThreadQueries()
-            .build()
-        try {
-            runBlocking { legacyDb.usersDao().saveUser(activeUser(userId)) }
-        } finally {
-            legacyDb.close()
-        }
+        seedDatabase(userId, legacyKey())
         if (resetKeyState) {
             // the key manager must believe this is the first launch under the new scheme
             resetKeyManagerState()
         }
+    }
+
+    private fun seedDatabase(userId: String, key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        val db = Room
+            .databaseBuilder(context.applicationContext, TalkDatabase::class.java, TEST_DB_NAME)
+            .openHelperFactory(SupportOpenHelperFactory(key))
+            .allowMainThreadQueries()
+            .build()
+        try {
+            runBlocking { db.usersDao().saveUser(activeUser(userId)) }
+        } finally {
+            db.close()
+        }
+    }
+
+    /**
+     * Leaves the database file as a process killed during a write does: changed pages in the file and
+     * a rollback journal with the original pages next to it.
+     */
+    private fun leaveRollbackJournal(key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        val journal = File(dbFile.path + "-journal")
+        val dbCopy = File(dbFile.path + ".copy")
+        val journalCopy = File(journal.path + ".copy")
+        SQLiteDatabase.openDatabase(dbFile.absolutePath, key, null, SQLiteDatabase.OPEN_READWRITE, null).use { db ->
+            db.beginTransaction()
+            try {
+                // more data than fits into the page cache, so that changed pages are written to the file
+                db.execSQL("CREATE TABLE Filler (value BLOB)")
+                repeat(FILLER_ROWS) { db.execSQL("INSERT INTO Filler (value) VALUES (randomblob(1024))") }
+                dbFile.copyTo(dbCopy, overwrite = true)
+                journal.copyTo(journalCopy, overwrite = true)
+            } finally {
+                db.endTransaction()
+            }
+        }
+        context.deleteDatabase(TEST_DB_NAME)
+        dbCopy.renameTo(dbFile)
+        journalCopy.renameTo(journal)
+        assertTrue("A rollback journal must be left", journal.length() > 0)
+    }
+
+    private fun assertFileReadableWith(key: ByteArray) {
+        System.loadLibrary(TalkDatabase.SQL_CIPHER_LIBRARY)
+        assertTrue("Database must be readable with the key", SqlCipherRekeyer.canOpen(dbFile, key))
+    }
+
+    /** The stored passphrase, from the active slot or, if it was moved there, the pending one. */
+    private fun unwrappedPassphrase(): ByteArray {
+        val prefs = testPrefs()
+        val ciphertext = prefs.getString(DatabaseKeyManager.PREF_PASSPHRASE, null)
+            ?: prefs.getString(DatabaseKeyManager.PREF_PENDING_PASSPHRASE, null)
+        val iv = prefs.getString(DatabaseKeyManager.PREF_IV, null)
+            ?: prefs.getString(DatabaseKeyManager.PREF_PENDING_IV, null)
+        val stored = PassphraseCipher.unwrap(TEST_KEY_ALIAS, iv!!, ciphertext!!)
+        return (stored as StoredPassphrase.Present).value
     }
 
     private fun assertFileNotReadableWith(passphrase: ByteArray) {
@@ -213,9 +336,9 @@ class DatabaseKeyManagerTest {
             ).use { db ->
                 db.query("SELECT count(*) FROM sqlite_master").use { it.moveToFirst() }
             }
-            fail("Database must not be readable with the static key")
+            fail("Database must not be readable with this key")
         } catch (e: SQLiteException) {
-            // expected: the file is encrypted with the per-install, device-bound passphrase
+            // expected: the file is on another key
         }
     }
 

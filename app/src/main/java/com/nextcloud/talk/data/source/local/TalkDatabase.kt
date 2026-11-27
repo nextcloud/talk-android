@@ -181,13 +181,13 @@ abstract class TalkDatabase : RoomDatabase() {
             prefsName: String = DatabaseKeyManager.PREFS_NAME,
             keyAlias: String = DatabaseKeyManager.WRAPPING_KEY_ALIAS
         ): TalkDatabase {
-            val passphrase: ByteArray = DatabaseKeyManager.getPassphrase(
+            val key: ByteArray = DatabaseKeyManager.getDatabaseKey(
                 context,
                 context.applicationContext.getDatabasePath(dbName).absolutePath,
                 prefsName,
                 keyAlias
             )
-            val factory = SupportOpenHelperFactory(passphrase)
+            val factory = SupportOpenHelperFactory(key)
 
             val database = Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
