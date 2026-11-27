@@ -104,6 +104,9 @@ class AccountVerificationActivity : BaseActivity() {
 
         handleIntent()
 
+        // Also runs again when the activity is recreated, e.g. after a configuration change or process death, as the
+        // verification of the destroyed instance was cancelled with it. Storing the profile again updates the
+        // account stored by the first run instead of adding it twice, see UserManager.storeProfile().
         lifecycleScope.launch {
             if (
                 isAccountImport &&

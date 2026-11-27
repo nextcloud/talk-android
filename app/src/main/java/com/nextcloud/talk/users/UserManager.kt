@@ -24,11 +24,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) {
 
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    // Makes looking up and inserting an account in [storeProfile] atomic, so that two verifications of the same
+    // account running at the same time cannot both find no account and both insert one.
+    private val storeProfileMutex = Mutex()
 
     suspend fun getUsers(): List<User> = userRepository.getUsers()
 
@@ -163,31 +169,31 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return success
     }
 
-    suspend fun storeProfile(username: String?, userAttributes: UserAttributes): User? {
-        val existingUser = findUser(userAttributes)
-        val user = if (existingUser != null) {
-            existingUser.apply {
-                token = userAttributes.token
+    /**
+     * Stores the profile of a verified account. An account that is already stored, found by [UserAttributes.id] or
+     * else by [username] and server, is updated instead of adding it a second time, e.g. when its verification runs
+     * again because the verification screen was recreated or started twice. An existing account keeps its active
+     * state, which only [setUserAsActive] changes. An account scheduled for deletion is not reused.
+     */
+    suspend fun storeProfile(username: String?, userAttributes: UserAttributes): User? =
+        storeProfileMutex.withLock {
+            val existingUser = findUser(username, userAttributes)
+            val user = existingUser?.apply {
                 baseUrl = userAttributes.serverUrl
-                current = userAttributes.currentUser
-                userId = userAttributes.userId
-                token = userAttributes.token
-                displayName = userAttributes.displayName
-                clientCertificate = userAttributes.certificateAlias
                 updateUserData(this, userAttributes)
-            }
-        } else {
-            createUser(username, userAttributes)
+            } ?: createUser(username, userAttributes)
+            val id = userRepository.insertUser(user)
+            userRepository.getUserWithId(id)
         }
-        val id = userRepository.insertUser(user)
-        return userRepository.getUserWithId(id)
-    }
 
-    private suspend fun findUser(userAttributes: UserAttributes): User? =
-        if (userAttributes.id != null) {
-            userRepository.getUserWithId(userAttributes.id)
-        } else {
-            null
+    private suspend fun findUser(username: String?, userAttributes: UserAttributes): User? =
+        when {
+            userAttributes.id != null -> userRepository.getUserWithId(userAttributes.id)
+
+            username.isNullOrEmpty() || userAttributes.serverUrl.isNullOrEmpty() -> null
+
+            else -> userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
+                ?.takeUnless { it.scheduledForDeletion }
         }
 
     private fun updateUserData(user: User, userAttributes: UserAttributes) {
@@ -211,7 +217,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.externalSignalingServer = LoganSquare
                 .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
         }
-        user.current = userAttributes.currentUser == true
     }
 
     private fun createUser(username: String?, userAttributes: UserAttributes): User {
