@@ -1,0 +1,14 @@
+## Added
+- Screen sharing in calls
+- Speaker view and highlighting in calls
+- Calls integrated with Android Telecom (@thecyberd3m0n)
+- Reworked playback of voice messages (@minichhenoch-sir)
+- Select and forward several messages
+- Warning on all screens when server is unreachable
+
+## Fixed
+- Various bugs
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/118?closed=1
