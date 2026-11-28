@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Batterioptimering är aktiverad vilket kan orsaka problem. Du bör inaktivera batterioptimering!</string>
     <string name="battery_optimization_title">Batteriinställningar</string>
     <string name="busy">Upptagen</string>
-    <string name="calendar">Kalender</string>
     <string name="call_in_progress">Ett samtal pågår</string>
     <string name="call_more_actions_dialog_headline">Avancerade samtalsalternativ</string>
     <string name="call_running_since_one_hour">Samtalet har pågått i en timme.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
     <string name="close">Stäng</string>
     <string name="close_icon">Stängningsikon</string>
-    <string name="connection_established">Anslutning etablerad</string>
     <string name="connection_lost">Ingen anslutning till servern</string>
-    <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
     <string name="continuous_voice_message_recording">Lås inspelningen för kontinuerlig inspelning av röstmeddelandet</string>
-    <string name="conversation_archived">Konversationen är arkiverad</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
     <string name="conversation_read_only_failed">Kunde inte sätta konversationen skrivskyddad</string>
     <string name="conversations">Konversationer</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är beviljad, allt är bra</string>
     <string name="full_screen_intent_permission_not_granted">Behörighet att visa inkommande samtalsskärm över låsskärmen är inte beviljad. Bevilja detta så att inkommande samtal visas på låsskärmen!</string>
     <string name="full_screen_intent_permission_title">Visa inkommande samtal över låsskärmen</string>
-    <string name="get_invitations_error">Kunde inte hämta väntande inbjudningar</string>
     <string name="gplay_available_no">Google Play-tjänster är inte tillgängliga. Aviseringar stöds inte</string>
     <string name="hint_edited_message">(redigerad)</string>
     <string name="internal_note">Intern anteckning</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Lämna samtalet</string>
     <string name="left_conversation">Du lämnade konversationen %1$s</string>
     <string name="load_more_results">Visa fler resultat</string>
-    <string name="local_time">Lokal tid: %1$s</string>
     <string name="location_permission_denied">Behörighet för plats nekad</string>
     <string name="location_services_disabled">Platstjänster inaktiverade</string>
     <string name="lock_conversation">Lås konversation</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Aktiv användare</string>
     <string name="nc_account_chooser_add_account">Lägg till konto</string>
     <string name="nc_account_removal_pending">Borttagningen av det här kontot är ännu inte klar. Försök igen om en stund.</string>
-    <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
     <string name="nc_add_attachment">Lägg till bilaga</string>
     <string name="nc_add_emojis">Lägg till emojier</string>
     <string name="nc_add_file">Lägg till i konversation</string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Lägg till deltagare</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_add_to_home_screen">Lägg till på hemskärmen</string>
-    <string name="nc_admin_only">Endast administratörer</string>
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
     <string name="nc_announcement">Meddelande</string>
     <string name="nc_announcement_description">Konversation för administratörer som ska informera en fast målgrupp och som inte kan lämnas.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Växla mikrofon</string>
     <string name="nc_call_button_content_description_pip">Öppna bild i bild-läge</string>
     <string name="nc_call_button_content_description_switch_camera">Växla kamera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Växla till egen video</string>
-    <string name="nc_call_e2ee_not_supported">Samtal stöds för närvarande inte eftersom end-to-end-kryptering är aktiverad på servern.</string>
-    <string name="nc_call_e2ee_not_supported_title">Samtal från %s är inte tillgängligt</string>
     <string name="nc_call_e2ee_requires_hpb">End-to-end-krypterade samtal kräver en högpresterande backend (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Det gick inte att konfigurera end-to-end-kryptering för det här samtalet</string>
     <string name="nc_call_incoming">INKOMMANDE</string>
@@ -184,9 +173,6 @@
     <string name="nc_call_ringing">RINGER</string>
     <string name="nc_call_self_video_enlarge">Förstora egen video</string>
     <string name="nc_call_self_video_shrink">Förminska egen video</string>
-    <string name="nc_call_state_in_call">%1$s i samtal</string>
-    <string name="nc_call_state_with_phone">%1$s med telefon</string>
-    <string name="nc_call_state_with_video">%1$s med video</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_call_unknown">%s samtal</string>
     <string name="nc_call_video">%s videosamtal</string>
@@ -197,7 +183,6 @@
     <string name="nc_call_voice">%s röstsamtal</string>
     <string name="nc_camera_permission_hint">För att aktivera videokommunikation måste du bevilja \"Kamera\"-tillstånd.</string>
     <string name="nc_cancel">Avbryt</string>
-    <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_caption">Rubrik</string>
     <string name="nc_certificate_dialog_text_for_host">Vill du lita på det hittills okända SSL-certifikatet för %1$s, utfärdat av %2$s för %3$s, som är giltigt från %4$s till %5$s? Det kommer endast att vara betrott för %1$s.</string>
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
@@ -220,7 +205,6 @@
     <string name="nc_common_and">och</string>
     <string name="nc_common_copy">Kopiera</string>
     <string name="nc_common_copy_success">Kopierat till urklipp</string>
-    <string name="nc_common_create">Skapa</string>
     <string name="nc_common_disabled">Inaktiverad</string>
     <string name="nc_common_dismiss">Avfärda</string>
     <string name="nc_common_error_sorry">Ledsen, någonting gick fel!</string>
@@ -229,11 +213,7 @@
     <string name="nc_common_set">Sätt</string>
     <string name="nc_common_skip">Hoppa över</string>
     <string name="nc_common_unknown">Okänd</string>
-    <string name="nc_compress_images">Komprimera bilder och videor</string>
-    <string name="nc_compress_in_progress">Komprimerar</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
-    <string name="nc_confirm">Bekräfta</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contact_chat_start">Starta</string>
     <string name="nc_contact_chat_start_message">Du har ännu ingen konversation med %1$s. Om du startar en läggs den till i konversationslistan för er båda.</string>
@@ -322,7 +302,6 @@
     <string name="nc_edit_icon">Redigera</string>
     <string name="nc_edit_message">Redigera</string>
     <string name="nc_edit_message_text">Redigera meddelande</string>
-    <string name="nc_edited_by_admin">Redigerad av admin</string>
     <string name="nc_event_conversation_menu">Menyn för händelsekonversation</string>
     <string name="nc_event_schedule">Schemalägg</string>
     <string name="nc_expire_message_eight_hours">8 timmar</string>
@@ -369,8 +348,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Inbjudningar skickades ut igen.</string>
     <string name="nc_guest_access_share_link">Dela konversationslänk</string>
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
-    <string name="nc_hq_toggle">HQ</string>
-    <string name="nc_hq_toggle_description">Hög kvalitet, ingen komprimering</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering ignoreras inte. Detta bör ändras för att säkerställa att aviseringar fungerar i bakgrunden! Klicka på OK, välj “Alla appar” -> %1$s och sedan “Optimera inte” eller “Tillåt bakgrundsanvändning -> Obegränsad”.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorera batterioptimering</string>
     <string name="nc_important_conversation">Viktig konversation</string>
@@ -401,8 +378,6 @@
     <string name="nc_locked_tap_to_unlock">Tryck för att låsa upp</string>
     <string name="nc_login_too_many_attempts">För många misslyckade inloggningsförsök från det här nätverket. Försök igen senare.</string>
     <string name="nc_logs_advanced_logging">Avancerad loggning</string>
-    <string name="nc_logs_advanced_logging_disable">Inaktivera avancerad loggning</string>
-    <string name="nc_logs_advanced_logging_enable">Aktivera avancerad loggning</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Avancerad loggning är aktiverad. Detta kan försämra prestandan.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Om du har haft avancerad loggning aktiverad ska du inte dela rapporten offentligt.</string>
     <string name="nc_logs_delete_all">Ta bort alla loggar</string>
@@ -416,8 +391,6 @@
     <string name="nc_logs_logging_enabled">Loggning är aktiverad</string>
     <string name="nc_logs_overflow_warning">Varning: vissa loggposter gick förlorade eftersom kön blev full.</string>
     <string name="nc_logs_share">Skicka som e-post</string>
-    <string name="nc_logs_share_diagnosis">Diagnosrapport</string>
-    <string name="nc_logs_share_latest_crash">Senaste kraschrapporten</string>
     <string name="nc_logs_share_no_app_found">Ingen app hittades för att skicka rapporten.</string>
     <string name="nc_logs_title">Loggar</string>
     <string name="nc_logs_total_size">Total storlek: %d KB</string>
@@ -428,7 +401,6 @@
     <string name="nc_media_quality_original_hint">Att skicka ursprunglig kvalitet använder mer mobildata.</string>
     <string name="nc_media_quality_reduced">Reducerad kvalitet</string>
     <string name="nc_meeting_ended">Möte avslutat</string>
-    <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
     <string name="nc_message_failed">Kunde inte skicka meddelandet</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
     <string name="nc_message_not_added_to_notes">Kunde inte lägga till meddelandet i anteckningar</string>
@@ -573,7 +545,6 @@
     <string name="nc_sent_an_audio_you">Du skickade en ljudfil.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s skickade en bild.</string>
     <string name="nc_sent_an_image_you">Du skickade en bild.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s skickade ett Deck-kort</string>
     <string name="nc_server_connect">Testa serveranslutning</string>
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
@@ -605,7 +576,6 @@
     <string name="nc_settings_diagnosis_title">Diagnos</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerar tangentbordet att inaktivera personlig inlärning (utan garantier)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tangentbord</string>
-    <string name="nc_settings_logs_subtitle">Visa lokala loggfiler</string>
     <string name="nc_settings_logs_title">Loggar</string>
     <string name="nc_settings_media_quality_title">Kvalitet för skickade media</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
@@ -666,7 +636,6 @@
     <string name="nc_share_link">Delningslänk</string>
     <string name="nc_share_location">Dela plats</string>
     <string name="nc_share_this_location">Dela den här platsen</string>
-    <string name="nc_share_to_choose_account">Välj konto</string>
     <string name="nc_shared_items">Delade objekt</string>
     <string name="nc_shared_items_deck_card">Deck-kort</string>
     <string name="nc_shared_items_description">Bilder, filer, röstmeddelanden ...</string>
@@ -696,15 +665,11 @@
     <string name="nc_undo">Ångra</string>
     <string name="nc_upcoming_event_dismissed">Kommande samtal kan visas i konversationsinformationen</string>
     <string name="nc_upload_choose_local_files">Välj filer</string>
-    <string name="nc_upload_confirm_send_multiple">Skicka dessa filer till %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Skicka denna fil till %1$s?</string>
     <string name="nc_upload_failed">Tyvärr, uppladdningen misslyckades</string>
     <string name="nc_upload_failed_notification_text">Kunde inte ladda upp %1$s</string>
     <string name="nc_upload_failed_notification_title">Fel</string>
     <string name="nc_upload_from_cloud">Dela från %1$s</string>
     <string name="nc_upload_from_device">Ladda upp från enheten</string>
-    <string name="nc_upload_in_progess">Laddar upp</string>
-    <string name="nc_upload_notification_text">%1$s till %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Ta en bild</string>
     <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
@@ -739,14 +704,12 @@
     <string name="pin_24hr">Fäst i 24 timmar</string>
     <string name="pin_30_days">Fäst i 30 dagar</string>
     <string name="pin_7_days">Fäst i 7 dagar</string>
-    <string name="pin_indefinitely">Fäst tills vidare</string>
     <string name="pin_message">Fäst meddelande</string>
     <string name="pinned">Fäst</string>
     <string name="pinned_by_author">%1$s (fäst av %2$s)</string>
     <string name="pinned_by_you">%1$s (fäst av dig)</string>
     <string name="pinned_dismiss">Avfärda</string>
     <string name="pinned_go_to_message">Gå till meddelande</string>
-    <string name="pinned_indefinitely">Fäst tills vidare</string>
     <string name="pinned_message_options">Meddelandeinställningar</string>
     <string name="pinned_until">Fäst till</string>
     <string name="play_pause_audio_file">Spela upp/pausa ljudfil</string>
@@ -811,7 +774,6 @@
     <string name="search_icon">Sökikon</string>
     <string name="secondsAgo">sekunder sedan</string>
     <string name="selected_list_item">Vald</string>
-    <string name="send_email">Skicka e-post</string>
     <string name="send_to">Skicka till</string>
     <string name="send_to_forbidden">Du får inte dela innehåll till denna chatt</string>
     <string name="send_to_three_dots">Skicka till …</string>
@@ -827,22 +789,18 @@
     <string name="shared_items_poll">Omröstning</string>
     <string name="shared_items_recording">Samtalsinspelning</string>
     <string name="shared_items_voice">Röst</string>
-    <string name="show_ban_reason">Visa orsak till blockering</string>
     <string name="show_banned_participants">Visa blockerade deltagare</string>
     <string name="silent_message_hint">Tyst meddelande</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
     <string name="start_thread">Skapa en tråd</string>
-    <string name="started_a_call">startade ett samtal</string>
     <string name="status_message">Statusmeddelande</string>
-    <string name="status_reverted">Status återställd</string>
     <string name="switch_to_breakout_room">Byt till grupprum</string>
     <string name="switch_to_main_room">Byt till huvudrum</string>
     <string name="take_photo">Ta en bild</string>
     <string name="take_photo_permission">Det är inte möjligt att ta ett foto utan behörighet</string>
     <string name="thirtyMinutes">30 minuter</string>
     <string name="thisWeek">Denna vecka</string>
-    <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
     <string name="thread">Tråd</string>
     <string name="thread_cancel">Avbryt skapande av tråd</string>
@@ -896,7 +854,6 @@
     <string name="user_info_role">Roll</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Hemsida</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Kunde inte hämta personlig användarinformation.</string>
     <string name="userinfo_no_info_headline">Ingen personlig info angiven</string>
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>

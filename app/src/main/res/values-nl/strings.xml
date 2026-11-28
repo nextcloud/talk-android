@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Batterijoptimalisatie is ingeschakeld, dit kan problemen veroorzaken. Je zou  batterijoptimalisatie moeten uitschakelen!</string>
     <string name="battery_optimization_title">Batterij instellingen</string>
     <string name="busy">Bezet</string>
-    <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Geavanceerde oproepopties</string>
     <string name="call_running_since_one_hour">Dit gesprek is actief gedurende een uur</string>
     <string name="call_without_notification">Oproepen zonder melding</string>
@@ -37,11 +36,8 @@
     <string name="clear_status_message_after">Statusbericht wissen na</string>
     <string name="close">Sluit</string>
     <string name="close_icon">Sluiten-pictogram</string>
-    <string name="connection_established">Verbinding tot stand gebracht</string>
     <string name="connection_lost">Geen verbinding met server</string>
-    <string name="connection_lost_sent_messages_are_queued">Verbinding verbroken - Verzonden berichten in de wachtrij geplaatst</string>
     <string name="continuous_voice_message_recording">Zet opname vast voor doorlopende opname van de spraak</string>
-    <string name="conversation_archived">Gesprek is gearchiveerd</string>
     <string name="conversation_is_read_only">Gesprek is alleen-lezen</string>
     <string name="conversation_read_only_failed">Gesprek op alleen-lezen instellen is mislukt</string>
     <string name="conversations">Gesprekken</string>
@@ -72,7 +68,6 @@
     <string name="file_list_folder">map</string>
     <string name="file_list_loading">Laden …</string>
     <string name="fourHours">4 uur</string>
-    <string name="get_invitations_error">Kon wachtende uitnodigingen niet ophalen</string>
     <string name="hint_edited_message">(bewerkt)</string>
     <string name="internal_note">Interne notitie</string>
     <string name="invisible">Onzichtbaar</string>
@@ -83,7 +78,6 @@
     <string name="leave_call">Verlaat oproep</string>
     <string name="left_conversation">Je hebt gesprek %1$s verlaten</string>
     <string name="load_more_results">Laad meer resultaten</string>
-    <string name="local_time">Lokale tijd: %1$s</string>
     <string name="location_permission_denied">Lokatietoestemming geweigerd</string>
     <string name="location_services_disabled">Lokatiediensten uitgeschakeld</string>
     <string name="lock_conversation">Gesprek vergrendelen</string>
@@ -108,7 +102,6 @@
     <string name="nc_about">Over</string>
     <string name="nc_account_chooser_active_user">Actieve gebruiker</string>
     <string name="nc_account_chooser_add_account">Toevoegen account </string>
-    <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
     <string name="nc_add_attachment">Toevoegen bijlage</string>
     <string name="nc_add_emojis">Toevoegen emojis</string>
     <string name="nc_add_file">Toevoegen aan gespek</string>
@@ -130,7 +123,6 @@
     <string name="nc_call_button_content_description_microphone">Microfoon omschakelen</string>
     <string name="nc_call_button_content_description_pip">Open beeld-in-beeld modus</string>
     <string name="nc_call_button_content_description_switch_camera">Andere camera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Omschakelen naar zelf-video</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
@@ -140,9 +132,6 @@
     <string name="nc_call_raised_hand">%1$s stak een hand op</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden …</string>
     <string name="nc_call_ringing">BELLEN</string>
-    <string name="nc_call_state_in_call">%1$s in gesprek</string>
-    <string name="nc_call_state_with_phone">%1$s met telefoon</string>
-    <string name="nc_call_state_with_video">%1$s met video</string>
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
     <string name="nc_call_unknown">%s oproep</string>
     <string name="nc_call_video">%s videogesprek</string>
@@ -151,7 +140,6 @@
     <string name="nc_call_voice">%s gesprek</string>
     <string name="nc_camera_permission_hint">Om videogesprekken te houden, verleen \"Camera\" machtiging.</string>
     <string name="nc_cancel">Annuleren</string>
-    <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_caption">Bijschrift</string>
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
@@ -167,7 +155,6 @@
     <string name="nc_common_and">en</string>
     <string name="nc_common_copy">Kopiëren</string>
     <string name="nc_common_copy_success">Gekopieerd naar het klembord</string>
-    <string name="nc_common_create">Creëer</string>
     <string name="nc_common_disabled">Uitgeschakeld</string>
     <string name="nc_common_dismiss">Wissen</string>
     <string name="nc_common_error_sorry">Sorry, er is iets fout gegaan!</string>
@@ -177,7 +164,6 @@
     <string name="nc_common_skip">Overslaan</string>
     <string name="nc_common_unknown">Onbekend</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
-    <string name="nc_confirm">Bevestigen</string>
     <string name="nc_connecting_call">Verbinden …</string>
     <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Gereed</string>
@@ -240,7 +226,6 @@
     <string name="nc_edit_icon">Bewerken</string>
     <string name="nc_edit_message">Bewerken</string>
     <string name="nc_edit_message_text">Bewerk bericht</string>
-    <string name="nc_edited_by_admin">Bewerkt door admin</string>
     <string name="nc_event_conversation_menu">Menu voor evenementgesprekken</string>
     <string name="nc_event_schedule">Agenda</string>
     <string name="nc_expire_message_eight_hours">8 uur</string>
@@ -311,13 +296,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
     <string name="nc_logs_disable_delete">Verwijderen logs</string>
-    <string name="nc_logs_share_diagnosis">Diagnoserapport</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_manual">Niet ingesteld</string>
     <string name="nc_mark_as_read">Markeren als gelezen</string>
     <string name="nc_mark_as_unread">Markeren als ongelezen</string>
     <string name="nc_meeting_ended">Vergadering is beëindigd</string>
-    <string name="nc_message_added_to_notes">Bericht toegevoegd aan notities</string>
     <string name="nc_message_failed_to_send">Fout bij versturen bericht:</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
@@ -430,7 +413,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_sent_an_audio_you">Je verstuurde een geluidsbestand.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s verstuurde een afbeelding</string>
     <string name="nc_sent_an_image_you">Je verstuurde een afbeelding.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s stuurde een deck kaart</string>
     <string name="nc_server_connect">Testen serververbinding</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
@@ -511,7 +493,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_location">Deel locatie</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
-    <string name="nc_share_to_choose_account">Kies account</string>
     <string name="nc_shared_items">Gedeelde objecten</string>
     <string name="nc_shared_items_deck_card">Deck kaart</string>
     <string name="nc_shared_items_description">Plaatjes, bestanden, spraakberichten ...</string>
@@ -532,15 +513,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_today_meeting">Vandaag om %1$s</string>
     <string name="nc_tomorrow_meeting">Morgen om %1$s</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
-    <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_failed_notification_text">Upload %1$s mislukt</string>
     <string name="nc_upload_failed_notification_title">Gefaald</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_from_device">Uploaden vanaf apparaat</string>
-    <string name="nc_upload_in_progess">Uploaden</string>
-    <string name="nc_upload_notification_text">%1$s naar%2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_upload_video_from_cam">Maak video</string>
     <string name="nc_user">Gebruiker</string>
@@ -571,12 +548,10 @@ Kies er eentje van een provider.</string>
     <string name="pin_24hr">Pin voor 24 uur</string>
     <string name="pin_30_days">Pin voor 30 dagen</string>
     <string name="pin_7_days">Pin voor 7 dagen</string>
-    <string name="pin_indefinitely">Pin onbeperkt</string>
     <string name="pin_message">Pin bericht</string>
     <string name="pinned">Gepind</string>
     <string name="pinned_by_you">%1$s (door jou vastgemaakt)</string>
     <string name="pinned_dismiss">Wijs af</string>
-    <string name="pinned_indefinitely">Onbeperkt gepind</string>
     <string name="pinned_message_options">Berichtopties</string>
     <string name="pinned_until">Gepind tot</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
@@ -637,7 +612,6 @@ Kies er eentje van een provider.</string>
     <string name="search_icon">Zoeken-pictogram</string>
     <string name="secondsAgo">seconden geleden</string>
     <string name="selected_list_item">Geselecteerd</string>
-    <string name="send_email">Verstuur e-mail</string>
     <string name="send_to">Versturen naar</string>
     <string name="send_to_forbidden">Je bent niet geautoriseerd inhoud te delen in deze chat</string>
     <string name="send_to_three_dots">Versturen naar …</string>
@@ -653,21 +627,17 @@ Kies er eentje van een provider.</string>
     <string name="shared_items_poll">Peiling</string>
     <string name="shared_items_recording">Gesprek wordt opgenomen</string>
     <string name="shared_items_voice">Stem</string>
-    <string name="show_ban_reason">Toon reden uitsluiten</string>
     <string name="show_banned_participants">Toon uitgesloten deelnemers</string>
     <string name="starred">Favoriet</string>
     <string name="startCallForbidden">U hebt geen toestemming om een gesprek te starten</string>
     <string name="start_thread">Creëer een lijn</string>
-    <string name="started_a_call">een gesprek gestart</string>
     <string name="status_message">Statusbericht</string>
-    <string name="status_reverted">Status omgezet</string>
     <string name="switch_to_breakout_room">Schakel naar aparte ruimte</string>
     <string name="switch_to_main_room">Schakel naar hoofdruimte</string>
     <string name="take_photo">Neem een foto</string>
     <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder machtiging</string>
     <string name="thirtyMinutes">30 minuten</string>
     <string name="thisWeek">Deze week</string>
-    <string name="this_is_a_test_message">Dit is een testbericht</string>
     <string name="this_weekend">Dit weekend</string>
     <string name="thread_cancel">Annuleer lijn-creatie</string>
     <string name="thread_notifications">Lijn-berichten</string>
@@ -716,7 +686,6 @@ Kies er eentje van een provider.</string>
     <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Kon persoonlijke informatie niet ophalen.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>

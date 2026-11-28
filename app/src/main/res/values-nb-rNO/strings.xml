@@ -21,7 +21,6 @@
     <string name="battery_optimization_ignored">Batterioptimalisering ignoreres, alt er bra</string>
     <string name="battery_optimization_title">Batteri innstillinger</string>
     <string name="busy">Opptatt</string>
-    <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avanserte samtalealternativer</string>
     <string name="call_running_since_one_hour">Samtalen har pågått i én time.</string>
     <string name="call_without_notification">Ring uten varsel</string>
@@ -32,8 +31,6 @@
     <string name="clear_status_message_after">Fjern statusmelding etter</string>
     <string name="close">Lukk</string>
     <string name="close_icon">Lukk ikon</string>
-    <string name="connection_established">Tilkobling opprettet</string>
-    <string name="connection_lost_sent_messages_are_queued">Tilkobling brutt – sendte meldinger legges i kø</string>
     <string name="continuous_voice_message_recording">Lås opptak for kontinuerlig opptak av talemeldingen</string>
     <string name="conversation_is_read_only">Samtalen kan kun leses</string>
     <string name="conversations">Samtaler</string>
@@ -61,7 +58,6 @@
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Laster ...</string>
     <string name="fourHours">4 timer</string>
-    <string name="get_invitations_error">Henting av ventende invitasjoner feilet</string>
     <string name="hint_edited_message">(redigert)</string>
     <string name="internal_note">Intern merknad</string>
     <string name="invisible">Usynlig</string>
@@ -92,7 +88,6 @@
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruker</string>
     <string name="nc_account_chooser_add_account">Legg til en konto</string>
-    <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
     <string name="nc_add_attachment">Legg til vedlegg</string>
     <string name="nc_add_emojis">Legg til emojier</string>
     <string name="nc_add_file">Legg til i samtale</string>
@@ -113,7 +108,6 @@
     <string name="nc_call_button_content_description_microphone">Mikrofon av/på</string>
     <string name="nc_call_button_content_description_pip">Åpne bilde-i-bilde-modus</string>
     <string name="nc_call_button_content_description_switch_camera">Bytt kamera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Bytt til selvvideo</string>
     <string name="nc_call_incoming">INNKOMMENDE</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_notifications">Varsler om anrop</string>
@@ -122,9 +116,6 @@
     <string name="nc_call_raised_hand">%1$s rekte opp hånden</string>
     <string name="nc_call_reconnecting">Kobler til igjen...</string>
     <string name="nc_call_ringing">RINGER</string>
-    <string name="nc_call_state_in_call">%1$s i samtale</string>
-    <string name="nc_call_state_with_phone">%1$s med telefon</string>
-    <string name="nc_call_state_with_video">%1$s med video</string>
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
     <string name="nc_call_unknown">%s anrop</string>
     <string name="nc_call_video">%s videosamtale</string>
@@ -133,7 +124,6 @@
     <string name="nc_call_voice">%s taleanrop</string>
     <string name="nc_camera_permission_hint">For å aktivere videokommunikasjon, vennligst gi \"Kamera\" tillatelse.</string>
     <string name="nc_cancel">Avbryt</string>
-    <string name="nc_capabilities_failed">Kunne ikke hente evner, avbryter</string>
     <string name="nc_caption">Bildetekst</string>
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
@@ -149,7 +139,6 @@
     <string name="nc_common_and">og</string>
     <string name="nc_common_copy">Kopi</string>
     <string name="nc_common_copy_success">Kopiert til utklippstavlen</string>
-    <string name="nc_common_create">Opprett</string>
     <string name="nc_common_disabled">Deaktivert</string>
     <string name="nc_common_dismiss">Forkast</string>
     <string name="nc_common_error_sorry">Noe gikk galt.</string>
@@ -159,7 +148,6 @@
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_common_unknown">Ukjent</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
-    <string name="nc_confirm">Bekreft</string>
     <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contacts_done">Ferdig</string>
@@ -220,7 +208,6 @@
     <string name="nc_edit_icon">Rediger</string>
     <string name="nc_edit_message">Rediger</string>
     <string name="nc_edit_message_text">Rediger melding</string>
-    <string name="nc_edited_by_admin">Redigert av administrator</string>
     <string name="nc_event_schedule">Timeplan</string>
     <string name="nc_expire_message_eight_hours">8 timer</string>
     <string name="nc_expire_message_four_weeks">4 uker</string>
@@ -458,7 +445,6 @@
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_location">Del plassering</string>
     <string name="nc_share_this_location">Del denne plasseringen</string>
-    <string name="nc_share_to_choose_account">Velg konto</string>
     <string name="nc_shared_items">Delte elementer</string>
     <string name="nc_shared_items_deck_card">Deck kort</string>
     <string name="nc_shared_items_description">Bilder, filer, talemeldinger...</string>
@@ -473,15 +459,11 @@
     <string name="nc_team">Lag</string>
     <string name="nc_undo">Angre</string>
     <string name="nc_upload_choose_local_files">Velg filer</string>
-    <string name="nc_upload_confirm_send_multiple">Sende disse filene til %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Sende denne filen til %1$s?</string>
     <string name="nc_upload_failed">Beklager, opplasting feilet</string>
     <string name="nc_upload_failed_notification_text">Opplasting av %1$s feilet</string>
     <string name="nc_upload_failed_notification_title">Feil</string>
     <string name="nc_upload_from_cloud">Del fra %1$s</string>
     <string name="nc_upload_from_device">Last opp fra enhet</string>
-    <string name="nc_upload_in_progess">Laster opp</string>
-    <string name="nc_upload_notification_text">%1$s til %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Ta et bilde</string>
     <string name="nc_upload_video_from_cam">Ta opp video</string>
     <string name="nc_user">Bruker</string>
@@ -556,7 +538,6 @@
     <string name="search_icon">Søkeikon</string>
     <string name="secondsAgo">sekunder siden</string>
     <string name="selected_list_item">Valgt</string>
-    <string name="send_email">Send e-post</string>
     <string name="send_to">Send til</string>
     <string name="send_to_forbidden">Du har ikke lov til å dele innhold til denne chatten</string>
     <string name="send_to_three_dots">Send til...</string>
@@ -572,11 +553,9 @@
     <string name="shared_items_poll">Avstemning</string>
     <string name="shared_items_recording">Samtaleopptak</string>
     <string name="shared_items_voice">Svarer</string>
-    <string name="show_ban_reason">Vis utestengelsesårsak</string>
     <string name="show_banned_participants">Vis utestengte deltakere</string>
     <string name="starred">Favoritt</string>
     <string name="startCallForbidden">Du har ikke lov til å starte et anrop</string>
-    <string name="started_a_call">startet et anrop</string>
     <string name="status_message">Statusmelding</string>
     <string name="switch_to_breakout_room">Bytt til grupperom</string>
     <string name="switch_to_main_room">Bytt til hovedrom</string>
@@ -584,7 +563,6 @@
     <string name="take_photo_permission">Å ta et bilde er ikke mulig uten tillatelser</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uken</string>
-    <string name="this_is_a_test_message">Dette er en testmelding</string>
     <string name="this_weekend">Denne helgen</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
@@ -619,7 +597,6 @@
     <string name="user_info_role">Rolle</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Nettsted</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Kan ikke hente personlig brukerinformasjon.</string>
     <string name="userinfo_no_info_headline">Ingen personlig info satt</string>
     <string name="userinfo_no_info_text">Legg til navn, bilde og kontaktdetaljer på profilsiden.</string>

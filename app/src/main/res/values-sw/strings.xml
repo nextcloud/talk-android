@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Uboreshaji wa betri umewezeshwa ambayo inaweza kusababisha matatizo. Unapaswa kuzima uboreshaji wa betri!</string>
     <string name="battery_optimization_title">Mipangilio ya betri</string>
     <string name="busy">Bize</string>
-    <string name="calendar">Kalenda</string>
     <string name="call_more_actions_dialog_headline">Chaguzi za simu za hali ya juu</string>
     <string name="call_running_since_one_hour">Simu imekuwa ikifanya kazi kwa saa moja.</string>
     <string name="call_without_notification">Piga simu bila arifa</string>
@@ -37,11 +36,8 @@
     <string name="clear_status_message_after">Futa jumbe za wadhifa baada ya </string>
     <string name="close">Funga</string>
     <string name="close_icon">Funga aikoni</string>
-    <string name="connection_established">Muunganiko umeanzishwa</string>
     <string name="connection_lost">Hakuna mtandao kwenye seva</string>
-    <string name="connection_lost_sent_messages_are_queued">Muunganisho umepotea - Jumbe zilizotumwa zimewekwa kwenye foleni</string>
     <string name="continuous_voice_message_recording">Funga rekodi ili uendelee kurekodi ujumbe wa sauti</string>
-    <string name="conversation_archived">Mazungumzo yamehifadhiwa</string>
     <string name="conversation_is_read_only">Mazungumzo yanasomwa tu</string>
     <string name="conversation_read_only_failed">Imeshindwa kuweka mazungumzo ya Kusomwa tu</string>
     <string name="conversations">Mazungumzo</string>
@@ -72,7 +68,6 @@
     <string name="file_list_folder">folda</string>
     <string name="file_list_loading">Inapakia</string>
     <string name="fourHours">Masaa 4</string>
-    <string name="get_invitations_error">Imeshindwa kuleta mialiko ambayo haijashughulikiwa</string>
     <string name="hint_edited_message">(imehaririwa)</string>
     <string name="internal_note">Nukuu ya ndani</string>
     <string name="invisible">Haionekani</string>
@@ -83,7 +78,6 @@
     <string name="leave_call">Acha simu</string>
     <string name="left_conversation">Umeacha mazungumzo %1$s</string>
     <string name="load_more_results">Pakia matokeo zaidi</string>
-    <string name="local_time">Muda wa kawaida: %1$s</string>
     <string name="location_permission_denied">Ruhusa ya eneo imekataliwa</string>
     <string name="location_services_disabled">Huduma za eneo zimezimwa</string>
     <string name="lock_conversation">Funga mazungumzo</string>
@@ -108,7 +102,6 @@
     <string name="nc_about">Kuhusu</string>
     <string name="nc_account_chooser_active_user">Mtumiaji anayetumia</string>
     <string name="nc_account_chooser_add_account">Ongeza akaunti</string>
-    <string name="nc_account_scheduled_for_deletion">Akaunti imeratibiwa kufutwa, na haiwezi kubadilishwa</string>
     <string name="nc_add_attachment">Ongeza kiambatisho</string>
     <string name="nc_add_emojis">Ongeza emoji</string>
     <string name="nc_add_file">Ongeza kwenye mazungumzo</string>
@@ -129,7 +122,6 @@
     <string name="nc_call_button_content_description_microphone">Geuza microphone</string>
     <string name="nc_call_button_content_description_pip">Fungua picha katika modi ya picha</string>
     <string name="nc_call_button_content_description_switch_camera">Badili kamera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Hamia kwenye video binafsi</string>
     <string name="nc_call_incoming">Zinazoingia</string>
     <string name="nc_call_name">Jina la mazungumzo</string>
     <string name="nc_call_notifications">Arifu za simu</string>
@@ -139,9 +131,6 @@
     <string name="nc_call_raised_hand">%1$s ameinua mkono</string>
     <string name="nc_call_reconnecting">Inaunganisha upya</string>
     <string name="nc_call_ringing">INAITA</string>
-    <string name="nc_call_state_in_call">%1$s katika simu</string>
-    <string name="nc_call_state_with_phone">%1$s na simu</string>
-    <string name="nc_call_state_with_video">%1$sna video</string>
     <string name="nc_call_timeout">Hakuna jibu katika sekunde 45, bonyeza kujaribu tena</string>
     <string name="nc_call_unknown">%s piga simu</string>
     <string name="nc_call_video">%s simu ya video</string>
@@ -150,7 +139,6 @@
     <string name="nc_call_voice">%s simu ya sauti</string>
     <string name="nc_camera_permission_hint">Kuwezesha mawasiliano ya video tafadhali toa ruhusa ya kamera</string>
     <string name="nc_cancel">Ghairi</string>
-    <string name="nc_capabilities_failed">Imeshindwa kuleta uwezo, kukatisha</string>
     <string name="nc_caption">Manukuu</string>
     <string name="nc_certificate_dialog_title">Angalia cheti</string>
     <string name="nc_certificate_error">Usanidi wako wa SSL umezuia muunganisho</string>
@@ -166,7 +154,6 @@
     <string name="nc_common_and">na</string>
     <string name="nc_common_copy">Nakili</string>
     <string name="nc_common_copy_success">Nakili katika ubao wa kunakili</string>
-    <string name="nc_common_create">Tengeneza</string>
     <string name="nc_common_disabled">Zima</string>
     <string name="nc_common_dismiss">Ondoa</string>
     <string name="nc_common_error_sorry">Pole, kitu fulani kimeenda vibaya</string>
@@ -176,7 +163,6 @@
     <string name="nc_common_skip">Ruka</string>
     <string name="nc_common_unknown">Haijulikani</string>
     <string name="nc_configure_cert_auth">Chagua cheti cha uthibitishaji</string>
-    <string name="nc_confirm">Thibitisha</string>
     <string name="nc_connecting_call">Inaunganisha...</string>
     <string name="nc_contact_chat_start">Anza</string>
     <string name="nc_contacts_done">Imefanyika</string>
@@ -237,7 +223,6 @@
     <string name="nc_edit_icon">Hariri</string>
     <string name="nc_edit_message">Hariri</string>
     <string name="nc_edit_message_text">Hariri ujumbe</string>
-    <string name="nc_edited_by_admin">Imehaririwa na msimamizi</string>
     <string name="nc_event_conversation_menu">Mwongozo wa mazungumzo ya tukio</string>
     <string name="nc_event_schedule">Ratiba</string>
     <string name="nc_expire_message_eight_hours">Masaa 8</string>
@@ -313,7 +298,6 @@
     <string name="nc_mark_as_read">Weka alama kama iliyosomwa</string>
     <string name="nc_mark_as_unread">Weka alama kama haijasomwa</string>
     <string name="nc_meeting_ended">Mkutano umeisha</string>
-    <string name="nc_message_added_to_notes">Ujumbe umeongezwa katika kumbukumbu</string>
     <string name="nc_message_failed_to_send">Imeshindwa kutuma ujumbe</string>
     <string name="nc_message_quote_cancel_reply">Ghairi jibu</string>
     <string name="nc_message_read">Usomaji wa ujumbe</string>
@@ -429,7 +413,6 @@
     <string name="nc_sent_an_audio_you">Umetuma sauti</string>
     <string name="nc_sent_an_image" formatted="true">%1$sametuma picha</string>
     <string name="nc_sent_an_image_you">Umetuma picha</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$sametuma kadi ya deck</string>
     <string name="nc_server_connect">Jaribu mtandao wa seva</string>
     <string name="nc_server_db_upgrade_needed">Tafadhali pandisha viwango kanzidata yako %1$s</string>
     <string name="nc_server_failed_to_import_account">Imeshindwa kuingiza akaunti iliyochaguliwa</string>
@@ -510,7 +493,6 @@
     <string name="nc_share_link">Shirikisha kiungo</string>
     <string name="nc_share_location">Shirikisha eneo</string>
     <string name="nc_share_this_location">Shirikisha eneo hili</string>
-    <string name="nc_share_to_choose_account">Chagua akaunti</string>
     <string name="nc_shared_items">Vipengele vilivyoshirikiwa</string>
     <string name="nc_shared_items_deck_card">Kadi ya deck</string>
     <string name="nc_shared_items_description">Picha, faili,jumbe za sauti</string>
@@ -532,15 +514,11 @@
     <string name="nc_tomorrow_meeting">Kesho katika %1$s</string>
     <string name="nc_undo">Tendua</string>
     <string name="nc_upload_choose_local_files">Chagua faili</string>
-    <string name="nc_upload_confirm_send_multiple">Tuma faili hizi katka %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Tuma faili hili katika %1$s?</string>
     <string name="nc_upload_failed">Samahani, upakiaji umeshindikana</string>
     <string name="nc_upload_failed_notification_text">Imeshindwa kupakia %1$s</string>
     <string name="nc_upload_failed_notification_title">Kushindwa</string>
     <string name="nc_upload_from_cloud">Shirikisha kutoka %1$s</string>
     <string name="nc_upload_from_device">Pakia kutoka katika kifaa</string>
-    <string name="nc_upload_in_progess">Inapakia</string>
-    <string name="nc_upload_notification_text">%1$s kwenda %2$s-%3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Chukua picha</string>
     <string name="nc_upload_video_from_cam">Chukua video</string>
     <string name="nc_user">Mtumiaji</string>
@@ -572,14 +550,12 @@
     <string name="pin_24hr">Bandika kwa masaa 24</string>
     <string name="pin_30_days">Bandika kwa siku 30</string>
     <string name="pin_7_days">Bandika kwa siku 7</string>
-    <string name="pin_indefinitely">Bandika kwa muda usiojulikana</string>
     <string name="pin_message">Bandika ujumbe</string>
     <string name="pinned">Imebandikwa</string>
     <string name="pinned_by_author">%1$s (imebandikwa na %2$s)</string>
     <string name="pinned_by_you">%1$s (imebandikwa na wewe)</string>
     <string name="pinned_dismiss">Tawanya</string>
     <string name="pinned_go_to_message">Nenda kwenye ujumbe</string>
-    <string name="pinned_indefinitely">Imebandikwa kwa muda usiojulikana</string>
     <string name="pinned_message_options">Chaguo za ujumbe</string>
     <string name="pinned_until">Imebandikwa hadi</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
@@ -641,7 +617,6 @@
     <string name="search_icon">Tafuta ikoni</string>
     <string name="secondsAgo">sukunde zilizopita</string>
     <string name="selected_list_item">Iliyochaguliwa</string>
-    <string name="send_email">Tuma barua pepe</string>
     <string name="send_to">Tuma kwa</string>
     <string name="send_to_forbidden">Huruhusiwi kushirikisha maudhui katika gumzo hii</string>
     <string name="send_to_three_dots">Tuma kwa...</string>
@@ -657,21 +632,17 @@
     <string name="shared_items_poll">Kura ya maoni</string>
     <string name="shared_items_recording">Kurekodi simu</string>
     <string name="shared_items_voice">Sauti</string>
-    <string name="show_ban_reason">Onesha sababu ya zuio</string>
     <string name="show_banned_participants">Onesha washiriki waliozuiliwa</string>
     <string name="starred">Kipendwa</string>
     <string name="startCallForbidden">Huruhusiwi kuanzisha simu</string>
     <string name="start_thread">Unda mjadala</string>
-    <string name="started_a_call">Umeanzisha simu</string>
     <string name="status_message">Ujumbe wa hadhi</string>
-    <string name="status_reverted">Hali Imerejeshwa</string>
     <string name="switch_to_breakout_room">Badili hadi chumba cha mapumziko</string>
     <string name="switch_to_main_room">Badili hadi chumba kikuu</string>
     <string name="take_photo">Chukua picha</string>
     <string name="take_photo_permission">Kupiga picha hakuwezekani bila ruhusa</string>
     <string name="thirtyMinutes">Dakika 30</string>
     <string name="thisWeek">Wiki hii</string>
-    <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>
     <string name="this_weekend">Wikendi hii</string>
     <string name="thread_cancel">Ghairi uundaji wa mjadala</string>
     <string name="thread_notifications">Arifa za mjadala</string>
@@ -720,7 +691,6 @@
     <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Wavuti</string>
-    <string name="user_status">Wadhifa</string>
     <string name="userinfo_error_text">Imeshindwa kupata maelezo binafsi ya mtumiaji.</string>
     <string name="userinfo_no_info_headline">Hakuna maelezo binafsi yaliyowekwa</string>
     <string name="userinfo_no_info_text">Ongeza jina, picha na maelezo ya mawasiliano kwenye ukurasa wako wa wasifu.</string>

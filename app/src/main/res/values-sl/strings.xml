@@ -16,7 +16,6 @@
     <string name="away">Ne spremljam</string>
     <string name="battery_optimization_title">Nastavitve baterije</string>
     <string name="busy">Zasedeno</string>
-    <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
     <string name="call_running_since_one_hour">Pogovor traja že eno uro.</string>
     <string name="call_without_notification">Klic brez obvestila</string>
@@ -26,7 +25,6 @@
     <string name="clear_status_message">Počisti sporočilo stanja</string>
     <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
     <string name="close">Zapri</string>
-    <string name="connection_established">Povezava je vzpostavljena</string>
     <string name="conversations">Pogovori</string>
     <string name="create_conversation">Ustvari pogovor</string>
     <string name="custom">Po meri</string>
@@ -54,7 +52,6 @@
     <string name="join_call">Pridruži se klicu</string>
     <string name="leave_call">Zapusti klic</string>
     <string name="load_more_results">Naloži več zadetkov</string>
-    <string name="local_time">Krajevni čas: %1$s</string>
     <string name="lock_conversation">Zakleni pogovor</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="lower_hand">Spusti roko</string>
@@ -73,7 +70,6 @@
     <string name="nc_about">O programu</string>
     <string name="nc_account_chooser_active_user">Dejavni uporabnik</string>
     <string name="nc_account_chooser_add_account">Dodaj račun</string>
-    <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
     <string name="nc_add_attachment">Dodaj prilogo</string>
     <string name="nc_add_emojis">Vstavi izrazno ikono</string>
     <string name="nc_add_file">Dodaj v pogovor</string>
@@ -93,7 +89,6 @@
     <string name="nc_call_button_content_description_microphone">Preklopi mikrofon</string>
     <string name="nc_call_button_content_description_pip">Odpri način slike v sliki</string>
     <string name="nc_call_button_content_description_switch_camera">Preklopi kamero</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Preklopi na pogled sebe</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_notifications">Obvestila klica</string>
@@ -102,9 +97,6 @@
     <string name="nc_call_raised_hand">Oseba %1$s je dvignila roko</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave …</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
-    <string name="nc_call_state_in_call">%1$s v klicu</string>
-    <string name="nc_call_state_with_phone">%1$s v video klicu</string>
-    <string name="nc_call_state_with_video">%1$s v video klicu</string>
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_unknown">Klic %s</string>
     <string name="nc_call_video">Glasovni klic %s</string>
@@ -112,7 +104,6 @@
     <string name="nc_call_view_mode_speaker">Pogled govorca</string>
     <string name="nc_call_voice">Glasovni klic %s</string>
     <string name="nc_cancel">Prekliči</string>
-    <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
@@ -127,7 +118,6 @@
     <string name="nc_common_and">in</string>
     <string name="nc_common_copy">Kopiraj</string>
     <string name="nc_common_copy_success">Kopirano v odložišče</string>
-    <string name="nc_common_create">Ustvari</string>
     <string name="nc_common_disabled">Onemogočeno</string>
     <string name="nc_common_dismiss">Opusti</string>
     <string name="nc_common_error_sorry">Prišlo je do napake …</string>
@@ -137,7 +127,6 @@
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_common_unknown">Neznano</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
-    <string name="nc_confirm">Potrdi</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
     <string name="nc_contact_chat_start">Začetek</string>
     <string name="nc_contacts_done">Začni pogovor</string>
@@ -409,7 +398,6 @@
     <string name="nc_share_link">Povezava za souporabo</string>
     <string name="nc_share_location">Objavi trenutno mesto</string>
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
-    <string name="nc_share_to_choose_account">Izbor računa</string>
     <string name="nc_shared_items">Predmeti v souporabi</string>
     <string name="nc_shared_items_deck_card">Naloga Deck</string>
     <string name="nc_shared_items_description">Slike, datoteke, glasovna sporočila ...</string>
@@ -424,15 +412,11 @@
     <string name="nc_team">Skupina</string>
     <string name="nc_undo">Razveljavi</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
-    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_failed_notification_text">Pošiljanje %1$s je spodletelo</string>
     <string name="nc_upload_failed_notification_title">Spodletelo</string>
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_from_device">Pošlji z naprave</string>
-    <string name="nc_upload_in_progess">Poteka pošiljanje</string>
-    <string name="nc_upload_notification_text">%1$s za %2$s – %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_upload_video_from_cam">Zajemi video</string>
     <string name="nc_user">Uporabnik</string>
@@ -498,7 +482,6 @@
     <string name="scroll_to_bottom">Podrsaj do dna</string>
     <string name="secondsAgo">pred nekaj sekundami</string>
     <string name="selected_list_item">Izbrano</string>
-    <string name="send_email">Pošlji elektronsko sporočilo</string>
     <string name="send_to">Pošlji</string>
     <string name="send_to_forbidden">Ni ustreznih dovoljenj za objavljanje vsebine v ta klepet</string>
     <string name="send_to_three_dots">Pošlji …</string>
@@ -550,7 +533,6 @@
     <string name="user_info_role">Vloga</string>
     <string name="user_info_twitter">Račun Twitter</string>
     <string name="user_info_website">Spletna stran</string>
-    <string name="user_status">Stanje</string>
     <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
     <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
     <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>

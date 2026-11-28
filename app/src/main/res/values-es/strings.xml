@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">La optimización de batería está activada, lo que podría causar problemas. ¡Debería deshabilitar la optimización de batería!</string>
     <string name="battery_optimization_title">Ajustes de la batería</string>
     <string name="busy">Ocupado</string>
-    <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
     <string name="call_running_since_one_hour">La llamada ha estado activa por una hora.</string>
     <string name="call_without_notification">Llamada sin notificación</string>
@@ -37,11 +36,8 @@
     <string name="clear_status_message_after">Borrar el mensaje de estado después de</string>
     <string name="close">Cerrar</string>
     <string name="close_icon">Ícono de cerrar</string>
-    <string name="connection_established">Conexión establecida</string>
     <string name="connection_lost">Sin conexión al servidor</string>
-    <string name="connection_lost_sent_messages_are_queued">Se perdió la conexión - Los mensajes a enviar se encuentran encolados</string>
     <string name="continuous_voice_message_recording">Bloquear grabación para grabación continua del mensaje de voz</string>
-    <string name="conversation_archived">La conversación está archivada</string>
     <string name="conversation_is_read_only">La conversación es de sólo lectura</string>
     <string name="conversation_read_only_failed">Fallo al establecer la conversación como de sólo lectura.</string>
     <string name="conversations">Conversaciones</string>
@@ -72,7 +68,6 @@
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Cargando …</string>
     <string name="fourHours">4 horas</string>
-    <string name="get_invitations_error">Fallo al obtener invitaciones pendientes</string>
     <string name="gplay_available_no">Los servicios de Google Play no están accesibles. No se admiten notificaciones.</string>
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
@@ -84,7 +79,6 @@
     <string name="leave_call">Abandonar llamada</string>
     <string name="left_conversation">Ud. Abandonó la conversación %1$s</string>
     <string name="load_more_results">Cargar más resultados</string>
-    <string name="local_time">Hora local: %1$s</string>
     <string name="location_permission_denied">Se denegó el permiso de ubicación</string>
     <string name="location_services_disabled">Servicios de ubicación desactivados</string>
     <string name="lock_conversation">Bloquear conversación</string>
@@ -109,7 +103,6 @@
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
     <string name="nc_account_chooser_add_account">Añadir cuenta</string>
-    <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
     <string name="nc_add_attachment">Añadir adjunto</string>
     <string name="nc_add_emojis">Añadir emojis</string>
     <string name="nc_add_file">Añadir a la conversación</string>
@@ -131,7 +124,6 @@
     <string name="nc_call_button_content_description_microphone">Activar/Desactivar el micrófono</string>
     <string name="nc_call_button_content_description_pip">Abrir el modo de imagen sobre imagen, PiP</string>
     <string name="nc_call_button_content_description_switch_camera">Cambiar de cámara</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Cambiar a video propio</string>
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_notifications">Notificaciones de llamadas</string>
@@ -141,9 +133,6 @@
     <string name="nc_call_raised_hand">%1$s levantó la mano</string>
     <string name="nc_call_reconnecting">Reconectándose …</string>
     <string name="nc_call_ringing">LLAMANDO</string>
-    <string name="nc_call_state_in_call">%1$s en una llamada</string>
-    <string name="nc_call_state_with_phone">%1$s con teléfono</string>
-    <string name="nc_call_state_with_video">%1$s con video</string>
     <string name="nc_call_timeout">No ha habido respuesta en 45 segundos, pulse para intentarlo de nuevo</string>
     <string name="nc_call_unknown">%s llamada</string>
     <string name="nc_call_video">%s videollamada</string>
@@ -152,7 +141,6 @@
     <string name="nc_call_voice">%s llamada de voz</string>
     <string name="nc_camera_permission_hint">Para habilitar la comunicación por vídeo, por favor, otorgue el permiso \"Cámara\".</string>
     <string name="nc_cancel">Cancelar</string>
-    <string name="nc_capabilities_failed">Fallo al recuperar capacidades. Abortando.</string>
     <string name="nc_caption">Leyenda</string>
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
@@ -169,7 +157,6 @@
     <string name="nc_common_and">y</string>
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado al portapapeles</string>
-    <string name="nc_common_create">Crear</string>
     <string name="nc_common_disabled">Deshabilitado</string>
     <string name="nc_common_dismiss">Descartar</string>
     <string name="nc_common_error_sorry">Lo sentimos, algo ha ido mal.</string>
@@ -179,7 +166,6 @@
     <string name="nc_common_skip">Saltar</string>
     <string name="nc_common_unknown">Desconocido</string>
     <string name="nc_configure_cert_auth">Seleccionar certificado de autenticación</string>
-    <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contact_chat_start">Iniciar</string>
     <string name="nc_contacts_done">Hecho</string>
@@ -243,7 +229,6 @@
     <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensaje</string>
-    <string name="nc_edited_by_admin">Editado por admin</string>
     <string name="nc_event_conversation_menu">Menú de eventos de conversación</string>
     <string name="nc_event_schedule">Programar</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -314,13 +299,11 @@
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>
     <string name="nc_logs_disable_delete">Eliminar registros</string>
-    <string name="nc_logs_share_diagnosis">Informe de diagnóstico</string>
     <string name="nc_logs_title">Registros</string>
     <string name="nc_manual">No configurado</string>
     <string name="nc_mark_as_read">Marcar como leído</string>
     <string name="nc_mark_as_unread">Marcar como no leído</string>
     <string name="nc_meeting_ended">La reunión ha finalizado</string>
-    <string name="nc_message_added_to_notes">El mensaje se agregó a las notas</string>
     <string name="nc_message_failed_to_send">Fallo al enviar el mensaje</string>
     <string name="nc_message_quote_cancel_reply">Cancelar respuesta</string>
     <string name="nc_message_read">Mensajes leídos</string>
@@ -426,6 +409,7 @@
     <string name="nc_search_clear">Limpiar búsqueda</string>
     <string name="nc_search_location">Búsqueda de ubicación</string>
     <string name="nc_select_an_account">Selecciona una cuenta</string>
+    <string name="nc_select_message">Seleccionar</string>
     <string name="nc_send_edit_message">Actualizar mensaje</string>
     <string name="nc_send_later">Enviar más tarde</string>
     <string name="nc_send_now">Enviar ahora</string>
@@ -440,7 +424,6 @@
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$senvió una tarjeta de deck</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
@@ -522,7 +505,6 @@
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_share_location">Compartir ubicación</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
-    <string name="nc_share_to_choose_account">Elija una cuenta</string>
     <string name="nc_shared_items">Elementos compartidos</string>
     <string name="nc_shared_items_deck_card">Tarjeta Deck</string>
     <string name="nc_shared_items_description">Imágenes, archivos, mensajes de voz …</string>
@@ -546,15 +528,11 @@
     <string name="nc_undo">Deshacer</string>
     <string name="nc_upcoming_event_dismissed">La próxima llamada se puede ver en la información de la conversación.</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
-    <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
-    <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
     <string name="nc_upload_failed">Lo siento, error en la subida</string>
     <string name="nc_upload_failed_notification_text">Fallo al subir %1$s</string>
     <string name="nc_upload_failed_notification_title">Falla</string>
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
     <string name="nc_upload_from_device">Subir desde dispositivo</string>
-    <string name="nc_upload_in_progess">Subiendo</string>
-    <string name="nc_upload_notification_text">%1$s a %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Tomar foto</string>
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
@@ -586,14 +564,12 @@
     <string name="pin_24hr">Fijar durante 24 horas</string>
     <string name="pin_30_days">Fijar durante 30 días</string>
     <string name="pin_7_days">Fijar durante 7 días</string>
-    <string name="pin_indefinitely">Fijar indefinidamente</string>
     <string name="pin_message">Fijar mensaje</string>
     <string name="pinned">Fijado</string>
     <string name="pinned_by_author">%1$s (fijado por %2$s)</string>
     <string name="pinned_by_you">%1$s (fijado por ti)</string>
     <string name="pinned_dismiss">Descartar</string>
     <string name="pinned_go_to_message">Ir al mensaje</string>
-    <string name="pinned_indefinitely">Fijado indefinidamente</string>
     <string name="pinned_message_options">Opciones de mensjes</string>
     <string name="pinned_until">Fijado hasta</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
@@ -655,7 +631,6 @@
     <string name="search_icon">Ícono de búsqueda</string>
     <string name="secondsAgo">hace segundos</string>
     <string name="selected_list_item">Seleccionado</string>
-    <string name="send_email">Enviar correo electrónico</string>
     <string name="send_to">Enviar a</string>
     <string name="send_to_forbidden">No tiene permiso para compartir contenido a este chat</string>
     <string name="send_to_three_dots">Enviar a …</string>
@@ -671,21 +646,17 @@
     <string name="shared_items_poll">Encuesta</string>
     <string name="shared_items_recording">Grabación de llamada</string>
     <string name="shared_items_voice">Voz</string>
-    <string name="show_ban_reason">Mostrar razón de bloqueo</string>
     <string name="show_banned_participants">Mostrar participantes bloqueados</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No está autorizado a iniciar una llamada</string>
     <string name="start_thread">Crear un hilo</string>
-    <string name="started_a_call">inició una llamada</string>
     <string name="status_message">Mensaje de estado</string>
-    <string name="status_reverted">El estado ha sido revertido</string>
     <string name="switch_to_breakout_room">Cambiar a sala de grupos</string>
     <string name="switch_to_main_room">Cambiar a la sala principal</string>
     <string name="take_photo">Tomar una foto</string>
     <string name="take_photo_permission">No se puede tomar una foto sin permisos</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
-    <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
     <string name="thread_cancel">Cancelar la creación del hilo</string>
     <string name="thread_notifications">Notificaciones para hilos</string>
@@ -734,7 +705,6 @@
     <string name="user_info_role">Cargo</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Página web</string>
-    <string name="user_status">Estado</string>
     <string name="userinfo_error_text">Fallo al obtener la información personal del usuario.</string>
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>

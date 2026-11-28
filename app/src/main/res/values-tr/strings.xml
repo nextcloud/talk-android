@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Pil iyileştirmesi açık ve bu sorunlara neden olabilir. Pil iyileştirmesini kapatmalısınız!</string>
     <string name="battery_optimization_title">Pil ayarları</string>
     <string name="busy">Meşgul</string>
-    <string name="calendar">Takvim</string>
     <string name="call_in_progress">Bir arama sürüyor</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş arama seçenekleri</string>
     <string name="call_running_since_one_hour">Arama bir saattir sürüyor.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
     <string name="close">Kapat</string>
     <string name="close_icon">Kapatma simgesi</string>
-    <string name="connection_established">Bağlantı kuruldu</string>
     <string name="connection_lost">Sunucu ile bağlantı yok</string>
-    <string name="connection_lost_sent_messages_are_queued">Bağlantı kesildi. Gönderilen iletiler kuyruğa alındı</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
-    <string name="conversation_archived">Görüşme arşivlendi</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
     <string name="conversation_read_only_failed">Görüşme salt okunur olarak ayarlanamadı</string>
     <string name="conversations">Görüşmeler</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Kilit ekranında gelen aramaların görüntülenmesine izin veriliyor, her şey yolunda</string>
     <string name="full_screen_intent_permission_not_granted">Kilit ekranında gelen aramaların görüntülenmesine izin verilmiyor. Gelen aramaların görüntülenmesi için lütfen izin verin!</string>
     <string name="full_screen_intent_permission_title">Kilit ekranında gelen aramalar görüntülensin</string>
-    <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
     <string name="gplay_available_no">Google Play hizmetleri kullanılamıyor. Bildirimler desteklenmiyor</string>
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="internal_note">İç not</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Aramadan ayrıl</string>
     <string name="left_conversation">%1$s görüşmesinden çıktınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
-    <string name="local_time">Yerel zaman: %1$s</string>
     <string name="location_permission_denied">Konum izni reddedildi</string>
     <string name="location_services_disabled">Konum hizmetleri kapalı</string>
     <string name="lock_conversation">Görüşmeyi kilitle</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Etkin kullanıcı</string>
     <string name="nc_account_chooser_add_account">Hesap ekle</string>
     <string name="nc_account_removal_pending">Bu hesap henüz kaldırılmamış. Lütfen bir süre sonra yeniden deneyin.</string>
-    <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
     <string name="nc_add_attachment">Dosya ekle</string>
     <string name="nc_add_emojis">Emoji ekle</string>
     <string name="nc_add_file">Görüşmeye ekle</string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Katılımcı ekle</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_add_to_home_screen">Girişe ekle</string>
-    <string name="nc_admin_only">Yalnızca yönetici</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_announcement">Duyuru</string>
     <string name="nc_announcement_description">Yöneticilerin sabit bir kitleyi bilgilendirme görüşmesi, bundan çıkılamaz.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Mikrofonu aç/kapat</string>
     <string name="nc_call_button_content_description_pip">Resim içinde resim kipini aç</string>
     <string name="nc_call_button_content_description_switch_camera">Kamerayı değiştir</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Benim görüntüme geç</string>
-    <string name="nc_call_e2ee_not_supported">Sunucuda uçtan uca şifreleme açık olduğundan arama şu anda desteklenmiyor</string>
-    <string name="nc_call_e2ee_not_supported_title">%s araması kullanılamıyor</string>
     <string name="nc_call_e2ee_requires_hpb">Uçtan uca şifrelenmiş aramalar için yüksek başarımlı arka uç (HPB) gereklidir</string>
     <string name="nc_call_e2ee_setup_failed">Bu arama için uçtan uca şifreleme ayarlanamadı</string>
     <string name="nc_call_incoming">GELEN</string>
@@ -185,9 +174,6 @@
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_call_self_video_enlarge">Görüntümü büyüt</string>
     <string name="nc_call_self_video_shrink">Görüntümü küçült</string>
-    <string name="nc_call_state_in_call">Aramada %1$s kişi var</string>
-    <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
-    <string name="nc_call_state_with_video">%1$s kişi görüntü ile</string>
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
     <string name="nc_call_unknown">%s arama</string>
     <string name="nc_call_video">%s görüntülü arama</string>
@@ -198,7 +184,6 @@
     <string name="nc_call_voice">%s sesli arama</string>
     <string name="nc_camera_permission_hint">Görüntülü iletişim kurabilmek için \"Kamera\" için erişme izni verin.</string>
     <string name="nc_cancel">İptal</string>
-    <string name="nc_capabilities_failed">Yeterlilikler alınamadı, vazgeçiliyor</string>
     <string name="nc_caption">Alt yazı</string>
     <string name="nc_certificate_dialog_text_for_host">Şimdiye kadar bilinmeyen, %2$s tarafından %3$s için  yayınlanmış, %4$s ile %5$s arasında geçerli olan %1$s SSL sertifikasına güveniyor musunuz? Yalnızca %1$s için güvenilecek.</string>
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
@@ -221,7 +206,6 @@
     <string name="nc_common_and">ve</string>
     <string name="nc_common_copy">Kopyala</string>
     <string name="nc_common_copy_success">Panoya kopyalandı</string>
-    <string name="nc_common_create">Oluştur</string>
     <string name="nc_common_disabled">Kapalı</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
@@ -230,11 +214,7 @@
     <string name="nc_common_set">Ayarla</string>
     <string name="nc_common_skip">Atla</string>
     <string name="nc_common_unknown">Bilinmiyor</string>
-    <string name="nc_compress_images">Görselleri ve görüntüleri sıkıştır</string>
-    <string name="nc_compress_in_progress">Sıkıştırılıyor</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
-    <string name="nc_confirm">Onayla</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contact_chat_start">Başlat</string>
     <string name="nc_contact_chat_start_message">Henüz %1$s ile bir görüşmeniz yok. Bir görüşme başlatmak onu ikinizin de görüşme listesine ekler.</string>
@@ -323,7 +303,6 @@
     <string name="nc_edit_icon">Düzenle</string>
     <string name="nc_edit_message">Düzenle</string>
     <string name="nc_edit_message_text">İletiyi düzenle</string>
-    <string name="nc_edited_by_admin">Yönetici tarafından düzenlendi</string>
     <string name="nc_event_conversation_menu">Etkinlik görüşmesi menüsü</string>
     <string name="nc_event_schedule">Zamanlama</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
@@ -371,8 +350,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
-    <string name="nc_hq_toggle">Yüksek kalite</string>
-    <string name="nc_hq_toggle_description">Yüksek kalite, sıkıştırma yok</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> \"İyileştirilmesin\" ya da \"Arka çalışmaya izin ver -> Kısıtlanmamış\" seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
@@ -403,8 +380,6 @@
     <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
     <string name="nc_login_too_many_attempts">Bu ağdan çok sayıda başarısız oturum açma denemesi yapıldı. Bir süre sonra yeniden deneyin.</string>
     <string name="nc_logs_advanced_logging">Gelişmiş günlük kaydı</string>
-    <string name="nc_logs_advanced_logging_disable">Gelişmiş günlük kaydını kapat</string>
-    <string name="nc_logs_advanced_logging_enable">Gelişmiş günlük kaydını aç</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Gelişmiş günlük kaydı açık. Bu durum başarımı düşürebilir.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Gelişmiş günlük kaydını açtıysanız, lütfen bildirimi herkese açık olarak paylaşmayın.</string>
     <string name="nc_logs_delete_all">Tüm günlük kayıtlarını sil</string>
@@ -418,8 +393,6 @@
     <string name="nc_logs_logging_enabled">Günlük kaydı açık</string>
     <string name="nc_logs_overflow_warning">Uyarı: Kuyruk aşırı dolduğundan bazı günlük kayıtları kayboldu.</string>
     <string name="nc_logs_share">E-posta ile gönder</string>
-    <string name="nc_logs_share_diagnosis">Tanılama raporu</string>
-    <string name="nc_logs_share_latest_crash">Son çökme</string>
     <string name="nc_logs_share_no_app_found">Bildirim gönderilebileceği bir uygulama bulunamadı.</string>
     <string name="nc_logs_title">Günlükler</string>
     <string name="nc_logs_total_size">Toplam günlük boyutu: %d KB</string>
@@ -430,7 +403,6 @@
     <string name="nc_media_quality_original_hint">Özgün kalitede gönderim daha fazla mobil veri kullanır.</string>
     <string name="nc_media_quality_reduced">Azaltılmış kalite</string>
     <string name="nc_meeting_ended">Toplantı sona erdi</string>
-    <string name="nc_message_added_to_notes">İleti notlara eklendi</string>
     <string name="nc_message_failed">İleti gönderilemedi</string>
     <string name="nc_message_failed_to_send">İleti gönderilemedi.</string>
     <string name="nc_message_not_added_to_notes">İleti notlara eklenemedi</string>
@@ -575,7 +547,6 @@
     <string name="nc_sent_an_audio_you">Bir ses gönderdiniz.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s bir görsel gönderdi.</string>
     <string name="nc_sent_an_image_you">Bir görsel gönderdiniz.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s bir Deste kartı gönderdi</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veri tabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
@@ -607,7 +578,6 @@
     <string name="nc_settings_diagnosis_title">Tanılama</string>
     <string name="nc_settings_incognito_keyboard_desc">Klavyede kişisel öğrenmeyi kapatır (garanti edilmez)</string>
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
-    <string name="nc_settings_logs_subtitle">Yerel günlük dosyalarını görüntüle</string>
     <string name="nc_settings_logs_title">Günlükler</string>
     <string name="nc_settings_media_quality_title">Gönderilen ortam kalitesi</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
@@ -669,7 +639,6 @@
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_location">Konumu paylaş</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
-    <string name="nc_share_to_choose_account">Hesap seçin</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
     <string name="nc_shared_items_deck_card">Deste kartı</string>
     <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
@@ -700,15 +669,11 @@
     <string name="nc_undo">Geri al</string>
     <string name="nc_upcoming_event_dismissed">Yaklaşan arama görüşme bilgilerinde görülebilir</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
-    <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
-    <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_failed">Yüklenemedi</string>
     <string name="nc_upload_failed_notification_text">%1$s yüklenemedi</string>
     <string name="nc_upload_failed_notification_title">Sorun çıktı</string>
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
     <string name="nc_upload_from_device">Aygıttan yükle</string>
-    <string name="nc_upload_in_progess">Yükleniyor</string>
-    <string name="nc_upload_notification_text">%1$s ile %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
@@ -743,14 +708,12 @@
     <string name="pin_24hr">24 saat sabitle</string>
     <string name="pin_30_days">30 gün sabitle</string>
     <string name="pin_7_days">7 gün sabitle</string>
-    <string name="pin_indefinitely">Süresiz sabitle</string>
     <string name="pin_message">İletiyi sabitle</string>
     <string name="pinned">Sabitlenmiş</string>
     <string name="pinned_by_author">%1$s (%2$s tarafından sabitlenmiş)</string>
     <string name="pinned_by_you">%1$s (siz sabitlemişsiniz)</string>
     <string name="pinned_dismiss">Yok say</string>
     <string name="pinned_go_to_message">İletiye git</string>
-    <string name="pinned_indefinitely">Süresiz sabitlendi</string>
     <string name="pinned_message_options">İleti seçenekleri</string>
     <string name="pinned_until">Şu zamana kadar sabitlendi</string>
     <string name="play_pause_audio_file">Ses dosyasını oynat/duraklat</string>
@@ -815,7 +778,6 @@
     <string name="search_icon">Arama simgesi</string>
     <string name="secondsAgo">saniye önce</string>
     <string name="selected_list_item">Seçilmiş</string>
-    <string name="send_email">E-posta gönder</string>
     <string name="send_to">Şuraya gönder</string>
     <string name="send_to_forbidden">Bu sohbette içerik paylaşma izniniz yok</string>
     <string name="send_to_three_dots">Şuraya gönder …</string>
@@ -831,22 +793,18 @@
     <string name="shared_items_poll">Anket</string>
     <string name="shared_items_recording">Arama kaydı</string>
     <string name="shared_items_voice">Ses</string>
-    <string name="show_ban_reason">Yasaklama nedeni görüntülensin</string>
     <string name="show_banned_participants">Yasaklanmış katılımcıları görüntüle</string>
     <string name="silent_message_hint">Sessiz ileti</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir arama başlatma izniniz yok</string>
     <string name="start_thread">Bir yazışma oluştur</string>
-    <string name="started_a_call">bir arama başlattı</string>
     <string name="status_message">Durum iletisi</string>
-    <string name="status_reverted">Durum geri alındı</string>
     <string name="switch_to_breakout_room">Çalışma odasına geç</string>
     <string name="switch_to_main_room">Ana odaya geç</string>
     <string name="take_photo">Bir fotoğraf çekin</string>
     <string name="take_photo_permission">İzin verilmeden bir fotoğraf çekilemez</string>
     <string name="thirtyMinutes">30 dakika</string>
     <string name="thisWeek">Bu hafta</string>
-    <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
     <string name="this_weekend">Bu hafta sonu</string>
     <string name="thread">Yazışma</string>
     <string name="thread_cancel">Yazışma başlatmaktan vazgeç</string>
@@ -900,7 +858,6 @@
     <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Site</string>
-    <string name="user_status">Durum</string>
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>

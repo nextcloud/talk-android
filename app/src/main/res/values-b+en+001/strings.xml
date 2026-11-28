@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="battery_optimization_title">Battery settings</string>
     <string name="busy">Busy</string>
-    <string name="calendar">Calendar</string>
     <string name="call_in_progress">A call is in progress</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">Note: the call has been going on for an hour already.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Clear status message after</string>
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
-    <string name="connection_established">Connection established</string>
     <string name="connection_lost">No connection to server</string>
-    <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
-    <string name="conversation_archived">Conversation is archived</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="conversations">Conversations</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Incoming call screen over lock screen is granted, all fine</string>
     <string name="full_screen_intent_permission_not_granted">Incoming call screen over lock screen is not granted. Please grant this so incoming calls appear on the lock screen!</string>
     <string name="full_screen_intent_permission_title">Show incoming call over lock screen</string>
-    <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="gplay_available_no">Google Play services are not available.Notifications are not supported</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="internal_note">Internal note</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Leave call</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
-    <string name="local_time">Local time: %1$s</string>
     <string name="location_permission_denied">Location permission denied</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="lock_conversation">Lock conversation</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Active user</string>
     <string name="nc_account_chooser_add_account">Add account</string>
     <string name="nc_account_removal_pending">The removal of this account is not finished yet. Please try again in a moment.</string>
-    <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_add_file">Add to conversation</string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Add participants</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_add_to_home_screen">Add to home screen</string>
-    <string name="nc_admin_only">Admin only</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_announcement">Announcement</string>
     <string name="nc_announcement_description">Conversation for admins to inform a fixed audience, which cannot be left.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_switch_camera">Switch camera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
-    <string name="nc_call_e2ee_not_supported">Calling is currently not supported because end-to-end encryption is enabled on the server</string>
-    <string name="nc_call_e2ee_not_supported_title">Call from %s unavailable</string>
     <string name="nc_call_e2ee_requires_hpb">End-to-end encrypted calls require the high performance backend (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">End-to-end encryption could not be set up for this call</string>
     <string name="nc_call_incoming">INCOMING</string>
@@ -185,9 +174,6 @@
     <string name="nc_call_ringing">RINGING</string>
     <string name="nc_call_self_video_enlarge">Enlarge self video</string>
     <string name="nc_call_self_video_shrink">Shrink self video</string>
-    <string name="nc_call_state_in_call">%1$s in call</string>
-    <string name="nc_call_state_with_phone">%1$s with phone</string>
-    <string name="nc_call_state_with_video">%1$s with video</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_video">%s video call</string>
@@ -198,7 +184,6 @@
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_cancel">Cancel</string>
-    <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_caption">Caption</string>
     <string name="nc_certificate_dialog_text_for_host">Do you trust the until now unknown SSL certificate of %1$s, issued by %2$s for %3$s, valid from %4$s to %5$s? It will only be trusted for %1$s.</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
@@ -221,7 +206,6 @@
     <string name="nc_common_and">and</string>
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
-    <string name="nc_common_create">Create</string>
     <string name="nc_common_disabled">Disabled</string>
     <string name="nc_common_dismiss">Dismiss</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
@@ -230,11 +214,7 @@
     <string name="nc_common_set">Set</string>
     <string name="nc_common_skip">Skip</string>
     <string name="nc_common_unknown">Unknown</string>
-    <string name="nc_compress_images">Compress images and videos</string>
-    <string name="nc_compress_in_progress">Compressing</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
-    <string name="nc_confirm">Confirm</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contact_chat_start">Start</string>
     <string name="nc_contact_chat_start_message">You have no conversation with %1$s yet. Starting one adds it to the conversation list of both of you.</string>
@@ -323,7 +303,6 @@
     <string name="nc_edit_icon">Edit</string>
     <string name="nc_edit_message">Edit</string>
     <string name="nc_edit_message_text">Edit message</string>
-    <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_event_conversation_menu">Event conversation menu</string>
     <string name="nc_event_schedule">Schedule</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
@@ -371,8 +350,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
-    <string name="nc_hq_toggle">HQ</string>
-    <string name="nc_hq_toggle_description">High quality, no compression</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimisation is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s and then \"Do not optimise\" or \"Allow background usage -> Unrestricted\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
@@ -403,8 +380,6 @@
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
     <string name="nc_login_too_many_attempts">Too many failed login attempts from this network. Try again later.</string>
     <string name="nc_logs_advanced_logging">Advanced logging</string>
-    <string name="nc_logs_advanced_logging_disable">Disable advanced logging</string>
-    <string name="nc_logs_advanced_logging_enable">Enable advanced logging</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Advanced logging is enabled. This may slow down performance.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">If you had advanced logging activated, please do not share the report in public.</string>
     <string name="nc_logs_delete_all">Delete all logs</string>
@@ -418,8 +393,6 @@
     <string name="nc_logs_logging_enabled">Logging enabled</string>
     <string name="nc_logs_overflow_warning">Warning: some log entries were lost due to queue overflow.</string>
     <string name="nc_logs_share">Send as mail</string>
-    <string name="nc_logs_share_diagnosis">Diagnosis report</string>
-    <string name="nc_logs_share_latest_crash">Latest crash</string>
     <string name="nc_logs_share_no_app_found">No app found to send the report.</string>
     <string name="nc_logs_title">Logs</string>
     <string name="nc_logs_total_size">Total log size: %d KB</string>
@@ -430,7 +403,6 @@
     <string name="nc_media_quality_original_hint">Sending original quality uses more mobile data.</string>
     <string name="nc_media_quality_reduced">Reduced quality</string>
     <string name="nc_meeting_ended">Meeting ended</string>
-    <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed to send message</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_message_not_added_to_notes">Could not add the message to notes</string>
@@ -560,6 +532,7 @@
     <string name="nc_search_clear">Clear search</string>
     <string name="nc_search_location">Search location</string>
     <string name="nc_select_an_account">Select an account</string>
+    <string name="nc_select_message">Select</string>
     <string name="nc_send_edit_message">Update message</string>
     <string name="nc_send_later">Send later</string>
     <string name="nc_send_now">Send now</string>
@@ -574,7 +547,6 @@
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
     <string name="nc_server_connect">Test server connection</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
@@ -606,7 +578,6 @@
     <string name="nc_settings_diagnosis_title">Diagnosis</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
-    <string name="nc_settings_logs_subtitle">View local log files</string>
     <string name="nc_settings_logs_title">Logs</string>
     <string name="nc_settings_media_quality_title">Sent media quality</string>
     <string name="nc_settings_no_ringtone">No sound</string>
@@ -668,7 +639,6 @@
     <string name="nc_share_link">Share link</string>
     <string name="nc_share_location">Share location</string>
     <string name="nc_share_this_location">Share this location</string>
-    <string name="nc_share_to_choose_account">Choose account</string>
     <string name="nc_shared_items">Shared items</string>
     <string name="nc_shared_items_deck_card">Deck card</string>
     <string name="nc_shared_items_description">Images, files, voice messages …</string>
@@ -699,15 +669,11 @@
     <string name="nc_undo">Undo</string>
     <string name="nc_upcoming_event_dismissed">Upcoming call can be viewed in conversation info</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
-    <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
     <string name="nc_upload_failed_notification_title">Failure</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_from_device">Upload from device</string>
-    <string name="nc_upload_in_progess">Uploading</string>
-    <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">User</string>
@@ -742,14 +708,12 @@
     <string name="pin_24hr">Pin for 24 hours</string>
     <string name="pin_30_days">Pin for 30 days</string>
     <string name="pin_7_days">Pin for 7 days</string>
-    <string name="pin_indefinitely">Pin indefinitely</string>
     <string name="pin_message">Pin message</string>
     <string name="pinned">Pinned</string>
     <string name="pinned_by_author">%1$s (pinned by %2$s)</string>
     <string name="pinned_by_you">%1$s (pinned by you)</string>
     <string name="pinned_dismiss">Dismiss</string>
     <string name="pinned_go_to_message">Go to message</string>
-    <string name="pinned_indefinitely">Pinned indefinitely</string>
     <string name="pinned_message_options">Message options</string>
     <string name="pinned_until">Pinned until</string>
     <string name="play_pause_audio_file">Play/pause audio file</string>
@@ -814,7 +778,6 @@
     <string name="search_icon">Search Icon</string>
     <string name="secondsAgo">seconds ago</string>
     <string name="selected_list_item">Selected</string>
-    <string name="send_email">Send email</string>
     <string name="send_to">Send to</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
     <string name="send_to_three_dots">Send to …</string>
@@ -830,22 +793,18 @@
     <string name="shared_items_poll">Poll</string>
     <string name="shared_items_recording">Call recording</string>
     <string name="shared_items_voice">Voice</string>
-    <string name="show_ban_reason">Show ban reason</string>
     <string name="show_banned_participants">Show banned participants</string>
     <string name="silent_message_hint">Silent message</string>
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="start_thread">Create a thread</string>
-    <string name="started_a_call">started a call</string>
     <string name="status_message">Status message</string>
-    <string name="status_reverted">Status Reverted</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">This week</string>
-    <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
     <string name="thread">Thread</string>
     <string name="thread_cancel">Cancel thread creation</string>
@@ -899,7 +858,6 @@
     <string name="user_info_role">Role</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
