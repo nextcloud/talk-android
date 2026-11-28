@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">A otimização da bateria está ativada, o que pode causar problemas. Você deve desativar a otimização da bateria!</string>
     <string name="battery_optimization_title">Configurações da bateria</string>
     <string name="busy">Ocupado</string>
-    <string name="calendar">Calendário</string>
     <string name="call_in_progress">Uma chamada está em andamento</string>
     <string name="call_more_actions_dialog_headline">Opções avançadas de chamada</string>
     <string name="call_running_since_one_hour">A chamada está em andamento há uma hora.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
     <string name="close">Fechar</string>
     <string name="close_icon">Ícone de Fechar</string>
-    <string name="connection_established">Conexão estabelecida</string>
     <string name="connection_lost">Sem conexão com o servidor</string>
-    <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas são colocadas na fila</string>
     <string name="continuous_voice_message_recording">Fixar gravação para gravação contínua da mensagem de voz</string>
-    <string name="conversation_archived">Conversa é arquivada</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>
     <string name="conversation_read_only_failed">Falha ao definir a conversa Somente leitura</string>
     <string name="conversations">Conversas</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">A exibição da tela de chamadas recebidas na tela de bloqueio está habilitada, tudo certo</string>
     <string name="full_screen_intent_permission_not_granted">A exibição de chamadas recebidas na tela de bloqueio não está habilitada. Por favor, habilite essa função para que as chamadas recebidas apareçam na tela de bloqueio!</string>
     <string name="full_screen_intent_permission_title">Exibir chamadas de entrada em cima da tela de bloqueio</string>
-    <string name="get_invitations_error">Falha ao buscar convites pendentes</string>
     <string name="gplay_available_no">Os serviços do Google Play não estão disponíveis. Notificações não são suportadas</string>
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Sair da chamada</string>
     <string name="left_conversation">Você saiu da conversa %1$s</string>
     <string name="load_more_results">Carregar mais resultados</string>
-    <string name="local_time">Horário local: %1$s</string>
     <string name="location_permission_denied">Permissão de localização negada</string>
     <string name="location_services_disabled">Serviços de localização desativados</string>
     <string name="lock_conversation">Trancar conversa</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Usuário ativo</string>
     <string name="nc_account_chooser_add_account">Adicionar conta</string>
     <string name="nc_account_removal_pending">A remoção desta conta ainda não terminou. Por favor, tente novamente daqui a pouco.</string>
-    <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
     <string name="nc_add_attachment">Adicionar anexo</string>
     <string name="nc_add_emojis">Adicionar emojis</string>
     <string name="nc_add_file">Adicionar à conversa </string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Adicionar participantes</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_add_to_home_screen">Adicionar para a tela inicial</string>
-    <string name="nc_admin_only">Somente administração</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_announcement">Anúncio</string>
     <string name="nc_announcement_description">Conversa destinada à administração para informar um público fixo, do qual não é possível sair.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Alternar o microfone</string>
     <string name="nc_call_button_content_description_pip">Abrir modo imagem-em-imagem</string>
     <string name="nc_call_button_content_description_switch_camera">Trocar câmera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Mudar para próprio vídeo</string>
-    <string name="nc_call_e2ee_not_supported">No momento, as chamadas não são suportadas porque a criptografia de ponta-a-ponta está ativada no servidor</string>
-    <string name="nc_call_e2ee_not_supported_title">A chamada de %s não está disponível</string>
     <string name="nc_call_e2ee_requires_hpb">As chamadas com criptografia de ponta-a-ponta exigem o back-end de alto desempenho (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Não foi possível configurar a criptografia de ponta-a-ponta para esta chamada</string>
     <string name="nc_call_incoming">ENTRADA </string>
@@ -185,9 +174,6 @@
     <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_call_self_video_enlarge">Ampliar vídeo pessoal</string>
     <string name="nc_call_self_video_shrink">Reduzir vídeo pessoal</string>
-    <string name="nc_call_state_in_call">%1$s em chamada</string>
-    <string name="nc_call_state_with_phone">%1$s com telefone</string>
-    <string name="nc_call_state_with_video">%1$s com vídeo</string>
     <string name="nc_call_timeout">45 segundos sem resposta, toque para retentar</string>
     <string name="nc_call_unknown">%s chamada</string>
     <string name="nc_call_video">%s chamada de vídeo</string>
@@ -198,7 +184,6 @@
     <string name="nc_call_voice">%s chamada de voz</string>
     <string name="nc_camera_permission_hint">Para ativar a comunicação por vídeo, por favor, conceda a permissão \"Câmera\".</string>
     <string name="nc_cancel">Cancelar</string>
-    <string name="nc_capabilities_failed">Falhou ao buscar recursos, interrompendo</string>
     <string name="nc_caption">Legenda</string>
     <string name="nc_certificate_dialog_text_for_host">Você confia no certificado SSL de %1$s até agora desconhecido, emitido por %2$s para %3$s, válido de %4$s até %5$s? Ele só será considerado confiável para %1$s.</string>
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
@@ -221,7 +206,6 @@
     <string name="nc_common_and">e</string>
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado para a área de transferência</string>
-    <string name="nc_common_create">Criar</string>
     <string name="nc_common_disabled">Desativado</string>
     <string name="nc_common_dismiss">Dispensar</string>
     <string name="nc_common_error_sorry">Desculpe, algo deu errado!</string>
@@ -230,11 +214,7 @@
     <string name="nc_common_set">Definir</string>
     <string name="nc_common_skip">Pular</string>
     <string name="nc_common_unknown">Desconhecido</string>
-    <string name="nc_compress_images">Compactar imagens e vídeos</string>
-    <string name="nc_compress_in_progress">Compactando</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
-    <string name="nc_confirm">Confirmar</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contact_chat_start">Iniciar</string>
     <string name="nc_contact_chat_start_message">Você ainda não conversou com %1$s. Ao iniciar uma conversa, ela será adicionada à lista de conversas de ambos.</string>
@@ -323,7 +303,6 @@
     <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensagem</string>
-    <string name="nc_edited_by_admin">Editado por um administrador</string>
     <string name="nc_event_conversation_menu">Menu de conversa de evento</string>
     <string name="nc_event_schedule">Agenda</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -371,8 +350,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
-    <string name="nc_hq_toggle">AQ</string>
-    <string name="nc_hq_toggle_description">Alta qualidade, sem compressão</string>
     <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os apps\" -> %1$s e, em seguida, \"Não otimizar\" ou \"Permitir uso em segundo plano -> Irrestrito\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
@@ -403,8 +380,6 @@
     <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
     <string name="nc_login_too_many_attempts">Houve muitas tentativas de login malsucedidas desta rede. Tente novamente mais tarde.</string>
     <string name="nc_logs_advanced_logging">Registro avançado</string>
-    <string name="nc_logs_advanced_logging_disable">Desativar o registro avançado</string>
-    <string name="nc_logs_advanced_logging_enable">Ativar o registro avançado</string>
     <string name="nc_logs_advanced_logging_enabled_warning">O registro avançado está ativado. Isso pode reduzir o desempenho.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Caso você tenha ativado o registro avançado, por favor, não compartilhe o relatório publicamente.</string>
     <string name="nc_logs_delete_all">Excluir todos os registros</string>
@@ -418,8 +393,6 @@
     <string name="nc_logs_logging_enabled">Registro ativado</string>
     <string name="nc_logs_overflow_warning">Aviso: algumas entradas do registro foram perdidas devido ao estouro da fila.</string>
     <string name="nc_logs_share">Enviar como e-mail</string>
-    <string name="nc_logs_share_diagnosis">Relatório de diagnóstico</string>
-    <string name="nc_logs_share_latest_crash">Última falha</string>
     <string name="nc_logs_share_no_app_found">Não foi encontrado nenhum aplicativo para enviar o relatório.</string>
     <string name="nc_logs_title">Registros</string>
     <string name="nc_logs_total_size">Tamanho total do registro: %d KB</string>
@@ -430,7 +403,6 @@
     <string name="nc_media_quality_original_hint">O envio em qualidade original consome mais dados móveis.</string>
     <string name="nc_media_quality_reduced">Qualidade reduzida</string>
     <string name="nc_meeting_ended">Reunião encerrada</string>
-    <string name="nc_message_added_to_notes">Mensagem adicionada às notas</string>
     <string name="nc_message_failed">Falha ao enviar a mensagem</string>
     <string name="nc_message_failed_to_send">Falha ao enviar mensagem:</string>
     <string name="nc_message_not_added_to_notes">Não foi possível adicionar a mensagem às notas</string>
@@ -575,7 +547,6 @@
     <string name="nc_sent_an_audio_you">Você enviou um áudio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou uma imagem.</string>
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s enviou um cartão de Deck</string>
     <string name="nc_server_connect">Testar a conexão do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
@@ -607,7 +578,6 @@
     <string name="nc_settings_diagnosis_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
-    <string name="nc_settings_logs_subtitle">Exibir arquivos de registro locais</string>
     <string name="nc_settings_logs_title">Registros</string>
     <string name="nc_settings_media_quality_title">Qualidade da mídia transmitida</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
@@ -669,7 +639,6 @@
     <string name="nc_share_link">Compartilhar link</string>
     <string name="nc_share_location">Compartilhar localização</string>
     <string name="nc_share_this_location">Compartilhar esta localização</string>
-    <string name="nc_share_to_choose_account">Escolha uma conta</string>
     <string name="nc_shared_items">Itens compartilhados</string>
     <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
@@ -700,15 +669,11 @@
     <string name="nc_undo">Desfazer</string>
     <string name="nc_upcoming_event_dismissed">A próxima chamada pode ser visualizada nas informações da conversa</string>
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
-    <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
     <string name="nc_upload_failed">Desculpe, falha no upload</string>
     <string name="nc_upload_failed_notification_text">Falha no upload de %1$s</string>
     <string name="nc_upload_failed_notification_title">Falha</string>
     <string name="nc_upload_from_cloud">Compartilhamento de %1$s</string>
     <string name="nc_upload_from_device">Fazer upload do dispositivo</string>
-    <string name="nc_upload_in_progess">Fazendo upload</string>
-    <string name="nc_upload_notification_text">%1$s para %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Tirar foto</string>
     <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Usuário</string>
@@ -743,14 +708,12 @@
     <string name="pin_24hr">Fixar por 24 horas</string>
     <string name="pin_30_days">Fixar por 30 dias</string>
     <string name="pin_7_days">Fixar por 7 dias</string>
-    <string name="pin_indefinitely">Fixar indefinidamente</string>
     <string name="pin_message">Fixar mensagem</string>
     <string name="pinned">Fixada</string>
     <string name="pinned_by_author">%1$s (fixada por %2$s)</string>
     <string name="pinned_by_you">%1$s (fixada por você)</string>
     <string name="pinned_dismiss">Descartar</string>
     <string name="pinned_go_to_message">Ir para mensagem</string>
-    <string name="pinned_indefinitely">Fixada indefinidamente</string>
     <string name="pinned_message_options">Opções de mensagem</string>
     <string name="pinned_until">Fixada até</string>
     <string name="play_pause_audio_file">Reproduzir/pausar arquivo de áudio</string>
@@ -815,7 +778,6 @@
     <string name="search_icon">Ícone de Pesquisa</string>
     <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Selecionado</string>
-    <string name="send_email">Enviar e-mail</string>
     <string name="send_to">Enviar para</string>
     <string name="send_to_forbidden">Você não tem permissão para compartilhar conteúdo neste bate-papo</string>
     <string name="send_to_three_dots">Enviar para …</string>
@@ -831,22 +793,18 @@
     <string name="shared_items_poll">Enquete</string>
     <string name="shared_items_recording">Gravação de chamada</string>
     <string name="shared_items_voice">Voz</string>
-    <string name="show_ban_reason">Mostrar motivo do banimento</string>
     <string name="show_banned_participants">Mostrar participantes banidos</string>
     <string name="silent_message_hint">Mensagem silenciosa</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma chamada</string>
     <string name="start_thread">Criar um fio</string>
-    <string name="started_a_call">iniciou uma chamada</string>
     <string name="status_message">Mensagem de status</string>
-    <string name="status_reverted">Status Revertido</string>
     <string name="switch_to_breakout_room">Mudar para a sala temática</string>
     <string name="switch_to_main_room">Mudar para a sala principal</string>
     <string name="take_photo">Tirar uma foto</string>
     <string name="take_photo_permission">Tirar uma foto não é possível sem permissões</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
-    <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
     <string name="thread">Fio</string>
     <string name="thread_cancel">Cancelar a criação do fio</string>
@@ -900,7 +858,6 @@
     <string name="user_info_role">Função</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhumas informações pessoais definidas</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>

@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Optimizarea bateriei este activată, ceea ce poate cauza probleme. Ar trebui să dezactivezi optimizarea bateriei!</string>
     <string name="battery_optimization_title">Setări baterie</string>
     <string name="busy">Ocupat</string>
-    <string name="calendar">Calendar</string>
     <string name="call_in_progress">Un apel este în curs</string>
     <string name="call_more_actions_dialog_headline">Opțiuni avansate pentru apel</string>
     <string name="call_running_since_one_hour">Apelul durează de o oră.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Golește mesajul de stare după</string>
     <string name="close">Închide</string>
     <string name="close_icon">Pictograma Închide</string>
-    <string name="connection_established">Conexiune stabilită</string>
     <string name="connection_lost">Nu există conexiune la server</string>
-    <string name="connection_lost_sent_messages_are_queued">Conexiunea s-a pierdut – mesajele trimise sunt puse în coadă</string>
     <string name="continuous_voice_message_recording">Blochează înregistrarea pentru a înregistra continuu mesajul vocal</string>
-    <string name="conversation_archived">Conversația este arhivată</string>
     <string name="conversation_is_read_only">Conversația este doar pentru citire</string>
     <string name="conversation_read_only_failed">Conversația nu a putut fi setată doar pentru citire</string>
     <string name="conversations">Conversații</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Afișarea apelurilor primite peste ecranul de blocare este permisă, totul este în regulă</string>
     <string name="full_screen_intent_permission_not_granted">Afișarea apelurilor primite peste ecranul de blocare nu este permisă. Acordă această permisiune pentru ca apelurile primite să apară pe ecranul de blocare!</string>
     <string name="full_screen_intent_permission_title">Afișează apelurile primite peste ecranul de blocare</string>
-    <string name="get_invitations_error">Invitațiile în așteptare nu au putut fi preluate</string>
     <string name="gplay_available_no">Serviciile Google Play nu sunt disponibile. Notificările nu sunt acceptate</string>
     <string name="hint_edited_message">(editat)</string>
     <string name="internal_note">Notă internă</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Părăsește apelul</string>
     <string name="left_conversation">Ai părăsit conversația %1$s</string>
     <string name="load_more_results">Încarcă mai multe rezultate</string>
-    <string name="local_time">Ora locală: %1$s</string>
     <string name="location_permission_denied">Permisiunea pentru locație a fost refuzată</string>
     <string name="location_services_disabled">Serviciile de localizare sunt dezactivate</string>
     <string name="lock_conversation">Blochează conversația</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Utilizator activ</string>
     <string name="nc_account_chooser_add_account">Adaugă cont</string>
     <string name="nc_account_removal_pending">Eliminarea acestui cont nu s-a încheiat încă. Încearcă din nou peste câteva momente.</string>
-    <string name="nc_account_scheduled_for_deletion">Contul este programat pentru ștergere și nu poate fi modificat</string>
     <string name="nc_add_attachment">Adaugă un atașament</string>
     <string name="nc_add_emojis">Adaugă emoji</string>
     <string name="nc_add_file">Adaugă în conversație</string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Adaugă participanți</string>
     <string name="nc_add_to_favorites">Adaugă la favorite</string>
     <string name="nc_add_to_home_screen">Adaugă pe ecranul de pornire</string>
-    <string name="nc_admin_only">Doar administratorii</string>
     <string name="nc_all_ok_operation">Gata, totul este în regulă!</string>
     <string name="nc_announcement">Anunț</string>
     <string name="nc_announcement_description">Conversație prin care administratorii informează un public fix și care nu poate fi părăsită.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Pornește/oprește microfonul</string>
     <string name="nc_call_button_content_description_pip">Deschide modul imagine în imagine</string>
     <string name="nc_call_button_content_description_switch_camera">Schimbă camera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Comută la propriul video</string>
-    <string name="nc_call_e2ee_not_supported">Apelurile nu sunt acceptate momentan, deoarece criptarea end-to-end este activată pe server</string>
-    <string name="nc_call_e2ee_not_supported_title">Apelul de la %s nu este disponibil</string>
     <string name="nc_call_e2ee_requires_hpb">Apelurile criptate end-to-end necesită backendul de înaltă performanță (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Criptarea end-to-end nu a putut fi configurată pentru acest apel</string>
     <string name="nc_call_incoming">APEL PRIMIT</string>
@@ -183,9 +172,6 @@
     <string name="nc_call_ringing">SUNĂ</string>
     <string name="nc_call_self_video_enlarge">Mărește propriul video</string>
     <string name="nc_call_self_video_shrink">Micșorează propriul video</string>
-    <string name="nc_call_state_in_call">%1$s în apel</string>
-    <string name="nc_call_state_with_phone">%1$s prin telefon</string>
-    <string name="nc_call_state_with_video">%1$s cu video</string>
     <string name="nc_call_timeout">Niciun răspuns în 45 de secunde, atinge pentru a încerca din nou</string>
     <string name="nc_call_unknown">Apel %s</string>
     <string name="nc_call_video">Apel video %s</string>
@@ -194,7 +180,6 @@
     <string name="nc_call_voice">Apel vocal %s</string>
     <string name="nc_camera_permission_hint">Pentru a activa comunicarea video, acordă permisiunea „Cameră”.</string>
     <string name="nc_cancel">Anulează</string>
-    <string name="nc_capabilities_failed">Capacitățile serverului nu au putut fi preluate, se abandonează</string>
     <string name="nc_caption">Legendă</string>
     <string name="nc_certificate_dialog_text_for_host">Ai încredere în certificatul SSL necunoscut până acum al %1$s, emis de %2$s pentru %3$s, valabil de la %4$s până la %5$s? Va fi de încredere doar pentru %1$s.</string>
     <string name="nc_certificate_dialog_title">Verifică certificatul</string>
@@ -217,7 +202,6 @@
     <string name="nc_common_and">și</string>
     <string name="nc_common_copy">Copiază</string>
     <string name="nc_common_copy_success">Copiat în clipboard</string>
-    <string name="nc_common_create">Creează</string>
     <string name="nc_common_disabled">Dezactivat</string>
     <string name="nc_common_dismiss">Închide</string>
     <string name="nc_common_error_sorry">Ne pare rău, ceva nu a funcționat!</string>
@@ -226,11 +210,7 @@
     <string name="nc_common_set">Setează</string>
     <string name="nc_common_skip">Sari peste</string>
     <string name="nc_common_unknown">Necunoscut</string>
-    <string name="nc_compress_images">Comprimă imaginile și videoclipurile</string>
-    <string name="nc_compress_in_progress">Se comprimă</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Selectează certificatul de autentificare</string>
-    <string name="nc_confirm">Confirmă</string>
     <string name="nc_connecting_call">Se conectează…</string>
     <string name="nc_contact_chat_start">Plecare</string>
     <string name="nc_contacts_done">Gata</string>
@@ -315,7 +295,6 @@
     <string name="nc_edit_icon">Editează</string>
     <string name="nc_edit_message">Editează</string>
     <string name="nc_edit_message_text">Editează mesajul</string>
-    <string name="nc_edited_by_admin">Editat de un administrator</string>
     <string name="nc_event_conversation_menu">Meniul conversației evenimentului</string>
     <string name="nc_event_schedule">Program</string>
     <string name="nc_expire_message_eight_hours">8 ore</string>
@@ -362,8 +341,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitațiile au fost retrimise.</string>
     <string name="nc_guest_access_share_link">Partajează linkul conversației</string>
     <string name="nc_hint_enter_a_message">Scrie un mesaj…</string>
-    <string name="nc_hq_toggle">HQ</string>
-    <string name="nc_hq_toggle_description">Calitate înaltă, fără comprimare</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Optimizarea bateriei nu este ignorată. Trebuie schimbat acest lucru pentru ca notificările să funcționeze în fundal! Apasă OK și selectează „Toate aplicațiile” -&gt; %1$s, apoi „Nu optimiza” sau „Permite utilizarea în fundal -&gt; Nerestricționat”.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignoră optimizarea bateriei</string>
     <string name="nc_important_conversation">Conversație importantă</string>
@@ -391,8 +368,6 @@
     <string name="nc_locked_tap_to_unlock">Atinge pentru a debloca</string>
     <string name="nc_login_too_many_attempts">Prea multe încercări de autentificare eșuate din această rețea. Încearcă din nou mai târziu.</string>
     <string name="nc_logs_advanced_logging">Jurnalizare avansată</string>
-    <string name="nc_logs_advanced_logging_disable">Dezactivează jurnalizarea avansată</string>
-    <string name="nc_logs_advanced_logging_enable">Activează jurnalizarea avansată</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Jurnalizarea avansată este activată. Aceasta poate încetini aplicația.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Dacă ai avut jurnalizarea avansată activată, nu partaja raportul în public.</string>
     <string name="nc_logs_delete_all">Șterge toate jurnalele</string>
@@ -406,8 +381,6 @@
     <string name="nc_logs_logging_enabled">Jurnalizare activată</string>
     <string name="nc_logs_overflow_warning">Avertisment: unele intrări din jurnal s-au pierdut din cauza depășirii cozii.</string>
     <string name="nc_logs_share">Trimite prin e-mail</string>
-    <string name="nc_logs_share_diagnosis">Raport de diagnosticare</string>
-    <string name="nc_logs_share_latest_crash">Ultima închidere neașteptată</string>
     <string name="nc_logs_share_no_app_found">Nu s-a găsit nicio aplicație pentru trimiterea raportului.</string>
     <string name="nc_logs_title">Jurnale</string>
     <string name="nc_logs_total_size">Dimensiunea totală a jurnalelor: %d KB</string>
@@ -418,7 +391,6 @@
     <string name="nc_media_quality_original_hint">Trimiterea la calitatea originală folosește mai multe date mobile.</string>
     <string name="nc_media_quality_reduced">Calitate redusă</string>
     <string name="nc_meeting_ended">Întâlnirea s-a încheiat</string>
-    <string name="nc_message_added_to_notes">Mesajul a fost adăugat în notițe</string>
     <string name="nc_message_failed">Mesajul nu a putut fi trimis</string>
     <string name="nc_message_failed_to_send">Mesajul nu a putut fi trimis:</string>
     <string name="nc_message_not_added_to_notes">Mesajul nu a putut fi adăugat în notițe</string>
@@ -559,7 +531,6 @@
     <string name="nc_sent_an_audio_you">Ai trimis un fișier audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s a trimis o imagine.</string>
     <string name="nc_sent_an_image_you">Ai trimis o imagine.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s a trimis un card Deck</string>
     <string name="nc_server_connect">Testează conexiunea cu serverul</string>
     <string name="nc_server_db_upgrade_needed">Actualizează baza de date %1$s</string>
     <string name="nc_server_failed_to_import_account">Contul selectat nu a putut fi importat</string>
@@ -591,7 +562,6 @@
     <string name="nc_settings_diagnosis_title">Diagnosticare</string>
     <string name="nc_settings_incognito_keyboard_desc">Cere tastaturii să dezactiveze învățarea personalizată (fără garanții)</string>
     <string name="nc_settings_incognito_keyboard_title">Tastatură incognito</string>
-    <string name="nc_settings_logs_subtitle">Vezi fișierele jurnal locale</string>
     <string name="nc_settings_logs_title">Jurnale</string>
     <string name="nc_settings_media_quality_title">Calitatea fișierelor media trimise</string>
     <string name="nc_settings_no_ringtone">Fără sunet</string>
@@ -652,7 +622,6 @@
     <string name="nc_share_link">Partajează linkul</string>
     <string name="nc_share_location">Partajează locația</string>
     <string name="nc_share_this_location">Partajează această locație</string>
-    <string name="nc_share_to_choose_account">Alege contul</string>
     <string name="nc_shared_items">Elemente partajate</string>
     <string name="nc_shared_items_deck_card">Card Deck</string>
     <string name="nc_shared_items_description">Imagini, fișiere, mesaje vocale…</string>
@@ -679,15 +648,11 @@
     <string name="nc_undo">Anulează ultima acțiune</string>
     <string name="nc_upcoming_event_dismissed">Apelul programat poate fi văzut în informațiile despre conversație</string>
     <string name="nc_upload_choose_local_files">Alege fișiere</string>
-    <string name="nc_upload_confirm_send_multiple">Trimiți aceste fișiere către %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Trimiți acest fișier către %1$s?</string>
     <string name="nc_upload_failed">Ne pare rău, încărcarea a eșuat</string>
     <string name="nc_upload_failed_notification_text">%1$s nu a putut fi încărcat</string>
     <string name="nc_upload_failed_notification_title">Eșec</string>
     <string name="nc_upload_from_cloud">Partajează din %1$s</string>
     <string name="nc_upload_from_device">Încarcă din dispozitiv</string>
-    <string name="nc_upload_in_progess">Se încarcă</string>
-    <string name="nc_upload_notification_text">%1$s către %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Fă o fotografie</string>
     <string name="nc_upload_video_from_cam">Filmează un videoclip</string>
     <string name="nc_user">Utilizator</string>
@@ -721,14 +686,12 @@
     <string name="pin_24hr">Fixează pentru 24 de ore</string>
     <string name="pin_30_days">Fixează pentru 30 de zile</string>
     <string name="pin_7_days">Fixează pentru 7 zile</string>
-    <string name="pin_indefinitely">Fixează pe termen nelimitat</string>
     <string name="pin_message">Fixează mesajul</string>
     <string name="pinned">Fixat</string>
     <string name="pinned_by_author">%1$s (fixat de %2$s)</string>
     <string name="pinned_by_you">%1$s (fixat de tine)</string>
     <string name="pinned_dismiss">Închide</string>
     <string name="pinned_go_to_message">Mergi la mesaj</string>
-    <string name="pinned_indefinitely">Fixat pe termen nelimitat</string>
     <string name="pinned_message_options">Opțiuni pentru mesaj</string>
     <string name="pinned_until">Fixat până la</string>
     <string name="play_pause_audio_file">Redă/întrerupe fișierul audio</string>
@@ -793,7 +756,6 @@
     <string name="search_icon">Pictograma de căutare</string>
     <string name="secondsAgo">acum câteva secunde</string>
     <string name="selected_list_item">Selectat</string>
-    <string name="send_email">Trimite un e-mail</string>
     <string name="send_to">Trimite către</string>
     <string name="send_to_forbidden">Nu ai permisiunea de a partaja conținut în acest chat</string>
     <string name="send_to_three_dots">Trimite către…</string>
@@ -809,22 +771,18 @@
     <string name="shared_items_poll">Sondaj</string>
     <string name="shared_items_recording">Înregistrare apel</string>
     <string name="shared_items_voice">Voce</string>
-    <string name="show_ban_reason">Afișează motivul interdicției</string>
     <string name="show_banned_participants">Afișează participanții cu acces interzis</string>
     <string name="silent_message_hint">Mesaj fără notificare</string>
     <string name="starred">Favorite</string>
     <string name="startCallForbidden">Nu ai permisiunea de a porni un apel</string>
     <string name="start_thread">Creează un fir de discuție</string>
-    <string name="started_a_call">a pornit un apel</string>
     <string name="status_message">Mesaj de stare</string>
-    <string name="status_reverted">Starea a fost restabilită</string>
     <string name="switch_to_breakout_room">Comută la sala de grup</string>
     <string name="switch_to_main_room">Comută la sala principală</string>
     <string name="take_photo">Fă o fotografie</string>
     <string name="take_photo_permission">Fotografierea nu este posibilă fără permisiuni</string>
     <string name="thirtyMinutes">30 de minute</string>
     <string name="thisWeek">Săptămâna aceasta</string>
-    <string name="this_is_a_test_message">Acesta este un mesaj de test</string>
     <string name="this_weekend">În acest weekend</string>
     <string name="thread">Fir de discuție</string>
     <string name="thread_cancel">Anulează crearea firului de discuție</string>
@@ -878,7 +836,6 @@
     <string name="user_info_role">Rol</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Site web</string>
-    <string name="user_status">Stare</string>
     <string name="userinfo_error_text">Informațiile personale ale utilizatorului nu au putut fi preluate.</string>
     <string name="userinfo_no_info_headline">Nu există informații personale setate</string>
     <string name="userinfo_no_info_text">Adaugă nume, poză și detalii de contact pe pagina ta de profil.</string>

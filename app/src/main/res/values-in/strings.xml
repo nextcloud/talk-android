@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Pengoptimalan baterai aktif dan dapat menyebabkan masalah. Anda harus menonaktifkan pengoptimalan baterai!</string>
     <string name="battery_optimization_title">Pengaturan baterai</string>
     <string name="busy">Sibuk</string>
-    <string name="calendar">Kalender</string>
     <string name="call_in_progress">Panggilan sedang berlangsung</string>
     <string name="call_more_actions_dialog_headline">Opsi panggilan lanjutan</string>
     <string name="call_running_since_one_hour">Panggilan telah berjalan selama satu jam.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Kosongkan pesan status setelah</string>
     <string name="close">Tutup</string>
     <string name="close_icon">Ikon tutup</string>
-    <string name="connection_established">Sambungan dibuat</string>
     <string name="connection_lost">Tidak ada koneksi ke server</string>
-    <string name="connection_lost_sent_messages_are_queued">Koneksi terputus - Pesan yang dikirim masuk dalam antrean</string>
     <string name="continuous_voice_message_recording">Kunci perekaman untuk merekam pesan suara secara terus-menerus</string>
-    <string name="conversation_archived">Percakapan diarsipkan</string>
     <string name="conversation_is_read_only">Percakapan hanya dapat dibaca</string>
     <string name="conversation_read_only_failed">Gagal mengatur percakapan menjadi hanya baca</string>
     <string name="conversations">Percakapan</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Izin untuk menampilkan panggilan masuk di atas layar kunci telah diberikan, tidak ada masalah</string>
     <string name="full_screen_intent_permission_not_granted">Izin untuk menampilkan panggilan masuk di atas layar kunci belum diberikan. Berikan izin ini agar panggilan masuk muncul di layar kunci!</string>
     <string name="full_screen_intent_permission_title">Tampilkan panggilan masuk di atas layar kunci</string>
-    <string name="get_invitations_error">Gagal mengambil undangan yang tertunda</string>
     <string name="gplay_available_no">Layanan Google Play tidak tersedia.Notifikasi tidak didukung</string>
     <string name="hint_edited_message">(diedit)</string>
     <string name="internal_note">Catatan internal</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Keluar dari panggilan</string>
     <string name="left_conversation">Anda telah keluar dari percakapan %1$s</string>
     <string name="load_more_results">Muat lebih banyak hasil</string>
-    <string name="local_time">Waktu lokal: %1$s</string>
     <string name="location_permission_denied">Izin lokasi ditolak</string>
     <string name="location_services_disabled">Layanan lokasi dinonaktifkan</string>
     <string name="lock_conversation">Kunci percakapan</string>
@@ -125,7 +119,6 @@
     <string name="nc_account_chooser_active_user">Pengguna aktif</string>
     <string name="nc_account_chooser_add_account">Tambah akun</string>
     <string name="nc_account_removal_pending">Penghapusan akun ini belum selesai. Silakan coba lagi beberapa saat lagi.</string>
-    <string name="nc_account_scheduled_for_deletion">Akun ini dijadwalkan untuk dihapus dan tidak dapat diubah</string>
     <string name="nc_add_attachment">Tambahkan lampiran</string>
     <string name="nc_add_emojis">Tambahkan emoji</string>
     <string name="nc_add_file">Tambahkan ke percakapan</string>
@@ -133,7 +126,6 @@
     <string name="nc_add_participants">Tambahkan peserta</string>
     <string name="nc_add_to_favorites">Tambah ke favorit</string>
     <string name="nc_add_to_home_screen">Tambahkan ke layar utama</string>
-    <string name="nc_admin_only">Hanya admin</string>
     <string name="nc_all_ok_operation">Oke, semua selesai!</string>
     <string name="nc_announcement">Pengumuman</string>
     <string name="nc_announcement_description">Percakapan bagi admin untuk menyampaikan informasi kepada peserta tetap, yang tidak dapat ditinggalkan oleh peserta.</string>
@@ -165,9 +157,6 @@
     <string name="nc_call_button_content_description_microphone">Aktifkan/nonaktifkan mikrofon</string>
     <string name="nc_call_button_content_description_pip">Buka mode picture-in-picture</string>
     <string name="nc_call_button_content_description_switch_camera">Ganti kamera</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Beralih ke video Anda sendiri</string>
-    <string name="nc_call_e2ee_not_supported">Panggilan saat ini tidak didukung karena enkripsi end-to-end diaktifkan di server</string>
-    <string name="nc_call_e2ee_not_supported_title">Panggilan dari %s tidak tersedia</string>
     <string name="nc_call_e2ee_requires_hpb">Panggilan terenkripsi end-to-end memerlukan high performance backend (HPB)</string>
     <string name="nc_call_e2ee_setup_failed">Enkripsi end-to-end tidak dapat disiapkan untuk panggilan ini</string>
     <string name="nc_call_incoming">MASUK</string>
@@ -184,9 +173,6 @@
     <string name="nc_call_ringing">BERDERING</string>
     <string name="nc_call_self_video_enlarge">Perbesar video Anda sendiri</string>
     <string name="nc_call_self_video_shrink">Perkecil video Anda sendiri</string>
-    <string name="nc_call_state_in_call">%1$s dalam panggilan</string>
-    <string name="nc_call_state_with_phone">%1$s menggunakan telepon</string>
-    <string name="nc_call_state_with_video">%1$s menggunakan video</string>
     <string name="nc_call_timeout">Tidak ada respons dalam 45 detik, ketuk untuk mencoba lagi</string>
     <string name="nc_call_unknown">Panggilan %s</string>
     <string name="nc_call_video">Panggilan video %s</string>
@@ -197,7 +183,6 @@
     <string name="nc_call_voice">Panggilan suara %s</string>
     <string name="nc_camera_permission_hint">Untuk mengaktifkan komunikasi video, berikan izin \"Kamera\".</string>
     <string name="nc_cancel">Membatalkan</string>
-    <string name="nc_capabilities_failed">Gagal mengambil kapabilitas, proses dibatalkan</string>
     <string name="nc_caption">Keterangan</string>
     <string name="nc_certificate_dialog_text_for_host">Apakah Anda memercayai sertifikat SSL %1$s yang sebelumnya tidak dikenal, diterbitkan oleh %2$s untuk %3$s, dan berlaku dari %4$s hingga %5$s? Sertifikat ini hanya akan dipercaya untuk %1$s.</string>
     <string name="nc_certificate_dialog_title">Lihat sertifikat</string>
@@ -220,7 +205,6 @@
     <string name="nc_common_and">dan</string>
     <string name="nc_common_copy">Salin</string>
     <string name="nc_common_copy_success">Disalin ke papan klip</string>
-    <string name="nc_common_create">Buat</string>
     <string name="nc_common_disabled">Dinonaktifkan</string>
     <string name="nc_common_dismiss">Batal</string>
     <string name="nc_common_error_sorry">Maaf, terjadi kesalahan!</string>
@@ -229,11 +213,7 @@
     <string name="nc_common_set">Atur</string>
     <string name="nc_common_skip">Lewati</string>
     <string name="nc_common_unknown">Tidak diketahui</string>
-    <string name="nc_compress_images">Kompres gambar dan video</string>
-    <string name="nc_compress_in_progress">Mengompres</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Pilih sertifikat autentikasi</string>
-    <string name="nc_confirm">Konfirmasi</string>
     <string name="nc_connecting_call">Menghubungkan …</string>
     <string name="nc_contact_chat_start">Mulai</string>
     <string name="nc_contact_chat_start_message">Anda belum memiliki percakapan dengan %1$s. Memulai percakapan akan menambahkannya ke daftar percakapan Anda berdua.</string>
@@ -322,7 +302,6 @@
     <string name="nc_edit_icon">Sunting</string>
     <string name="nc_edit_message">Sunting</string>
     <string name="nc_edit_message_text">Edit pesan</string>
-    <string name="nc_edited_by_admin">Diedit oleh admin</string>
     <string name="nc_event_conversation_menu">Menu percakapan acara</string>
     <string name="nc_event_schedule">Jadwal</string>
     <string name="nc_expire_message_eight_hours">8 jam</string>
@@ -369,8 +348,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Undangan telah dikirim ulang.</string>
     <string name="nc_guest_access_share_link">Bagikan tautan percakapan</string>
     <string name="nc_hint_enter_a_message">Masukkan pesan …</string>
-    <string name="nc_hq_toggle">HQ</string>
-    <string name="nc_hq_toggle_description">Kualitas tinggi, tanpa kompresi</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Pengoptimalan baterai tidak diabaikan. Pengaturan ini perlu diubah untuk memastikan notifikasi berfungsi di latar belakang! Klik OK dan pilih \"Semua aplikasi\" -> %1$s, lalu \"Jangan optimalkan\" atau \"Izinkan penggunaan di latar belakang -> Tidak dibatasi\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Abaikan pengoptimalan baterai</string>
     <string name="nc_important_conversation">Percakapan penting</string>
@@ -398,8 +375,6 @@
     <string name="nc_locked_tap_to_unlock">Ketuk untuk membuka kunci</string>
     <string name="nc_login_too_many_attempts">Terlalu banyak percobaan masuk yang gagal dari jaringan ini. Coba lagi nanti.</string>
     <string name="nc_logs_advanced_logging">Pencatatan log lanjutan</string>
-    <string name="nc_logs_advanced_logging_disable">Nonaktifkan pencatatan log lanjutan</string>
-    <string name="nc_logs_advanced_logging_enable">Aktifkan pencatatan log lanjutan</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Pencatatan log lanjutan diaktifkan. Hal ini dapat memperlambat kinerja.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Jika Anda telah mengaktifkan pencatatan log lanjutan, jangan bagikan laporan secara publik.</string>
     <string name="nc_logs_delete_all">Hapus semua log</string>
@@ -413,8 +388,6 @@
     <string name="nc_logs_logging_enabled">Pencatatan log diaktifkan</string>
     <string name="nc_logs_overflow_warning">Peringatan: beberapa entri log hilang karena antrean melebihi kapasitas.</string>
     <string name="nc_logs_share">Kirim melalui email</string>
-    <string name="nc_logs_share_diagnosis">Laporan diagnosis</string>
-    <string name="nc_logs_share_latest_crash">Kerusakan aplikasi terakhir</string>
     <string name="nc_logs_share_no_app_found">Tidak ada aplikasi yang ditemukan untuk mengirim laporan.</string>
     <string name="nc_logs_title">Log</string>
     <string name="nc_logs_total_size">Ukuran total log: %d KB</string>
@@ -425,7 +398,6 @@
     <string name="nc_media_quality_original_hint">Mengirim dengan kualitas asli menggunakan lebih banyak data seluler.</string>
     <string name="nc_media_quality_reduced">Kualitas lebih rendah</string>
     <string name="nc_meeting_ended">Rapat berakhir</string>
-    <string name="nc_message_added_to_notes">Pesan ditambahkan ke catatan</string>
     <string name="nc_message_failed">Gagal mengirim pesan</string>
     <string name="nc_message_failed_to_send">Gagal mengirim pesan:</string>
     <string name="nc_message_not_added_to_notes">Tidak dapat menambahkan pesan ke catatan</string>
@@ -570,7 +542,6 @@
     <string name="nc_sent_an_audio_you">Anda mengirim audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s mengirim gambar.</string>
     <string name="nc_sent_an_image_you">Anda mengirim gambar.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s mengirim kartu Deck</string>
     <string name="nc_server_connect">Tes koneksi server.</string>
     <string name="nc_server_db_upgrade_needed">Perbarui basis data %1$s Anda</string>
     <string name="nc_server_failed_to_import_account">Gagal mengimpor akun yang dipilih</string>
@@ -602,7 +573,6 @@
     <string name="nc_settings_diagnosis_title">Diagnosis</string>
     <string name="nc_settings_incognito_keyboard_desc">Menginstruksikan papan ketik untuk menonaktifkan pembelajaran yang dipersonalisasi (tanpa jaminan)</string>
     <string name="nc_settings_incognito_keyboard_title">Papan ketik penyamaran</string>
-    <string name="nc_settings_logs_subtitle">Lihat berkas log lokal</string>
     <string name="nc_settings_logs_title">Log</string>
     <string name="nc_settings_media_quality_title">Kualitas media yang dikirim</string>
     <string name="nc_settings_no_ringtone">Tanpa suara</string>
@@ -663,7 +633,6 @@
     <string name="nc_share_link">Bagikan tautan</string>
     <string name="nc_share_location">Bagikan lokasi</string>
     <string name="nc_share_this_location">Bagikan lokasi ini</string>
-    <string name="nc_share_to_choose_account">Pilih akun</string>
     <string name="nc_shared_items">Item yang dibagikan</string>
     <string name="nc_shared_items_deck_card">Kartu Linggok</string>
     <string name="nc_shared_items_description">Gambar, berkas, pesan suara …</string>
@@ -693,15 +662,11 @@
     <string name="nc_undo">Undo</string>
     <string name="nc_upcoming_event_dismissed">Panggilan mendatang dapat dilihat di informasi percakapan</string>
     <string name="nc_upload_choose_local_files">Pilih berkas</string>
-    <string name="nc_upload_confirm_send_multiple">Kirim berkas-berkas ini ke %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Kirim berkas ini ke %1$s?</string>
     <string name="nc_upload_failed">Maaf, unggahan gagal</string>
     <string name="nc_upload_failed_notification_text">Gagal mengunggah %1$s</string>
     <string name="nc_upload_failed_notification_title">Kegagalan</string>
     <string name="nc_upload_from_cloud">Bagikan dari %1$s</string>
     <string name="nc_upload_from_device">Unggah dari perangkat</string>
-    <string name="nc_upload_in_progess">Menunggah</string>
-    <string name="nc_upload_notification_text">%1$s ke %2$s - %3$s%%</string>
     <string name="nc_upload_picture_from_cam">Ambil foto</string>
     <string name="nc_upload_video_from_cam">Rekam video</string>
     <string name="nc_user">Pengguna</string>
@@ -736,14 +701,12 @@
     <string name="pin_24hr">Sematkan selama 24 jam</string>
     <string name="pin_30_days">Sematkan selama 30 hari</string>
     <string name="pin_7_days">Sematkan selama 7 hari</string>
-    <string name="pin_indefinitely">Sematkan tanpa batas waktu</string>
     <string name="pin_message">Sematkan pesan</string>
     <string name="pinned">Disematkan</string>
     <string name="pinned_by_author">%1$s (disematkan oleh %2$s)</string>
     <string name="pinned_by_you">%1$s (disematkan oleh Anda)</string>
     <string name="pinned_dismiss">Abaikan</string>
     <string name="pinned_go_to_message">Buka pesan</string>
-    <string name="pinned_indefinitely">Disematkan tanpa batas waktu</string>
     <string name="pinned_message_options">Opsi pesan</string>
     <string name="pinned_until">Disematkan hingga</string>
     <string name="play_pause_audio_file">Putar/jeda berkas audio</string>
@@ -808,7 +771,6 @@
     <string name="search_icon">Ikon pencarian</string>
     <string name="secondsAgo">beberapa detik yang lalu</string>
     <string name="selected_list_item">Dipilih</string>
-    <string name="send_email">Kirim email</string>
     <string name="send_to">Kirim ke</string>
     <string name="send_to_forbidden">Anda tidak diizinkan membagikan konten ke obrolan ini</string>
     <string name="send_to_three_dots">Kirim ke …</string>
@@ -824,22 +786,18 @@
     <string name="shared_items_poll">Polling</string>
     <string name="shared_items_recording">Perekaman panggilan</string>
     <string name="shared_items_voice">Suara</string>
-    <string name="show_ban_reason">Tampilkan alasan pemblokiran</string>
     <string name="show_banned_participants">Tampilkan peserta yang diblokir</string>
     <string name="silent_message_hint">Pesan tanpa notifikasi</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Anda tidak diizinkan memulai panggilan</string>
     <string name="start_thread">Buat utas</string>
-    <string name="started_a_call">memulai panggilan</string>
     <string name="status_message">Pesan status</string>
-    <string name="status_reverted">Status dikembalikan</string>
     <string name="switch_to_breakout_room">Beralih ke ruang kelompok</string>
     <string name="switch_to_main_room">Beralih ke ruang utama</string>
     <string name="take_photo">Ambil foto</string>
     <string name="take_photo_permission">Tidak dapat mengambil foto tanpa izin</string>
     <string name="thirtyMinutes">30 Menit</string>
     <string name="thisWeek">Pekan ini</string>
-    <string name="this_is_a_test_message">Ini adalah pesan uji</string>
     <string name="this_weekend">Akhir pekan ini</string>
     <string name="thread">Utas</string>
     <string name="thread_cancel">Batalkan pembuatan utas</string>
@@ -893,7 +851,6 @@
     <string name="user_info_role">Peran</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Situs</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Gagal mengambil informasi pribadi pengguna.</string>
     <string name="userinfo_no_info_headline">Tidak ada info pribadi yang disetel</string>
     <string name="userinfo_no_info_text">Tambahkan nama, gambar, dan detail kontak di halaman profil Anda.</string>

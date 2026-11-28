@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Az akkumulátoroptimalizálás engedélyezve van, amely problémákat okozhat. Ajánlatos letiltani az akkumulátoroptimalizálást.</string>
     <string name="battery_optimization_title">Akkumulátorbeállítások</string>
     <string name="busy">Foglalt</string>
-    <string name="calendar">Naptár</string>
     <string name="call_more_actions_dialog_headline">Speciális hívásbeállítások</string>
     <string name="call_running_since_one_hour">A hívás egy órája tart.</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
@@ -38,11 +37,8 @@
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="close">Bezárás</string>
     <string name="close_icon">Bezárás ikon</string>
-    <string name="connection_established">A kapcsolat létrejött</string>
     <string name="connection_lost">Nincs kapcsolat a kiszolgálóval</string>
-    <string name="connection_lost_sent_messages_are_queued">A kapcsolat elveszett – Elküldött üzenetek sorba állítva</string>
     <string name="continuous_voice_message_recording">Felvétel zárolása a hangüzenet folyamatos rögzítéséhez</string>
-    <string name="conversation_archived">A beszélgetés archiválva van</string>
     <string name="conversation_is_read_only">A beszélgetés csak olvasható</string>
     <string name="conversation_read_only_failed">Nem sikerült csak olvashatóvá állítani a beszélgetést</string>
     <string name="conversations">Beszélgetések</string>
@@ -78,7 +74,6 @@
     <string name="full_screen_intent_permission_granted">A képernyőzáron megjelenő bejövő hívást jelző értesítés engedélyezve van, minden rendben</string>
     <string name="full_screen_intent_permission_not_granted">A bejövő hívások képernyőjének megjelenítése a lezárási képernyőn nincs engedélyezve. Engedélyezze ezt, hogy a bejövő hívások megjelenjenek a képernyőzáron!</string>
     <string name="full_screen_intent_permission_title">Bejövő hívások megjelenítése a képernyőzáron</string>
-    <string name="get_invitations_error">A függőben lévő meghívások lekérése sikertelen</string>
     <string name="gplay_available_no">A Google Play szolgáltatások nem érhetőek el. Az értesítések nem támogatottak.</string>
     <string name="hint_edited_message">(szerkesztve)</string>
     <string name="internal_note">Belső jegyzet</string>
@@ -90,7 +85,6 @@
     <string name="leave_call">Hívás elhagyása</string>
     <string name="left_conversation">Elhagyta a következő beszélgetést: %1$s</string>
     <string name="load_more_results">További találatok betöltése</string>
-    <string name="local_time">Helyi idő: %1$s</string>
     <string name="location_permission_denied">Hely engedély szükséges</string>
     <string name="location_services_disabled">Helyszolgáltatások letiltva</string>
     <string name="lock_conversation">Beszélgetés zárolása</string>
@@ -121,7 +115,6 @@
     <string name="nc_about">Leírás</string>
     <string name="nc_account_chooser_active_user">Aktív felhasználó</string>
     <string name="nc_account_chooser_add_account">Fiók hozzáadása</string>
-    <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_add_attachment">Melléklet hozzáadása</string>
     <string name="nc_add_emojis">Emodzsi hozzáadása</string>
     <string name="nc_add_file">Hozzáadás a beszélgetéshez</string>
@@ -144,7 +137,6 @@
     <string name="nc_call_button_content_description_microphone">Mikrofon be/ki</string>
     <string name="nc_call_button_content_description_pip">Megnyitás kép a képben módban</string>
     <string name="nc_call_button_content_description_switch_camera">Kamera váltása</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Váltás a saját videóra</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_call_notifications">Hívásértesítések</string>
@@ -154,9 +146,6 @@
     <string name="nc_call_raised_hand">%1$s felemelte a kezét</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_call_ringing">CSENGETÉS</string>
-    <string name="nc_call_state_in_call">%1$s hívásban</string>
-    <string name="nc_call_state_with_phone">%1$s telefonnal</string>
-    <string name="nc_call_state_with_video">%1$s videóval</string>
     <string name="nc_call_timeout">Nincs válasz 45 másodpercen belül, koppintson az újrapróbálkozáshoz</string>
     <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_video">%s videóhívás</string>
@@ -165,7 +154,6 @@
     <string name="nc_call_voice">%s hanghívás</string>
     <string name="nc_camera_permission_hint">A videóhívás engedélyezéséhez adja meg a „Kamera” engedélyt.</string>
     <string name="nc_cancel">Mégse</string>
-    <string name="nc_capabilities_failed">A lehetőségek lekérdezése sikertelen, megszakítás</string>
     <string name="nc_caption">Felirat</string>
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
@@ -183,7 +171,6 @@
     <string name="nc_common_and">és</string>
     <string name="nc_common_copy">Másolás</string>
     <string name="nc_common_copy_success">Vágólapra másolva</string>
-    <string name="nc_common_create">Létrehozás</string>
     <string name="nc_common_disabled">Letiltva</string>
     <string name="nc_common_dismiss">Elutasítás</string>
     <string name="nc_common_error_sorry">Valami hiba történt!</string>
@@ -193,7 +180,6 @@
     <string name="nc_common_skip">Kihagyás</string>
     <string name="nc_common_unknown">Ismeretlen</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
-    <string name="nc_confirm">Megerősítés</string>
     <string name="nc_connecting_call">Csatlakozás…</string>
     <string name="nc_contact_chat_start">Kezdés</string>
     <string name="nc_contacts_done">Kész</string>
@@ -260,7 +246,6 @@
     <string name="nc_edit_icon">Szerkesztés</string>
     <string name="nc_edit_message">Szerkesztés</string>
     <string name="nc_edit_message_text">Üzenet szerkesztése</string>
-    <string name="nc_edited_by_admin">Rendszergazda által szerkesztve</string>
     <string name="nc_event_conversation_menu">Esemény beszélgetési menüje</string>
     <string name="nc_event_schedule">Ütemterv</string>
     <string name="nc_expire_message_eight_hours">8 óra</string>
@@ -332,13 +317,11 @@
     <string name="nc_locked">Zárolt</string>
     <string name="nc_locked_tap_to_unlock">Koppintson a feloldáshoz</string>
     <string name="nc_logs_disable_delete">Naplók törlése</string>
-    <string name="nc_logs_share_diagnosis">Diagnózisjelentés</string>
     <string name="nc_logs_title">Naplók</string>
     <string name="nc_manual">Nincs megadva</string>
     <string name="nc_mark_as_read">Megjelölés olvasottként</string>
     <string name="nc_mark_as_unread">Megjelölés olvasatlanként</string>
     <string name="nc_meeting_ended">A találkozó véget ért</string>
-    <string name="nc_message_added_to_notes">Üzenet hozzáadva a jegyzetekhez</string>
     <string name="nc_message_failed">Nem sikerült elküldeni az üzenetet</string>
     <string name="nc_message_failed_to_send">Nem sikerült elküldeni az üzenetet:</string>
     <string name="nc_message_quote_cancel_reply">Válasz elvetése</string>
@@ -466,7 +449,6 @@
     <string name="nc_sent_an_audio_you">Ön hangot küldött.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s képet küldött.</string>
     <string name="nc_sent_an_image_you">Ön képet küldött.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s kártyát küldött</string>
     <string name="nc_server_connect">Kiszolgálókapcsolat tesztelése</string>
     <string name="nc_server_db_upgrade_needed">Frissítse a(z) %1$s adatbázisát</string>
     <string name="nc_server_failed_to_import_account">A kiválasztott fiók importálása sikertelen</string>
@@ -550,7 +532,6 @@
     <string name="nc_share_link">Megosztási hivatkozás</string>
     <string name="nc_share_location">Hely megosztása</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
-    <string name="nc_share_to_choose_account">Válasszon fiókot</string>
     <string name="nc_shared_items">Megosztott elemek</string>
     <string name="nc_shared_items_deck_card">Kártya</string>
     <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
@@ -576,15 +557,11 @@
     <string name="nc_undo">Visszavonás</string>
     <string name="nc_upcoming_event_dismissed">A következő hívás megtekinthető a beszélgetésinformációk között</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
-    <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Fájl küldése ide: %1$s?</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>
     <string name="nc_upload_failed_notification_text">A(z) %1$s feltöltése sikertelen</string>
     <string name="nc_upload_failed_notification_title">Sikertelen</string>
     <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
     <string name="nc_upload_from_device">Feltöltés az eszközről</string>
-    <string name="nc_upload_in_progess">Feltöltés</string>
-    <string name="nc_upload_notification_text">%1$s → %2$s – %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Fénykép készítése</string>
     <string name="nc_upload_video_from_cam">Videó készítése</string>
     <string name="nc_user">Felhasználó</string>
@@ -617,14 +594,12 @@
     <string name="pin_24hr">Kitűzés 24 óráig</string>
     <string name="pin_30_days">Kitűzés 30 napig</string>
     <string name="pin_7_days">Kitűzés 7 napig</string>
-    <string name="pin_indefinitely">Kitűzés határozatlan ideig</string>
     <string name="pin_message">Üzenet kitűzése</string>
     <string name="pinned">Kitűzve</string>
     <string name="pinned_by_author">%1$s (%2$s tűzte ki)</string>
     <string name="pinned_by_you">%1$s (Ön tűzte ki)</string>
     <string name="pinned_dismiss">Eltüntetés</string>
     <string name="pinned_go_to_message">Ugrás az üzenethez</string>
-    <string name="pinned_indefinitely">Határozatlan ideig kitűzve</string>
     <string name="pinned_message_options">Üzenetbeállítások</string>
     <string name="pinned_until">Kitűzve eddig:</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
@@ -686,7 +661,6 @@
     <string name="search_icon">Keresési ikon</string>
     <string name="secondsAgo">pár másodperce</string>
     <string name="selected_list_item">Kiválasztott</string>
-    <string name="send_email">E-mail küldése</string>
     <string name="send_to">Küldés</string>
     <string name="send_to_forbidden">Nincs jogosultsága, hogy tartalmat osszon meg ebben a csevegésben</string>
     <string name="send_to_three_dots">Küldés…</string>
@@ -702,22 +676,18 @@
     <string name="shared_items_poll">Szavazás</string>
     <string name="shared_items_recording">Hívásfelvétel</string>
     <string name="shared_items_voice">Hang</string>
-    <string name="show_ban_reason">Kitiltás okának megjelenítése</string>
     <string name="show_banned_participants">Kitiltott résztvevők megjelenítése</string>
     <string name="silent_message_hint">Csendes üzenet</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
     <string name="start_thread">Szál létrehozása</string>
-    <string name="started_a_call">hívás indítás</string>
     <string name="status_message">Állapotüzenet</string>
-    <string name="status_reverted">Üzenet visszaállítva</string>
     <string name="switch_to_breakout_room">Szétbontott szobára váltás</string>
     <string name="switch_to_main_room">Fő szobára váltás</string>
     <string name="take_photo">Fénykép készítése</string>
     <string name="take_photo_permission">Engedély nélkül a fénykép készítése nem lehetséges</string>
     <string name="thirtyMinutes">30 perc</string>
     <string name="thisWeek">Ez a hét</string>
-    <string name="this_is_a_test_message">Ez egy tesztüzenet</string>
     <string name="this_weekend">Ezen a hétvégén</string>
     <string name="thread_cancel">Szál létrehozásának megszakítása</string>
     <string name="thread_notifications">Szálértesítések</string>
@@ -770,7 +740,6 @@
     <string name="user_info_role">Szerepkör</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Weboldal</string>
-    <string name="user_status">Állapot</string>
     <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>

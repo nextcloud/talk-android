@@ -25,7 +25,6 @@
     <string name="battery_optimization_not_ignored">تحسين البطارية تمّ تمكينه؛ الأمر الذي قد يتسبب في مشكلات. يجب عليك تعطيل تحسين البطارية!</string>
     <string name="battery_optimization_title">إعدادات البطارية</string>
     <string name="busy">مشغول</string>
-    <string name="calendar">التقويم Calendar</string>
     <string name="call_more_actions_dialog_headline">خيارات الاتصال المتقدمة</string>
     <string name="call_running_since_one_hour">المكالمة ما زالت مستمرة منذ حوالي الساعة.</string>
     <string name="call_without_notification">اتصال بدون إشعار</string>
@@ -36,8 +35,6 @@
     <string name="clear_status_message_after">إمسح رسالة الحالة فيما بعدٌ</string>
     <string name="close">إغلاق</string>
     <string name="close_icon">أيقونة الإغلاق</string>
-    <string name="connection_established">تم الاتصال</string>
-    <string name="connection_lost_sent_messages_are_queued">انقطع الاتصال - الرسالة المطلوب إرسالها تمّ تحضيرها للإرسال في قائمة بحسب الأولوية</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
     <string name="conversation_read_only_failed">تعذّر تمييز المحادثة \"للقراءة فقط\"</string>
@@ -67,7 +64,6 @@
     <string name="file_list_folder">مُجلّد</string>
     <string name="file_list_loading">التحميل جارٍ …</string>
     <string name="fourHours">4 ساعات</string>
-    <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
     <string name="hint_edited_message">(معدّلة)</string>
     <string name="internal_note">ملاحظة داخلية</string>
     <string name="invisible">غير مرئي</string>
@@ -98,7 +94,6 @@
     <string name="nc_about">عن</string>
     <string name="nc_account_chooser_active_user">مستخدِم نشط</string>
     <string name="nc_account_chooser_add_account">أضف حساباً</string>
-    <string name="nc_account_scheduled_for_deletion">تمت جدولة الحساب للحذف ، ولا يمكن تغييره</string>
     <string name="nc_add_attachment">إضافة مرفق</string>
     <string name="nc_add_emojis">إضِف إيموجي emoji</string>
     <string name="nc_add_file">إضافة إلى المحادثة</string>
@@ -119,7 +114,6 @@
     <string name="nc_call_button_content_description_microphone">تبديل لاقط الصوت</string>
     <string name="nc_call_button_content_description_pip">فتح وضعية \"صورة في صورة\" PIP</string>
     <string name="nc_call_button_content_description_switch_camera">تبديل الكاميرا</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">تبديل إلى الفيديو الذاتي</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_call_notifications">تنبيهات المكالمة</string>
@@ -128,9 +122,6 @@
     <string name="nc_call_raised_hand">%1$s رفع يده</string>
     <string name="nc_call_reconnecting">إعادة الاتصال …</string>
     <string name="nc_call_ringing">يرن </string>
-    <string name="nc_call_state_in_call">%1$s في مكالمة</string>
-    <string name="nc_call_state_with_phone">%1$s بالهاتف</string>
-    <string name="nc_call_state_with_video">%1$s بالفيديو</string>
     <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_video">%s اتصال فيديو</string>
@@ -139,7 +130,6 @@
     <string name="nc_call_voice">%s اتصال صوتي</string>
     <string name="nc_camera_permission_hint">لتمكين اتصال الفيديو ، يرجى منح إذن \"الكاميرا\".</string>
     <string name="nc_cancel">إلغاء</string>
-    <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
     <string name="nc_caption">الشرح</string>
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
@@ -155,7 +145,6 @@
     <string name="nc_common_and">و</string>
     <string name="nc_common_copy">إنسَخ</string>
     <string name="nc_common_copy_success">تمّ النسخ إلى الحافظة</string>
-    <string name="nc_common_create">إنشاء </string>
     <string name="nc_common_disabled">مُعطّل</string>
     <string name="nc_common_dismiss">تجاهل</string>
     <string name="nc_common_error_sorry">حدث خطأ ما!</string>
@@ -165,7 +154,6 @@
     <string name="nc_common_skip">تخطى</string>
     <string name="nc_common_unknown">غير معروف</string>
     <string name="nc_configure_cert_auth">اختر شهادة المصادقة</string>
-    <string name="nc_confirm">تأكيد</string>
     <string name="nc_connecting_call">الاتصال جارٍ …</string>
     <string name="nc_contact_chat_start">ابدأ</string>
     <string name="nc_contacts_done">تم</string>
@@ -227,7 +215,6 @@
     <string name="nc_edit_icon">تحرير</string>
     <string name="nc_edit_message">تحرير</string>
     <string name="nc_edit_message_text">تحرير رسالة</string>
-    <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المدير</string>
     <string name="nc_event_schedule">جدْوَل</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
     <string name="nc_expire_message_four_weeks">4 أسابيع</string>
@@ -382,6 +369,7 @@
     <string name="nc_search">البحث</string>
     <string name="nc_search_clear">مَحوُ البحث</string>
     <string name="nc_select_an_account">اختيار حساب</string>
+    <string name="nc_select_message">تحديد</string>
     <string name="nc_send_later">أرسِل لاحقاً</string>
     <string name="nc_send_now">أرسِل الآن</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
@@ -392,7 +380,6 @@
     <string name="nc_sent_an_audio_you">لقد قمت بإرسال مقطع صوتي.</string>
     <string name="nc_sent_an_image" formatted="true">%1$sارسل صوره.</string>
     <string name="nc_sent_an_image_you">لقد قمت بإرسال صورة.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s أرسل بطاقة مهام</string>
     <string name="nc_server_connect">إفحَص الاتصال بالخادم</string>
     <string name="nc_server_db_upgrade_needed">الرجاء ترقية %1$s قاعدة البيانات الخاصة بك </string>
     <string name="nc_server_failed_to_import_account">فشل في استيراد حساب محدد</string>
@@ -472,7 +459,6 @@
     <string name="nc_share_link">رابط المشاركة</string>
     <string name="nc_share_location">مشاركة الموقع</string>
     <string name="nc_share_this_location">شارِك هذا الموقع</string>
-    <string name="nc_share_to_choose_account">إختر حسابًا</string>
     <string name="nc_shared_items">عناصر مُشارَكة</string>
     <string name="nc_shared_items_deck_card">بطاقة مهام</string>
     <string name="nc_shared_items_description">صور، و ملفات، ورسائل صوتية ...</string>
@@ -490,15 +476,11 @@
     <string name="nc_team">الفريق</string>
     <string name="nc_undo">تراجع</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
-    <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
-    <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_failed_notification_text">فشلت عملية رفع %1$s</string>
     <string name="nc_upload_failed_notification_title">فشل</string>
     <string name="nc_upload_from_cloud">مشاركة من %1$s</string>
     <string name="nc_upload_from_device">إرفَع من الجهاز</string>
-    <string name="nc_upload_in_progess">الرَّفْعُ جارٍ …</string>
-    <string name="nc_upload_notification_text">%1$s إلى %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">خُذ صورة</string>
     <string name="nc_upload_video_from_cam">خُذ فيديو</string>
     <string name="nc_user">مستخدم</string>
@@ -577,7 +559,6 @@
     <string name="search_icon">أيقونة البحث</string>
     <string name="secondsAgo">منذ ثوانٍ</string>
     <string name="selected_list_item">مُحدّدة</string>
-    <string name="send_email">إرسال بريد</string>
     <string name="send_to">أرسِل إلى</string>
     <string name="send_to_forbidden">ليس مسموحاً لك مشاركة محتوى هذه الدردشة</string>
     <string name="send_to_three_dots">إرسالُ إلى…</string>
@@ -593,20 +574,16 @@
     <string name="shared_items_poll">استبيان</string>
     <string name="shared_items_recording">تسجيل المكالمة</string>
     <string name="shared_items_voice">صوت</string>
-    <string name="show_ban_reason">أظهِر سبب الحظر</string>
     <string name="show_banned_participants">عرض المشاركين المحظورين</string>
     <string name="starred">المفضلة</string>
     <string name="startCallForbidden">لا يُمكنُك إجراءُ مكالمة</string>
-    <string name="started_a_call">بدأت مكالمةً</string>
     <string name="status_message">رسالة الحالة</string>
-    <string name="status_reverted">تمّ إرجاع الحالة</string>
     <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية</string>
     <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية</string>
     <string name="take_photo">خُذ صورة</string>
     <string name="take_photo_permission">لا يمكن أخذ صورة من دون تصريح</string>
     <string name="thirtyMinutes">30 دقيقة</string>
     <string name="thisWeek">هذا الأسبوع</string>
-    <string name="this_is_a_test_message">هذه رسالة اختبار</string>
     <string name="this_weekend">نهاية هذا الأسبوع</string>
     <string name="thread_reply">الرَّدّ</string>
     <string name="today">اليوم</string>
@@ -646,7 +623,6 @@
     <string name="user_info_role">الوظيفة</string>
     <string name="user_info_twitter">تويتر</string>
     <string name="user_info_website">موقع الويب</string>
-    <string name="user_status">الحاله</string>
     <string name="userinfo_error_text">فشل في استرداد المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين أي معلومات شخصية</string>
     <string name="userinfo_no_info_text">إضافة الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>

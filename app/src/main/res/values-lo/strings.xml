@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="battery_optimization_title">ການຕັ້ງຄ່າແບັດເຕີຣີ</string>
     <string name="busy">Busy</string>
-    <string name="calendar">ປະຕິທິນ</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">The call has been running for one hour.</string>
     <string name="call_without_notification">Call without notification</string>
@@ -37,11 +36,8 @@
     <string name="clear_status_message_after">ລ້າງສະຖານະພາບຂໍ້ຄວາມພາຍຫຼັງ</string>
     <string name="close">ປິດ</string>
     <string name="close_icon">Close Icon</string>
-    <string name="connection_established">ຕິດຕັ້ງການເຊື່ອມຕໍ່</string>
     <string name="connection_lost">No connection to server</string>
-    <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
-    <string name="conversation_archived">Conversation is archived</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="conversations">Conversations</string>
@@ -72,7 +68,6 @@
     <string name="file_list_folder">ໂຟນເດີ</string>
     <string name="file_list_loading">ກຳລັງໂຫຼດ</string>
     <string name="fourHours">4 ຊົ່ວໂມງ</string>
-    <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="internal_note">Internal note</string>
     <string name="invisible">ເບິ່ງບໍ່ເຫັນ</string>
@@ -83,7 +78,6 @@
     <string name="leave_call">Leave call</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">ຜົນLoad ເພີ່ມເຕີມ</string>
-    <string name="local_time">Local time: %1$s</string>
     <string name="location_permission_denied">Location permission denied</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="lock_conversation">Lock conversation</string>
@@ -108,7 +102,6 @@
     <string name="nc_about">ກ່ຽວກັບ</string>
     <string name="nc_account_chooser_active_user">ຜູ້ໃຊ້ທີ່ໃຊ້ງານຢຸ່</string>
     <string name="nc_account_chooser_add_account">ເພີ່ມບັນຊີ</string>
-    <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_add_file">Add to conversation</string>
@@ -129,7 +122,6 @@
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_switch_camera">ສະຫຼັບກ້ອງ</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Switch to self video</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
     <string name="nc_call_notifications">Call notifications</string>
@@ -139,9 +131,6 @@
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
-    <string name="nc_call_state_in_call">%1$s in call</string>
-    <string name="nc_call_state_with_phone">%1$s with phone</string>
-    <string name="nc_call_state_with_video">%1$s with video</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_video">%s video call</string>
@@ -150,7 +139,6 @@
     <string name="nc_call_voice">%s voice call</string>
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_cancel">ຍົກເລີກ</string>
-    <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_caption">Caption</string>
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
@@ -166,7 +154,6 @@
     <string name="nc_common_and">ແລະ</string>
     <string name="nc_common_copy">ສຳເນົາ</string>
     <string name="nc_common_copy_success">ສໍາເນົາຄລິບ</string>
-    <string name="nc_common_create">ສ້າງ</string>
     <string name="nc_common_disabled">Disabled</string>
     <string name="nc_common_dismiss">ຍົກເລີກ</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
@@ -176,7 +163,6 @@
     <string name="nc_common_skip">ຂ້າມໄປ</string>
     <string name="nc_common_unknown">ບໍ່ຮູ້</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
-    <string name="nc_confirm">ຢືນຢັນ</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_contact_chat_start">ເລີ່ມ</string>
     <string name="nc_contacts_done">ສໍາເລັດ</string>
@@ -238,7 +224,6 @@
     <string name="nc_edit_icon">ແກ້ໄຂ</string>
     <string name="nc_edit_message">ແກ້ໄຂ</string>
     <string name="nc_edit_message_text">Edit message</string>
-    <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_event_conversation_menu">Event conversation menu</string>
     <string name="nc_event_schedule">Schedule</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
@@ -313,7 +298,6 @@
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
     <string name="nc_meeting_ended">Meeting ended</string>
-    <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
@@ -422,7 +406,6 @@
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
     <string name="nc_server_connect">ທົດສອບການເຊື່ອມຕໍ່ເຊີເວີ</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
@@ -503,7 +486,6 @@
     <string name="nc_share_link">ແບ່ງປັນລິງ</string>
     <string name="nc_share_location">Share location</string>
     <string name="nc_share_this_location">Share this location</string>
-    <string name="nc_share_to_choose_account">ເລືອກບັນຊີ</string>
     <string name="nc_shared_items">Shared items</string>
     <string name="nc_shared_items_deck_card">Deck card</string>
     <string name="nc_shared_items_description">Images, files, voice messages …</string>
@@ -524,15 +506,11 @@
     <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
     <string name="nc_undo">ກັບຄືນ</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
-    <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_failed_notification_text">Failed to upload %1$s</string>
     <string name="nc_upload_failed_notification_title">Failure</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_from_device">Upload from device</string>
-    <string name="nc_upload_in_progess">ກຳລັງດາວໂຫຼດ</string>
-    <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">ຜູ້ໃຊ້</string>
@@ -619,7 +597,6 @@
     <string name="search_icon">Search Icon</string>
     <string name="secondsAgo">ວິນາທີຜ່ານມາ</string>
     <string name="selected_list_item">ເລືອກ</string>
-    <string name="send_email">ສົ່ງອີເມວ</string>
     <string name="send_to">Send to</string>
     <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
     <string name="send_to_three_dots">Send to …</string>
@@ -635,21 +612,17 @@
     <string name="shared_items_poll">ໂພລ</string>
     <string name="shared_items_recording">Call recording</string>
     <string name="shared_items_voice">Voice</string>
-    <string name="show_ban_reason">Show ban reason</string>
     <string name="show_banned_participants">Show banned participants</string>
     <string name="starred">ລາຍການທີ່ມັກ</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="start_thread">Create a thread</string>
-    <string name="started_a_call">started a call</string>
     <string name="status_message">ສະຖານະຂໍ້ຄວາມ</string>
-    <string name="status_reverted">Status Reverted</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
     <string name="thirtyMinutes">30 ນາທີ</string>
     <string name="thisWeek">ທິດນີ້</string>
-    <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
     <string name="thread_cancel">Cancel thread creation</string>
     <string name="thread_notifications">Thread notifications</string>
@@ -697,7 +670,6 @@
     <string name="user_info_role">ບົດບາດ</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">ເວັບໄຊ</string>
-    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="userinfo_no_info_headline">ບໍ່ມີຂໍ້ມຸນສ່ວນຕົວ</string>
     <string name="userinfo_no_info_text">ເພີ່ມຊື່, ຮູບພາບ ແລະ ລາຍລະອຽດການຕິດຕໍ່ ໃນຫນ້າປົກຂອງທ່ານ.</string>

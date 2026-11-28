@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">باتارېيە ئەلالاشتۇرۇش ئىقتىدارى قوزغىتىلغان بولۇپ، مەسىلە پەيدا قىلىشى مۇمكىن. باتارېيە ئەلالاشتۇرۇش ئىقتىدارىدىن ۋاز كېچىشىڭىز كېرەك!</string>
     <string name="battery_optimization_title">باتارېيە تەڭشىكى</string>
     <string name="busy">ئالدىراش</string>
-    <string name="calendar">كالېندار</string>
     <string name="call_more_actions_dialog_headline">ئىلغار چاقىرىش تاللانمىلىرى</string>
     <string name="call_running_since_one_hour">تېلېفون بىر سائەت داۋاملاشتى.</string>
     <string name="call_without_notification">ئۇقتۇرۇش قىلماي تېلېفون قىلىڭ</string>
@@ -37,11 +36,8 @@
     <string name="clear_status_message_after">كېيىنكى ھالەت ئۇچۇرىنى تازىلاڭ</string>
     <string name="close">تاقاش</string>
     <string name="close_icon">سىنبەلگە تاقاش</string>
-    <string name="connection_established">ئۇلىنىش قۇرۇلدى</string>
     <string name="connection_lost">مۇلازىمېتىرغا ئۇلىنىش يوق</string>
-    <string name="connection_lost_sent_messages_are_queued">ئۇلىنىش يوقاپ كەتتى - ئەۋەتىلگەن ئۇچۇرلار ئۆچرەتتە تۇرىدۇ</string>
     <string name="continuous_voice_message_recording">ئاۋاز ئۇچۇرىنى ئۇدا خاتىرىلەش ئۈچۈن قۇلۇپ خاتىرىلەش</string>
-    <string name="conversation_archived">سۆھبەت ئارخىپلاندى</string>
     <string name="conversation_is_read_only">سۆھبەت پەقەت ئوقۇلىدۇ</string>
     <string name="conversation_read_only_failed">سۆھبەتنى ئوقۇشقىلا-بولىدىغان قىلغىلى بولمىدى</string>
     <string name="conversations">سۆھبەت</string>
@@ -72,7 +68,6 @@
     <string name="file_list_folder">ھۆججەت قىسقۇچ</string>
     <string name="file_list_loading">يۈكلەۋاتىدۇ…</string>
     <string name="fourHours">4 سائەت</string>
-    <string name="get_invitations_error">ساقلىنىۋاتقان تەكلىپلەرنى ئالالمىدى</string>
     <string name="hint_edited_message">(تەھرىرلەندى)</string>
     <string name="internal_note">ئىچكى خاتىرە</string>
     <string name="invisible">كۆرۈنمەيدۇ</string>
@@ -83,7 +78,6 @@
     <string name="leave_call">تېلېفون قىلىڭ</string>
     <string name="left_conversation">سىز %1$sسۆھبەتتىن ئايرىلدىڭىز </string>
     <string name="load_more_results">تېخىمۇ كۆپ نەتىجىلەرنى يۈكلەڭ</string>
-    <string name="local_time">يەرلىك ۋاقىت:%1$s</string>
     <string name="location_permission_denied">ئورۇن رۇخسىتى رەت قىلىندى</string>
     <string name="location_services_disabled">ئورۇن مۇلازىمىتى قوزغىتىلمىغان</string>
     <string name="lock_conversation">سۆھبەتنى قۇلۇپلاڭ</string>
@@ -108,7 +102,6 @@
     <string name="nc_about">ھەققىدە</string>
     <string name="nc_account_chooser_active_user">ئاكتىپ ئىشلەتكۈچى</string>
     <string name="nc_account_chooser_add_account">ھېسابات قوشۇڭ</string>
-    <string name="nc_account_scheduled_for_deletion">ھېسابات ئۆچۈرۈلمەكچى ، ئۇنى ئۆزگەرتىشكە بولمايدۇ</string>
     <string name="nc_add_attachment">قوشۇمچە ھۆججەت قوشۇڭ</string>
     <string name="nc_add_emojis">Emojis نى قوشۇڭ</string>
     <string name="nc_add_file">سۆھبەتكە قوشۇڭ</string>
@@ -129,7 +122,6 @@
     <string name="nc_call_button_content_description_microphone">مىكروفوننى ئالماشتۇرۇڭ</string>
     <string name="nc_call_button_content_description_pip">رەسىمدىكى ھالەتنى ئېچىڭ</string>
     <string name="nc_call_button_content_description_switch_camera">كامېرا ئالماشتۇرۇش</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">ئۆزى سىنغا ئالماشتۇرۇڭ</string>
     <string name="nc_call_incoming">كەلگەن</string>
     <string name="nc_call_name">سۆھبەت ئىسمى</string>
     <string name="nc_call_notifications">تېلېفون ئۇقتۇرۇشى</string>
@@ -139,9 +131,6 @@
     <string name="nc_call_raised_hand">%1$s قولىنى كۆتۈردى</string>
     <string name="nc_call_reconnecting">قايتا ئۇلىنىش…</string>
     <string name="nc_call_ringing">جىرىڭلاۋاتىدۇ</string>
-    <string name="nc_call_state_in_call">تېلېفوندا%1$s</string>
-    <string name="nc_call_state_with_phone">تېلېفون بىلەن%1$s</string>
-    <string name="nc_call_state_with_video">سىن بىلەن%1$s</string>
     <string name="nc_call_timeout">45 سېكۇنتتا جاۋاب يوق ، قايتا سىناڭ</string>
     <string name="nc_call_unknown">%s تېلېفون</string>
     <string name="nc_call_video">%s سىنلىق سۆزلىشىش</string>
@@ -150,7 +139,6 @@
     <string name="nc_call_voice">%s ئاۋازلىق تېلېفون</string>
     <string name="nc_camera_permission_hint">سىن ئالاقىسىنى قوزغىتىش ئۈچۈن \ \"كامېرا \" ئىجازەت بېرىڭ.</string>
     <string name="nc_cancel">بىكار قىلىش</string>
-    <string name="nc_capabilities_failed">ئىقتىدارغا ئېرىشەلمىدى ، چۈشۈرۈۋېتىلدى</string>
     <string name="nc_caption">ئاستى ماۋزۇ</string>
     <string name="nc_certificate_dialog_title">گۇۋاھنامىنى تەكشۈرۈپ بېقىڭ</string>
     <string name="nc_certificate_error">SSL تەڭشىكىڭىز ئۇلىنىشنىڭ ئالدىنى ئالدى</string>
@@ -166,7 +154,6 @@
     <string name="nc_common_and">ۋە</string>
     <string name="nc_common_copy">كۆچۈرۈڭ</string>
     <string name="nc_common_copy_success">چاپلاش تاختىسىغا كۆچۈرۈلدى</string>
-    <string name="nc_common_create">قۇر</string>
     <string name="nc_common_disabled">چەكلەنگەن</string>
     <string name="nc_common_dismiss">خىزمەتتىن ھەيدەش</string>
     <string name="nc_common_error_sorry">كەچۈرۈڭ ، چاتاق چىقتى!</string>
@@ -176,7 +163,6 @@
     <string name="nc_common_skip">ئاتلاش</string>
     <string name="nc_common_unknown">نامەلۇم</string>
     <string name="nc_configure_cert_auth">دەلىللەش گۇۋاھنامىسىنى تاللاڭ</string>
-    <string name="nc_confirm">جەزملەشتۈرۈڭ</string>
     <string name="nc_connecting_call">ئۇلىنىش…</string>
     <string name="nc_contact_chat_start">باشلاش</string>
     <string name="nc_contacts_done">تامام</string>
@@ -238,7 +224,6 @@
     <string name="nc_edit_icon">تەھرىر</string>
     <string name="nc_edit_message">تەھرىر</string>
     <string name="nc_edit_message_text">ئۇچۇرنى تەھرىرلەش</string>
-    <string name="nc_edited_by_admin">باشقۇرغۇچى تەرىپىدىن تەھرىرلەندى</string>
     <string name="nc_event_conversation_menu">پائالىيەت ھۆھبەت تىزىملىكى</string>
     <string name="nc_event_schedule">ئورۇنلاشتۇر</string>
     <string name="nc_expire_message_eight_hours">8 سائەت</string>
@@ -313,7 +298,6 @@
     <string name="nc_mark_as_read">ئوقۇغاندەك بەلگە قويۇڭ</string>
     <string name="nc_mark_as_unread">ئوقۇلمىغان دەپ بەلگە قويۇڭ</string>
     <string name="nc_meeting_ended">يىغىن ئاخىرلاشتى</string>
-    <string name="nc_message_added_to_notes">ئۇچۇر خاتىرىگە قوشۇلدى</string>
     <string name="nc_message_failed_to_send">ئۇچۇر ئەۋەتمىدى:</string>
     <string name="nc_message_quote_cancel_reply">جاۋابنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="nc_message_read">ئۇچۇر ئوقۇلدى</string>
@@ -422,7 +406,6 @@
     <string name="nc_sent_an_audio_you">ئاۋاز ئەۋەتتىڭىز.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s رەسىم ئەۋەتتى.</string>
     <string name="nc_sent_an_image_you">رەسىم ئەۋەتتىڭىز.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s پالۋان كارتىسى ئەۋەتتى</string>
     <string name="nc_server_connect">مۇلازىمېتىر ئۇلىنىشىنى سىناش</string>
     <string name="nc_server_db_upgrade_needed">%1$s سانداننى يېڭىلاڭ</string>
     <string name="nc_server_failed_to_import_account">تاللانغان ھېساباتنى ئەكىرىش مەغلۇب بولدى</string>
@@ -503,7 +486,6 @@
     <string name="nc_share_link">ئۇلىنىشنى ھەمبەھىرلەش</string>
     <string name="nc_share_location">ئورۇننى ئورتاقلىشىش</string>
     <string name="nc_share_this_location">بۇ ئورۇننى ئورتاقلىشىڭ</string>
-    <string name="nc_share_to_choose_account">ھېسابات تاللاڭ</string>
     <string name="nc_shared_items">ئورتاق بەھرىلىنىدىغان بۇيۇملار</string>
     <string name="nc_shared_items_deck_card">پالۋان كارتىسى</string>
     <string name="nc_shared_items_description">رەسىم ، ھۆججەت ، ئاۋازلىق ئۇچۇرلار…</string>
@@ -525,15 +507,11 @@
     <string name="nc_tomorrow_meeting">ئەتە %1$s</string>
     <string name="nc_undo">ئەمەلدىن قالدۇرۇش</string>
     <string name="nc_upload_choose_local_files">ھۆججەتلەرنى تاللاڭ</string>
-    <string name="nc_upload_confirm_send_multiple">بۇ ھۆججەتلەرنى%1$s غا ئەۋەتىڭ؟</string>
-    <string name="nc_upload_confirm_send_single">بۇ ھۆججەتنى %1$s غا ئەۋەتىڭ؟</string>
     <string name="nc_upload_failed">كەچۈرۈڭ ، يوللاش مەغلۇپ بولدى</string>
     <string name="nc_upload_failed_notification_text">%1$s  نى يۈكلىيەلمىدى</string>
     <string name="nc_upload_failed_notification_title">مەغلۇبىيەت</string>
     <string name="nc_upload_from_cloud">%1$s دىن ئورتاقلىشىش</string>
     <string name="nc_upload_from_device">ئۈسكۈنىدىن يۈكلەش</string>
-    <string name="nc_upload_in_progess">يۈكلەش</string>
-    <string name="nc_upload_notification_text">%1$s-%2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">رەسىمگە تارتىڭ</string>
     <string name="nc_upload_video_from_cam">سىن ئېلىڭ</string>
     <string name="nc_user">ئىشلەتكۈچى</string>
@@ -622,7 +600,6 @@
     <string name="search_icon">سىنبەلگە ئىزدەش</string>
     <string name="secondsAgo">سېكۇنت بۇرۇن</string>
     <string name="selected_list_item">تاللانغان</string>
-    <string name="send_email">ئېلېكترونلۇق خەت ئەۋەتىڭ</string>
     <string name="send_to">ئەۋەتىش</string>
     <string name="send_to_forbidden">بۇ سۆھبەتكە مەزمۇن ئورتاقلىشىڭىزغا رۇخسەت قىلىنمايدۇ</string>
     <string name="send_to_three_dots">ئەۋەتىش…</string>
@@ -638,21 +615,17 @@
     <string name="shared_items_poll">راي سىناش</string>
     <string name="shared_items_recording">چاقىرىش خاتىرىسى</string>
     <string name="shared_items_voice">ئاۋاز</string>
-    <string name="show_ban_reason">چەكلەش سەۋەبىنى كۆرسىتىڭ</string>
     <string name="show_banned_participants">چەكلەنگەن قاتناشقۇچىلارنى كۆرسىتىش</string>
     <string name="starred">ئامراق</string>
     <string name="startCallForbidden">سىزنىڭ تېلېفوننى باشلىشىڭىزغا رۇخسەت قىلىنمايدۇ</string>
     <string name="start_thread">بىر يىپ قۇر</string>
-    <string name="started_a_call">تېلېفون باشلىدى</string>
     <string name="status_message">ھالەت ئۇچۇرى</string>
-    <string name="status_reverted">ھالىتى ئۆزگەرتىلدى</string>
     <string name="switch_to_breakout_room">بۆسۈش ئۆيىگە ئالماشتۇرۇڭ</string>
     <string name="switch_to_main_room">ئاساسلىق ئۆيگە ئالماشتۇرۇڭ</string>
     <string name="take_photo">رەسىمگە تارتىڭ</string>
     <string name="take_photo_permission">رۇخسەتسىز رەسىمگە تارتىش مۇمكىن ئەمەس</string>
     <string name="thirtyMinutes">30 مىنۇت</string>
     <string name="thisWeek">بۇ ھەپتە</string>
-    <string name="this_is_a_test_message">بۇ بىر سىناق ئۇچۇرى</string>
     <string name="this_weekend">بۇ ھەپتە ئاخىرى</string>
     <string name="thread_cancel">يىپ قۇرۇشنى ئەمەلدىن قالدۇر</string>
     <string name="thread_notifications">يىپ ئۇقتۇرۇشى</string>
@@ -702,7 +675,6 @@
     <string name="user_info_role">رولى</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">تور بېكەت</string>
-    <string name="user_status">ھالەت</string>
     <string name="userinfo_error_text">شەخسىي ئىشلەتكۈچى ئۇچۇرىغا ئېرىشەلمىدى.</string>
     <string name="userinfo_no_info_headline">شەخسىي ئۇچۇر يوق</string>
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>

@@ -26,7 +26,6 @@
     <string name="battery_optimization_not_ignored">Įjungtas akumuliatoriaus optimizavimas, kuris gali sukelti problemų. Turėtumėte išjungti akumuliatoriaus optimizavimą!</string>
     <string name="battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="busy">Užimtas</string>
-    <string name="calendar">Kalendorius</string>
     <string name="call_in_progress">Skambutis vyksta</string>
     <string name="call_more_actions_dialog_headline">Išplėstinės skambučio parinktys</string>
     <string name="call_running_since_one_hour">Skambutis vyksta jau valandą.</string>
@@ -39,11 +38,8 @@
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
     <string name="close">Užverti</string>
     <string name="close_icon">Uždaryti piktogramą</string>
-    <string name="connection_established">Ryšys užmegztas</string>
     <string name="connection_lost">Nėra ryšio su serveriu</string>
-    <string name="connection_lost_sent_messages_are_queued">Ryšys nutrūko – išsiųstos žinutės yra eilėje</string>
     <string name="continuous_voice_message_recording">Įrašymo blokavimas, kad balso pranešimas būtų įrašomas nepertraukiamai</string>
-    <string name="conversation_archived">Pokalbis archyvuotas</string>
     <string name="conversation_is_read_only">Pokalbis yra tik skaitymui</string>
     <string name="conversation_read_only_failed">Nepavyko nustatyti pokalbio kaip „Tik skaitymui“</string>
     <string name="conversations">Pokalbiai</string>
@@ -81,7 +77,6 @@
     <string name="full_screen_intent_permission_granted">Leidžiama rodyti gaunamo skambučio langą užrakintame ekrane, viskas gerai</string>
     <string name="full_screen_intent_permission_not_granted">Neleidžiama rodyti skambučių ekrano užrakintame ekrane. Prašome suteikti šią teisę, kad skambučiai būtų rodomi užrakintame ekrane!</string>
     <string name="full_screen_intent_permission_title">Rodyti gaunamus skambučius užrakintame ekrane</string>
-    <string name="get_invitations_error">Nepavyko atsisiųsti laukiančių kvietimų</string>
     <string name="gplay_available_no">„Google Play“ paslaugos neprieinamos. Pranešimai nepalaikomi.</string>
     <string name="hint_edited_message">(redaguota)</string>
     <string name="internal_note">Vidaus užrašas</string>
@@ -93,7 +88,6 @@
     <string name="leave_call">Išeiti iš skambučio</string>
     <string name="left_conversation">Išėjote iš %1$s pokalbio</string>
     <string name="load_more_results">Įkelti daugiau rezultatų</string>
-    <string name="local_time">Vietinis laikas: %1$s</string>
     <string name="location_permission_denied">Leidimas naudoti vietovės duomenis atmestas</string>
     <string name="location_services_disabled">Vietos nustatymo paslaugos išjungtos</string>
     <string name="lock_conversation">Užrakinti pokalbį</string>
@@ -124,7 +118,6 @@
     <string name="nc_about">Apie</string>
     <string name="nc_account_chooser_active_user">Aktyvus vartotojas</string>
     <string name="nc_account_chooser_add_account">Pridėti paskyrą</string>
-    <string name="nc_account_scheduled_for_deletion">Paskyra yra suplanuota ištrynimui ir negali būti pakeista</string>
     <string name="nc_add_attachment">Pridėti priedą</string>
     <string name="nc_add_emojis">Pridėti emociukų</string>
     <string name="nc_add_file">Pridėti į pokalbį</string>
@@ -132,7 +125,6 @@
     <string name="nc_add_participants">Pridėti dalyvių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_add_to_home_screen">Pridėti prie pradinio ekrano</string>
-    <string name="nc_admin_only">Tik administratoriui</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_announcement">Skelbimas</string>
     <string name="nc_announcement_description">Pokalbis, skirtas administratoriams informuoti konkrečią auditoriją; iš šio pokalbio negalima pasitraukti.</string>
@@ -149,7 +141,6 @@
     <string name="nc_call_button_content_description_microphone">Perjungti mikrofoną</string>
     <string name="nc_call_button_content_description_pip">Įjungti „vaizdas vaizde“ režimą</string>
     <string name="nc_call_button_content_description_switch_camera">Perjungti kamerą</string>
-    <string name="nc_call_button_content_description_switch_to_self_vide">Rodyti savo vaizdą</string>
     <string name="nc_call_incoming">ĮEINANTIS</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
     <string name="nc_call_notifications">Skambučių pranešimai</string>
@@ -159,9 +150,6 @@
     <string name="nc_call_raised_hand">%1$s pakėlė ranką</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_ringing">SMABINAMA</string>
-    <string name="nc_call_state_in_call">%1$s skambutyje</string>
-    <string name="nc_call_state_with_phone">%1$s su telefonu</string>
-    <string name="nc_call_state_with_video">%1$s su vaizdu</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_call_unknown">%s skambutis</string>
     <string name="nc_call_video">%s vaizdo skambutis</string>
@@ -170,7 +158,6 @@
     <string name="nc_call_voice">%s baldo skambutis</string>
     <string name="nc_camera_permission_hint">Norėdami įjungti vaizdo ryšį, suteikite leidimą „Kamera“.</string>
     <string name="nc_cancel">Atsisakyti</string>
-    <string name="nc_capabilities_failed">Klaida nustatant funkcijas, veiksmas atšauktas</string>
     <string name="nc_caption">Antraštė</string>
     <string name="nc_certificate_dialog_title">Peržiūrėkite sertifikatą</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
@@ -191,7 +178,6 @@
     <string name="nc_common_and">ir</string>
     <string name="nc_common_copy">Kopijuoti</string>
     <string name="nc_common_copy_success">Nukopijuota į iškarpinę</string>
-    <string name="nc_common_create">Sukurti</string>
     <string name="nc_common_disabled">Išjungta</string>
     <string name="nc_common_dismiss">Atmesti</string>
     <string name="nc_common_error_sorry">Atleiskite, kažkas nutiko!</string>
@@ -200,11 +186,7 @@
     <string name="nc_common_set">Nustatyti</string>
     <string name="nc_common_skip">Praleisti</string>
     <string name="nc_common_unknown">Nežinoma</string>
-    <string name="nc_compress_images">Suspauskite nuotraukas ir vaizdo įrašus</string>
-    <string name="nc_compress_in_progress">Suspaudimas</string>
-    <string name="nc_compress_notification_text">%1$s - %2$s\%%</string>
     <string name="nc_configure_cert_auth">Pasirinkti tapatybės nustatymo sertifikatą</string>
-    <string name="nc_confirm">Patvirtinti</string>
     <string name="nc_connecting_call">Jungiamasi…</string>
     <string name="nc_contact_chat_start">Pradėti</string>
     <string name="nc_contacts_done">Atlikta</string>
@@ -276,7 +258,6 @@
     <string name="nc_edit_icon">Redaguoti</string>
     <string name="nc_edit_message">Redaguoti</string>
     <string name="nc_edit_message_text">Redaguoti pranešimą</string>
-    <string name="nc_edited_by_admin">Redagavo administratorius</string>
     <string name="nc_event_conversation_menu">Įvykio pokalbio meniu</string>
     <string name="nc_event_schedule">Tvarkaraštis</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
@@ -322,8 +303,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Kvietimai buvo išsiųsti dar kartą.</string>
     <string name="nc_guest_access_share_link">Bendrinkite pokalbio nuorodą</string>
     <string name="nc_hint_enter_a_message">Įrašykite žinutę …</string>
-    <string name="nc_hq_toggle">„HQ“</string>
-    <string name="nc_hq_toggle_description">Aukšta kokybė, be suspaudimo</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Baterijos optimizavimas nėra ignoruojamas. Tai reikėtų pakeisti, kad pranešimai veiktų fone! Spustelėkite Gerai ir pasirinkite „Visos programėlės“ -> %1$s, tada „Neoptimizuoti“ arba „Leisti naudoti foną -> Neribotai“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignoruoti akumuliatoriaus optimizavimą</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
@@ -350,8 +329,6 @@
     <string name="nc_locked">Užrakinta</string>
     <string name="nc_locked_tap_to_unlock">Bakstelėkite, norėdami atrakinti</string>
     <string name="nc_logs_advanced_logging">Išplėstinis registravimas</string>
-    <string name="nc_logs_advanced_logging_disable">Išjungti išplėstinį registravimą</string>
-    <string name="nc_logs_advanced_logging_enable">Įjungti išplėstinį registravimą</string>
     <string name="nc_logs_advanced_logging_enabled_warning">Įjungtas išplėstinis žurnalų fiksavimas. Tai gali sulėtinti veikimą.</string>
     <string name="nc_logs_advanced_logging_privacy_warning">Jei buvote įjungę išplėstinį žurnalų fiksavimą, prašome viešai nesidalinti ataskaita.</string>
     <string name="nc_logs_delete_all">Ištrinti visus žurnalus</string>
@@ -365,8 +342,6 @@
     <string name="nc_logs_logging_enabled">Įvykių registravimas įjungtas</string>
     <string name="nc_logs_overflow_warning">Įspėjimas: kai kurie žurnalo įrašai buvo prarasti dėl eilės perpildymo.</string>
     <string name="nc_logs_share">Siųsti kaip laišką</string>
-    <string name="nc_logs_share_diagnosis">Diagnozės ataskaita</string>
-    <string name="nc_logs_share_latest_crash">Paskutinis lūžis</string>
     <string name="nc_logs_title">Žurnalai</string>
     <string name="nc_logs_total_size">Bendras žurnalo dydis: %d KB</string>
     <string name="nc_manual">Nenustatyta</string>
@@ -376,7 +351,6 @@
     <string name="nc_media_quality_original_hint">Siunčiant originalios kokybės failus sunaudojama daugiau mobiliųjų duomenų.</string>
     <string name="nc_media_quality_reduced">Sumažinta kokybė</string>
     <string name="nc_meeting_ended">Susitikimas baigėsi</string>
-    <string name="nc_message_added_to_notes">Pranešimas pridėtas prie užrašų</string>
     <string name="nc_message_failed">Nepavyko išsiųsti pranešimo</string>
     <string name="nc_message_failed_to_send">Nepavyko išsiųsti pranešimo:</string>
     <string name="nc_message_quote_cancel_reply">Atšaukti atsakymą</string>
@@ -506,7 +480,6 @@
     <string name="nc_sent_an_audio_you">Jūs išsiuntėte garso įrašą.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s išsiuntė paveikslą.</string>
     <string name="nc_sent_an_image_you">Jūs išsiuntėte paveikslą.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s išsiuntė darbų kortelę</string>
     <string name="nc_server_connect">Patikrinkite serverio ryšį</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
@@ -535,7 +508,6 @@
     <string name="nc_settings_diagnosis_title">Diagnozė</string>
     <string name="nc_settings_incognito_keyboard_desc">Nurodo klaviatūrai išjungti individualizuotą mokymąsi (be garantijų)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
-    <string name="nc_settings_logs_subtitle">Peržiūrėti vietinius žurnalo failus</string>
     <string name="nc_settings_logs_title">Žurnalai</string>
     <string name="nc_settings_media_quality_title">Siunčiamos medijos kokybė</string>
     <string name="nc_settings_no_ringtone">Be garso</string>
@@ -596,7 +568,6 @@
     <string name="nc_share_link">Bendrinimo nuoroda</string>
     <string name="nc_share_location">Bendrinkite vietą</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
-    <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
     <string name="nc_shared_items_deck_card">Darbų kortelė</string>
     <string name="nc_shared_items_description">Paveikslai, failai, balso žinutės…</string>
@@ -623,15 +594,11 @@
     <string name="nc_undo">Atšaukti</string>
     <string name="nc_upcoming_event_dismissed">Būsimą skambutį galima peržiūrėti pokalbio informacijoje</string>
     <string name="nc_upload_choose_local_files">Pasirinkite failus</string>
-    <string name="nc_upload_confirm_send_multiple">Siųsti šiuos failus %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Siųsti šį failą %1$s?</string>
     <string name="nc_upload_failed">Atsiprašome, nepavyko įkelti</string>
     <string name="nc_upload_failed_notification_text">Nepavyko įkelti %1$s</string>
     <string name="nc_upload_failed_notification_title">Nesėkmė</string>
     <string name="nc_upload_from_cloud">Bendrinimas iš %1$s</string>
     <string name="nc_upload_from_device">Įkelti iš įrenginio</string>
-    <string name="nc_upload_in_progess">Įkeliama</string>
-    <string name="nc_upload_notification_text">%1$s į %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_upload_video_from_cam">Įrašyti vaizdo įrašą</string>
     <string name="nc_user">Naudotojas</string>
@@ -664,14 +631,12 @@
     <string name="pin_24hr">Prisegti 24 valandoms</string>
     <string name="pin_30_days">Prisegti 30 dienų</string>
     <string name="pin_7_days">Prisegti 7 dienoms</string>
-    <string name="pin_indefinitely">Prisegti neribotam laikui</string>
     <string name="pin_message">Prisegti pranešimą</string>
     <string name="pinned">Prisegta</string>
     <string name="pinned_by_author">%1$s (prisegta %2$s)</string>
     <string name="pinned_by_you">%1$s (jūs prisegėte)</string>
     <string name="pinned_dismiss">Atmesti</string>
     <string name="pinned_go_to_message">Eiti į pranešimą</string>
-    <string name="pinned_indefinitely">Prisegta neribotam laikui</string>
     <string name="pinned_message_options">Pranešimų parinktys</string>
     <string name="pinned_until">Prisegta iki</string>
     <string name="play_pause_voice_message">Atkurti/pristabdyti balso žinutę</string>
@@ -733,7 +698,6 @@
     <string name="search_icon">Paieškos piktograma</string>
     <string name="secondsAgo">prieš keletą sekundžių</string>
     <string name="selected_list_item">Pasirinkta</string>
-    <string name="send_email">Siųsti elektroninį laišką</string>
     <string name="send_to">Siųsti</string>
     <string name="send_to_forbidden">Šiame pokalbyje negalima dalintis turiniu</string>
     <string name="send_to_three_dots">Siųsti...</string>
@@ -749,22 +713,18 @@
     <string name="shared_items_poll">Apklausa</string>
     <string name="shared_items_recording">Skambučio įrašymas</string>
     <string name="shared_items_voice">Balsas</string>
-    <string name="show_ban_reason">Rodyti blokavimo priežastį</string>
     <string name="show_banned_participants">Rodyti užblokuotus dalyvius</string>
     <string name="silent_message_hint">Tyli žinutė</string>
     <string name="starred">Mėgstamas</string>
     <string name="startCallForbidden">Jums neleidžiama pradėti skambučio</string>
     <string name="start_thread">Sukurti temą</string>
-    <string name="started_a_call">pradėjo pokalbį</string>
     <string name="status_message">Būsenos žinutė</string>
-    <string name="status_reverted">Būklė Atkurta</string>
     <string name="switch_to_breakout_room">Pereiti į grupinio darbo kambarį</string>
     <string name="switch_to_main_room">Pereiti į pagrindinį kambarį</string>
     <string name="take_photo">Fotografuoti</string>
     <string name="take_photo_permission">Be leidimo fotografuoti negalima</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
-    <string name="this_is_a_test_message">Tai yra bandomoji žinutė</string>
     <string name="this_weekend">Šį savaitgalį</string>
     <string name="thread_cancel">Atšaukti temos kūrimą</string>
     <string name="thread_notifications">Temos pranešimai</string>
@@ -817,7 +777,6 @@
     <string name="user_info_role">Vaidmuo</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Svetainė</string>
-    <string name="user_status">Būsena</string>
     <string name="userinfo_error_text">Nepavyko gauti asmeninės vartotojo informacijos.</string>
     <string name="userinfo_no_info_headline">Asmeninės informacijos nėra</string>
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
